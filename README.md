@@ -39,7 +39,7 @@ you're working in.
 
 7. If you want to run the built-in tests, type
 ```
-cargo test --release -p enclone enclone -- --nocapture
+cargo test --release -- --nocapture
 ```
 
 If you have problems, please write to us at enclone@10xgenomics.com.
