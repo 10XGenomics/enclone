@@ -132,7 +132,7 @@ fn test_enclone() {
         } else {
             let old = read_to_string(&out_file).unwrap();
             let args = testn.split(' ').collect::<Vec<&str>>();
-            let mut new = Command::new("../target/release/enclone");
+            let mut new = Command::new("target/release/enclone");
             let mut new = new.arg( format!("PRE=test/inputs/version{}", version) );
             for i in 0..args.len() {
                 new = new.arg(&args[i]);
