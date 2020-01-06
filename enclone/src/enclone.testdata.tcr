@@ -1,0 +1,35 @@
+# Each non-comment line in this file is a list of lena ids, putatively from the same donor.
+
+123083,123084
+
+# AGBT donor 3
+
+101287
+
+126184,126185
+
+106227,106228,106229
+
+# would need to recover fastq files:
+
+# 72919,72920
+
+86189,86197
+
+132723,132725
+
+86052
+
+35884
+
+48602
+
+48600
+
+37661
+
+# lung cancer DTC
+
+163911,163914
+
+36368

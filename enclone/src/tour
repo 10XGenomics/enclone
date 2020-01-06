@@ -1,0 +1,30 @@
+
+1. Duplicated V segment.  Assembly graph has an indel bubble, 
+and there are UMIs that support both branches of the bubble, probably because of barcode
+exchange.  So the presence of both chains 1 and 2 is an assembly artifact, that we might 
+hope to fix by improving the assembly algorithm.
+
+enclone 160326 CDR3=CARAAFGGYPYYYYGMDVW
+
+2. Two clonotypes.
+
+enclone 123085 CDR3=CAKKVHHGVVVSATPPWYFDLW
+
+3. Same, grouped, suggests possible improvements to join heuristics.
+
+enclone 123085 CDR3=CAKKVHHGVVVSATPPWYFDLW GROUP_HEAVY_CDR3
+
+4. Fishy foursie (see next).
+
+enclone 123085 CVARS=umed CDR3="CARRYFGVVADAFDIW|CTRAGFLSYQLLSYYYYGMDVW" MIN_CELLS=3
+
+5. Now we see that it's an artifact of 123085.  Could be explained by GEM containing 2 cells and 
+20 gel beads.  Can't think of another explanation.  Algorithm should kill if both datasets given.
+Not sure how to get rid of it if only 123085 given.  Maybe just because fishy foursie.
+
+enclone 123085,123089 CVARS=umed CDR3="CARRYFGVVADAFDIW|CTRAGFLSYQLLSYYYYGMDVW" MIN_CELLS=6
+
+6. Show ability to see gene expression and antibodies.
+
+enclone 123085 GEX=126106 LVARSP=gex_med,IGHV5-51_g,IGLV1-47_g,IGLV1-44_g,CD19_a CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
+

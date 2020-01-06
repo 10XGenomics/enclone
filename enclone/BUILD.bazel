@@ -1,0 +1,30 @@
+load(
+    "@tenx_bazel_rules//rules:cargo.bzl",
+    "cargo_library",
+)
+
+exports_files(
+    ["Cargo.toml"],
+    visibility = ["//lib/rust:__pkg__"],
+)
+
+filegroup(
+    name = "srcs",
+    srcs = [
+        "build.rs",
+    ] + glob([
+        "src/*.rs",
+        "src/*.fasta",
+    ]),
+    visibility = ["//lib/rust:__pkg__"],
+)
+
+cargo_library(
+    name = "enclone",
+    srcs = [
+        ":srcs",
+        "//lib/rust:srcs",
+    ],
+    cargo_deps = "//lib/rust",
+    visibility = ["//visibility:public"],
+)
