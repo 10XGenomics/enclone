@@ -8,6 +8,7 @@ use pager::Pager;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -16,6 +17,28 @@ pub fn help1() {
     // Set up.
 
     let mut args: Vec<String> = env::args().collect();
+    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
+        PrettyTrace::new().on();
+        let mut nopager = false;
+        let mut to_delete = vec![ false; args.len() ];
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                nopager = true;
+                to_delete[i] = true;
+            }
+        }
+        erase_if(&mut args, &to_delete);
+        if !nopager {
+            Pager::with_pager("less -r -F").setup();
+        }
+    }
+    let mut help_all = false;
+    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
+        unsafe {
+            HELP_ALL = true;
+        }
+        help_all = true;
+    }
     let mut rows = Vec::<Vec<String>>::new();
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
@@ -80,13 +103,6 @@ pub fn help1() {
             }
         };
     }
-    let mut help_all = false;
-    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
-        unsafe {
-            HELP_ALL = true;
-        }
-        help_all = true;
-    }
     macro_rules! begin_doc {
         ($x:expr) => {
         rows.clear();
@@ -94,18 +110,6 @@ pub fn help1() {
             banner($x, plain);
         }
         };
-    }
-    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
-        PrettyTrace::new().on();
-        let mut nopager = false;
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                nopager = true;
-            }
-        }
-        if !nopager {
-            Pager::with_pager("less -r -F").setup();
-        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
