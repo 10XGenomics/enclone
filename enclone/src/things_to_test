@@ -1,0 +1,9 @@
+
+- no arg
+- AMINO=cdr3
+- AMINO=cdr3,var 
+- AMINO=         
+- CVARS=var
+- CVARS=var AMINO=
+- AMINO=var
+- AMINO=cdr3 CVARS=var
