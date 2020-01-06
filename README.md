@@ -19,9 +19,9 @@ box (untested).
 
 2. You need to have the rust compiler installed.
 
-3. Check out the branch `dj/cr-1577b` of `cellranger`, and do
+3. Clone the enclone repository and do
 ```
-cd cellranger/lib/rust
+git clone git@github.com:10XDev/enclone.git
 cargo build --release --bin enclone
 ```
 and then put `target/release/enclone` in your path.
