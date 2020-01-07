@@ -263,8 +263,8 @@ pub fn help5() {
             H. then print (or save the pdf, if you prefer).\n" );
 
         print( "\\boldblue{3. Why is enclone slow for me?}\n\n" );
-        print( "It should not be.  When we use it, it typically takes a few seconds, although it \
-            can be longer, depending on the dataset.  If you have \
+        print( "It should not be.  When we use it, it typically takes a few seconds for a single \
+            dataset, and longer for multiple datasets.  If you have \
             encountered an example where it is slow, please write to us, so we can improve its \
             performance.\n\n" );
 
