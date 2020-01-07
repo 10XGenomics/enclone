@@ -116,8 +116,11 @@ pub struct EClonotype {
 /// Define a clonotype chain
 #[derive(Serialize, Deserialize)]
 pub struct ClonotypeChain {
-    /// The nuclotide sequence of this clonotype chain consensus
-    /// TODO: Will be ambiguous bases be `N` or IUPAC or a nt based on voting?
+    /// The nuclotide sequence of this clonotype chain consensus.
+    /// What we actually compute here is not the consensus across the clonotype (whose
+    /// biological meaning is questionable), but rather the sequence of the first exact
+    /// subclonotype which has an entry for the given chain.  Over 99% of the time, this
+    /// will be the first exact subclonotype.
     pub nt_sequence: Sequence,
     /// Index of the 5' UTR region in the universal reference. The region in the universal
     /// reference is guaranteed to be `Region::U`
