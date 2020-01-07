@@ -132,15 +132,23 @@ pub fn make_loupe_clonotype(
 
     let mut xchains = Vec::<ClonotypeChain>::new();
     for cx in 0..cols {
+
+        // Find the first exact subclonotype that has an entry in the given column.  Over
+        // 99% of the time, this will be the first exact subclonotype.
+
         let mut m0 = 0;
         let mut u0 = 0;
         for z in 0..mat[cx].len() {
             if mat[cx][z].is_some() {
                 u0 = z;
                 m0 = mat[cx][z].unwrap();
+                break;
             }
         }
         let ex = &exact_clonotypes[exacts[u0]];
+
+        // Compute the ClonotypeChain from this exact subclonotype.
+
         let nt_sequence = ex.share[m0].full_seq.clone();
         let u_idx = rsi.uids[cx];
         let v_idx = rsi.vids[cx];
