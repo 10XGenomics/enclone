@@ -190,8 +190,10 @@ pub fn help3( args: &Vec<String> ) {
         println!( "where each xi is one of the field names shown below.\n\
             There is a separate description there of how gene expression and feature barcode\n\
             columns are obtained.\n" );
-        println!( "Over time additional fields may be added and the order of fields may \
-            change.\n" );
+        print( "Over time additional fields may be added and the order of fields may \
+            change.\n\n" );
+        print( "If you want to completely suppress the generation of visual clonotypes, add \
+            \\bold{NOPRINT} to the enclone command line.\n\n" );
         let mut log = Vec::<u8>::new();
         if !plain {
             emit_bold_escape(&mut log);

@@ -225,6 +225,8 @@ pub fn proc_args( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
         } else if is_simple_arg( &args[i], "NO_REUSE" ) {
             ctl.gen_opt.no_reuse = true;
         } else if is_simple_arg( &args[i], "NOPAGER" ) {
+        } else if is_simple_arg( &args[i], "NOPRINT" ) {
+            ctl.gen_opt.noprint = true;
         } else if args[i].starts_with( "POUT=" ) {
             ctl.parseable_opt.pout = args[i].after( "POUT=" ).to_string();
         } else if args[i].starts_with( "DONOR_REF_FILE=" ) {

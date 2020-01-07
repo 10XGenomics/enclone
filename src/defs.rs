@@ -75,6 +75,7 @@ pub struct GeneralOpt {
     pub dref_file: String,
     pub mouse: bool,
     pub refname: String,
+    pub noprint: bool,
 }
 
 // Allele finding algorithmic options.

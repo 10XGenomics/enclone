@@ -90,38 +90,40 @@ pub fn group_and_print_clonotypes(
 
         // Generate human readable output.
 
-        println!("");
-        if last_width > 0 {
+        if !ctl.gen_opt.noprint {
+            println!("");
+            if last_width > 0 {
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_eight_bit_color_escape(&mut log, 44);
+                    print!( "{}", strme(&log) );
+                }
+                print!( "╺" );
+                for _ in 0..last_width-2 {
+                    print!( "━" );
+                }
+                print!( "╸" );
+                println!("\n");
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_end_escape(&mut log);
+                    print!( "{}", strme(&log) );
+                }
+            }
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
-                emit_eight_bit_color_escape(&mut log, 44);
+                emit_bold_escape(&mut log);
+                emit_eight_bit_color_escape(&mut log, 27);
                 print!( "{}", strme(&log) );
             }
-            print!( "╺" );
-            for _ in 0..last_width-2 {
-                print!( "━" );
-            }
-            print!( "╸" );
-            println!("\n");
+            print!( "[{}] GROUP = {} CLONOTYPES = {} CELLS", groups, o.len(), n );
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_end_escape(&mut log);
                 print!( "{}", strme(&log) );
             }
+            println!("");
         }
-        if ctl.pretty {
-            let mut log = Vec::<u8>::new();
-            emit_bold_escape(&mut log);
-            emit_eight_bit_color_escape(&mut log, 27);
-            print!( "{}", strme(&log) );
-        }
-        print!( "[{}] GROUP = {} CLONOTYPES = {} CELLS", groups, o.len(), n );
-        if ctl.pretty {
-            let mut log = Vec::<u8>::new();
-            emit_end_escape(&mut log);
-            print!( "{}", strme(&log) );
-        }
-        println!("");
         let mut group_ncells = 0;
         for j in 0..o.len() {
             let oo = o[j] as usize;
@@ -131,7 +133,9 @@ pub fn group_and_print_clonotypes(
         }
         for j in 0..o.len() {
             let oo = o[j] as usize;
-            print!("\n[{}.{}] {}", groups, j+1, pics[oo] );
+            if !ctl.gen_opt.noprint {
+                print!("\n[{}.{}] {}", groups, j+1, pics[oo] );
+            }
             let x = &pics[oo];
             let mut y = Vec::<char>::new();
             for c in x.chars() {
