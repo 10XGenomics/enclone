@@ -256,7 +256,7 @@ pub struct TigData1 {
     pub seq: Vec<u8>,                         // V..J contig subsequence
     pub seq_del: Vec<u8>,                     // V..J, possibly with mod 3 del
     pub seq_del_amino: Vec<u8>,               // V..J, possibly with mod 3 del at mod 3 start
-    pub full_seq: Vec<u8>,                    // full contig sequence
+    pub full_seq: Vec<u8>,                    // full contig sequence (consensus)
     pub v_start: usize,                       // start of V on full contig sequence
     pub j_stop: usize,                        // stop of J on full contig sequence
     pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
