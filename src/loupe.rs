@@ -279,7 +279,7 @@ pub fn loupe_out( ctl: &EncloneControl, all_loupe_clonotypes: Vec<Clonotype>,
                     "D" => Region::D,
                     "J" => Region::J,
                     "C" => Region::C,
-                    _ => Region::U, // nonsense!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    _ => Region::U, // nonsense, but can't happen
                 },
                 nt_sequence: refdata.refs[i].to_ascii_vec(),
             } );
