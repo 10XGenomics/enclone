@@ -410,17 +410,25 @@ pub fn help1() {
         println!( "glossary of terms used by enclone\n" );
         end_escape!();
 
+        // doc V..J
+
+        doc!( "V..J", "the full sequence of a V(D)J transcript, from the beginning of the V" );
+        doc!( "", "segment to the end of the J segment; this sequence begins with a stop codon" );
+        doc!( "", "and ends with a partial codon (its first base)" );
+
         // doc clonotype
 
-        doc!( "clonotype", "all the cells descending from a single fully rearranged T or B cell," );
+        ldoc!( "clonotype", 
+            "all the cells descending from a single fully rearranged T or B cell," );
         doc!( "", "or a best computational approximation to that" );
 
         // doc exact subclonotype
 
         doc!( "exact subclonotype", 
-            "all cells descending from a single fully rearranged T or B cell," );
-        doc!( "", "and having identical V(D)J transcripts or a best computational" );
-        doc!( "", "approximation to that; every clonotype is a union of exact subclonotypes" );
+            "all cells having identical V..J DNA sequences and assigned the same" );
+        doc!( "", "constant region reference sequence; there may be mutations in the 5'-UTR or" );
+        doc!( "", "constant region within an exact subclonotype; every clonotype is a union" );
+        doc!( "", "of exact subclonotypes" );
 
         // doc clone
 
@@ -437,12 +445,6 @@ pub fn help1() {
         doc!( "", "these very rarely represent true biological events" );
         doc!( "moresie", "a clonotype having more than four chains;" );
         doc!( "", "these sad clonotypes do not represent true biological events" );
-
-        // doc V..J
-
-        ldoc!( "V..J", "the full sequence of a V(D)J transcript, from the beginning of the V" );
-        doc!( "", "segment to the end of the J segment; this sequence begins with a stop codon" );
-        doc!( "", "and ends with a partial codon (its first base)" );
 
         // doc donor etc.
 
