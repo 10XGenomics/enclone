@@ -13,11 +13,11 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help2() {
+pub fn help2( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
     /*
     macro_rules! doc {

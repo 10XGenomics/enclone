@@ -4,18 +4,17 @@
 
 use ansi_escape::*;
 use help_utils::*;
-use std::env;
 use string_utils::*;
 use tables::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help3() {
+pub fn help3( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {

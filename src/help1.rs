@@ -22,11 +22,11 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help1() {
+pub fn help1( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
         PrettyTrace::new().on();
         let mut nopager = false;

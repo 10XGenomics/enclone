@@ -14,7 +14,7 @@ use vector_utils::*;
 
 // Process arguments.
 
-pub fn proc_args( mut ctl: &mut EncloneControl ) {
+pub fn proc_args( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
 
     // Knobs.
 
@@ -28,7 +28,7 @@ pub fn proc_args( mut ctl: &mut EncloneControl ) {
     // Mine environment variables and fetch command line args.
 
     let targs = Instant::now();
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     args2.push( args[0].clone() );
     let mut internal_run = false;
