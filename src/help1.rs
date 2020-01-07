@@ -10,6 +10,16 @@ use std::env;
 use string_utils::*;
 use vector_utils::*;
 
+// Notes on a testing issue.  The code for NOPAGER accidentally broke at one point and we
+// don't want that to recur.  Some test cases that could be verified:
+// enclone BCR=...
+// enclone BCR=... NOPAGER
+// enclone help all
+// enclone help all NOPAGER
+// enclone help faq
+// enclone help faq NOPAGER.
+// It's not clear how to automate this.
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn help1() {
