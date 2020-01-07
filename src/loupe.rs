@@ -141,7 +141,7 @@ pub fn make_loupe_clonotype(
             }
         }
         let ex = &exact_clonotypes[exacts[u0]];
-        let nt_sequence = ex.share[m0].seq.clone(); // wrong and temporary!!!!!!!!!!!!!
+        let nt_sequence = ex.share[m0].full_seq.clone();
         let u_idx = rsi.uids[cx];
         let v_idx = rsi.vids[cx];
         let d_idx = rsi.dids[cx];
