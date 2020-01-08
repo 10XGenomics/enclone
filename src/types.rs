@@ -170,10 +170,10 @@ pub struct Clonotype {
     /// convention heavy chain/beta chain comes ahead of light chain/alpha chain.
     /// TODO: What is the ordering when multiple chains of same kind are present?
     pub chains: Vec<ClonotypeChain>,
-    /// The list of exact subclonotypes in this clonotype ordered by the number of cell barcodes in the
-    /// exact subclonotype in descending order (TODO: Verify sort order). The number of chains listed
-    /// under each exact subclonotype will be equal to the number of chains in this clonotype in the
-    /// same order. However, some of the exact subclonotype chains could be `None`.
+    /// The list of exact subclonotypes in this clonotype ordered by the number of cell barcodes in
+    /// the exact subclonotype in descending order (TODO: Verify sort order). The number of chains 
+    /// listed under each exact subclonotype will be equal to the number of chains in this 
+    /// clonotype in the same order. However, some of the exact subclonotype chains could be `None`.
     pub exact_clonotypes: Vec<EClonotype>,
     /// The total number of cell barcodes associated with this clonotype. This can be inferred by
     /// summing up the number of barcodes within each exact subclonotype, but it is stored here for
@@ -232,8 +232,8 @@ pub struct EncloneOutputs {
     /// List of all clonotypes computed in this enclone run.
     pub clonotypes: Vec<Clonotype>,
     /// List of all universal reference sequences and metadata packaged in a convenient struct.
-    /// UV(D)JC regions associated with a clonotype chain or an exact subclonotype chain are stored as
-    /// indices into this vector
+    /// UV(D)JC regions associated with a clonotype chain or an exact subclonotype chain are stored
+    /// as indices into this vector
     pub universal_reference: UniversalReference,
     /// List of all donor reference sequences and metadata packaged in a convenient struct.
     /// The donor V-REGION associated with a clonotype chain is stored as an index to this vector.
