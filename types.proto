@@ -91,7 +91,10 @@ message ExactSubClonotype {
 // Define a clonotype chain
 message ClonotypeChain {
     // The nuclotide sequence of this clonotype chain consensus
-    // TODO: Will be ambiguous bases be `N` or IUPAC or a nt based on voting?
+    // What we actually compute here is not the consensus across the clonotype (whose
+    // biological meaning is questionable), but rather the sequence of the first exact
+    // subclonotype which has an entry for the given chain.  Over 99% of the time, this
+    // will be the first exact subclonotype.
     required bytes nt_sequence = 1;
     // Index of the 5' UTR region in the universal reference. The region in the universal
     // reference is guaranteed to be `Region::U`
@@ -151,7 +154,9 @@ message Clonotype {
     required uint32 frequency = 3;
 }
 
-// A single universal reference sequence and metadata packaged in a convenient struct.
+// A single donor reference sequence and metadata packaged in a convenient struct. In the
+// current version of enclone, the donor reference is only inferred for the V-REGIONs. But we could
+// extend it to J-REGIONs in the future.
 message UniversalReferenceItem {
     // A unique identifier for this reference sequence that traces back to the reference fasta.
     required uint32 ref_idx = 1;
