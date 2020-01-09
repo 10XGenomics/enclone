@@ -1,9 +1,11 @@
 // Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
 
 // slightly modified version of https://vallentin.dev/2019/06/06/versioning
+extern crate prost_build;
 
+use prost_build::Config;
+use std::env::consts::{ARCH, OS};
 use std::process::Command;
-use std::env::consts::{OS, ARCH};
 
 #[cfg(debug_assertions)]
 const BUILD_TYPE: &'static str = "debug";
@@ -11,14 +13,19 @@ const BUILD_TYPE: &'static str = "debug";
 const BUILD_TYPE: &'static str = "release";
 
 fn main() {
-    let version_string =
-        format!("{}:{}{}, {}, {} [{}]",
-            get_branch_name(),
-            get_commit_hash(),
-            if is_working_tree_clean() { "" } else { "+" },
-            BUILD_TYPE,
-            OS, ARCH);
+    let version_string = format!(
+        "{}:{}{}, {}, {} [{}]",
+        get_branch_name(),
+        get_commit_hash(),
+        if is_working_tree_clean() { "" } else { "+" },
+        BUILD_TYPE,
+        OS,
+        ARCH
+    );
     println!("cargo:rustc-env=VERSION_STRING={}", version_string);
+    let mut config = Config::new();
+    config.type_attribute(".", "#[derive(Serialize, Deserialize)]");
+    config.compile_protos(&["types.proto"], &["."]).unwrap();
 }
 
 fn get_commit_hash() -> String {
@@ -42,7 +49,9 @@ fn get_branch_name() -> String {
         .output()
         .unwrap();
     assert!(output.status.success());
-    String::from_utf8_lossy(&output.stdout).trim_end().to_string()
+    String::from_utf8_lossy(&output.stdout)
+        .trim_end()
+        .to_string()
 }
 
 fn is_working_tree_clean() -> bool {
