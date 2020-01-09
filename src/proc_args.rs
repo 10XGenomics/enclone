@@ -235,6 +235,8 @@ pub fn proc_args( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
             ctl.gen_opt.ext = args[i].after( "EXT=" ).to_string();
         } else if is_usize_arg( &args[i], "PCHAINS" ) {
             ctl.parseable_opt.pchains = args[i].after( "PCHAINS=" ).force_usize();
+        } else if is_usize_arg( &args[i], "REQUIRED_FPS" ) {
+            ctl.gen_opt.required_fps = Some(args[i].after( "REQUIRED_FPS=" ).force_usize());
         } else if args[i].starts_with( "PCOLS=" ) {
             ctl.parseable_opt.pcols.clear();
             for x in args[i].after("PCOLS=").split(',').collect::<Vec<&str>>() {

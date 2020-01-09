@@ -76,6 +76,7 @@ pub struct GeneralOpt {
     pub mouse: bool,
     pub refname: String,
     pub noprint: bool,
+    pub required_fps: Option<usize>,
 }
 
 // Allele finding algorithmic options.

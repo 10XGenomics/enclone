@@ -113,6 +113,9 @@
 // The input file should have lines of the form:
 // lena barcode clonotype_id.
 //
+// REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
+// positive to be a clonotype that contains cells from multiple donors.
+//
 // For each VDJ dataset, the following files are used:
 // - all_contig_annotations.json
 // - _invocation.

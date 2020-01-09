@@ -185,4 +185,19 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
+    if ctl.gen_opt.required_fps.is_some() {
+        let mut fps = 0;
+        for i in 0..pics.len() {
+            if pics[i].contains("WARNING:") {
+                fps += 1;
+            }
+        }
+        if fps != ctl.gen_opt.required_fps.unwrap() {
+            eprintln!( "\nA \"false positive\" is a clonotype that contains cells from multiple\n\
+                donors.  You invoked enclone with the argument REQUIRED_FPS={}, but we found\n\
+                {} false positives, so the requirement is not met.\n", 
+                ctl.gen_opt.required_fps.unwrap(), fps );
+            std::process::exit(1);
+        }
+    }
 }
