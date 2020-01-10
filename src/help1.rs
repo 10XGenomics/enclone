@@ -419,8 +419,8 @@ pub fn help1( args: &Vec<String> ) {
         // doc clonotype
 
         ldoc!( "clonotype", 
-            "all the cells descending from a single fully rearranged T or B cell," );
-        doc!( "", "or a best computational approximation to that" );
+            "all the cells descended from a single fully rearranged T or B cell" );
+        doc!( "", "(approximately computationally)" );
 
         // doc exact subclonotype
 
