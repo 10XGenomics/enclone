@@ -189,19 +189,18 @@ pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) 
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup( mut ctl: &mut EncloneControl ) {
+pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
 
     // Provide help if requested.
 
-    help1();
-    help2();
-    help3();
-    help4();
-    help5();
+    help1(&args);
+    help2(&args);
+    help3(&args);
+    help4(&args);
+    help5(&args);
 
     // Pretest for some options.
 
-    let args: Vec<String> = env::args().collect();
     ctl.pretty = true;
     let mut nopretty = false;
     for i in 1..args.len() {
@@ -279,7 +278,7 @@ pub fn setup( mut ctl: &mut EncloneControl ) {
 
     // Process args (and set defaults for them).
 
-    proc_args(&mut ctl);
+    proc_args(&mut ctl, &args);
 
     // Dump lenas.
 

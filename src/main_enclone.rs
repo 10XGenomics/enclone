@@ -31,13 +31,13 @@ use std::{
 };
 use vector_utils::*;
 
-pub fn main_enclone() {
+pub fn main_enclone( args: &Vec<String> ) {
 
     // Set up stuff, read args, etc.
 
     let tall = Instant::now();
     let mut ctl = EncloneControl::default();
-    setup( &mut ctl );
+    setup( &mut ctl, &args );
 
     // Read external data.
 

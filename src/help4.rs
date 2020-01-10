@@ -4,17 +4,17 @@
 
 use ansi_escape::*;
 use help_utils::*;
-use std::env;
 use string_utils::*;
 use tables::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help4() {
+pub fn help4( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
@@ -37,6 +37,15 @@ pub fn help4() {
             }
             break;
         }
+    }
+    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
+        let mut to_delete = vec![ false; args.len() ];
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                to_delete[i] = true;
+            }
+        }
+        erase_if(&mut args, &to_delete);
     }
     /*
     macro_rules! doc_red {

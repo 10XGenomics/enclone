@@ -14,7 +14,7 @@ use vector_utils::*;
 
 // Process arguments.
 
-pub fn proc_args( mut ctl: &mut EncloneControl ) {
+pub fn proc_args( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
 
     // Knobs.
 
@@ -28,7 +28,7 @@ pub fn proc_args( mut ctl: &mut EncloneControl ) {
     // Mine environment variables and fetch command line args.
 
     let targs = Instant::now();
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     args2.push( args[0].clone() );
     let mut internal_run = false;
@@ -224,6 +224,9 @@ pub fn proc_args( mut ctl: &mut EncloneControl ) {
             ctl.pretty = true;
         } else if is_simple_arg( &args[i], "NO_REUSE" ) {
             ctl.gen_opt.no_reuse = true;
+        } else if is_simple_arg( &args[i], "NOPAGER" ) {
+        } else if is_simple_arg( &args[i], "NOPRINT" ) {
+            ctl.gen_opt.noprint = true;
         } else if args[i].starts_with( "POUT=" ) {
             ctl.parseable_opt.pout = args[i].after( "POUT=" ).to_string();
         } else if args[i].starts_with( "DONOR_REF_FILE=" ) {
@@ -232,6 +235,8 @@ pub fn proc_args( mut ctl: &mut EncloneControl ) {
             ctl.gen_opt.ext = args[i].after( "EXT=" ).to_string();
         } else if is_usize_arg( &args[i], "PCHAINS" ) {
             ctl.parseable_opt.pchains = args[i].after( "PCHAINS=" ).force_usize();
+        } else if is_usize_arg( &args[i], "REQUIRED_FPS" ) {
+            ctl.gen_opt.required_fps = Some(args[i].after( "REQUIRED_FPS=" ).force_usize());
         } else if args[i].starts_with( "PCOLS=" ) {
             ctl.parseable_opt.pcols.clear();
             for x in args[i].after("PCOLS=").split(',').collect::<Vec<&str>>() {
