@@ -90,7 +90,7 @@ message ExactSubClonotype {
 
 // Define a clonotype chain
 message ClonotypeChain {
-    // The nuclotide sequence of this clonotype chain consensus
+    // The nucleotide sequence of this clonotype chain consensus
     // What we actually compute here is not the consensus across the clonotype (whose
     // biological meaning is questionable), but rather the sequence of the first exact
     // subclonotype which has an entry for the given chain.  Over 99% of the time, this
