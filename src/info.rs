@@ -5,14 +5,14 @@
 use vdj_ann::*;
 
 use self::refx::*;
+use crate::defs::*;
+use crate::print_utils1::*;
+use crate::read_json::*;
 use amino::*;
 use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
-use defs::*;
 use io_utils::*;
 use perf_stats::*;
-use print_utils1::*;
-use read_json::*;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;

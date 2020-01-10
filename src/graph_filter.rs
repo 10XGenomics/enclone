@@ -2,7 +2,7 @@
 
 // This file provides the single function graph_filter.
 
-use defs::*;
+use crate::defs::*;
 use graph_simple::GraphSimple;
 use io_utils::*;
 use petgraph::prelude::*;

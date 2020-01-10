@@ -1,7 +1,7 @@
 // Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
 
+use crate::defs::*;
 use ansi_escape::*;
-use defs::*;
 use io_utils::*;
 use itertools::*;
 use std::cmp::max;

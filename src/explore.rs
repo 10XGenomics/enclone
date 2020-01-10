@@ -1,6 +1,6 @@
 // Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
 
-use defs::*;
+use crate::defs::*;
 use io_utils::*;
 use std::io::Write;
 use string_utils::*;

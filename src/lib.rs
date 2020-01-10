@@ -1,40 +1,5 @@
 // Copyright (c) 2019 10x Genomics, Inc. All rights reserved.
 
-extern crate amino;
-extern crate ansi_escape;
-extern crate bio;
-extern crate byteorder;
-extern crate debruijn;
-extern crate equiv;
-#[macro_use]
-extern crate failure;
-extern crate graph_simple;
-extern crate h5;
-extern crate io_utils;
-extern crate itertools;
-extern crate load_feature_bc;
-extern crate marsoc;
-extern crate mirror_sparse_matrix;
-extern crate ndarray;
-extern crate pager;
-extern crate perf_stats;
-extern crate permutation;
-extern crate petgraph;
-extern crate pretty_trace;
-extern crate prost;
-extern crate rayon;
-extern crate regex;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-extern crate stats_utils;
-extern crate stirling_numbers;
-extern crate string_utils;
-extern crate tables;
-extern crate vdj_ann;
-extern crate vector_utils;
-
 pub mod allele;
 pub mod defs;
 pub mod explore;

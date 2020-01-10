@@ -5,24 +5,24 @@
 use vdj_ann::*;
 
 use self::refx::*;
-use allele::*;
+use crate::allele::*;
+use crate::defs::*;
+use crate::explore::*;
+use crate::graph_filter::*;
+use crate::info::*;
+use crate::join::*;
+use crate::load_gex::*;
+use crate::loupe::*;
+use crate::misc1::*;
+use crate::misc2::*;
+use crate::misc3::*;
+use crate::print_clonotypes::*;
+use crate::proc_args2::*;
+use crate::read_json::*;
 use debruijn::dna_string::*;
-use defs::*;
 use equiv::EquivRel;
-use explore::*;
-use graph_filter::*;
-use info::*;
 use io_utils::*;
-use join::*;
-use load_gex::*;
-use loupe::*;
-use misc1::*;
-use misc2::*;
-use misc3::*;
 use perf_stats::*;
-use print_clonotypes::*;
-use proc_args2::*;
-use read_json::*;
 use std::{
     collections::HashMap,
     fs::File,

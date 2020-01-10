@@ -2,7 +2,7 @@
 
 // Miscellaneous functions.
 
-use defs::*;
+use crate::defs::*;
 use equiv::*;
 use itertools::*;
 use perf_stats::*;

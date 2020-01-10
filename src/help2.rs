@@ -2,8 +2,8 @@
 
 // Test for help request.
 
+use crate::help_utils::*;
 use ansi_escape::*;
-use help_utils::*;
 use std::env;
 use string_utils::*;
 use tables::*;

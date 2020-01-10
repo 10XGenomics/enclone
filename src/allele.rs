@@ -5,8 +5,8 @@
 use vdj_ann::*;
 
 use self::refx::*;
+use crate::defs::*;
 use debruijn::{dna_string::*, Mer};
-use defs::*;
 use itertools::Itertools;
 use perf_stats::*;
 use stats_utils::*;

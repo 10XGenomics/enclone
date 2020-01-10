@@ -2,8 +2,8 @@
 //
 // Test for help request, under development.
 
+use crate::help_utils::*;
 use ansi_escape::*;
-use help_utils::*;
 use string_utils::*;
 use tables::*;
 use vector_utils::*;

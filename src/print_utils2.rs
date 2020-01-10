@@ -1,18 +1,18 @@
 // Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
 
+use crate::defs::*;
+use crate::print_utils1::*;
+use crate::types::*;
 use amino::*;
 use ansi_escape::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
-use defs::*;
 use itertools::*;
 use ndarray::s;
-use print_utils1::*;
 use stats_utils::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 use string_utils::*;
-use types::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
