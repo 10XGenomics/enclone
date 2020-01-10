@@ -159,6 +159,7 @@ message Clonotype {
 // extend it to J-REGIONs in the future.
 message UniversalReferenceItem {
     // A unique identifier for this reference sequence that traces back to the reference fasta.
+    // Need not be ordered or continuous
     required uint32 ref_idx = 1;
     // The display name of this gene which will be shown in Loupe (optional allele information)
     required string display_name = 2;
@@ -166,6 +167,15 @@ message UniversalReferenceItem {
     required Region region = 3;
     // Nucleotide sequence associated with this reference item
     required bytes nt_sequence = 4;
+}
+
+
+// List of all universal reference sequences and metadata packaged in a convenient struct.
+// Currently just a list of items. Could add metadata like species etc.
+message UniversalReference {
+    // UV(D)JC regions associated with a clonotype chain or an exact subclonotype chain are stored
+    // as indices into this vector
+    repeated UniversalReferenceItem items = 1; 
 }
 
 // A single donor reference sequence and metadata packaged in a convenient struct. In the
@@ -190,6 +200,14 @@ message DonorReferenceItem {
     required Alignment universal_aln = 6;
 }
 
+// List of all donor reference sequences and metadata packaged in a convenient struct.
+// Currently just a list of items. Could add metadata like all donor names etc.
+message DonorReference {
+    // All the entries in this reference
+    // The donor V-REGION associated with a clonotype chain is stored as an index to this vector.
+    repeated DonorReferenceItem items = 1; 
+}
+
 // Outputs from a single enclone run.
 //
 // TODO: It might be easier to store the three vectors as three different files if we want to
@@ -197,11 +215,8 @@ message DonorReferenceItem {
 message EncloneOutputs {
     // List of all clonotypes computed in this enclone run.
     repeated Clonotype clonotypes = 1;
-    // List of all universal reference sequences and metadata packaged in a convenient struct.
-    // UV(D)JC regions associated with a clonotype chain or an exact subclonotype chain are stored
-    // as indices into this vector
-    repeated UniversalReferenceItem universal_reference = 2;
-    // List of all donor reference sequences and metadata packaged in a convenient struct.
-    // The donor V-REGION associated with a clonotype chain is stored as an index to this vector.
-    repeated DonorReferenceItem donor_reference = 3;
+    // The universal reference used.
+    required UniversalReference universal_reference = 2;
+    // The inferred donor reference.
+    required DonorReference donor_reference = 3;
 }
