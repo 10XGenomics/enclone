@@ -5,16 +5,15 @@
 use defs::*;
 use io_utils::*;
 use itertools::*;
-use vdj_ann::refx::*;
-use std::cmp::{min, max, Ordering};
+use std::cmp::{max, min, Ordering};
 use std::io::Write;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn sort_tig_bc( tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData ) {
-
+pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
     tig_bc.sort_by(|x, y| -> Ordering {
         for i in 0..x.len() {
             if i >= y.len() {
@@ -52,24 +51,27 @@ pub fn sort_tig_bc( tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData ) {
                 return Ordering::Less;
             } else if cid2.is_none() && cid1.is_some() {
                 return Ordering::Greater;
-            } else if cid1.is_some() && cid2.is_some()
-                && refdata.name[cid1.unwrap()] < refdata.name[cid2.unwrap()] {
+            } else if cid1.is_some()
+                && cid2.is_some()
+                && refdata.name[cid1.unwrap()] < refdata.name[cid2.unwrap()]
+            {
                 return Ordering::Less;
-            } else if cid1.is_some() && cid2.is_some()
-                && refdata.name[cid1.unwrap()] > refdata.name[cid2.unwrap()] {
+            } else if cid1.is_some()
+                && cid2.is_some()
+                && refdata.name[cid1.unwrap()] > refdata.name[cid2.unwrap()]
+            {
                 return Ordering::Greater;
             }
-
         }
         if x.len() < y.len() {
             return Ordering::Less;
         }
         return Ordering::Equal;
-    } );
+    });
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-            
+
 // Exploratory code to understand exact subclonotype consensus formation.
 //
 // 1. Not clear if we want to do this for exact subclonotypes or for clonotypes.
@@ -80,48 +82,60 @@ pub fn sort_tig_bc( tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData ) {
 // - don't show the most trivial case with one UTR and all agree
 // - find code simplifications.
 
-pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<TigData1>,
-    clones: &Vec<Vec<TigData0>>, exact_clonotypes: &Vec<ExactClonotype>, refdata: &RefData ) {
+pub fn study_consensus(
+    _count: &mut usize,
+    ctl: &EncloneControl,
+    share: &Vec<TigData1>,
+    clones: &Vec<Vec<TigData0>>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    refdata: &RefData,
+) {
     if ctl.gen_opt.utr_con {
         for z in 0..clones[0].len() {
             let mut log = Vec::<u8>::new();
             let (mut utr_ids, mut v_ids) = (Vec::<usize>::new(), Vec::<usize>::new());
             for _ in 0..clones.len() {
                 if share[z].u_ref_id.is_some() {
-                    utr_ids.push( share[z].u_ref_id.unwrap() );
+                    utr_ids.push(share[z].u_ref_id.unwrap());
                 }
-                v_ids.push( share[z].v_ref_id );
+                v_ids.push(share[z].v_ref_id);
             }
-            unique_sort( &mut utr_ids );
-            unique_sort( &mut v_ids );
-            fwriteln!( log,
+            unique_sort(&mut utr_ids);
+            unique_sort(&mut v_ids);
+            fwriteln!(
+                log,
                 "\n[{}] rev lefts for exact subclonotype {}, chain {}, \
-                    vs = {}, utrs = {}, cdr3 = {}\n", 
-                *_count+1, exact_clonotypes.len(), z, v_ids.iter().format(","),
-                utr_ids.iter().format(","), share[z].cdr3_aa );
+                 vs = {}, utrs = {}, cdr3 = {}\n",
+                *_count + 1,
+                exact_clonotypes.len(),
+                z,
+                v_ids.iter().format(","),
+                utr_ids.iter().format(","),
+                share[z].cdr3_aa
+            );
             let _len = share[z].seq.len();
             let mut lefts = Vec::<Vec<u8>>::new();
             for m in 0..clones.len() {
                 let start = clones[m][z].v_start;
                 let mut x = clones[m][z].full_seq[0..start].to_vec();
                 x.reverse();
-                lefts.push( x.to_vec() );
+                lefts.push(x.to_vec());
             }
             let mut rutrs = Vec::<Vec<u8>>::new();
             for i in 0..utr_ids.len() {
                 let mut x = refdata.refs[utr_ids[i]].to_string().as_bytes().to_vec();
                 x.reverse();
-                rutrs.push( x.to_vec() );
+                rutrs.push(x.to_vec());
             }
             let mut minlen = 1_000_000;
             let mut maxlen = 0;
             for i in 0..lefts.len() {
-                minlen = min( minlen, lefts[i].len() );
-                maxlen = max( maxlen, lefts[i].len() );
+                minlen = min(minlen, lefts[i].len());
+                maxlen = max(maxlen, lefts[i].len());
             }
             for i in 0..rutrs.len() {
-                minlen = min( minlen, rutrs[i].len() );
-                maxlen = max( maxlen, rutrs[i].len() );
+                minlen = min(minlen, rutrs[i].len());
+                maxlen = max(maxlen, rutrs[i].len());
             }
             let mut dots = Vec::<u8>::new();
             let mut diffs = 0;
@@ -129,12 +143,12 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 let mut bases = Vec::<u8>::new();
                 for i in 0..lefts.len() {
                     if j < lefts[i].len() {
-                        bases.push( lefts[i][j] );
+                        bases.push(lefts[i][j]);
                     }
                 }
                 for i in 0..rutrs.len() {
                     if j < rutrs[i].len() {
-                        bases.push( rutrs[i][j] );
+                        bases.push(rutrs[i][j]);
                     }
                 }
                 let mut diff = false;
@@ -145,38 +159,44 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 }
                 if diff {
                     diffs += 1;
-                    dots.push( b'x' );
+                    dots.push(b'x');
                 } else {
-                    dots.push( b'.' );
+                    dots.push(b'.');
                 }
             }
-            fwriteln!( log, "     {}", strme(&dots) );
+            fwriteln!(log, "     {}", strme(&dots));
             for i in 0..rutrs.len() {
-                fwriteln!( log, " U = {}", strme(&rutrs[i]) );
+                fwriteln!(log, " U = {}", strme(&rutrs[i]));
             }
             for i in 0..lefts.len() {
-                if i+1 <= 9 {
-                    fwrite!( log, " " );
+                if i + 1 <= 9 {
+                    fwrite!(log, " ");
                 }
-                fwriteln!( log, "{} = {}", i+1, strme(&lefts[i]) );
+                fwriteln!(log, "{} = {}", i + 1, strme(&lefts[i]));
             }
-            if !( minlen == maxlen && diffs == 0 && utr_ids.len() == 1 ) {
-                print!( "{}", strme(&log) );
+            if !(minlen == maxlen && diffs == 0 && utr_ids.len() == 1) {
+                print!("{}", strme(&log));
                 *_count += 1;
             }
         }
     }
-    if ctl.gen_opt.con_con && clones.len() > 0 { // ???????????????????????????????????????
+    if ctl.gen_opt.con_con && clones.len() > 0 {
+        // ???????????????????????????????????????
         // NOTE TRUNCATED TO 120 BASES!
-        const SHOW : usize = 120;
+        const SHOW: usize = 120;
         for z in 0..clones[0].len() {
             let mut log = Vec::<u8>::new();
             let mut c_ref_ids = Vec::<Option<usize>>::new();
-            c_ref_ids.push( share[z].c_ref_id );
-            unique_sort( &mut c_ref_ids );
-            fwriteln!( log,
-                "\n[{}] rights for exact subclonotype {}, chain {}, cs = {:?}\n", 
-                *_count+1, exact_clonotypes.len(), z, c_ref_ids.iter().format(",") );
+            c_ref_ids.push(share[z].c_ref_id);
+            unique_sort(&mut c_ref_ids);
+            fwriteln!(
+                log,
+                "\n[{}] rights for exact subclonotype {}, chain {}, cs = {:?}\n",
+                *_count + 1,
+                exact_clonotypes.len(),
+                z,
+                c_ref_ids.iter().format(",")
+            );
             let _len = share[z].seq.len();
             let mut rights = Vec::<Vec<u8>>::new();
             let mut bcs = Vec::<String>::new();
@@ -186,8 +206,8 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 if x.len() > SHOW {
                     x.truncate(SHOW);
                 }
-                rights.push( x.to_vec() );
-                bcs.push( clones[m][0].barcode.clone() );
+                rights.push(x.to_vec());
+                bcs.push(clones[m][0].barcode.clone());
             }
             let mut rconst = Vec::<Vec<u8>>::new();
             for i in 0..c_ref_ids.len() {
@@ -202,22 +222,22 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 /*
                 // WARNING!  TO INVESTIGATE, AND NOT NECESSARILY VALID FOR MOUSE!!!!!!!!!!!!!!!
                 let n = refdata.name[cid.unwrap()].after("IG");
-                if n == "HM" || n == "HA1" || n == "HA2" ||  n == "HG1" || n == "HG2" 
+                if n == "HM" || n == "HA1" || n == "HA2" ||  n == "HG1" || n == "HG2"
                     || n == "HG4"{
                     x.remove(0);
                 }
                 */
-                rconst.push( x.to_vec() );
+                rconst.push(x.to_vec());
             }
             let mut minlen = 1_000_000;
             let mut maxlen = 0;
             for i in 0..rights.len() {
-                minlen = min( minlen, rights[i].len() );
-                maxlen = max( maxlen, rights[i].len() );
+                minlen = min(minlen, rights[i].len());
+                maxlen = max(maxlen, rights[i].len());
             }
             for i in 0..rights.len() {
-                minlen = min( minlen, rights[i].len() );
-                maxlen = max( maxlen, rights[i].len() );
+                minlen = min(minlen, rights[i].len());
+                maxlen = max(maxlen, rights[i].len());
             }
             let mut dots = Vec::<u8>::new();
             let mut diffs = 0;
@@ -225,12 +245,12 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 let mut bases = Vec::<u8>::new();
                 for i in 0..rights.len() {
                     if j < rights[i].len() {
-                        bases.push( rights[i][j] );
+                        bases.push(rights[i][j]);
                     }
                 }
                 for i in 0..rconst.len() {
                     if j < rconst[i].len() {
-                        bases.push( rconst[i][j] );
+                        bases.push(rconst[i][j]);
                     }
                 }
                 let mut diff = false;
@@ -241,31 +261,36 @@ pub fn study_consensus( _count: &mut usize, ctl: &EncloneControl, share: &Vec<Ti
                 }
                 if diff {
                     diffs += 1;
-                    dots.push( b'x' );
+                    dots.push(b'x');
                 } else {
-                    dots.push( b'.' );
+                    dots.push(b'.');
                 }
             }
             if dots.len() > SHOW {
                 dots.truncate(SHOW);
             }
-            fwriteln!( log, "     {}, diffs = {}", strme(&dots), diffs );
+            fwriteln!(log, "     {}, diffs = {}", strme(&dots), diffs);
             for i in 0..rconst.len() {
                 let cid = c_ref_ids[i];
                 if cid.is_some() {
-                    fwriteln!( log, " C = {}, {}|{}", strme(&rconst[i]), 
-                        refdata.id[cid.unwrap()], refdata.name[cid.unwrap()] );
+                    fwriteln!(
+                        log,
+                        " C = {}, {}|{}",
+                        strme(&rconst[i]),
+                        refdata.id[cid.unwrap()],
+                        refdata.name[cid.unwrap()]
+                    );
                 }
             }
             for i in 0..rights.len() {
-                if i+1 <= 9 {
-                    fwrite!( log, " " );
+                if i + 1 <= 9 {
+                    fwrite!(log, " ");
                 }
-                fwriteln!( log, "{} = {} = {}", i+1, strme(&rights[i]), bcs[i] );
+                fwriteln!(log, "{} = {} = {}", i + 1, strme(&rights[i]), bcs[i]);
             }
             // if !( minlen == maxlen && diffs == 0 && utr_ids.len() == 1 ) {
-                print!( "{}", strme(&log) );
-                *_count += 1;
+            print!("{}", strme(&log));
+            *_count += 1;
             // }
         }
     }

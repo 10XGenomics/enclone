@@ -10,19 +10,18 @@ use std::cmp::*;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn survives_filter( 
+pub fn survives_filter(
     exacts: &Vec<usize>,
     rsi: &ColInfo,
-    ctl: &EncloneControl, 
+    ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
 ) -> bool {
-
     let mut mults = Vec::<usize>::new();
     for i in 0..exacts.len() {
-        mults.push( exact_clonotypes[exacts[i]].clones.len() );
+        mults.push(exact_clonotypes[exacts[i]].clones.len());
     }
-    let n : usize = mults.iter().sum();
+    let n: usize = mults.iter().sum();
     if n == 0 {
         return false;
     }
@@ -67,8 +66,8 @@ pub fn survives_filter(
                 let cid = ex.share[m].c_ref_id;
                 if cid.is_some() {
                     let r = &refdata.refs[cid.unwrap()];
-                    for i in 0..min( clen, r.len() ) {
-                        let tb = ex.share[m].full_seq[ cstart + i ];
+                    for i in 0..min(clen, r.len()) {
+                        let tb = ex.share[m].full_seq[cstart + i];
                         let rb = r.to_ascii_vec()[i];
                         if tb != rb {
                             cdiff = true;
@@ -114,7 +113,7 @@ pub fn survives_filter(
     }
     if !ctl.clono_filt_opt.seg.is_empty() {
         let mut hit = false;
-            for j in 0..ctl.clono_filt_opt.seg.len() {
+        for j in 0..ctl.clono_filt_opt.seg.len() {
             for cx in 0..cols {
                 if refdata.name[rsi.vids[cx]] == ctl.clono_filt_opt.seg[j] {
                     hit = true;
@@ -137,22 +136,19 @@ pub fn survives_filter(
     }
     if !ctl.clono_filt_opt.segn.is_empty() {
         let mut hit = false;
-            for j in 0..ctl.clono_filt_opt.segn.len() {
+        for j in 0..ctl.clono_filt_opt.segn.len() {
             for cx in 0..cols {
-                if refdata.id[rsi.vids[cx]] 
-                    == ctl.clono_filt_opt.segn[j].force_i32() {
+                if refdata.id[rsi.vids[cx]] == ctl.clono_filt_opt.segn[j].force_i32() {
                     hit = true;
                 }
                 let did = rsi.dids[cx];
                 if did.is_some() {
                     let did = did.unwrap();
-                    if refdata.id[did] 
-                        == ctl.clono_filt_opt.segn[j].force_i32() {
+                    if refdata.id[did] == ctl.clono_filt_opt.segn[j].force_i32() {
                         hit = true;
                     }
                 }
-                if refdata.id[rsi.jids[cx]] 
-                    == ctl.clono_filt_opt.segn[j].force_i32() {
+                if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.segn[j].force_i32() {
                     hit = true;
                 }
             }
@@ -189,7 +185,13 @@ pub fn survives_filter(
         for s in exacts.iter() {
             let ex = &exact_clonotypes[*s];
             for j in 0..ex.share.len() {
-                if ctl.clono_filt_opt.cdr3.as_ref().unwrap().is_match( &ex.share[j].cdr3_aa) {
+                if ctl
+                    .clono_filt_opt
+                    .cdr3
+                    .as_ref()
+                    .unwrap()
+                    .is_match(&ex.share[j].cdr3_aa)
+                {
                     ok = true;
                 }
             }

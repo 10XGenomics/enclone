@@ -14,9 +14,13 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn make_table( ctl: &EncloneControl, rows: &mut Vec<Vec<String>>, justify: &Vec<u8>,
-    mlog: &Vec<u8>, logz: &mut String ) {
-
+pub fn make_table(
+    ctl: &EncloneControl,
+    rows: &mut Vec<Vec<String>>,
+    justify: &Vec<u8>,
+    mlog: &Vec<u8>,
+    logz: &mut String,
+) {
     // In plain mode, strip escape characters.
 
     if !ctl.pretty {
@@ -35,7 +39,7 @@ pub fn make_table( ctl: &EncloneControl, rows: &mut Vec<Vec<String>>, justify: &
                         }
                         continue;
                     }
-                    x.push( s[l] );
+                    x.push(s[l]);
                 }
                 rows[i][j] = stringme(&x);
             }
@@ -177,8 +181,15 @@ pub fn ndigits(n: usize) -> usize {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn make_diff_row( ctl: &EncloneControl, rsi: &ColInfo, cols: usize, diff_pos: usize, 
-    drows: &Vec<Vec<String>>, row1: &mut Vec<String>, rows: &mut Vec<Vec<String>> ) {
+pub fn make_diff_row(
+    ctl: &EncloneControl,
+    rsi: &ColInfo,
+    cols: usize,
+    diff_pos: usize,
+    drows: &Vec<Vec<String>>,
+    row1: &mut Vec<String>,
+    rows: &mut Vec<Vec<String>>,
+) {
     let nc = row1.len();
     let cvars = &ctl.clono_print_opt.cvars;
     if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
@@ -267,15 +278,14 @@ pub fn make_diff_row( ctl: &EncloneControl, rsi: &ColInfo, cols: usize, diff_pos
         rows[diff_pos] = row1.to_vec();
     } else {
         for i in 0..row1.len() {
-            rows[diff_pos-1][i] = row1[i].clone();
+            rows[diff_pos - 1][i] = row1[i].clone();
         }
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn set_speakers( ctl: &EncloneControl, parseable_fields: &mut Vec<String> ) {
-
+pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.
 
     let cvars = &ctl.clono_print_opt.cvars;
@@ -287,17 +297,16 @@ pub fn set_speakers( ctl: &EncloneControl, parseable_fields: &mut Vec<String> ) 
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
     macro_rules! speaker {
         ($var:expr) => {
-            if ctl.parseable_opt.pcols.is_empty() 
-                || bin_member(&pcols_sort, &$var.to_string()) {
-                parseable_fields.push( $var.to_string() );
+            if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &$var.to_string()) {
+                parseable_fields.push($var.to_string());
             }
         };
     }
     macro_rules! speakerc {
         ($col:expr, $var:expr) => {
-            let varc = format!( "{}{}", $var, $col+1 );
+            let varc = format!("{}{}", $var, $col + 1);
             if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &varc) {
-                parseable_fields.push( format!( "{}{}", $var, $col+1 ) );
+                parseable_fields.push(format!("{}{}", $var, $col + 1));
             }
         };
     }
@@ -306,26 +315,37 @@ pub fn set_speakers( ctl: &EncloneControl, parseable_fields: &mut Vec<String> ) 
     }
     for col in 0..ctl.parseable_opt.pchains {
         for x in cvars.iter() {
-            speakerc!( col, x );
+            speakerc!(col, x);
         }
-        for x in &[ "v_name", "d_name", "j_name", "v_id", "d_id", "j_id" ] {
-            speakerc!( col, x );
+        for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
+            speakerc!(col, x);
         }
-        for x in &[ "var_indices_dna", "var_indices_aa", "share_indices_dna", "share_indices_aa" ] {
-            speakerc!( col, x );
+        for x in &[
+            "var_indices_dna",
+            "var_indices_aa",
+            "share_indices_dna",
+            "share_indices_aa",
+        ] {
+            speakerc!(col, x);
         }
-        for x in &[ "v_start", "const_id", "utr_id", "utr_name", "cdr3_start", "cdr3_aa" ] {
-            speakerc!( col, x );
+        for x in &[
+            "v_start",
+            "const_id",
+            "utr_id",
+            "utr_name",
+            "cdr3_start",
+            "cdr3_aa",
+        ] {
+            speakerc!(col, x);
         }
-        for x in &[ "seq", "vj_seq", "var_aa" ] {
-            speakerc!( col, x );
+        for x in &["seq", "vj_seq", "var_aa"] {
+            speakerc!(col, x);
         }
         for i in 0..pcols_sort.len() {
-            if pcols_sort[i].starts_with('q') 
-                && pcols_sort[i].ends_with( &format!( "_{}", col+1 ) ) {
+            if pcols_sort[i].starts_with('q') && pcols_sort[i].ends_with(&format!("_{}", col + 1)) {
                 let x = pcols_sort[i].after("q").rev_before("_");
                 if x.parse::<usize>().is_ok() {
-                    parseable_fields.push( pcols_sort[i].clone() );
+                    parseable_fields.push(pcols_sort[i].clone());
                 }
             }
         }
@@ -341,7 +361,7 @@ pub fn set_speakers( ctl: &EncloneControl, parseable_fields: &mut Vec<String> ) 
     unique_sort(&mut pfsort);
     for x in pcols_sort.iter() {
         if !bin_member(&pfsort, x) {
-            eprintln!( "\nUnknown parseable output field: {}.\n", x );
+            eprintln!("\nUnknown parseable output field: {}.\n", x);
             std::process::exit(1);
         }
     }
@@ -357,7 +377,7 @@ pub fn start_gen(
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
     rsi: &ColInfo,
-    out_data: &mut Vec<HashMap<String,String>>,
+    out_data: &mut Vec<HashMap<String, String>>,
     mut mlog: &mut Vec<u8>,
 ) {
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
@@ -365,17 +385,17 @@ pub fn start_gen(
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 {
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &$var.to_string()) {
-                    out_data[$u].insert( $var.to_string(), $val );
+                    out_data[$u].insert($var.to_string(), $val);
                 }
             }
         };
     }
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col+1 <= ctl.parseable_opt.pchains {
-                let varc = format!( "{}{}", $var, $col+1 );
+            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                let varc = format!("{}{}", $var, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    out_data[$u].insert( varc, format!( "{}", $val ) );
+                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
@@ -386,7 +406,7 @@ pub fn start_gen(
         n += exact_clonotypes[exacts[u]].ncells();
     }
     if ctl.parseable_opt.pout.len() > 0 {
-        *out_data = vec![ HashMap::<String,String>::new(); nexacts ];
+        *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
     let cols = rsi.vids.len();
     let mut ncells = 0;
@@ -394,27 +414,27 @@ pub fn start_gen(
         ncells += exact_clonotypes[exacts[u]].ncells();
     }
     for u in 0..exacts.len() {
-        speak!( u, "nchains", format!( "{}", cols ) );
-        speak!( u, "clonotype_ncells", format!( "{}", ncells ) );
+        speak!(u, "nchains", format!("{}", cols));
+        speak!(u, "clonotype_ncells", format!("{}", ncells));
         let mut bc = Vec::<String>::new();
         for x in exact_clonotypes[exacts[u]].clones.iter() {
-            bc.push( x[0].barcode.clone() );
+            bc.push(x[0].barcode.clone());
         }
         bc.sort();
-        speak!( u, "barcodes", format!( "{}", bc.iter().format(",") ) );
+        speak!(u, "barcodes", format!("{}", bc.iter().format(",")));
         for cx in 0..cols {
             let vid = rsi.vids[cx];
-            speakc!( u, cx, "v_name", refdata.name[vid] );
-            speakc!( u, cx, "v_id", refdata.id[vid] );
+            speakc!(u, cx, "v_name", refdata.name[vid]);
+            speakc!(u, cx, "v_id", refdata.id[vid]);
             let did = rsi.dids[cx];
             if did.is_some() {
                 let did = did.unwrap();
-                speakc!( u, cx, "d_name", refdata.name[did] );
-                speakc!( u, cx, "d_id", refdata.id[did] );
+                speakc!(u, cx, "d_name", refdata.name[did]);
+                speakc!(u, cx, "d_id", refdata.id[did]);
             }
             let jid = rsi.jids[cx];
-            speakc!( u, cx, "j_name", refdata.name[jid] );
-            speakc!( u, cx, "j_id", refdata.id[jid] );
+            speakc!(u, cx, "j_name", refdata.name[jid]);
+            speakc!(u, cx, "j_id", refdata.id[jid]);
         }
     }
 
@@ -468,8 +488,12 @@ pub fn start_gen(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn insert_position_rows( rsi: &ColInfo, show_aa: &Vec<Vec<usize>>,
-    vars: &Vec<Vec<usize>>, row1: &Vec<String> ) -> Vec<Vec<String>> {
+pub fn insert_position_rows(
+    rsi: &ColInfo,
+    show_aa: &Vec<Vec<usize>>,
+    vars: &Vec<Vec<usize>>,
+    row1: &Vec<String>,
+) -> Vec<Vec<String>> {
     let cols = rsi.cdr3_starts.len();
     let mut drows = Vec::<Vec<String>>::new();
     let mut digits = 0;

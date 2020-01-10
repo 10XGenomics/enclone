@@ -2,14 +2,14 @@
 
 use amino::*;
 use ansi_escape::*;
+use bio::alignment::pairwise::*;
+use bio::alignment::AlignmentOperation::*;
 use defs::*;
 use itertools::*;
-use print_utils1::*;
-use bio::alignment::AlignmentOperation::*;
-use bio::alignment::pairwise::*;
 use ndarray::s;
+use print_utils1::*;
 use stats_utils::*;
-use std::cmp::{min,max};
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use string_utils::*;
 use types::*;
@@ -22,17 +22,28 @@ use vector_utils::*;
 //
 // Awful interface, should work to improve.
 
-pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>, 
-    mults: &Vec<usize>, exact_clonotypes: &Vec<ExactClonotype>, gex_info: &GexInfo, 
-    refdata: &RefData, varmat: &Vec<Vec<Vec<u8>>>, vars_amino: &Vec<Vec<usize>>,
-    show_aa: &Vec<Vec<usize>>, bads: &mut Vec<bool>, gex_low: &mut usize, 
-    row: &mut Vec<String>, // row of human-readable output
-    out_data: &mut Vec<HashMap<String,String>>, // row of parseable output
-    cx: &mut Vec<Vec<String>>, d_all: &mut Vec<Vec<u32>>, ind_all: &mut Vec<Vec<u32>>,
-    rsi: &ColInfo, dref: &Vec<DonorReferenceItem>,
-    groups: &HashMap<usize,Vec<usize>>,
+pub fn row_fill(
+    u: usize,
+    ctl: &EncloneControl,
+    exacts: &Vec<usize>,
+    mults: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    gex_info: &GexInfo,
+    refdata: &RefData,
+    varmat: &Vec<Vec<Vec<u8>>>,
+    vars_amino: &Vec<Vec<usize>>,
+    show_aa: &Vec<Vec<usize>>,
+    bads: &mut Vec<bool>,
+    gex_low: &mut usize,
+    row: &mut Vec<String>,                       // row of human-readable output
+    out_data: &mut Vec<HashMap<String, String>>, // row of parseable output
+    cx: &mut Vec<Vec<String>>,
+    d_all: &mut Vec<Vec<u32>>,
+    ind_all: &mut Vec<Vec<u32>>,
+    rsi: &ColInfo,
+    dref: &Vec<DonorReferenceItem>,
+    groups: &HashMap<usize, Vec<usize>>,
 ) {
-
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
@@ -40,20 +51,21 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 {
-                if ctl.parseable_opt.pcols.is_empty() 
-                    || bin_member(&ctl.parseable_opt.pcols, &$var.to_string()) {
-                    out_data[$u].insert( $var.to_string(), $val );
+                if ctl.parseable_opt.pcols.is_empty()
+                    || bin_member(&ctl.parseable_opt.pcols, &$var.to_string())
+                {
+                    out_data[$u].insert($var.to_string(), $val);
                 }
             }
-            };
+        };
     }
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col+1 <= ctl.parseable_opt.pchains {
-                let varc = format!( "{}{}", $var, $col+1 );
+            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                let varc = format!("{}{}", $var, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    out_data[$u].insert( varc, format!( "{}", $val ) );
+                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
@@ -77,7 +89,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
     macro_rules! lvar {
         ($var:expr, $val:expr) => {
             row.push($val);
-            speak!( u, $var.to_string(), $val );
+            speak!(u, $var.to_string(), $val);
         };
     }
 
@@ -87,12 +99,12 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     for l in 0..ex.clones.len() {
-        lena_indices.push( ex.clones[l][0].lena_index);
+        lena_indices.push(ex.clones[l][0].lena_index);
     }
     unique_sort(&mut lena_indices);
     let mut lenas = Vec::<String>::new();
     for l in lena_indices.iter() {
-        lenas.push( ctl.sample_info.dataset_id[*l].clone() );
+        lenas.push(ctl.sample_info.dataset_id[*l].clone());
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
@@ -101,7 +113,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
         let bc = ex.clones[l][0].barcode.clone();
         if !gex_info.gex_barcodes.is_empty() {
             let mut count = 0;
-            let p = bin_position( &gex_info.gex_barcodes[li], &bc );
+            let p = bin_position(&gex_info.gex_barcodes[li], &bc);
             if p >= 0 {
                 let mut raw_count = 0;
                 if !ctl.gen_opt.h5 {
@@ -115,14 +127,22 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     }
                 } else {
                     let z1 = gex_info.h5_indptr[li][p as usize] as usize;
-                    let z2 = gex_info.h5_indptr[li][p as usize + 1] 
-                        as usize; // is p+1 OK??
-                    let d : Vec<u32> 
-                        = gex_info.h5_data[li].as_ref().unwrap().as_reader()
-                        .read_slice(&s![z1..z2]).unwrap().to_vec();
+                    let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
+                    let d: Vec<u32> = gex_info.h5_data[li]
+                        .as_ref()
+                        .unwrap()
+                        .as_reader()
+                        .read_slice(&s![z1..z2])
+                        .unwrap()
+                        .to_vec();
                     d_all[l] = d.clone();
-                    let ind : Vec<u32> = gex_info.h5_indices[li].as_ref().unwrap()
-                        .as_reader().read_slice(&s![z1..z2]).unwrap().to_vec();
+                    let ind: Vec<u32> = gex_info.h5_indices[li]
+                        .as_ref()
+                        .unwrap()
+                        .as_reader()
+                        .read_slice(&s![z1..z2])
+                        .unwrap()
+                        .to_vec();
                     ind_all[l] = ind.clone();
                     for j in 0..d.len() {
                         if gex_info.is_gex[li][ind[j] as usize] {
@@ -130,8 +150,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                         }
                     }
                 }
-                count = (raw_count as f64 * gex_info.gex_mults[li]).round() 
-                    as usize;
+                count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
             }
             counts.push(count);
         }
@@ -153,18 +172,18 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
     for i in 0..lvars.len() {
         if lvars[i].starts_with('g') && lvars[i].after("g").parse::<usize>().is_ok() {
             let d = lvars[i].after("g").force_usize();
-            lvar![ lvars[i], format!("{}", groups[&d][u] + 1) ];
+            lvar![lvars[i], format!("{}", groups[&d][u] + 1)];
         } else if lvars[i] == "datasets".to_string() {
-            lvar![ lvars[i], format!("{}", lenas.iter().format(",")) ];
+            lvar![lvars[i], format!("{}", lenas.iter().format(","))];
         } else if lvars[i] == "donors".to_string() {
             let mut donors = Vec::<String>::new();
             for lena in lena_indices.iter() {
                 donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
             }
             unique_sort(&mut donors);
-            lvar![ lvars[i], format!("{}", donors.iter().format(",")) ];
+            lvar![lvars[i], format!("{}", donors.iter().format(","))];
         } else if lvars[i] == "ncells".to_string() {
-            lvar![ lvars[i], format!("{}", mults[u]) ];
+            lvar![lvars[i], format!("{}", mults[u])];
         } else if lvars[i].starts_with("n_") {
             let name = lvars[i].after("n_");
             let indices = ctl.sample_info.name_list[name].clone();
@@ -174,7 +193,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     count += 1;
                 }
             }
-            lvar![ lvars[i], format!("{}", count) ];
+            lvar![lvars[i], format!("{}", count)];
         } else if lvars[i] == "near".to_string() {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
@@ -192,9 +211,9 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                 dist = min(dist, d);
             }
             if dist == 1_000_000 {
-                lvar![ lvars[i], "-".to_string() ];
+                lvar![lvars[i], "-".to_string()];
             } else {
-                lvar![ lvars[i], format!("{}", dist) ];
+                lvar![lvars[i], format!("{}", dist)];
             }
         } else if lvars[i] == "far".to_string() {
             let mut dist = -1 as isize;
@@ -213,21 +232,21 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                 dist = max(dist, d);
             }
             if dist == -1 as isize {
-                lvar![ lvars[i], "-".to_string() ];
+                lvar![lvars[i], "-".to_string()];
             } else {
-                lvar![ lvars[i], format!("{}", dist) ];
+                lvar![lvars[i], format!("{}", dist)];
             }
         } else if lvars[i] == "gex_med".to_string() {
-            lvar![ lvars[i], format!("{}", gex_median) ];
+            lvar![lvars[i], format!("{}", gex_median)];
         } else if lvars[i] == "gex_max".to_string() {
-            lvar![ lvars[i], format!("{}", gex_max) ];
+            lvar![lvars[i], format!("{}", gex_max)];
         } else if lvars[i] == "ext".to_string() {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
                 let li = ctl.sample_info.dataset_id[ex.clones[l][0].lena_index].clone();
                 let bc = ex.clones[l][0].barcode.clone();
-                if ctl.gen_opt.extc.contains_key( &(li.clone(),bc.clone()) ) {
-                    exts.push( ctl.gen_opt.extc[ &(li,bc) ].clone() );
+                if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
+                    exts.push(ctl.gen_opt.extc[&(li, bc)].clone());
                 }
             }
             exts.sort();
@@ -238,23 +257,27 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                 if j > 0 {
                     s += ",";
                 }
-                s += &format!( "{}[{}/{}]", exts[j], k-j, ctl.gen_opt.extn[&exts[j].clone()] );
+                s += &format!(
+                    "{}[{}/{}]",
+                    exts[j],
+                    k - j,
+                    ctl.gen_opt.extn[&exts[j].clone()]
+                );
                 j = k;
             }
-            lvar![ lvars[i], s.clone() ];
+            lvar![lvars[i], s.clone()];
         } else {
             let mut count = 0;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].lena_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                let p = bin_position( &gex_info.gex_barcodes[li], &bc );
+                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
                     if gex_info.feature_id[li].contains_key(&lvars[i]) {
                         let fid = gex_info.feature_id[li][&lvars[i]];
                         let mut raw_count = 0 as f64;
                         if !ctl.gen_opt.h5 {
-                            raw_count = gex_info.gex_matrices[li]
-                                .value(p as usize, fid) as f64;
+                            raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
                         } else {
                             for j in 0..d_all[l].len() {
                                 if ind_all[l][j] == fid as u32 {
@@ -263,7 +286,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                                 }
                             }
                         }
-                        let mult : f64;
+                        let mult: f64;
                         if lvars[i].ends_with("_g") {
                             mult = gex_info.gex_mults[li];
                         } else {
@@ -273,7 +296,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     }
                 }
             }
-            lvar![ lvars[i], format!("{}", count/ex.ncells()) ];
+            lvar![lvars[i], format!("{}", count / ex.ncells())];
         }
     }
 
@@ -281,7 +304,11 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
 
     let mut bli = Vec::<(String, usize, usize)>::new();
     for l in 0..ex.clones.len() {
-        bli.push((ex.clones[l][0].barcode.clone(), ex.clones[l][0].lena_index, l));
+        bli.push((
+            ex.clones[l][0].barcode.clone(),
+            ex.clones[l][0].lena_index,
+            l,
+        ));
     }
     bli.sort();
 
@@ -301,8 +328,8 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
         let mut numis = Vec::<usize>::new();
         let mut nreads = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
-            numis.push( ex.clones[j][mid].umi_count );
-            nreads.push( ex.clones[j][mid].read_count );
+            numis.push(ex.clones[j][mid].umi_count);
+            nreads.push(ex.clones[j][mid].read_count);
         }
         numis.sort();
         let median_numis = numis[numis.len() / 2];
@@ -317,24 +344,25 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
         macro_rules! cvar {
             ($i: expr, $var:expr, $val:expr) => {
                 cx[col][$i] = $val.clone();
-                speakc!( u, col, $var, $val );
+                speakc!(u, col, $var, $val);
             };
         }
 
         // Speak quality score column entries.
 
-        if ctl.parseable_opt.pout.len() > 0 && col+1 <= ctl.parseable_opt.pchains {
+        if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
             for i in 0..pcols_sort.len() {
-                if pcols_sort[i].starts_with('q') 
-                    && pcols_sort[i].ends_with( &format!( "_{}", col+1 ) ) {
+                if pcols_sort[i].starts_with('q')
+                    && pcols_sort[i].ends_with(&format!("_{}", col + 1))
+                {
                     let n = pcols_sort[i].after("q").rev_before("_").force_usize();
                     if n < ex.share[mid].seq.len() {
                         let mut quals = Vec::<u8>::new();
                         for j in 0..ex.clones.len() {
-                            quals.push( ex.clones[j][mid].quals[n] );
+                            quals.push(ex.clones[j][mid].quals[n]);
                         }
-                        let q = format!( "{}", quals.iter().format(",") );
-                        out_data[u].insert( pcols_sort[i].clone(), q );
+                        let q = format!("{}", quals.iter().format(","));
+                        out_data[u].insert(pcols_sort[i].clone(), q);
                     }
                 }
             }
@@ -342,25 +370,25 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
 
         // Speak some other column entries.
 
-        speakc!( u, col, "vj_seq", stringme(&ex.share[mid].seq) );
-        speakc!( u, col, "seq", stringme(&ex.share[mid].full_seq) );
-        speakc!( u, col, "v_start", ex.share[mid].v_start );
+        speakc!(u, col, "vj_seq", stringme(&ex.share[mid].seq));
+        speakc!(u, col, "seq", stringme(&ex.share[mid].full_seq));
+        speakc!(u, col, "v_start", ex.share[mid].v_start);
         let cid = ex.share[mid].c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
-            speakc!( u, col, "const_id", refdata.id[cid] );
+            speakc!(u, col, "const_id", refdata.id[cid]);
         }
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             let uid = uid.unwrap();
-            speakc!( u, col, "utr_id", refdata.id[uid] );
-            speakc!( u, col, "utr_name", refdata.name[uid] );
+            speakc!(u, col, "utr_id", refdata.id[uid]);
+            speakc!(u, col, "utr_name", refdata.name[uid]);
         }
-        speakc!( u, col, "cdr3_start", ex.share[mid].cdr3_start );
-        speakc!( u, col, "cdr3_aa", ex.share[mid].cdr3_aa );
+        speakc!(u, col, "cdr3_start", ex.share[mid].cdr3_start);
+        speakc!(u, col, "cdr3_aa", ex.share[mid].cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
-            vv.push( *x/3 );
+            vv.push(*x / 3);
         }
         unique_sort(&mut vv);
         let mut varaa = Vec::<u8>::new();
@@ -370,11 +398,11 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                 if seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec() {
                     varaa.push(b'-');
                 } else {
-                    varaa.push( codon_to_aa(&seq_amino[3 * p..3 * p + 3]) );
+                    varaa.push(codon_to_aa(&seq_amino[3 * p..3 * p + 3]));
                 }
             }
         }
-        speakc!( u, col, "var_aa", strme(&varaa) );
+        speakc!(u, col, "var_aa", strme(&varaa));
 
         // Create column entry.
 
@@ -387,8 +415,9 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     if k > 0 && p == cs {
                         cx[col][j] += " ";
                     }
-                    if 3 * p + 3 <= seq_amino.len() 
-                        && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec() {
+                    if 3 * p + 3 <= seq_amino.len()
+                        && seq_amino[3 * p..3 * p + 3].to_vec() == b"---".to_vec()
+                    {
                         cx[col][j] += "-";
                     } else if 3 * p + 3 > seq_amino.len()
                         || seq_amino[3 * p..3 * p + 3].contains(&b'-')
@@ -396,10 +425,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                         cx[col][j] += "*";
                     } else {
                         let mut log = Vec::<u8>::new();
-                        emit_codon_color_escape(
-                            &seq_amino[3 * p..3 * p + 3],
-                            &mut log,
-                        );
+                        emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
                         let aa = codon_to_aa(&seq_amino[3 * p..3 * p + 3]);
                         log.push(aa);
                         emit_end_escape(&mut log);
@@ -429,18 +455,17 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     let mut concat = Vec::<u8>::new();
                     let mut x = refdata.refs[rsi.vids[col]].to_ascii_vec();
                     if rsi.vpids[col].is_none() {
-                        concat.append( &mut x );
+                        concat.append(&mut x);
                     } else {
-                        let mut y 
-                            = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-                        concat.append( &mut y );
+                        let mut y = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+                        concat.append(&mut y);
                     }
                     if ex.share[mid].left {
                         let mut x = refdata.refs[d].to_ascii_vec();
-                        concat.append( &mut x );
+                        concat.append(&mut x);
                     }
                     let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
-                    concat.append( &mut x );
+                    concat.append(&mut x);
                     let al = aligner.semiglobal(&tig, &concat);
                     let mut m = 0;
                     let mut pos = al.xstart;
@@ -450,40 +475,45 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     while m < al.operations.len() {
                         let n = next_diff(&al.operations, m);
                         match al.operations[m] {
-                            Match => { pos += 1; },
+                            Match => {
+                                pos += 1;
+                            }
                             Subst => {
                                 if pos >= start && pos < stop {
                                     count += 1;
                                 }
                                 pos += 1;
-                            },
+                            }
                             Del => {
                                 if pos >= start && pos < stop {
                                     count += 1;
                                 }
-                                pos += n-m;
-                                m = n-1;
-                            },
-                            Ins => { 
+                                pos += n - m;
+                                m = n - 1;
+                            }
+                            Ins => {
                                 if pos >= start && pos < stop {
                                     count += 1;
                                 }
-                                m = n-1;
-                            },
-                            _ => { },
+                                m = n - 1;
+                            }
+                            _ => {}
                         };
                         m += 1;
                     }
-                    comp = min( comp, count );
+                    comp = min(comp, count);
                 }
-                cvar![ j, rsi.cvars[col][j], format!( "{}", comp ) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", comp)];
             } else if rsi.cvars[col][j] == "cdr3_dna".to_string() {
-                cvar![ j, rsi.cvars[col][j], ex.share[mid].cdr3_dna.clone() ];
+                cvar![j, rsi.cvars[col][j], ex.share[mid].cdr3_dna.clone()];
             } else if rsi.cvars[col][j] == "ulen".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!( "{}", ex.share[mid].v_start ) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", ex.share[mid].v_start)];
             } else if rsi.cvars[col][j] == "clen".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!( "{}", 
-                    ex.share[mid].full_seq.len() - ex.share[mid].j_stop ) ];
+                cvar![
+                    j,
+                    rsi.cvars[col][j],
+                    format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
+                ];
             } else if rsi.cvars[col][j].starts_with("ndiff") {
                 let u0 = rsi.cvars[col][j].after("ndiff").force_usize() - 1;
                 if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
@@ -497,9 +527,9 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                             ndiff += 1;
                         }
                     }
-                    cvar![ j, rsi.cvars[col][j], format!( "{}", ndiff ) ];
+                    cvar![j, rsi.cvars[col][j], format!("{}", ndiff)];
                 } else {
-                    cvar![ j, rsi.cvars[col][j], "_".to_string() ];
+                    cvar![j, rsi.cvars[col][j], "_".to_string()];
                 }
             } else if rsi.cvars[col][j] == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
@@ -513,13 +543,13 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     if clen > r.len() {
                         extra = clen - r.len();
                     }
-                    for i in 0..min( clen, r.len() ) {
-                        let tb = ex.share[mid].full_seq[ cstart + i ];
+                    for i in 0..min(clen, r.len()) {
+                        let tb = ex.share[mid].full_seq[cstart + i];
                         let rb = r.to_ascii_vec()[i];
                         if tb != rb {
                             ndiffs += 1;
                             if ndiffs <= 5 {
-                                cdiff += &format!( "{}{}", i, tb as char );
+                                cdiff += &format!("{}{}", i, tb as char);
                             }
                         }
                     }
@@ -527,12 +557,12 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                         cdiff += "...";
                     }
                     if extra > 0 {
-                        cdiff += &format!( "%{}", extra );
+                        cdiff += &format!("%{}", extra);
                     }
                 } else if clen > 0 {
-                    cdiff = format!( "%{}", clen );
+                    cdiff = format!("%{}", clen);
                 }
-                cvar![ j, rsi.cvars[col][j], cdiff ];
+                cvar![j, rsi.cvars[col][j], cdiff];
             } else if rsi.cvars[col][j] == "udiff".to_string() {
                 let ulen = ex.share[mid].v_start;
                 let uid = ex.share[mid].u_ref_id;
@@ -559,7 +589,7 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                         if tb != rb {
                             ndiffs += 1;
                             if ndiffs <= 5 {
-                                udiff += &format!( "{}{}", rpos, tb as char );
+                                udiff += &format!("{}{}", rpos, tb as char);
                             }
                         }
                     }
@@ -567,24 +597,24 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                         udiff += "...";
                     }
                     if extra > 0 {
-                        udiff += &format!( "%{}", extra );
+                        udiff += &format!("%{}", extra);
                     }
                 } else if ulen > 0 {
-                    udiff = format!( "%{}", ulen );
+                    udiff = format!("%{}", ulen);
                 }
-                cvar![ j, rsi.cvars[col][j], udiff ];
+                cvar![j, rsi.cvars[col][j], udiff];
             } else if rsi.cvars[col][j] == "notes".to_string() {
-                cvar![ j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone() ];
+                cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
             } else if rsi.cvars[col][j] == "var".to_string() {
-                cvar![ j, rsi.cvars[col][j], stringme(&varmat[u][col]) ];
+                cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
             } else if rsi.cvars[col][j] == "umed".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!("{}", median_numis) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
             } else if rsi.cvars[col][j] == "umax".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!("{}", umax) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", umax)];
             } else if rsi.cvars[col][j] == "utot".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!("{}", utot) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", utot)];
             } else if rsi.cvars[col][j] == "rmed".to_string() {
-                cvar![ j, rsi.cvars[col][j], format!("{}", median_nreads) ];
+                cvar![j, rsi.cvars[col][j], format!("{}", median_nreads)];
             } else if rsi.cvars[col][j] == "const".to_string() {
                 let mut constx = Vec::<String>::new();
                 let cid = ex.share[mid].c_ref_id;
@@ -596,11 +626,14 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                 unique_sort(&mut constx);
                 // This is overcomplicated because there is now at most one
                 // const entry per exact subclonotype.
-                cvar![ j, rsi.cvars[col][j], format!("{}", constx.iter().format(",")) ];
+                cvar![
+                    j,
+                    rsi.cvars[col][j],
+                    format!("{}", constx.iter().format(","))
+                ];
 
             // Compute potential whitelist contamination percent.  And filter.
             // This is an undocumented option.
-
             } else if rsi.cvars[col][j] == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
                 for l in 0..ex.clones.len() {
@@ -649,7 +682,9 @@ pub fn row_fill( u: usize, ctl: &EncloneControl, exacts: &Vec<usize>,
                     cx[col][j] = format!("{:.1}", junk_rate);
                 }
                 // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                if ctl.clono_filt_opt.whitef && junk_rate == 0.0 /* && pass == 1 */ {
+                if ctl.clono_filt_opt.whitef && junk_rate == 0.0
+                /* && pass == 1 */
+                {
                     bads[u] = true;
                 }
             }

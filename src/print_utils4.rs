@@ -13,15 +13,14 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn define_mat( 
+pub fn define_mat(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     cdr3s: &Vec<Vec<String>>,
     js: &Vec<usize>,
-    od: &Vec<(Vec<usize>, usize, i32)>, 
+    od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
 ) -> Vec<Vec<Option<usize>>> {
-
     // Form the flattened list of all CDR3_AAs.
 
     let nexacts = cdr3s.len();
@@ -66,14 +65,10 @@ pub fn define_mat(
 
                                                 let mut vj_diffs = 0;
                                                 if !y1.has_del[u1] && !y2.has_del[u2] {
-                                                    vj_diffs = ndiffs(
-                                                        &y1.tigsp[u1],
-                                                        &y2.tigsp[u2],
-                                                    );
+                                                    vj_diffs = ndiffs(&y1.tigsp[u1], &y2.tigsp[u2]);
                                                 } else {
                                                     for j in 0..y1.tigs[u1].len() {
-                                                        if y1.tigs[u1][j] != y2.tigs[u2][j]
-                                                        {
+                                                        if y1.tigs[u1][j] != y2.tigs[u2][j] {
                                                             vj_diffs += 1;
                                                         }
                                                     }
@@ -133,15 +128,17 @@ pub fn define_mat(
     // ◼ This should be propagated so we don't compute something equivalent
     //   over and over.
 
-    let mut mat = vec![ vec![ None; nexacts ]; cols ];
-    for cx in 0..cols { // for every column
-        'exact: for u in 0..nexacts { // for every exact subclonotype
+    let mut mat = vec![vec![None; nexacts]; cols];
+    for cx in 0..cols {
+        // for every column
+        'exact: for u in 0..nexacts {
+            // for every exact subclonotype
             let clonotype_id = od[js[u]].1;
             let ex = &exact_clonotypes[clonotype_id];
             let x = &cdr3s[u];
             let mut mm0 = vec![0; r.len()];
             // for every chain in the exact subclonotype:
-            for (iy, y) in x.iter().enumerate() { 
+            for (iy, y) in x.iter().enumerate() {
                 let q = rpos[&(u, iy)];
                 let mut col = mm0[q];
                 for j in 0..q {
@@ -167,7 +164,7 @@ pub fn define_mat(
 
 // Define amino acid positions to show.
 
-pub fn build_show_aa( 
+pub fn build_show_aa(
     ctl: &EncloneControl,
     rsi: &ColInfo,
     vars_amino: &Vec<Vec<usize>>,
@@ -199,7 +196,7 @@ pub fn build_show_aa(
         if ctl.clono_print_opt.amino.contains(&"donor".to_string()) {
             let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
             let jseq1 = refdata.refs[rsi.jids[cx]].to_ascii_vec();
-            let vseq2 : Vec<u8>;
+            let vseq2: Vec<u8>;
             if rsi.vpids[cx].is_some() {
                 vseq2 = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
             } else {
@@ -209,23 +206,23 @@ pub fn build_show_aa(
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
-            assert!( gap >= 0 );
+            assert!(gap >= 0);
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
-                    show_aa[cx].push(j/3);
+                    show_aa[cx].push(j / 3);
                 }
             }
             for j in ctl.heur.ref_j_trim..jlen {
                 if jseq1[j] != jseq2[j] {
                     let pos = rsi.seq_lens[cx] - jlen + j;
-                    show_aa[cx].push(pos/3);
+                    show_aa[cx].push(pos / 3);
                 }
             }
         }
         if ctl.clono_print_opt.amino.contains(&"donorn".to_string()) {
             let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
             let jseq1 = refdata.refs[rsi.jids[cx]].to_ascii_vec();
-            let vseq2 : Vec<u8>;
+            let vseq2: Vec<u8>;
             if rsi.vpids[cx].is_some() {
                 vseq2 = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
             } else {
@@ -235,43 +232,45 @@ pub fn build_show_aa(
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
-            assert!( gap >= 0 );
+            assert!(gap >= 0);
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
-                    let n = 3 * (j/3);
-                    if n+3 <= vseq1.len() 
-                        && codon_to_aa(&vseq1[n..n+3]) != codon_to_aa(&vseq2[n..n+3]) {
-                        show_aa[cx].push(j/3);
+                    let n = 3 * (j / 3);
+                    if n + 3 <= vseq1.len()
+                        && codon_to_aa(&vseq1[n..n + 3]) != codon_to_aa(&vseq2[n..n + 3])
+                    {
+                        show_aa[cx].push(j / 3);
                     }
                 }
             }
-            for j in ctl.heur.ref_j_trim..jlen-1 {
+            for j in ctl.heur.ref_j_trim..jlen - 1 {
                 if jseq1[j] != jseq2[j] {
                     let mut p = j;
-                    let d = jlen-1-j;
+                    let d = jlen - 1 - j;
                     if d % 3 == 0 {
                     } else if d % 3 == 1 {
                         p -= 2;
                     } else if d % 3 == 2 {
                         p -= 1;
                     }
-                    if p+3 <= jlen
-                        && codon_to_aa(&jseq1[p..p+3]) != codon_to_aa(&jseq2[p..p+3]) {
+                    if p + 3 <= jlen
+                        && codon_to_aa(&jseq1[p..p + 3]) != codon_to_aa(&jseq2[p..p + 3])
+                    {
                         let pos = rsi.seq_lens[cx] - jlen + j;
-                        show_aa[cx].push(pos/3);
+                        show_aa[cx].push(pos / 3);
                     }
                 }
             }
         }
         unique_sort(&mut show_aa[cx]);
-    
+
         // Remove an amino acid position that is too high.  The way we would expect
         // to get this is that we started from the last base position on the J segment,
         // which is part of a codon whose other two bases lie in a C segment.
 
         if !show_aa[cx].is_empty() {
-            let p = show_aa[cx][show_aa[cx].len()-1];
-            if 3*p + 3 > rsi.seq_lens[cx] {
+            let p = show_aa[cx][show_aa[cx].len() - 1];
+            if 3 * p + 3 > rsi.seq_lens[cx] {
                 show_aa[cx].pop();
             }
         }

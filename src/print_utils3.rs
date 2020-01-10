@@ -13,8 +13,8 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Define reference segment identifiers, one per chain.  For the V segment, there is 
-// also an optional donor reference sequence alignment.  (For now.  We might do the 
+// Define reference segment identifiers, one per chain.  For the V segment, there is
+// also an optional donor reference sequence alignment.  (For now.  We might do the
 // same thing later for J segments.)
 // ◼ 1. We vote using the number of cells, whereas a better way would be to test all
 // ◼    the alternatives to find the best match.
@@ -52,7 +52,7 @@ pub fn define_column_info(
             if ctl.clono_print_opt.cvars[i] == "notes" && !have_notes {
                 continue;
             }
-            cv.push( ctl.clono_print_opt.cvars[i].to_string() );
+            cv.push(ctl.clono_print_opt.cvars[i].to_string());
         }
         cvars.push(cv);
     }
@@ -74,31 +74,31 @@ pub fn define_column_info(
                 seq_lens.push(exm.seq.len());
                 seq_del_lens.push(exm.seq_del.len());
                 let mut start = exm.cdr3_start;
-                for (i,c) in exm.seq_del.iter().enumerate() {
+                for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
                         start += 1;
-                    }   
-                }   
+                    }
+                }
                 cdr3_starts.push(start);
                 break;
-            }   
-        }   
-    }   
+            }
+        }
+    }
 
     // Compute reference info.
 
-    let mut uids = vec![ None; cols ];
-    let mut vids = vec![ 0; cols ];
-    let mut vpids = vec![ None; cols ];
-    let mut vpids_d = vec![ None; cols ];
-    let mut vpids_a = vec![ None; cols ];
-    let mut dids = vec![ None; cols ];
-    let mut jids = vec![ 0; cols ];
-    let mut cids = vec![ None; cols ];
+    let mut uids = vec![None; cols];
+    let mut vids = vec![0; cols];
+    let mut vpids = vec![None; cols];
+    let mut vpids_d = vec![None; cols];
+    let mut vpids_a = vec![None; cols];
+    let mut dids = vec![None; cols];
+    let mut jids = vec![0; cols];
+    let mut cids = vec![None; cols];
     for col in 0..cols {
         let mut u = Vec::<usize>::new();
         let mut v = Vec::<usize>::new();
-        let mut vp = Vec::<(usize,Option<usize>,Option<usize>,Option<usize>)>::new();
+        let mut vp = Vec::<(usize, Option<usize>, Option<usize>, Option<usize>)>::new();
         let mut d = Vec::<usize>::new();
         let mut j = Vec::<usize>::new();
         let mut c = Vec::<usize>::new();
@@ -116,8 +116,11 @@ pub fn define_column_info(
                 for _ in 0..ex.ncells() {
                     v.push(x.v_ref_id);
                     vp.push((
-                        x.v_ref_id, x.v_ref_id_donor, x.v_ref_id_donor_donor, 
-                            x.v_ref_id_donor_alt_id));
+                        x.v_ref_id,
+                        x.v_ref_id_donor,
+                        x.v_ref_id_donor_donor,
+                        x.v_ref_id_donor_alt_id,
+                    ));
                 }
                 if x.d_ref_id.is_some() {
                     for _ in 0..ex.ncells() {
@@ -140,35 +143,35 @@ pub fn define_column_info(
         d.sort();
         j.sort();
         c.sort();
-        let mut uf = Vec::<(u32,usize)>::new();
+        let mut uf = Vec::<(u32, usize)>::new();
         make_freq(&u, &mut uf);
         if !uf.is_empty() {
             uids[col] = Some(uf[0].1);
         }
-        let mut vf = Vec::<(u32,usize)>::new();
+        let mut vf = Vec::<(u32, usize)>::new();
         make_freq(&v, &mut vf);
         vids[col] = vf[0].1;
-        let mut to_delete = vec![ false; vp.len() ];
+        let mut to_delete = vec![false; vp.len()];
         for i in 0..vp.len() {
             if vp[i].0 != vids[col] {
                 to_delete[i] = true;
             }
         }
         erase_if(&mut vp, &to_delete);
-        let mut vpf = Vec::<(u32,(usize,Option<usize>,Option<usize>,Option<usize>))>::new();
+        let mut vpf = Vec::<(u32, (usize, Option<usize>, Option<usize>, Option<usize>))>::new();
         make_freq(&vp, &mut vpf);
         vpids[col] = (vpf[0].1).1;
         vpids_d[col] = (vpf[0].1).2;
         vpids_a[col] = (vpf[0].1).3;
-        let mut df = Vec::<(u32,usize)>::new();
+        let mut df = Vec::<(u32, usize)>::new();
         make_freq(&d, &mut df);
         if !df.is_empty() {
             dids[col] = Some(df[0].1);
         }
-        let mut jf = Vec::<(u32,usize)>::new();
+        let mut jf = Vec::<(u32, usize)>::new();
         make_freq(&j, &mut jf);
         jids[col] = jf[0].1;
-        let mut cf = Vec::<(u32,usize)>::new();
+        let mut cf = Vec::<(u32, usize)>::new();
         make_freq(&c, &mut cf);
         if !cf.is_empty() {
             cids[col] = Some(cf[0].1);
@@ -187,16 +190,15 @@ pub fn define_column_info(
             let m = mat[cx][u];
             if m.is_some() {
                 let m = m.unwrap();
-                seqs.push( exact_clonotypes[exacts[u]].share[m].seq_del.clone() );
-                seqs_amino.push(
-                    exact_clonotypes[exacts[u]].share[m].seq_del_amino.clone() );
+                seqs.push(exact_clonotypes[exacts[u]].share[m].seq_del.clone());
+                seqs_amino.push(exact_clonotypes[exacts[u]].share[m].seq_del_amino.clone());
             } else {
-                seqs.push( Vec::<u8>::new() );
-                seqs_amino.push( Vec::<u8>::new() );
+                seqs.push(Vec::<u8>::new());
+                seqs_amino.push(Vec::<u8>::new());
             }
         }
-        seqss.push( seqs.clone() );
-        seqss_amino.push( seqs_amino.clone() );
+        seqss.push(seqs.clone());
+        seqss_amino.push(seqs_amino.clone());
     }
 
     // Show segment names.
@@ -204,19 +206,23 @@ pub fn define_column_info(
     let mut chain_descrip = vec![String::new(); cols];
     for cx in 0..cols {
         let vid = vids[cx];
-        let mut vdescrip = format!( "{}", refdata.id[vid] );
+        let mut vdescrip = format!("{}", refdata.id[vid]);
         if vpids[cx].is_some() {
-            vdescrip = format!( "{}.{}.{}", 
-                vdescrip, vpids_d[cx].unwrap()+1, vpids_a[cx].unwrap()+1 );
+            vdescrip = format!(
+                "{}.{}.{}",
+                vdescrip,
+                vpids_d[cx].unwrap() + 1,
+                vpids_a[cx].unwrap() + 1
+            );
         }
         chain_descrip[cx] = format!("{}|{}", vdescrip, refdata.name[vid]);
         let did = dids[cx];
         if did.is_some() {
             let did = did.unwrap();
-            chain_descrip[cx] += &format!( " + {}|{}", refdata.id[did], refdata.name[did] );
+            chain_descrip[cx] += &format!(" + {}|{}", refdata.id[did], refdata.name[did]);
         }
         let jid = jids[cx];
-        chain_descrip[cx] += &format!( " + {}|{}", refdata.id[jid], refdata.name[jid] );
+        chain_descrip[cx] += &format!(" + {}|{}", refdata.id[jid], refdata.name[jid]);
     }
 
     // Return.
@@ -244,8 +250,8 @@ pub fn define_column_info(
 
 // Add header text to mlog.
 
-pub fn add_header_text( 
-    ctl: &EncloneControl, 
+pub fn add_header_text(
+    ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
     rord: &Vec<usize>,
@@ -271,18 +277,18 @@ pub fn add_header_text(
             let m = mat[cx][rord[u]];
             if m.is_some() {
                 let m = m.unwrap();
-                seqs.push( ex.share[m].seq_del.clone() );
-                full_seqs.push( ex.share[m].full_seq.clone() );
+                seqs.push(ex.share[m].seq_del.clone());
+                full_seqs.push(ex.share[m].full_seq.clone());
             } else {
-                seqs.push( Vec::<u8>::new() );
-                full_seqs.push( Vec::<u8>::new() );
+                seqs.push(Vec::<u8>::new());
+                full_seqs.push(Vec::<u8>::new());
             }
         }
         let mut simple = false;
         let n = seqs[0].len() - jref.len();
         if ctl.clono_print_opt.note_simple && vref.len() >= n {
             let mut vj = vref[0..n].to_vec();
-            vj.append( &mut jref.clone() );
+            vj.append(&mut jref.clone());
             if vj == seqs[0] {
                 simple = true;
             }
@@ -307,9 +313,16 @@ pub fn add_header_text(
 // Insert universal and donor reference rows.
 // Possibly buggy WRT reference indels that we insert.
 
-pub fn insert_reference_rows( ctl: &EncloneControl, rsi: &ColInfo, show_aa: &Vec<Vec<usize>>,
-    refdata: &RefData, dref: &Vec<DonorReferenceItem>, row1: &Vec<String>, 
-    drows: &mut Vec<Vec<String>>, rows: &mut Vec<Vec<String>> ) {
+pub fn insert_reference_rows(
+    ctl: &EncloneControl,
+    rsi: &ColInfo,
+    show_aa: &Vec<Vec<usize>>,
+    refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
+    row1: &Vec<String>,
+    drows: &mut Vec<Vec<String>>,
+    rows: &mut Vec<Vec<String>>,
+) {
     let cols = rsi.seq_del_lens.len();
     if drows.len() >= 1 {
         for pass in 1..=2 {
@@ -319,13 +332,13 @@ pub fn insert_reference_rows( ctl: &EncloneControl, rsi: &ColInfo, show_aa: &Vec
             } else {
                 row.push("donor ref".to_string());
             }
-            for _ in  1..row1.len() {
+            for _ in 1..row1.len() {
                 row.push("\\ext".to_string());
             }
             for cz in 0..cols {
                 let mut refseq = Vec::<u8>::new();
-                let mut vlen : usize;
-                let vseq : Vec::<u8>;
+                let mut vlen: usize;
+                let vseq: Vec<u8>;
                 if pass == 1 {
                     vlen = refdata.refs[rsi.vids[cz]].len();
                     vseq = refdata.refs[rsi.vids[cz]].to_ascii_vec();
@@ -340,16 +353,16 @@ pub fn insert_reference_rows( ctl: &EncloneControl, rsi: &ColInfo, show_aa: &Vec
                 let jlen = refdata.refs[rsi.jids[cz]].len() - ctl.heur.ref_j_trim;
                 let jseq = refdata.refs[rsi.jids[cz]].to_ascii_vec();
                 let gap = rsi.seq_del_lens[cz] as isize - vlen as isize - jlen as isize;
-                assert!( gap >= 0 );
+                assert!(gap >= 0);
                 let gap = gap as usize;
                 for j in 0..vlen {
-                    refseq.push( vseq[j] );
+                    refseq.push(vseq[j]);
                 }
                 for _ in 0..gap {
-                    refseq.push( b'-' );
+                    refseq.push(b'-');
                 }
                 for j in 0..jlen {
-                    refseq.push( jseq[ j + ctl.heur.ref_j_trim ] );
+                    refseq.push(jseq[j + ctl.heur.ref_j_trim]);
                 }
                 let mut refx = String::new();
                 let cs = rsi.cdr3_starts[cz] / 3;
@@ -359,9 +372,7 @@ pub fn insert_reference_rows( ctl: &EncloneControl, rsi: &ColInfo, show_aa: &Vec
                     if k > 0 && p == cs {
                         refx += " ";
                     }
-                    if 3 * p + 3 > refseq.len()
-                        || refseq[3 * p..3 * p + 3].contains(&b'-')
-                    {
+                    if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
                         refx += "◦";
                     } else {
                         let mut log = Vec::<u8>::new();
@@ -387,19 +398,18 @@ pub fn insert_reference_rows( ctl: &EncloneControl, rsi: &ColInfo, show_aa: &Vec
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn build_table_stuff( 
-    ctl: &EncloneControl, 
+pub fn build_table_stuff(
+    ctl: &EncloneControl,
     exacts: &Vec<usize>,
-    exact_clonotypes: &Vec<ExactClonotype>, 
+    exact_clonotypes: &Vec<ExactClonotype>,
     rsi: &ColInfo,
     vars: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
-    row1: &mut Vec<String>, 
-    justify: &mut Vec<u8>, 
+    row1: &mut Vec<String>,
+    justify: &mut Vec<u8>,
     drows: &mut Vec<Vec<String>>,
     rows: &mut Vec<Vec<String>>,
 ) {
-
     // Build lead header row and justification to match.
 
     let lvars = &ctl.clono_print_opt.lvars;
@@ -408,9 +418,11 @@ pub fn build_table_stuff(
     row1.push("#".to_string());
     justify.push(b'l');
     for i in 0..lvars.len() {
-        row1.push( lvars[i].to_string() );
-        if lvars[i] == "datasets".to_string() || lvars[i] == "donors".to_string() 
-            || lvars[i] == "ext".to_string() {
+        row1.push(lvars[i].to_string());
+        if lvars[i] == "datasets".to_string()
+            || lvars[i] == "donors".to_string()
+            || lvars[i] == "ext".to_string()
+        {
             justify.push(b'l');
         } else {
             justify.push(b'r');
@@ -422,7 +434,8 @@ pub fn build_table_stuff(
     let mut row = vec!["".to_string(); row1.len()];
     for j in 0..cols {
         if rsi.chain_descrip[j].contains(&"IGH".to_string())
-            || rsi.chain_descrip[j].contains(&"TRB".to_string()) {
+            || rsi.chain_descrip[j].contains(&"TRB".to_string())
+        {
             row.push(bold(&format!("CHAIN {}", j + 1)));
         } else {
             row.push(format!("CHAIN {}", j + 1));
@@ -435,7 +448,8 @@ pub fn build_table_stuff(
     let mut row = vec!["".to_string(); row1.len()];
     for j in 0..cols {
         if rsi.chain_descrip[j].contains(&"IGH".to_string())
-            || rsi.chain_descrip[j].contains(&"TRB".to_string()) {
+            || rsi.chain_descrip[j].contains(&"TRB".to_string())
+        {
             row.push(bold(&format!("{}", rsi.chain_descrip[j])));
         } else {
             row.push(format!("{}", rsi.chain_descrip[j]));
@@ -448,19 +462,19 @@ pub fn build_table_stuff(
 
     // Insert divider row (horizontal line across the chains).
 
-    let mut row = vec!["".to_string(); lvars.len()+1];
+    let mut row = vec!["".to_string(); lvars.len() + 1];
     let mut ncall = 0;
     for j in 0..cols {
         ncall += rsi.cvars[j].len();
     }
-    row.append( &mut vec!["\\hline".to_string(); ncall ] );
+    row.append(&mut vec!["\\hline".to_string(); ncall]);
     rows.push(row);
 
     // Insert position rows.
 
-    *drows = insert_position_rows( &rsi, &show_aa, &vars, &row1 );
+    *drows = insert_position_rows(&rsi, &show_aa, &vars, &row1);
     let mut drows2 = drows.clone();
-    rows.append( &mut drows2 );
+    rows.append(&mut drows2);
 
     // Insert main per-chain header row.
 
@@ -477,10 +491,7 @@ pub fn build_table_stuff(
                         let mut s = String::new();
                         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
                             let cs = rsi.cdr3_starts[cx] / 3;
-                            let lead = show_aa[cx]
-                                .iter()
-                                .position(|x| *x == cs)
-                                .unwrap();
+                            let lead = show_aa[cx].iter().position(|x| *x == cs).unwrap();
                             s += &" ".repeat(lead);
                             if lead > 0 {
                                 s += " ";
@@ -491,7 +502,7 @@ pub fn build_table_stuff(
                             s += &"═".repeat(left);
                             s += "CDR3";
                             s += &"═".repeat(right);
-                            if show_aa[cx][show_aa[cx].len()-1] != cs + n - 1 {
+                            if show_aa[cx][show_aa[cx].len() - 1] != cs + n - 1 {
                                 s += " ";
                             }
                         }

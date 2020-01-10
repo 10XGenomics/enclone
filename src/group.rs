@@ -15,24 +15,23 @@ use std::path::Path;
 use string_utils::*;
 use vector_utils::*;
 
-pub fn group_and_print_clonotypes( 
+pub fn group_and_print_clonotypes(
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
-    out_datas: &mut Vec<Vec<HashMap<String,String>>>,
+    out_datas: &mut Vec<Vec<HashMap<String, String>>>,
 ) {
-
     // Set up for parseable output.
 
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
-        "" => ( Box::new(stdout()) as Box<Write> ),
-        "stdout" => ( Box::new(stdout()) as Box<Write> ),
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.parseable_opt.pout);
-            ( Box::new(File::create(&path).unwrap()) as Box<Write> )
+            (Box::new(File::create(&path).unwrap()) as Box<Write>)
         }
     };
     let mut pcols = ctl.parseable_opt.pcols.clone();
@@ -40,7 +39,7 @@ pub fn group_and_print_clonotypes(
         pcols = parseable_fields.clone();
     }
     if !ctl.parseable_opt.pout.is_empty() && ctl.parseable_opt.pout != "stdout".to_string() {
-        fwriteln!( pout, "{}", pcols.iter().format(",") );
+        fwriteln!(pout, "{}", pcols.iter().format(","));
     }
 
     // Group clonotypes and make output.
@@ -48,13 +47,13 @@ pub fn group_and_print_clonotypes(
     let mut last_width = 0;
     let mut e: EquivRel = EquivRel::new(pics.len() as i32);
     if ctl.clono_group_opt.heavy_cdr3_aa {
-        let mut all = Vec::<(String,usize)>::new();
+        let mut all = Vec::<(String, usize)>::new();
         for i in 0..pics.len() {
             for x in exacts[i].iter() {
                 for m in 0..exact_clonotypes[*x].share.len() {
                     let y = &exact_clonotypes[*x].share[m];
                     if y.left {
-                        all.push( ( y.cdr3_aa.clone(), i ) );
+                        all.push((y.cdr3_aa.clone(), i));
                     }
                 }
             }
@@ -63,8 +62,8 @@ pub fn group_and_print_clonotypes(
         let mut i = 0;
         while i < all.len() {
             let j = next_diff1_2(&all, i as i32) as usize;
-            for k in i+1..j {
-                e.join( all[i].1 as i32, all[k].1 as i32);
+            for k in i + 1..j {
+                e.join(all[i].1 as i32, all[k].1 as i32);
             }
             i = j;
         }
@@ -96,31 +95,31 @@ pub fn group_and_print_clonotypes(
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_eight_bit_color_escape(&mut log, 44);
-                    print!( "{}", strme(&log) );
+                    print!("{}", strme(&log));
                 }
-                print!( "╺" );
-                for _ in 0..last_width-2 {
-                    print!( "━" );
+                print!("╺");
+                for _ in 0..last_width - 2 {
+                    print!("━");
                 }
-                print!( "╸" );
+                print!("╸");
                 println!("\n");
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_end_escape(&mut log);
-                    print!( "{}", strme(&log) );
+                    print!("{}", strme(&log));
                 }
             }
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_bold_escape(&mut log);
                 emit_eight_bit_color_escape(&mut log, 27);
-                print!( "{}", strme(&log) );
+                print!("{}", strme(&log));
             }
-            print!( "[{}] GROUP = {} CLONOTYPES = {} CELLS", groups, o.len(), n );
+            print!("[{}] GROUP = {} CLONOTYPES = {} CELLS", groups, o.len(), n);
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_end_escape(&mut log);
-                print!( "{}", strme(&log) );
+                print!("{}", strme(&log));
             }
             println!("");
         }
@@ -134,7 +133,7 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                print!("\n[{}.{}] {}", groups, j+1, pics[oo] );
+                print!("\n[{}.{}] {}", groups, j + 1, pics[oo]);
             }
             let x = &pics[oo];
             let mut y = Vec::<char>::new();
@@ -155,32 +154,32 @@ pub fn group_and_print_clonotypes(
 
             if ctl.parseable_opt.pout.len() > 0 {
                 for m in 0..out_datas[oo].len() {
-                    out_datas[oo][m].insert( "group_id".to_string(), format!( "{}", groups ) );
-                    out_datas[oo][m].insert( 
-                        "group_ncells".to_string(), format!( "{}", group_ncells ) );
-                    out_datas[oo][m].insert( "clonotype_id".to_string(), format!( "{}", j+1 ) );
+                    out_datas[oo][m].insert("group_id".to_string(), format!("{}", groups));
+                    out_datas[oo][m]
+                        .insert("group_ncells".to_string(), format!("{}", group_ncells));
+                    out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
                 }
                 if ctl.parseable_opt.pout == "stdout".to_string() {
-                    fwriteln!( pout, "{}", pcols.iter().format(",") );
+                    fwriteln!(pout, "{}", pcols.iter().format(","));
                 }
                 let x = &out_datas[oo];
                 for y in x.iter() {
                     for (i, c) in pcols.iter().enumerate() {
                         if i > 0 {
-                            fwrite!( pout, "," );
+                            fwrite!(pout, ",");
                         }
                         if y.contains_key(c) {
                             let val = &y[c];
                             if !val.contains(',') {
-                                fwrite!( pout, "{}", val );
+                                fwrite!(pout, "{}", val);
                             } else {
-                                fwrite!( pout, "\"{}\"", val );
+                                fwrite!(pout, "\"{}\"", val);
                             }
                         } else {
-                            fwrite!( pout, "" );
+                            fwrite!(pout, "");
                         }
                     }
-                    fwriteln!( pout, "" );
+                    fwriteln!(pout, "");
                 }
             }
         }
@@ -193,10 +192,13 @@ pub fn group_and_print_clonotypes(
             }
         }
         if fps != ctl.gen_opt.required_fps.unwrap() {
-            eprintln!( "\nA \"false positive\" is a clonotype that contains cells from multiple\n\
-                donors.  You invoked enclone with the argument REQUIRED_FPS={}, but we found\n\
-                {} false positives, so the requirement is not met.\n", 
-                ctl.gen_opt.required_fps.unwrap(), fps );
+            eprintln!(
+                "\nA \"false positive\" is a clonotype that contains cells from multiple\n\
+                 donors.  You invoked enclone with the argument REQUIRED_FPS={}, but we found\n\
+                 {} false positives, so the requirement is not met.\n",
+                ctl.gen_opt.required_fps.unwrap(),
+                fps
+            );
             std::process::exit(1);
         }
     }
