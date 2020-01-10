@@ -224,7 +224,6 @@ pub fn make_loupe_clonotype(
         for l in 0..ex.clones.len() {
             cell_barcodes.push(ex.clones[l][0].barcode.clone());
         }
-        cell_barcodes.sort(); // not sure this makes sense
         ecl.push(ExactSubClonotype {
             chains: chains
                 .into_iter()
