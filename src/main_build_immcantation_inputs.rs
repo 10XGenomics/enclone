@@ -19,17 +19,17 @@ pub fn main_build_immcantation_inputs() {
 
     // Get the list of lena ids.
 
-    let testlines = include_str![ "enclone.testdata" ];
+    let testlines = include_str!["enclone.testdata"];
     let testlines = testlines.split('\n').collect::<Vec<&str>>();
     let mut lenas = Vec::<usize>::new();
     for x in testlines.iter() {
-        if !x.starts_with( '#' ) {
-            let xx = x.replace( " ", "" );
+        if !x.starts_with('#') {
+            let xx = x.replace(" ", "");
             let y = xx.split(',').collect::<Vec<&str>>();
             for z in y.iter() {
                 if *z == "" {
-                } else if !z.contains( '-' ) {
-                    lenas.push( z.force_usize() );
+                } else if !z.contains('-') {
+                    lenas.push(z.force_usize());
                 } else {
                     let l1 = z.before("-").force_usize();
                     let l2 = z.after("-").force_usize();
@@ -45,49 +45,52 @@ pub fn main_build_immcantation_inputs() {
     // Concatenate the fasta files, prepending the lena id to the contig name.
     // Also concatenate the csv files, prepending the lena id to the contig name.
 
-    let mut g1 = open_for_write_new![ "filtered_contig.fasta" ];
-    let mut g = open_for_write_new![ "filtered_contig_annotations.csv" ];
+    let mut g1 = open_for_write_new!["filtered_contig.fasta"];
+    let mut g = open_for_write_new!["filtered_contig_annotations.csv"];
     for (i, l) in lenas.iter().enumerate() {
         let mut count1 = 0;
-        let f1 = open_for_read![ &format!("{}//{}/outs/filtered_contig.fasta", pre, l ) ];
+        let f1 = open_for_read![&format!("{}//{}/outs/filtered_contig.fasta", pre, l)];
         for line in f1.lines() {
             let s = line.unwrap();
             if s.starts_with('>') {
-                fwriteln!( g1, ">{}_{}", l, s.after(">") );
+                fwriteln!(g1, ">{}_{}", l, s.after(">"));
                 count1 += 1;
             } else {
-                fwriteln!( g1, "{}", s );
+                fwriteln!(g1, "{}", s);
             }
         }
-        let f = open_for_read![ &format!("{}//{}/outs/filtered_contig_annotations.csv", pre, l ) ];
+        let f = open_for_read![&format!(
+            "{}//{}/outs/filtered_contig_annotations.csv",
+            pre, l
+        )];
         let mut count2 = 0;
         let mut first = true;
         for line in f.lines() {
             let s = line.unwrap();
             if i == 0 && first {
-                fwriteln!( g, "{}", s );
+                fwriteln!(g, "{}", s);
             }
             if first {
                 first = false;
                 continue;
             }
             let fields = s.split(',').collect::<Vec<&str>>();
-            assert!( fields[2].contains( "_contig_" ) );
+            assert!(fields[2].contains("_contig_"));
             for j in 0..fields.len() {
                 if j > 0 {
-                    fwrite!( g, "," );
+                    fwrite!(g, ",");
                 }
                 if j == 2 {
-                    fwrite!( g, "{}_", l );
+                    fwrite!(g, "{}_", l);
                     count2 += 1;
                 }
-                fwrite!( g, "{}", fields[j] );
+                fwrite!(g, "{}", fields[j]);
             }
-            fwriteln!( g, "" );
+            fwriteln!(g, "");
         }
         if count1 != count2 {
-            eprintln!( "\ninconsistency" );
-            eprintme!( l, count1, count2 );
+            eprintln!("\ninconsistency");
+            eprintme!(l, count1, count2);
             eprintln!("");
             std::process::exit(1);
         }

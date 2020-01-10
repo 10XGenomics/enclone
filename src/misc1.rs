@@ -18,7 +18,7 @@ use vector_utils::*;
 // However, what the code does suggest is ways that heavy chain concordance might be used
 // to improve the join algorithm.
 
-pub fn lookup_heavy_chain_reuse( 
+pub fn lookup_heavy_chain_reuse(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
@@ -26,8 +26,8 @@ pub fn lookup_heavy_chain_reuse(
 ) {
     if ctl.gen_opt.heavy_chain_reuse {
         let t = Instant::now();
-        println!( "\nheavy chain reuse by cdr3_aa:\n" );
-        let mut cdr3 = Vec::<(String,String,usize)>::new();
+        println!("\nheavy chain reuse by cdr3_aa:\n");
+        let mut cdr3 = Vec::<(String, String, usize)>::new();
         for i in 0..info.len() {
             let ex = &exact_clonotypes[info[i].clonotype_id];
 
@@ -61,17 +61,20 @@ pub fn lookup_heavy_chain_reuse(
             // Currently set up to work on CDR3_AA but could switch to CDR3_DNA and just use
             // CDR3_AA for tracking.
 
-            cdr3.push( ( ex.share[lid].cdr3_aa.clone(), ex.share[lid].cdr3_aa.clone(),
-                eq.class_id(i as i32) as usize ) );
+            cdr3.push((
+                ex.share[lid].cdr3_aa.clone(),
+                ex.share[lid].cdr3_aa.clone(),
+                eq.class_id(i as i32) as usize,
+            ));
         }
 
-        // For each of two positions, ignore the amino acid at that position by putting an 
+        // For each of two positions, ignore the amino acid at that position by putting an
         // asterisk there.  Could make this number of positions configurable.
-    
+
         let mut dio = Vec::<Vec<String>>::new();
-        println!( "cdr3 has size {}", cdr3.len() );
+        println!("cdr3 has size {}", cdr3.len());
         for z1 in 0..25 {
-            for z2 in z1+1..25 {
+            for z2 in z1 + 1..25 {
                 let mut xcdr3 = cdr3.clone();
                 for i in 0..xcdr3.len() {
                     if xcdr3[i].0.len() > z2 {
@@ -82,22 +85,22 @@ pub fn lookup_heavy_chain_reuse(
                     }
                 }
 
-                // Look for heavy chain CDR3_AAs that are identical except for one position, and 
+                // Look for heavy chain CDR3_AAs that are identical except for one position, and
                 // lie in different orbits.
 
                 xcdr3.sort();
                 let mut i = 0;
                 while i < xcdr3.len() {
-                    let j = next_diff1_3( &xcdr3, i as i32 ) as usize;
+                    let j = next_diff1_3(&xcdr3, i as i32) as usize;
                     let mut ids = Vec::<usize>::new();
                     for k in i..j {
-                        ids.push( xcdr3[k].2 );
+                        ids.push(xcdr3[k].2);
                     }
                     unique_sort(&mut ids);
                     if !ids.solo() {
                         let mut x = Vec::<String>::new();
                         for k in i..j {
-                            x.push( xcdr3[k].1.clone() );
+                            x.push(xcdr3[k].1.clone());
                         }
                         unique_sort(&mut x);
                         dio.push(x);
@@ -108,9 +111,12 @@ pub fn lookup_heavy_chain_reuse(
         }
         unique_sort(&mut dio);
         for i in 0..dio.len() {
-            println!( "{} = {}", i+1, dio[i].iter().format(", ") );
+            println!("{} = {}", i + 1, dio[i].iter().format(", "));
         }
-        println!( "\nused {:.2} seconds in heavy chain reuse calculation\n", elapsed(&t) );
+        println!(
+            "\nused {:.2} seconds in heavy chain reuse calculation\n",
+            elapsed(&t)
+        );
         std::process::exit(0);
     }
 }
@@ -132,7 +138,7 @@ pub fn lookup_heavy_chain_reuse(
 // There are only certain ways that these misdistribution events could happen:
 //
 // 1. A cell (and particularly a plasma cell or plasmablast) bursts after drawing cells to
-//    make libraries, leaving behind cell fragments that seed separate GEMs 
+//    make libraries, leaving behind cell fragments that seed separate GEMs
 // (probably most likely).
 // 2. Multiple gel beads end up in one GEM.
 // 3. Something involving like cells sticking together and subsequently separating.
@@ -144,23 +150,28 @@ pub fn lookup_heavy_chain_reuse(
 // original cells that were drawn (perhaps breaking up in the process of drawing), and was
 // subsequently distintegrated.
 
-pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) {
+pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
     if !ctl.clono_filt_opt.ncross {
-
         // Get the list of samples.  Here we allow the same sample name to have been used for
         // more than one donor, as we haven't explicitly prohibited that.
 
-        let mut samples = Vec::<(String,String)>::new();
+        let mut samples = Vec::<(String, String)>::new();
         for i in 0..ctl.sample_info.n() {
-            samples.push( ( 
-                ctl.sample_info.donor_id[i].clone(), ctl.sample_info.sample_id[i].clone() ) );
+            samples.push((
+                ctl.sample_info.donor_id[i].clone(),
+                ctl.sample_info.sample_id[i].clone(),
+            ));
         }
         unique_sort(&mut samples);
-        let mut to_sample = vec![ 0; ctl.sample_info.n() ];
+        let mut to_sample = vec![0; ctl.sample_info.n()];
         for i in 0..ctl.sample_info.n() {
-            to_sample[i] = bin_position(&samples,
-                &( ctl.sample_info.donor_id[i].clone(), ctl.sample_info.sample_id[i].clone() ) )
-                as usize;
+            to_sample[i] = bin_position(
+                &samples,
+                &(
+                    ctl.sample_info.donor_id[i].clone(),
+                    ctl.sample_info.sample_id[i].clone(),
+                ),
+            ) as usize;
         }
 
         // For each lena index, and each sample, compute the total number of productive pairs.
@@ -171,7 +182,7 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
             for j in 0..tig_bc[i].len() {
                 let x = &tig_bc[i][j];
                 n_lena_index[x.lena_index] += 1;
-                n_sample[ to_sample[x.lena_index] ] += 1;
+                n_sample[to_sample[x.lena_index]] += 1;
             }
         }
 
@@ -180,13 +191,13 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
         // Note that there is no point running this unless we have at least two lena ids, and in
         // fact unless there is a sample with at least two lena ids.  Better: just gather data for
         // the sample for which there are at least two lena ids.  Also no point if NCROSS.
-    
+
         let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, lena index, count)
         {
             for i in 0..tig_bc.len() {
                 for j in 0..tig_bc[i].len() {
                     let x = &tig_bc[i][j];
-                    vjx.push( (x.seq.clone(), x.lena_index, 1) );
+                    vjx.push((x.seq.clone(), x.lena_index, 1));
                 }
             }
             vjx.sort();
@@ -194,8 +205,8 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
             let mut i = 0;
             while i < vjx.len() {
                 let j = next_diff(&vjx, i); // actually only need to check first two fields
-                vjx[i].2 = j-i;
-                for k in i+1..j {
+                vjx[i].2 = j - i;
+                for k in i + 1..j {
                     to_delete[k] = true;
                 }
                 i = j;
@@ -209,7 +220,7 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
         let mut i = 0;
         while i < vjx.len() {
             let j = next_diff1_3(&vjx, i as i32) as usize;
-            if j-i == 1 {
+            if j - i == 1 {
                 let lena_index = vjx[i].1;
                 let n = vjx[i].2;
                 let x = n_lena_index[lena_index];
@@ -217,7 +228,7 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
                 if y > 0 {
                     let p = (x as f64 / y as f64).powi(n as i32);
                     if p <= 1.0e-6 {
-                        blacklist.push( vjx[i].0.clone() );
+                        blacklist.push(vjx[i].0.clone());
                     }
                 }
             }
@@ -225,11 +236,10 @@ pub fn cross_filter( ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>> ) 
         }
         blacklist.sort();
         let mut to_delete = vec![false; tig_bc.len()];
-        const UMIS_SAVE : usize = 100;
+        const UMIS_SAVE: usize = 100;
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
-                if tig_bc[i][j].umi_count < UMIS_SAVE &&
-                    bin_member(&blacklist, &tig_bc[i][j].seq) {
+                if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
                     to_delete[i] = true;
                 }
             }

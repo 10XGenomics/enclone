@@ -15,7 +15,7 @@ use proc_args::*;
 use std::{
     env,
     fs::File,
-    io::{BufRead,BufReader},
+    io::{BufRead, BufReader},
     time::Instant,
 };
 use string_utils::*;
@@ -29,11 +29,14 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 // where the argument has been set by an environment variable.
 
 pub fn is_simple_arg(arg: &str, x: &str) -> bool {
-    if arg == x || arg == &format!( "{}=", x ) {
-        return true
-    } else if arg.starts_with( &format!( "{}=", x ) ) {
-        eprintln!( "\nYour command line includes \"{}\", which is not a valid argument.\n\
-            Perhaps you meant \"{}\".\n", arg, x );
+    if arg == x || arg == &format!("{}=", x) {
+        return true;
+    } else if arg.starts_with(&format!("{}=", x)) {
+        eprintln!(
+            "\nYour command line includes \"{}\", which is not a valid argument.\n\
+             Perhaps you meant \"{}\".\n",
+            arg, x
+        );
         std::process::exit(1);
     }
     return false;
@@ -43,16 +46,22 @@ pub fn is_simple_arg(arg: &str, x: &str) -> bool {
 
 pub fn is_usize_arg(arg: &str, x: &str) -> bool {
     if arg == x {
-        eprintln!( "\nYour command line includes \"{}\", which is not a valid argument.\n\
-            Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n", arg, x );
+        eprintln!(
+            "\nYour command line includes \"{}\", which is not a valid argument.\n\
+             Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
+            arg, x
+        );
         std::process::exit(1);
-    } else if arg.starts_with( &format!( "{}=", x ) ) {
-        let val = arg.after( &format!( "{}=", x ) ).parse::<usize>();
+    } else if arg.starts_with(&format!("{}=", x)) {
+        let val = arg.after(&format!("{}=", x)).parse::<usize>();
         if val.is_ok() {
             return true;
         } else {
-            eprintln!( "\nYour command line includes \"{}\", which is not a valid argument.\n\
-                Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n", arg, x );
+            eprintln!(
+                "\nYour command line includes \"{}\", which is not a valid argument.\n\
+                 Perhaps you meant \"{}=n\", where n >= 0 is an integer.\n",
+                arg, x
+            );
             std::process::exit(1);
         }
     }
@@ -61,16 +70,22 @@ pub fn is_usize_arg(arg: &str, x: &str) -> bool {
 
 pub fn is_f64_arg(arg: &str, x: &str) -> bool {
     if arg == x {
-        eprintln!( "\nYour command line includes \"{}\", which is not a valid argument.\n\
-            Perhaps you meant \"{}=n\", where n is a floating point number.\n", arg, x );
+        eprintln!(
+            "\nYour command line includes \"{}\", which is not a valid argument.\n\
+             Perhaps you meant \"{}=n\", where n is a floating point number.\n",
+            arg, x
+        );
         std::process::exit(1);
-    } else if arg.starts_with( &format!( "{}=", x ) ) {
-        let val = arg.after( &format!( "{}=", x ) ).parse::<f64>();
+    } else if arg.starts_with(&format!("{}=", x)) {
+        let val = arg.after(&format!("{}=", x)).parse::<f64>();
         if val.is_ok() {
             return true;
         } else {
-            eprintln!( "\nYour command line includes \"{}\", which is not a valid argument.\n\
-                Perhaps you meant \"{}=n\", where n is a floating point number.\n", arg, x );
+            eprintln!(
+                "\nYour command line includes \"{}\", which is not a valid argument.\n\
+                 Perhaps you meant \"{}=n\", where n is a floating point number.\n",
+                arg, x
+            );
             std::process::exit(1);
         }
     }
@@ -81,15 +96,26 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 
 // Check lvars args.
 
-pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) {
+pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     let mut to_check = Vec::<String>::new();
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !( *x == "datasets" || *x == "donors" || *x == "ncells" || *x == "gex_med"
-            || *x == "gex_max" || *x == "near" || *x == "far" || *x == "ext" || gpvar ) {
+        if !(*x == "datasets"
+            || *x == "donors"
+            || *x == "ncells"
+            || *x == "gex_med"
+            || *x == "gex_max"
+            || *x == "near"
+            || *x == "far"
+            || *x == "ext"
+            || gpvar)
+        {
             if !x.ends_with("_g") && !x.ends_with("_a") && !x.starts_with("n_") {
-                eprintln!( "\nUnrecognized variable {} for LVARS.  Please type \
-                    \"enclone help lvars\".\n", x );
+                eprintln!(
+                    "\nUnrecognized variable {} for LVARS.  Please type \
+                     \"enclone help lvars\".\n",
+                    x
+                );
                 std::process::exit(1);
             } else {
                 to_check.push(x.clone());
@@ -103,14 +129,14 @@ pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) 
                 let f = &gex_features[i][j];
                 let ff = f.split('\t').collect::<Vec<&str>>();
                 if ff.len() != 3 {
-                    eprintln!( "Unexpected structure of features file, at this line\n{}", f);
-                    eprintln!( "Giving up.\n" );
+                    eprintln!("Unexpected structure of features file, at this line\n{}", f);
+                    eprintln!("Giving up.\n");
                     std::process::exit(1);
                 }
                 if ff[2].starts_with("Antibody") {
-                    known_features.push( format!( "{}_a", ff[0] ) );
+                    known_features.push(format!("{}_a", ff[0]));
                 } else {
-                    known_features.push( format!( "{}_g", ff[1] ) );
+                    known_features.push(format!("{}_g", ff[1]));
                 }
             }
         }
@@ -119,7 +145,7 @@ pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) 
             let x = to_check[i].clone();
             if !bin_member(&known_features, &x) {
                 let mut n_var = false;
-                if  x.starts_with("n_") {
+                if x.starts_with("n_") {
                     n_var = true;
                     let mut indices = Vec::<usize>::new();
                     let mut is_dataset_name = false;
@@ -142,44 +168,64 @@ pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) 
                         }
                     }
                     let msg = "Suggested reading: \"enclone help input\" and \
-                        \"enclone help glossary\".\n";
+                               \"enclone help glossary\".\n";
                     if !is_dataset_name && !is_sample_name && !is_donor_name {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            does not name a dataset, or a sample,\nor a donor.\n{}", x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             does not name a dataset, or a sample,\nor a donor.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     if is_dataset_name && indices.len() > 1 {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            names more than one dataset.  That's ambiguous.\n{}", x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names more than one dataset.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     if is_dataset_name && is_sample_name && is_donor_name {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            names a dataset, a sample, and a donor.  That's ambiguous.\n{}", 
-                            x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a dataset, a sample, and a donor.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     if is_dataset_name && is_sample_name {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            names a dataset and a sample.  That's ambiguous.\n{}", x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a dataset and a sample.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     if is_dataset_name && is_donor_name {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            names a dataset and a donor.  That's ambiguous.\n{}", x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a dataset and a donor.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     if is_sample_name && is_donor_name {
-                        eprintln!( "\nYou've used the lead variable {}, and yet {} \
-                            names a sample and a donor.  That's ambiguous.\n{}", x, name, msg );
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a sample and a donor.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
                         std::process::exit(1);
                     }
                     // could this get called twice on the same name, and what would that do?
-                    ctl.sample_info.name_list.insert( name, indices );
+                    ctl.sample_info.name_list.insert(name, indices);
                 }
                 if !n_var {
-                    eprintln!( "\nUnrecognized variable {} for LVARS.  Please type \
-                        \"enclone help lvars\".\n", x );
+                    eprintln!(
+                        "\nUnrecognized variable {} for LVARS.  Please type \
+                         \"enclone help lvars\".\n",
+                        x
+                    );
                     std::process::exit(1);
                 }
             }
@@ -189,8 +235,7 @@ pub fn check_lvars( ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>> ) 
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
-
+pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Provide help if requested.
 
     help1(&args);
@@ -204,14 +249,14 @@ pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
     ctl.pretty = true;
     let mut nopretty = false;
     for i in 1..args.len() {
-        if is_simple_arg( &args[i], "PLAIN" ) {
+        if is_simple_arg(&args[i], "PLAIN") {
             ctl.pretty = false;
         }
-        if is_simple_arg( &args[i], "NOPRETTY" ) {
-           nopretty = true;
+        if is_simple_arg(&args[i], "NOPRETTY") {
+            nopretty = true;
         }
-        if is_simple_arg( &args[i], "COMP" ) {
-           ctl.comp = true;
+        if is_simple_arg(&args[i], "COMP") {
+            ctl.comp = true;
         }
     }
 
@@ -225,7 +270,7 @@ pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
                 // should actually test for usize
                 happening = args[i].after("HAPS=").force_usize();
             }
-            if is_simple_arg( &args[i], "CTRLC" ) {
+            if is_simple_arg(&args[i], "CTRLC") {
                 ctrlc = true;
             }
         }
@@ -249,13 +294,15 @@ pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
                     "stirling_numbers",
                     "string_utils",
                     "tables",
-                    "vector_utils"])
+                    "vector_utils",
+                ])
                 .ctrlc()
                 .on();
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let exit_message = format!( "Something has gone badly wrong.  Please check to make \
+            let exit_message =
+                format!( "Something has gone badly wrong.  Please check to make \
                 sure that none\nof your input files are corrupted.  If they are all OK, then you \
                 have probably\n\
                 encountered an internal error in enclone.\n\
@@ -283,13 +330,13 @@ pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
     // Dump lenas.
 
     for i in 1..args.len() {
-        if is_simple_arg( &args[i], "DUMP_LENAS" ) {
+        if is_simple_arg(&args[i], "DUMP_LENAS") {
             let mut x = Vec::<usize>::new();
             for y in ctl.sample_info.dataset_id.iter() {
-                x.push( y.force_usize() );
+                x.push(y.force_usize());
             }
             x.sort();
-            println!( "\n{}\n", x.iter().format(",") );
+            println!("\n{}\n", x.iter().format(","));
             std::process::exit(0);
         }
     }
@@ -297,7 +344,7 @@ pub fn setup( mut ctl: &mut EncloneControl, args: &Vec<String> ) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_run: bool ) {
+pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run: bool) {
     let tall = Instant::now();
     let mut lvars_specified = false;
     for i in 1..args.len() {
@@ -306,11 +353,13 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
         }
     }
     if !ctl.clono_print_opt.amino.is_empty() {
-        ctl.clono_print_opt.cvars.insert( 0, "amino".to_string() );
+        ctl.clono_print_opt.cvars.insert(0, "amino".to_string());
     }
     if ctl.gen_opt.mouse && ctl.gen_opt.refname.len() > 0 {
-        eprintln!( "\nIf you specify REF, please do not also specify MOUSE.  It is enough to\n\
-            set REF to a mouse reference sequence.\n" );
+        eprintln!(
+            "\nIf you specify REF, please do not also specify MOUSE.  It is enough to\n\
+             set REF to a mouse reference sequence.\n"
+        );
         std::process::exit(1);
     }
 
@@ -326,7 +375,7 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
         println!("");
         for i in 0..args.len() {
             let mut x = args[i].clone();
-            if i == 0 && x.contains( "/" ) {
+            if i == 0 && x.contains("/") {
                 x = x.rev_after("/").to_string();
             }
             if i > 0 {
@@ -335,8 +384,11 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
             print!("{}", x);
         }
         println!("");
-        println!( "\nThere are {} datasets from {} donors.", 
-            ctl.sample_info.dataset_path.len(), ctl.sample_info.donors );
+        println!(
+            "\nThere are {} datasets from {} donors.",
+            ctl.sample_info.dataset_path.len(),
+            ctl.sample_info.donors
+        );
     }
 
     // Check for duplicated directory paths.
@@ -347,7 +399,7 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
     while i < dp.len() {
         let j = next_diff(&dp, i);
         if j - i > 1 {
-            eprintln!( "\nInput dataset path {} is duplicated.\n", dp[i] );
+            eprintln!("\nInput dataset path {} is duplicated.\n", dp[i]);
             std::process::exit(1);
         }
         i = j;
@@ -365,13 +417,13 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();
             let dir = ctl.sample_info.dataset_path[i].rev_before("/outs");
-            let invo = format!( "{}/_invocation", dir );
+            let invo = format!("{}/_invocation", dir);
             if path_exists(&invo) {
                 let f = open_for_read![invo];
                 for line in f.lines() {
                     let s = line.unwrap();
-                    if s.contains( "sample_desc " ) {
-                        d = s.between( "\"", "\"" ).to_string();
+                    if s.contains("sample_desc ") {
+                        d = s.between("\"", "\"").to_string();
                     }
                 }
             }
@@ -380,16 +432,18 @@ pub fn proc_args_tail( ctl: &mut EncloneControl, args: &Vec<String>, internal_ru
         if ctl.gen_opt.descrip {
             println!("");
             for i in 0..ctl.sample_info.n() {
-                println!( "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}", 
-                    ctl.sample_info.dataset_id[i], 
-                    ctl.sample_info.sample_id[i], 
-                    ctl.sample_info.donor_id[i], 
-                    ctl.sample_info.descrips[i] );
+                println!(
+                    "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
+                    ctl.sample_info.dataset_id[i],
+                    ctl.sample_info.sample_id[i],
+                    ctl.sample_info.donor_id[i],
+                    ctl.sample_info.descrips[i]
+                );
             }
         }
     }
     if ctl.comp {
-        println!( "-- used {:.2} seconds reading invocation", elapsed(&tinv) );
+        println!("-- used {:.2} seconds reading invocation", elapsed(&tinv));
     }
 
     // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given

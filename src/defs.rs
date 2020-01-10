@@ -22,17 +22,17 @@ pub struct ClonotypeHeuristics {
 #[derive(Default)]
 pub struct SampleInfo {
     // parallel vectors
-    pub descrips: Vec<String>,           // map dataset index to dataset long name
-    pub dataset_path: Vec<String>,       // map dataset index to vdj path
-    pub gex_path: Vec<String>,           // map dataset index to gex path
-    pub dataset_id: Vec<String>,         // map dataset index to dataset short name
-    pub donor_index: Vec<usize>,         // map dataset index to donor index
-    pub donor_id: Vec<String>,           // map dataset index to donor short name
-    pub sample_id: Vec<String>,          // map dataset id to sample short name
+    pub descrips: Vec<String>,     // map dataset index to dataset long name
+    pub dataset_path: Vec<String>, // map dataset index to vdj path
+    pub gex_path: Vec<String>,     // map dataset index to gex path
+    pub dataset_id: Vec<String>,   // map dataset index to dataset short name
+    pub donor_index: Vec<usize>,   // map dataset index to donor index
+    pub donor_id: Vec<String>,     // map dataset index to donor short name
+    pub sample_id: Vec<String>,    // map dataset id to sample short name
     // other
-    pub dataset_list: Vec<Vec<usize>>,   // map donor index to list of dataset indices
-    pub donors: usize,                   // number of donors
-    pub name_list: HashMap<String,Vec<usize>>,  // map short name to list of dataset indices
+    pub dataset_list: Vec<Vec<usize>>, // map donor index to list of dataset indices
+    pub donors: usize,                 // number of donors
+    pub name_list: HashMap<String, Vec<usize>>, // map short name to list of dataset indices
 }
 
 impl SampleInfo {
@@ -70,8 +70,8 @@ pub struct GeneralOpt {
     pub no_reuse: bool,
     pub descrip: bool,
     pub ext: String,
-    pub extc: HashMap<(String,String),String>,
-    pub extn: HashMap<String,usize>,
+    pub extc: HashMap<(String, String), String>,
+    pub extn: HashMap<String, usize>,
     pub dref_file: String,
     pub mouse: bool,
     pub refname: String,
@@ -165,18 +165,18 @@ pub struct ClonoPrintOpt {
 
 #[derive(Default)]
 pub struct ClonoGroupOpt {
-    pub heavy_cdr3_aa: bool,      // group by perfect identity of cdr3_aa IGH or TRB
-    pub min_group: usize,         // minimum number of clonotypes in group to print
+    pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
+    pub min_group: usize,    // minimum number of clonotypes in group to print
 }
 
 // Parseable output options.
 
 #[derive(Default)]
 pub struct ParseableOpt {
-    pub pout: String,             // name of parseable output file
-    pub pchains: usize,           // number of chains to show in parseable output
-    pub pcols: Vec<String>,       // column names to show in parseable output
-    pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
+    pub pout: String,            // name of parseable output file
+    pub pchains: usize,          // number of chains to show in parseable output
+    pub pcols: Vec<String>,      // column names to show in parseable output
+    pub pcols_sort: Vec<String>, // sorted column names to show in parseable output
 }
 
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given
@@ -242,15 +242,15 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,          // quality scores, truncated to V..J
-    pub v_start: usize,          // start of V on full contig sequence
-    pub j_stop: usize,           // stop of J on full contig sequence
-    pub full_seq: Vec<u8>,       // full contig sequence
-    pub barcode: String,         // barcode
-    pub tigname: String,         // name of contig
-    pub lena_index: usize,       // index of lena id
-    pub umi_count: usize,        // number of UMIs supporting contig
-    pub read_count: usize,       // number of reads supporting contig
+    pub quals: Vec<u8>,    // quality scores, truncated to V..J
+    pub v_start: usize,    // start of V on full contig sequence
+    pub j_stop: usize,     // stop of J on full contig sequence
+    pub full_seq: Vec<u8>, // full contig sequence
+    pub barcode: String,   // barcode
+    pub tigname: String,   // name of contig
+    pub lena_index: usize, // index of lena id
+    pub umi_count: usize,  // number of UMIs supporting contig
+    pub read_count: usize, // number of reads supporting contig
 }
 
 pub struct TigData1 {
@@ -274,9 +274,9 @@ pub struct TigData1 {
     pub left: bool,                           // true if this is IGH or TRA
     pub chain_type: String,                   // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub vs: DnaString,        // reference V segment (possibly donor allele)
-    pub vs_notesx: String,    // notes on reference V segment (probably to be replaced)
-    pub js: DnaString,        // reference J segment
+    pub vs: DnaString,                        // reference V segment (possibly donor allele)
+    pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
+    pub js: DnaString,     // reference J segment
 }
 
 pub struct ExactClonotype {
@@ -292,7 +292,7 @@ impl ExactClonotype {
         let mut m = 0;
         for i in 0..self.clones.len() {
             for j in 0..self.clones[i].len() {
-                m = max( m, self.clones[i][j].umi_count );
+                m = max(m, self.clones[i][j].umi_count);
             }
         }
         m
@@ -300,7 +300,7 @@ impl ExactClonotype {
     pub fn lena_indices(&self) -> Vec<usize> {
         let mut x = Vec::<usize>::new();
         for i in 0..self.clones.len() {
-            x.push( self.clones[i][0].lena_index );
+            x.push(self.clones[i][0].lena_index);
         }
         unique_sort(&mut x);
         x
@@ -315,27 +315,27 @@ impl ExactClonotype {
 
 #[derive(Eq, Ord, PartialEq, PartialOrd, Default, Clone)] // not sure we need all these
 pub struct CloneInfo {
-    pub lens: Vec<usize>,          // V..J contig lengths (will sort by this)
-    pub tigs: Vec<Vec<u8>>,        // contigs, truncated to V..J (with possible - chars inserted)
-                                   // note only need tigs in has_del case, could improve
-    pub tigs_amino: Vec<Vec<u8>>,  // same as tigs, but deletion shifted to mod 3 position
-                                   // if there is one (rare, so wasteful, should be Option)
-    pub tigsp: Vec<DnaString>,     // contigs, truncated to V..J, packed (doesn't show - chars)
-    pub has_del: Vec<bool>,        // if - chars inserted to represent deletion
+    pub lens: Vec<usize>,   // V..J contig lengths (will sort by this)
+    pub tigs: Vec<Vec<u8>>, // contigs, truncated to V..J (with possible - chars inserted)
+    // note only need tigs in has_del case, could improve
+    pub tigs_amino: Vec<Vec<u8>>, // same as tigs, but deletion shifted to mod 3 position
+    // if there is one (rare, so wasteful, should be Option)
+    pub tigsp: Vec<DnaString>, // contigs, truncated to V..J, packed (doesn't show - chars)
+    pub has_del: Vec<bool>,    // if - chars inserted to represent deletion
     pub orig_tigs: Vec<DnaString>, // untruncated contigs
-    pub clonotype_id: usize,       // index into exact_clonotypes
-    pub exact_cols: Vec<usize>,    // the columns of the exact_clonotype that were extracted (used?)
-    pub clonotype_index: usize,    // index into vector of all clonotypes (across samples)
-    pub origin: Vec<usize>,        // sample indices
-    pub vs: Vec<DnaString>,        // reference V segments (possibly donor allele)
-    pub dref: Vec<Option<usize>>,  // indices into alt_refs
-    pub vs_notesx: Vec<String>,    // notes on reference V segments (probably to be replaced)
-    pub js: Vec<DnaString>,        // reference J segments
-    pub vsids: Vec<usize>,         // ids of V segments
-    pub jsids: Vec<usize>,         // ids of J segments
-    pub cdr3s: Vec<String>,        // cdr3 nucleotide seqs
-    pub cdr3_aa: Vec<String>,      // cdr3 amino acid seqs
-    pub chain_types: Vec<String>,  // chain types
+    pub clonotype_id: usize,   // index into exact_clonotypes
+    pub exact_cols: Vec<usize>, // the columns of the exact_clonotype that were extracted (used?)
+    pub clonotype_index: usize, // index into vector of all clonotypes (across samples)
+    pub origin: Vec<usize>,    // sample indices
+    pub vs: Vec<DnaString>,    // reference V segments (possibly donor allele)
+    pub dref: Vec<Option<usize>>, // indices into alt_refs
+    pub vs_notesx: Vec<String>, // notes on reference V segments (probably to be replaced)
+    pub js: Vec<DnaString>,    // reference J segments
+    pub vsids: Vec<usize>,     // ids of V segments
+    pub jsids: Vec<usize>,     // ids of J segments
+    pub cdr3s: Vec<String>,    // cdr3 nucleotide seqs
+    pub cdr3_aa: Vec<String>,  // cdr3 amino acid seqs
+    pub chain_types: Vec<String>, // chain types
 }
 
 // Gene expression stuff.
@@ -351,7 +351,7 @@ pub struct GexInfo {
     pub h5_indices: Vec<Option<Dataset>>,
     pub h5_indptr: Vec<Vec<u32>>,
     pub is_gex: Vec<Vec<bool>>,
-    pub feature_id: Vec<HashMap::<String,usize>>,
+    pub feature_id: Vec<HashMap<String, usize>>,
 }
 
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains

@@ -12,7 +12,7 @@ use vector_utils::*;
 
 // Find variant positions.  And some other things.
 
-pub fn vars_and_shares( 
+pub fn vars_and_shares(
     pass: usize,
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
@@ -23,18 +23,17 @@ pub fn vars_and_shares(
     vars: &mut Vec<Vec<usize>>,
     vars_amino: &mut Vec<Vec<usize>>,
     shares_amino: &mut Vec<Vec<usize>>,
-    out_data: &mut Vec<HashMap<String,String>>,
+    out_data: &mut Vec<HashMap<String, String>>,
 ) {
-
     // Copied stuff.
 
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col+1 <= ctl.parseable_opt.pchains {
-                let varc = format!( "{}{}", $var, $col+1 );
+            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                let varc = format!("{}{}", $var, $col + 1);
                 if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
-                    out_data[$u].insert( varc, format!( "{}", $val ) );
+                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
@@ -58,19 +57,19 @@ pub fn vars_and_shares(
                 vref = exact_clonotypes[exacts[u]].share[m].vs.to_ascii_vec();
                 jref = exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
             }
-           let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
-           if rsi.vpids[cx].is_some() {
-               vseq2 = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
-           } else {
-               vseq2 = vseq1.clone();
-           }
+            let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
+            if rsi.vpids[cx].is_some() {
+                vseq2 = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
+            } else {
+                vseq2 = vseq1.clone();
+            }
         }
         let mut n = 0;
         for z in 0..rsi.seqss[cx].len() {
-            n = max( n, rsi.seqss[cx][z].len() );
+            n = max(n, rsi.seqss[cx][z].len());
         }
-        let (mut v, mut s) = (Vec::<usize>::new(),  Vec::<usize>::new());
-        let (mut v_amino, mut s_amino) = (Vec::<usize>::new(),  Vec::<usize>::new());
+        let (mut v, mut s) = (Vec::<usize>::new(), Vec::<usize>::new());
+        let (mut v_amino, mut s_amino) = (Vec::<usize>::new(), Vec::<usize>::new());
         for p in 0..n {
             let mut bases = Vec::<u8>::new();
             let mut bases_amino = Vec::<u8>::new();
@@ -94,9 +93,7 @@ pub fn vars_and_shares(
                 if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
                     s.push(p);
                 }
-                if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                    && b != jref[jref.len() - (n - p)]
-                {
+                if p >= n - (jref.len() - ctl.heur.ref_j_trim) && b != jref[jref.len() - (n - p)] {
                     s.push(p);
                 }
             }
@@ -105,31 +102,49 @@ pub fn vars_and_shares(
             } else if pass == 2 {
                 let b = bases_amino[0];
                 if p < vseq2.len() - ctl.heur.ref_v_trim && b != vseq2[p] {
-                // if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                    // if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
                     s_amino.push(p);
                 }
-                if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                    && b != jref[jref.len() - (n - p)]
-                {
+                if p >= n - (jref.len() - ctl.heur.ref_j_trim) && b != jref[jref.len() - (n - p)] {
                     s_amino.push(p);
                 }
             }
         }
         let mut va = Vec::<usize>::new();
         for x in v_amino.iter() {
-            va.push( *x/3 );
+            va.push(*x / 3);
         }
         unique_sort(&mut va);
         let mut sa = Vec::<usize>::new();
         for x in s_amino.iter() {
-            sa.push( *x/3 );
+            sa.push(*x / 3);
         }
         unique_sort(&mut sa);
         for u in 0..nexacts {
-            speakc![ u, cx, "var_indices_dna", format!("{}", v.iter().format(",")) ];
-            speakc![ u, cx, "share_indices_dna", format!("{}", s.iter().format(",")) ];
-            speakc![ u, cx, "var_indices_aa", format!("{}", va.iter().format(",")) ];
-            speakc![ u, cx, "share_indices_aa", format!("{}", sa.iter().format(",")) ];
+            speakc![
+                u,
+                cx,
+                "var_indices_dna",
+                format!("{}", v.iter().format(","))
+            ];
+            speakc![
+                u,
+                cx,
+                "share_indices_dna",
+                format!("{}", s.iter().format(","))
+            ];
+            speakc![
+                u,
+                cx,
+                "var_indices_aa",
+                format!("{}", va.iter().format(","))
+            ];
+            speakc![
+                u,
+                cx,
+                "share_indices_aa",
+                format!("{}", sa.iter().format(","))
+            ];
         }
         vars.push(v);
         vars_amino.push(v_amino);
@@ -139,7 +154,7 @@ pub fn vars_and_shares(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn delete_weaks( 
+pub fn delete_weaks(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     mults: &Vec<usize>, // should eliminate
@@ -149,8 +164,7 @@ pub fn delete_weaks(
     vars: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
 ) {
-
-    // Mark for deletion exact subclonotypes that fail the MIN_CELLS_EXACT or MIN_CHAINS_EXACT 
+    // Mark for deletion exact subclonotypes that fail the MIN_CELLS_EXACT or MIN_CHAINS_EXACT
     // tests.
 
     let nexacts = exacts.len();
@@ -192,7 +206,8 @@ pub fn delete_weaks(
                             refdiff = true;
                         }
                         if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                            && b != jref[jref.len() - (n - p)] {
+                            && b != jref[jref.len() - (n - p)]
+                        {
                             refdiff = true;
                         }
                         if refdiff {

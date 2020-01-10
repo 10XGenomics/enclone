@@ -3,42 +3,41 @@
 use debruijn::{dna_string::*, Mer};
 use defs::*;
 use equiv::EquivRel;
-use join_utils::*;
 use join2::*;
+use join_utils::*;
 use stats_utils::*;
 use std::collections::HashMap;
 use stirling_numbers::*;
 use vector_utils::*;
 
-pub fn join_core( 
+pub fn join_core(
     is_bcr: bool,
     i: usize,
     j: usize,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
-    to_bc: &HashMap<(usize,usize),Vec<String>>,
+    to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<f64>>,
     eq: &mut EquivRel,
     pot: &mut Vec<PotentialJoin>,
 ) {
     for k1 in i..j {
-        for k2 in k1+1..j {
-
+        for k2 in k1 + 1..j {
             // Do nothing if join could have no effect on equivalence relation.
             // For certain samples, this hugely reduces run time.  That is the purpose of
             // having the equivalence relation.  Observed on MALT samples including 83808.
             // MALT is a B cell cancer in which j-i is very large and in fact the number of
             // exact subclonotypes in one clonotype is very large.
 
-            if !ctl.force && ( eq.class_id( (k1-i) as i32 ) == eq.class_id( (k2-i) as i32 ) ) {
+            if !ctl.force && (eq.class_id((k1 - i) as i32) == eq.class_id((k2 - i) as i32)) {
                 continue;
             }
 
             // Do not merge onesies or foursies with anything.  Deferred until later.
             // Note that perhaps some foursies should be declared doublets and deleted.
             // Note onesies merging above is turned off so this appears to be moot.
-            
+
             let (clono1, clono2) = (info[k1].clonotype_id, info[k2].clonotype_id);
             let chains1 = exact_clonotypes[clono1].share.len();
             let chains2 = exact_clonotypes[clono2].share.len();
@@ -77,14 +76,14 @@ pub fn join_core(
                 if !info[k1].has_del[x] && !info[k2].has_del[x] {
                     // A great deal of time is spent in the call to ndiffs.  Notes on this:
                     // 1. It is slower than if the computation is done outside
-                    //    the ndiffs function.  This is mysterious but must have something to 
+                    //    the ndiffs function.  This is mysterious but must have something to
                     //    do with the storage of the 256-byte lookup table.
                     // 2. Adding #[inline(always)] in front of the ndiffs function definition
                     //    doesn't help.
                     // 3. Adding a bounds test for diffs > ctl.heur.max_diffs inside the ndiffs
                     //    function doesn't help, whether placed in the inner loop or the other
                     //    loop.
-                    diffs += ndiffs( &info[k1].tigsp[x], &info[k2].tigsp[x] );
+                    diffs += ndiffs(&info[k1].tigsp[x], &info[k2].tigsp[x]);
                 } else {
                     for j in 0..info[k1].tigs[x].len() {
                         if info[k1].tigs[x][j] != info[k2].tigs[x][j] {
@@ -111,7 +110,7 @@ pub fn join_core(
             // And if that did happen, the output would be confusing and might have a greatly
             // exaggerated number of fails.
 
-            let (mut donors1, mut donors2) = (Vec::<usize>::new(), Vec::<usize>::new() );
+            let (mut donors1, mut donors2) = (Vec::<usize>::new(), Vec::<usize>::new());
             for origin in info[k1].origin.iter() {
                 donors1.push(ctl.sample_info.donor_index[*origin]);
             }
@@ -128,24 +127,22 @@ pub fn join_core(
 
             let mut nrefs = 1;
             for m in 0..2 {
-                if info[k1].vs[m] != info[k2].vs[m]
-                    || info[k1].js[m] != info[k2].js[m] {
+                if info[k1].vs[m] != info[k2].vs[m] || info[k1].js[m] != info[k2].js[m] {
                     nrefs = 2;
                 }
             }
             let mut fail = false;
             let mut shares = vec![0; nrefs]; // shared mutations from reference
             let mut indeps = vec![0; nrefs]; // independent mutations from reference
-            let mut total = vec![vec![0;2]; nrefs]; // total differences from reference
+            let mut total = vec![vec![0; 2]; nrefs]; // total differences from reference
             let mut shares_details = vec![vec![0; 4]; nrefs];
             let mut share_pos_v = vec![Vec::<usize>::new(); 2];
             let mut share_pos_j = vec![Vec::<usize>::new(); 2];
             for u in 0..nrefs {
-                let k : usize;
+                let k: usize;
                 if u == 0 {
                     k = k1;
-                }
-                else {
+                } else {
                     k = k2;
                 }
 
@@ -158,11 +155,10 @@ pub fn join_core(
                     // Traverse the two segments (V and J).
 
                     for si in 0..2 {
-                        let seg : &DnaString;
+                        let seg: &DnaString;
                         if si == 0 {
                             seg = &info[k].vs[m];
-                        }
-                        else {
+                        } else {
                             seg = &info[k].js[m];
                         }
                         let mut ref_trim = ctl.heur.ref_v_trim;
@@ -192,12 +188,11 @@ pub fn join_core(
                                 } else {
                                     r = b'T';
                                 }
-                            }
-                            else {
-                                t1 = tig1[ tig1.len() - p - 1 ];
-                                t2 = tig2[ tig2.len() - p - 1 ];
+                            } else {
+                                t1 = tig1[tig1.len() - p - 1];
+                                t2 = tig2[tig2.len() - p - 1];
                                 // r = seg.get( seg.len() - p - 1 );
-                                let rx = seg.get( seg.len() - p - 1 );
+                                let rx = seg.get(seg.len() - p - 1);
                                 if rx == 0 {
                                     r = b'A';
                                 } else if rx == 1 {
@@ -210,20 +205,17 @@ pub fn join_core(
                             }
                             if t1 == t2 && t1 != r {
                                 shares[u] += 1;
-                                shares_details[u][2*m + si] += 1;
+                                shares_details[u][2 * m + si] += 1;
                                 if si == 0 {
                                     share_pos_v[m].push(p);
                                 } else {
                                     share_pos_j[m].push(p);
                                 }
-                            }
-                            else if t1 == r && t2 != r {
+                            } else if t1 == r && t2 != r {
                                 indeps[u] += 1;
-                            }
-                            else if t2 == r && t1 != r {
+                            } else if t2 == r && t1 != r {
                                 indeps[u] += 1;
-                            }
-                            else if t1 != r && t2 != r {
+                            } else if t1 != r && t2 != r {
                                 indeps[u] += 2;
                             }
                             if t1 != r {
@@ -240,10 +232,10 @@ pub fn join_core(
             // Don't allow different references if one is strongly favored.
             // (not documented)
 
-            const MAX_DEGRADATION : usize = 3;
+            const MAX_DEGRADATION: usize = 3;
             if nrefs == 2 {
                 for m in 0..2 {
-                    if abs_diff( total[0][m], total[1][m] ) > MAX_DEGRADATION {
+                    if abs_diff(total[0][m], total[1][m]) > MAX_DEGRADATION {
                         fail = true;
                     }
                 }
@@ -265,7 +257,7 @@ pub fn join_core(
 
             // Cap CDR3 diffs.
 
-            if cd > 10 || ( !is_bcr && cd > 0 ) {
+            if cd > 10 || (!is_bcr && cd > 0) {
                 continue;
             }
 
@@ -278,10 +270,10 @@ pub fn join_core(
 
             let (mut bcs1, mut bcs2) = (Vec::<String>::new(), Vec::<String>::new());
             for origin in info[k1].origin.iter() {
-                bcs1.append( &mut to_bc[ &(*origin, info[k1].clonotype_id) ].clone() );
+                bcs1.append(&mut to_bc[&(*origin, info[k1].clonotype_id)].clone());
             }
             for origin in info[k2].origin.iter() {
-                bcs2.append( &mut to_bc[ &(*origin, info[k2].clonotype_id) ].clone() );
+                bcs2.append(&mut to_bc[&(*origin, info[k2].clonotype_id)].clone());
             }
             unique_sort(&mut bcs1);
             unique_sort(&mut bcs2);
@@ -289,26 +281,26 @@ pub fn join_core(
                 continue;
             }
 
-            // Estimate the probability p1 that drawing k = min_indeps + 2 * min_shares 
-            // objects from n = 3 * (sum of VJ contig lengths) yields d = min_shares or 
+            // Estimate the probability p1 that drawing k = min_indeps + 2 * min_shares
+            // objects from n = 3 * (sum of VJ contig lengths) yields d = min_shares or
             // more duplicates.
 
-            let n = 3 * ( info[k1].tigs[0].len() + info[k1].tigs[1].len() );
+            let n = 3 * (info[k1].tigs[0].len() + info[k1].tigs[1].len());
             let k = *min_indeps + 2 * *min_shares;
             let d = *min_shares;
-            let p1 = p_at_most_m_distinct_in_sample_of_x_from_n( 
-                (k-d) as usize, k as usize, n, &sr );
-            assert!( !p1.is_infinite() ); // IS THIS SAFE??????????????????????????????????
+            let p1 =
+                p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, &sr);
+            assert!(!p1.is_infinite()); // IS THIS SAFE??????????????????????????????????
 
-            // Multiply by the number of DNA sequences that differ from the given CDR3 
+            // Multiply by the number of DNA sequences that differ from the given CDR3
             // sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
 
             let mut cn = 0;
             for l in 0..x1.len() {
                 cn += x1[l].len();
             }
-            let mult = partial_bernoulli_sum( 3 * cn, cd as usize );
-            assert!( !mult.is_infinite() ); // IS THIS SAFE????????????????????????????????
+            let mult = partial_bernoulli_sum(3 * cn, cd as usize);
+            assert!(!mult.is_infinite()); // IS THIS SAFE????????????????????????????????
             let score = p1 * mult;
 
             // Threshold on score.
@@ -318,15 +310,15 @@ pub fn join_core(
             }
 
             // Save potential joins.  Note that this jacks up memory usage significantly,
-            // so it would likely be more efficient to duplicate some of the computations 
+            // so it would likely be more efficient to duplicate some of the computations
             // during the analysis phase.
 
-            eq.join( (k1-i) as i32, (k2-i) as i32 );
+            eq.join((k1 - i) as i32, (k2 - i) as i32);
             if !ctl.join_print_opt.show_bc {
                 bcs1.clear();
                 bcs2.clear();
             }
-            pot.push( PotentialJoin {
+            pot.push(PotentialJoin {
                 k1: k1,
                 k2: k2,
                 nrefs: nrefs,
@@ -341,7 +333,7 @@ pub fn join_core(
                 share_pos_j: share_pos_j,
                 score: score,
                 err: err,
-            } );
+            });
         }
     }
 }
