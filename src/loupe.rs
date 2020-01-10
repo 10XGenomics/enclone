@@ -1,5 +1,6 @@
 // Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
 
+use proto_io::write_proto;
 use vdj_ann::*;
 
 use self::refx::*;
@@ -274,9 +275,14 @@ pub fn loupe_out(
         }
         let enclone_outputs = EncloneOutputs {
             clonotypes: all_loupe_clonotypes,
-            universal_reference: uref,
-            donor_reference: dref.to_vec(),
+            universal_reference: UniversalReference { items: uref },
+            donor_reference: DonorReference {
+                items: dref.to_vec(),
+            },
         };
-        write_obj(&enclone_outputs, &ctl.gen_opt.loupe);
+        let bin_file = format!("{}.bin", ctl.gen_opt.loupe);
+        write_obj(&enclone_outputs, bin_file);
+        let proto_file = format!("{}.proto", ctl.gen_opt.loupe);
+        write_proto(enclone_outputs, proto_file).unwrap();
     }
 }

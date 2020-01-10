@@ -3,8 +3,11 @@
 extern crate amino;
 extern crate ansi_escape;
 extern crate bio;
+extern crate byteorder;
 extern crate debruijn;
 extern crate equiv;
+#[macro_use]
+extern crate failure;
 extern crate graph_simple;
 extern crate h5;
 extern crate io_utils;
@@ -65,6 +68,7 @@ pub mod print_utils5;
 pub mod proc_args;
 pub mod proc_args2;
 pub mod proc_args3;
+pub mod proto_io;
 pub mod read_json;
 pub mod subset_json;
 pub mod types;
