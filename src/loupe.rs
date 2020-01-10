@@ -178,12 +178,9 @@ pub fn make_loupe_clonotype(
             let cdr3_end = cdr3_start + ex.share[m].cdr3_dna.len();
             let mut umi_counts = Vec::<u32>::new();
             let mut contig_ids = Vec::<String>::new();
-            if mat[cx][j].is_some() {
-                let m = mat[cx][j].unwrap();
-                for l in 0..ex.clones.len() {
-                    umi_counts.push(ex.clones[l][m].umi_count as u32);
-                    contig_ids.push(ex.clones[l][m].tigname.clone());
-                }
+            for l in 0..ex.clones.len() {
+                umi_counts.push(ex.clones[l][m].umi_count as u32);
+                contig_ids.push(ex.clones[l][m].tigname.clone());
             }
 
             // Build alignments.  Don't know that these are sensible
