@@ -4,17 +4,17 @@
 
 use ansi_escape::*;
 use help_utils::*;
-use std::env;
 use string_utils::*;
 use tables::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help5() {
+pub fn help5( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
@@ -37,6 +37,15 @@ pub fn help5() {
             }
             break;
         }
+    }
+    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
+        let mut to_delete = vec![ false; args.len() ];
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                to_delete[i] = true;
+            }
+        }
+        erase_if(&mut args, &to_delete);
     }
     /*
     macro_rules! doc_red {
@@ -253,8 +262,8 @@ pub fn help5() {
             H. then print (or save the pdf, if you prefer).\n" );
 
         print( "\\boldblue{3. Why is enclone slow for me?}\n\n" );
-        print( "It should not be.  When we use it, it typically takes a few seconds, although it \
-            can be longer, depending on the dataset.  If you have \
+        print( "It should not be.  When we use it, it typically takes a few seconds for a single \
+            dataset, and longer for multiple datasets.  If you have \
             encountered an example where it is slow, please write to us, so we can improve its \
             performance.\n\n" );
 

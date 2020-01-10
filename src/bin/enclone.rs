@@ -2,9 +2,11 @@
 
 extern crate enclone;
 use enclone::*;
+use std::env;
 
 use main_enclone::*;
 
 fn main() {
-    main_enclone();
+    let args: Vec<String> = env::args().collect();
+    main_enclone( &args );
 }

@@ -8,14 +8,47 @@ use pager::Pager;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
+use vector_utils::*;
+
+// Notes on a testing issue.  The code for NOPAGER accidentally broke at one point and we
+// don't want that to recur.  Some test cases that could be verified:
+// enclone BCR=...
+// enclone BCR=... NOPAGER
+// enclone help all
+// enclone help all NOPAGER
+// enclone help faq
+// enclone help faq NOPAGER.
+// It's not clear how to automate this.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help1() {
+pub fn help1( args: &Vec<String> ) {
 
     // Set up.
 
-    let mut args: Vec<String> = env::args().collect();
+    let mut args = args.clone();
+    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
+        PrettyTrace::new().on();
+        let mut nopager = false;
+        let mut to_delete = vec![ false; args.len() ];
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                nopager = true;
+                to_delete[i] = true;
+            }
+        }
+        erase_if(&mut args, &to_delete);
+        if !nopager {
+            Pager::with_pager("less -r -F").setup();
+        }
+    }
+    let mut help_all = false;
+    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
+        unsafe {
+            HELP_ALL = true;
+        }
+        help_all = true;
+    }
     let mut rows = Vec::<Vec<String>>::new();
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
@@ -80,13 +113,6 @@ pub fn help1() {
             }
         };
     }
-    let mut help_all = false;
-    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
-        unsafe {
-            HELP_ALL = true;
-        }
-        help_all = true;
-    }
     macro_rules! begin_doc {
         ($x:expr) => {
         rows.clear();
@@ -94,18 +120,6 @@ pub fn help1() {
             banner($x, plain);
         }
         };
-    }
-    if args.len() == 1 || ( args.len() >= 2 && args[1] == "help" ) {
-        PrettyTrace::new().on();
-        let mut nopager = false;
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                nopager = true;
-            }
-        }
-        if !nopager {
-            Pager::with_pager("less -r -F").setup();
-        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -396,17 +410,25 @@ pub fn help1() {
         println!( "glossary of terms used by enclone\n" );
         end_escape!();
 
+        // doc V..J
+
+        doc!( "V..J", "the full sequence of a V(D)J transcript, from the beginning of the V" );
+        doc!( "", "segment to the end of the J segment; this sequence begins with a stop codon" );
+        doc!( "", "and ends with a partial codon (its first base)" );
+
         // doc clonotype
 
-        doc!( "clonotype", "all the cells descending from a single fully rearranged T or B cell," );
-        doc!( "", "or a best computational approximation to that" );
+        ldoc!( "clonotype", 
+            "all the cells descended from a single fully rearranged T or B cell" );
+        doc!( "", "(approximately computationally)" );
 
         // doc exact subclonotype
 
         doc!( "exact subclonotype", 
-            "all cells descending from a single fully rearranged T or B cell," );
-        doc!( "", "and having identical V(D)J transcripts or a best computational" );
-        doc!( "", "approximation to that; every clonotype is a union of exact subclonotypes" );
+            "all cells having identical V..J DNA sequences and assigned the same" );
+        doc!( "", "constant region reference sequence; there may be mutations in the 5'-UTR or" );
+        doc!( "", "constant region within an exact subclonotype; every clonotype is a union" );
+        doc!( "", "of exact subclonotypes" );
 
         // doc clone
 
@@ -424,15 +446,9 @@ pub fn help1() {
         doc!( "moresie", "a clonotype having more than four chains;" );
         doc!( "", "these sad clonotypes do not represent true biological events" );
 
-        // doc V..J
-
-        ldoc!( "V..J", "the full sequence of a V(D)J transcript, from the beginning of the V" );
-        doc!( "", "segment to the end of the J segment; this sequence begins with a stop codon" );
-        doc!( "", "and ends with a partial codon (its first base)" );
-
         // doc donor etc.
 
-        ldoc!( "donor", "an individual from which samples are obtained" );
+        ldoc!( "donor", "an individual from whom samples are obtained" );
         doc!( "sample", "a tube of cells from a donor, from a particular tissue at a" );
         doc!( "", "particular point in time, and possibly enriched for particular cells" );
         doc!( "cell group", "an aliquot from a sample, presumed to be a random draw" );
