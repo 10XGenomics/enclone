@@ -448,7 +448,7 @@ pub fn help1( args: &Vec<String> ) {
 
         // doc donor etc.
 
-        ldoc!( "donor", "an individual from which samples are obtained" );
+        ldoc!( "donor", "an individual from whom samples are obtained" );
         doc!( "sample", "a tube of cells from a donor, from a particular tissue at a" );
         doc!( "", "particular point in time, and possibly enriched for particular cells" );
         doc!( "cell group", "an aliquot from a sample, presumed to be a random draw" );
