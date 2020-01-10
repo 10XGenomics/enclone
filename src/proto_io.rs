@@ -85,6 +85,11 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
     proto_writer.encode_and_write(enclone_outputs.universal_reference)?;
     // Write the donor reference
     proto_writer.encode_and_write(enclone_outputs.donor_reference)?;
+    // Write the number of clonotypes. Not bothering to write this raw
+    proto_writer.encode_and_write(enclone_outputs.clonotypes.len() as u32)?;
+    for cl in enclone_outputs.clonotypes {
+        proto_writer.encode_and_write(cl)?;
+    }
     Ok(())
 }
 
@@ -96,22 +101,38 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let universal_reference = proto_reader.read_and_decode()?;
     // Read the donor reference
     let donor_reference = proto_reader.read_and_decode()?;
+    // Number of clonotyopes
+    let num_clonotypes: u32 = proto_reader.read_and_decode()?;
+    let mut clonotypes = Vec::new();
+    for _ in 0..num_clonotypes {
+        clonotypes.push(proto_reader.read_and_decode()?);
+    }
+
     Ok(EncloneOutputs {
         universal_reference,
         donor_reference,
-        clonotypes: Vec::new(),
+        clonotypes,
     })
 }
 
 #[test]
 fn test_proto_write() -> Result<(), Error> {
-    use main_enclone::main_enclone;
-    let tests = vec!["enclone PRE=test/inputs/version12 BCR=123085 LOUPE=test_proto"];
+    let tests = vec!["BCR=123085 LOUPE=__test_proto"];
     for t in tests {
-        let args: Vec<_> = t.split(' ').map(|a| a.to_string()).collect();
-        println!("args = {:?}", args);
-        // This creates two files
-        main_enclone(&args);
+        let args: Vec<_> = t.split(' ').collect();
+        // This creates two files test_proto.bin and test_proto.proto
+        let mut new = std::process::Command::new("target/release/enclone");
+        let mut new = new.arg(format!("PRE=test/inputs/version12"));
+        for arg in args {
+            new = new.arg(&arg);
+        }
+        new.output()
+            .expect(&format!("failed to execute enclone for test_proto_write"));
+        let outputs_proto = read_proto("__test_proto.proto")?;
+        let outputs_bin: EncloneOutputs = io_utils::read_obj("__test_proto.bin");
+        std::fs::remove_file("__test_proto.proto")?;
+        std::fs::remove_file("__test_proto.bin")?;
+        assert!(outputs_proto == outputs_bin);
     }
 
     Ok(())
