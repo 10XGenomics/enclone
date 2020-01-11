@@ -1,4 +1,4 @@
-// Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 #![allow(unused_imports, dead_code)]
 // Run enclone on a test case and verify that the output is identical to what
 // was gotten before.  If the output is different, look at it
