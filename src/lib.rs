@@ -1,4 +1,4 @@
-// Copyright (c) 2019 10x Genomics, Inc. All rights reserved.
+// Copyright (c) 2020 10x Genomics, Inc. All rights reserved.
 
 extern crate amino;
 extern crate ansi_escape;
