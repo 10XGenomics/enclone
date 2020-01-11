@@ -1,4 +1,4 @@
-// Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // slightly modified version of https://vallentin.dev/2019/06/06/versioning
 extern crate prost_build;
