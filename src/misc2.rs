@@ -2,10 +2,10 @@
 
 // Miscellaneous functions.
 
+use crate::defs::*;
+use crate::misc3::*;
 use debruijn::dna_string::*;
-use defs::*;
 use io_utils::*;
-use misc3::*;
 use perf_stats::*;
 use rayon::prelude::*;
 use std::cmp::{max, min};

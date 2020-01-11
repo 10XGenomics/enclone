@@ -11,15 +11,6 @@
 //
 // cargo test --release -p enclone enclone -- --nocapture
 
-extern crate ansi_escape;
-extern crate enclone;
-extern crate failure;
-extern crate io_utils;
-extern crate perf_stats;
-extern crate pretty_trace;
-extern crate rayon;
-extern crate string_utils;
-
 use ansi_escape::*;
 use enclone::proto_io::read_proto;
 use enclone::types::EncloneOutputs;

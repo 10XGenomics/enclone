@@ -5,7 +5,7 @@
 use vdj_ann::*;
 
 use self::refx::*;
-use defs::*;
+use crate::defs::*;
 use std::cmp::*;
 use string_utils::*;
 use vector_utils::*;

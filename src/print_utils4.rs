@@ -1,13 +1,13 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+use crate::defs::*;
+use crate::types::*;
 use amino::*;
 use debruijn::dna_string::*;
-use defs::*;
 use equiv::EquivRel;
 use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::*;
-use types::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 

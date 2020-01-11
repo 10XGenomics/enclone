@@ -5,25 +5,22 @@
 //
 // Problem: stack traces from this file consistently do not go back to the main program.
 
-use vdj_ann::*;
-
-use self::refx::*;
-use defs::*;
+use crate::defs::*;
+use crate::filter::*;
+use crate::group::*;
+use crate::loupe::*;
+use crate::print_utils1::*;
+use crate::print_utils2::*;
+use crate::print_utils3::*;
+use crate::print_utils4::*;
+use crate::print_utils5::*;
+use crate::types::*;
 use equiv::EquivRel;
-use filter::*;
-use group::*;
-use loupe::*;
-use permutation::*;
-use print_utils1::*;
-use print_utils2::*;
-use print_utils3::*;
-use print_utils4::*;
-use print_utils5::*;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
 use string_utils::*;
-use types::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 // TO DO: provide alternate coloring by amino acid properties:

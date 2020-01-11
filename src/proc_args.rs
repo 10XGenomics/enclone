@@ -1,9 +1,9 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use defs::*;
+use crate::defs::*;
+use crate::proc_args2::*;
+use crate::proc_args3::*;
 use perf_stats::*;
-use proc_args2::*;
-use proc_args3::*;
 use regex::Regex;
 use std::{env, time::Instant};
 use string_utils::*;

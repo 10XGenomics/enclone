@@ -2,8 +2,8 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
+use crate::defs::*;
 use ansi_escape::*;
-use defs::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;

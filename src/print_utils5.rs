@@ -1,10 +1,10 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use defs::*;
+use crate::defs::*;
+use crate::types::*;
 use itertools::*;
 use std::cmp::max;
 use std::collections::HashMap;
-use types::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
