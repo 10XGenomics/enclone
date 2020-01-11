@@ -1,4 +1,4 @@
-// Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Split a given all_contig_annotations.json file using multiplexing data and put the results
 // in individual directories.
