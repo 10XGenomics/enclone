@@ -7,14 +7,14 @@ use vdj_ann::*;
 
 use self::annotate::*;
 use self::refx::*;
+use crate::defs::*;
+use crate::join2::*;
+use crate::join_core::*;
+use crate::join_utils::*;
 use debruijn::dna_string::*;
-use defs::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
-use join2::*;
-use join_core::*;
-use join_utils::*;
 use perf_stats::*;
 use rayon::prelude::*;
 use std::cmp::*;

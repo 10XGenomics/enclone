@@ -2,7 +2,7 @@
 
 // This file provides the tail end code for join.rs, plus a small function used there.
 
-use defs::*;
+use crate::defs::*;
 use equiv::EquivRel;
 use perf_stats::*;
 use stats_utils::*;

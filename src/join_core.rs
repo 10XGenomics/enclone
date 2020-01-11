@@ -1,10 +1,10 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+use crate::defs::*;
+use crate::join2::*;
+use crate::join_utils::*;
 use debruijn::{dna_string::*, Mer};
-use defs::*;
 use equiv::EquivRel;
-use join2::*;
-use join_utils::*;
 use stats_utils::*;
 use std::collections::HashMap;
 use stirling_numbers::*;

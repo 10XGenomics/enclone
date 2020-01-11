@@ -19,13 +19,13 @@
 //! - `Length` is an unsigned 32 bit integer stored in **Big endian** order.
 //! - If there are multiple messages, they are stored consecutively following the same format.
 
+use crate::types::EncloneOutputs;
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
-use failure::Error;
+use failure::{format_err, Error};
 use prost::Message;
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::Path;
-use types::EncloneOutputs;
 
 const BUFFER_CAPACITY: usize = 1_000_000;
 

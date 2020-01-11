@@ -24,7 +24,7 @@ fn main() {
     );
     println!("cargo:rustc-env=VERSION_STRING={}", version_string);
     let mut config = Config::new();
-    config.type_attribute(".", "#[derive(Serialize, Deserialize)]");
+    config.type_attribute(".", "#[derive(::serde::Serialize, ::serde::Deserialize)]");
     config.compile_protos(&["types.proto"], &["."]).unwrap();
 }
 

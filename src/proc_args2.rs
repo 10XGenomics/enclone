@@ -1,17 +1,17 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use defs::*;
-use help1::*;
-use help2::*;
-use help3::*;
-use help4::*;
-use help5::*;
+use crate::defs::*;
+use crate::help1::*;
+use crate::help2::*;
+use crate::help3::*;
+use crate::help4::*;
+use crate::help5::*;
+use crate::proc_args::*;
 use io_utils::*;
 use itertools::*;
 use pager::Pager;
 use perf_stats::*;
 use pretty_trace::*;
-use proc_args::*;
 use std::{
     env,
     fs::File,

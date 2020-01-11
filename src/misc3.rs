@@ -2,7 +2,7 @@
 
 // Miscellaneous functions.
 
-use defs::*;
+use crate::defs::*;
 use io_utils::*;
 use itertools::*;
 use std::cmp::{max, min, Ordering};

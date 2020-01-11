@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use defs::*;
+use crate::defs::*;
 use io_utils::*;
 use marsoc::*;
 use std::fs::File;

@@ -1,16 +1,16 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use proto_io::write_proto;
+use crate::proto_io::write_proto;
 use vdj_ann::*;
 
 use self::refx::*;
 use amino::*;
 use bio::alignment::pairwise::*;
 
+use crate::defs::*;
+use crate::types::*;
 use debruijn::dna_string::*;
-use defs::*;
 use io_utils::*;
-use types::*;
 use vector_utils::*;
 
 pub fn make_donor_refs(

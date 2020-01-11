@@ -1,13 +1,13 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+use crate::defs::*;
+use crate::print_utils1::*;
+use crate::types::*;
 use amino::*;
 use ansi_escape::*;
-use defs::*;
 use io_utils::*;
-use print_utils1::*;
 use std::io::Write;
 use string_utils::*;
-use types::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
