@@ -1,4 +1,4 @@
-// Copyright (c) 2019 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // This file provides functions to find alternate alleles and substitute them into references.
 
