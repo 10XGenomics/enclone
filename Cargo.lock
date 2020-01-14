@@ -474,7 +474,7 @@ dependencies = [
  "perf_stats 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "permutation 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "petgraph 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
- "pretty_trace 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "prost 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "prost-build 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "prost-derive 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1217,6 +1217,24 @@ dependencies = [
 [[package]]
 name = "pretty_trace"
 version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "backtrace 0.3.40 (registry+https://github.com/rust-lang/crates.io-index)",
+ "chashmap 2.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "failure 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "io_utils 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.66 (registry+https://github.com/rust-lang/crates.io-index)",
+ "nix 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rayon 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stats_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "pretty_trace"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "backtrace 0.3.40 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2178,6 +2196,7 @@ dependencies = [
 "checksum predicates-core 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "06075c3a3e92559ff8929e7a280684489ea27fe44805174c3ebd9328dcb37178"
 "checksum predicates-tree 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8e63c4859013b38a76eca2414c64911fba30def9e3202ac461a2d22831220124"
 "checksum pretty_trace 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "5251de2804291bd20304b5df748fbe6d5b59071c6b549048b4bcedf506181a47"
+"checksum pretty_trace 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "e942fe67369305589975e43ef8eca85dc995a4eed3609f55c18e1d049ad53f2d"
 "checksum proc-macro2 0.4.30 (registry+https://github.com/rust-lang/crates.io-index)" = "cf3d2011ab5c909338f7887f4fc896d35932e29146c12c8d01da6b22a80ba759"
 "checksum proc-macro2 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)" = "0319972dcae462681daf4da1adeeaa066e3ebd29c69be96c6abb1259d2ee2bcc"
 "checksum prost 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "96d14b1c185652833d24aaad41c5832b0be5616a590227c1fbff57c616754b23"
