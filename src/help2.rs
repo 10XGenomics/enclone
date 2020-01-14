@@ -234,8 +234,10 @@ pub fn help2(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
         begin_doc!("support");
         print(
-            "\n\\red{We're here to help.  Here's a guide to where we can, and where we may \
-             have difficulty.}\n\n\
+             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
+             Although we cannot guarantee full support for the software, please email us at \
+             enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
+             If you prefer you may submit a GitHub issue.}\n\n\
              \\bold{Critical things we want to hear from you}\n\n\
              1. If you have trouble understanding the documentation.\n\n\
              2. If enclone crashes.  We always need to see the output you got.  Often we will \
@@ -255,7 +257,9 @@ pub fn help2(args: &Vec<String>) {
              2. If you get different results by two methods or observe suspicious statistics.  \
              Feel free to tell us, but we are much more likely to be able to respond if you have \
              specific data as in point 3 above.\n\n\
-             3. If for whatever reason, we get stuck.  We may not be able to fix every problem, \
+             3. Details about the algorithms.  We can answer some questions but may need to \
+             point you to the source code to read yourself.\n\n\
+             4. If for whatever reason, we get stuck.  We may not be able to fix every problem, \
              even if it's our fault.  And sometimes the right solution will take time.  We'll do \
              our best!\n\n",
         );
