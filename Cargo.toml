@@ -50,4 +50,4 @@ branch= "pmarks/linking"
 prost-build = "0.5.0"
 
 [profile.release]
-debug = true
+debug = 1
