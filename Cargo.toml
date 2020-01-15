@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["David Jaffe <david.jaffe@10xgenomics.com, Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>, Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"]
 edition = "2018"
 build = "build.rs"
+publish = false
 
 [dependencies]
 amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
