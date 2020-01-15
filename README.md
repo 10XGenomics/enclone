@@ -6,7 +6,7 @@ The mission of `enclone` is to:
 groups of T and B cells having the same fully rearranged common ancestor.**
 
 `enclone` is part of the [10x Genomics](https://www.10xgenomics.com/) immune profiling toolkit, including
-[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), with which enclone is integrated.
+[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), with which `enclone` is integrated.
 
 To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
