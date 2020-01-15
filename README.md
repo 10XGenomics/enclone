@@ -30,6 +30,8 @@ cargo build --release --bin enclone
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`PATH=$PATH:~/where/you/cloned/enclone/target/release/enclone`. 
 See also [this helpful post on StackExchange](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path).
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Compilation takes 8-10 minutes on a 2017 MacBook Pro with a dual-core i7 and 5-7 minutes on a similar Linux machine. 
+
 4. Copy the directory `enclone/test/inputs` to somewhere you can point to, or just leave it 
 where it is.  These are test data you can play with; you can also supply your own output
 from a Cell Ranger immune profiling run (so long as there is an `all_contig_annotations.json` output). 
