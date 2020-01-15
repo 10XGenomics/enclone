@@ -130,11 +130,13 @@ pub fn make_loupe_clonotype(
         let donor_v_idx = rsi.vpids[cx];
         let donor_j_idx = None;
         let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
+        let universal_reference = concatu[cx].clone();
+        let donor_reference = concatd[cx].clone();
         let mut aligner = Aligner::new(-6, -1, &score);
-        let al = aligner.semiglobal(&nt_sequence, &concatd[cx]);
-        let donor_reference_aln = Alignment::from(&al);
-        let al = aligner.semiglobal(&nt_sequence, &concatu[cx]);
+        let al = aligner.semiglobal(&nt_sequence, &universal_reference);
         let universal_reference_aln = Alignment::from(&al);
+        let al = aligner.semiglobal(&nt_sequence, &donor_reference);
+        let donor_reference_aln = Alignment::from(&al);
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
             u_idx: u_idx.map(|idx| idx as u32),
@@ -144,8 +146,10 @@ pub fn make_loupe_clonotype(
             c_idx: c_idx.map(|idx| idx as u32),
             donor_v_idx: donor_v_idx.map(|idx| idx as u32),
             donor_j_idx: donor_j_idx,
-            donor_reference_aln: donor_reference_aln,
+            universal_reference: universal_reference,
             universal_reference_aln: universal_reference_aln,
+            donor_reference: donor_reference,
+            donor_reference_aln: donor_reference_aln,
         });
     }
 
