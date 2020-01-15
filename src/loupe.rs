@@ -18,7 +18,6 @@ pub fn make_donor_refs(
     refdata: &RefData,
 ) -> Vec<DonorReferenceItem> {
     let mut drefs = Vec::<DonorReferenceItem>::new();
-    // if ctl.gen_opt.loupe.len() > 0 {
     let mut i = 0;
     while i < alt_refs.len() {
         let j = next_diff12_3(&alt_refs, i as i32) as usize;
@@ -64,7 +63,6 @@ pub fn make_donor_refs(
         }
         i = j;
     }
-    // }
     drefs
 }
 
@@ -128,15 +126,13 @@ pub fn make_loupe_clonotype(
         let v_idx = rsi.vids[cx];
         let d_idx = rsi.dids[cx];
         let j_idx = rsi.jids[cx];
+        let c_idx = rsi.cids[cx];
         let donor_v_idx = rsi.vpids[cx];
         let donor_j_idx = None;
         let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
         let mut aligner = Aligner::new(-6, -1, &score);
-        let mut donor_reference_aln = None;
-        if rsi.vpids[cx].is_some() {
-            let al = aligner.semiglobal(&nt_sequence, &concatd[cx]);
-            donor_reference_aln = Some(Alignment::from(&al));
-        }
+        let al = aligner.semiglobal(&nt_sequence, &concatd[cx]);
+        let donor_reference_aln = Alignment::from(&al);
         let al = aligner.semiglobal(&nt_sequence, &concatu[cx]);
         let universal_reference_aln = Alignment::from(&al);
         xchains.push(ClonotypeChain {
@@ -145,6 +141,7 @@ pub fn make_loupe_clonotype(
             v_idx: v_idx as u32,
             d_idx: d_idx.map(|idx| idx as u32),
             j_idx: j_idx as u32,
+            c_idx: c_idx.map(|idx| idx as u32),
             donor_v_idx: donor_v_idx.map(|idx| idx as u32),
             donor_j_idx: donor_j_idx,
             donor_reference_aln: donor_reference_aln,
@@ -194,12 +191,7 @@ pub fn make_loupe_clonotype(
             let al = aligner.semiglobal(&ex.share[m].seq, &concatu[cx]);
             let universal_reference_aln = Alignment::from(&al);
             let al = aligner.semiglobal(&ex.share[m].seq, &concatd[cx]);
-            let donor_reference_aln;
-            if rsi.vpids[cx].is_none() {
-                donor_reference_aln = None;
-            } else {
-                donor_reference_aln = Some(Alignment::from(&al));
-            }
+            let donor_reference_aln = Alignment::from(&al);
 
             // Finally, define the ExactClonotypeChain.
 
@@ -256,7 +248,7 @@ pub fn loupe_out(
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
 ) {
-    if ctl.gen_opt.loupe.len() > 0 {
+    if ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 {
         let mut uref = Vec::new();
         for i in 0..refdata.refs.len() {
             uref.push(UniversalReferenceItem {
@@ -280,9 +272,11 @@ pub fn loupe_out(
                 items: dref.to_vec(),
             },
         };
-        let bin_file = format!("{}.bin", ctl.gen_opt.loupe);
-        write_obj(&enclone_outputs, bin_file);
-        let proto_file = format!("{}.proto", ctl.gen_opt.loupe);
-        write_proto(enclone_outputs, proto_file).unwrap();
+        if ctl.gen_opt.binary.len() > 0 {
+            write_obj(&enclone_outputs, &ctl.gen_opt.binary);
+        }
+        if ctl.gen_opt.proto.len() > 0 {
+            write_proto(enclone_outputs, &ctl.gen_opt.proto).unwrap();
+        }
     }
 }

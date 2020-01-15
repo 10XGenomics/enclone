@@ -52,11 +52,11 @@ message ExactSubClonotypeChain {
     // TODO: Do we need amino acid alignment info?
     required Alignment clonotype_consensus_aln = 10;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
-    // reference of this chain.
+    // reference of this chain (defined elsewhere in this file).
     // TODO: Default donor reference to universal reference?
-    optional Alignment donor_reference_aln = 11;
+    required Alignment donor_reference_aln = 11;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
-    // reference of this chain.
+    // reference of this chain (defined elsewhere in this file).
     required Alignment universal_reference_aln = 12;
 }
 
@@ -110,28 +110,34 @@ message ClonotypeChain {
     // Index of the Joining region in the universal reference. The region in the universal
     // reference is guaranteed to be `Region::J`
     required uint32 j_idx = 5;
+    // Index of the Constant region in the universal reference. The region in the universal
+    // reference is guaranteed to be `Region::C`
+    optional uint32 c_idx = 6;
     // Index of the Variable region in the donor reference. The region in the donor
     // reference is guaranteed to be `Region::V` and the `universal_idx` in the donor reference
     // item will be equal to the `v_idx`
-    optional uint32 donor_v_idx = 6;
+    optional uint32 donor_v_idx = 7;
     /// Index of the Joining region in the donor reference. The region in the donor
     /// reference is guaranteed to be `Region::J` and the `universal_idx` in the donor reference
     /// item will be equal to the `j_idx`
-    optional uint32 donor_j_idx = 7;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
-    // reference of this chain.
-    // Concatenated donor reference =
-    //     `nt_sequence` of donor_reference[donor_v_idx] if donor_v_idx is not None +
-    //     `nt_sequence` of donor_reference[donor_j_idx] if donor_j_idx is not None
-    optional Alignment donor_reference_aln = 8;
+    optional uint32 donor_j_idx = 8;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
     // reference of this chain.
     // Concatenated universal reference =
     //     `nt_sequence` of universal_reference[u_idx] if u_idx is not None +
     //     `nt_sequence` of universal_reference[v_idx] +
-    //     `nt_sequence` of universal_reference[d_idx] if d_idx is not None+
-    //     `nt_sequence` of universal_reference[j_idx]
+    //     `nt_sequence` of universal_reference[d_idx] if d_idx is not None +
+    //     `nt_sequence` of universal_reference[j_idx] +
+    //     `nt_sequence` of universal_reference[c_idx] if c_idx is not None.
     required Alignment universal_reference_aln = 9;
+    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
+    // reference of this chain.
+    // The concatenated donor reference is the same as the concatenated universal reference,
+    // however with substitutions:
+    //     `nt_sequence` of donor_reference[donor_v_idx] if donor_v_idx is not None
+    // and
+    //     `nt_sequence` of donor_reference[donor_j_idx] if donor_j_idx is not None.
+    required Alignment donor_reference_aln = 10;
 }
 
 // Definition of a clonotype.

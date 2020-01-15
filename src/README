@@ -96,7 +96,8 @@
 // - INSERTIONS: search for SHM insertions (exploratory)
 // - NOPRETTY: turn off pretty trace entirely
 // - HEAVY_CHAIN_REUSE: look for instances of heavy chain reuse
-// - LOUPE=filename: generate rusty Loupe output
+// - BINARY=filename: generate binary output file
+// - PROTO=filename: generate proto output file
 // - NH5: do not get gene expression values from the h5 file
 // - NO_REUSE: exit if significant barcode reuse found, intended to detect accidental inclusion
 //             of multiple datasets from the same cDNA from the same GEM well
