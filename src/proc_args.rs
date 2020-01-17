@@ -156,8 +156,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
             ctl.gen_opt.reuse = true;
-        } else if args[i].starts_with("LOUPE=") {
-            ctl.gen_opt.loupe = args[i].after("LOUPE=").to_string();
+        } else if args[i].starts_with("BINARY=") {
+            ctl.gen_opt.binary = args[i].after("BINARY=").to_string();
+        } else if args[i].starts_with("PROTO=") {
+            ctl.gen_opt.proto = args[i].after("PROTO=").to_string();
         } else if is_simple_arg(&args[i], "PRINT_FAILED_JOINS") {
             ctl.join_print_opt.quiet = false;
         } else if is_simple_arg(&args[i], "NOTE_SIMPLE") {
