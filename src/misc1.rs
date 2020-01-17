@@ -17,17 +17,6 @@ use vector_utils::*;
 
 pub fn setup_pager( pager: bool ) {
 
-    // If output is going to a terminal, emit the ANSI escape character that disables the
-    // alternate screen buffer.  We did this because we found that in full screen mode on
-    // mac OSX Catalina, enclone would appear to produce no output, because the output was
-    // being sent to the alternate screen.
-
-    if unsafe { libc::isatty(libc::STDOUT_FILENO) } != 0 {
-        let mut log = Vec::<u8>::new();
-        emit_disable_alternate_screen_buffer_escape(&mut log);
-        print!( "{}", strme(&log) );
-    }
-
     // If the output is going to a terminal, set up paging so that output is in effect piped to
     // "less -r -F".  The option -r is used to render ANSI escape characters correctly and also
     // to properly display special unicode characters, including at least the red dot we show
@@ -37,6 +26,17 @@ pub fn setup_pager( pager: bool ) {
 
     if pager {
         Pager::with_pager("less -r -F").setup();
+    }
+
+    // If output is going to a terminal, emit the ANSI escape character that disables the
+    // alternate screen buffer.  We did this because we found that in full screen mode on
+    // mac OSX Catalina, enclone would appear to produce no output, because the output was
+    // being sent to the alternate screen.
+
+    if unsafe { libc::isatty(libc::STDOUT_FILENO) } != 0 {
+        let mut log = Vec::<u8>::new();
+        emit_disable_alternate_screen_buffer_escape(&mut log);
+        print!( "{}", strme(&log) );
     }
 }
 
