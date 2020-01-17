@@ -2,13 +2,41 @@
 
 // Miscellaneous functions.
 
+use ansi_escape::*;
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
+use libc;
+use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn setup_pager() {
+
+    // If output is going to a terminal, emit the ANSI escape character that disables the
+    // alternate screen buffer.  We did this because we found that in full screen mode on
+    // mac OSX Catalina, enclone would appear to produce no output, because the output was
+    // being sent to the alternate screen.
+
+    if unsafe { libc::isatty(libc::STDOUT_FILENO) } != 0 {
+        let mut log = Vec::<u8>::new();
+        emit_disable_alternate_screen_buffer_escape(&mut log);
+        print!( "{}", strme(&log) );
+    }
+
+    // If the output is going to a terminal, set up paging so that output is in effect piped to
+    // "less -r -F".  The option -r is used to render ANSI escape characters correctly and also
+    // to properly display special unicode characters, including at least the red dot we show
+    // when a clonotype contains cells from two donors.  We do not use the -R option because it
+    // incorrectly handles this.  The -F option makes less exit immediately if all the output can
+    // be seen in one screen.
+
+    Pager::with_pager("less -r -F").setup();
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

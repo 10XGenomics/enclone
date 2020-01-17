@@ -4,7 +4,7 @@
 
 use crate::help_utils::*;
 use ansi_escape::*;
-use pager::Pager;
+use crate::misc1::*;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
@@ -38,7 +38,7 @@ pub fn help1(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
         if !nopager {
-            Pager::with_pager("less -r -F").setup();
+            setup_pager();
         }
     }
     let mut help_all = false;

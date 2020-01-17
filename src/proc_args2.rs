@@ -9,7 +9,7 @@ use crate::help5::*;
 use crate::proc_args::*;
 use io_utils::*;
 use itertools::*;
-use pager::Pager;
+use crate::misc1::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::{
@@ -318,7 +318,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             if !nopager {
-                Pager::with_pager("less -r -F").setup();
+                setup_pager();
             }
         }
     }
