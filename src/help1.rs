@@ -427,7 +427,7 @@ pub fn help1(args: &Vec<String>) {
              codes.  However some things will not make sense without color.\n\n",
         );
         print("\\bold{3. Paging}\n\n");
-        print("• enclone automatically pipes its output to \\bold{less -r -F}.\n");
+        print("• enclone automatically pipes its output to \\bold{less -R -F}.\n");
         print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \

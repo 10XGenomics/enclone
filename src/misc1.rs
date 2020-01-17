@@ -18,14 +18,15 @@ use vector_utils::*;
 pub fn setup_pager( pager: bool ) {
 
     // If the output is going to a terminal, set up paging so that output is in effect piped to
-    // "less -r -F".  The option -r is used to render ANSI escape characters correctly and also
-    // to properly display special unicode characters, including at least the red dot we show
-    // when a clonotype contains cells from two donors.  We do not use the -R option because it
-    // incorrectly handles this.  The -F option makes less exit immediately if all the output can
-    // be seen in one screen.
+    // "less -R -F".  The option -R is used to render ANSI escape characters correctly.  We do
+    // not use -r instead because if you navigate backwards in less -r, stuff gets screwed up,
+    // which is consistent with the scary stuff in the man page for less at -r.  However -r will
+    // not display all unicode characters correctly, so those have to be picked carefully,
+    // by empirically testing that e.g. "echo ◼ | less -R -F" renders correctly.  The -F option 
+    // makes less exit immediately if all the output can be seen in one screen.
 
     if pager {
-        Pager::with_pager("less -r -F").setup();
+        Pager::with_pager("less -R -F").setup();
     }
 
     // If output is going to a terminal, emit the ANSI escape character that disables the
