@@ -37,9 +37,7 @@ pub fn help1(args: &Vec<String>) {
             }
         }
         erase_if(&mut args, &to_delete);
-        if !nopager {
-            setup_pager();
-        }
+        setup_pager(!nopager);
     }
     let mut help_all = false;
     if args.len() == 3 && args[1] == "help" && args[2] == "all" {

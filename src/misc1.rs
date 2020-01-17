@@ -15,7 +15,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup_pager() {
+pub fn setup_pager( pager: bool ) {
 
     // If output is going to a terminal, emit the ANSI escape character that disables the
     // alternate screen buffer.  We did this because we found that in full screen mode on
@@ -35,7 +35,9 @@ pub fn setup_pager() {
     // incorrectly handles this.  The -F option makes less exit immediately if all the output can
     // be seen in one screen.
 
-    Pager::with_pager("less -r -F").setup();
+    if pager {
+        Pager::with_pager("less -r -F").setup();
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

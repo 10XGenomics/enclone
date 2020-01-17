@@ -317,9 +317,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     nopager = true;
                 }
             }
-            if !nopager {
-                setup_pager();
-            }
+            setup_pager(!nopager);
         }
     }
 
