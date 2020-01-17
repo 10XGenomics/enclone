@@ -270,11 +270,12 @@ fn test_enclone() {
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
     let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
-    let loupe_arg = format!("LOUPE={}", LOUPE_OUT_FILENAME);
+    let binary_arg = format!("BINARY={}.bin", LOUPE_OUT_FILENAME);
+    let proto_arg = format!("PROTO={}.proto", LOUPE_OUT_FILENAME);
     for t in tests {
         // FIXME: It would be nicer to use the enclone API here
         std::process::Command::new("target/release/enclone")
-            .args(&[&pre_arg, t, &loupe_arg])
+            .args(&[&pre_arg, t, &binary_arg, &proto_arg])
             .output()
             .expect(&format!("failed to execute enclone for test_proto_write"));
         let outputs_proto = read_proto(format!("{}.proto", LOUPE_OUT_FILENAME))?;
