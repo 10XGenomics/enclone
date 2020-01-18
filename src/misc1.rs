@@ -26,7 +26,7 @@ pub fn setup_pager( pager: bool ) {
     // makes less exit immediately if all the output can be seen in one screen.
 
     if pager {
-        Pager::with_pager("less -R -F").setup();
+        Pager::with_pager("less -R -X").setup();
     }
 
     // If output is going to a terminal, emit the ANSI escape character that disables the
