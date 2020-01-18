@@ -121,7 +121,7 @@ pub fn make_loupe_clonotype(
             }
         }
         let ex = &exact_clonotypes[exacts[u0]];
-        let nt_sequence = ex.share[m0].seq.clone(); // wrong and temporary!!!!!!!!!!!!!
+        let nt_sequence = ex.share[m0].full_seq.clone();
         let u_idx = rsi.uids[cx];
         let v_idx = rsi.vids[cx];
         let d_idx = rsi.dids[cx];
@@ -150,6 +150,14 @@ pub fn make_loupe_clonotype(
             universal_reference_aln: universal_reference_aln,
             donor_reference: donor_reference,
             donor_reference_aln: donor_reference_aln,
+            v_start: ex.share[m0].v_start as u32,
+            v_end: ex.share[m0].v_stop as u32,
+            v_end_ref: ex.share[m0].v_stop_ref as u32,
+            j_start: ex.share[m0].j_start as u32,
+            j_start_ref: ex.share[m0].j_start_ref as u32,
+            j_end: ex.share[m0].j_stop as u32,
+            cdr3_start: ex.share[m0].cdr3_start as u32,
+            cdr3_end: (ex.share[m0].cdr3_start + 3 * ex.share[m0].cdr3_aa.len()) as u32,
         });
     }
 

@@ -130,6 +130,10 @@ pub fn read_json(
                 let mut chain_type = String::new();
                 let mut u_ref_id = None;
                 let (mut tig_start, mut tig_stop) = (-1 as isize, -1 as isize);
+                let mut v_stop = 0;
+                let mut v_stop_ref = 0;
+                let mut j_start = 0;
+                let mut j_start_ref = 0;
                 let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
                 let cdr3_aa: String;
                 let cdr3_dna: String;
@@ -168,11 +172,15 @@ pub fn read_json(
                                 tig_start = ann[i].0 as isize;
                                 cdr3_start -= tig_start as usize;
                             }
+                            v_stop = (ann[i].0 + ann[i].1) as usize;
+                            v_stop_ref = (ann[i].3 + ann[i].1) as usize;
                         } else if refdata.is_d(t) {
                             d_ref_id = Some(t);
                         } else if refdata.is_j(t) {
                             j_ref_id = t;
                             tig_stop = (ann[i].0 + ann[i].1) as isize;
+                            j_start = ann[i].0 as usize;
+                            j_start_ref = ann[i].3 as usize;
                             seen_j = true;
                         } else if refdata.is_c(t) {
                             c_ref_id = Some(t);
@@ -198,6 +206,10 @@ pub fn read_json(
                         }
                         let feature_id = to_ref_index[&feature_id];
                         let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
+                        if region_type == "L-REGION+V-REGION" {
+                            v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
+                            v_stop_ref = a["annotation_match_end"].as_i64().unwrap() as usize;
+                        }
                         if region_type == "L-REGION+V-REGION" && ref_start == 0 {
                             let chain = a["feature"]["chain"]
                                 .to_string()
@@ -219,6 +231,9 @@ pub fn read_json(
                             if region_type == "J-REGION" && ref_stop == ref_len {
                                 tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
                                 j_ref_id = feature_id;
+                                j_start = a["contig_match_start"].as_i64().unwrap() as usize;
+                                j_start_ref 
+                                    = a["annotation_match_start"].as_i64().unwrap() as usize;
                             }
                             if region_type == "5'UTR" {
                                 u_ref_id = Some(feature_id);
@@ -315,6 +330,10 @@ pub fn read_json(
                     len: seq.len(),
                     seq: seq.as_bytes().to_vec(),
                     v_start: tig_start,
+                    v_stop: v_stop,
+                    v_stop_ref: v_stop_ref,
+                    j_start: j_start,
+                    j_start_ref: j_start_ref,
                     j_stop: tig_stop,
                     full_seq: full_seq.as_bytes().to_vec(),
                     v_ref_id: v_ref_id,
