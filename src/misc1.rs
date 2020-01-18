@@ -26,7 +26,7 @@ pub fn setup_pager( pager: bool ) {
     // makes less exit immediately if all the output can be seen in one screen.
 
     if pager {
-        Pager::with_pager("less -R -F").setup();
+        Pager::with_pager("less -R -F -X").setup();
     }
 
     // If output is going to a terminal, emit the ANSI escape character that disables the
@@ -34,11 +34,13 @@ pub fn setup_pager( pager: bool ) {
     // mac OSX Catalina, enclone would appear to produce no output, because the output was
     // being sent to the alternate screen.
 
+    /*
     if unsafe { libc::isatty(libc::STDOUT_FILENO) } != 0 {
         let mut log = Vec::<u8>::new();
         emit_disable_alternate_screen_buffer_escape(&mut log);
         print!( "{}", strme(&log) );
     }
+    */
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
