@@ -2,11 +2,9 @@
 
 // Miscellaneous functions.
 
-use ansi_escape::*;
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
-use libc;
 use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
@@ -18,29 +16,23 @@ use vector_utils::*;
 pub fn setup_pager( pager: bool ) {
 
     // If the output is going to a terminal, set up paging so that output is in effect piped to
-    // "less -R -F".  The option -R is used to render ANSI escape characters correctly.  We do
-    // not use -r instead because if you navigate backwards in less -r, stuff gets screwed up,
-    // which is consistent with the scary stuff in the man page for less at -r.  However -r will
-    // not display all unicode characters correctly, so those have to be picked carefully,
-    // by empirically testing that e.g. "echo ◼ | less -R -F" renders correctly.  The -F option 
-    // makes less exit immediately if all the output can be seen in one screen.
+    // "less -R -F -X".  
+    //
+    // ∙ The option -R is used to render ANSI escape characters correctly.  We do not use
+    //   -r instead because if you navigate backwards in less -r, stuff gets screwed up,
+    //   which is consistent with the scary stuff in the man page for less at -r.  However -R will
+    //   not display all unicode characters correctly, so those have to be picked carefully,
+    //   by empirically testing that e.g. "echo ◼ | less -R -F -X" renders correctly.  
+    //
+    // ∙ The -F option makes less exit immediately if all the output can be seen in one screen.
+    //
+    // ∙ The -X option is needed because we found that in full screen mode on OSX Catalina, output
+    //   was sent to the alternate screen, and hence it appeared that one got no output at all
+    //   from enclone.  This is really bad, so do not turn off this option!
 
     if pager {
         Pager::with_pager("less -R -F -X").setup();
     }
-
-    // If output is going to a terminal, emit the ANSI escape character that disables the
-    // alternate screen buffer.  We did this because we found that in full screen mode on
-    // mac OSX Catalina, enclone would appear to produce no output, because the output was
-    // being sent to the alternate screen.
-
-    /*
-    if unsafe { libc::isatty(libc::STDOUT_FILENO) } != 0 {
-        let mut log = Vec::<u8>::new();
-        emit_disable_alternate_screen_buffer_escape(&mut log);
-        print!( "{}", strme(&log) );
-    }
-    */
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

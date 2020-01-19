@@ -427,16 +427,18 @@ pub fn help1(args: &Vec<String>) {
              codes.  However some things will not make sense without color.\n\n",
         );
         print("\\bold{3. Paging}\n\n");
-        print("• enclone automatically pipes its output to \\bold{less -R -F}.\n");
+        print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
         print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \
-             The \\bold{-R} option causes escape characters to be correctly displayed, and the \
-             \\bold{-F} option causes an automatic exit if output fits on a single screen.\n",
+             The \\bold{-R} option causes escape characters to be correctly displayed, the \
+             \\bold{-F} option causes an automatic exit if output fits on a single screen, and \
+             the \\bold{-X} option prevents output from being sent to the \"alternate screen\" \
+             under certain platform/version combinations.\n",
         );
         print("• Type \\bold{man less} if you need more information.\n");
         print(
-            "• If for whatever reason you need to turn off output piping, add the argument \
+            "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
         if !help_all {

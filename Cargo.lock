@@ -466,7 +466,6 @@ dependencies = [
  "hdf5-rs 0.2.0 (git+https://github.com/pmarks/hdf5-rs.git?branch=pmarks/linking)",
  "io_utils 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.7.11 (registry+https://github.com/rust-lang/crates.io-index)",
- "libc 0.2.66 (registry+https://github.com/rust-lang/crates.io-index)",
  "load_feature_bc 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "marsoc 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "mirror_sparse_matrix 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
