@@ -4,21 +4,27 @@
 
 use crate::help_utils::*;
 use ansi_escape::*;
-use pager::Pager;
+use crate::misc1::*;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
 use vector_utils::*;
 
-// Notes on a testing issue.  The code for NOPAGER accidentally broke at one point and we
-// don't want that to recur.  Some test cases that could be verified:
-// enclone BCR=...
-// enclone BCR=... NOPAGER
-// enclone help all
-// enclone help all NOPAGER
-// enclone help faq
-// enclone help faq NOPAGER.
-// It's not clear how to automate this.
+// Notes on some testing issues:
+//
+// 1. The code for NOPAGER accidentally broke at one point and we
+//    don't want that to recur.  Some test cases that could be verified:
+//    enclone BCR=...
+//    enclone BCR=... NOPAGER
+//    enclone help all
+//    enclone help all NOPAGER
+//    enclone help faq
+//    enclone help faq NOPAGER.
+//
+// 2. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
+//    because the output was going to the alternate screen.
+//
+// It's not clear how to automate testing for these problems.
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -37,9 +43,7 @@ pub fn help1(args: &Vec<String>) {
             }
         }
         erase_if(&mut args, &to_delete);
-        if !nopager {
-            Pager::with_pager("less -r -F").setup();
-        }
+        setup_pager(!nopager);
     }
     let mut help_all = false;
     if args.len() == 3 && args[1] == "help" && args[2] == "all" {
@@ -429,16 +433,18 @@ pub fn help1(args: &Vec<String>) {
              codes.  However some things will not make sense without color.\n\n",
         );
         print("\\bold{3. Paging}\n\n");
-        print("• enclone automatically pipes its output to \\bold{less -r -F}.\n");
+        print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
         print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \
-             The \\bold{-R} option causes escape characters to be correctly displayed, and the \
-             \\bold{-F} option causes an automatic exit if output fits on a single screen.\n",
+             The \\bold{-R} option causes escape characters to be correctly displayed, the \
+             \\bold{-F} option causes an automatic exit if output fits on a single screen, and \
+             the \\bold{-X} option prevents output from being sent to the \"alternate screen\" \
+             under certain platform/version combinations.\n",
         );
         print("• Type \\bold{man less} if you need more information.\n");
         print(
-            "• If for whatever reason you need to turn off output piping, add the argument \
+            "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
         if !help_all {
