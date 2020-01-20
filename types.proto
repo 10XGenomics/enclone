@@ -43,21 +43,24 @@ message ExactSubClonotypeChain {
     // UMI counts of contigs associated with this exact subclonotype chain. The number of elements
     // in this vector is equal to the number of barcodes associated with this exact subclonotype.
     repeated uint32 umi_counts = 8;
+    // Read counts of contigs associated with this exact subclonotype chain. The number of elements
+    // in this vector is equal to the number of barcodes associated with this exact subclonotype.
+    repeated uint32 read_counts = 9;
     // Names of contigs associated with this exact subclonotype chain. The number of elements
     // in this vector is equal to the number of barcodes associated with this exact subclonotype.
     // The contig name would be of the form `{barcode}_contig_{id}`.
-    repeated string contig_ids = 9;
+    repeated string contig_ids = 10;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the clonotype consensus
     // of this chain.
     // TODO: Do we need amino acid alignment info?
-    required Alignment clonotype_consensus_aln = 10;
+    required Alignment clonotype_consensus_aln = 11;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
     // reference of this chain (defined elsewhere in this file).
     // TODO: Default donor reference to universal reference?
-    required Alignment donor_reference_aln = 11;
+    required Alignment donor_reference_aln = 12;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
     // reference of this chain (defined elsewhere in this file).
-    required Alignment universal_reference_aln = 12;
+    required Alignment universal_reference_aln = 13;
 }
 
 // The chains in a clonotype are ordered an hence they have a unique index.
@@ -140,6 +143,24 @@ message ClonotypeChain {
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
     // reference of this chain.
     required Alignment donor_reference_aln = 12;
+    // Index of the start of the V-REGION in the `nt_sequence`.
+    required uint32 v_start = 13;
+    // Index of the stop of the aligned part of the V-REGION in the `nt-sequence` (exclusive).
+    required uint32 v_end = 14;
+    // Index of the stop of the aligned part of the V-REGION in universal reference V (exclusive).
+    required uint32 v_end_ref = 15;
+    // Index of the start of the aligned part of the J-REGION in the `nt_sequence`.
+    required uint32 j_start = 16;
+    // Index of the start of the aligned part of the J-REGION in universal reference J.
+    required uint32 j_start_ref = 17;
+    // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
+    required uint32 j_end = 18;
+    // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of the CDR3
+    // amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
+    required uint32 cdr3_start = 19;
+    // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The end of the
+    // CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
+    required uint32 cdr3_end = 20;
 }
 
 // Definition of a clonotype.
