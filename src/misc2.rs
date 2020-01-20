@@ -167,6 +167,10 @@ pub fn create_exact_subclonotype_core(
             seq_del_amino: tig_bc[r][m].seq.clone(), // may get changed later
             full_seq: full,
             v_start: utr.len(),
+            v_stop: tig_bc[r][m].v_stop + utr.len() - tig_bc[r][m].v_start,
+            v_stop_ref: tig_bc[r][m].v_stop_ref,
+            j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
+            j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
             u_ref_id: tig_bc[r][m].u_ref_id,
             v_ref_id: tig_bc[r][m].v_ref_id,

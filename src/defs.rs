@@ -215,6 +215,10 @@ pub struct TigData {
     pub len: usize,                           // length of V..J sequence
     pub seq: Vec<u8>,                         // V..J contig subsequence
     pub v_start: usize,                       // start of V on full contig sequence
+    pub v_stop: usize,                        // stop of aligned V on full contig sequence
+    pub v_stop_ref: usize,                    // stop of aligned V on reference V
+    pub j_start: usize,                       // start of aligned J on full contig sequence
+    pub j_start_ref: usize,                   // start of aligned J on reference J
     pub j_stop: usize,                        // stop of J on full contig sequences
     pub full_seq: Vec<u8>,                    // full contig sequence
     pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
@@ -261,6 +265,10 @@ pub struct TigData1 {
     pub seq_del_amino: Vec<u8>,               // V..J, possibly with mod 3 del at mod 3 start
     pub full_seq: Vec<u8>,                    // full contig sequence (consensus)
     pub v_start: usize,                       // start of V on full contig sequence
+    pub v_stop: usize,                        // stop of aligned V on full contig sequence
+    pub v_stop_ref: usize,                    // stop of aligned V on reference V
+    pub j_start: usize,                       // start of aligned J on full contig sequence
+    pub j_start_ref: usize,                   // start of aligned J on reference J
     pub j_stop: usize,                        // stop of J on full contig sequence
     pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
     pub v_ref_id: usize,                      // index of V segment reference sequence in ref file
