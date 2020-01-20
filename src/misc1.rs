@@ -5,10 +5,35 @@
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
+use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn setup_pager( pager: bool ) {
+
+    // If the output is going to a terminal, set up paging so that output is in effect piped to
+    // "less -R -F -X".  
+    //
+    // ∙ The option -R is used to render ANSI escape characters correctly.  We do not use
+    //   -r instead because if you navigate backwards in less -r, stuff gets screwed up,
+    //   which is consistent with the scary stuff in the man page for less at -r.  However -R will
+    //   not display all unicode characters correctly, so those have to be picked carefully,
+    //   by empirically testing that e.g. "echo ◼ | less -R -F -X" renders correctly.  
+    //
+    // ∙ The -F option makes less exit immediately if all the output can be seen in one screen.
+    //
+    // ∙ The -X option is needed because we found that in full screen mode on OSX Catalina, output
+    //   was sent to the alternate screen, and hence it appeared that one got no output at all
+    //   from enclone.  This is really bad, so do not turn off this option!
+
+    if pager {
+        Pager::with_pager("less -R -F -X").setup();
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

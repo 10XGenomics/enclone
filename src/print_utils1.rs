@@ -451,10 +451,16 @@ pub fn start_gen(
     unique_sort(&mut donors);
     fwriteln!(&mut mlog, "CLONOTYPE = {} CELLS", n);
     if donors.len() > 1 {
-        fwriteln!(
-            &mut mlog,
-            "🔴 WARNING: This clonotype contains cells from multiple donors."
-        );
+        if ctl.pretty {
+            // emit_red_escape(&mut mlog);
+            // what is below is a brighter red
+            mlog.append(&mut b"[38;5;9m".to_vec());
+        }
+        fwrite!(&mut mlog, "██");
+        if ctl.pretty {
+            emit_end_escape(&mut mlog);
+        }
+        fwriteln!(&mut mlog, " WARNING: This clonotype contains cells from multiple donors.");
         for i in 0..donors.len() {
             let mut lenas = Vec::<String>::new();
             for u in 0..nexacts {
