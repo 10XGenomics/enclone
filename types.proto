@@ -43,21 +43,24 @@ message ExactSubClonotypeChain {
     // UMI counts of contigs associated with this exact subclonotype chain. The number of elements
     // in this vector is equal to the number of barcodes associated with this exact subclonotype.
     repeated uint32 umi_counts = 8;
+    // Read counts of contigs associated with this exact subclonotype chain. The number of elements
+    // in this vector is equal to the number of barcodes associated with this exact subclonotype.
+    repeated uint32 read_counts = 9;
     // Names of contigs associated with this exact subclonotype chain. The number of elements
     // in this vector is equal to the number of barcodes associated with this exact subclonotype.
     // The contig name would be of the form `{barcode}_contig_{id}`.
-    repeated string contig_ids = 9;
+    repeated string contig_ids = 10;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the clonotype consensus
     // of this chain.
     // TODO: Do we need amino acid alignment info?
-    required Alignment clonotype_consensus_aln = 10;
+    required Alignment clonotype_consensus_aln = 11;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
     // reference of this chain (defined elsewhere in this file).
     // TODO: Default donor reference to universal reference?
-    required Alignment donor_reference_aln = 11;
+    required Alignment donor_reference_aln = 12;
     // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
     // reference of this chain (defined elsewhere in this file).
-    required Alignment universal_reference_aln = 12;
+    required Alignment universal_reference_aln = 13;
 }
 
 // The chains in a clonotype are ordered an hence they have a unique index.

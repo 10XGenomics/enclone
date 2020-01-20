@@ -187,9 +187,11 @@ pub fn make_loupe_clonotype(
             let cdr3_start = v_start + ex.share[m].cdr3_start;
             let cdr3_end = cdr3_start + ex.share[m].cdr3_dna.len();
             let mut umi_counts = Vec::<u32>::new();
+            let mut read_counts = Vec::<u32>::new();
             let mut contig_ids = Vec::<String>::new();
             for l in 0..ex.clones.len() {
                 umi_counts.push(ex.clones[l][m].umi_count as u32);
+                read_counts.push(ex.clones[l][m].read_count as u32);
                 contig_ids.push(ex.clones[l][m].tigname.clone());
             }
 
@@ -216,6 +218,7 @@ pub fn make_loupe_clonotype(
                 cdr3_start: cdr3_start as u32,
                 cdr3_end: cdr3_end as u32,
                 umi_counts: umi_counts,
+                read_counts: read_counts,
                 contig_ids: contig_ids,
                 clonotype_consensus_aln: clonotype_consensus_aln,
                 donor_reference_aln: donor_reference_aln,
