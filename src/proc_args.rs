@@ -348,8 +348,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_group_opt.min_group = args[i].after("MIN_GROUP=").force_usize();
         } else if is_simple_arg(&args[i], "BCJOIN") {
             ctl.join_alg_opt.bcjoin = true;
+        } else if args[i].starts_with("EXFASTA=") {
+            ctl.gen_opt.fasta = args[i].after("EXFASTA=").to_string();
         } else if args[i].starts_with("FASTA=") {
-            ctl.gen_opt.fasta = args[i].after("FASTA=").to_string();
+            ctl.gen_opt.fasta_filename = args[i].after("FASTA=").to_string();
         } else if args[i].starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", args[i].after("CDR3=")));
             if !reg.is_ok() {

@@ -207,6 +207,11 @@ pub fn help3(args: &Vec<String>) {
             "If you want to completely suppress the generation of visual clonotypes, add \
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
+        print(
+            "If you want to generate FASTA output for each chain in each exact subclonotype, \
+             use the argument\n\\bold{FASTA=filename}.  The special case \\bold{stdout} will \
+             cause the FASTA records to be shown as part of standard output.\n\n",
+        );
         let mut log = Vec::<u8>::new();
         if !plain {
             emit_bold_escape(&mut log);
@@ -220,7 +225,7 @@ pub fn help3(args: &Vec<String>) {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
         }
-        log.append(&mut b"details below\n".to_vec());
+        log.append(&mut b"parseable output fields\n".to_vec());
         if !plain {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);

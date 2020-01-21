@@ -42,6 +42,18 @@ pub fn group_and_print_clonotypes(
         fwriteln!(pout, "{}", pcols.iter().format(","));
     }
 
+    // Set up for fasta output.
+
+    #[allow(bare_trait_objects)]
+    let mut fout = match ctl.gen_opt.fasta_filename.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.fasta_filename);
+            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+        }
+    };
+
     // Group clonotypes and make output.
 
     let mut last_width = 0;
