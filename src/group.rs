@@ -18,6 +18,7 @@ use vector_utils::*;
 pub fn group_and_print_clonotypes(
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
+    mat: &Vec<Vec<Vec<Option<usize>>>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
@@ -161,6 +162,22 @@ pub fn group_and_print_clonotypes(
                 m += 1;
             }
             last_width = m - 1;
+
+            // Generate fasta output.
+
+            if ctl.gen_opt.fasta_filename.len() > 0 {
+                for (k,u) in exacts[oo].iter().enumerate() {
+                    for m in 0..mat[oo].len() {
+                        if mat[oo][m][k].is_some() {
+                            let r = mat[oo][m][k].unwrap();
+                            let ex = &exact_clonotypes[*u];
+                            fwriteln!( fout, 
+                                ">group{}.clonotype{}.exact{}.chain{}", groups, j+1, k+1, m+1 );
+                            fwriteln!( fout, "{}", strme(&ex.share[r].full_seq) );
+                        }
+                    }
+                }
+            }
 
             // Generate parseable output.
 
