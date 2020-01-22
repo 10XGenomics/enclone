@@ -210,7 +210,12 @@ pub fn help3(args: &Vec<String>) {
         print(
             "If you want to generate FASTA output for each chain in each exact subclonotype, \
              use the argument\n\\bold{FASTA=filename}.  The special case \\bold{stdout} will \
-             cause the FASTA records to be shown as part of standard output.\n\n",
+             cause the FASTA records to be shown as part of standard output.  The FASTA records \
+             that are generated are of the form V(D)JC, where V is the full V segment (including \
+             the leader) and C is the full constant region, copied verbatim from the reference.  \
+             If a particular chain in a particular exact subclonotype is not assigned a constant \
+             region, then we use the constant region that was assigned to the clonotype.  If no \
+             constant region at all was assigned, then the FASTA record is omitted.\n\n",
         );
         let mut log = Vec::<u8>::new();
         if !plain {

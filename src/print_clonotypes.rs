@@ -754,6 +754,7 @@ pub fn print_clonotypes(
         out_datas.append(&mut results[i].7);
     }
     group_and_print_clonotypes(
+        &refdata,
         &pics,
         &exacts,
         &mat,

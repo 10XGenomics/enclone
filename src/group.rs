@@ -13,9 +13,11 @@ use std::io::Write;
 use std::io::*;
 use std::path::Path;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 pub fn group_and_print_clonotypes(
+    refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
     mat: &Vec<Vec<Vec<Option<usize>>>>,
@@ -173,7 +175,26 @@ pub fn group_and_print_clonotypes(
                             let ex = &exact_clonotypes[*u];
                             fwriteln!( fout, 
                                 ">group{}.clonotype{}.exact{}.chain{}", groups, j+1, k+1, m+1 );
-                            fwriteln!( fout, "{}", strme(&ex.share[r].full_seq) );
+                            let mut seq = ex.share[r].seq.clone();
+                            let mut cid = ex.share[r].c_ref_id;
+                            if cid.is_none() {
+                                for l in 0..exacts[oo].len() {
+                                    if mat[oo][m][l].is_some() {
+                                        let r2 = mat[oo][m][l].unwrap();
+                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
+                                        let cid2 = ex2.share[r2].c_ref_id;
+                                        if cid2.is_some() {
+                                            cid = cid2;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if cid.is_some() {
+                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
+                                seq.append( &mut cseq );
+                                fwriteln!( fout, "{}", strme(&seq) );
+                            }
                         }
                     }
                 }
