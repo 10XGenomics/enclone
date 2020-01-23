@@ -323,5 +323,8 @@ pub fn main_enclone(args: &Vec<String>) {
         );
     }
     println!("");
-    std::process::exit(0);
+    // The following line is commented out because it isn't appropriate if 
+    // cellranger calls main_enclone.  We could make it optional, however it's
+    // not clear that the line actually saves time.
+    // std::process::exit(0);
 }
