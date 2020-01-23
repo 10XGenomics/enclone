@@ -574,7 +574,8 @@ pub fn help1(args: &Vec<String>) {
         println!("conventions\n");
         end_escape!();
         println!(
-            "• Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
+            "• When we refer to \"V segments\", we always include the leader segment.\n\
+             • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
              chains within a clonotype, however DNA and amino-acid positions are numbered starting \
              at zero.\n"
         );
