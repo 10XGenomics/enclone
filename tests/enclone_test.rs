@@ -75,8 +75,8 @@ fn test_enclone() {
         "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
         // 12. this added because it got better when a noise filter was added, also tests umax
         "TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax",
-        // 13. this added because it got better when a noise filter was added
-        "TCR=163914 CDR3=CAFRGGSYIPTF",
+        // 13. this added because it got better when a noise filter was added; also test FASTA
+        "TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout",
         // 14. this added because it got better when a bug in bads detection was fixed
         "TCR=163914 CDR3=CASRLGGEETQYF",
         // 15. tests insertion
