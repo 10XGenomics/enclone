@@ -24,7 +24,7 @@
 // Undocumented option: inclusive ranges l1-l2 of lena ids are expanded out.
 //
 // Optional arguments governing input and output files:
-// - FASTA=f: dump fasta file f for V..J exact subclonotypes.
+// - EXFASTA=f: dump fasta file f for V..J exact subclonotypes.
 //
 // Optional arguments that control basic execution:
 // - HAPS=n: profile using count n; however to actually use this you need to temporarily

@@ -13,11 +13,14 @@ use std::io::Write;
 use std::io::*;
 use std::path::Path;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 pub fn group_and_print_clonotypes(
+    refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
+    mat: &Vec<Vec<Vec<Option<usize>>>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
@@ -41,6 +44,18 @@ pub fn group_and_print_clonotypes(
     if !ctl.parseable_opt.pout.is_empty() && ctl.parseable_opt.pout != "stdout".to_string() {
         fwriteln!(pout, "{}", pcols.iter().format(","));
     }
+
+    // Set up for fasta output.
+
+    #[allow(bare_trait_objects)]
+    let mut fout = match ctl.gen_opt.fasta_filename.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.fasta_filename);
+            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+        }
+    };
 
     // Group clonotypes and make output.
 
@@ -149,6 +164,41 @@ pub fn group_and_print_clonotypes(
                 m += 1;
             }
             last_width = m - 1;
+
+            // Generate fasta output.
+
+            if ctl.gen_opt.fasta_filename.len() > 0 {
+                for (k,u) in exacts[oo].iter().enumerate() {
+                    for m in 0..mat[oo].len() {
+                        if mat[oo][m][k].is_some() {
+                            let r = mat[oo][m][k].unwrap();
+                            let ex = &exact_clonotypes[*u];
+                            fwriteln!( fout, 
+                                ">group{}.clonotype{}.exact{}.chain{}", groups, j+1, k+1, m+1 );
+                            let mut seq = ex.share[r].seq.clone();
+                            let mut cid = ex.share[r].c_ref_id;
+                            if cid.is_none() {
+                                for l in 0..exacts[oo].len() {
+                                    if mat[oo][m][l].is_some() {
+                                        let r2 = mat[oo][m][l].unwrap();
+                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
+                                        let cid2 = ex2.share[r2].c_ref_id;
+                                        if cid2.is_some() {
+                                            cid = cid2;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if cid.is_some() {
+                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
+                                seq.append( &mut cseq );
+                                fwriteln!( fout, "{}", strme(&seq) );
+                            }
+                        }
+                    }
+                }
+            }
 
             // Generate parseable output.
 
