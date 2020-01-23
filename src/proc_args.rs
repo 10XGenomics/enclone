@@ -152,6 +152,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "CTRLC") {
         } else if is_simple_arg(&args[i], "FORCE") {
             ctl.force = true;
+        } else if is_simple_arg(&args[i], "CELLRANGER") {
         } else if is_simple_arg(&args[i], "WEAK") {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
