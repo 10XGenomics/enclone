@@ -107,6 +107,8 @@
 //
 // PROTECT_BADS
 //
+// EMAIL: name for email address (default enclone)
+//
 // EXT=filename:
 // Given output of an external clonotyping algorithm which took as inputs the pipeline outputs 
 // for the lenas in enclone.testdata, for each exact subclonotype found by enclone, report its 
