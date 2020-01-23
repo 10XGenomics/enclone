@@ -321,7 +321,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     format!( "Something has gone badly wrong.  You have probably \
                     encountered an internal error\nin cellranger.  \
                     Please email us at help@10xgenomics.com, including the traceback\nshown \
-                    above.\n\n" );
+                    above." );
             }
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
