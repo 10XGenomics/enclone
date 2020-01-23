@@ -248,7 +248,6 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.pretty = true;
     let mut nopretty = false;
-    ctl.gen_opt.email = "help".to_string();
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN") {
             ctl.pretty = false;
@@ -259,8 +258,8 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if is_simple_arg(&args[i], "COMP") {
             ctl.comp = true;
         }
-        if args[i].starts_with("EMAIL=") {
-            ctl.gen_opt.email = args[i].after("EMAIL=").to_string();
+        if is_simple_arg(&args[i], "CELLRANGER") {
+            ctl.gen_opt.cellranger = true;
         }
     }
 
@@ -305,16 +304,25 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let exit_message =
-                format!( "Something has gone badly wrong.  Please check to make \
-                sure that none\nof your input files are corrupted.  If they are all OK, then you \
-                have probably\n\
-                encountered an internal error in enclone.\n\
-                Please email us at {}@10xgenomics.com, including the traceback shown\n\
-                above and also the following version information:\n\
-                {} = {}.\n\n\
-                Thank you and have a nice day!", 
-                ctl.gen_opt.email, env!("CARGO_PKG_VERSION"), VERSION_STRING );
+            let exit_message : String;
+            if !ctl.gen_opt.cellranger {
+                exit_message =
+                    format!( "Something has gone badly wrong.  Please check to make \
+                    sure that none\nof your input files are corrupted.  If they are all OK, then \
+                    you have probably\n\
+                    encountered an internal error in enclone.\n\
+                    Please email us at enclone@10xgenomics.com, including the traceback shown\n\
+                    above and also the following version information:\n\
+                    {} = {}.\n\n\
+                    Thank you and have a nice day!", 
+                    env!("CARGO_PKG_VERSION"), VERSION_STRING );
+            } else {
+                exit_message =
+                    format!( "Something has gone badly wrong.  You have probably \
+                    encountered an internal error\nin cellranger.  \
+                    Please email us at help@10xgenomics.com, including the traceback\nshown \
+                    above.\n\n" );
+            }
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
             for i in 1..args.len() {

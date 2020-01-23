@@ -79,7 +79,7 @@ pub struct GeneralOpt {
     pub refname: String,
     pub noprint: bool,
     pub required_fps: Option<usize>,
-    pub email: String,
+    pub cellranger: bool,
 }
 
 // Allele finding algorithmic options.
