@@ -352,6 +352,19 @@ pub fn help5(args: &Vec<String>) {
              nonsensical and confusing behavior!\n\n",
         );
 
+        print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
+        print( 
+            "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
+            get zero.\n\n",
+        );
+
+        print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
+        print( 
+            "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
+            one of the filters described in \\bold{enclone help special}, and which you can \
+            turn off.  We also delete cells for which more than four chains were found.\n\n",
+        );
+
         std::process::exit(0);
     }
 

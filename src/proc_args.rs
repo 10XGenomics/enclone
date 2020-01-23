@@ -188,6 +188,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.con_con = true;
         } else if is_simple_arg(&args[i], "MOUSE") {
             ctl.gen_opt.mouse = true;
+        } else if args[i].starts_with("EMAIL=") {
         } else if args[i].starts_with("REF=") {
             ctl.gen_opt.refname = args[i].after("REF=").to_string();
         } else if is_simple_arg(&args[i], "NSILENT") {

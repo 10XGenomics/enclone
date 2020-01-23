@@ -285,8 +285,8 @@ pub fn add_header_text(
             }
         }
         let mut simple = false;
-        let n = seqs[0].len() - jref.len();
-        if ctl.clono_print_opt.note_simple && vref.len() >= n {
+        if ctl.clono_print_opt.note_simple && vref.len() + jref.len() >= seqs[0].len() {
+            let n = seqs[0].len() - jref.len();
             let mut vj = vref[0..n].to_vec();
             vj.append(&mut jref.clone());
             if vj == seqs[0] {
