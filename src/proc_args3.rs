@@ -105,7 +105,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 } else {
                     if p.parse::<i32>().is_ok() && internal_run {
                         p = format!("{}", get_outs(&p));
-                    } else {
+                    } else if !p.ends_with("/outs") {
                         p = format!("{}/outs", p);
                     }
                 }
