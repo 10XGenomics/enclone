@@ -1,0 +1,19 @@
+
+Notes on some testing issues:
+
+1. Testing in debug mode (more precisely with overflow detection on) is a good thing
+   to do at least occasionally.
+
+2. The code for NOPAGER accidentally broke at one point and we
+   don't want that to recur.  Some test cases that could be verified:
+   enclone BCR=...
+   enclone BCR=... NOPAGER
+   enclone help all
+   enclone help all NOPAGER
+   enclone help faq
+   enclone help faq NOPAGER.
+   This seems to require manual testing.
+
+3. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
+   because the output was going to the alternate screen.
+   This seems to require manual testing.

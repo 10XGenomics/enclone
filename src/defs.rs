@@ -79,6 +79,7 @@ pub struct GeneralOpt {
     pub refname: String,
     pub noprint: bool,
     pub required_fps: Option<usize>,
+    pub email: String,
 }
 
 // Allele finding algorithmic options.
