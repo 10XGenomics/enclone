@@ -365,6 +365,13 @@ pub fn help5(args: &Vec<String>) {
             turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
 
+        print("\\boldblue{12. Can enclone print summary stats?}\n\n");
+        print( 
+            "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
+            printed.  If you only want to see the summary stats, then also add the option \
+            \\bold{NOPRINT}.\n\n",
+        );
+
         std::process::exit(0);
     }
 

@@ -80,6 +80,7 @@ pub struct GeneralOpt {
     pub noprint: bool,
     pub required_fps: Option<usize>,
     pub cellranger: bool,
+    pub summary: bool,
 }
 
 // Allele finding algorithmic options.

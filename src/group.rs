@@ -234,6 +234,24 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
+
+    // Print summary stats.
+
+    if ctl.gen_opt.summary {
+        println!( "\nSummary statistics for the selected clonotypes" );
+        let nclono = exacts.len();
+        let mut ncells = 0;
+        for i in 0..nclono {
+            for j in 0..exacts[i].len() {
+                ncells += exact_clonotypes[exacts[i][j]].ncells();
+            }
+        }
+        println!( "• number of clonotypes = {}", nclono );
+        println!( "• number of cells = {}", ncells );
+    }
+
+    // Test for required number of false positives.
+
     if ctl.gen_opt.required_fps.is_some() {
         let mut fps = 0;
         for i in 0..pics.len() {
