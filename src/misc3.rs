@@ -68,6 +68,15 @@ pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
                 && refdata.name[cid1.unwrap()] > refdata.name[cid2.unwrap()]
             {
                 return Ordering::Greater;
+
+            // Order by JC delta.
+
+            } else if x[i].c_start.is_some() && y[i].c_start.is_some()
+                && x[i].c_start.unwrap() + y[i].j_stop < y[i].c_start.unwrap() + x[i].j_stop {
+                return Ordering::Less;
+            } else if x[i].c_start.is_some() && y[i].c_start.is_some()
+                && x[i].c_start.unwrap() + y[i].j_stop > y[i].c_start.unwrap() + x[i].j_stop {
+                return Ordering::Greater;
             }
         }
         if x.len() < y.len() {
