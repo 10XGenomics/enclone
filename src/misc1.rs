@@ -294,9 +294,10 @@ pub fn print_weird_jc(
                         if delta != 0 {
                             let jname = &refdata.name[ex.share[k].j_ref_id];
                             println!( 
-                                "exact subclonotype {}, clone {} of {}, chain {}, {}, \
+                                "ex {}, clone {}/{}, chain {}, {}, {}, \
                                 j_stop = {}, c_start = {}, delta = {}",
-                                i, j+1, k+1, ex.clones.len(), jname, j_stop, c_start, delta );
+                                i, j+1, k+1, ex.clones.len(), ex.share[k].cdr3_aa, jname,
+                                j_stop, c_start, delta );
                         }
                     }
                 }
