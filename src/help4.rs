@@ -448,12 +448,16 @@ pub fn help4(args: &Vec<String>) {
         doc!("udiff", "like cdiff, but for the 5'-UTR");
         ldoc!(
             "notes",
-            "optional note if there is an insertion, elided if empty"
+            "optional note if there is an insertion or the end of J does not exactly abut"
+        );
+        doc!( "",
+              "the beginning of C; elided if empty"
         );
         ldoc!(
             "ndiff<n>",
-            "number of base differences within V..J with exact subclonotype n"
+            "number of base differences within V..J between this exact subclonotype and"
         );
+        doc!( "", "exact subclonotype n" );
 
         // The rest.
 

@@ -122,7 +122,8 @@ pub fn help5(args: &Vec<String>) {
              observed.  For the \\bold{AMINO} option, the deletion is first shifted by up to two \
              bases, so that the deletion starts at a base position that is divisible by three.  \
              Then the deleted amino acids are shown as hyphens.\n\n\
-             Insertions are shown only in amino acid space, in a special per-chain column that \
+             Insertions are shown only in amino acid space, in a special per-chain column called \
+             \\bold{notes} that \
              appears if there is an insertion.  Colored amino acids are shown for the insertion, \
              and the position of the insertion is shown.  The position is the position of the \
              amino acid after which the insertion appears, where the first amino acid (start \
