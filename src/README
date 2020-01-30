@@ -110,6 +110,8 @@
 // CELLRANGER: for use if called from cellranger -- changes failure message and prevents exit
 //             upon normal completion
 //
+// WEIRD_JC: print info about noncanical J/C junctions
+//
 // EXT=filename:
 // Given output of an external clonotyping algorithm which took as inputs the pipeline outputs 
 // for the lenas in enclone.testdata, for each exact subclonotype found by enclone, report its 

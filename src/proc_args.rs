@@ -157,6 +157,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
             ctl.gen_opt.reuse = true;
+        } else if is_simple_arg(&args[i], "WEIRD_JC") {
+            ctl.gen_opt.weird_jc = true;
         } else if args[i].starts_with("BINARY=") {
             ctl.gen_opt.binary = args[i].after("BINARY=").to_string();
         } else if args[i].starts_with("PROTO=") {

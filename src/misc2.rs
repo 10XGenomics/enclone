@@ -172,6 +172,7 @@ pub fn create_exact_subclonotype_core(
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
+            
             u_ref_id: tig_bc[r][m].u_ref_id,
             v_ref_id: tig_bc[r][m].v_ref_id,
             v_ref_id_donor: None,
@@ -199,6 +200,7 @@ pub fn create_exact_subclonotype_core(
                     quals: tig_bc[t][m].quals.clone(),
                     v_start: tig_bc[t][m].v_start.clone(),
                     j_stop: tig_bc[t][m].j_stop.clone(),
+                    c_start: tig_bc[t][m].c_start,
                     full_seq: tig_bc[t][m].full_seq.clone(),
                     barcode: tig_bc[t][m].barcode.clone(),
                     tigname: tig_bc[t][m].tigname.clone(),

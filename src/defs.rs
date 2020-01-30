@@ -81,6 +81,7 @@ pub struct GeneralOpt {
     pub required_fps: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
+    pub weird_jc: bool,
 }
 
 // Allele finding algorithmic options.
@@ -222,7 +223,8 @@ pub struct TigData {
     pub v_stop_ref: usize,                    // stop of aligned V on reference V
     pub j_start: usize,                       // start of aligned J on full contig sequence
     pub j_start_ref: usize,                   // start of aligned J on reference J
-    pub j_stop: usize,                        // stop of J on full contig sequences
+    pub j_stop: usize,                        // stop of J on full contig sequence
+    pub c_start: Option<usize>,               // start of C on full contig sequence
     pub full_seq: Vec<u8>,                    // full contig sequence
     pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
     pub v_ref_id: usize,                      // index of V segment reference sequence in ref file
@@ -250,15 +252,16 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,    // quality scores, truncated to V..J
-    pub v_start: usize,    // start of V on full contig sequence
-    pub j_stop: usize,     // stop of J on full contig sequence
-    pub full_seq: Vec<u8>, // full contig sequence
-    pub barcode: String,   // barcode
-    pub tigname: String,   // name of contig
-    pub lena_index: usize, // index of lena id
-    pub umi_count: usize,  // number of UMIs supporting contig
-    pub read_count: usize, // number of reads supporting contig
+    pub quals: Vec<u8>,                       // quality scores, truncated to V..J
+    pub v_start: usize,                       // start of V on full contig sequence
+    pub j_stop: usize,                        // stop of J on full contig sequence
+    pub c_start: Option<usize>,               // start of C on full contig sequence
+    pub full_seq: Vec<u8>,                    // full contig sequence
+    pub barcode: String,                      // barcode
+    pub tigname: String,                      // name of contig
+    pub lena_index: usize,                    // index of lena id
+    pub umi_count: usize,                     // number of UMIs supporting contig
+    pub read_count: usize,                    // number of reads supporting contig
 }
 
 pub struct TigData1 {

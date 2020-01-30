@@ -272,3 +272,29 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
         erase_if(&mut tig_bc, &to_delete);
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn print_weird_jc( ctl: &EncloneControl, exact_clonotypes: &Vec<ExactClonotype> ) {
+    if ctl.gen_opt.weird_jc {
+        println!( "weird J/C junctions\n" );
+        for i in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[i];
+            for j in 0..ex.clones.len() {
+                let x = &ex.clones[j];
+                for k in 0..x.len() {
+                    if x[k].c_start.is_some() {
+                        let j_stop = x[k].j_stop;
+                        let c_start = x[k].c_start.unwrap();
+                        if j_stop != c_start {
+                            println!( 
+                                "exact subclonotype {}, clone {} of {}, chain {}, \
+                                j_stop = {}, c_start = {}",
+                                i, j+1, k+1, ex.clones.len(), j_stop, c_start );
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
