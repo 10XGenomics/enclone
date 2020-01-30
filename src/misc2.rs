@@ -247,6 +247,11 @@ pub fn find_exact_subclonotypes(
                     || ( cid1.is_none() && cid2.is_some() ) || ( cid1.is_some() && cid2.is_none() )
                     || ( cid1.is_some() && cid2.is_some()
                         && refdata.name[cid1.unwrap()] != refdata.name[cid2.unwrap()] )
+
+
+                    || ( cid1.is_some() && cid2.is_some()
+                        && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
+
                 {
                     ok = false;
                     break;
