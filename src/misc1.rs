@@ -296,7 +296,7 @@ pub fn print_weird_jc(
                             println!( 
                                 "ex {}, clone {}/{}, chain {}, {}, {}, \
                                 j_stop = {}, c_start = {}, delta = {}",
-                                i, j+1, k+1, ex.clones.len(), ex.share[k].cdr3_aa, jname,
+                                i, j+1, ex.clones.len(), k+1, ex.share[k].cdr3_aa, jname,
                                 j_stop, c_start, delta );
                         }
                     }
