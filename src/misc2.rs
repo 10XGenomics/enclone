@@ -216,8 +216,7 @@ pub fn create_exact_subclonotype_core(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Find exact subclonotypes.  We use a strict definition of exact subclonotypes, not
-// allowing for errors.
+// Find exact subclonotypes.  
 
 pub fn find_exact_subclonotypes(
     ctl: &EncloneControl,
