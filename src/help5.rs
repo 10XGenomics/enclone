@@ -373,6 +373,26 @@ pub fn help5(args: &Vec<String>) {
             \\bold{NOPRINT}.\n\n",
         );
 
+        print("\\boldblue{13. What is the notes column?}\n\n");
+        print( 
+            "The notes column appears if one of two relatively rare events occurs:\n\
+            1. An insertion is detected in a chain sequence, relative to the reference.\n\
+            2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
+            the beginning of the C segment.\n\
+            The latter could correspond to one of several phenomena:\n\
+            a. A transcript has an insertion between its J and C segments.\n   \
+            This can happen.  See e.g. Behlke MA, Loh DY.\n   \
+            Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
+            Nature 322(1986), 379-382.\n\
+            b. There is an error in a reference sequence segment.\n   \
+            We have tried to eliminate all such errors from the built-in references for\n   \
+            human and mouse.\n\
+            c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
+               cellranger pipeline just happened to pick a nonstandard one.\n\
+            d. There was a technical artifact and the sequence does not actually represent\n   \
+            an mRNA molecule.\n\n",
+        );
+
         std::process::exit(0);
     }
 
