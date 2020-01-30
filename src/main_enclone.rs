@@ -183,7 +183,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Print info about weird J/C junctions.
 
-    print_weird_jc(&ctl, &exact_clonotypes);
+    print_weird_jc(&ctl, &refdata, &exact_clonotypes);
 
     // Filter out some foursie artifacts.
 

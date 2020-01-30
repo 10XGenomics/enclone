@@ -9,6 +9,7 @@ use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -275,7 +276,10 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn print_weird_jc( ctl: &EncloneControl, exact_clonotypes: &Vec<ExactClonotype> ) {
+pub fn print_weird_jc( 
+    ctl: &EncloneControl, 
+    refdata: &RefData,
+    exact_clonotypes: &Vec<ExactClonotype> ) {
     if ctl.gen_opt.weird_jc {
         println!( "weird J/C junctions\n" );
         for i in 0..exact_clonotypes.len() {
@@ -286,11 +290,13 @@ pub fn print_weird_jc( ctl: &EncloneControl, exact_clonotypes: &Vec<ExactClonoty
                     if x[k].c_start.is_some() {
                         let j_stop = x[k].j_stop;
                         let c_start = x[k].c_start.unwrap();
-                        if j_stop != c_start {
+                        let delta = (c_start as isize) - (j_stop as isize);
+                        if delta != 0 {
+                            let jname = &refdata.name[ex.share[k].j_ref_id];
                             println!( 
-                                "exact subclonotype {}, clone {} of {}, chain {}, \
-                                j_stop = {}, c_start = {}",
-                                i, j+1, k+1, ex.clones.len(), j_stop, c_start );
+                                "exact subclonotype {}, clone {} of {}, chain {}, {}, \
+                                j_stop = {}, c_start = {}, delta = {}",
+                                i, j+1, k+1, ex.clones.len(), jname, j_stop, c_start, delta );
                         }
                     }
                 }
