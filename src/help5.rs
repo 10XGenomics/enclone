@@ -393,6 +393,9 @@ pub fn help5(args: &Vec<String>) {
             an mRNA molecule.\n\n",
         );
 
+        print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
+        print( "Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n" );
+
         std::process::exit(0);
     }
 
