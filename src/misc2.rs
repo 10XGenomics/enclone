@@ -295,11 +295,13 @@ pub fn find_exact_subclonotypes(
         // higher UMI counts.
 
         let mut to_delete = vec![false; s - r];
-        for t1 in r..s {
-            for t2 in t1 + 1..s {
-                if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
-                    to_delete[t1 - r] = true;
-                    to_delete[t2 - r] = true;
+        if ctl.clono_filt_opt.bc_dup {
+            for t1 in r..s {
+                for t2 in t1 + 1..s {
+                    if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+                        to_delete[t1 - r] = true;
+                        to_delete[t2 - r] = true;
+                    }
                 }
             }
         }

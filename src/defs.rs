@@ -149,6 +149,7 @@ pub struct ClonoFiltOpt {
     pub weak_chains: bool,   // filter weak chains from clonotypes
     pub weak_onesies: bool,  // filter weak onesies
     pub weak_foursies: bool, // filter weak foursies
+    pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
 }
 
 // Clonotype printing options.

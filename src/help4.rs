@@ -237,6 +237,14 @@ pub fn help4(args: &Vec<String>) {
             "of oligos on gel beads.  The NWHITEF option turns off this filter."
         );
         ldoc!(
+            "NBC_DUP",
+            "By default, enclone filters out duplicated barcodes within an exact subclonotype."
+        );
+        doc!(
+            "",
+            "The NBC_DUP option turns off this filter."
+        );
+        ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
         );
