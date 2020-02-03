@@ -33,7 +33,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         } else if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
             internal_run = true;
-            ctl.gen_opt.pre = "/mnt/assembly/vdj/current12".to_string();
+            ctl.gen_opt.pre = "/mnt/assembly/vdj/current13".to_string();
         }
     }
     for i in 1..args.len() {
