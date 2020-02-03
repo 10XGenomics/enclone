@@ -26,7 +26,7 @@ use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
 
-const TEST_FILES_VERSION: u8 = 12;
+const TEST_FILES_VERSION: u8 = 13;
 const LOUPE_OUT_FILENAME: &str = "__test_proto";
 
 #[cfg(debug_assertions)]
@@ -63,7 +63,7 @@ fn test_enclone() {
         // 6. tests AMINO=
         "BCR=86237 CELLS=3 AMINO= CVARS=umed,rmed,cdr3_dna",
         // 7. tests SHM deletion
-        "BCR=123085 CVARSP=var,clen,cdiff CELLS=51 LVARSP=near,far",
+        "BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far",
         // 8. this clonotype included a junk chain before we made a change
         "TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor",
         // 9. tests PER_BC
