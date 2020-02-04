@@ -30,7 +30,7 @@ pub fn help1(args: &Vec<String>) {
         setup_pager(!nopager);
     }
     let mut help_all = false;
-    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
+    if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
         unsafe {
             HELP_ALL = true;
         }
