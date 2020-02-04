@@ -47,8 +47,9 @@ pub fn build_info(
         let mut chain_types = Vec::<String>::new();
         let mut vs_notes = Vec::<String>::new();
         let mut vs_notesx = Vec::<String>::new();
-        for j in 0..exact_clonotypes[i].share.len() {
-            let x = &mut exact_clonotypes[i].share[j];
+        let p = &mut exact_clonotypes[i];
+        for j in 0..p.share.len() {
+            let x = &mut p.share[j];
             tigsp.push(DnaString::from_acgt_bytes(&x.seq));
             // INCORRECT, TO DO SOMETHING ABOUT LATER:
             orig_tigs.push(DnaString::from_acgt_bytes(&x.full_seq));
@@ -131,6 +132,7 @@ pub fn build_info(
             // reference V segment accordingly.
 
             let rt = &refdata.refs[vid as usize];
+            let mut vsnx = String::new();
             if x.annv.len() == 2 {
                 if x.annv[0].1 as usize > rt.len() {
                     printme!(x.annv[0].1, rt.len());
@@ -178,7 +180,7 @@ pub fn build_info(
                         aax.push(aa);
                         emit_end_escape(&mut aax);
                     }
-                    vs_notesx.push(format!("ins = {} at {}", strme(&aax), ins_pos / 3));
+                    vsnx = format!("ins = {} at {}", strme(&aax), ins_pos / 3);
                 } else {
                     // maybe can't happen
                     vs.push(rt.clone());
@@ -187,16 +189,34 @@ pub fn build_info(
                     // the traceback did not get back to the main program, even with
                     // "enclone 123085 RE NOPRETTY".
                     vs_notes.push("".to_string());
-                    vs_notesx.push("".to_string());
+                    vsnx = "".to_string();
                 }
             } else {
                 vs.push(rt.clone());
                 vs_notes.push(String::new());
-                vs_notesx.push(String::new());
+                vsnx = "".to_string();
             }
             cdr3s.push(x.cdr3_dna.clone());
             cdr3_aa.push(x.cdr3_aa.clone());
             chain_types.push(x.chain_type.clone());
+
+            // Add to notes if there's a J/C delta.
+
+            let z = &p.clones[0][j];
+            if z.c_start.is_some() {
+                let delta = z.c_start.unwrap() as isize - z.j_stop as isize;
+                if delta != 0 {
+                    if vsnx.len() > 0 {
+                        vsnx += "; ";
+                    }
+                    if delta > 0 {
+                        vsnx += &mut format!("gap from J stop to C start = {}", delta);
+                    } else {
+                        vsnx += &mut format!("J and C segs overlap by {}", -delta);
+                    }
+                }
+            }
+            vs_notesx.push(vsnx);
 
             // Modify the exact subclonotype to fill in some members.
             // This is the only place where build_info modifies the exact subclonotype.
@@ -209,7 +229,7 @@ pub fn build_info(
         }
         let mut origin = Vec::<usize>::new();
         for j in 0..exact_clonotypes[i].clones.len() {
-            origin.push(exact_clonotypes[i].clones[j][0].lena_index);
+            origin.push(exact_clonotypes[i].clones[j][0].dataset_index);
         }
         unique_sort(&mut origin);
         let shares = &exact_clonotypes[i].share;

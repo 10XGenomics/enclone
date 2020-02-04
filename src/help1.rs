@@ -468,23 +468,19 @@ pub fn help1(args: &Vec<String>) {
             "clonotype",
             "all the cells descended from a single fully rearranged T or B cell"
         );
-        doc!("", "(approximately computationally)");
+        doc!("", "(approximated computationally)");
 
         // doc exact subclonotype
 
-        doc!(
-            "exact subclonotype",
-            "all cells having identical V..J DNA sequences and assigned the same"
-        );
-        doc!(
-            "",
-            "constant region reference sequence; there may be mutations in the 5'-UTR or"
-        );
-        doc!(
-            "",
-            "constant region within an exact subclonotype; every clonotype is a union"
-        );
-        doc!("", "of exact subclonotypes");
+        let x1 = "exact subclonotype".to_string();
+        let mut w2 = b"all cells having identical transcripts".to_vec();
+        emit_bold_escape(&mut w2);
+        emit_red_escape(&mut w2);
+        w2.append( &mut " ○".as_bytes().to_vec() );
+        emit_end_escape(&mut w2);
+        let x2 = stringme(&w2);
+        rows.push(vec![x1, x2]);
+        doc!( "", "(every clonotype is a union of exact subclonotypes)" );
 
         // doc clone
 
@@ -551,6 +547,17 @@ pub fn help1(args: &Vec<String>) {
         // print main table
 
         print_tab2(&rows);
+
+        // print footnote
+
+        print( "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
+            that cells:\n\
+            • have the same number of productive contigs identified\n\
+            • that these have identical bases within V..J\n\
+            • that they are assigned the same constant region reference sequences\n\
+            • and that the difference between the V stop and the C start is the same\n  \
+              (noting that this difference is nearly always zero).\n\
+            Note that we allow mutations within the 5'-UTR and constant regions.\n\n" );
 
         // conventions
 

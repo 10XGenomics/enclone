@@ -107,7 +107,8 @@
 //
 // PROTECT_BADS
 //
-// EMAIL: name for email address (default enclone)
+// CELLRANGER: for use if called from cellranger -- changes failure message and prevents exit
+//             upon normal completion
 //
 // EXT=filename:
 // Given output of an external clonotyping algorithm which took as inputs the pipeline outputs 

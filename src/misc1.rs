@@ -201,13 +201,13 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
 
         // For each lena index, and each sample, compute the total number of productive pairs.
 
-        let mut n_lena_index = vec![0; ctl.sample_info.n()];
+        let mut n_dataset_index = vec![0; ctl.sample_info.n()];
         let mut n_sample = vec![0; samples.len()];
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 let x = &tig_bc[i][j];
-                n_lena_index[x.lena_index] += 1;
-                n_sample[to_sample[x.lena_index]] += 1;
+                n_dataset_index[x.dataset_index] += 1;
+                n_sample[to_sample[x.dataset_index]] += 1;
             }
         }
 
@@ -222,7 +222,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             for i in 0..tig_bc.len() {
                 for j in 0..tig_bc[i].len() {
                     let x = &tig_bc[i][j];
-                    vjx.push((x.seq.clone(), x.lena_index, 1));
+                    vjx.push((x.seq.clone(), x.dataset_index, 1));
                 }
             }
             vjx.sort();
@@ -246,10 +246,10 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
         while i < vjx.len() {
             let j = next_diff1_3(&vjx, i as i32) as usize;
             if j - i == 1 {
-                let lena_index = vjx[i].1;
+                let dataset_index = vjx[i].1;
                 let n = vjx[i].2;
-                let x = n_lena_index[lena_index];
-                let y = n_sample[to_sample[lena_index]];
+                let x = n_dataset_index[dataset_index];
+                let y = n_sample[to_sample[dataset_index]];
                 if y > 0 {
                     let p = (x as f64 / y as f64).powi(n as i32);
                     if p <= 1.0e-6 {

@@ -33,7 +33,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         } else if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
             internal_run = true;
-            ctl.gen_opt.pre = "/mnt/assembly/vdj/current12".to_string();
+            ctl.gen_opt.pre = "/mnt/assembly/vdj/current13".to_string();
         }
     }
     for i in 1..args.len() {
@@ -64,6 +64,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.weak_chains = true;
     ctl.clono_filt_opt.weak_onesies = true;
     ctl.clono_filt_opt.weak_foursies = true;
+    ctl.clono_filt_opt.bc_dup = true;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -152,6 +153,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "CTRLC") {
         } else if is_simple_arg(&args[i], "FORCE") {
             ctl.force = true;
+        } else if is_simple_arg(&args[i], "CELLRANGER") {
         } else if is_simple_arg(&args[i], "WEAK") {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
@@ -180,6 +182,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.weak_onesies = false;
         } else if is_simple_arg(&args[i], "NFOURSIE_KILL") {
             ctl.clono_filt_opt.weak_foursies = false;
+        } else if is_simple_arg(&args[i], "NBC_DUP") {
+            ctl.clono_filt_opt.bc_dup = false;
         } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
         } else if is_simple_arg(&args[i], "UTR_CON") {
@@ -188,6 +192,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.con_con = true;
         } else if is_simple_arg(&args[i], "MOUSE") {
             ctl.gen_opt.mouse = true;
+        } else if is_simple_arg(&args[i], "SUMMARY") {
+            ctl.gen_opt.summary = true;
         } else if args[i].starts_with("EMAIL=") {
         } else if args[i].starts_with("REF=") {
             ctl.gen_opt.refname = args[i].after("REF=").to_string();
@@ -240,6 +246,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.ext = args[i].after("EXT=").to_string();
         } else if is_usize_arg(&args[i], "PCHAINS") {
             ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
+        } else if is_usize_arg(&args[i], "MAX_THREADS") {
+            let nthreads = args[i].after("MAX_THREADS=").force_usize();
+            let _ = rayon::ThreadPoolBuilder::new().num_threads(nthreads).build_global();
         } else if is_usize_arg(&args[i], "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(args[i].after("REQUIRED_FPS=").force_usize());
         } else if args[i].starts_with("PCOLS=") {

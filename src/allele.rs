@@ -74,13 +74,13 @@ pub fn find_alleles(
                 if !partner.is_empty() {
                     if y.seq_del.len() >= refdata.refs[id].len() - ctl.heur.ref_v_trim {
                         for l in 0..x.clones.len() {
-                            let donor = ctl.sample_info.donor_index[x.clones[l][j].lena_index];
+                            let donor = ctl.sample_info.donor_index[x.clones[l][j].dataset_index];
                             allxy[id].push((
                                 donor,
                                 y.seq_del.clone(),
                                 partner.clone(),
                                 m,
-                                x.clones[l][j].lena_index,
+                                x.clones[l][j].dataset_index,
                             ));
                         }
                     }

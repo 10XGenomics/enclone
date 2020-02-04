@@ -93,23 +93,23 @@ pub fn row_fill(
         };
     }
 
-    // Compute lenas, gex_med, gex_max.
+    // Compute dataset indices, gex_med, gex_max.
 
-    let mut lena_indices = Vec::<usize>::new();
+    let mut dataset_indices = Vec::<usize>::new();
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     for l in 0..ex.clones.len() {
-        lena_indices.push(ex.clones[l][0].lena_index);
+        dataset_indices.push(ex.clones[l][0].dataset_index);
     }
-    unique_sort(&mut lena_indices);
+    unique_sort(&mut dataset_indices);
     let mut lenas = Vec::<String>::new();
-    for l in lena_indices.iter() {
+    for l in dataset_indices.iter() {
         lenas.push(ctl.sample_info.dataset_id[*l].clone());
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
     for l in 0..ex.clones.len() {
-        let li = ex.clones[l][0].lena_index;
+        let li = ex.clones[l][0].dataset_index;
         let bc = ex.clones[l][0].barcode.clone();
         if !gex_info.gex_barcodes.is_empty() {
             let mut count = 0;
@@ -177,7 +177,7 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", lenas.iter().format(","))];
         } else if lvars[i] == "donors".to_string() {
             let mut donors = Vec::<String>::new();
-            for lena in lena_indices.iter() {
+            for lena in dataset_indices.iter() {
                 donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
             }
             unique_sort(&mut donors);
@@ -189,7 +189,7 @@ pub fn row_fill(
             let indices = ctl.sample_info.name_list[name].clone();
             let mut count = 0;
             for j in 0..ex.clones.len() {
-                if bin_member(&indices, &ex.clones[j][0].lena_index) {
+                if bin_member(&indices, &ex.clones[j][0].dataset_index) {
                     count += 1;
                 }
             }
@@ -243,7 +243,7 @@ pub fn row_fill(
         } else if lvars[i] == "ext".to_string() {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
-                let li = ctl.sample_info.dataset_id[ex.clones[l][0].lena_index].clone();
+                let li = ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone();
                 let bc = ex.clones[l][0].barcode.clone();
                 if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
                     exts.push(ctl.gen_opt.extc[&(li, bc)].clone());
@@ -269,7 +269,7 @@ pub fn row_fill(
         } else {
             let mut count = 0;
             for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].lena_index;
+                let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
@@ -306,7 +306,7 @@ pub fn row_fill(
     for l in 0..ex.clones.len() {
         bli.push((
             ex.clones[l][0].barcode.clone(),
-            ex.clones[l][0].lena_index,
+            ex.clones[l][0].dataset_index,
             l,
         ));
     }
@@ -637,7 +637,7 @@ pub fn row_fill(
             } else if rsi.cvars[col][j] == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
                 for l in 0..ex.clones.len() {
-                    let li = ex.clones[l][0].lena_index;
+                    let li = ex.clones[l][0].dataset_index;
                     let bc = &ex.clones[l][0].barcode;
                     let mut numi = 0;
                     for j in 0..ex.clones[l].len() {

@@ -15,7 +15,7 @@ pub fn main_build_immcantation_inputs() {
 
     // Location of files.
 
-    let pre = "/mnt/assembly/vdj/current12";
+    let pre = "/mnt/assembly/vdj/current13";
 
     // Get the list of lena ids.
 

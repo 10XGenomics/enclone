@@ -122,7 +122,8 @@ pub fn help5(args: &Vec<String>) {
              observed.  For the \\bold{AMINO} option, the deletion is first shifted by up to two \
              bases, so that the deletion starts at a base position that is divisible by three.  \
              Then the deleted amino acids are shown as hyphens.\n\n\
-             Insertions are shown only in amino acid space, in a special per-chain column that \
+             Insertions are shown only in amino acid space, in a special per-chain column called \
+             \\bold{notes} that \
              appears if there is an insertion.  Colored amino acids are shown for the insertion, \
              and the position of the insertion is shown.  The position is the position of the \
              amino acid after which the insertion appears, where the first amino acid (start \
@@ -364,6 +365,36 @@ pub fn help5(args: &Vec<String>) {
             one of the filters described in \\bold{enclone help special}, and which you can \
             turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
+
+        print("\\boldblue{12. Can enclone print summary stats?}\n\n");
+        print( 
+            "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
+            printed.  If you only want to see the summary stats, then also add the option \
+            \\bold{NOPRINT}.\n\n",
+        );
+
+        print("\\boldblue{13. What is the notes column?}\n\n");
+        print( 
+            "The notes column appears if one of two relatively rare events occurs:\n\
+            1. An insertion is detected in a chain sequence, relative to the reference.\n\
+            2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
+            the beginning of the C segment.\n\
+            The latter could correspond to one of several phenomena:\n\
+            a. A transcript has an insertion between its J and C segments.\n   \
+            This can happen.  See e.g. Behlke MA, Loh DY.\n   \
+            Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
+            Nature 322(1986), 379-382.\n\
+            b. There is an error in a reference sequence segment.\n   \
+            We have tried to eliminate all such errors from the built-in references for\n   \
+            human and mouse.\n\
+            c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
+               Cell Ranger pipeline just happened to pick a nonstandard one.\n\
+            d. There was a technical artifact and the sequence does not actually represent\n   \
+            an mRNA molecule.\n\n",
+        );
+
+        print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
+        print( "Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n" );
 
         std::process::exit(0);
     }
