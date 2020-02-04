@@ -98,6 +98,8 @@ fn test_enclone() {
         "BCR=\"165807;165808\" FAIL_ONLY=true EXPECT_NULL",
         // 23. here we were generating a fake alternate allele
         "BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30",
+        // 24. an example that uses IGHE
+        "BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
