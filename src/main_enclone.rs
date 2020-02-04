@@ -181,10 +181,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata);
 
-    // Print info about weird J/C junctions.
-
-    print_weird_jc(&ctl, &refdata, &exact_clonotypes);
-
     // Filter out some foursie artifacts.
 
     if ctl.clono_filt_opt.weak_foursies {
