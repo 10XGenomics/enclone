@@ -29,7 +29,7 @@ pub fn filter_gelbead_contamination(ctl: &EncloneControl, mut clones: &mut Vec<V
         const GB_MIN_FRAC: f64 = 0.2;
         let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
         for l in 0..clones.len() {
-            let li = clones[l][0].lena_index;
+            let li = clones[l][0].dataset_index;
             let bc = &clones[l][0].barcode;
             let mut numi = 0;
             for j in 0..clones[l].len() {
@@ -204,7 +204,7 @@ pub fn create_exact_subclonotype_core(
                     full_seq: tig_bc[t][m].full_seq.clone(),
                     barcode: tig_bc[t][m].barcode.clone(),
                     tigname: tig_bc[t][m].tigname.clone(),
-                    lena_index: tig_bc[t][m].lena_index,
+                    dataset_index: tig_bc[t][m].dataset_index,
                     umi_count: tig_bc[t][m].umi_count,
                     read_count: tig_bc[t][m].read_count,
                 });
@@ -272,7 +272,7 @@ pub fn find_exact_subclonotypes(
                         println!("see reuse of barcode {}", tig_bc[t1][0].barcode);
                         print!(
                             "{}: numis =",
-                            ctl.sample_info.dataset_id[tig_bc[t1][0].lena_index]
+                            ctl.sample_info.dataset_id[tig_bc[t1][0].dataset_index]
                         );
                         for m in 0..tig_bc[t1].len() {
                             print!(" {}", tig_bc[t1][m].umi_count);
@@ -280,7 +280,7 @@ pub fn find_exact_subclonotypes(
                         println!("");
                         print!(
                             "{}: numis =",
-                            ctl.sample_info.dataset_id[tig_bc[t2][0].lena_index]
+                            ctl.sample_info.dataset_id[tig_bc[t2][0].dataset_index]
                         );
                         for m in 0..tig_bc[t2].len() {
                             print!(" {}", tig_bc[t2][m].umi_count);
@@ -391,7 +391,7 @@ pub fn find_exact_subclonotypes(
             println!(
                 "clone {} = {}.{}",
                 i + 1,
-                ctl.sample_info.dataset_id[x.lena_index],
+                ctl.sample_info.dataset_id[x.dataset_index],
                 x.barcode
             );
         }
@@ -443,8 +443,8 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
         let mut all = Vec::<(String, usize, usize)>::new();
         let mut total = vec![0; ctl.sample_info.dataset_id.len()];
         for i in 0..tig_bc.len() {
-            all.push((tig_bc[i][0].barcode.clone(), tig_bc[i][0].lena_index, i));
-            total[tig_bc[i][0].lena_index] += 1;
+            all.push((tig_bc[i][0].barcode.clone(), tig_bc[i][0].dataset_index, i));
+            total[tig_bc[i][0].dataset_index] += 1;
         }
         all.par_sort();
         let mut reuse = Vec::<(usize, usize)>::new();

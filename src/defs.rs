@@ -238,7 +238,7 @@ pub struct TigData {
     pub barcode: String,                      // barcode
     pub tigname: String,                      // name of contig
     pub left: bool,                           // true if this is IGH or TRA
-    pub lena_index: usize,                    // index of lena id
+    pub dataset_index: usize,                 // index of dataset
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
@@ -259,7 +259,7 @@ pub struct TigData0 {
     pub full_seq: Vec<u8>,                    // full contig sequence
     pub barcode: String,                      // barcode
     pub tigname: String,                      // name of contig
-    pub lena_index: usize,                    // index of lena id
+    pub dataset_index: usize,                 // index of dataset
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
 }
@@ -312,10 +312,10 @@ impl ExactClonotype {
         }
         m
     }
-    pub fn lena_indices(&self) -> Vec<usize> {
+    pub fn dataset_indices(&self) -> Vec<usize> {
         let mut x = Vec::<usize>::new();
         for i in 0..self.clones.len() {
-            x.push(self.clones[i][0].lena_index);
+            x.push(self.clones[i][0].dataset_index);
         }
         unique_sort(&mut x);
         x

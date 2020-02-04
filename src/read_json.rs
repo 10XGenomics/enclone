@@ -352,7 +352,7 @@ pub fn read_json(
                     barcode: barcode.to_string(),
                     tigname: tigname.to_string(),
                     left: left,
-                    lena_index: li,
+                    dataset_index: li,
                     umi_count: umi_count,
                     read_count: read_count,
                     chain_type: chain_type.clone(),

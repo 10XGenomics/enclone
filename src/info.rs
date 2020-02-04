@@ -229,7 +229,7 @@ pub fn build_info(
         }
         let mut origin = Vec::<usize>::new();
         for j in 0..exact_clonotypes[i].clones.len() {
-            origin.push(exact_clonotypes[i].clones[j][0].lena_index);
+            origin.push(exact_clonotypes[i].clones[j][0].dataset_index);
         }
         unique_sort(&mut origin);
         let shares = &exact_clonotypes[i].share;
