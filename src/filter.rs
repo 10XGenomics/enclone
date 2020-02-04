@@ -170,7 +170,7 @@ pub fn survives_filter(
     }
     let mut lis = Vec::<usize>::new();
     for s in exacts.iter() {
-        let mut z = exact_clonotypes[*s].lena_indices();
+        let mut z = exact_clonotypes[*s].dataset_indices();
         lis.append(&mut z);
     }
     unique_sort(&mut lis);
@@ -204,7 +204,7 @@ pub fn survives_filter(
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
-            let lena = ex.clones[m][0].lena_index;
+            let lena = ex.clones[m][0].dataset_index;
             donors.push(ctl.sample_info.donor_index[lena]);
         }
     }

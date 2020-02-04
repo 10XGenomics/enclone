@@ -134,6 +134,7 @@ pub fn read_json(
                 let mut v_stop_ref = 0;
                 let mut j_start = 0;
                 let mut j_start_ref = 0;
+                let mut c_start = None;
                 let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
                 let cdr3_aa: String;
                 let cdr3_dna: String;
@@ -184,6 +185,7 @@ pub fn read_json(
                             seen_j = true;
                         } else if refdata.is_c(t) {
                             c_ref_id = Some(t);
+                            c_start = Some(ann[i].0 as usize);
                         }
                     }
                     for i in (0..annv.len()).rev() {
@@ -243,6 +245,7 @@ pub fn read_json(
                             }
                             if region_type == "C-REGION" {
                                 c_ref_id = Some(feature_id);
+                                c_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
                             }
                         }
                     }
@@ -335,6 +338,7 @@ pub fn read_json(
                     j_start: j_start,
                     j_start_ref: j_start_ref,
                     j_stop: tig_stop,
+                    c_start: c_start,
                     full_seq: full_seq.as_bytes().to_vec(),
                     v_ref_id: v_ref_id,
                     d_ref_id: d_ref_id,
@@ -348,7 +352,7 @@ pub fn read_json(
                     barcode: barcode.to_string(),
                     tigname: tigname.to_string(),
                     left: left,
-                    lena_index: li,
+                    dataset_index: li,
                     umi_count: umi_count,
                     read_count: read_count,
                     chain_type: chain_type.clone(),

@@ -234,6 +234,33 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
+
+    // Print summary stats.
+
+    if ctl.gen_opt.summary {
+        println!( "\nSummary statistics for the selected clonotypes" );
+        let nclono = exacts.len();
+        let mut ncells = 0;
+        let mut nchains = Vec::<usize>::new();
+        for i in 0..nclono {
+            for j in 0..exacts[i].len() {
+                ncells += exact_clonotypes[exacts[i][j]].ncells();
+            }
+            nchains.push( mat[i].len() );
+        }
+        println!( "• number of clonotypes = {}", nclono );
+        println!( "• number of cells = {}", ncells );
+        nchains.sort();
+        let mut i = 0;
+        while i < nchains.len() {
+            let j = next_diff(&nchains, i);
+            println!( "• number of clonotypes having {} chains = {}", nchains[i], j-i );
+            i = j;
+        }
+    }
+
+    // Test for required number of false positives.
+
     if ctl.gen_opt.required_fps.is_some() {
         let mut fps = 0;
         for i in 0..pics.len() {

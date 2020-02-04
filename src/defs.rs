@@ -79,7 +79,8 @@ pub struct GeneralOpt {
     pub refname: String,
     pub noprint: bool,
     pub required_fps: Option<usize>,
-    pub email: String,
+    pub cellranger: bool,
+    pub summary: bool,
 }
 
 // Allele finding algorithmic options.
@@ -147,6 +148,7 @@ pub struct ClonoFiltOpt {
     pub weak_chains: bool,   // filter weak chains from clonotypes
     pub weak_onesies: bool,  // filter weak onesies
     pub weak_foursies: bool, // filter weak foursies
+    pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
 }
 
 // Clonotype printing options.
@@ -221,7 +223,8 @@ pub struct TigData {
     pub v_stop_ref: usize,                    // stop of aligned V on reference V
     pub j_start: usize,                       // start of aligned J on full contig sequence
     pub j_start_ref: usize,                   // start of aligned J on reference J
-    pub j_stop: usize,                        // stop of J on full contig sequences
+    pub j_stop: usize,                        // stop of J on full contig sequence
+    pub c_start: Option<usize>,               // start of C on full contig sequence
     pub full_seq: Vec<u8>,                    // full contig sequence
     pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
     pub v_ref_id: usize,                      // index of V segment reference sequence in ref file
@@ -235,7 +238,7 @@ pub struct TigData {
     pub barcode: String,                      // barcode
     pub tigname: String,                      // name of contig
     pub left: bool,                           // true if this is IGH or TRA
-    pub lena_index: usize,                    // index of lena id
+    pub dataset_index: usize,                 // index of dataset
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
@@ -249,15 +252,16 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,    // quality scores, truncated to V..J
-    pub v_start: usize,    // start of V on full contig sequence
-    pub j_stop: usize,     // stop of J on full contig sequence
-    pub full_seq: Vec<u8>, // full contig sequence
-    pub barcode: String,   // barcode
-    pub tigname: String,   // name of contig
-    pub lena_index: usize, // index of lena id
-    pub umi_count: usize,  // number of UMIs supporting contig
-    pub read_count: usize, // number of reads supporting contig
+    pub quals: Vec<u8>,                       // quality scores, truncated to V..J
+    pub v_start: usize,                       // start of V on full contig sequence
+    pub j_stop: usize,                        // stop of J on full contig sequence
+    pub c_start: Option<usize>,               // start of C on full contig sequence
+    pub full_seq: Vec<u8>,                    // full contig sequence
+    pub barcode: String,                      // barcode
+    pub tigname: String,                      // name of contig
+    pub dataset_index: usize,                 // index of dataset
+    pub umi_count: usize,                     // number of UMIs supporting contig
+    pub read_count: usize,                    // number of reads supporting contig
 }
 
 pub struct TigData1 {
@@ -308,10 +312,10 @@ impl ExactClonotype {
         }
         m
     }
-    pub fn lena_indices(&self) -> Vec<usize> {
+    pub fn dataset_indices(&self) -> Vec<usize> {
         let mut x = Vec::<usize>::new();
         for i in 0..self.clones.len() {
-            x.push(self.clones[i][0].lena_index);
+            x.push(self.clones[i][0].dataset_index);
         }
         unique_sort(&mut x);
         x

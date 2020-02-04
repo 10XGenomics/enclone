@@ -449,7 +449,7 @@ pub fn print_clonotypes(
                     for l in 0..ex.clones.len() {
                         bli.push((
                             ex.clones[l][0].barcode.clone(),
-                            ex.clones[l][0].lena_index,
+                            ex.clones[l][0].dataset_index,
                             l,
                         ));
                     }

@@ -55,7 +55,7 @@ pub fn join_exacts(
         return eq;
     }
 
-    // Compute to_bc, which maps (lena_index, clonotype_id) to {barcodes}.
+    // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
     // This is intended as a replacement for some old code below.
 
     let timer1 = Instant::now();
@@ -63,11 +63,11 @@ pub fn join_exacts(
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
             let x = &exact_clonotypes[i].clones[j][0];
-            if !to_bc.contains_key(&(x.lena_index, i)) {
-                to_bc.insert((x.lena_index, i), vec![x.barcode.clone()]);
+            if !to_bc.contains_key(&(x.dataset_index, i)) {
+                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
             } else {
                 to_bc
-                    .get_mut(&(x.lena_index, i))
+                    .get_mut(&(x.dataset_index, i))
                     .unwrap()
                     .push(x.barcode.clone());
             }
