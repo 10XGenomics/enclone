@@ -388,7 +388,7 @@ pub fn help5(args: &Vec<String>) {
             We have tried to eliminate all such errors from the built-in references for\n   \
             human and mouse.\n\
             c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
-               cellranger pipeline just happened to pick a nonstandard one.\n\
+               Cell Ranger pipeline just happened to pick a nonstandard one.\n\
             d. There was a technical artifact and the sequence does not actually represent\n   \
             an mRNA molecule.\n\n",
         );
