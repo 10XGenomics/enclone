@@ -100,6 +100,8 @@ fn test_enclone() {
         "BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30",
         // 24. an example that uses IGHE
         "BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW",
+        // 25. add mouse B6 example that had messed up constant regions
+        "TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
