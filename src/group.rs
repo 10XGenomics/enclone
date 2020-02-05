@@ -168,13 +168,19 @@ pub fn group_and_print_clonotypes(
             // Generate fasta output.
 
             if ctl.gen_opt.fasta_filename.len() > 0 {
-                for (k,u) in exacts[oo].iter().enumerate() {
+                for (k, u) in exacts[oo].iter().enumerate() {
                     for m in 0..mat[oo].len() {
                         if mat[oo][m][k].is_some() {
                             let r = mat[oo][m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
-                            fwriteln!( fout, 
-                                ">group{}.clonotype{}.exact{}.chain{}", groups, j+1, k+1, m+1 );
+                            fwriteln!(
+                                fout,
+                                ">group{}.clonotype{}.exact{}.chain{}",
+                                groups,
+                                j + 1,
+                                k + 1,
+                                m + 1
+                            );
                             let mut seq = ex.share[r].seq.clone();
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
@@ -192,8 +198,8 @@ pub fn group_and_print_clonotypes(
                             }
                             if cid.is_some() {
                                 let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append( &mut cseq );
-                                fwriteln!( fout, "{}", strme(&seq) );
+                                seq.append(&mut cseq);
+                                fwriteln!(fout, "{}", strme(&seq));
                             }
                         }
                     }
@@ -238,7 +244,7 @@ pub fn group_and_print_clonotypes(
     // Print summary stats.
 
     if ctl.gen_opt.summary {
-        println!( "\nSummary statistics for the selected clonotypes" );
+        println!("\nSummary statistics for the selected clonotypes");
         let nclono = exacts.len();
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
@@ -246,15 +252,19 @@ pub fn group_and_print_clonotypes(
             for j in 0..exacts[i].len() {
                 ncells += exact_clonotypes[exacts[i][j]].ncells();
             }
-            nchains.push( mat[i].len() );
+            nchains.push(mat[i].len());
         }
-        println!( "• number of clonotypes = {}", nclono );
-        println!( "• number of cells = {}", ncells );
+        println!("• number of clonotypes = {}", nclono);
+        println!("• number of cells = {}", ncells);
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
             let j = next_diff(&nchains, i);
-            println!( "• number of clonotypes having {} chains = {}", nchains[i], j-i );
+            println!(
+                "• number of clonotypes having {} chains = {}",
+                nchains[i],
+                j - i
+            );
             i = j;
         }
     }

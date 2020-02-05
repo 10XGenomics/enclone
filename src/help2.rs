@@ -234,7 +234,7 @@ pub fn help2(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
         begin_doc!("support");
         print(
-             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
+            "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\

@@ -6,10 +6,10 @@ use crate::help2::*;
 use crate::help3::*;
 use crate::help4::*;
 use crate::help5::*;
+use crate::misc1::*;
 use crate::proc_args::*;
 use io_utils::*;
 use itertools::*;
-use crate::misc1::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::{
@@ -304,7 +304,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let exit_message : String;
+            let exit_message: String;
             if !ctl.gen_opt.cellranger {
                 exit_message =
                     format!( "Something has gone badly wrong.  Please check to make \
@@ -317,11 +317,12 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     Thank you and have a nice day!", 
                     env!("CARGO_PKG_VERSION"), VERSION_STRING );
             } else {
-                exit_message =
-                    format!( "Something has gone badly wrong.  You have probably \
-                    encountered an internal error\nin cellranger.  \
-                    Please email us at help@10xgenomics.com, including the traceback\nshown \
-                    above." );
+                exit_message = format!(
+                    "Something has gone badly wrong.  You have probably \
+                     encountered an internal error\nin cellranger.  \
+                     Please email us at help@10xgenomics.com, including the traceback\nshown \
+                     above."
+                );
             }
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;

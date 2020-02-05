@@ -157,7 +157,8 @@ pub fn make_loupe_clonotype(
             j_start_ref: ex.share[m0].j_start_ref as u32,
             j_end: ex.share[m0].j_stop as u32,
             cdr3_start: ex.share[m0].v_start as u32 + ex.share[m0].cdr3_start as u32,
-            cdr3_end: ex.share[m0].v_start as u32 + (ex.share[m0].cdr3_start + 3 * ex.share[m0].cdr3_aa.len()) as u32,
+            cdr3_end: ex.share[m0].v_start as u32
+                + (ex.share[m0].cdr3_start + 3 * ex.share[m0].cdr3_aa.len()) as u32,
         });
     }
 

@@ -252,16 +252,16 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,                       // quality scores, truncated to V..J
-    pub v_start: usize,                       // start of V on full contig sequence
-    pub j_stop: usize,                        // stop of J on full contig sequence
-    pub c_start: Option<usize>,               // start of C on full contig sequence
-    pub full_seq: Vec<u8>,                    // full contig sequence
-    pub barcode: String,                      // barcode
-    pub tigname: String,                      // name of contig
-    pub dataset_index: usize,                 // index of dataset
-    pub umi_count: usize,                     // number of UMIs supporting contig
-    pub read_count: usize,                    // number of reads supporting contig
+    pub quals: Vec<u8>,         // quality scores, truncated to V..J
+    pub v_start: usize,         // start of V on full contig sequence
+    pub j_stop: usize,          // stop of J on full contig sequence
+    pub c_start: Option<usize>, // start of C on full contig sequence
+    pub full_seq: Vec<u8>,      // full contig sequence
+    pub barcode: String,        // barcode
+    pub tigname: String,        // name of contig
+    pub dataset_index: usize,   // index of dataset
+    pub umi_count: usize,       // number of UMIs supporting contig
+    pub read_count: usize,      // number of reads supporting contig
 }
 
 pub struct TigData1 {

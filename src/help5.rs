@@ -354,47 +354,47 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
-        print( 
+        print(
             "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
-            get zero.\n\n",
+             get zero.\n\n",
         );
 
         print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
-        print( 
+        print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
-            one of the filters described in \\bold{enclone help special}, and which you can \
-            turn off.  We also delete cells for which more than four chains were found.\n\n",
+             one of the filters described in \\bold{enclone help special}, and which you can \
+             turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
 
         print("\\boldblue{12. Can enclone print summary stats?}\n\n");
-        print( 
+        print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
-            printed.  If you only want to see the summary stats, then also add the option \
-            \\bold{NOPRINT}.\n\n",
+             printed.  If you only want to see the summary stats, then also add the option \
+             \\bold{NOPRINT}.\n\n",
         );
 
         print("\\boldblue{13. What is the notes column?}\n\n");
-        print( 
+        print(
             "The notes column appears if one of two relatively rare events occurs:\n\
-            1. An insertion is detected in a chain sequence, relative to the reference.\n\
-            2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
-            the beginning of the C segment.\n\
-            The latter could correspond to one of several phenomena:\n\
-            a. A transcript has an insertion between its J and C segments.\n   \
-            This can happen.  See e.g. Behlke MA, Loh DY.\n   \
-            Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
-            Nature 322(1986), 379-382.\n\
-            b. There is an error in a reference sequence segment.\n   \
-            We have tried to eliminate all such errors from the built-in references for\n   \
-            human and mouse.\n\
-            c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
-               Cell Ranger pipeline just happened to pick a nonstandard one.\n\
-            d. There was a technical artifact and the sequence does not actually represent\n   \
-            an mRNA molecule.\n\n",
+             1. An insertion is detected in a chain sequence, relative to the reference.\n\
+             2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
+             the beginning of the C segment.\n\
+             The latter could correspond to one of several phenomena:\n\
+             a. A transcript has an insertion between its J and C segments.\n   \
+             This can happen.  See e.g. Behlke MA, Loh DY.\n   \
+             Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
+             Nature 322(1986), 379-382.\n\
+             b. There is an error in a reference sequence segment.\n   \
+             We have tried to eliminate all such errors from the built-in references for\n   \
+             human and mouse.\n\
+             c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
+             Cell Ranger pipeline just happened to pick a nonstandard one.\n\
+             d. There was a technical artifact and the sequence does not actually represent\n   \
+             an mRNA molecule.\n\n",
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print( "Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n" );
+        print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
 
         std::process::exit(0);
     }

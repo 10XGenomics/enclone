@@ -240,10 +240,7 @@ pub fn help4(args: &Vec<String>) {
             "NBC_DUP",
             "By default, enclone filters out duplicated barcodes within an exact subclonotype."
         );
-        doc!(
-            "",
-            "The NBC_DUP option turns off this filter."
-        );
+        doc!("", "The NBC_DUP option turns off this filter.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
@@ -458,14 +455,12 @@ pub fn help4(args: &Vec<String>) {
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut"
         );
-        doc!( "",
-              "the beginning of C; elided if empty"
-        );
+        doc!("", "the beginning of C; elided if empty");
         ldoc!(
             "ndiff<n>",
             "number of base differences within V..J between this exact subclonotype and"
         );
-        doc!( "", "exact subclonotype n" );
+        doc!("", "exact subclonotype n");
 
         // The rest.
 

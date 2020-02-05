@@ -234,8 +234,8 @@ pub fn read_json(
                                 tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
                                 j_ref_id = feature_id;
                                 j_start = a["contig_match_start"].as_i64().unwrap() as usize;
-                                j_start_ref 
-                                    = a["annotation_match_start"].as_i64().unwrap() as usize;
+                                j_start_ref =
+                                    a["annotation_match_start"].as_i64().unwrap() as usize;
                             }
                             if region_type == "5'UTR" {
                                 u_ref_id = Some(feature_id);

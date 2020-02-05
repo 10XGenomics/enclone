@@ -97,7 +97,7 @@ pub fn print_clonotypes(
     let mut results = Vec::<(
         usize,
         Vec<String>,
-        Vec<(Vec<usize>,Vec<Vec<Option<usize>>>)>,
+        Vec<(Vec<usize>, Vec<Vec<Option<usize>>>)>,
         usize,
         usize,
         usize,
@@ -251,7 +251,7 @@ pub fn print_clonotypes(
 
             // Generate loupe data.
 
-            if ( ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 ) && pass == 2 {
+            if (ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
                     &exact_clonotypes,
                     &exacts,

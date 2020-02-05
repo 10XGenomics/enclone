@@ -172,7 +172,7 @@ pub fn create_exact_subclonotype_core(
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
-            
+
             u_ref_id: tig_bc[r][m].u_ref_id,
             v_ref_id: tig_bc[r][m].v_ref_id,
             v_ref_id_donor: None,
@@ -216,7 +216,7 @@ pub fn create_exact_subclonotype_core(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Find exact subclonotypes.  
+// Find exact subclonotypes.
 
 pub fn find_exact_subclonotypes(
     ctl: &EncloneControl,
@@ -251,7 +251,6 @@ pub fn find_exact_subclonotypes(
 
                     || ( cid1.is_some() && cid2.is_some()
                         && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
-
                 {
                     ok = false;
                     break;
