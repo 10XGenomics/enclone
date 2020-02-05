@@ -313,6 +313,7 @@ pub fn help4(args: &Vec<String>) {
         doc!("", "one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
+        doc!("entropy", "Shannon entropy of GEX UMI counts (median across cells)");
         doc!("n_gex", "number of cells reported by GEX");
         doc!(
             "",

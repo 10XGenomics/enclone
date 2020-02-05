@@ -105,6 +105,8 @@
 //
 // - TOY: toy with phylogeny
 //
+// LVARS entry entropy
+//
 // PROTECT_BADS
 //
 // CELLRANGER: for use if called from cellranger -- changes failure message and prevents exit

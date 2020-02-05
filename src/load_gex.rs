@@ -245,7 +245,7 @@ pub fn load_gex(
     }
     for x in ctl.clono_print_opt.lvars.iter() {
         if *x == "gex_med".to_string() || *x == "gex_max".to_string() || x.ends_with("_g")
-            || *x == "n_gex".to_string() {
+            || *x == "n_gex".to_string() || *x == "entropy".to_string() {
             if !have_gex {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
