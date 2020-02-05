@@ -246,15 +246,22 @@ pub fn group_and_print_clonotypes(
     if ctl.gen_opt.summary {
         println!("\nSummary statistics for the selected clonotypes");
         let nclono = exacts.len();
+        let mut nclono2 = 0;
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
         for i in 0..nclono {
+            let mut n = 0;
             for j in 0..exacts[i].len() {
-                ncells += exact_clonotypes[exacts[i][j]].ncells();
+                n += exact_clonotypes[exacts[i][j]].ncells();
             }
+            if n >= 2 {
+                nclono2 += 1;
+            }
+            ncells += n;
             nchains.push(mat[i].len());
         }
         println!("• number of clonotypes = {}", nclono);
+        println!("• number of clonotypes having at least two cells = {}", nclono2);
         println!("• number of cells = {}", ncells);
         nchains.sort();
         let mut i = 0;
