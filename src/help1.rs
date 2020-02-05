@@ -374,9 +374,9 @@ pub fn help1(args: &Vec<String>) {
         // Finish.
 
         print( "We are actively working to improve the algorithm.  To test the performance of the \
-            current version, we combined data from 452 BCR libraries from 36 donors, which yielded \
-            \\boldred{9114} clonotypes having at least two cells each, of \
-            which \\boldred{22 (0.24%)} \
+            current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
+            \\boldred{9573} clonotypes having at least two cells each, of \
+            which \\boldred{15 (0.16%)} \
             contained data from multiple donors.  These are errors.\n\n" );
         if !help_all {
             std::process::exit(0);
