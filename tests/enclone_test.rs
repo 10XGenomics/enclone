@@ -27,7 +27,7 @@ use std::time::Instant;
 use string_utils::*;
 
 const TEST_FILES_VERSION: u8 = 13;
-const LOUPE_OUT_FILENAME: &str = "__test_proto";
+const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 #[cfg(debug_assertions)]
 #[test]
