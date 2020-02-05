@@ -163,7 +163,12 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 }
                 if pg != "".to_string() {
                     let pg0 = pg.clone();
-                    if ctl.gen_opt.pre != "" {
+                    if internal_run
+                        && ctl.gen_opt.pre != "" 
+                        && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
+                        && pg.parse::<i32>().is_ok() {
+                            pg = format!("{}", get_outs(&pg));
+                    } else if ctl.gen_opt.pre != "" {
                         pg = format!("{}/{}/outs", ctl.gen_opt.pre, pg);
                     } else {
                         if pg.parse::<i32>().is_ok() && internal_run {
@@ -172,6 +177,8 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                             pg = format!("{}/outs", pg);
                         }
                     }
+
+
                     if !path_exists(&pg.rev_before("/outs")) {
                         if ctl.gen_opt.pre != "".to_string() {
                             if !f.contains("=") {
