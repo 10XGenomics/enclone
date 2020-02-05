@@ -174,15 +174,27 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     }
                     if !path_exists(&pg.rev_before("/outs")) {
                         if ctl.gen_opt.pre != "".to_string() {
-                            eprintln!(
-                                "\nThe value given for {} on the enclone command line \
-                                 includes\n{}, which after prefixing by PRE yields\n\
-                                 {},\n\
-                                 and that path does not exist.\n",
-                                f.before("="),
-                                pg0,
-                                pg.rev_before("/outs")
-                            );
+                            if !f.contains("=") {
+                                eprintln!(
+                                    "\nThe enclone command line \
+                                     includes\n{}, which after prefixing by PRE yields\n\
+                                     {},\n\
+                                     and that path does not exist.\n",
+                                    pg0,
+                                    pg.rev_before("/outs")
+                                );
+
+                            } else {
+                                eprintln!(
+                                    "\nThe value given for {} on the enclone command line \
+                                     includes\n{}, which after prefixing by PRE yields\n\
+                                     {},\n\
+                                     and that path does not exist.\n",
+                                    f.before("="),
+                                    pg0,
+                                    pg.rev_before("/outs")
+                                );
+                            }
                         } else {
                             eprintln!(
                                 "\nThe value given for {} on the enclone command line \
