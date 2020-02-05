@@ -260,6 +260,8 @@ pub fn group_and_print_clonotypes(
             ncells += n;
             nchains.push(mat[i].len());
         }
+        println!("• number of datasets = {}", ctl.sample_info.n());
+        println!("• number of donors = {}", ctl.sample_info.donors);
         println!("• number of clonotypes = {}", nclono);
         println!("• number of clonotypes having at least two cells = {}", nclono2);
         println!("• number of cells = {}", ncells);
