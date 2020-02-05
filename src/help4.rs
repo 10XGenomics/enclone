@@ -242,6 +242,22 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "The NBC_DUP option turns off this filter.");
         ldoc!(
+            "NDONOR",
+            "By default, enclone will prevent cells from different donors from being placed in"
+        );
+        doc!( "",
+              "the same clonotype.  The NDONOR option turns off this behavior, thus allowing"
+        );
+        doc!( "",
+              "cells from different donors to be placed in the same clonotype.  The main use"
+        );
+        doc!( "",
+              "of this option is for specificity testing, in which data from different donors"
+        );
+        doc!( "",
+              "are deliberately combined in an attempt to find errors."
+        );
+        ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
         );
