@@ -140,6 +140,7 @@ pub fn help3(args: &Vec<String>) {
         ldoc!("raw_gene_bc_matrices_h5.h5", "GEX");
         ldoc!("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         doc!("raw_feature_bc_matrix/features.tsv.gz", "GEX");
+        doc!("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         print_tab2(&rows);
         println!("The exact files that are used could be changed in the future.\n");
         // end_escape!();

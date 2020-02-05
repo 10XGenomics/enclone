@@ -93,7 +93,7 @@ pub fn row_fill(
         };
     }
 
-    // Compute dataset indices, gex_med, gex_max.
+    // Compute dataset indices, gex_med, gex_max, n_gex.
 
     let mut dataset_indices = Vec::<usize>::new();
     let clonotype_id = exacts[u];
@@ -108,10 +108,14 @@ pub fn row_fill(
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
+    let mut n_gex = 0;
     for l in 0..ex.clones.len() {
         let li = ex.clones[l][0].dataset_index;
         let bc = ex.clones[l][0].barcode.clone();
         if !gex_info.gex_barcodes.is_empty() {
+            if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                n_gex += 1;
+            }
             let mut count = 0;
             let p = bin_position(&gex_info.gex_barcodes[li], &bc);
             if p >= 0 {
@@ -184,7 +188,7 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
         } else if lvars[i] == "ncells".to_string() {
             lvar![lvars[i], format!("{}", mults[u])];
-        } else if lvars[i].starts_with("n_") {
+        } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
             let indices = ctl.sample_info.name_list[name].clone();
             let mut count = 0;
@@ -238,6 +242,8 @@ pub fn row_fill(
             }
         } else if lvars[i] == "gex_med".to_string() {
             lvar![lvars[i], format!("{}", gex_median)];
+        } else if lvars[i] == "n_gex".to_string() {
+            lvar![lvars[i], format!("{}", n_gex)];
         } else if lvars[i] == "gex_max".to_string() {
             lvar![lvars[i], format!("{}", gex_max)];
         } else if lvars[i] == "ext".to_string() {

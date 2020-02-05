@@ -360,6 +360,7 @@ pub struct GexInfo {
     pub gex_features: Vec<Vec<String>>,
     pub gex_barcodes: Vec<Vec<String>>,
     pub gex_matrices: Vec<MirrorSparseMatrix>,
+    pub gex_cell_barcodes: Vec<Vec<String>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,
     pub h5_data: Vec<Option<Dataset>>,

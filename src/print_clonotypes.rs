@@ -472,19 +472,26 @@ pub fn print_clonotypes(
                     if ctl.clono_print_opt.bu {
                         for bcl in bli.iter() {
                             let mut row = Vec::<String>::new();
-                            row.push(format!("$ {}", bcl.0.clone()));
+                            let bc = &bcl.0;
+                            let li = bcl.1;
+                            row.push(format!("$ {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!(
                                         "{}",
-                                        ctl.sample_info.dataset_id[bcl.1].clone()
+                                        ctl.sample_info.dataset_id[li].clone()
                                     ));
+                                } else if lvars[k] == "n_gex".to_string() && have_gex {
+                                    let mut n_gex = 0;
+                                    if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                                        n_gex = 1;
+                                    }
+                                    row.push(format!("{}", n_gex));
                                 } else if lvars[k] == "gex_med".to_string() && have_gex {
                                     let mut gex_count = 0;
-                                    let li = bcl.1;
                                     let p = bin_position(
                                         &gex_info.gex_barcodes[li],
-                                        &bcl.0.to_string(),
+                                        &bc,
                                     );
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
