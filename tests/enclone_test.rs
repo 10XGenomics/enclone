@@ -70,7 +70,7 @@ fn test_enclone() {
         "BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC",
         // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
         // Note that we have deliberately "faked" two donors.  In reality there is one.
-        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share",
+        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share NDONOR",
         // 11. tests META
         "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
         // 12. this added because it got better when a noise filter was added, also tests umax

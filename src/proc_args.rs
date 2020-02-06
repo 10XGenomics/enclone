@@ -65,7 +65,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.weak_onesies = true;
     ctl.clono_filt_opt.weak_foursies = true;
     ctl.clono_filt_opt.bc_dup = true;
-    ctl.clono_filt_opt.donor = true;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -186,7 +185,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "NBC_DUP") {
             ctl.clono_filt_opt.bc_dup = false;
         } else if is_simple_arg(&args[i], "NDONOR") {
-            ctl.clono_filt_opt.donor = false;
+            ctl.clono_filt_opt.donor = true;
         } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
         } else if is_simple_arg(&args[i], "UTR_CON") {

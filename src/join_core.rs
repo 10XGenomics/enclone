@@ -102,6 +102,14 @@ pub fn join_core(
                 continue;
             }
 
+            // Unless NDONOR specified, do not join across donors.
+
+            if !ctl.clono_filt_opt.donor 
+                && ctl.sample_info.donor_index[info[k1].origin[0]]
+                != ctl.sample_info.donor_index[info[k2].origin[0]] {
+                continue;
+            }
+
             // Test for error.
             //
             // WARNING!  There are actually two cases: where an individual exact subclonotype
