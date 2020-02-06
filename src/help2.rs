@@ -192,7 +192,7 @@ pub fn help2(args: &Vec<String>) {
              directory /users/jdoe/enclone_data.  Then you can run this command:"
         );
         println!(
-            "\n% enclone PRE=/users/jdoe/enclone_data 123085 GEX=126106 \
+            "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
              LVARSP=gex_med,IGHV2-5_g,CD4_a CDR3=CALMGTYCSGDNCYSWFDPW"
         );
         if !plain {
