@@ -102,6 +102,10 @@ fn test_enclone() {
         "BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW",
         // 25. add mouse B6 example that had messed up constant regions
         "TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF",
+        // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
+        // Note that we have deliberately "faked" two donors.  In reality there is one.
+        // Here we make sure that non-specification of NDONOR works.
+        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
