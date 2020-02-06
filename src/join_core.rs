@@ -104,9 +104,10 @@ pub fn join_core(
 
             // Unless NDONOR specified, do not join across donors.
 
-            if !ctl.clono_filt_opt.donor 
+            if !ctl.clono_filt_opt.donor
                 && ctl.sample_info.donor_index[info[k1].origin[0]]
-                != ctl.sample_info.donor_index[info[k2].origin[0]] {
+                    != ctl.sample_info.donor_index[info[k2].origin[0]]
+            {
                 continue;
             }
 
