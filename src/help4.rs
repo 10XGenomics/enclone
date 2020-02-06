@@ -238,24 +238,28 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact subclonotype."
+            "By default, enclone filters out duplicated barcodes within an exact."
         );
-        doc!("", "The NBC_DUP option turns off this filter.");
+        doc!("", "subclonotype.  The NBC_DUP option turns off this filter.");
         ldoc!(
             "NDONOR",
-            "By default, enclone will prevent cells from different donors from being placed in"
+            "By default, enclone will prevent cells from different donors from being"
         );
         doc!( "",
-              "the same clonotype.  The NDONOR option turns off this behavior, thus allowing"
+              "placed in the same clonotype.  The NDONOR option turns off this behavior, "
         );
         doc!( "",
-              "cells from different donors to be placed in the same clonotype.  The main use"
+              "thus allowing cells from different donors to be placed in the same"
         );
         doc!( "",
-              "of this option is for specificity testing, in which data from different donors"
+              "clonotype The main use of this option is for specificity testing, in which"
+        );
+
+        doc!( "",
+              "data from different donors are deliberately combined in an attempt to find"
         );
         doc!( "",
-              "are deliberately combined in an attempt to find errors."
+              "errors."
         );
         ldoc!(
             "KEEP_IMPROPER",
