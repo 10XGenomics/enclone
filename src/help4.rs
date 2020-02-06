@@ -240,27 +240,32 @@ pub fn help4(args: &Vec<String>) {
             "NBC_DUP",
             "By default, enclone filters out duplicated barcodes within an exact."
         );
-        doc!("", "subclonotype.  The NBC_DUP option turns off this filter.");
+        doc!(
+            "",
+            "subclonotype.  The NBC_DUP option turns off this filter."
+        );
         ldoc!(
             "NDONOR",
             "By default, enclone will prevent cells from different donors from being"
         );
-        doc!( "",
-              "placed in the same clonotype.  The NDONOR option turns off this behavior, "
+        doc!(
+            "",
+            "placed in the same clonotype.  The NDONOR option turns off this behavior, "
         );
-        doc!( "",
-              "thus allowing cells from different donors to be placed in the same"
+        doc!(
+            "",
+            "thus allowing cells from different donors to be placed in the same"
         );
-        doc!( "",
-              "clonotype The main use of this option is for specificity testing, in which"
+        doc!(
+            "",
+            "clonotype The main use of this option is for specificity testing, in which"
         );
 
-        doc!( "",
-              "data from different donors are deliberately combined in an attempt to find"
+        doc!(
+            "",
+            "data from different donors are deliberately combined in an attempt to find"
         );
-        doc!( "",
-              "errors."
-        );
+        doc!("", "errors.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
@@ -333,7 +338,10 @@ pub fn help4(args: &Vec<String>) {
         doc!("", "one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
-        doc!("entropy", "Shannon entropy of GEX UMI counts (median across cells)");
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
         doc!("n_gex", "number of cells reported by GEX");
         doc!(
             "",

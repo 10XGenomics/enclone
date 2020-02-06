@@ -263,7 +263,10 @@ pub fn group_and_print_clonotypes(
         println!("• number of datasets = {}", ctl.sample_info.n());
         println!("• number of donors = {}", ctl.sample_info.donors);
         println!("• number of clonotypes = {}", nclono);
-        println!("• number of clonotypes having at least two cells = {}", nclono2);
+        println!(
+            "• number of clonotypes having at least two cells = {}",
+            nclono2
+        );
         println!("• number of cells = {}", ncells);
         nchains.sort();
         let mut i = 0;

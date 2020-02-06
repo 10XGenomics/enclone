@@ -477,10 +477,7 @@ pub fn print_clonotypes(
                             row.push(format!("$ {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 if lvars[k] == "datasets".to_string() {
-                                    row.push(format!(
-                                        "{}",
-                                        ctl.sample_info.dataset_id[li].clone()
-                                    ));
+                                    row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
                                 } else if lvars[k] == "n_gex".to_string() && have_gex {
                                     let mut n_gex = 0;
                                     if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
@@ -490,10 +487,7 @@ pub fn print_clonotypes(
                                 } else if lvars[k] == "entropy".to_string() && have_gex {
                                     // NOTE DUPLICATION WITH CODE BELOW.
                                     let mut gex_count = 0;
-                                    let p = bin_position(
-                                        &gex_info.gex_barcodes[li],
-                                        &bc,
-                                    );
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0;
                                         if !ctl.gen_opt.h5 {
@@ -541,10 +535,7 @@ pub fn print_clonotypes(
                                     row.push(format!("{:.2}", entropy));
                                 } else if lvars[k] == "gex_med".to_string() && have_gex {
                                     let mut gex_count = 0;
-                                    let p = bin_position(
-                                        &gex_info.gex_barcodes[li],
-                                        &bc,
-                                    );
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
                                         if !ctl.gen_opt.h5 {

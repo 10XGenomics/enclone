@@ -338,12 +338,14 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
-        print( "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
-            enclone is to prevent cells from different donors from being placed in the same \
-            clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
-            employ this option, then clonotypes containing cells from more than one donor will be \
-            flagged as errors.  The primary reason for allowing entry of data from multiple \
-            donors is to allow estimation of enclone's error rate.\n\n" );
+        print(
+            "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
+             enclone is to prevent cells from different donors from being placed in the same \
+             clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
+             employ this option, then clonotypes containing cells from more than one donor will be \
+             flagged as errors.  The primary reason for allowing entry of data from multiple \
+             donors is to allow estimation of enclone's error rate.\n\n",
+        );
 
         print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
         print(

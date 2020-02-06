@@ -73,14 +73,19 @@ pub fn load_gex(
                 std::process::exit(1);
             }
             let cb1 = format!("{}/filtered_feature_bc_matrix/barcodes.tsv.gz", gex_outs[i]);
-            let cb2 = format!("{}/filtered_gene_bc_matrices_mex/barcodes.tsv.gz", gex_outs[i]);
+            let cb2 = format!(
+                "{}/filtered_gene_bc_matrices_mex/barcodes.tsv.gz",
+                gex_outs[i]
+            );
             let mut cb = cb1.clone();
             if !path_exists(&cb) {
                 cb = cb2.clone();
                 if !path_exists(&cb) {
                     eprintln!(
                         "\nSomething wrong with GEX argument:\nneither the path {}\nnor \
-                        the path {} exists.\n", cb1, cb2 );
+                         the path {} exists.\n",
+                        cb1, cb2
+                    );
                     std::process::exit(1);
                 }
             }
@@ -244,8 +249,12 @@ pub fn load_gex(
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
-        if *x == "gex_med".to_string() || *x == "gex_max".to_string() || x.ends_with("_g")
-            || *x == "n_gex".to_string() || *x == "entropy".to_string() {
+        if *x == "gex_med".to_string()
+            || *x == "gex_max".to_string()
+            || x.ends_with("_g")
+            || *x == "n_gex".to_string()
+            || *x == "entropy".to_string()
+        {
             if !have_gex {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
