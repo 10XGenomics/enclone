@@ -164,7 +164,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Sort tig_bc.
 
-    sort_tig_bc(&mut tig_bc, &refdata);
+    sort_tig_bc(&ctl, &mut tig_bc, &refdata);
 
     // Cross filter.
 

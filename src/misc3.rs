@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
+pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
     tig_bc.sort_by(|x, y| -> Ordering {
         for i in 0..x.len() {
             // Order by number of chains.
@@ -76,7 +76,20 @@ pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
                 && x[i].c_start.unwrap() + y[i].j_stop > y[i].c_start.unwrap() + x[i].j_stop
             {
                 return Ordering::Greater;
+
+            // Order by donor if NDONOR option used.
+            } else if !ctl.clono_filt_opt.donor
+                && ctl.sample_info.donor_index[x[i].dataset_index]
+                < ctl.sample_info.donor_index[y[i].dataset_index]
+            {
+                return Ordering::Less;
+            } else if !ctl.clono_filt_opt.donor 
+                && ctl.sample_info.donor_index[x[i].dataset_index]
+                > ctl.sample_info.donor_index[y[i].dataset_index]
+            {
+                return Ordering::Greater;
             }
+    
         }
         if x.len() < y.len() {
             return Ordering::Less;
