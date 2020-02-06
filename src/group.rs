@@ -244,7 +244,8 @@ pub fn group_and_print_clonotypes(
     // Print summary stats.
 
     if ctl.gen_opt.summary {
-        println!("\nSummary statistics for the selected clonotypes");
+        println!("\nsummary statistics");
+        println!("1. overall");
         let nclono = exacts.len();
         let mut nclono2 = 0;
         let mut ncells = 0;
@@ -260,20 +261,21 @@ pub fn group_and_print_clonotypes(
             ncells += n;
             nchains.push(mat[i].len());
         }
-        println!("• number of datasets = {}", ctl.sample_info.n());
-        println!("• number of donors = {}", ctl.sample_info.donors);
-        println!("• number of clonotypes = {}", nclono);
+        println!("   • number of datasets = {}", ctl.sample_info.n());
+        println!("   • number of donors = {}", ctl.sample_info.donors);
+        println!("2. for the selected clonotypes");
+        println!("   • number of clonotypes = {}", nclono);
         println!(
-            "• number of clonotypes having at least two cells = {}",
+            "   • number of clonotypes having at least two cells = {}",
             nclono2
         );
-        println!("• number of cells = {}", ncells);
+        println!("   • number of cells in clonotypes = {}", ncells);
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
             let j = next_diff(&nchains, i);
             println!(
-                "• number of clonotypes having {} chains = {}",
+                "   • number of clonotypes having {} chains = {}",
                 nchains[i],
                 j - i
             );
