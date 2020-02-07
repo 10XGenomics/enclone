@@ -6,10 +6,10 @@ other vertebrate species.
 It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
 characterization of individual immune cells.
 
-For the general audience: everytime you get sick, your body mounts an immune response involving
+For the general audience: every time you get sick, your body mounts an immune response involving
 selective amplification of immune cells and mutations within them.  From a biological sample 
-(such as a blood draw), `enclone` allows you 
-to see the history of individual immune cells within it: how they evolved in response to antigens, 
+(such as a blood draw), enclone allows you to see the history of individual immune cells within a 
+biological sample (such as a blood draw or biopsy): how they evolved in response to antigens, 
 including those in viruses, bacteria and tumors.  Understanding this is a highly active 
 research area with many mysteries that will take years if not decades to fully sort out, with 
 profound implications for biology and medicine.  Welcome to the frontier!
@@ -72,7 +72,7 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Decide if you want to install `enclone` on linux, mac or windows computer.  
+1. Decide if you want to install `enclone` on Linux, Mac or Windows computer.  
 
 2. Decide if you want the absolute latest version, or the most fully tested version.
 
@@ -82,6 +82,8 @@ ________________________________________________________________________________
 
 4. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
 might be `~/bin`.
+
+<br>TODO: link to pathing tutorial<br>
 
 5. Change your path so that it includes this location.
 
