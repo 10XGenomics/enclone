@@ -16,7 +16,7 @@ but things are simpler because T cells do not have somatic hypermutation (SHM).
 
 Each cell in a clonotype is typically represented by two or three chains.  Such information can
 only be obtained from _single cell_ data!  From such data, clonotypes can be computationally
-approximated, with high accuracy.  The method we use for this is describe briefly in the online
+approximated, with high accuracy.  The method we use for this is described briefly in the online
 documentation for `enclone`, and will be described separately in more detail.
 
 ___________________________________________________________________________________________________
