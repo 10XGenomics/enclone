@@ -3,7 +3,7 @@
 `enclone` is a computational tool for studying the adaptive immune system in humans and
 other vertebrate species.  
 
-For the general audience: from a biological sample (e.g. from blood), `enclone` allows you to see 
+For the general audience: from a biological sample (such as blood), `enclone` allows you to see 
 the history of individual immune cells within it: how they evolved in response to antigens, 
 including those in viruses, bacteria and tumor cells.  Understanding this is a highly active 
 research area with many mysteries that will take years if not decades to sort out, with profound 
