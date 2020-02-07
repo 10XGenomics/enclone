@@ -6,8 +6,8 @@ other vertebrate species.
 For the general audience: from a biological sample (such as blood), `enclone` allows you to see 
 the history of individual immune cells within it: how they evolved in response to antigens, 
 including those in viruses, bacteria and tumors.  Understanding this is a highly active 
-research area with many mysteries that will take years if not decades to sort out, with profound 
-implications for biology and medicine.
+research area with many mysteries that will take years if not decades to fully sort out, with 
+profound implications for biology and medicine.
 
 `enclone` and this page are targeted at immunologists, but if
 you're simply curious, there's nothing to stop you from downloading and playing with it.
