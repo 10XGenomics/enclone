@@ -1,7 +1,9 @@
 # enclone
 
 `enclone` is a computational tool for studying the adaptive immune system in humans and
-other vertebrate species.  It uses data from [10x Genomics](https://www.10xgenomics.com/).
+other vertebrate species.  
+
+It uses data from [10x Genomics](https://www.10xgenomics.com/).
 
 For the general audience: from a biological sample (such as blood), `enclone` allows you to see 
 the history of individual immune cells within it: how they evolved in response to antigens, 
