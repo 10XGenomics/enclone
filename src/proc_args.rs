@@ -184,6 +184,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.weak_foursies = false;
         } else if is_simple_arg(&args[i], "NBC_DUP") {
             ctl.clono_filt_opt.bc_dup = false;
+        } else if is_simple_arg(&args[i], "NDONOR") {
+            ctl.clono_filt_opt.donor = true;
         } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
         } else if is_simple_arg(&args[i], "UTR_CON") {
@@ -248,7 +250,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
         } else if is_usize_arg(&args[i], "MAX_THREADS") {
             let nthreads = args[i].after("MAX_THREADS=").force_usize();
-            let _ = rayon::ThreadPoolBuilder::new().num_threads(nthreads).build_global();
+            let _ = rayon::ThreadPoolBuilder::new()
+                .num_threads(nthreads)
+                .build_global();
         } else if is_usize_arg(&args[i], "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(args[i].after("REQUIRED_FPS=").force_usize());
         } else if args[i].starts_with("PCOLS=") {

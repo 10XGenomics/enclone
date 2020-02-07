@@ -192,7 +192,7 @@ pub fn help2(args: &Vec<String>) {
              directory /users/jdoe/enclone_data.  Then you can run this command:"
         );
         println!(
-            "\n% enclone PRE=/users/jdoe/enclone_data 123085 GEX=126106 \
+            "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
              LVARSP=gex_med,IGHV2-5_g,CD4_a CDR3=CALMGTYCSGDNCYSWFDPW"
         );
         if !plain {
@@ -234,7 +234,7 @@ pub fn help2(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
         begin_doc!("support");
         print(
-             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
+            "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\

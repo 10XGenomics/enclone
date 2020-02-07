@@ -11,7 +11,7 @@
 //
 // 1. two PBMCs, BCR
 //
-//   split_by_tags 165809 
+//   split_by_tags 165809
 //   /mnt/deck6/narek/multiplexing/umi_filtering/filtering_166824/outs/tag_calls_per_cell.csv
 //   /mnt/assembly/vdj/splits/165809 "JWY119,JWY120,JWY121;JWY122,JWY123,JWY124"
 //
@@ -24,7 +24,7 @@
 //
 // 2. same two PBMCs, TCR
 //
-//   split_by_tags 165822 
+//   split_by_tags 165822
 //   /mnt/deck6/narek/multiplexing/umi_filtering/filtering_166824/outs/tag_calls_per_cell.csv
 //   /mnt/assembly/vdj/splits/165822 "JWY119,JWY120,JWY121;JWY122,JWY123,JWY124"
 //
@@ -42,11 +42,11 @@ use enclone::*;
 use io_utils::*;
 use marsoc::*;
 use pretty_trace::*;
-use subset_json::*;
 use std::env;
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead,BufReader,BufWriter,Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
+use subset_json::*;
 
 pub fn main() {
     PrettyTrace::new().on();
@@ -55,11 +55,11 @@ pub fn main() {
     let groups = tag_scheme.split(';').collect::<Vec<&str>>();
     let mut tags = Vec::<Vec<&str>>::new();
     for i in 0..groups.len() {
-        tags.push( groups[i].split(',').collect::<Vec<&str>>() );
+        tags.push(groups[i].split(',').collect::<Vec<&str>>());
     }
-    let json = format!( "{}/all_contig_annotations.json", get_outs(&lena) );
+    let json = format!("{}/all_contig_annotations.json", get_outs(&lena));
     for i in 0..groups.len() {
-        let _ = fs::create_dir_all( &format!( "{}/{}_{}/outs", out_dir, lena, i+1 ) );
+        let _ = fs::create_dir_all(&format!("{}/{}_{}/outs", out_dir, lena, i + 1));
         let f = open_for_read![&tags_file];
         let mut barcodes = Vec::<String>::new();
         for line in f.lines() {
@@ -81,10 +81,14 @@ pub fn main() {
             }
         }
         barcodes.sort();
-        println!( "group {}, selected {} barcodes", i+1, barcodes.len() );
-        let x = subset_all_contig_annotations_json( &json, &barcodes );
-        let mut f = open_for_write_new![
-            &format!( "{}/{}_{}/outs/all_contig_annotations.json", out_dir, lena, i+1 ) ];
-        fwrite!( f, "{}", x );
+        println!("group {}, selected {} barcodes", i + 1, barcodes.len());
+        let x = subset_all_contig_annotations_json(&json, &barcodes);
+        let mut f = open_for_write_new![&format!(
+            "{}/{}_{}/outs/all_contig_annotations.json",
+            out_dir,
+            lena,
+            i + 1
+        )];
+        fwrite!(f, "{}", x);
     }
 }

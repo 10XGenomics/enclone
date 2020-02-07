@@ -27,7 +27,7 @@ use std::time::Instant;
 use string_utils::*;
 
 const TEST_FILES_VERSION: u8 = 13;
-const LOUPE_OUT_FILENAME: &str = "__test_proto";
+const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 #[cfg(debug_assertions)]
 #[test]
@@ -56,7 +56,7 @@ fn test_enclone() {
         // 3. tests motif in CDR3, CHAINS, utot, flipped args in CVARS, on tiny dataset
         "BCR=85333 CDR3=\"CAA.*\" CHAINS=2 CVARS=const,utot",
         // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-        "BCR=86237 GEX=85679 LVARSP=gex_med,CD19_a,CD25_a,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC \
+        "BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab,CD25_ab,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC \
          CVARSP=ulen,udiff",
         // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
         "TCR=101287 MIN_CELLS=100",
@@ -70,7 +70,7 @@ fn test_enclone() {
         "BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC",
         // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
         // Note that we have deliberately "faked" two donors.  In reality there is one.
-        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share",
+        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share NDONOR",
         // 11. tests META
         "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
         // 12. this added because it got better when a noise filter was added, also tests umax
@@ -84,8 +84,8 @@ fn test_enclone() {
         // BCR=123085 CDR3=CARHPAPNYGFWSGYYKTDNWFDPW ==> alt example if we need to dump 86233
         // 16. tests number of cells broken out by dataset
         "BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW",
-        // 17. tests gex with PER_BC
-        "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,CD19_a CELLS=3 PER_BC",
+        // 17. tests gex with PER_BC and tests n_gex
+        "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC",
         // 18. makes sure cross filtering is isn't applied to two samples from same donor
         "BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW",
         // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
@@ -98,6 +98,14 @@ fn test_enclone() {
         "BCR=\"165807;165808\" FAIL_ONLY=true EXPECT_NULL",
         // 23. here we were generating a fake alternate allele
         "BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30",
+        // 24. an example that uses IGHE
+        "BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW",
+        // 25. add mouse B6 example that had messed up constant regions
+        "TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF",
+        // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
+        // Note that we have deliberately "faked" two donors.  In reality there is one.
+        // Here we make sure that non-specification of NDONOR works.
+        "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
