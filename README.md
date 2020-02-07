@@ -23,7 +23,7 @@ ________________________________________________________________________________
 
 ### The `enclone` software
 
-`enclone` is open-source, beta software.  Binary executables from linux, mac and windows can be 
+`enclone` is open-source, beta software.  Binary executables for Linux, Mac and Windows can be 
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
 running!  To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
