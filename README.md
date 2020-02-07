@@ -85,8 +85,8 @@ might be `~/bin`.
 6. Download the sample data.
 
 The easiest way to do this is
-```git clone git@github.com:10XDev/enclone.git```
-and after doing that, `enclone/datasets` will be the directory containing the datasets
+<br> `git clone git@github.com:10XDev/enclone.git`
+<br> and after doing that, `enclone/datasets` will be the directory containing the datasets
 that are prepackaged with `enclone`.
 
 <b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
