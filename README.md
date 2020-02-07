@@ -73,7 +73,7 @@ ________________________________________________________________________________
 
 2. Decide if you want the absolute latest version, or the most fully tested version.
 
-3. Click one of these links to download.  
+3. Click one of these links to download the binary executables.
 
 <b>TO DO: PUT LINKS HERE</b>
 
@@ -83,6 +83,15 @@ might be `~/bin`.
 5. Change your path so that it includes this location.
 
 6. Download the sample data.
+
+The easiest way to do this is
+```git clone git@github.com:10XDev/enclone.git```
+and after doing that, `enclone/datasets` will be the directory containing the datasets
+that are prepackaged with `enclone`.
+
+<b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
+executable and the datasets.  For the latter, you can do just `git pull` inside the `enclone`
+directory as created above.
 
 ___________________________________________________________________________________________________
 
