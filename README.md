@@ -85,12 +85,18 @@ might be `~/bin`.
 6. Download the sample data.
 
 The easiest way to do this is
-<br> `git clone git@github.com:10XDev/enclone.git`
-<br> and after doing that, `enclone/datasets` will be the directory containing the datasets
+```
+git clone git@github.com:10XDev/enclone.git
+```
+and after doing that, `enclone/datasets` will be the directory containing the datasets
 that are prepackaged with `enclone`.
 
+7. Type `enclone help`, and read the terminal setup instructions there.
+
+8. Type `enclone` to get to the main `enclone` help menu.
+
 <b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
-executable and the datasets.  For the latter, you can do just `git pull` inside the `enclone`
+executable and the datasets.  For the latter, you can simply type `git pull` inside the `enclone`
 directory as created above.
 
 ___________________________________________________________________________________________________
