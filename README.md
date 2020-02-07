@@ -37,7 +37,7 @@ ________________________________________________________________________________
 
 
 The example below shows how `enclone` prints out clonotypes.  This is something you'll need
-to study in order to use enclone successfully.  `enclone` comes with extensive online 
+to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
 documentation, and because you can easily play with the sample datasets, you can gradually
 figure out how it all works.
 
