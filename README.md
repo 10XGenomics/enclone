@@ -23,7 +23,7 @@ The mission of `enclone` is to:
 groups of T and B cells having the same fully rearranged common ancestor.**
 
 The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
-but things are simpler because T cells do not have somatic hypermutation (SHM).
+but things are simpler because T cells do not have somatic hypermutation.
 
 <img src="img/what_is_a_clonotype.png" alt="what is a clonotype" title="what is a clonotype" />
 
