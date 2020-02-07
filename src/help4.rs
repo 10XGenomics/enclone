@@ -385,7 +385,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
         ldoc!(
-            "<antibody>_a",
+            "<antibody>_ab",
             "assuming that feature barcode data has been provided,"
         );
         doc!(

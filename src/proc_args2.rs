@@ -112,7 +112,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             || *x == "ext"
             || gpvar)
         {
-            if !x.ends_with("_g") && !x.ends_with("_a") && !x.starts_with("n_") {
+            if !x.ends_with("_g") && !x.ends_with("_ab") && !x.starts_with("n_") {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",
@@ -136,7 +136,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     std::process::exit(1);
                 }
                 if ff[2].starts_with("Antibody") {
-                    known_features.push(format!("{}_a", ff[0]));
+                    known_features.push(format!("{}_ab", ff[0]));
                 } else {
                     known_features.push(format!("{}_g", ff[1]));
                 }

@@ -56,7 +56,7 @@ fn test_enclone() {
         // 3. tests motif in CDR3, CHAINS, utot, flipped args in CVARS, on tiny dataset
         "BCR=85333 CDR3=\"CAA.*\" CHAINS=2 CVARS=const,utot",
         // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-        "BCR=86237 GEX=85679 LVARSP=gex_med,CD19_a,CD25_a,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC \
+        "BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab,CD25_ab,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC \
          CVARSP=ulen,udiff",
         // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
         "TCR=101287 MIN_CELLS=100",
@@ -85,7 +85,7 @@ fn test_enclone() {
         // 16. tests number of cells broken out by dataset
         "BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW",
         // 17. tests gex with PER_BC and tests n_gex
-        "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_a CELLS=3 PER_BC",
+        "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC",
         // 18. makes sure cross filtering is isn't applied to two samples from same donor
         "BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW",
         // 19. there was a bug that caused twosie to be deleted, and there was foursie junk

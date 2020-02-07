@@ -279,7 +279,7 @@ pub fn help5(args: &Vec<String>) {
         println!(
             "We don't know how in general, but the following works for us from a mac:\n\n\
              A. open a new terminal window\n\
-             B. make it 110 characters wide; font should be fixed width and roughly 12pt\n\
+             B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
              C. type \"enclone help all NOPAGER\"\n\
              D. type command-A to select all\n\
              E. type option-command-P to print selection\n\
