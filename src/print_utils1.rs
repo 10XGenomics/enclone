@@ -460,7 +460,10 @@ pub fn start_gen(
         if ctl.pretty {
             emit_end_escape(&mut mlog);
         }
-        fwriteln!(&mut mlog, " WARNING: This clonotype contains cells from multiple donors.");
+        fwriteln!(
+            &mut mlog,
+            " WARNING: This clonotype contains cells from multiple donors."
+        );
         for i in 0..donors.len() {
             let mut lenas = Vec::<String>::new();
             for u in 0..nexacts {

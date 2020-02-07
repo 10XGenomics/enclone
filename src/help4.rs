@@ -238,12 +238,34 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact subclonotype."
+            "By default, enclone filters out duplicated barcodes within an exact."
         );
         doc!(
             "",
-            "The NBC_DUP option turns off this filter."
+            "subclonotype.  The NBC_DUP option turns off this filter."
         );
+        ldoc!(
+            "NDONOR",
+            "By default, enclone will prevent cells from different donors from being"
+        );
+        doc!(
+            "",
+            "placed in the same clonotype.  The NDONOR option turns off this behavior, "
+        );
+        doc!(
+            "",
+            "thus allowing cells from different donors to be placed in the same"
+        );
+        doc!(
+            "",
+            "clonotype.  The main use of this option is for specificity testing, in which"
+        );
+
+        doc!(
+            "",
+            "data from different donors are deliberately combined in an attempt to find"
+        );
+        doc!("", "errors.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
@@ -293,8 +315,8 @@ pub fn help4(args: &Vec<String>) {
         println!("lead column options\n");
         end_escape!();
         println!(
-            "These options define lead variables, which correspond to columns that\n\
-             appear once in each clonotype, on the left side, and have one entry for each\n\
+            "These options define lead variables, which correspond to columns that \
+             appear once in each\nclonotype, on the left side, and have one entry for each \
              exact subclonotype row.\n"
         );
         print(
@@ -316,6 +338,14 @@ pub fn help4(args: &Vec<String>) {
         doc!("", "one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
+        // nonpublic for now as we don't know if this is useful
+        /*
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
+        */
+        doc!("n_gex", "number of cells reported by GEX");
         doc!(
             "",
             "(requires that gene expression data are provided as input)"
@@ -358,23 +388,32 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
         ldoc!(
-            "<antibody>_a",
-            "assuming that feature barcode data has been provided,"
+            "<antibody>_ab",
+            "assuming that feature barcode data for antibody capture have been"
         );
         doc!(
             "",
-            "look for a feature line that starts with the given name, and"
+            "provided, look for a feature line having the given name in the first column;"
         );
-        doc!("", "then has a tab; report the mean UMI count value");
+        doc!("", "report the mean UMI count value");
+        doc!(
+            "<antigen>_ag",
+            "assuming that feature barcode data for antigens have been provided,"
+        );
+        doc!(
+            "",
+            "look for a feature line having the given name in the first column;"
+        );
+        doc!("", "report the mean UMI count value");
         doc!(
             "<gene name>_g",
             "assuming that gene expression data has been provided,"
         );
         doc!(
             "",
-            "look for a feature line that has the given name in the second"
+            "look for a feature line having the given name in the second"
         );
-        doc!("", "tab-delimited column; report the mean UMI count value");
+        doc!("", "column; report the mean UMI count value");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);
@@ -458,14 +497,12 @@ pub fn help4(args: &Vec<String>) {
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut"
         );
-        doc!( "",
-              "the beginning of C; elided if empty"
-        );
+        doc!("", "the beginning of C; elided if empty");
         ldoc!(
             "ndiff<n>",
             "number of base differences within V..J between this exact subclonotype and"
         );
-        doc!( "", "exact subclonotype n" );
+        doc!("", "exact subclonotype n");
 
         // The rest.
 

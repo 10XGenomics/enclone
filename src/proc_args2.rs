@@ -6,10 +6,10 @@ use crate::help2::*;
 use crate::help3::*;
 use crate::help4::*;
 use crate::help5::*;
+use crate::misc1::*;
 use crate::proc_args::*;
 use io_utils::*;
 use itertools::*;
-use crate::misc1::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::{
@@ -105,12 +105,18 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             || *x == "ncells"
             || *x == "gex_med"
             || *x == "gex_max"
+            || *x == "n_gex"
+            || *x == "entropy"
             || *x == "near"
             || *x == "far"
             || *x == "ext"
             || gpvar)
         {
-            if !x.ends_with("_g") && !x.ends_with("_a") && !x.starts_with("n_") {
+            if !x.ends_with("_g")
+                && !x.ends_with("_ab")
+                && !x.starts_with("_ag")
+                && !x.starts_with("n_")
+            {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",
@@ -134,7 +140,9 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     std::process::exit(1);
                 }
                 if ff[2].starts_with("Antibody") {
-                    known_features.push(format!("{}_a", ff[0]));
+                    known_features.push(format!("{}_ab", ff[0]));
+                } else if ff[2].starts_with("Antigen") {
+                    known_features.push(format!("{}_ag", ff[0]));
                 } else {
                     known_features.push(format!("{}_g", ff[1]));
                 }
@@ -304,7 +312,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let exit_message : String;
+            let exit_message: String;
             if !ctl.gen_opt.cellranger {
                 exit_message =
                     format!( "Something has gone badly wrong.  Please check to make \
@@ -317,11 +325,12 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     Thank you and have a nice day!", 
                     env!("CARGO_PKG_VERSION"), VERSION_STRING );
             } else {
-                exit_message =
-                    format!( "Something has gone badly wrong.  You have probably \
-                    encountered an internal error\nin cellranger.  \
-                    Please email us at help@10xgenomics.com, including the traceback\nshown \
-                    above." );
+                exit_message = format!(
+                    "Something has gone badly wrong.  You have probably \
+                     encountered an internal error\nin cellranger.  \
+                     Please email us at help@10xgenomics.com, including the traceback\nshown \
+                     above."
+                );
             }
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;

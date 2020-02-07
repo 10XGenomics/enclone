@@ -81,6 +81,7 @@ pub struct GeneralOpt {
     pub required_fps: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
+    pub cr_version: String,
 }
 
 // Allele finding algorithmic options.
@@ -149,6 +150,7 @@ pub struct ClonoFiltOpt {
     pub weak_onesies: bool,  // filter weak onesies
     pub weak_foursies: bool, // filter weak foursies
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
+    pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
 }
 
 // Clonotype printing options.
@@ -252,16 +254,16 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,                       // quality scores, truncated to V..J
-    pub v_start: usize,                       // start of V on full contig sequence
-    pub j_stop: usize,                        // stop of J on full contig sequence
-    pub c_start: Option<usize>,               // start of C on full contig sequence
-    pub full_seq: Vec<u8>,                    // full contig sequence
-    pub barcode: String,                      // barcode
-    pub tigname: String,                      // name of contig
-    pub dataset_index: usize,                 // index of dataset
-    pub umi_count: usize,                     // number of UMIs supporting contig
-    pub read_count: usize,                    // number of reads supporting contig
+    pub quals: Vec<u8>,         // quality scores, truncated to V..J
+    pub v_start: usize,         // start of V on full contig sequence
+    pub j_stop: usize,          // stop of J on full contig sequence
+    pub c_start: Option<usize>, // start of C on full contig sequence
+    pub full_seq: Vec<u8>,      // full contig sequence
+    pub barcode: String,        // barcode
+    pub tigname: String,        // name of contig
+    pub dataset_index: usize,   // index of dataset
+    pub umi_count: usize,       // number of UMIs supporting contig
+    pub read_count: usize,      // number of reads supporting contig
 }
 
 pub struct TigData1 {
@@ -360,6 +362,7 @@ pub struct GexInfo {
     pub gex_features: Vec<Vec<String>>,
     pub gex_barcodes: Vec<Vec<String>>,
     pub gex_matrices: Vec<MirrorSparseMatrix>,
+    pub gex_cell_barcodes: Vec<Vec<String>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,
     pub h5_data: Vec<Option<Dataset>>,
