@@ -279,7 +279,7 @@ pub fn help5(args: &Vec<String>) {
         println!(
             "We don't know how in general, but the following works for us from a mac:\n\n\
              A. open a new terminal window\n\
-             B. make it 110 characters wide; font should be fixed width and roughly 12pt\n\
+             B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
              C. type \"enclone help all NOPAGER\"\n\
              D. type command-A to select all\n\
              E. type option-command-P to print selection\n\
@@ -338,10 +338,14 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
-        print( "Yes.  Type \\bold{enclone help input} for details.  If we encounter a clonotype \
-            containing data from more than one donor, it will be flagged as an error.  The primary \
-            reason for allowing entry of data from multiple donors is to allow estimation of \
-            enclone's error rate.\n\n" );
+        print(
+            "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
+             enclone is to prevent cells from different donors from being placed in the same \
+             clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
+             employ this option, then clonotypes containing cells from more than one donor will be \
+             flagged as errors.  The primary reason for allowing entry of data from multiple \
+             donors is to allow estimation of enclone's error rate.\n\n",
+        );
 
         print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
         print(
@@ -354,47 +358,52 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
-        print( 
+        print(
             "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
-            get zero.\n\n",
+             get zero.\n\n",
         );
 
         print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
-        print( 
+        print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
-            one of the filters described in \\bold{enclone help special}, and which you can \
-            turn off.  We also delete cells for which more than four chains were found.\n\n",
+             one of the filters described in \\bold{enclone help special}, and which you can \
+             turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
 
         print("\\boldblue{12. Can enclone print summary stats?}\n\n");
-        print( 
+        print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
-            printed.  If you only want to see the summary stats, then also add the option \
-            \\bold{NOPRINT}.\n\n",
+             printed.  If you only want to see the summary stats, then also add the option \
+             \\bold{NOPRINT}.\n\n",
         );
 
         print("\\boldblue{13. What is the notes column?}\n\n");
-        print( 
-            "The notes column appears if one of two relatively rare events occurs:\n\
-            1. An insertion is detected in a chain sequence, relative to the reference.\n\
-            2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
-            the beginning of the C segment.\n\
-            The latter could correspond to one of several phenomena:\n\
-            a. A transcript has an insertion between its J and C segments.\n   \
-            This can happen.  See e.g. Behlke MA, Loh DY.\n   \
-            Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
-            Nature 322(1986), 379-382.\n\
-            b. There is an error in a reference sequence segment.\n   \
-            We have tried to eliminate all such errors from the built-in references for\n   \
-            human and mouse.\n\
-            c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
-               Cell Ranger pipeline just happened to pick a nonstandard one.\n\
-            d. There was a technical artifact and the sequence does not actually represent\n   \
-            an mRNA molecule.\n\n",
+        print(
+            "The notes column appears if one of two relatively rare events occurs:\n\n\
+             1. An insertion is detected in a chain sequence, relative to the reference.\n\n\
+             2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
+             the beginning of the C segment.\n\
+             The latter could correspond to one of several phenomena:\n\
+             a. A transcript has an insertion between its J and C segments.\n   \
+             This can happen.  See e.g. Behlke MA, Loh DY.\n   \
+             Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
+             Nature 322(1986), 379-382.\n\
+             b. There is an error in a reference sequence segment.\n   \
+             We have tried to eliminate all such errors from the built-in references for\n   \
+             human and mouse.\n\
+             c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
+             Cell Ranger pipeline just happened to pick a nonstandard one.\n\
+             d. There was a technical artifact and the sequence does not actually represent\n   \
+             an mRNA molecule.\n\n\
+             If you supply enclone with output from Cell Ranger 3.1, \
+             and J and C segments overlap by exactly one, this will not be noted.  \
+             The reason for this is that many of the reference sequences supplied with \
+             Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting \
+             in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print( "Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n" );
+        print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
 
         std::process::exit(0);
     }

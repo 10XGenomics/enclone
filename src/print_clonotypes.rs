@@ -97,7 +97,7 @@ pub fn print_clonotypes(
     let mut results = Vec::<(
         usize,
         Vec<String>,
-        Vec<(Vec<usize>,Vec<Vec<Option<usize>>>)>,
+        Vec<(Vec<usize>, Vec<Vec<Option<usize>>>)>,
         usize,
         usize,
         usize,
@@ -251,7 +251,7 @@ pub fn print_clonotypes(
 
             // Generate loupe data.
 
-            if ( ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 ) && pass == 2 {
+            if (ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
                     &exact_clonotypes,
                     &exacts,
@@ -472,20 +472,70 @@ pub fn print_clonotypes(
                     if ctl.clono_print_opt.bu {
                         for bcl in bli.iter() {
                             let mut row = Vec::<String>::new();
-                            row.push(format!("$ {}", bcl.0.clone()));
+                            let bc = &bcl.0;
+                            let li = bcl.1;
+                            row.push(format!("$ {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 if lvars[k] == "datasets".to_string() {
-                                    row.push(format!(
-                                        "{}",
-                                        ctl.sample_info.dataset_id[bcl.1].clone()
-                                    ));
+                                    row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
+                                } else if lvars[k] == "n_gex".to_string() && have_gex {
+                                    let mut n_gex = 0;
+                                    if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                                        n_gex = 1;
+                                    }
+                                    row.push(format!("{}", n_gex));
+                                } else if lvars[k] == "entropy".to_string() && have_gex {
+                                    // NOTE DUPLICATION WITH CODE BELOW.
+                                    let mut gex_count = 0;
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                    if p >= 0 {
+                                        let mut raw_count = 0;
+                                        if !ctl.gen_opt.h5 {
+                                            let row = gex_info.gex_matrices[li].row(p as usize);
+                                            for j in 0..row.len() {
+                                                let f = row[j].0;
+                                                let n = row[j].1;
+                                                if gex_info.is_gex[li][f] {
+                                                    raw_count += n;
+                                                }
+                                            }
+                                        } else {
+                                            let l = bcl.2;
+                                            for j in 0..d_all[l].len() {
+                                                if gex_info.is_gex[li][ind_all[l][j] as usize] {
+                                                    raw_count += d_all[l][j] as usize;
+                                                }
+                                            }
+                                        }
+                                        gex_count = raw_count;
+                                    }
+                                    let mut entropy = 0.0;
+                                    if p >= 0 {
+                                        if !ctl.gen_opt.h5 {
+                                            let row = gex_info.gex_matrices[li].row(p as usize);
+                                            for j in 0..row.len() {
+                                                let f = row[j].0;
+                                                let n = row[j].1;
+                                                if gex_info.is_gex[li][f] {
+                                                    let q = n as f64 / gex_count as f64;
+                                                    entropy += q * q.log2();
+                                                }
+                                            }
+                                        } else {
+                                            let l = bcl.2;
+                                            for j in 0..d_all[l].len() {
+                                                if gex_info.is_gex[li][ind_all[l][j] as usize] {
+                                                    let n = d_all[l][j] as usize;
+                                                    let q = n as f64 / gex_count as f64;
+                                                    entropy += q * q.log2();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    row.push(format!("{:.2}", entropy));
                                 } else if lvars[k] == "gex_med".to_string() && have_gex {
                                     let mut gex_count = 0;
-                                    let li = bcl.1;
-                                    let p = bin_position(
-                                        &gex_info.gex_barcodes[li],
-                                        &bcl.0.to_string(),
-                                    );
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
                                         if !ctl.gen_opt.h5 {

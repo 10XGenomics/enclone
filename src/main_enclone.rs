@@ -149,7 +149,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Parse the json annotations file.
 
     let mut tig_bc = Vec::<Vec<TigData>>::new();
-    parse_json_annotations_files(&ctl, &mut tig_bc, &refdata, &to_ref_index);
+    parse_json_annotations_files(&mut ctl, &mut tig_bc, &refdata, &to_ref_index);
 
     // Search for SHM indels.  Exploratory.
 
@@ -164,7 +164,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Sort tig_bc.
 
-    sort_tig_bc(&mut tig_bc, &refdata);
+    sort_tig_bc(&ctl, &mut tig_bc, &refdata);
 
     // Cross filter.
 

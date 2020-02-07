@@ -3,8 +3,8 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use ansi_escape::*;
 use crate::misc1::*;
+use ansi_escape::*;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
@@ -30,7 +30,7 @@ pub fn help1(args: &Vec<String>) {
         setup_pager(!nopager);
     }
     let mut help_all = false;
-    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
+    if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
         unsafe {
             HELP_ALL = true;
         }
@@ -374,9 +374,9 @@ pub fn help1(args: &Vec<String>) {
         // Finish.
 
         print( "We are actively working to improve the algorithm.  To test the performance of the \
-            current version, we combined data from 452 BCR libraries from 36 donors, which yielded \
-            \\boldred{9114} clonotypes having at least two cells each, of \
-            which \\boldred{22 (0.24%)} \
+            current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
+            \\boldred{9573} clonotypes having at least two cells each, of \
+            which \\boldred{15 (0.16%)} \
             contained data from multiple donors.  These are errors.\n\n" );
         if !help_all {
             std::process::exit(0);
@@ -476,11 +476,11 @@ pub fn help1(args: &Vec<String>) {
         let mut w2 = b"all cells having identical transcripts".to_vec();
         emit_bold_escape(&mut w2);
         emit_red_escape(&mut w2);
-        w2.append( &mut " ○".as_bytes().to_vec() );
+        w2.append(&mut " ○".as_bytes().to_vec());
         emit_end_escape(&mut w2);
         let x2 = stringme(&w2);
         rows.push(vec![x1, x2]);
-        doc!( "", "(every clonotype is a union of exact subclonotypes)" );
+        doc!("", "(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
 
@@ -550,14 +550,16 @@ pub fn help1(args: &Vec<String>) {
 
         // print footnote
 
-        print( "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
-            that cells:\n\
-            • have the same number of productive contigs identified\n\
-            • that these have identical bases within V..J\n\
-            • that they are assigned the same constant region reference sequences\n\
-            • and that the difference between the V stop and the C start is the same\n  \
-              (noting that this difference is nearly always zero).\n\
-            Note that we allow mutations within the 5'-UTR and constant regions.\n\n" );
+        print(
+            "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
+             that cells:\n\
+             • have the same number of productive contigs identified\n\
+             • that these have identical bases within V..J\n\
+             • that they are assigned the same constant region reference sequences\n\
+             • and that the difference between the V stop and the C start is the same\n  \
+             (noting that this difference is nearly always zero).\n\
+             Note that we allow mutations within the 5'-UTR and constant regions.\n\n",
+        );
 
         // conventions
 
