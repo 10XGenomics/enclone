@@ -258,7 +258,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "clonotype The main use of this option is for specificity testing, in which"
+            "clonotype.  The main use of this option is for specificity testing, in which"
         );
 
         doc!(
