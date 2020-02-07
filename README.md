@@ -40,7 +40,7 @@ with which `enclone` will be integrated (later).
 
 ___________________________________________________________________________________________________
 
-## How to understand `enclone` output
+### How to understand `enclone` output
 
 The example below shows how `enclone` prints out clonotypes.  This is something you'll need
 to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
@@ -57,7 +57,7 @@ as possible.  You can write to us at enclone@10xgenomics.com.
 ___________________________________________________________________________________________________
 
 
-## How to download and install `enclone`
+### How to download and install `enclone`
 
 1. Decide if you want to install `enclone` on linux, mac or windows computer.  
 
@@ -77,7 +77,7 @@ might be `~/bin`.
 ___________________________________________________________________________________________________
 
 
-## How to compile the `enclone` software (for experts!)
+### How to compile the `enclone` software (for experts!)
 
 You should only have to do this if you want to experimentally modify the `enclone` software.
 
@@ -116,4 +116,3 @@ cargo test --release -- --nocapture
 ```
 
 If you have problems, please write to us at enclone@10xgenomics.com.
-
