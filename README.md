@@ -65,7 +65,6 @@ ________________________________________________________________________________
 
 3. Click one of these links to download.  
 
-<span style=“color:green;”> text goes here</span>
 <b>TO DO: PUT LINKS HERE</b>
 
 4. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
