@@ -21,7 +21,7 @@ documentation for `enclone`, and will be described separately in more detail.
 
 ___________________________________________________________________________________________________
 
-## The `enclone` software
+### The `enclone` software
 
 `enclone` is open-source, beta software.  Binary executables from linux, mac and windows can be 
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
