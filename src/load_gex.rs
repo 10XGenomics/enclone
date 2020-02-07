@@ -264,7 +264,7 @@ pub fn load_gex(
                 std::process::exit(1);
             }
         }
-        if x.ends_with("_ab") {
+        if x.ends_with("_ab") || x.ends_with("_ag") {
             if !have_fb {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
@@ -348,6 +348,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             let ff = f.split('\t').collect::<Vec<&str>>();
             if ff[2].starts_with(&"Antibody") {
                 feature_id[i].insert(format!("{}_ab", ff[0]), j);
+            } else if ff[2].starts_with(&"Antigen") {
+                feature_id[i].insert(format!("{}_ag", ff[0]), j);
             } else {
                 feature_id[i].insert(format!("{}_g", ff[1]), j);
             }
