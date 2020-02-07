@@ -1,6 +1,10 @@
 # enclone
 
-`enclone` is a computational tool for studying immunology.  The mission of `enclone` is to:
+`enclone` is a computational tool for studying the adaptive immune system in humans and
+other vertebrate species.  `enclone` and this page are targeted at immunologists, but if
+you're simply curious, there's nothing to stop you from downloading and playing with it.
+
+The mission of `enclone` is to:
 
 **Find and display the clonotypes within single cell VDJ datasets:
 groups of T and B cells having the same fully rearranged common ancestor.**
@@ -32,9 +36,9 @@ with which `enclone` will be integrated (later).
 ___________________________________________________________________________________________________
 
 
-The example below shows how `enclone` prints out clonotypes.  This is something you will need
+The example below shows how `enclone` prints out clonotypes.  This is something you'll need
 to study in order to use enclone successfully.  `enclone` comes with extensive online 
-documentation, and because you can easily play with the sample datasets, and gradually
+documentation, and because you can easily play with the sample datasets, you can gradually
 figure out how it all works.
 
 <p><img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /></p>
@@ -42,6 +46,9 @@ figure out how it all works.
 By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
 `enclone` to print clonotypes in machine-readable forms that are suitable for input to other
 programs.
+
+We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
+as possible.  You can write to us at enclone@10xgenomics.com.
 
 ___________________________________________________________________________________________________
 
