@@ -1,13 +1,24 @@
 # enclone
 
-The mission of `enclone` is to:
+enclone is a computational tool for studying immunology.  The mission of `enclone` is to:
 
 **Find and display the clonotypes within single cell VDJ datasets:
 groups of T and B cells having the same fully rearranged common ancestor.**
+
+The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
+but things are simpler because T cells do not have somatic hypermutation (SHM).
+
 <img src="img/what_is_a_clonotype.png" alt="what is a clonotype" title="what is a clonotype" />
 
-`enclone` is part of the [10x Genomics](https://www.10xgenomics.com/) immune profiling toolkit, including
-[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), with which `enclone` is integrated.
+Each cell in a clonotype is typically represented by two or three chains.  Such information can
+only be obtained from _single cell_ data!  From such data, clonotypes can be computationally
+approximated, with high accuracy.  The method we use for this is describe briefly in the online
+documentation for enclone, and will be described separately in more detail.
+
+`enclone` is beta software that is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
+profiling toolkit, including
+[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), 
+with which `enclone` will be integrated.
 
 To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
