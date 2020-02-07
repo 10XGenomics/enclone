@@ -4,5 +4,6 @@
 The source is this single-page google doc:
 https://docs.google.com/presentation/d/14ZYTLjYoo_rK54bu6R09ylJS_6QghNf35skQfF7ZeIo/edit#slide=id.g6d8c1773ab_0_11
 (only accessible internally at 10x genomics).
-Saved as .png, which loses resolution.  Saving as .svg yields a 54 MB file.
-Probably the right thing to do is draw the diagram from scratch and save that as .svg.
+
+One can save this as a .png, which loses too much resolution.  One can save as a .svg, but
+that's ~54 MB.  Instead this is a screenshot.
