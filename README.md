@@ -22,8 +22,8 @@ documentation for `enclone`, and will be described separately in more detail.
 ___________________________________________________________________________________________________
 
 
-`enclone` is beta software.  Binary executables from linux, mac and windows can be directly
-downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
+`enclone` is open-source, beta software.  Binary executables from linux, mac and windows can be 
+directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
 running!  To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
 get started.  You do not need to be able to program, or anything of that sort.
@@ -51,7 +51,29 @@ as possible.  You can write to us at enclone@10xgenomics.com.
 ___________________________________________________________________________________________________
 
 
-Here are *temporary* instructions for using `enclone` (for internal testing purposes):
+## How to download and install `enclone`
+
+1. Decide if you want to install `enclone` on linux, mac or windows computer.  
+
+2. Decide if you want the absolute latest version, or the most fully tested version.
+
+3. Click one of these links to download.  
+
+<red>TO DO: PUT THE LINKS HERE</red>
+
+4. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
+might be `~/bin`.
+
+5. Change your path so that it includes this location.
+
+6. Download the sample data.
+
+___________________________________________________________________________________________________
+
+
+## How to compile the `enclone` software (for experts!)
+
+You should only have to do this if you want to experimentally modify the `enclone` software.
 
 1. For now, you can run on an x86-64 linux server, or a Mac, and possibly on a Windows
 box (untested).
