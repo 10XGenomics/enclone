@@ -49,3 +49,5 @@ cargo test --release -- --nocapture
 ```
 
 If you have problems, please write to us at enclone@10xgenomics.com.
+
+<p><img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /></p>
