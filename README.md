@@ -14,7 +14,7 @@ including those in viruses, bacteria and tumors.  Understanding this is a highly
 research area with many mysteries that will take years if not decades to fully sort out, with 
 profound implications for biology and medicine.  Welcome to the frontier!
 
-`enclone` and this page are targeted at immunologists, but if
+`enclone` and this page are designed for immunologists, but if
 you're simply curious, there's nothing to stop you from downloading and playing with it.
 
 The mission of `enclone` is to:
