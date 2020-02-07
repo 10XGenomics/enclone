@@ -446,8 +446,14 @@ pub fn parse_json_annotations_files(
             eprintln!("can't find {} or {}", json, json_lz4);
             std::process::exit(1);
         }
-        let tig_bc: Vec<Vec<TigData>> =
-            read_json(li, &json, &refdata, &to_ref_index, ctl.gen_opt.reannotate, &mut res.4);
+        let tig_bc: Vec<Vec<TigData>> = read_json(
+            li,
+            &json,
+            &refdata,
+            &to_ref_index,
+            ctl.gen_opt.reannotate,
+            &mut res.4,
+        );
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
     });
