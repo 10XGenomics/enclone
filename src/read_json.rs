@@ -75,6 +75,7 @@ pub fn read_json(
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
     reannotate: bool,
+    cr_version: &mut String,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -139,6 +140,9 @@ pub fn read_json(
                 let cdr3_aa: String;
                 let cdr3_dna: String;
                 let mut cdr3_start: usize;
+                if v.get("version").is_some() {
+                    *cr_version = v["version"].to_string();
+                }
 
                 // Reannotate.
 
@@ -404,7 +408,7 @@ pub fn read_json(
 // Parse the json annotations files.
 
 pub fn parse_json_annotations_files(
-    ctl: &EncloneControl,
+    mut ctl: &mut EncloneControl,
     tig_bc: &mut Vec<Vec<TigData>>,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
@@ -416,6 +420,7 @@ pub fn parse_json_annotations_files(
         Vec<(String, usize)>,
         Vec<Vec<TigData>>,
         Vec<Vec<u8>>, // logs
+        String,
     )>::new();
     for i in 0..ctl.sample_info.dataset_path.len() {
         results.push((
@@ -423,6 +428,7 @@ pub fn parse_json_annotations_files(
             Vec::<(String, usize)>::new(),
             Vec::<Vec<TigData>>::new(),
             Vec::<Vec<u8>>::new(),
+            String::new(),
         ));
     }
     // note: only tracking truncated seq and quals initially
@@ -441,12 +447,13 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> =
-            read_json(li, &json, &refdata, &to_ref_index, ctl.gen_opt.reannotate);
+            read_json(li, &json, &refdata, &to_ref_index, ctl.gen_opt.reannotate, &mut res.4);
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
     });
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
+        ctl.gen_opt.cr_version = results[i].4.clone();
     }
     if ctl.comp {
         println!("used {:.1} seconds loading from json", elapsed(&tl));

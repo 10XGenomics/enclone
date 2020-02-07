@@ -379,8 +379,8 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{13. What is the notes column?}\n\n");
         print(
-            "The notes column appears if one of two relatively rare events occurs:\n\
-             1. An insertion is detected in a chain sequence, relative to the reference.\n\
+            "The notes column appears if one of two relatively rare events occurs:\n\n\
+             1. An insertion is detected in a chain sequence, relative to the reference.\n\n\
              2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
              the beginning of the C segment.\n\
              The latter could correspond to one of several phenomena:\n\
@@ -394,7 +394,12 @@ pub fn help5(args: &Vec<String>) {
              c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
              Cell Ranger pipeline just happened to pick a nonstandard one.\n\
              d. There was a technical artifact and the sequence does not actually represent\n   \
-             an mRNA molecule.\n\n",
+             an mRNA molecule.\n\n\
+             If you supply enclone with output from Cell Ranger 3.1, \
+             and J and C segments overlap by exactly one, this will not be noted.  \
+             The reason for this is that many of the reference sequences supplied with \
+             Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting \
+             in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");

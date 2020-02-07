@@ -81,6 +81,7 @@ pub struct GeneralOpt {
     pub required_fps: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
+    pub cr_version: String,
 }
 
 // Allele finding algorithmic options.
