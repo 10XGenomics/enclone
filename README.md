@@ -83,7 +83,7 @@ ________________________________________________________________________________
 4. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
 might be `~/bin`.
 
-<br>TODO: link to pathing tutorial<br>
+<b>TO DO: link to pathing tutorial</b>
 
 5. Change your path so that it includes this location.
 
