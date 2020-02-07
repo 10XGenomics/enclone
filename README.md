@@ -21,12 +21,17 @@ documentation for `enclone`, and will be described separately in more detail.
 
 ___________________________________________________________________________________________________
 
+## The `enclone` software
 
 `enclone` is open-source, beta software.  Binary executables from linux, mac and windows can be 
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
 running!  To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
 get started.  You do not need to be able to program, or anything of that sort.
+
+`enclone` is fast, typically responding in seconds.  It is intended as an experimental tool.
+You can dynamically change your command line to select specific clonotypes and fields you wish
+to see.
 
 `enclone` is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
 profiling toolkit, including
@@ -35,6 +40,7 @@ with which `enclone` will be integrated (later).
 
 ___________________________________________________________________________________________________
 
+## How to understand `enclone` output
 
 The example below shows how `enclone` prints out clonotypes.  This is something you'll need
 to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
