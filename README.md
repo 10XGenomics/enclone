@@ -5,7 +5,7 @@ other vertebrate species.
 
 For the general audience: from a biological sample (such as blood), `enclone` allows you to see 
 the history of individual immune cells within it: how they evolved in response to antigens, 
-including those in viruses, bacteria and tumor cells.  Understanding this is a highly active 
+including those in viruses, bacteria and tumors.  Understanding this is a highly active 
 research area with many mysteries that will take years if not decades to sort out, with profound 
 implications for biology and medicine.
 
