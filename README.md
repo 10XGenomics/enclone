@@ -41,7 +41,7 @@ to study in order to use `enclone` successfully.  `enclone` comes with extensive
 documentation, and because you can easily play with the sample datasets, you can gradually
 figure out how it all works.
 
-<p><img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /></p>
+<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" />
 By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
 `enclone` to print clonotypes in machine-readable forms that are suitable for input to other
 programs.
