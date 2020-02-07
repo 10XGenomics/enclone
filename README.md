@@ -4,7 +4,6 @@ The mission of `enclone` is to:
 
 **Find and display the clonotypes within single cell VDJ datasets:
 groups of T and B cells having the same fully rearranged common ancestor.**
-
 <img src="img/what_is_a_clonotype.png" alt="what is a clonotype" title="what is a clonotype" />
 
 `enclone` is part of the [10x Genomics](https://www.10xgenomics.com/) immune profiling toolkit, including
