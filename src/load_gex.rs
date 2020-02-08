@@ -264,7 +264,7 @@ pub fn load_gex(
                 std::process::exit(1);
             }
         }
-        if x.ends_with("_ab") || x.ends_with("_ag") {
+        if x.ends_with("_ab") || x.ends_with("_ag") || x.ends_with("_cr") || x.ends_with("_cu") {
             if !have_fb {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
@@ -346,12 +346,18 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         for j in 0..gex_features[i].len() {
             let f = &gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
-            if ff[2].starts_with(&"Antibody") {
-                feature_id[i].insert(format!("{}_ab", ff[0]), j);
-            } else if ff[2].starts_with(&"Antigen") {
-                feature_id[i].insert(format!("{}_ag", ff[0]), j);
-            } else {
-                feature_id[i].insert(format!("{}_g", ff[1]), j);
+            for z in 0..2 {
+                if ff[2].starts_with(&"Antibody") {
+                    feature_id[i].insert(format!("{}_ab", ff[z]), j);
+                } else if ff[2].starts_with(&"Antigen") {
+                    feature_id[i].insert(format!("{}_ag", ff[z]), j);
+                } else if ff[2].starts_with(&"CRISPR") {
+                    feature_id[i].insert(format!("{}_cr", ff[z]), j);
+                } else if ff[2].starts_with(&"CUSTOM") {
+                    feature_id[i].insert(format!("{}_cu", ff[z]), j);
+                } else if ff[2].starts_with(&"Gene") {
+                    feature_id[i].insert(format!("{}_g", ff[z]), j);
+                }
             }
         }
     }

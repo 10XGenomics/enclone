@@ -387,33 +387,20 @@ pub fn help4(args: &Vec<String>) {
             "these identifiers is arbitrary.  This option is best applied to cases where"
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
-        ldoc!(
-            "<antibody>_ab",
-            "assuming that feature barcode data for antibody capture have been"
+        ldoc!("<gene>_g", "");
+        doc!("<antibody>_ab", "");
+        doc!("<antigen>_ag", "");
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
+        doc!(
+            "",
+            "look for a declared feature of the given type with the given id or name,"
         );
         doc!(
             "",
-            "provided, look for a feature line having the given name in the first column;"
+            "and report the mean umi count for it; this assumes that gene expression"
         );
-        doc!("", "report the mean UMI count value");
-        doc!(
-            "<antigen>_ag",
-            "assuming that feature barcode data for antigens have been provided,"
-        );
-        doc!(
-            "",
-            "look for a feature line having the given name in the first column;"
-        );
-        doc!("", "report the mean UMI count value");
-        doc!(
-            "<gene name>_g",
-            "assuming that gene expression data has been provided,"
-        );
-        doc!(
-            "",
-            "look for a feature line having the given name in the second"
-        );
-        doc!("", "column; report the mean UMI count value");
+        doc!("", "or feature barcode data have been generated");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

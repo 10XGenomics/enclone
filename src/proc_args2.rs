@@ -115,6 +115,8 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             if !x.ends_with("_g")
                 && !x.ends_with("_ab")
                 && !x.starts_with("_ag")
+                && !x.starts_with("_cr")
+                && !x.starts_with("_cu")
                 && !x.starts_with("n_")
             {
                 eprintln!(
@@ -139,12 +141,18 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     eprintln!("Giving up.\n");
                     std::process::exit(1);
                 }
-                if ff[2].starts_with("Antibody") {
-                    known_features.push(format!("{}_ab", ff[0]));
-                } else if ff[2].starts_with("Antigen") {
-                    known_features.push(format!("{}_ag", ff[0]));
-                } else {
-                    known_features.push(format!("{}_g", ff[1]));
+                for z in 0..2 {
+                    if ff[2].starts_with("Antibody") {
+                        known_features.push(format!("{}_ab", ff[z]));
+                    } else if ff[2].starts_with("Antigen") {
+                        known_features.push(format!("{}_ag", ff[z]));
+                    } else if ff[2].starts_with("CRISPR") {
+                        known_features.push(format!("{}_cr", ff[z]));
+                    } else if ff[2].starts_with("CUSTOM") {
+                        known_features.push(format!("{}_cu", ff[z]));
+                    } else {
+                        known_features.push(format!("{}_g", ff[z]));
+                    }
                 }
             }
         }
