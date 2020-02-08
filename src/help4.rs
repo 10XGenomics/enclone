@@ -258,14 +258,14 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "clonotype.  The main use of this option is for specificity testing, in which"
+            "clonotype.  The main use of this option is for specificity testing, in"
         );
 
         doc!(
             "",
-            "data from different donors are deliberately combined in an attempt to find"
+            "which data from different donors are deliberately combined in an attempt"
         );
-        doc!("", "errors.");
+        doc!("", "to find errors.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
