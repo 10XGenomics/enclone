@@ -2,16 +2,10 @@
 //
 // enclone internal documentation
 //
-// For each VDJ dataset, the following files are used:
-// - all_contig_annotations.json
-// - _invocation.
-//
 // enclone.test
 //    Run a full test on ~450 lenas, which takes about a minute.
 //    For this you need cellranger/lib/rust/enclone/src in your path.
 //    By default does not print clonotypes.  It just shows errors.  You can add enclone arguments.
-//
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 //
 // The documentation below is out of date.
 //
@@ -48,19 +42,10 @@
 // A known case of false positive errors are V segments that are missing from our VDJ 
 // reference.
 //
-// COMPUTATIONAL PERFORMANCE
-// The bulk of the time is spent in the call to annotate_seq and in the line that counts the
-// number of differences between two contigs.
-//
 // TO DO
 // - Test for duplicate barcode should be made more specific, preferably by adding CDR3 info.
-// - Ask for more files to be retained by evaporation, going forward.
-// - Search for more lenas to add to test.
-// - Run the positive control.
-// - Allow four contigs.
 // - Use reject contigs to increase power.
 // - Fix problem: using original clonotypes based on CDR3 match is wrong.
-// - Don't hardwire for human.
 // - Arguably clonotypes from the same donors and different lenas and having the same CDR3s 
 //   should be merged.  The problem with doing this is tracking, because then you can't say 
 //   that a particular clonotype
