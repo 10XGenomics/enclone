@@ -1,21 +1,11 @@
 
 1. what is a clonotype
 
-The source is this single-page google doc:
-
-https://docs.google.com/presentation/d/14ZYTLjYoo_rK54bu6R09ylJS_6QghNf35skQfF7ZeIo/edit#slide=id.g6d8c1773ab_0_11
-
-(only accessible internally at 10x genomics).
-
-One can save this as a .png, which loses too much resolution.  One can save as a .svg, but
-that's ~54 MB.  Instead this is a screenshot.
+The source of this is a single-page 10x google presentation "what is a clonotype?" with
+identical content.  One can save this as a .png, which loses too much resolution.  
+One can save as a .svg, but that's ~54 MB.  Instead this is a screenshot.
 
 2. enclone annotated example
 
-The source is the single-page google presentation:
-
-https://docs.google.com/presentation/d/1Fj1Zf1ds_yH3BSu5tzFs5cWOgctE0-l6_YYOLmsVS40/edit#slide=id.p
-
-(only accessible internally at 10x genomics).
-
-This was saved as a .svg file.
+The source of this is a single-page 10x google presentation "enclone example anatomy" with
+identical content.  This was saved as a .svg file.
