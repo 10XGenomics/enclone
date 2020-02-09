@@ -1,7 +1,3 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
-//
-// enclone internal documentation
-//
 // enclone.test
 //    Run a full test on ~450 lenas, which takes about a minute.
 //    For this you need cellranger/lib/rust/enclone/src in your path.
@@ -41,12 +37,3 @@
 //
 // A known case of false positive errors are V segments that are missing from our VDJ 
 // reference.
-//
-// TO DO
-// - Test for duplicate barcode should be made more specific, preferably by adding CDR3 info.
-// - Use reject contigs to increase power.
-// - Fix problem: using original clonotypes based on CDR3 match is wrong.
-// - Arguably clonotypes from the same donors and different lenas and having the same CDR3s 
-//   should be merged.  The problem with doing this is tracking, because then you can't say 
-//   that a particular clonotype
-// - Don't fix size for stirling2_ratio_table_f64.

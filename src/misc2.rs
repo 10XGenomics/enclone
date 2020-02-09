@@ -297,7 +297,8 @@ pub fn find_exact_subclonotypes(
         }
 
         // Delete reused barcodes.  In principle we could instead choose the instance having
-        // higher UMI counts.
+        // higher UMI counts.  Also we might test for more evidence of concurrence, to avoid
+        // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
         if ctl.clono_filt_opt.bc_dup {

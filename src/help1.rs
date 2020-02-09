@@ -352,7 +352,8 @@ pub fn help1(args: &Vec<String>) {
              outline:\n\n",
         );
         print(
-            "\\boldred{1}. enclone gets its information from the file all_contig_annotations.json \
+            "\\boldred{1}.  Input data.  \
+             enclone gets its information from the file all_contig_annotations.json \
              that is \
              produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated \
              V and J segment.  The V segment alignment may have a single indel whose length is \
@@ -360,12 +361,14 @@ pub fn help1(args: &Vec<String>) {
              delete or insert sequence.  In the insertion case, the bases are taken from the \
              contig.  These indels are noted in the enclone output.\n\n\
              \
-             \\boldred{2}. enclone groups cells into exact subclonotypes, provided that they have \
+             \\boldred{2}.  Exact subclonotypes.  \
+             enclone groups cells into exact subclonotypes, provided that they have \
              the same \
              number of chains, identical V..J sequences, identical C segment assignments, \
              and the same distance between the J stop and the C start (which is usually zero).\n\n\
              \
-             \\boldred{3}. For samples from a given donor, enclone derives \"donor reference \
+             \\boldred{3}.  Finding the germline sequences.  \
+             For samples from a given donor, enclone derives \"donor reference \
              sequences\" \
              for the V chains present in the donor's genome.  This is powerful, even though \
              based on imperfect information.  V segments vary in their expression frequency and \
@@ -373,7 +376,8 @@ pub fn help1(args: &Vec<String>) {
              is also not possible to accurately determine the last ~15 bases in a V chain from \
              transcript data.\n\n\
              \
-             \\boldred{4}. Pairs of exact subclonotypes are considered for joining, as described \
+             \\boldred{4}.  What joins are tested.  \
+             Pairs of exact subclonotypes are considered for joining, as described \
              below.  This \
              process only considers exact subclonotypes have two or three chains.  There is some \
              separate joining for the case of one chain.  Exact subclonotypes having four chains \
@@ -381,28 +385,33 @@ pub fn help1(args: &Vec<String>) {
              subclonotypes are highly enriched for cell doublets, which we discard if we can \
              identify as such.\n\n\
              \
-             \\boldred{5}. For each pair of exact subclonotypes, and for each pair of chains in \
+             \\boldred{5}.  Initial grouping.  \
+             For each pair of exact subclonotypes, and for each pair of chains in \
              each of the \
              two exact subclonotypes, for which V..J has the same length for the corresponding \
              chains, and the CDR3 segments have the same length for the corresponding chains, \
              enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
-             \\boldred{6}. To proceed, as a minimum requirement, there must be at most 50 total \
+             \\boldred{6}.  Error bounding.  \
+             To proceed, as a minimum requirement, there must be at most 50 total \
              mismatches \
              between the two exact subclonotypes, within the given two V..J segments.\n\n\
              \
-             \\boldred{7}. enclone next finds shared differences betweens exact subclonotypes, \
+             \\boldred{7}.  Shared differences.  \
+             enclone next finds shared differences betweens exact subclonotypes, \
              that is, for \
              two exact subclonotypes, common mutations from the reference sequence, using the \
              donor reference for the V segments and the universal reference for the J segments. \
              We also compute the number of independent mutations.\n\n\
              \
-             \\boldred{8}. Two cells sharing sufficiently many shared differences and \
+             \\boldred{8}.  Key join criteria.  \
+             Two cells sharing sufficiently many shared differences and \
              sufficiently few \
              CDR3 differences are deemed to be in the same clonotype.  This depends on heuristics \
              which are too detailed to describe on this page and will be described elsewhere.\n\n\
              \
-             \\boldred{9}. Spurious chains are filtered out based on frequency and \
+             \\boldred{9}.  Junk.  \
+             Spurious chains are filtered out based on frequency and \
              connections.\n\n",
         );
 
