@@ -89,7 +89,7 @@ pub fn setup_pager(pager: bool) {
 
         // Call pager.  Turned off.  Direct replacement, copied from pager, given below it.
 
-        // Pager::with_pager("less -r -F -X").setup();
+        // Pager::with_pager("less -R -F -X").setup();
         if isatty(libc::STDOUT_FILENO) {
             let mut fds = [0; 2];
             assert_eq!(unsafe { libc::pipe(fds.as_mut_ptr()) }, 0);
@@ -111,7 +111,7 @@ pub fn setup_pager(pager: bool) {
                     // I am parent
                     dup2(pager_stdin, libc::STDIN_FILENO);
                     close(main_stdout);
-                    execvp( &OsStr::new( "less -r -F -X" ).to_os_string() );
+                    execvp( &OsStr::new( "less -R -F -X" ).to_os_string() );
                 }
             }
         }
