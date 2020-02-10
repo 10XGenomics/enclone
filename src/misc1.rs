@@ -5,67 +5,11 @@
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
+use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
-
-use std::ffi::{CString, OsString};
-use std::ffi::OsStr;
-use std::os::unix::ffi::OsStringExt;
-use std::ptr;
-
-use errno;
-use libc;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// The following utilities are copied from the pager crate.
-
-fn osstring2cstring(s: OsString) -> CString {
-    unsafe { CString::from_vec_unchecked(s.into_vec()) }
-}
-
-fn split_string(s: &OsString) -> Vec<OsString> {
-    match s.clone().into_string() {
-        Ok(cmd) => cmd.split_whitespace().map(OsString::from).collect(),
-        Err(cmd) => vec![cmd],
-    }
-}
-
-pub fn fork() -> libc::pid_t {
-    unsafe { libc::fork() }
-}
-
-pub fn execvp(cmd: &OsString) {
-    let cstrings = split_string(cmd)
-        .into_iter()
-        .map(osstring2cstring)
-        .collect::<Vec<_>>();
-    let mut args = cstrings.iter().map(|c| c.as_ptr()).collect::<Vec<_>>();
-    args.push(ptr::null());
-    errno::set_errno(errno::Errno(0));
-    unsafe { libc::execvp(args[0], args.as_ptr()) };
-}
-
-pub fn dup2(fd1: i32, fd2: i32) {
-    assert!(unsafe { libc::dup2(fd1, fd2) } > -1);
-}
-
-pub fn close(fd: i32) {
-    assert_eq!(unsafe { libc::close(fd) }, 0);
-}
-
-pub fn pipe() -> (i32, i32) {
-    let mut fds = [0; 2];
-    assert_eq!(unsafe { libc::pipe(fds.as_mut_ptr()) }, 0);
-    (fds[0], fds[1])
-}
-
-pub fn isatty(fd: i32) -> bool {
-    let isatty = unsafe { libc::isatty(fd) };
-    isatty != 0
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -86,35 +30,7 @@ pub fn setup_pager(pager: bool) {
     //   from enclone.  This is really bad, so do not turn off this option!
 
     if pager {
-
-        // Call pager.  Turned off.  Direct replacement, copied from pager, given below it.
-
-        // Pager::with_pager("less -R -F -X").setup();
-        if isatty(libc::STDOUT_FILENO) {
-            let mut fds = [0; 2];
-            assert_eq!(unsafe { libc::pipe(fds.as_mut_ptr()) }, 0);
-            let pager_stdin : i32 = fds[0];
-            let main_stdout : i32 = fds[1];
-            let pid : libc::pid_t = unsafe { libc::fork() };
-            match pid {
-                -1 => {
-                    // Fork failed
-                    close(pager_stdin);
-                    close(main_stdout);
-                }
-                0 => {
-                    // I am child
-                    dup2(main_stdout, libc::STDOUT_FILENO);
-                    close(pager_stdin);
-                }
-                _ => {
-                    // I am parent
-                    dup2(pager_stdin, libc::STDIN_FILENO);
-                    close(main_stdout);
-                    execvp( &OsStr::new( "less -R -F -X" ).to_os_string() );
-                }
-            }
-        }
+        Pager::with_pager("less -R -F -X").setup();
     }
 }
 
