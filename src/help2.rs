@@ -296,9 +296,11 @@ pub fn help2(args: &Vec<String>) {
             "\nenclone has \\boldred{two} mechanisms for specifying input datasets: either \
              directly on the command line or via a supplementary metadata file. Only one mechanism \
              may be used at a time.\n\n\
-             In both cases, you will need to provide paths to Cell Ranger pipeline directories. \
-             Information about the files in those directories that are used may be found with \
-             \\bold{enclone help input_tech}. \
+             In both cases, you will need to provide paths to directories where the outputs of \
+             the Cell Ranger pipeline may be found.  enclone uses only some of the pipeline \
+             output files, so it is enough that those files are present in given directory, and \
+             the particular files that are needed may be found by typing \
+             \\bold{enclone help input_tech}.  \
              If you use the argument\n\\bold{PRE=p}\nthen \\bold{p/} will be prepended to all \
              pipeline paths.  Moreover (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \

@@ -99,40 +99,37 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
             }
             for (ix, x) in datasetsx.iter().enumerate() {
                 let mut p = (*x).to_string();
-                // ◼ In CR 4.0, the way we get to outs below will likely need to change.
+                // ◼ In CR 4.0, the way we get to outs below will need to change.
+
+                // Specify the "outs" path p.
+                //
+                // Use case 1.  PRE is specified.
+
                 if ctl.gen_opt.pre != "" {
                     p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
+
+                // Use case 2.  It's an internal run, a lena id has been provided, and PRE
+                // was not specified.  Then we look on marsoc.
+
+                } else if internal_run && p.parse::<u32>().is_ok() && ctl.gen_opt.pre == "" {
+                    p = format!("{}", get_outs(&p));
+
+                // Use case 3.  All else.
+
                 } else {
-                    if p.parse::<i32>().is_ok() && internal_run {
-                        p = format!("{}", get_outs(&p));
-                    } else if !p.ends_with("/outs") {
-                        p = format!("{}/outs", p);
-                    }
+                    p = format!("{}/outs", p);
                 }
-                if !path_exists(&p.rev_before("/outs")) {
-                    if !f.contains("=") {
-                        eprintln!("\nCan't find the path {}.\n", p);
-                        std::process::exit(1);
-                    } else if ctl.gen_opt.pre != "".to_string() {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, which after prefixing by PRE yields\n\
-                             {},\n\
-                             and that path does not exist.\n",
-                            f.before("="),
-                            x,
-                            p.rev_before("/outs")
-                        );
-                    } else {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, and that path does not exist.\n",
-                            f.before("="),
-                            x
-                        );
-                    }
-                    std::process::exit(1);
+
+                // Now, possibly, we should remove the /outs suffix.  We do this to allow for the
+                // case where the customer has copied Cell Ranger output files but not preserved
+                // the directory structure.  Or perhaps they appended /outs to their path.
+
+                if !path_exists(&p) {
+                    p = p.rev_before("/outs").to_string();
                 }
+
+                // If the path p doesn't exist, we have to give up.
+
                 if !path_exists(&p) {
                     if !f.contains("=") {
                         eprintln!("\nCan't find the path {}.\n", p);
@@ -157,6 +154,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     }
                     std::process::exit(1);
                 }
+
+                // Now work on the GEX path.
+
                 let mut pg = String::new();
                 if have_gex {
                     pg = datasets_gex[ix].to_string();
@@ -166,7 +166,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     if internal_run
                         && ctl.gen_opt.pre != ""
                         && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
-                        && pg.parse::<i32>().is_ok()
+                        && pg.parse::<u32>().is_ok()
                     {
                         pg = format!("{}", get_outs(&pg));
                     } else if ctl.gen_opt.pre != "" {
@@ -179,39 +179,15 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         }
                     }
 
-                    if !path_exists(&pg.rev_before("/outs")) {
-                        if ctl.gen_opt.pre != "".to_string() {
-                            if !f.contains("=") {
-                                eprintln!(
-                                    "\nThe enclone command line \
-                                     includes\n{}, which after prefixing by PRE yields\n\
-                                     {},\n\
-                                     and that path does not exist.\n",
-                                    pg0,
-                                    pg.rev_before("/outs")
-                                );
-                            } else {
-                                eprintln!(
-                                    "\nThe value given for {} on the enclone command line \
-                                     includes\n{}, which after prefixing by PRE yields\n\
-                                     {},\n\
-                                     and that path does not exist.\n",
-                                    f.before("="),
-                                    pg0,
-                                    pg.rev_before("/outs")
-                                );
-                            }
-                        } else {
-                            eprintln!(
-                                "\nThe value given for {} on the enclone command line \
-                                 includes\n{}, and that path does not exist.\n",
-                                f.before("="),
-                                pg.rev_before("/outs")
-                            );
-                        }
-                        std::process::exit(1);
+                    // Now, possibly, we should remove the /outs suffix, see discussion above.
+
+                    if !path_exists(&pg) {
+                        pg = pg.rev_before("/outs").to_string();
                     }
-                    if !path_exists(&p) {
+
+                    // Check for nonexistent path
+
+                    if !path_exists(&pg) {
                         if ctl.gen_opt.pre != "".to_string() {
                             eprintln!(
                                 "\nThe value given for GEX on the enclone command line \
@@ -232,6 +208,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         std::process::exit(1);
                     }
                 }
+
+                // OK everything worked, all set.
+
                 let donor_name = format!("d{}", id + 1);
                 let sample_name = format!("s{}", is + 1);
                 let mut dataset_name = (*x).to_string();
