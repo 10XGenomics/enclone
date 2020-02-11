@@ -72,7 +72,8 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Decide if you want to install `enclone` on Linux or Mac computer.
+1. Decide if you want to install `enclone` on a Linux or Mac computer.  Please let us know if
+availability on other platforms is important to you.
 
 2. Decide if you want the absolute latest version, or the most fully tested version.
 
