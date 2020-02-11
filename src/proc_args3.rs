@@ -3,6 +3,7 @@
 use crate::defs::*;
 use io_utils::*;
 use marsoc::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use string_utils::*;
@@ -275,6 +276,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 std::process::exit(1);
             }
             let allowed_fields = vec![
+                "bc".to_string(),
                 "bcr".to_string(),
                 "donor".to_string(),
                 "gex".to_string(),
@@ -322,6 +324,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             let mut gpath = String::new();
             let mut sample = "s1".to_string();
             let mut donor = "d1".to_string();
+            let mut bc = "".to_string();
             for i in 0..fields.len() {
                 let x = &fields[i];
                 let mut y = val[i].to_string();
@@ -346,6 +349,55 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     sample = y.to_string();
                 } else if *x == "donor" {
                     donor = y.to_string();
+                } else if *x == "bc" && y.len() > 0 {
+                    bc = y.to_string();
+                }
+            }
+            if bc != "" && ( sample != "" || donor != "" ) {
+                eprintln!( "\nIf bc is specified in META, for a given dataset, it does not\n\
+                    make sense to also specify sample or donor.\n"
+                );
+                std::process::exit(1);
+            }
+            let mut sample_donor = HashMap::<String,(String,String)>::new();
+            if bc != "".to_string() {
+                if ctl.gen_opt.pre != "".to_string() {
+                    bc = format!( "{}/{}", ctl.gen_opt.pre, bc );
+                }
+                if !path_exists(&bc) {
+                    eprintln!( "\nIn your META file, a value for bc implies the existence of \
+                        a file\n{}\nbut that file does not exist.\n", bc );
+                    std::process::exit(1);
+                }
+                let f = open_for_read![&bc];
+                let mut first = true;
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if first {
+                        if s != "barcode,sample,donor".to_string() {
+                            eprintln!( "\nThe first line in the CSV file defined by bc in META \
+                                must be\nbarcode,sample,donor\nbut it's not.  This is for the \
+                                file\n{}\ndefined by bc.\n", bc );
+                            std::process::exit(1);
+                        }
+                    } else {
+                        first = false;
+                        let fields = s.split(',').collect::<Vec<&str>>();
+                        if fields.len() != 3 {
+                            eprintln!( "\nThere is a line in the CSV file defined by bc in META\n\
+                                that does not have three fields.  That's wrong.  This is for the \
+                                file\n{}\ndefined by bc.\n", bc );
+                            std::process::exit(1);
+                        }
+                        if !fields[0].contains('-') {
+                            eprintln!( "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
+                                by bc in META.  That doesn't make sense because a barcode\n\
+                                should include a hyphen.\n", fields[0], bc );
+                            std::process::exit(1);
+                        }
+                        sample_donor.insert( fields[0].to_string(),
+                            (fields[1].to_string(), fields[2].to_string()) );
+                    }
                 }
             }
             if ctl.gen_opt.pre != "".to_string() {
@@ -376,6 +428,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.dataset_id.push(abbr);
             ctl.sample_info.donor_id.push(donor);
             ctl.sample_info.sample_id.push(sample);
+            ctl.sample_info.sample_donor.push(sample_donor);
         }
     }
     ctl.sample_info.donors = donors.len();

@@ -33,6 +33,8 @@ pub struct SampleInfo {
     pub dataset_list: Vec<Vec<usize>>, // map donor index to list of dataset indices
     pub donors: usize,                 // number of donors
     pub name_list: HashMap<String, Vec<usize>>, // map short name to list of dataset indices
+    // map dataset index to map of barcode to (sample,donor):
+    pub sample_donor: Vec<HashMap<String,(String,String)>>,  
 }
 
 impl SampleInfo {
