@@ -406,6 +406,12 @@ pub fn help5(args: &Vec<String>) {
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
         print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
 
+        print("\\boldblue{15. Does enclone work under Windows?}\n\n");
+        print("No.  There are nontrivial technical problems with getting this to work.  If you're \
+            sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
+            know if you're interested in support for Windows.\n\n",
+        );
+
         std::process::exit(0);
     }
 
