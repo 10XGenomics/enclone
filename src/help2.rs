@@ -377,11 +377,7 @@ pub fn help2(args: &Vec<String>) {
         }
         let s3 = stringme(&log3);
         rows.push(vec![s1, s2, s3]);
-        rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "tcr or bcr".to_string(),
             "(required!)".to_string(),
@@ -407,21 +403,13 @@ pub fn help2(args: &Vec<String>) {
             "".to_string(),
             "of FB data".to_string(),
         ]);
-        rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "sample".to_string(),
             "s1".to_string(),
             "abbreviated name of sample".to_string(),
         ]);
-        rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "donor".to_string(),
             "d1".to_string(),
