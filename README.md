@@ -36,7 +36,7 @@ ________________________________________________________________________________
 
 ### The `enclone` software
 
-`enclone` is open-source, beta software.  Binary executables for Linux, Mac and Windows can be 
+`enclone` is open-source, beta software.  Binary executables for Linux and Mac can be 
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
 running!  To use `enclone`, you need to know how to run command-line tools.  This is something that 
 can be learned easily, particularly if you have a friend or colleague who can help you
@@ -72,7 +72,7 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Decide if you want to install `enclone` on Linux, Mac or Windows computer.  
+1. Decide if you want to install `enclone` on Linux or Mac computer.
 
 2. Decide if you want the absolute latest version, or the most fully tested version.
 
@@ -111,8 +111,7 @@ ________________________________________________________________________________
 
 You should only have to do this if you want to experimentally modify the `enclone` software.
 
-1. For now, you can run on an x86-64 linux server, or a Mac, and possibly on a Windows
-box (untested).
+1. For now, you can run on an x86-64 linux server or a Mac.
 
 2. You need to have the Rust compiler installed. Detailed instructions on how to do this
 can be found [here](https://www.rust-lang.org/tools/install). You can confirm that you 

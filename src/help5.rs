@@ -158,6 +158,8 @@ pub fn help5(args: &Vec<String>) {
             "phylogeny",
             "generate a phylogeny for the exact clonotypes within a clonotype"
         );
+
+        ldoc!("windows", "make enclone work on windows computers");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         print!("{}", log);
@@ -315,8 +317,7 @@ pub fn help5(args: &Vec<String>) {
         print("\\boldblue{5. What platforms does enclone run on?}\n\n");
         print(
             "1. linux/x86-64 (that's most servers)\n\
-             2. mac\n\
-             3. windows (maybe, we haven't yet tested).\n\n\
+             2. mac.\n\n\
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
