@@ -90,7 +90,7 @@ might be `~/bin`.
 
 6. Download the sample data.
 
-The easiest way to do this is
+The easiest way to do this is to type
 ```
 git clone git@github.com:10XDev/enclone.git
 ```
