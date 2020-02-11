@@ -426,7 +426,7 @@ pub fn help1(args: &Vec<String>) {
              \
              \\boldred{11}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
-             \"enclone help special\" for a description of the filters.\n\n"
+             \"enclone help special\" for a description of the filters.\n\n",
         );
 
         // Finish.

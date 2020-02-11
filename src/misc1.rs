@@ -47,8 +47,7 @@ pub fn setup_pager(pager: bool) {
 }
 
 #[cfg(target_os = "windows")]
-pub fn setup_pager(pager: bool) {
-}
+pub fn setup_pager(pager: bool) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
