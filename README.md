@@ -109,7 +109,7 @@ ________________________________________________________________________________
 
 ### Questions
 
-Please write to us at enclone@10xgenomics.com.  Please note that enclone is beta software
+Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
 and that we may not be able to answer your question.
 
 ___________________________________________________________________________________________________
