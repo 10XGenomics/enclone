@@ -5,6 +5,7 @@
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
+#[cfg(not(target_os = "windows"))]
 use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
@@ -13,6 +14,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+#[cfg(not(target_os = "windows"))]
 pub fn setup_pager(pager: bool) {
     // If the output is going to a terminal, set up paging so that output is in effect piped to
     // "less -R -F -X".
@@ -32,6 +34,10 @@ pub fn setup_pager(pager: bool) {
     if pager {
         Pager::with_pager("less -R -F -X").setup();
     }
+}
+
+#[cfg(target_os = "windows")]
+pub fn setup_pager(pager: bool) {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
