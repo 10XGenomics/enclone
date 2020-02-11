@@ -301,7 +301,7 @@ pub fn help2(args: &Vec<String>) {
              output files, so it is enough that those files are present in given directory, and \
              the particular files that are needed may be found by typing \
              \\bold{enclone help input_tech}.  \
-             If you use the argument\n\\bold{PRE=p}\nthen \\bold{p/} will be prepended to all \
+             If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
              pipeline paths.  Moreover (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
              \\bold{ENCLONE_PRE} to \\bold{p}.\n\n",
@@ -379,19 +379,14 @@ pub fn help2(args: &Vec<String>) {
         rows.push(vec![s1, s2, s3]);
         rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
-            "tcr or bcr".to_string(),
+            "tcr".to_string(),
             "(required!)".to_string(),
-            "path to dataset, or abbr:path, where abbr is used as an".to_string(),
+            "path to dataset, or abbr:path, where abbr is an abbreviated".to_string(),
         ]);
         rows.push(vec![
+            "or bcr".to_string(),
             "".to_string(),
-            "".to_string(),
-            "abbreviated name for the dataset; exactly one of tcr or bcr".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "must be used".to_string(),
+            "name for the dataset; exactly one of tcr or bcr must be used".to_string(),
         ]);
         rows.push(vec![
             "gex".to_string(),
@@ -409,11 +404,23 @@ pub fn help2(args: &Vec<String>) {
             "s1".to_string(),
             "abbreviated name of sample".to_string(),
         ]);
+
         rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "donor".to_string(),
             "d1".to_string(),
             "abbreviated name of donor".to_string(),
+        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
+        rows.push(vec![
+            "bc".to_string(),
+            "null".to_string(),
+            "name of CSV file with header \"barcode,sample,donor\" that".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "assigns a sample and donor name to each barcode".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
