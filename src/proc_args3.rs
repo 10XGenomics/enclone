@@ -223,6 +223,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info.donor_index.push(id);
                 ctl.sample_info.donor_id.push(donor_name);
                 ctl.sample_info.sample_id.push(sample_name);
+                ctl.sample_info
+                    .sample_donor
+                    .push(HashMap::<String, (String, String)>::new());
             }
         }
     }
