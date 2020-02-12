@@ -239,7 +239,9 @@ pub fn row_fill(
         } else if lvars[i] == "donors".to_string() {
             let mut donors = Vec::<String>::new();
             for lena in dataset_indices.iter() {
-                donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
+                donors.push(ctl.sample_info.donor_id[*lena].clone());
+                // WRONG, REMOVE LATER:
+                // donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
             }
             unique_sort(&mut donors);
             lvar![lvars[i], format!("{}", donors.iter().format(","))];

@@ -204,12 +204,13 @@ pub fn survives_filter(
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
-            let lena = ex.clones[m][0].dataset_index;
-            donors.push(ctl.sample_info.donor_index[lena]);
+            if ex.clones[m][0].donor_index.is_some() {
+                donors.push( ex.clones[m][0].donor_index.unwrap() );
+            }
         }
     }
     unique_sort(&mut donors);
-    if ctl.clono_filt_opt.fail_only && donors.len() == 1 {
+    if ctl.clono_filt_opt.fail_only && donors.len() <= 1 {
         return false;
     }
     return true;

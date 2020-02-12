@@ -146,6 +146,15 @@ pub fn help4(args: &Vec<String>) {
             "",
             "yielding 'fake' cells.  The NCROSS option turns off this filtering step."
         );
+
+        doc!(
+            "",
+            "However, if you supply bc entries under the META option, this filtering"
+        );
+        doc!(
+            "",
+            "step is also turned off."
+        );
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"

@@ -453,6 +453,41 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
     }
+    for i in 0..sample_info.n() {
+        if sample_info[i].sample_donor.len() > 0 {
+            ctl.clono_filt_opt.ncross = true;
+        }
+    }
+    let mut donors = Vec::<String>::new();
+    let mut samples = Vec::<String>::new();
+    let mut sample_donor = Vec::<(String,String)>::new();
+    for i in 0..ctl.sample_info.len() {
+        if ctl.sample_info[i].sample_donor.len() == 0 {
+            donors.push( ctl.sample_info[i].donor_id.clone() );
+            samples.push( ctl.sample_info[i].sample_id.clone() );
+        } else {
+            for x in ctl.sample_info[i].sample_donor.iter() {
+                donors.push( x.1.1.clone() );
+                samples.push( x.1.0.clone() );
+                sample_donor.push( ( x.1.0.clone(), x.1.1.clone() ) );
+            }
+        }
+    }
+    unique_sort(&mut donors);
+    unique_sort(&mut samples);
+    unique_sort(&mut sample_donor);
+    ctl.sample_info.donors = donors.len();
+    ctl.sample_info.donor_list = donors;
+    ctl.sample_info.sample_list = samples;
+    let mut sample_donor_list = Vec::<(usize,usize)>::new();
+    for i in 0..sample_donor.len() {
+        sample_donor_list.push( (
+            bin_position(&samples, &sample_donor[i].0) as usize,
+            bin_position(&donors, &sample_donor[i].1) as usize
+        ) );
+    }
+    unique_sort(&mut sample_donor_list);
+    ctl.sample_info.sample_donor_list = sample_donor_list;
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }

@@ -103,15 +103,7 @@ pub fn join_core(
             }
 
             // Unless NDONOR specified, do not join across donors.
-
-            if !ctl.clono_filt_opt.donor
-                && ctl.sample_info.donor_index[info[k1].origin[0]]
-                    != ctl.sample_info.donor_index[info[k2].origin[0]]
-            {
-                continue;
-            }
-
-            // Test for error.
+            // And test for error.
             //
             // WARNING!  There are actually two cases: where an individual exact subclonotype
             // itself crosses donors, and where we cross donors in making a join.  Note that
@@ -120,14 +112,25 @@ pub fn join_core(
             // exaggerated number of fails.
 
             let (mut donors1, mut donors2) = (Vec::<usize>::new(), Vec::<usize>::new());
-            for origin in info[k1].origin.iter() {
-                donors1.push(ctl.sample_info.donor_index[*origin]);
+            let ex1 = &exact_clonotypes[info[k1].clonotype_index];
+            let ex2 = &exact_clonotypes[info[k2].clonotype_index];
+            for j in 0..ex1.clones.len() {
+                if ex1[clones[j][0].donor_index.is_some() {
+                    donors1.push( ex1[clones[j][0].donor_index.unwrap() );
+                }
             }
-            for origin in info[k2].origin.iter() {
-                donors2.push(ctl.sample_info.donor_index[*origin]);
+            for j in 0..ex2.clones.len() {
+                if ex2[clones[j][0].donor_index.is_some() {
+                    donors2.push( ex2[clones[j][0].donor_index.unwrap() );
+                }
             }
             unique_sort(&mut donors1);
             unique_sort(&mut donors2);
+            if !ctl.clono_filt_opt.donor {
+                if donors1.len() > 0 && donors2.len() > 0 && donors1 != donors2 {
+                    continue;
+                }
+            }
             let err = donors1 != donors2 || donors1.len() != 1 || donors2.len() != 1;
 
             // Analyze the two clonotypes versus the reference.  First traverse the reference

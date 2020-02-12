@@ -168,17 +168,22 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     let mut is_sample_name = false;
                     let mut is_donor_name = false;
                     let name = x.after("n_").to_string();
-                    let s = ctl.sample_info.dataset_path.len();
+                    let s = ctl.sample_info.n();
                     for j in 0..s {
                         if ctl.sample_info.dataset_id[j] == name {
                             is_dataset_name = true;
                             indices.push(j);
                         }
-                        if ctl.sample_info.sample_id[j] == name {
+                    }
+
+                    // indices is broken and can't do below
+
+                    for j in 0..ctl.sample_info.sample_list.len() {
+                        if ctl.sample_info.sample_list[j == name
                             is_sample_name = true;
                             indices.push(j);
                         }
-                        if ctl.sample_info.donor_id[j] == name {
+                        if ctl.sample_info.donor_list[j] == name {
                             is_donor_name = true;
                             indices.push(j);
                         }

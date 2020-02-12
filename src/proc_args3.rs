@@ -233,10 +233,8 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
         for k in i..j {
             x.push(k);
         }
-        ctl.sample_info.dataset_list.push(x);
         i = j;
     }
-    ctl.sample_info.donors = ctl.sample_info.dataset_list.len();
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -411,16 +409,12 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 if donor == donors[j] {
                     dp = Some(j);
                     ctl.sample_info.donor_index.push(j);
-                    ctl.sample_info.dataset_list[j].push(ctl.sample_info.descrips.len());
                     break;
                 }
             }
             if dp.is_none() {
                 ctl.sample_info.donor_index.push(donors.len());
                 donors.push(donor.clone());
-                ctl.sample_info
-                    .dataset_list
-                    .push(vec![ctl.sample_info.descrips.len()]);
             }
             ctl.sample_info.descrips.push(abbr.clone());
             ctl.sample_info.dataset_path.push(path);
@@ -431,5 +425,4 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.sample_donor.push(sample_donor);
         }
     }
-    ctl.sample_info.donors = donors.len();
 }

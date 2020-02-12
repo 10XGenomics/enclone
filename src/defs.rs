@@ -30,7 +30,9 @@ pub struct SampleInfo {
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
     // other
-    pub dataset_list: Vec<Vec<usize>>, // map donor index to list of dataset indices
+    pub donor_list: Vec<String>,   // unique-sorted list of donor short names
+    pub sample_list: Vec<String>,   // unique-sorted list of sample short names
+    pub sample_donor_list: Vec<usize>, // unique-sorted list of (sample, donor) indices
     pub donors: usize,                 // number of donors
     pub name_list: HashMap<String, Vec<usize>>, // map short name to list of dataset indices
     // map dataset index to map of barcode to (sample,donor):
@@ -243,6 +245,8 @@ pub struct TigData {
     pub tigname: String,                      // name of contig
     pub left: bool,                           // true if this is IGH or TRA
     pub dataset_index: usize,                 // index of dataset
+    pub sample_index: Option<usize>,          // index of sample
+    pub donor_index: Option<usize>,           // index of donor
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
@@ -264,6 +268,8 @@ pub struct TigData0 {
     pub barcode: String,        // barcode
     pub tigname: String,        // name of contig
     pub dataset_index: usize,   // index of dataset
+    pub sample_index: Option<usize>,          // index of sample
+    pub donor_index: Option<usize>,           // index of donor
     pub umi_count: usize,       // number of UMIs supporting contig
     pub read_count: usize,      // number of reads supporting contig
 }
@@ -344,7 +350,7 @@ pub struct CloneInfo {
     pub orig_tigs: Vec<DnaString>, // untruncated contigs
     pub clonotype_id: usize,   // index into exact_clonotypes
     pub exact_cols: Vec<usize>, // the columns of the exact_clonotype that were extracted (used?)
-    pub clonotype_index: usize, // index into vector of all clonotypes (across samples)
+    pub clonotype_index: usize, // index into vector of all exact subclonotypes (across samples)
     pub origin: Vec<usize>,    // sample indices
     pub vs: Vec<DnaString>,    // reference V segments (possibly donor allele)
     pub dref: Vec<Option<usize>>, // indices into alt_refs

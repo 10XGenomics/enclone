@@ -79,13 +79,11 @@ pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata
 
             // Order by donor if NDONOR option used.
             } else if !ctl.clono_filt_opt.donor
-                && ctl.sample_info.donor_index[x[i].dataset_index]
-                    < ctl.sample_info.donor_index[y[i].dataset_index]
+                && x[i].donor_index < y[i].donor_index
             {
                 return Ordering::Less;
             } else if !ctl.clono_filt_opt.donor
-                && ctl.sample_info.donor_index[x[i].dataset_index]
-                    > ctl.sample_info.donor_index[y[i].dataset_index]
+                && x[i].donor_index > y[i].donor_inde]
             {
                 return Ordering::Greater;
             }
