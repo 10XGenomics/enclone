@@ -238,10 +238,12 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", lenas.iter().format(","))];
         } else if lvars[i] == "donors".to_string() {
             let mut donors = Vec::<String>::new();
-            for lena in dataset_indices.iter() {
-                donors.push(ctl.sample_info.donor_id[*lena].clone());
-                // WRONG, REMOVE LATER:
-                // donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].donor_index.is_some() {
+                    donors.push( ctl.sample_info.donor_id( ex.clones[j][0].donor_index.unwrap() );
+                } else {
+                    donors.push( "?".to_string() );
+                }
             }
             unique_sort(&mut donors);
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
@@ -249,10 +251,15 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", mults[u])];
         } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
-            let indices = ctl.sample_info.name_list[name].clone();
-            let mut count = 0;
             for j in 0..ex.clones.len() {
-                if bin_member(&indices, &ex.clones[j][0].dataset_index) {
+                let x = &ex.clones[j][0];
+                if ctl.sample_info.dataset_id[x.dataset_index] == name {
+                    count += 1;
+                } else if x.sample_index.is_some() 
+                    && ctl.sample_info.sample_id[x.sample_index.unwrap()] == name {
+                    count += 1;
+                } else if x.donor_index.is_some() 
+                    && ctl.sample_info.donor_id[x.donor_index.unwrap()] == name {
                     count += 1;
                 }
             }

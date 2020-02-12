@@ -163,7 +163,6 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                 let mut n_var = false;
                 if x.starts_with("n_") {
                     n_var = true;
-                    let mut indices = Vec::<usize>::new();
                     let mut is_dataset_name = false;
                     let mut is_sample_name = false;
                     let mut is_donor_name = false;
@@ -172,20 +171,15 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     for j in 0..s {
                         if ctl.sample_info.dataset_id[j] == name {
                             is_dataset_name = true;
-                            indices.push(j);
                         }
                     }
-
-                    // indices is broken and can't do below
 
                     for j in 0..ctl.sample_info.sample_list.len() {
                         if ctl.sample_info.sample_list[j == name
                             is_sample_name = true;
-                            indices.push(j);
                         }
                         if ctl.sample_info.donor_list[j] == name {
                             is_donor_name = true;
-                            indices.push(j);
                         }
                     }
                     let msg = "Suggested reading: \"enclone help input\" and \
@@ -194,14 +188,6 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         eprintln!(
                             "\nYou've used the lead variable {}, and yet {} \
                              does not name a dataset, or a sample,\nor a donor.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if is_dataset_name && indices.len() > 1 {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names more than one dataset.  That's ambiguous.\n{}",
                             x, name, msg
                         );
                         std::process::exit(1);
@@ -238,8 +224,6 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         );
                         std::process::exit(1);
                     }
-                    // could this get called twice on the same name, and what would that do?
-                    ctl.sample_info.name_list.insert(name, indices);
                 }
                 if !n_var {
                     eprintln!(
@@ -468,6 +452,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
                 println!(
                     "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
                     ctl.sample_info.dataset_id[i],
+                    // sample_id and donor_id don't make sense if bc specified in META
                     ctl.sample_info.sample_id[i],
                     ctl.sample_info.donor_id[i],
                     ctl.sample_info.descrips[i]
