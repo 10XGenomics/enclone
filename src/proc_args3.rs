@@ -351,20 +351,24 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     bc = y.to_string();
                 }
             }
-            if bc != "" && ( sample != "" || donor != "" ) {
-                eprintln!( "\nIf bc is specified in META, for a given dataset, it does not\n\
-                    make sense to also specify sample or donor.\n"
+            if bc != "" && (sample != "" || donor != "") {
+                eprintln!(
+                    "\nIf bc is specified in META, for a given dataset, it does not\n\
+                     make sense to also specify sample or donor.\n"
                 );
                 std::process::exit(1);
             }
-            let mut sample_donor = HashMap::<String,(String,String)>::new();
+            let mut sample_donor = HashMap::<String, (String, String)>::new();
             if bc != "".to_string() {
                 if ctl.gen_opt.pre != "".to_string() {
-                    bc = format!( "{}/{}", ctl.gen_opt.pre, bc );
+                    bc = format!("{}/{}", ctl.gen_opt.pre, bc);
                 }
                 if !path_exists(&bc) {
-                    eprintln!( "\nIn your META file, a value for bc implies the existence of \
-                        a file\n{}\nbut that file does not exist.\n", bc );
+                    eprintln!(
+                        "\nIn your META file, a value for bc implies the existence of \
+                         a file\n{}\nbut that file does not exist.\n",
+                        bc
+                    );
                     std::process::exit(1);
                 }
                 let f = open_for_read![&bc];
@@ -373,28 +377,39 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     let s = line.unwrap();
                     if first {
                         if s != "barcode,sample,donor".to_string() {
-                            eprintln!( "\nThe first line in the CSV file defined by bc in META \
-                                must be\nbarcode,sample,donor\nbut it's not.  This is for the \
-                                file\n{}\ndefined by bc.\n", bc );
+                            eprintln!(
+                                "\nThe first line in the CSV file defined by bc in META \
+                                 must be\nbarcode,sample,donor\nbut it's not.  This is for the \
+                                 file\n{}\ndefined by bc.\n",
+                                bc
+                            );
                             std::process::exit(1);
                         }
                     } else {
                         first = false;
                         let fields = s.split(',').collect::<Vec<&str>>();
                         if fields.len() != 3 {
-                            eprintln!( "\nThere is a line in the CSV file defined by bc in META\n\
-                                that does not have three fields.  That's wrong.  This is for the \
-                                file\n{}\ndefined by bc.\n", bc );
+                            eprintln!(
+                                "\nThere is a line in the CSV file defined by bc in META\n\
+                                 that does not have three fields.  That's wrong.  This is for the \
+                                 file\n{}\ndefined by bc.\n",
+                                bc
+                            );
                             std::process::exit(1);
                         }
                         if !fields[0].contains('-') {
-                            eprintln!( "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
-                                by bc in META.  That doesn't make sense because a barcode\n\
-                                should include a hyphen.\n", fields[0], bc );
+                            eprintln!(
+                                "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
+                                 by bc in META.  That doesn't make sense because a barcode\n\
+                                 should include a hyphen.\n",
+                                fields[0], bc
+                            );
                             std::process::exit(1);
                         }
-                        sample_donor.insert( fields[0].to_string(),
-                            (fields[1].to_string(), fields[2].to_string()) );
+                        sample_donor.insert(
+                            fields[0].to_string(),
+                            (fields[1].to_string(), fields[2].to_string()),
+                        );
                     }
                 }
             }

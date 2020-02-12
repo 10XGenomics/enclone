@@ -205,7 +205,7 @@ pub fn survives_filter(
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
-                donors.push( ex.clones[m][0].donor_index.unwrap() );
+                donors.push(ex.clones[m][0].donor_index.unwrap());
             }
         }
     }

@@ -445,7 +445,7 @@ pub fn start_gen(
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
-                donors.push( ex.clones[m][0].donor_index.unwrap() );
+                donors.push(ex.clones[m][0].donor_index.unwrap());
             }
         }
     }
@@ -472,7 +472,9 @@ pub fn start_gen(
                 for l in 0..ex.clones.len() {
                     if ex.clones[l][0].donor_index.is_some() {
                         if ex.clones[l][0].donor_index.unwrap() == donors[i] {
-                            lenas.push(ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone());
+                            lenas.push(
+                                ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
+                            );
                         }
                     }
                 }

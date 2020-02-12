@@ -240,9 +240,11 @@ pub fn row_fill(
             let mut donors = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
-                    donors.push( ctl.sample_info.donor_id[ ex.clones[j][0].donor_index.unwrap() ].clone() );
+                    donors.push(
+                        ctl.sample_info.donor_id[ex.clones[j][0].donor_index.unwrap()].clone(),
+                    );
                 } else {
-                    donors.push( "?".to_string() );
+                    donors.push("?".to_string());
                 }
             }
             unique_sort(&mut donors);
@@ -256,11 +258,13 @@ pub fn row_fill(
                 let x = &ex.clones[j][0];
                 if ctl.sample_info.dataset_id[x.dataset_index] == name {
                     count += 1;
-                } else if x.sample_index.is_some() 
-                    && ctl.sample_info.sample_id[x.sample_index.unwrap()] == name {
+                } else if x.sample_index.is_some()
+                    && ctl.sample_info.sample_id[x.sample_index.unwrap()] == name
+                {
                     count += 1;
-                } else if x.donor_index.is_some() 
-                    && ctl.sample_info.donor_id[x.donor_index.unwrap()] == name {
+                } else if x.donor_index.is_some()
+                    && ctl.sample_info.donor_id[x.donor_index.unwrap()] == name
+                {
                     count += 1;
                 }
             }

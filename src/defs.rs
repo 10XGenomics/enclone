@@ -30,12 +30,12 @@ pub struct SampleInfo {
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
     // other
-    pub donor_list: Vec<String>,   // unique-sorted list of donor short names
-    pub sample_list: Vec<String>,   // unique-sorted list of sample short names
-    pub sample_donor_list: Vec<(usize,usize)>, // unique-sorted list of (sample, donor) indices
-    pub donors: usize,                 // number of donors
+    pub donor_list: Vec<String>, // unique-sorted list of donor short names
+    pub sample_list: Vec<String>, // unique-sorted list of sample short names
+    pub sample_donor_list: Vec<(usize, usize)>, // unique-sorted list of (sample, donor) indices
+    pub donors: usize,           // number of donors
     // map dataset index to map of barcode to (sample,donor):
-    pub sample_donor: Vec<HashMap<String,(String,String)>>,  
+    pub sample_donor: Vec<HashMap<String, (String, String)>>,
 }
 
 impl SampleInfo {
@@ -259,18 +259,18 @@ pub struct TigData {
 // TigData1: shared data
 
 pub struct TigData0 {
-    pub quals: Vec<u8>,         // quality scores, truncated to V..J
-    pub v_start: usize,         // start of V on full contig sequence
-    pub j_stop: usize,          // stop of J on full contig sequence
-    pub c_start: Option<usize>, // start of C on full contig sequence
-    pub full_seq: Vec<u8>,      // full contig sequence
-    pub barcode: String,        // barcode
-    pub tigname: String,        // name of contig
-    pub dataset_index: usize,   // index of dataset
-    pub sample_index: Option<usize>,          // index of sample
-    pub donor_index: Option<usize>,           // index of donor
-    pub umi_count: usize,       // number of UMIs supporting contig
-    pub read_count: usize,      // number of reads supporting contig
+    pub quals: Vec<u8>,              // quality scores, truncated to V..J
+    pub v_start: usize,              // start of V on full contig sequence
+    pub j_stop: usize,               // stop of J on full contig sequence
+    pub c_start: Option<usize>,      // start of C on full contig sequence
+    pub full_seq: Vec<u8>,           // full contig sequence
+    pub barcode: String,             // barcode
+    pub tigname: String,             // name of contig
+    pub dataset_index: usize,        // index of dataset
+    pub sample_index: Option<usize>, // index of sample
+    pub donor_index: Option<usize>,  // index of donor
+    pub umi_count: usize,            // number of UMIs supporting contig
+    pub read_count: usize,           // number of reads supporting contig
 }
 
 pub struct TigData1 {

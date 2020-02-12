@@ -460,16 +460,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     let mut donors = Vec::<String>::new();
     let mut samples = Vec::<String>::new();
-    let mut sample_donor = Vec::<(String,String)>::new();
+    let mut sample_donor = Vec::<(String, String)>::new();
     for i in 0..ctl.sample_info.n() {
         if ctl.sample_info.sample_donor[i].len() == 0 {
-            donors.push( ctl.sample_info.donor_id[i].clone() );
-            samples.push( ctl.sample_info.sample_id[i].clone() );
+            donors.push(ctl.sample_info.donor_id[i].clone());
+            samples.push(ctl.sample_info.sample_id[i].clone());
         } else {
             for x in ctl.sample_info.sample_donor[i].iter() {
-                donors.push( (x.1).1.clone() );
-                samples.push( (x.1).0.clone() );
-                sample_donor.push( ( (x.1).0.clone(), (x.1).1.clone() ) );
+                donors.push((x.1).1.clone());
+                samples.push((x.1).0.clone());
+                sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
             }
         }
     }
@@ -479,12 +479,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.sample_info.donors = donors.len();
     ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.sample_list = samples.clone();
-    let mut sample_donor_list = Vec::<(usize,usize)>::new();
+    let mut sample_donor_list = Vec::<(usize, usize)>::new();
     for i in 0..sample_donor.len() {
-        sample_donor_list.push( (
+        sample_donor_list.push((
             bin_position(&samples, &sample_donor[i].0) as usize,
-            bin_position(&donors, &sample_donor[i].1) as usize
-        ) );
+            bin_position(&donors, &sample_donor[i].1) as usize,
+        ));
     }
     unique_sort(&mut sample_donor_list);
     ctl.sample_info.sample_donor_list = sample_donor_list;

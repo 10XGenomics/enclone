@@ -346,8 +346,10 @@ pub fn read_json(
                 let mut sample_index = None;
                 let mut donor_index = None;
                 if sample.is_some() {
-                    sample_index = Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
-                    donor_index = Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+                    sample_index =
+                        Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+                    donor_index =
+                        Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
                 }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),

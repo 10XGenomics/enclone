@@ -151,10 +151,7 @@ pub fn help4(args: &Vec<String>) {
             "",
             "However, if you supply bc entries under the META option, this filtering"
         );
-        doc!(
-            "",
-            "step is also turned off."
-        );
+        doc!("", "step is also turned off.");
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"
