@@ -227,7 +227,7 @@ fn test_enclone() {
                 fwriteln!(
                     log,
                     "enclone subtest {} failed.  If you are happy with the new output, \
-                     you can replace the\noutput by executing the folllowing command from \
+                     you can replace the\noutput by executing the following command from \
                      cellranger/lib/rust/enclone (essential!):\n",
                     it + 1
                 );

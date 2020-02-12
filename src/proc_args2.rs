@@ -177,6 +177,8 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         if ctl.sample_info.sample_list[j] == name {
                             is_sample_name = true;
                         }
+                    }
+                    for j in 0..ctl.sample_info.donor_list.len() {
                         if ctl.sample_info.donor_list[j] == name {
                             is_donor_name = true;
                         }
@@ -432,7 +434,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         ctl.sample_info.descrips.clear();
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();
-            let dir = ctl.sample_info.dataset_path[i].rev_before("/outs");
+            let mut dir = ctl.sample_info.dataset_path[i].clone();
+            if dir.ends_with("/outs" ) {
+                dir = dir.rev_before("/outs").to_string();
+            }
             let invo = format!("{}/_invocation", dir);
             if path_exists(&invo) {
                 let f = open_for_read![invo];

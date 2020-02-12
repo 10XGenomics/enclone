@@ -259,11 +259,11 @@ pub fn row_fill(
                 if ctl.sample_info.dataset_id[x.dataset_index] == name {
                     count += 1;
                 } else if x.sample_index.is_some()
-                    && ctl.sample_info.sample_id[x.sample_index.unwrap()] == name
+                    && ctl.sample_info.sample_list[x.sample_index.unwrap()] == name
                 {
                     count += 1;
                 } else if x.donor_index.is_some()
-                    && ctl.sample_info.donor_id[x.donor_index.unwrap()] == name
+                    && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
                 {
                     count += 1;
                 }

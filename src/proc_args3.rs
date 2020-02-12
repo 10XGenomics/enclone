@@ -354,7 +354,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     bc = y.to_string();
                 }
             }
-            if bc != "" && (sample != "" || donor != "") {
+            if bc != "" && ( fields.contains(&"sample".to_string()) || fields.contains(&"donor".to_string()) ) {
                 eprintln!(
                     "\nIf bc is specified in META, for a given dataset, it does not\n\
                      make sense to also specify sample or donor.\n"
@@ -388,8 +388,8 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                             );
                             std::process::exit(1);
                         }
-                    } else {
                         first = false;
+                    } else {
                         let fields = s.split(',').collect::<Vec<&str>>();
                         if fields.len() != 3 {
                             eprintln!(
@@ -420,6 +420,11 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 path = format!("{}/{}/outs", ctl.gen_opt.pre, path);
                 if gpath != "".to_string() {
                     gpath = format!("{}/{}/outs", ctl.gen_opt.pre, gpath);
+                }
+            } else {
+                path = format!("{}/outs", path);
+                if gpath != "".to_string() {
+                    gpath = format!("{}/outs", gpath);
                 }
             }
             let mut dp = None;
