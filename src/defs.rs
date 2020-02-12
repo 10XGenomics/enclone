@@ -32,7 +32,7 @@ pub struct SampleInfo {
     // other
     pub donor_list: Vec<String>,   // unique-sorted list of donor short names
     pub sample_list: Vec<String>,   // unique-sorted list of sample short names
-    pub sample_donor_list: Vec<usize>, // unique-sorted list of (sample, donor) indices
+    pub sample_donor_list: Vec<(usize,usize)>, // unique-sorted list of (sample, donor) indices
     pub donors: usize,                 // number of donors
     // map dataset index to map of barcode to (sample,donor):
     pub sample_donor: Vec<HashMap<String,(String,String)>>,  

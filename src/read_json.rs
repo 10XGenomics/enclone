@@ -14,6 +14,7 @@ use rayon::prelude::*;
 use serde_json::Value;
 use std::{collections::HashMap, io::BufReader, time::Instant};
 use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -70,6 +71,7 @@ pub fn json_error(json: Option<&str>) {
 // only the information that we need.
 
 pub fn read_json(
+    ctl: &mut EncloneControl,
     li: usize,
     json: &String,
     refdata: &RefData,
@@ -337,15 +339,15 @@ pub fn read_json(
                 if ctl.sample_info.sample_donor[li].len() == 0 {
                     sample = Some(ctl.sample_info.sample_id[li].clone());
                     donor = Some(ctl.sample_info.donor_id[li].clone());
-                } else if ctl.sample_info.sample_donor[li].contains_key(&barcode) {
-                    sample = ctl.sample_info.sample_donor[li][&barcode].0.clone();
-                    donor = ctl.sample_info.sample_donor[li][&barcode].1.clone();
+                } else if ctl.sample_info.sample_donor[li].contains_key(&barcode.clone()) {
+                    sample = Some(ctl.sample_info.sample_donor[li][&barcode.clone()].0.clone());
+                    donor = Some(ctl.sample_info.sample_donor[li][&barcode.clone()].1.clone());
                 }
                 let mut sample_index = None;
                 let mut donor_index = None;
                 if sample.is_some() {
-                    sample_index = bin_position(&ctl.sample_info.sample_list, &sample.unwrap());
-                    donor_index = bin_position(&ctl.sample_info.donor_list, &donor.unwrap());
+                    sample_index = Some(bin_position(&ctl.sample_info.sample_list, &sample.unwrap()) as usize);
+                    donor_index = Some(bin_position(&ctl.sample_info.donor_list, &donor.unwrap()) as usize);
                 }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),
@@ -464,6 +466,7 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(
+            &mut ctl,
             li,
             &json,
             &refdata,

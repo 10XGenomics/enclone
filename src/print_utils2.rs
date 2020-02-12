@@ -240,7 +240,7 @@ pub fn row_fill(
             let mut donors = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
-                    donors.push( ctl.sample_info.donor_id( ex.clones[j][0].donor_index.unwrap() );
+                    donors.push( ctl.sample_info.donor_id[ ex.clones[j][0].donor_index.unwrap() ].clone() );
                 } else {
                     donors.push( "?".to_string() );
                 }
@@ -251,6 +251,7 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", mults[u])];
         } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
+            let mut count = 0;
             for j in 0..ex.clones.len() {
                 let x = &ex.clones[j][0];
                 if ctl.sample_info.dataset_id[x.dataset_index] == name {

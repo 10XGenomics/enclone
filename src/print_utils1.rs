@@ -446,6 +446,7 @@ pub fn start_gen(
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
                 donors.push( ex.clones[m][0].donor_index.unwrap() );
+            }
         }
     }
     unique_sort(&mut donors);

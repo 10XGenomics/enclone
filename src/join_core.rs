@@ -115,13 +115,13 @@ pub fn join_core(
             let ex1 = &exact_clonotypes[info[k1].clonotype_index];
             let ex2 = &exact_clonotypes[info[k2].clonotype_index];
             for j in 0..ex1.clones.len() {
-                if ex1[clones[j][0].donor_index.is_some() {
-                    donors1.push( ex1[clones[j][0].donor_index.unwrap() );
+                if ex1.clones[j][0].donor_index.is_some() {
+                    donors1.push( ex1.clones[j][0].donor_index.unwrap() );
                 }
             }
             for j in 0..ex2.clones.len() {
-                if ex2[clones[j][0].donor_index.is_some() {
-                    donors2.push( ex2[clones[j][0].donor_index.unwrap() );
+                if ex2.clones[j][0].donor_index.is_some() {
+                    donors2.push( ex2.clones[j][0].donor_index.unwrap() );
                 }
             }
             unique_sort(&mut donors1);

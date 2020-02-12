@@ -173,9 +173,8 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                             is_dataset_name = true;
                         }
                     }
-
                     for j in 0..ctl.sample_info.sample_list.len() {
-                        if ctl.sample_info.sample_list[j == name
+                        if ctl.sample_info.sample_list[j] == name {
                             is_sample_name = true;
                         }
                         if ctl.sample_info.donor_list[j] == name {
