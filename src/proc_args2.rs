@@ -435,7 +435,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();
             let mut dir = ctl.sample_info.dataset_path[i].clone();
-            if dir.ends_with("/outs" ) {
+            if dir.ends_with("/outs") {
                 dir = dir.rev_before("/outs").to_string();
             }
             let invo = format!("{}/_invocation", dir);

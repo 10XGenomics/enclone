@@ -354,7 +354,9 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     bc = y.to_string();
                 }
             }
-            if bc != "" && ( fields.contains(&"sample".to_string()) || fields.contains(&"donor".to_string()) ) {
+            if bc != ""
+                && (fields.contains(&"sample".to_string()) || fields.contains(&"donor".to_string()))
+            {
                 eprintln!(
                     "\nIf bc is specified in META, for a given dataset, it does not\n\
                      make sense to also specify sample or donor.\n"
