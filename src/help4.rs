@@ -160,11 +160,19 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "should be turned off.  Note that if you supply bc entries under the META"
+            "should be turned off, and in particular the filter can do weird things if"
         );
         doc!(
             "",
-            "option, this filtering step is automatically turned off."
+            "inputs are somehow mis-specified to enclone.  Note that for purposes of"
+        );
+        doc!(
+            "",
+            "this option, enclone defines a sample by the pair"
+        );
+        doc!(
+            "",
+            "(sample name, donor name)."
         );
         ldoc!(
             "NGRAPH_FILTER",

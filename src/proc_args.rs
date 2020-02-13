@@ -453,11 +453,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
     }
-    for i in 0..ctl.sample_info.n() {
-        if ctl.sample_info.sample_donor[i].len() > 0 {
-            ctl.clono_filt_opt.ncross = true;
-        }
-    }
     let mut donors = Vec::<String>::new();
     let mut samples = Vec::<String>::new();
     let mut sample_donor = Vec::<(String, String)>::new();
