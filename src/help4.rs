@@ -144,14 +144,28 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "yielding 'fake' cells.  The NCROSS option turns off this filtering step."
+            "yielding expanded 'fake' clonotypes that are residues of real single plasma"
         );
-
         doc!(
             "",
-            "However, if you supply bc entries under the META option, this filtering"
+            "cells.  The NCROSS options turns off this filter, which could be useful so"
         );
-        doc!("", "step is also turned off.");
+        doc!(
+            "",
+            "long as you interpret the restored clonotypes as representing what are"
+        );
+        doc!(
+            "",
+            "probably single cells.  There may also be other situations where the filter"
+        );
+        doc!(
+            "",
+            "should be turned off.  Note that if you supply bc entries under the META"
+        );
+        doc!(
+            "",
+            "option, this filtering step is automatically turned off."
+        );
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"
