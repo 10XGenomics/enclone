@@ -166,14 +166,8 @@ pub fn help4(args: &Vec<String>) {
             "",
             "inputs are somehow mis-specified to enclone.  Note that for purposes of"
         );
-        doc!(
-            "",
-            "this option, enclone defines a sample by the pair"
-        );
-        doc!(
-            "",
-            "(sample name, donor name)."
-        );
+        doc!("", "this option, enclone defines a sample by the pair");
+        doc!("", "(sample name, donor name).");
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"
