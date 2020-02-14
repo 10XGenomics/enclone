@@ -340,20 +340,29 @@ pub fn read_json(
                     sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
                     donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
                 } else {
-                    if sample_info.sample_id[li].len() > 0 {
+                    // the way we use s1 and d1 here is flaky
+                    if sample_info.sample_id[li].len() > 0
+                        && sample_info.sample_id[li] != "s1".to_string()
+                    {
                         sample = Some(sample_info.sample_id[li].clone());
                     }
-                    if sample_info.donor_id[li].len() > 0 {
+                    if sample_info.donor_id[li].len() > 0
+                        && sample_info.donor_id[li] != "d1".to_string()
+                    {
                         donor = Some(sample_info.donor_id[li].clone());
                     }
                 }
                 let mut sample_index = None;
                 let mut donor_index = None;
                 if sample.is_some() {
-                    sample_index =
-                        Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
-                    donor_index =
-                        Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+                    if sample.is_some() {
+                        sample_index =
+                            Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+                    }
+                    if donor.is_some() {
+                        donor_index =
+                            Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+                    }
                 }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),
