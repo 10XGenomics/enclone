@@ -627,8 +627,8 @@ pub fn help4(args: &Vec<String>) {
              of IGH or TRB"
         );
         doc!(
-            "GROUP_VJ1",
-            "group by sharing a chain that has the same V and J reference gene names"
+            "GROUP_VJ2",
+            "group by sharing two chains having the same V and J reference gene names"
         );
         ldoc!(
             "MIN_GROUP",
