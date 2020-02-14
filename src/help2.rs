@@ -404,7 +404,6 @@ pub fn help2(args: &Vec<String>) {
             "s1".to_string(),
             "abbreviated name of sample".to_string(),
         ]);
-
         rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "donor".to_string(),
@@ -420,7 +419,17 @@ pub fn help2(args: &Vec<String>) {
         rows.push(vec![
             "".to_string(),
             "".to_string(),
-            "assigns a sample and donor name to each barcode".to_string(),
+            "assigns a sample and donor name to each barcode; if sample and/or".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "donor are also specified, then those are treated as default values".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "to be used in case a particular barcode is not specified by bc".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);

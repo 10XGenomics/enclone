@@ -459,16 +459,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut samples = Vec::<String>::new();
     let mut sample_donor = Vec::<(String, String)>::new();
     for i in 0..ctl.sample_info.n() {
-        if ctl.sample_info.sample_donor[i].len() == 0 {
-            donors.push(ctl.sample_info.donor_id[i].clone());
-            samples.push(ctl.sample_info.sample_id[i].clone());
-        } else {
-            for x in ctl.sample_info.sample_donor[i].iter() {
-                donors.push((x.1).1.clone());
-                samples.push((x.1).0.clone());
-                sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
-            }
+        for x in ctl.sample_info.sample_donor[i].iter() {
+            donors.push((x.1).1.clone());
+            samples.push((x.1).0.clone());
+            sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
         }
+        donors.push(ctl.sample_info.donor_id[i].clone());
+        samples.push(ctl.sample_info.sample_id[i].clone());
     }
     unique_sort(&mut donors);
     unique_sort(&mut samples);

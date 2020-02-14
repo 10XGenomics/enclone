@@ -336,12 +336,16 @@ pub fn read_json(
                 let read_count = v["read_count"].as_i64().unwrap() as usize;
                 let mut sample = None;
                 let mut donor = None;
-                if sample_info.sample_donor[li].len() == 0 {
-                    sample = Some(sample_info.sample_id[li].clone());
-                    donor = Some(sample_info.donor_id[li].clone());
-                } else if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
+                if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
                     sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
                     donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+                } else {
+                    if sample_info.sample_id[li].len() > 0 {
+                        sample = Some(sample_info.sample_id[li].clone());
+                    }
+                    if sample_info.donor_id[li].len() > 0 {
+                        donor = Some(sample_info.donor_id[li].clone());
+                    }
                 }
                 let mut sample_index = None;
                 let mut donor_index = None;
