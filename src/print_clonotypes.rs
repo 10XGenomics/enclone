@@ -19,6 +19,7 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -46,6 +47,7 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
+    tall: &Instant,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
@@ -804,6 +806,7 @@ pub fn print_clonotypes(
         out_datas.append(&mut results[i].7);
     }
     group_and_print_clonotypes(
+        &tall,
         &refdata,
         &pics,
         &exacts,

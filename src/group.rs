@@ -7,17 +7,20 @@ use ansi_escape::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;
+use perf_stats::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
 use std::path::Path;
+use std::time::Instant;
 use string_utils::*;
 use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
 pub fn group_and_print_clonotypes(
+    tall: &Instant,
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
@@ -251,7 +254,7 @@ pub fn group_and_print_clonotypes(
         let mut nclono2 = 0;
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
-        let mut sd = Vec::<(Option<usize>,Option<usize>)>::new();
+        let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
         for i in 0..nclono {
             let mut n = 0;
             for j in 0..exacts[i].len() {
@@ -269,15 +272,17 @@ pub fn group_and_print_clonotypes(
             nchains.push(mat[i].len());
         }
         sd.sort();
-        let mut sdx = Vec::<(Option<usize>,Option<usize>,usize)>::new();
+        let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
         let mut i = 0;
         while i < sd.len() {
             let j = next_diff(&sd, i);
-            sdx.push( (sd[i].0, sd[i].1, j-i) );
+            sdx.push((sd[i].0, sd[i].1, j - i));
             i = j;
         }
         println!("   • number of datasets = {}", ctl.sample_info.n());
         println!("   • number of donors = {}", ctl.sample_info.donors);
+        println!("   • total elapsed time = {:.2} seconds", elapsed(&tall));
+        println!("   • peak memory = {:.2} GB", peak_mem_usage_gb());
         println!("2. for the selected clonotypes");
         println!("   • number of clonotypes = {}", nclono);
         println!(
@@ -297,29 +302,36 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
         let mut rows = Vec::<Vec<String>>::new();
-        let row = vec![ "sample".to_string(), "donor".to_string(), "ncells".to_string() ];
+        let row = vec![
+            "sample".to_string(),
+            "donor".to_string(),
+            "ncells".to_string(),
+        ];
         rows.push(row);
-        let row = vec![ "\\hline".to_string(); 3 ];
+        let row = vec!["\\hline".to_string(); 3];
         rows.push(row);
         for i in 0..sdx.len() {
             let mut row = Vec::<String>::new();
             if sdx[i].0.is_some() {
-                row.push( format!( "{}", ctl.sample_info.sample_list[sdx[i].0.unwrap()] ) );
+                row.push(format!(
+                    "{}",
+                    ctl.sample_info.sample_list[sdx[i].0.unwrap()]
+                ));
             } else {
-                row.push( "?".to_string() );
+                row.push("?".to_string());
             }
             if sdx[i].1.is_some() {
-                row.push( format!( "{}", ctl.sample_info.donor_list[sdx[i].1.unwrap()] ) );
+                row.push(format!("{}", ctl.sample_info.donor_list[sdx[i].1.unwrap()]));
             } else {
-                row.push( "?".to_string() );
+                row.push("?".to_string());
             }
-            row.push( format!( "{}", sdx[i].2 ) );
+            row.push(format!("{}", sdx[i].2));
             rows.push(row);
         }
         let mut log = String::new();
-        print_tabular_vbox( &mut log, &rows, 2, &b"llr".to_vec(), false );
-        log = log.replace( "\n", "\n   " );
-        print!( "   {}", log );
+        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false);
+        log = log.replace("\n", "\n   ");
+        print!("   {}", log);
     }
 
     // Test for required number of false positives.
