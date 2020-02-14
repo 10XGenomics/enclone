@@ -126,6 +126,10 @@ pub fn group_and_print_clonotypes(
     let mut groups = 0;
     let mut greps = Vec::<i32>::new();
     e.orbit_reps(&mut greps);
+
+    // Sort so that larger groups (as measured by cells) come first.
+
+    let mut grepsn = Vec::<(usize,usize)>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(greps[i], &mut o);
@@ -140,6 +144,17 @@ pub fn group_and_print_clonotypes(
                 n += exact_clonotypes[s[k]].clones.len();
             }
         }
+        grepsn.push( (n,i) );
+    }
+    reverse_sort(&mut grepsn);
+
+    // Now print.
+
+    for z in 0..grepsn.len() {
+        let i = grepsn[z].1;
+        let n = grepsn[z].0;
+        let mut o = Vec::<i32>::new();
+        e.orbit(greps[i], &mut o);
         groups += 1;
 
         // Generate human readable output.
