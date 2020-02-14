@@ -233,6 +233,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.heavy_chain_reuse = true;
         } else if is_simple_arg(&args[i], "GROUP_HEAVY_CDR3") {
             ctl.clono_group_opt.heavy_cdr3_aa = true;
+        } else if is_simple_arg(&args[i], "GROUP_VJ1") {
+            ctl.clono_group_opt.vj1 = true;
         } else if is_simple_arg(&args[i], "NPLAIN") {
             ctl.pretty = true;
         } else if is_simple_arg(&args[i], "NO_REUSE") {

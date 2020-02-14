@@ -620,10 +620,15 @@ pub fn help4(args: &Vec<String>) {
              placeholder, we have the following \"toy\" options:\n\n",
         );
         rows.clear();
+
         doc!(
             "GROUP_HEAVY_CDR3",
             "group by perfect identity of CDR3 amino acid sequence \
              of IGH or TRB"
+        );
+        doc!(
+            "GROUP_VJ1",
+            "group by sharing a chain that has the same V and J reference gene names"
         );
         ldoc!(
             "MIN_GROUP",

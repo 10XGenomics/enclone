@@ -87,6 +87,28 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
     }
+    if ctl.clono_group_opt.vj1 {
+        let mut all = Vec::<((String,String),usize)>::new();
+        for i in 0..pics.len() {
+            for x in exacts[i].iter() {
+                let ex = &exact_clonotypes[*x];
+                for j in 0..ex.share.len() {
+                    let y = &ex.share[j];
+                    all.push( ( ( refdata.name[y.v_ref_id].clone(), refdata.name[y.j_ref_id].clone() ), i ) );
+                }
+            }
+        }
+        // Note duplication with above code.
+        all.sort();
+        let mut i = 0;
+        while i < all.len() {
+            let j = next_diff1_2(&all, i as i32) as usize;
+            for k in i + 1..j {
+                e.join(all[i].1 as i32, all[k].1 as i32);
+            }
+            i = j;
+        }
+    }
     let mut groups = 0;
     let mut greps = Vec::<i32>::new();
     e.orbit_reps(&mut greps);
