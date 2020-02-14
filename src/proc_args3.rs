@@ -109,8 +109,8 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 if ctl.gen_opt.pre != "" {
                     p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
 
-                // Use case 2.  It's an internal run, a lena id has been provided, and PRE
-                // was not specified.  Then we look on marsoc.
+                // Use case 2.  It's an internal run, an id has been provided, and PRE
+                // was not specified.  Then we look internally.
                 } else if internal_run && p.parse::<u32>().is_ok() && ctl.gen_opt.pre == "" {
                     p = format!("{}", get_outs(&p));
 
