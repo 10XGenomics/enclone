@@ -90,16 +90,14 @@ pub fn group_and_print_clonotypes(
     if ctl.clono_group_opt.vj_refname {
         let mut all = Vec::<(Vec<String>, usize)>::new();
         for i in 0..pics.len() {
-            for x in exacts[i].iter() {
-                let ex = &exact_clonotypes[*x];
-                let mut s = Vec::<String>::new();
-                for j in 0..ex.share.len() {
-                    s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                    s.push(refdata.name[ex.share[j].j_ref_id].clone());
-                }
-                s.sort();
-                all.push((s, i));
+            let ex = &exact_clonotypes[exacts[i][0]];
+            let mut s = Vec::<String>::new();
+            for j in 0..ex.share.len() {
+                s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                s.push(refdata.name[ex.share[j].j_ref_id].clone());
             }
+            s.sort();
+            all.push((s, i));
         }
         // Note duplication with above code.
         all.sort();
