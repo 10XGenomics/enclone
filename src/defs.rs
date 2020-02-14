@@ -176,7 +176,7 @@ pub struct ClonoPrintOpt {
 #[derive(Default)]
 pub struct ClonoGroupOpt {
     pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
-    pub vj2: bool,           // group by having two chains with same VJ reference names
+    pub vj_refname: bool,    // group by having the same VJ reference names
     pub min_group: usize,    // minimum number of clonotypes in group to print
 }
 

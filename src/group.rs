@@ -87,29 +87,18 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
     }
-    if ctl.clono_group_opt.vj2 {
-        let mut all = Vec::<((String, String, String, String), usize)>::new();
+    if ctl.clono_group_opt.vj_refname {
+        let mut all = Vec::<(Vec<String>, usize)>::new();
         for i in 0..pics.len() {
             for x in exacts[i].iter() {
                 let ex = &exact_clonotypes[*x];
-                for j1 in 0..ex.share.len() {
-                    for j2 in 0..ex.share.len() {
-                        if j1 == j2 {
-                            continue;
-                        }
-                        let y1 = &ex.share[j1];
-                        let y2 = &ex.share[j2];
-                        all.push((
-                            (
-                                refdata.name[y1.v_ref_id].clone(),
-                                refdata.name[y1.j_ref_id].clone(),
-                                refdata.name[y2.v_ref_id].clone(),
-                                refdata.name[y2.j_ref_id].clone(),
-                            ),
-                            i,
-                        ));
-                    }
+                let mut s = Vec::<String>::new();
+                for j in 0..ex.share.len() {
+                    s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                    s.push(refdata.name[ex.share[j].j_ref_id].clone());
                 }
+                s.sort();
+                all.push((s, i));
             }
         }
         // Note duplication with above code.
@@ -129,7 +118,7 @@ pub fn group_and_print_clonotypes(
 
     // Sort so that larger groups (as measured by cells) come first.
 
-    let mut grepsn = Vec::<(usize,usize)>::new();
+    let mut grepsn = Vec::<(usize, usize)>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(greps[i], &mut o);
@@ -144,7 +133,7 @@ pub fn group_and_print_clonotypes(
                 n += exact_clonotypes[s[k]].clones.len();
             }
         }
-        grepsn.push( (n,i) );
+        grepsn.push((n, i));
     }
     reverse_sort(&mut grepsn);
 

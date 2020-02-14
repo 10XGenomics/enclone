@@ -627,9 +627,10 @@ pub fn help4(args: &Vec<String>) {
              of IGH or TRB"
         );
         doc!(
-            "GROUP_VJ2",
-            "group by sharing two chains having the same V and J reference gene names"
+            "GROUP_VJ_REFNAME",
+            "group by sharing identical V and J reference gene names,"
         );
+        doc!("", "but ignores foursies and moresies");
         ldoc!(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)"
