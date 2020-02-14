@@ -88,13 +88,19 @@ pub fn group_and_print_clonotypes(
         }
     }
     if ctl.clono_group_opt.vj1 {
-        let mut all = Vec::<((String,String),usize)>::new();
+        let mut all = Vec::<((String, String), usize)>::new();
         for i in 0..pics.len() {
             for x in exacts[i].iter() {
                 let ex = &exact_clonotypes[*x];
                 for j in 0..ex.share.len() {
                     let y = &ex.share[j];
-                    all.push( ( ( refdata.name[y.v_ref_id].clone(), refdata.name[y.j_ref_id].clone() ), i ) );
+                    all.push((
+                        (
+                            refdata.name[y.v_ref_id].clone(),
+                            refdata.name[y.j_ref_id].clone(),
+                        ),
+                        i,
+                    ));
                 }
             }
         }
