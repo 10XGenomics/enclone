@@ -94,8 +94,6 @@ pub fn make_table(
     for c in log.chars() {
         if c == '$' {
             logz.push('•');
-        } else if c == '+' {
-            logz.push('◼');
         } else if c == '%' {
             logz.push('+');
         } else {
