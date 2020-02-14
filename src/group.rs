@@ -13,6 +13,7 @@ use std::io::Write;
 use std::io::*;
 use std::path::Path;
 use string_utils::*;
+use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -244,22 +245,36 @@ pub fn group_and_print_clonotypes(
     // Print summary stats.
 
     if ctl.gen_opt.summary {
-        println!("\nsummary statistics");
+        println!("\nSUMMARY STATISTICS");
         println!("1. overall");
         let nclono = exacts.len();
         let mut nclono2 = 0;
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
+        let mut sd = Vec::<(Option<usize>,Option<usize>)>::new();
         for i in 0..nclono {
             let mut n = 0;
             for j in 0..exacts[i].len() {
-                n += exact_clonotypes[exacts[i][j]].ncells();
+                let ex = &exact_clonotypes[exacts[i][j]];
+                n += ex.ncells();
+                for k in 0..ex.clones.len() {
+                    let x = &ex.clones[k][0];
+                    sd.push((x.sample_index, x.donor_index));
+                }
             }
             if n >= 2 {
                 nclono2 += 1;
             }
             ncells += n;
             nchains.push(mat[i].len());
+        }
+        sd.sort();
+        let mut sdx = Vec::<(Option<usize>,Option<usize>,usize)>::new();
+        let mut i = 0;
+        while i < sd.len() {
+            let j = next_diff(&sd, i);
+            sdx.push( (sd[i].0, sd[i].1, j-i) );
+            i = j;
         }
         println!("   • number of datasets = {}", ctl.sample_info.n());
         println!("   • number of donors = {}", ctl.sample_info.donors);
@@ -281,6 +296,30 @@ pub fn group_and_print_clonotypes(
             );
             i = j;
         }
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![ "sample".to_string(), "donor".to_string(), "ncells".to_string() ];
+        rows.push(row);
+        let row = vec![ "\\hline".to_string(); 3 ];
+        rows.push(row);
+        for i in 0..sdx.len() {
+            let mut row = Vec::<String>::new();
+            if sdx[i].0.is_some() {
+                row.push( format!( "{}", ctl.sample_info.sample_list[sdx[i].0.unwrap()] ) );
+            } else {
+                row.push( "?".to_string() );
+            }
+            if sdx[i].1.is_some() {
+                row.push( format!( "{}", ctl.sample_info.donor_list[sdx[i].1.unwrap()] ) );
+            } else {
+                row.push( "?".to_string() );
+            }
+            row.push( format!( "{}", sdx[i].2 ) );
+            rows.push(row);
+        }
+        let mut log = String::new();
+        print_tabular_vbox( &mut log, &rows, 2, &b"llr".to_vec(), false );
+        log = log.replace( "\n", "\n   " );
+        print!( "   {}", log );
     }
 
     // Test for required number of false positives.
