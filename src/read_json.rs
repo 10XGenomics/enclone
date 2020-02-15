@@ -342,12 +342,14 @@ pub fn read_json(
                 } else {
                     // the way we use s1 and d1 here is flaky
                     if sample_info.sample_id[li].len() > 0
-                        && ( sample_info.sample_id[li] != "s1".to_string() || sample_info.sample_donor[li].len() == 0 )
+                        && (sample_info.sample_id[li] != "s1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
                     {
                         sample = Some(sample_info.sample_id[li].clone());
                     }
                     if sample_info.donor_id[li].len() > 0
-                        && ( sample_info.donor_id[li] != "d1".to_string() || sample_info.sample_donor[li].len() == 0 )
+                        && (sample_info.donor_id[li] != "d1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
                     {
                         donor = Some(sample_info.donor_id[li].clone());
                     }
