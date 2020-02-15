@@ -319,8 +319,10 @@ pub fn group_and_print_clonotypes(
         }
         println!("   • number of datasets = {}", ctl.sample_info.n());
         println!("   • number of donors = {}", ctl.sample_info.donors);
-        println!("   • total elapsed time = {:.2} seconds", elapsed(&tall));
-        println!("   • peak memory = {:.2} GB", peak_mem_usage_gb());
+        if !ctl.gen_opt.summary_clean {
+            println!("   • total elapsed time = {:.2} seconds", elapsed(&tall));
+            println!("   • peak memory = {:.2} GB", peak_mem_usage_gb());
+        }
         println!("2. for the selected clonotypes");
         println!("   • number of clonotypes = {}", nclono);
         println!(

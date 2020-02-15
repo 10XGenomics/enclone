@@ -198,6 +198,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.mouse = true;
         } else if is_simple_arg(&args[i], "SUMMARY") {
             ctl.gen_opt.summary = true;
+        } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
+            ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {
         } else if args[i].starts_with("REF=") {
             ctl.gen_opt.refname = args[i].after("REF=").to_string();

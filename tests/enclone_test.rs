@@ -106,6 +106,8 @@ fn test_enclone() {
         // Note that we have deliberately "faked" two donors.  In reality there is one.
         // Here we make sure that non-specification of NDONOR works.
         "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
+        // 27. tests SUMMARY and NOPRINT
+        "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();

@@ -84,6 +84,7 @@ pub struct GeneralOpt {
     pub required_fps: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
+    pub summary_clean: bool,
     pub cr_version: String,
     pub nwarn: bool,
 }
