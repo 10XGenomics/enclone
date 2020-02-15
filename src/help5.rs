@@ -344,7 +344,8 @@ pub fn help5(args: &Vec<String>) {
              enclone is to prevent cells from different donors from being placed in the same \
              clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
              employ this option, then clonotypes containing cells from more than one donor will be \
-             flagged as errors.  The primary reason for allowing entry of data from multiple \
+             flagged as errors, unless you use the \\bold{NWARN} option to turn off those \
+             warnings.  The primary reason for allowing entry of data from multiple \
              donors is to allow estimation of enclone's error rate.\n\n",
         );
 

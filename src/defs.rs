@@ -85,6 +85,7 @@ pub struct GeneralOpt {
     pub cellranger: bool,
     pub summary: bool,
     pub cr_version: String,
+    pub nwarn: bool,
 }
 
 // Allele finding algorithmic options.

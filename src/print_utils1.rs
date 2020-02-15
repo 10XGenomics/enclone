@@ -449,7 +449,7 @@ pub fn start_gen(
     }
     unique_sort(&mut donors);
     fwriteln!(&mut mlog, "CLONOTYPE = {} CELLS", n);
-    if donors.len() > 1 {
+    if donors.len() > 1 && !ctl.gen_opt.nwarn {
         if ctl.pretty {
             // emit_red_escape(&mut mlog);
             // what is below is a brighter red
