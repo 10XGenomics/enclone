@@ -120,6 +120,19 @@ pub fn print_clonotypes(
             0,
         ));
     }
+    let mut d_readers = Vec::<Option<h5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
+    if ctl.gen_opt.h5 {
+        for li in 0..ctl.sample_info.n() {
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            } else {
+                d_readers.push(None);
+                ind_readers.push(None);
+            }
+        }
+    }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut o = Vec::<i32>::new();
@@ -446,6 +459,8 @@ pub fn print_clonotypes(
                         &rsi,
                         &dref,
                         &groups,
+                        &d_readers,
+                        &ind_readers,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
