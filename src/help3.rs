@@ -512,6 +512,18 @@ pub fn help3(args: &Vec<String>) {
              https://docs.rs/regex.\n"
         );
 
+        // bounds
+
+        print(
+            "There is a very tentative capability to filter by bounding certain variables, \
+             using \\bold{exactly} the following notation:\n\
+             F=\"mean(x)>v\"\n\
+             where x is a lead column variable arising from gene expression or a feature \
+             barcode and v is a floating-point number.  The requirement is that the mean \
+             across all cells of the given variable is greater than v.  If this turns out \
+             to be useful we will generalize it.\n\n",
+        );
+
         // done
 
         if !help_all {

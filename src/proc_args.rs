@@ -198,6 +198,27 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.mouse = true;
         } else if is_simple_arg(&args[i], "SUMMARY") {
             ctl.gen_opt.summary = true;
+        } else if args[i].starts_with("F=") {
+            let mut filt = args[i].after("F=").to_string();
+            if filt.starts_with('"') && filt.ends_with('"') {
+                filt = filt.after("\"").rev_before("\"").to_string();
+            }
+            if !filt.starts_with("mean(") || !filt.contains(")>") {
+                eprintln!("Illegal value for F.\n");
+                std::process::exit(1);
+            }
+            let var = filt.between("mean(", ")>");
+            let mut val = filt.after(">").to_string();
+            if !val.contains('.') {
+                val += ".0";
+            }
+            if !val.parse::<f64>().is_ok() {
+                eprintln!("Illegal value for F.\n");
+                std::process::exit(1);
+            }
+            ctl.clono_filt_opt
+                .bounds
+                .push((var.to_string(), val.force_f64()));
         } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {

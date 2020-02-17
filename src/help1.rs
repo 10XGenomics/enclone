@@ -241,7 +241,7 @@ pub fn help1(args: &Vec<String>) {
             "how to provide input to enclone (technical notes)"
         );
         ldoc!("enclone help parseable", "parseable output (long)");
-        ldoc!("enclone help filter", "clonotype filtering options");
+        ldoc!("enclone help filter", "clonotype filtering options (long)");
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options");
         doc!("enclone help cvars", "per chain column options");

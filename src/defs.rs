@@ -156,6 +156,7 @@ pub struct ClonoFiltOpt {
     pub weak_foursies: bool, // filter weak foursies
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
+    pub bounds: Vec<(String, f64)>, // bounds on certain variables
 }
 
 // Clonotype printing options.

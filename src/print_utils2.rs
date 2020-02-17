@@ -23,6 +23,7 @@ use vector_utils::*;
 // Awful interface, should work to improve.
 
 pub fn row_fill(
+    pass: usize,
     u: usize,
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
@@ -92,7 +93,9 @@ pub fn row_fill(
     macro_rules! lvar {
         ($var:expr, $val:expr) => {
             row.push($val);
-            speak!(u, $var.to_string(), $val);
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
         };
     }
 
