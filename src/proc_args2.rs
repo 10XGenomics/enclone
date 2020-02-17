@@ -158,7 +158,10 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
         }
         unique_sort(&mut known_features);
         for i in 0..to_check.len() {
-            let x = to_check[i].clone();
+            let mut x = to_check[i].clone();
+            if x.contains(':') {
+                x = x.after(":").to_string();
+            }
             if !bin_member(&known_features, &x) {
                 let mut n_var = false;
                 if x.starts_with("n_") {

@@ -342,8 +342,7 @@ pub fn help4(args: &Vec<String>) {
              exact subclonotype row.\n"
         );
         print(
-            "Lead variables are specified using\n\
-             \\bold{LVARS=x1,...,xn}\n\
+            "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
         doc!("datasets", "dataset identifiers");
@@ -422,7 +421,14 @@ pub fn help4(args: &Vec<String>) {
             "",
             "and report the mean umi count for it; this assumes that gene expression"
         );
-        doc!("", "or feature barcode data have been generated");
+        doc!(
+            "",
+            "or feature barcode data have been generated; we also allow the form e.g."
+        );
+        doc!(
+            "",
+            "<abbr>:<gene>_g where abbr is an abbreviation to be shown as column header"
+        );
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

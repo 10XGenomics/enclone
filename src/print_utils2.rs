@@ -357,13 +357,21 @@ pub fn row_fill(
         } else {
             let mut count = 0.0;
             let mut counts = Vec::<f64>::new();
+            let mut x = lvars[i].clone();
+            let mut y = lvars[i].clone();
+            if x.contains(':') {
+                x = x.before(":").to_string();
+            }
+            if y.contains(':') {
+                y = y.after(":").to_string();
+            }
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
-                    if gex_info.feature_id[li].contains_key(&lvars[i]) {
-                        let fid = gex_info.feature_id[li][&lvars[i]];
+                    if gex_info.feature_id[li].contains_key(&y) {
+                        let fid = gex_info.feature_id[li][&y];
                         let mut raw_count = 0 as f64;
                         if !ctl.gen_opt.h5 {
                             raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
@@ -376,7 +384,7 @@ pub fn row_fill(
                             }
                         }
                         let mult: f64;
-                        if lvars[i].ends_with("_g") {
+                        if x.ends_with("_g") {
                             mult = gex_info.gex_mults[li];
                         } else {
                             mult = gex_info.fb_mults[li];
@@ -386,11 +394,8 @@ pub fn row_fill(
                     }
                 }
             }
-            stats.push((lvars[i].clone(), counts));
-            lvar![
-                lvars[i],
-                format!("{}", (count.round() as usize) / ex.ncells())
-            ];
+            stats.push((x.clone(), counts));
+            lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
         }
     }
 
