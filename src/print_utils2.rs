@@ -354,7 +354,7 @@ pub fn row_fill(
             }
             lvar![lvars[i], s.clone()];
         } else {
-            let mut count = 0;
+            let mut count = 0.0;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
@@ -379,11 +379,14 @@ pub fn row_fill(
                         } else {
                             mult = gex_info.fb_mults[li];
                         }
-                        count += (raw_count * mult).round() as usize;
+                        count += raw_count * mult;
                     }
                 }
             }
-            lvar![lvars[i], format!("{}", count / ex.ncells())];
+            lvar![
+                lvars[i],
+                format!("{}", (count.round() as usize) / ex.ncells())
+            ];
         }
     }
 
