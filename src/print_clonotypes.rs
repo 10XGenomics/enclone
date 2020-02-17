@@ -426,6 +426,13 @@ pub fn print_clonotypes(
                         groups.insert(d, c);
                     }
                 }
+
+                // Set up to record stats that assign a value to each cell for a given variable.
+
+                let mut stats = Vec::<(String, Vec<f64>)>::new();
+
+                // Build rows.
+
                 for u in 0..nexacts {
                     let mut typex = vec![false; cols];
                     let mut row = Vec::<String>::new();
@@ -461,6 +468,7 @@ pub fn print_clonotypes(
                         &groups,
                         &d_readers,
                         &ind_readers,
+                        &mut stats,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {

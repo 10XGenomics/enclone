@@ -45,6 +45,7 @@ pub fn row_fill(
     groups: &HashMap<usize, Vec<usize>>,
     d_readers: &Vec<Option<h5::Reader>>,
     ind_readers: &Vec<Option<h5::Reader>>,
+    stats: &mut Vec<(String, Vec<f64>)>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -355,6 +356,7 @@ pub fn row_fill(
             lvar![lvars[i], s.clone()];
         } else {
             let mut count = 0.0;
+            let mut counts = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
@@ -380,9 +382,11 @@ pub fn row_fill(
                             mult = gex_info.fb_mults[li];
                         }
                         count += raw_count * mult;
+                        counts.push(raw_count * mult);
                     }
                 }
             }
+            stats.push((lvars[i].clone(), counts));
             lvar![
                 lvars[i],
                 format!("{}", (count.round() as usize) / ex.ncells())
