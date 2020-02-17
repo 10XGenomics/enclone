@@ -345,6 +345,12 @@ pub fn print_clonotypes(
                     );
                 }
 
+                // Done unless on second pass.  Unless there are bounds.
+
+                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 {
+                    continue;
+                }
+
                 // Define amino acid positions to show.
 
                 let show_aa =
