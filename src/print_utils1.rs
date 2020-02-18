@@ -446,7 +446,10 @@ pub fn start_gen(
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
-                donors.push(ex.clones[m][0].donor_index.unwrap());
+                let d = ex.clones[m][0].donor_index.unwrap();
+                if ctl.sample_info.donor_list[d].len() > 0 {
+                    donors.push(d);
+                }
             }
         }
     }
