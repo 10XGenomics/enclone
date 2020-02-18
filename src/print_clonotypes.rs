@@ -726,7 +726,7 @@ pub fn print_clonotypes(
 
                 // Add total row.
 
-                if ctl.clono_print_opt.total {
+                if ctl.clono_print_opt.sum {
                     let mut row = Vec::<String>::new();
                     row.push("Σ".to_string());
                     for i in 0..lvars.len() {

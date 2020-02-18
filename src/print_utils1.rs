@@ -199,7 +199,7 @@ pub fn make_diff_row(
                 if drows.len() >= 1 {
                     start += 2;
                 }
-                if ctl.clono_print_opt.total {
+                if ctl.clono_print_opt.sum {
                     start += 1;
                 }
                 for k in start..rows.len() {

@@ -617,7 +617,7 @@ pub fn help4(args: &Vec<String>) {
             "print full sequence for each chain in the first exact subclonotype,"
         );
         doc!("", "near the top of the printout for a given clonotype");
-        ldoc!("TOTAL", "print total row for each clonotype");
+        ldoc!("SUM", "print sum row for each clonotype");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

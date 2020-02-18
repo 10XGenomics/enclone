@@ -146,8 +146,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
-        } else if is_simple_arg(&args[i], "TOTAL") {
-            ctl.clono_print_opt.total = true;
+        } else if is_simple_arg(&args[i], "SUM") {
+            ctl.clono_print_opt.sum = true;
         } else if is_simple_arg(&args[i], "NH5") {
             ctl.gen_opt.h5 = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
