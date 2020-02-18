@@ -5,6 +5,7 @@
 use crate::defs::*;
 use equiv::*;
 use itertools::*;
+#[cfg(not(target_os = "windows"))]
 use pager::Pager;
 use perf_stats::*;
 use std::time::Instant;
@@ -13,6 +14,17 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// This section contains a function that supports paging.  It does not work under Windows, and
+// we describe here all the *known* problems with getting enclone to work under Windows.
+// 1. It does not compile for us.  When we tried, there was a problem with libhdf-5.
+// 2. Paging is turned off, because the pager crate doesn't compile under Windows, and porting
+//    it to Windows appears nontrivial.
+// 3. ANSI escape characters are not handled correctly, at least by default.
+// In addition, we have some concerns about what it would mean to properly test enclone on Windows,
+// given that some users might have older OS installs, and support for ANSI escape characters
+// appears to have been changed in 2018.
+
+#[cfg(not(target_os = "windows"))]
 pub fn setup_pager(pager: bool) {
     // If the output is going to a terminal, set up paging so that output is in effect piped to
     // "less -R -F -X".
@@ -33,6 +45,9 @@ pub fn setup_pager(pager: bool) {
         Pager::with_pager("less -R -F -X").setup();
     }
 }
+
+#[cfg(target_os = "windows")]
+pub fn setup_pager(pager: bool) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -147,17 +162,17 @@ pub fn lookup_heavy_chain_reuse(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// If a V..J segment appears in exactly one lena id, with frequency n, let x be the total
-// number of productive pairs for that lena, and let y be the total number of productive
-// pairs for all lena ids from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
-// that assuming even distribution, all instances of that V..J ended up in that one lena,
+// If a V..J segment appears in exactly one dataset, with frequency n, let x be the total
+// number of productive pairs for that dataset, and let y be the total number of productive
+// pairs for all datasets from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
+// that assuming even distribution, all instances of that V..J ended up in that one dataset,
 // delete all the productive pairs for that V..J segment that do not have at least 100
 // supporting UMIs.  (Note no attempt to do bonferroni correction.)
 //
-// For the case of two lena ids for one sample, with equal numbers of productive pairs in
+// For the case of two datasets for one sample, with equal numbers of productive pairs in
 // each, this corresponds roughly to the case n = 20.
 //
-// Note that we could modify this to allow *some* occurrences in other lena ids.
+// Note that we could modify this to allow *some* occurrences in other datasets.
 //
 // There are only certain ways that these misdistribution events could happen:
 //

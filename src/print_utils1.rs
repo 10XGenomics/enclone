@@ -94,8 +94,6 @@ pub fn make_table(
     for c in log.chars() {
         if c == '$' {
             logz.push('•');
-        } else if c == '+' {
-            logz.push('◼');
         } else if c == '%' {
             logz.push('+');
         } else {
@@ -444,13 +442,14 @@ pub fn start_gen(
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
-            let lena = ex.clones[m][0].dataset_index;
-            donors.push(ctl.sample_info.donor_index[lena]);
+            if ex.clones[m][0].donor_index.is_some() {
+                donors.push(ex.clones[m][0].donor_index.unwrap());
+            }
         }
     }
     unique_sort(&mut donors);
     fwriteln!(&mut mlog, "CLONOTYPE = {} CELLS", n);
-    if donors.len() > 1 {
+    if donors.len() > 1 && !ctl.gen_opt.nwarn {
         if ctl.pretty {
             // emit_red_escape(&mut mlog);
             // what is below is a brighter red
@@ -469,13 +468,17 @@ pub fn start_gen(
             for u in 0..nexacts {
                 let ex = &exact_clonotypes[exacts[u]];
                 for l in 0..ex.clones.len() {
-                    let li = ex.clones[l][0].dataset_index;
-                    if ctl.sample_info.donor_index[li] == donors[i] {
-                        lenas.push(ctl.sample_info.dataset_id[li].clone());
+                    if ex.clones[l][0].donor_index.is_some() {
+                        if ex.clones[l][0].donor_index.unwrap() == donors[i] {
+                            lenas.push(
+                                ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
+                            );
+                        }
                     }
                 }
             }
             unique_sort(&mut lenas);
+            // This message is pretty flaky in the case where bc has been specified in META.
             fwriteln!(&mut mlog, "donor {}: {}", i + 1, lenas.iter().format(","));
         }
     }

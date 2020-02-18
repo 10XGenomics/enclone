@@ -205,6 +205,8 @@ pub fn create_exact_subclonotype_core(
                     barcode: tig_bc[t][m].barcode.clone(),
                     tigname: tig_bc[t][m].tigname.clone(),
                     dataset_index: tig_bc[t][m].dataset_index,
+                    sample_index: tig_bc[t][m].sample_index,
+                    donor_index: tig_bc[t][m].donor_index,
                     umi_count: tig_bc[t][m].umi_count,
                     read_count: tig_bc[t][m].read_count,
                 });
@@ -255,8 +257,7 @@ pub fn find_exact_subclonotypes(
                     // Note funky redundancy in checking each chain
 
                     || ( !ctl.clono_filt_opt.donor
-                        && ctl.sample_info.donor_index[tig_bc[r][m].dataset_index]
-                        != ctl.sample_info.donor_index[tig_bc[s][m].dataset_index] )
+                        && tig_bc[r][m].donor_index != tig_bc[s][m].donor_index )
                 {
                     ok = false;
                     break;
@@ -297,7 +298,8 @@ pub fn find_exact_subclonotypes(
         }
 
         // Delete reused barcodes.  In principle we could instead choose the instance having
-        // higher UMI counts.
+        // higher UMI counts.  Also we might test for more evidence of concurrence, to avoid
+        // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
         if ctl.clono_filt_opt.bc_dup {

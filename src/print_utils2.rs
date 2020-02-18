@@ -23,6 +23,7 @@ use vector_utils::*;
 // Awful interface, should work to improve.
 
 pub fn row_fill(
+    pass: usize,
     u: usize,
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
@@ -43,6 +44,9 @@ pub fn row_fill(
     rsi: &ColInfo,
     dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
+    d_readers: &Vec<Option<h5::Reader>>,
+    ind_readers: &Vec<Option<h5::Reader>>,
+    stats: &mut Vec<(String, Vec<f64>)>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -89,7 +93,9 @@ pub fn row_fill(
     macro_rules! lvar {
         ($var:expr, $val:expr) => {
             row.push($val);
-            speak!(u, $var.to_string(), $val);
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
         };
     }
 
@@ -110,49 +116,52 @@ pub fn row_fill(
     let mut counts = Vec::<usize>::new();
     let mut n_gex = 0;
     let mut total_counts = Vec::<usize>::new();
-    // should only do this loop if entropy was asked for
-    for l in 0..ex.clones.len() {
-        let li = ex.clones[l][0].dataset_index;
-        let bc = ex.clones[l][0].barcode.clone();
-        if !gex_info.gex_barcodes.is_empty() {
-            let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-            if p >= 0 {
-                let mut raw_count = 0;
-                if !ctl.gen_opt.h5 {
-                    let row = gex_info.gex_matrices[li].row(p as usize);
-                    for j in 0..row.len() {
-                        let f = row[j].0;
-                        let n = row[j].1;
-                        if gex_info.is_gex[li][f] {
-                            raw_count += n;
+    // It might be possible to speed this up a lot by pulling part of the "let d" and
+    // "let ind" constructs out of the loop.
+    if lvars.contains(&"entropy".to_string()) {
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = ex.clones[l][0].barcode.clone();
+            if !gex_info.gex_barcodes.is_empty() {
+                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                if p >= 0 {
+                    let mut raw_count = 0;
+                    if !ctl.gen_opt.h5 {
+                        let row = gex_info.gex_matrices[li].row(p as usize);
+                        for j in 0..row.len() {
+                            let f = row[j].0;
+                            let n = row[j].1;
+                            if gex_info.is_gex[li][f] {
+                                raw_count += n;
+                            }
+                        }
+                    } else {
+                        let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                        let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
+                        let d: Vec<u32> = gex_info.h5_data[li]
+                            .as_ref()
+                            .unwrap()
+                            .as_reader()
+                            .read_slice(&s![z1..z2])
+                            .unwrap()
+                            .to_vec();
+                        d_all[l] = d.clone();
+                        let ind: Vec<u32> = gex_info.h5_indices[li]
+                            .as_ref()
+                            .unwrap()
+                            .as_reader()
+                            .read_slice(&s![z1..z2])
+                            .unwrap()
+                            .to_vec();
+                        ind_all[l] = ind.clone();
+                        for j in 0..d.len() {
+                            if gex_info.is_gex[li][ind[j] as usize] {
+                                raw_count += d[j] as usize;
+                            }
                         }
                     }
-                } else {
-                    let z1 = gex_info.h5_indptr[li][p as usize] as usize;
-                    let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                    let d: Vec<u32> = gex_info.h5_data[li]
-                        .as_ref()
-                        .unwrap()
-                        .as_reader()
-                        .read_slice(&s![z1..z2])
-                        .unwrap()
-                        .to_vec();
-                    d_all[l] = d.clone();
-                    let ind: Vec<u32> = gex_info.h5_indices[li]
-                        .as_ref()
-                        .unwrap()
-                        .as_reader()
-                        .read_slice(&s![z1..z2])
-                        .unwrap()
-                        .to_vec();
-                    ind_all[l] = ind.clone();
-                    for j in 0..d.len() {
-                        if gex_info.is_gex[li][ind[j] as usize] {
-                            raw_count += d[j] as usize;
-                        }
-                    }
+                    total_counts.push(raw_count);
                 }
-                total_counts.push(raw_count);
             }
         }
     }
@@ -183,18 +192,16 @@ pub fn row_fill(
                 } else {
                     let z1 = gex_info.h5_indptr[li][p as usize] as usize;
                     let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                    let d: Vec<u32> = gex_info.h5_data[li]
+                    let d: Vec<u32> = d_readers[li]
                         .as_ref()
                         .unwrap()
-                        .as_reader()
                         .read_slice(&s![z1..z2])
                         .unwrap()
                         .to_vec();
                     d_all[l] = d.clone();
-                    let ind: Vec<u32> = gex_info.h5_indices[li]
+                    let ind: Vec<u32> = ind_readers[li]
                         .as_ref()
                         .unwrap()
-                        .as_reader()
                         .read_slice(&s![z1..z2])
                         .unwrap()
                         .to_vec();
@@ -202,8 +209,10 @@ pub fn row_fill(
                     for j in 0..d.len() {
                         if gex_info.is_gex[li][ind[j] as usize] {
                             let n = d[j] as usize;
-                            let q = n as f64 / total_counts[l] as f64;
-                            entropy -= q * q.log2();
+                            if lvars.contains(&"entropy".to_string()) {
+                                let q = n as f64 / total_counts[l] as f64;
+                                entropy -= q * q.log2();
+                            }
                             raw_count += n;
                         }
                     }
@@ -226,7 +235,10 @@ pub fn row_fill(
         gex_max = counts[counts.len() - 1];
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    let entropy = entropies[entropies.len() / 2];
+    let mut entropy = 0.0;
+    if entropies.len() > 0 {
+        entropy = entropies[entropies.len() / 2];
+    }
 
     // Output lead variable columns.
 
@@ -238,8 +250,14 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", lenas.iter().format(","))];
         } else if lvars[i] == "donors".to_string() {
             let mut donors = Vec::<String>::new();
-            for lena in dataset_indices.iter() {
-                donors.push(ctl.sample_info.donor_id[ctl.sample_info.donor_index[*lena]].clone());
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].donor_index.is_some() {
+                    donors.push(
+                        ctl.sample_info.donor_id[ex.clones[j][0].donor_index.unwrap()].clone(),
+                    );
+                } else {
+                    donors.push("?".to_string());
+                }
             }
             unique_sort(&mut donors);
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
@@ -247,10 +265,18 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", mults[u])];
         } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
-            let indices = ctl.sample_info.name_list[name].clone();
             let mut count = 0;
             for j in 0..ex.clones.len() {
-                if bin_member(&indices, &ex.clones[j][0].dataset_index) {
+                let x = &ex.clones[j][0];
+                if ctl.sample_info.dataset_id[x.dataset_index] == name {
+                    count += 1;
+                } else if x.sample_index.is_some()
+                    && ctl.sample_info.sample_list[x.sample_index.unwrap()] == name
+                {
+                    count += 1;
+                } else if x.donor_index.is_some()
+                    && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
+                {
                     count += 1;
                 }
             }
@@ -332,14 +358,23 @@ pub fn row_fill(
             }
             lvar![lvars[i], s.clone()];
         } else {
-            let mut count = 0;
+            let mut count = 0.0;
+            let mut counts = Vec::<f64>::new();
+            let mut x = lvars[i].clone();
+            let mut y = lvars[i].clone();
+            if x.contains(':') {
+                x = x.before(":").to_string();
+            }
+            if y.contains(':') {
+                y = y.after(":").to_string();
+            }
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
-                    if gex_info.feature_id[li].contains_key(&lvars[i]) {
-                        let fid = gex_info.feature_id[li][&lvars[i]];
+                    if gex_info.feature_id[li].contains_key(&y) {
+                        let fid = gex_info.feature_id[li][&y];
                         let mut raw_count = 0 as f64;
                         if !ctl.gen_opt.h5 {
                             raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
@@ -352,16 +387,18 @@ pub fn row_fill(
                             }
                         }
                         let mult: f64;
-                        if lvars[i].ends_with("_g") {
+                        if x.ends_with("_g") {
                             mult = gex_info.gex_mults[li];
                         } else {
                             mult = gex_info.fb_mults[li];
                         }
-                        count += (raw_count * mult).round() as usize;
+                        count += raw_count * mult;
+                        counts.push(raw_count * mult);
                     }
                 }
             }
-            lvar![lvars[i], format!("{}", count / ex.ncells())];
+            stats.push((x.clone(), counts));
+            lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
         }
     }
 

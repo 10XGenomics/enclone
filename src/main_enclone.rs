@@ -288,6 +288,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let torb = Instant::now();
     print_clonotypes(
+        &tall,
         &refdata,
         &drefs,
         &ctl,
@@ -298,19 +299,6 @@ pub fn main_enclone(args: &Vec<String>) {
     );
     if ctl.comp {
         println!("\nused {:.2} seconds making orbits", elapsed(&torb));
-    }
-
-    // Report total cells.
-
-    let mut ncells = 0;
-    for i in 0..info.len() {
-        ncells += exact_clonotypes[info[i].clonotype_index].ncells();
-    }
-    if !ctl.silent {
-        if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
-            println!("");
-        }
-        println!("total cells in clonotypes = {}", ncells);
     }
 
     // Report computational performance.

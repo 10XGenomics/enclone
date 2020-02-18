@@ -23,7 +23,6 @@ load_feature_bc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 marsoc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ndarray = "0.12.1"
-pager = "0.15.0"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 permutation = "0.2.5"
 petgraph = "0.4.13"
@@ -41,6 +40,9 @@ string_utils = "0.1.0"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vector_utils = "0.1.0"
+
+[target.'cfg(not(windows))'.dependencies]
+pager = "0.15.0"
 
 [dependencies.hdf5-rs]
 features = ["conda"]

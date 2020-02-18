@@ -2,6 +2,10 @@
 
 // This file provides the single function join_exacts, which computes the equivalence relation
 // on exact subclonotypes.
+//
+// Note that in principle the specificity of joining might be increased by using nonproductive
+// contigs that represent the sequence of the "other" allele.  This does not look easy to
+// execute.
 
 use vdj_ann::*;
 
@@ -90,6 +94,7 @@ pub fn join_exacts(
         results.push((i, j, 0, 0, Vec::<u8>::new(), Vec::<(usize, usize)>::new()));
         i = j;
     }
+    // Not sure that fixing the size of this is safe.
     let sr = stirling2_ratio_table::<f64>(3000);
     if !ctl.silent {
         println!("comparing {} simple clonotypes", info.len());

@@ -216,7 +216,7 @@ pub fn help1(args: &Vec<String>) {
         ldoc_red!("enclone help", "help to test for correct setup");
         doc_red!("enclone", "what you see here: guide to all the doc");
         ldoc_red!("enclone help quick", "quick guide to getting started");
-        ldoc_red!("enclone help how", "how enclone works");
+        ldoc_red!("enclone help how", "how enclone works (long)");
         ldoc_red!(
             "enclone help command",
             "info about enclone command line argument processing"
@@ -241,7 +241,7 @@ pub fn help1(args: &Vec<String>) {
             "how to provide input to enclone (technical notes)"
         );
         ldoc!("enclone help parseable", "parseable output (long)");
-        ldoc!("enclone help filter", "clonotype filtering options");
+        ldoc!("enclone help filter", "clonotype filtering options (long)");
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options");
         doc!("enclone help cvars", "per chain column options");
@@ -349,35 +349,92 @@ pub fn help1(args: &Vec<String>) {
 
         print(
             "To address these challenges, the enclone algorithm has several steps, which we \
-             briefly outline:\n\n",
+             outline:\n\n",
         );
-        print_with_box(
-            "1. For samples from a given donor, enclone first \
-             derives \"donor reference sequences\" \
+        print(
+            "\\boldred{1}.  Input data.  \
+             enclone gets its information from the file all_contig_annotations.json that is \
+             produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated \
+             V and J segment.  The V segment alignment may have a single indel whose length is \
+             divisible by three, and in that case, the V reference sequence is edited either to \
+             delete or insert sequence.  In the insertion case, the bases are taken from the \
+             contig.  These indels are noted in the enclone output.\n\n\
+             \
+             \\boldred{2}.  Exact subclonotypes.  \
+             enclone groups cells into exact subclonotypes, provided that they have the same \
+             number of chains, identical V..J sequences, identical C segment assignments, \
+             and the same distance between the J stop and the C start (which is usually zero).\n\n\
+             \
+             \\boldred{3}.  Finding the germline sequences.  \
+             For samples from a given donor, enclone derives \"donor reference sequences\" \
              for the V chains present in the donor's genome.  This is powerful, even though \
              based on imperfect information.  V segments vary in their expression frequency and \
              thus the more cells which are present, the more complete the information will be.  It \
              is also not possible to accurately determine the last ~15 bases in a V chain from \
              transcript data.\n\n\
              \
-             2. enclone next finds shared differences betweens cells, that is, for two cells, \
-             common mutations from the reference sequence, using the donor reference for the V \
-             segments and the universal reference for the J segments.\n\n\
+             \\boldred{4}.  What joins are tested.  \
+             Pairs of exact subclonotypes are considered for joining, as described below.  This \
+             process only considers exact subclonotypes have two or three chains.  There is some \
+             separate joining for the case of one chain.  Exact subclonotypes having four chains \
+             are not joined at present.  These cases are clearly harder because these exact \
+             subclonotypes are highly enriched for cell doublets, which we discard if we can \
+             identify as such.\n\n\
              \
-             3. Two cells sharing sufficiently many shared differences and sufficiently few \
-             CDR3 differences are deemed to be in the same clonotype.  This depends on heuristics \
-             which are too detailed to describe on this page and will be described elsewhere.\n\n\
+             \\boldred{5}.  Initial grouping.  \
+             For each pair of exact subclonotypes, and for each pair of chains in each of the \
+             two exact subclonotypes, for which V..J has the same length for the corresponding \
+             chains, and the CDR3 segments have the same length for the corresponding chains, \
+             enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
-             4. Spurious chains are filtered out based on frequency and connections.",
+             \\boldred{6}.  Error bounding.  \
+             To proceed, as a minimum requirement, there must be at most 50 total \
+             mismatches \
+             between the two exact subclonotypes, within the given two V..J segments.\n\n\
+             \
+             \\boldred{7}.  Shared mutations.  \
+             enclone next finds shared mutations betweens exact subclonotypes, that is, for \
+             two exact subclonotypes, common mutations from the reference sequence, using the \
+             donor reference for the V segments and the universal reference for the J segments.  \
+             Shared mutations are supposed to be somatic hypermutations, that would be evidence \
+             of common ancestry.  By using the donor reference sequences, most shared germline \
+             mutations are excluded, and this is critical for the algorithm's success.\n\n\
+             \
+             \\boldred{8}.  Are there enough shared mutations?  \
+             We find the probability p that “the shared mutations occur by chance”.  More \
+             specifically, given d shared mutations, and k total mutations (across the two cells), \
+             we compute the probability p that an sample with replacement of k items from a set \
+             whose size is the total number of bases in the V..J segments, yields at most k – d \
+             distinct elements.\n\n\
+             \
+             \\boldred{9}.  Are there too many CDR3 mutations?  \
+             Next, let N be \"the number of DNA sequences that differ from the given CDR3 \
+             sequences by at most the number of observed differences\".  More specifically, if \
+             cd is the number of differences between the given CDR3 nucleotide sequences, and n \
+             is the total length in nucleotides of the CDR3 sequences (for the two chains), we \
+             compute the total number N of strings of length n that are obtainable by perturbing \
+             a given string of length n, which is sum( choose(n,m), m = 0..=cd) ).\n\n\
+             \
+             \\boldred{10}.  Key join criteria.  \
+             Two cells sharing sufficiently many shared differences and sufficiently few \
+             CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, \
+             and the lower N is, the more likely it is that the shared mutations represent bona \
+             fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
+             two cells lie in the same true clonotype.  To join two cells into the same \
+             clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
+             heuristically determined (and somewhat arbitrary) constant 1,000,000.\n\n\
+             \
+             \\boldred{11}.  Junk.  \
+             Spurious chains are filtered out based on frequency and connections. See \
+             \"enclone help special\" for a description of the filters.\n\n",
         );
 
         // Finish.
 
         print( "We are actively working to improve the algorithm.  To test the performance of the \
             current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
-            \\boldred{9573} clonotypes having at least two cells each, of \
-            which \\boldred{15 (0.16%)} \
-            contained data from multiple donors.  These are errors.\n\n" );
+            \\boldred{9573} clonotypes having at least two cells each, of which \
+            \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n" );
         if !help_all {
             std::process::exit(0);
         }

@@ -144,8 +144,30 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "yielding 'fake' cells.  The NCROSS option turns off this filtering step."
+            "yielding expanded 'fake' clonotypes that are residues of real single plasma"
         );
+        doc!(
+            "",
+            "cells.  The NCROSS options turns off this filter, which could be useful so"
+        );
+        doc!(
+            "",
+            "long as you interpret the restored clonotypes as representing what are"
+        );
+        doc!(
+            "",
+            "probably single cells.  There may also be other situations where the filter"
+        );
+        doc!(
+            "",
+            "should be turned off, and in particular the filter can do weird things if"
+        );
+        doc!(
+            "",
+            "inputs are somehow mis-specified to enclone.  Note that for purposes of"
+        );
+        doc!("", "this option, enclone defines a sample by the pair");
+        doc!("", "(sample name, donor name).");
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"
@@ -258,14 +280,14 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "clonotype.  The main use of this option is for specificity testing, in which"
+            "clonotype.  The main use of this option is for specificity testing, in"
         );
 
         doc!(
             "",
-            "data from different donors are deliberately combined in an attempt to find"
+            "which data from different donors are deliberately combined in an attempt"
         );
-        doc!("", "errors.");
+        doc!("", "to find errors.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
@@ -320,8 +342,7 @@ pub fn help4(args: &Vec<String>) {
              exact subclonotype row.\n"
         );
         print(
-            "Lead variables are specified using\n\
-             \\bold{LVARS=x1,...,xn}\n\
+            "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
         doc!("datasets", "dataset identifiers");
@@ -387,33 +408,27 @@ pub fn help4(args: &Vec<String>) {
             "these identifiers is arbitrary.  This option is best applied to cases where"
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
-        ldoc!(
-            "<antibody>_ab",
-            "assuming that feature barcode data for antibody capture have been"
+        ldoc!("<gene>_g", "");
+        doc!("<antibody>_ab", "");
+        doc!("<antigen>_ag", "");
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
+        doc!(
+            "",
+            "look for a declared feature of the given type with the given id or name,"
         );
         doc!(
             "",
-            "provided, look for a feature line having the given name in the first column;"
-        );
-        doc!("", "report the mean UMI count value");
-        doc!(
-            "<antigen>_ag",
-            "assuming that feature barcode data for antigens have been provided,"
+            "and report the mean umi count for it; this assumes that gene expression"
         );
         doc!(
             "",
-            "look for a feature line having the given name in the first column;"
-        );
-        doc!("", "report the mean UMI count value");
-        doc!(
-            "<gene name>_g",
-            "assuming that gene expression data has been provided,"
+            "or feature barcode data have been generated; we also allow the form e.g."
         );
         doc!(
             "",
-            "look for a feature line having the given name in the second"
+            "<abbr>:<gene>_g where abbr is an abbreviation to be shown as column header"
         );
-        doc!("", "column; report the mean UMI count value");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);
@@ -611,11 +626,17 @@ pub fn help4(args: &Vec<String>) {
              placeholder, we have the following \"toy\" options:\n\n",
         );
         rows.clear();
+
         doc!(
             "GROUP_HEAVY_CDR3",
             "group by perfect identity of CDR3 amino acid sequence \
              of IGH or TRB"
         );
+        doc!(
+            "GROUP_VJ_REFNAME",
+            "group by sharing identical V and J reference gene names,"
+        );
+        doc!("", "but ignores foursies and moresies");
         ldoc!(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)"

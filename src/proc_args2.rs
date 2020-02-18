@@ -115,6 +115,8 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             if !x.ends_with("_g")
                 && !x.ends_with("_ab")
                 && !x.starts_with("_ag")
+                && !x.starts_with("_cr")
+                && !x.starts_with("_cu")
                 && !x.starts_with("n_")
             {
                 eprintln!(
@@ -139,40 +141,49 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     eprintln!("Giving up.\n");
                     std::process::exit(1);
                 }
-                if ff[2].starts_with("Antibody") {
-                    known_features.push(format!("{}_ab", ff[0]));
-                } else if ff[2].starts_with("Antigen") {
-                    known_features.push(format!("{}_ag", ff[0]));
-                } else {
-                    known_features.push(format!("{}_g", ff[1]));
+                for z in 0..2 {
+                    if ff[2].starts_with("Antibody") {
+                        known_features.push(format!("{}_ab", ff[z]));
+                    } else if ff[2].starts_with("Antigen") {
+                        known_features.push(format!("{}_ag", ff[z]));
+                    } else if ff[2].starts_with("CRISPR") {
+                        known_features.push(format!("{}_cr", ff[z]));
+                    } else if ff[2].starts_with("CUSTOM") {
+                        known_features.push(format!("{}_cu", ff[z]));
+                    } else {
+                        known_features.push(format!("{}_g", ff[z]));
+                    }
                 }
             }
         }
         unique_sort(&mut known_features);
         for i in 0..to_check.len() {
-            let x = to_check[i].clone();
+            let mut x = to_check[i].clone();
+            if x.contains(':') {
+                x = x.after(":").to_string();
+            }
             if !bin_member(&known_features, &x) {
                 let mut n_var = false;
                 if x.starts_with("n_") {
                     n_var = true;
-                    let mut indices = Vec::<usize>::new();
                     let mut is_dataset_name = false;
                     let mut is_sample_name = false;
                     let mut is_donor_name = false;
                     let name = x.after("n_").to_string();
-                    let s = ctl.sample_info.dataset_path.len();
+                    let s = ctl.sample_info.n();
                     for j in 0..s {
                         if ctl.sample_info.dataset_id[j] == name {
                             is_dataset_name = true;
-                            indices.push(j);
                         }
-                        if ctl.sample_info.sample_id[j] == name {
+                    }
+                    for j in 0..ctl.sample_info.sample_list.len() {
+                        if ctl.sample_info.sample_list[j] == name {
                             is_sample_name = true;
-                            indices.push(j);
                         }
-                        if ctl.sample_info.donor_id[j] == name {
+                    }
+                    for j in 0..ctl.sample_info.donor_list.len() {
+                        if ctl.sample_info.donor_list[j] == name {
                             is_donor_name = true;
-                            indices.push(j);
                         }
                     }
                     let msg = "Suggested reading: \"enclone help input\" and \
@@ -181,14 +192,6 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         eprintln!(
                             "\nYou've used the lead variable {}, and yet {} \
                              does not name a dataset, or a sample,\nor a donor.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if is_dataset_name && indices.len() > 1 {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names more than one dataset.  That's ambiguous.\n{}",
                             x, name, msg
                         );
                         std::process::exit(1);
@@ -225,8 +228,6 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         );
                         std::process::exit(1);
                     }
-                    // could this get called twice on the same name, and what would that do?
-                    ctl.sample_info.name_list.insert(name, indices);
                 }
                 if !n_var {
                     eprintln!(
@@ -436,7 +437,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         ctl.sample_info.descrips.clear();
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();
-            let dir = ctl.sample_info.dataset_path[i].rev_before("/outs");
+            let mut dir = ctl.sample_info.dataset_path[i].clone();
+            if dir.ends_with("/outs") {
+                dir = dir.rev_before("/outs").to_string();
+            }
             let invo = format!("{}/_invocation", dir);
             if path_exists(&invo) {
                 let f = open_for_read![invo];
@@ -455,6 +459,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
                 println!(
                     "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
                     ctl.sample_info.dataset_id[i],
+                    // sample_id and donor_id don't make sense if bc specified in META
                     ctl.sample_info.sample_id[i],
                     ctl.sample_info.donor_id[i],
                     ctl.sample_info.descrips[i]

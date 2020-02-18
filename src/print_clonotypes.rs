@@ -19,6 +19,7 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -46,6 +47,7 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
+    tall: &Instant,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
@@ -117,6 +119,19 @@ pub fn print_clonotypes(
             Vec::<Vec<HashMap<String, String>>>::new(),
             0,
         ));
+    }
+    let mut d_readers = Vec::<Option<h5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
+    if ctl.gen_opt.h5 {
+        for li in 0..ctl.sample_info.n() {
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            } else {
+                d_readers.push(None);
+                ind_readers.push(None);
+            }
+        }
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -330,9 +345,9 @@ pub fn print_clonotypes(
                     );
                 }
 
-                // Done unless on second pass.
+                // Done unless on second pass.  Unless there are bounds.
 
-                if pass == 1 {
+                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 {
                     continue;
                 }
 
@@ -411,6 +426,13 @@ pub fn print_clonotypes(
                         groups.insert(d, c);
                     }
                 }
+
+                // Set up to record stats that assign a value to each cell for a given variable.
+
+                let mut stats = Vec::<(String, Vec<f64>)>::new();
+
+                // Build rows.
+
                 for u in 0..nexacts {
                     let mut typex = vec![false; cols];
                     let mut row = Vec::<String>::new();
@@ -424,6 +446,7 @@ pub fn print_clonotypes(
                     let mut d_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     let mut ind_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     row_fill(
+                        pass,
                         u,
                         &ctl,
                         &exacts,
@@ -444,6 +467,9 @@ pub fn print_clonotypes(
                         &rsi,
                         &dref,
                         &groups,
+                        &d_readers,
+                        &ind_readers,
+                        &mut stats,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -592,6 +618,51 @@ pub fn print_clonotypes(
                 let mut rord = Vec::<usize>::new(); // note that this is now superfluous
                 for j in 0..sr.len() {
                     rord.push(j);
+                }
+
+                // Apply bounds.
+
+                stats.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let mut stats2 = Vec::<(String, Vec<f64>)>::new();
+                let mut i = 0;
+                while i < stats.len() {
+                    let mut j = i + 1;
+                    while j < stats.len() {
+                        if stats[j].0 != stats[i].0 {
+                            break;
+                        }
+                        j += 1;
+                    }
+                    let mut all = Vec::<f64>::new();
+                    for k in i..j {
+                        all.append(&mut stats[k].1.clone());
+                    }
+                    stats2.push((stats[i].0.clone(), all));
+                    i = j;
+                }
+                stats = stats2;
+                for i in 0..ctl.clono_filt_opt.bounds.len() {
+                    for j in 0..stats.len() {
+                        if ctl.clono_filt_opt.bounds[i].0 == stats[j].0 {
+                            let bound = ctl.clono_filt_opt.bounds[i].1;
+                            let data = &stats[j].1;
+                            let mut sum = 0.0;
+                            for k in 0..data.len() {
+                                sum += data[k];
+                            }
+                            if sum / (n as f64) <= bound {
+                                for u in 0..nexacts {
+                                    bads[u] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Done unless on second pass.
+
+                if pass == 1 {
+                    continue;
                 }
 
                 // Fill in exact_subclonotype_id, reorder.
@@ -804,6 +875,7 @@ pub fn print_clonotypes(
         out_datas.append(&mut results[i].7);
     }
     group_and_print_clonotypes(
+        &tall,
         &refdata,
         &pics,
         &exacts,
