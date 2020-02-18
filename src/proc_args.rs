@@ -482,6 +482,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     let mut donors = Vec::<String>::new();
     let mut samples = Vec::<String>::new();
+    let mut tags = Vec::<String>::new();
     let mut sample_donor = Vec::<(String, String)>::new();
     for i in 0..ctl.sample_info.n() {
         for x in ctl.sample_info.sample_donor[i].iter() {
@@ -489,15 +490,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             samples.push((x.1).0.clone());
             sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
         }
+        for x in ctl.sample_info.tag[i].iter() {
+            tags.push((x.1).clone());
+        }
         donors.push(ctl.sample_info.donor_id[i].clone());
         samples.push(ctl.sample_info.sample_id[i].clone());
     }
     unique_sort(&mut donors);
     unique_sort(&mut samples);
+    unique_sort(&mut tags);
     unique_sort(&mut sample_donor);
     ctl.sample_info.donors = donors.len();
     ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.sample_list = samples.clone();
+    ctl.sample_info.tag_list = tags;
     let mut sample_donor_list = Vec::<(usize, usize)>::new();
     for i in 0..sample_donor.len() {
         sample_donor_list.push((

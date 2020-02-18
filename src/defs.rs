@@ -32,10 +32,13 @@ pub struct SampleInfo {
     // other
     pub donor_list: Vec<String>, // unique-sorted list of donor short names
     pub sample_list: Vec<String>, // unique-sorted list of sample short names
+    pub tag_list: Vec<String>,   // unique-sorted list of tag short names
     pub sample_donor_list: Vec<(usize, usize)>, // unique-sorted list of (sample, donor) indices
     pub donors: usize,           // number of donors
     // map dataset index to map of barcode to (sample,donor):
     pub sample_donor: Vec<HashMap<String, (String, String)>>,
+    // map dataset index to map of barcode to tag:
+    pub tag: Vec<HashMap<String, String>>,
 }
 
 impl SampleInfo {
@@ -250,6 +253,7 @@ pub struct TigData {
     pub dataset_index: usize,                 // index of dataset
     pub sample_index: Option<usize>,          // index of sample
     pub donor_index: Option<usize>,           // index of donor
+    pub tag_index: Option<usize>,             // index of tag
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
@@ -273,6 +277,7 @@ pub struct TigData0 {
     pub dataset_index: usize,        // index of dataset
     pub sample_index: Option<usize>, // index of sample
     pub donor_index: Option<usize>,  // index of donor
+    pub tag_index: Option<usize>,    // index of tag
     pub umi_count: usize,            // number of UMIs supporting contig
     pub read_count: usize,           // number of reads supporting contig
 }

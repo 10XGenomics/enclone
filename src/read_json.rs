@@ -336,6 +336,7 @@ pub fn read_json(
                 let read_count = v["read_count"].as_i64().unwrap() as usize;
                 let mut sample = None;
                 let mut donor = None;
+                let mut tag = None;
                 if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
                     sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
                     donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
@@ -354,8 +355,12 @@ pub fn read_json(
                         donor = Some(sample_info.donor_id[li].clone());
                     }
                 }
+                if sample_info.tag[li].contains_key(&barcode.clone()) {
+                    tag = Some(sample_info.tag[li][&barcode.clone()].clone());
+                }
                 let mut sample_index = None;
                 let mut donor_index = None;
+                let mut tag_index = None;
                 if sample.is_some() {
                     if sample.is_some() {
                         sample_index =
@@ -365,6 +370,9 @@ pub fn read_json(
                         donor_index =
                             Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
                     }
+                }
+                if tag.is_some() {
+                    tag_index = Some(bin_position(&sample_info.tag_list, &tag.unwrap()) as usize);
                 }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),
@@ -393,6 +401,7 @@ pub fn read_json(
                     dataset_index: li,
                     sample_index: sample_index,
                     donor_index: donor_index,
+                    tag_index: tag_index,
                     umi_count: umi_count,
                     read_count: read_count,
                     chain_type: chain_type.clone(),

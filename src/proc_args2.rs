@@ -169,6 +169,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     let mut is_dataset_name = false;
                     let mut is_sample_name = false;
                     let mut is_donor_name = false;
+                    let mut is_tag_name = false;
                     let name = x.after("n_").to_string();
                     let s = ctl.sample_info.n();
                     for j in 0..s {
@@ -186,15 +187,34 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                             is_donor_name = true;
                         }
                     }
+                    for j in 0..ctl.sample_info.tag_list.len() {
+                        if ctl.sample_info.tag_list[j] == name {
+                            is_tag_name = true;
+                        }
+                    }
                     let msg = "Suggested reading: \"enclone help input\" and \
                                \"enclone help glossary\".\n";
-                    if !is_dataset_name && !is_sample_name && !is_donor_name {
+                    if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
                         eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             does not name a dataset, or a sample,\nor a donor.\n{}",
-                            x, name, msg
+                            "\ntags = {}\n\
+                            You've used the lead variable {}, and yet {} \
+                             does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
+                            ctl.sample_info.tag_list.iter().format(","), x, name, msg
                         );
                         std::process::exit(1);
+                    }
+                    let mut types = 0;
+                    if is_dataset_name {
+                        types += 1;
+                    }
+                    if is_sample_name {
+                        types += 1;
+                    }
+                    if is_donor_name {
+                        types += 1;
+                    }
+                    if is_tag_name {
+                        types += 1;
                     }
                     if is_dataset_name && is_sample_name && is_donor_name {
                         eprintln!(
@@ -224,6 +244,15 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         eprintln!(
                             "\nYou've used the lead variable {}, and yet {} \
                              names a sample and a donor.  That's ambiguous.\n{}",
+                            x, name, msg
+                        );
+                        std::process::exit(1);
+                    }
+                    if types != 1 {
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a tag and also a dataset, sample or donor.\n\
+                             That's ambiguous.\n{}",
                             x, name, msg
                         );
                         std::process::exit(1);

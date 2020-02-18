@@ -354,9 +354,9 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "name, or a sample short name, or a donor short name; it may not name more than"
+            "name, or a sample short name, or a donor short name, or a tag short name;"
         );
-        doc!("", "one such category");
+        doc!("", "it may not name more than one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
         // nonpublic for now as we don't know if this is useful

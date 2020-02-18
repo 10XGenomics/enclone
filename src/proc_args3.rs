@@ -226,6 +226,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info
                     .sample_donor
                     .push(HashMap::<String, (String, String)>::new());
+                ctl.sample_info.tag.push(HashMap::<String, String>::new());
             }
         }
     }
@@ -355,6 +356,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 }
             }
             let mut sample_donor = HashMap::<String, (String, String)>::new();
+            let mut tag = HashMap::<String, String>::new();
             if bc != "".to_string() {
                 if ctl.gen_opt.pre != "".to_string() {
                     bc = format!("{}/{}", ctl.gen_opt.pre, bc);
@@ -369,13 +371,22 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 }
                 let f = open_for_read![&bc];
                 let mut first = true;
+                let mut nf = 0;
                 for line in f.lines() {
                     let s = line.unwrap();
                     if first {
-                        if s != "barcode,sample,donor".to_string() {
+                        if s == "barcode,sample,donor".to_string() {
+                            nf = 3;
+                        } else if s == "barcode,sample,donor,tag".to_string() {
+                            nf = 4;
+                        }
+                        if nf == 0 {
                             eprintln!(
                                 "\nThe first line in the CSV file defined by bc in META \
-                                 must be\nbarcode,sample,donor\nbut it's not.  This is for the \
+                                 must be\nbarcode,sample,donor\n\
+                                 or\
+                                 \nbarcode,sample,donor,tag\n\
+                                 but it's not.  This is for the \
                                  file\n{}\ndefined by bc.\n",
                                 bc
                             );
@@ -384,12 +395,13 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                         first = false;
                     } else {
                         let fields = s.split(',').collect::<Vec<&str>>();
-                        if fields.len() != 3 {
+                        if fields.len() != nf {
                             eprintln!(
-                                "\nThere is a line in the CSV file defined by bc in META\n\
-                                 that does not have three fields.  That's wrong.  This is for the \
-                                 file\n{}\ndefined by bc.\n",
-                                bc
+                                "\nThere is a line\n{}\n\
+                                 in the CSV file defined by bc in META\n\
+                                 that has {} fields, which isn't right, because the header line\n\
+                                 has {} fields..  This is for the file\n{}\ndefined by bc.\n",
+                                s, fields.len(), nf, bc
                             );
                             std::process::exit(1);
                         }
@@ -406,6 +418,9 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                             fields[0].to_string(),
                             (fields[1].to_string(), fields[2].to_string()),
                         );
+                        if nf == 4 {
+                            tag.insert(fields[0].to_string(), fields[3].to_string());
+                        }
                     }
                 }
             }
@@ -439,6 +454,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.donor_id.push(donor);
             ctl.sample_info.sample_id.push(sample);
             ctl.sample_info.sample_donor.push(sample_donor);
+            ctl.sample_info.tag.push(tag);
         }
     }
 }

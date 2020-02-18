@@ -278,6 +278,10 @@ pub fn row_fill(
                     && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
                 {
                     count += 1;
+                } else if x.tag_index.is_some()
+                    && ctl.sample_info.tag_list[x.tag_index.unwrap()] == name
+                {
+                    count += 1;
                 }
             }
             lvar![lvars[i], format!("{}", count)];
