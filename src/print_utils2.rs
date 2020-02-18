@@ -184,8 +184,10 @@ pub fn row_fill(
                         let f = row[j].0;
                         let n = row[j].1;
                         if gex_info.is_gex[li][f] {
-                            let q = n as f64 / total_counts[l] as f64;
-                            entropy -= q * q.log2();
+                            if lvars.contains(&"entropy".to_string()) {
+                                let q = n as f64 / total_counts[l] as f64;
+                                entropy -= q * q.log2();
+                            }
                             raw_count += n;
                         }
                     }
