@@ -466,6 +466,12 @@ pub fn start_gen(
             &mut mlog,
             " WARNING: This clonotype contains cells from multiple donors."
         );
+        let mut donor_names = Vec::<String>::new();
+        for i in 0..donors.len() {
+            donor_names.push(ctl.sample_info.donor_list[donors[i]].clone());
+        }
+        fwriteln!(&mut mlog, "donors = {}", donor_names.iter().format(","));
+        fwriteln!(&mut mlog, "datasets in which these donors appear:");
         for i in 0..donors.len() {
             let mut lenas = Vec::<String>::new();
             for u in 0..nexacts {
