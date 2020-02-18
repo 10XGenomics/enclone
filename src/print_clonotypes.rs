@@ -776,11 +776,11 @@ pub fn print_clonotypes(
                                 }
                             }
                         }
-                        let mean = (total / n as f64).round() as usize;
+                        let mean = total / n as f64;
                         if !found {
                             row.push(String::new());
                         } else {
-                            row.push(format!("{}", mean));
+                            row.push(format!("{:.1}", mean));
                         }
                     }
                     // This is necessary but should not be:
