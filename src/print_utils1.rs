@@ -202,6 +202,9 @@ pub fn make_diff_row(
                 if ctl.clono_print_opt.sum {
                     start += 1;
                 }
+                if ctl.clono_print_opt.mean {
+                    start += 1;
+                }
                 for k in start..rows.len() {
                     if rows[k][0].starts_with("$") {
                         continue;

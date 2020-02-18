@@ -618,6 +618,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "near the top of the printout for a given clonotype");
         ldoc!("SUM", "print sum row for each clonotype");
+        doc!("MEAN", "print mean row for each clonotype");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

@@ -148,6 +148,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.exp = true;
         } else if is_simple_arg(&args[i], "SUM") {
             ctl.clono_print_opt.sum = true;
+        } else if is_simple_arg(&args[i], "MEAN") {
+            ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
             ctl.gen_opt.h5 = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {

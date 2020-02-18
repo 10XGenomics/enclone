@@ -724,16 +724,20 @@ pub fn print_clonotypes(
                     rows.append(&mut sr[j].1.clone());
                 }
 
-                // Add total row.
+                // Add sum and mean rows.
 
                 if ctl.clono_print_opt.sum {
                     let mut row = Vec::<String>::new();
                     row.push("Σ".to_string());
                     for i in 0..lvars.len() {
+                        let mut x = lvars[i].clone();
+                        if x.contains(':') {
+                            x = x.before(":").to_string();
+                        }
                         let mut found = false;
                         let mut total = 0.0;
                         for j in 0..stats.len() {
-                            if stats[j].0 == lvars[i] {
+                            if stats[j].0 == x {
                                 found = true;
                                 for k in 0..stats[j].1.len() {
                                     total += stats[j].1[k];
@@ -744,6 +748,39 @@ pub fn print_clonotypes(
                             row.push(String::new());
                         } else {
                             row.push(format!("{}", total.round() as usize));
+                        }
+                    }
+                    // This is necessary but should not be:
+                    for cx in 0..cols {
+                        for _ in 0..rsi.cvars[cx].len() {
+                            row.push(String::new());
+                        }
+                    }
+                    rows.push(row);
+                }
+                if ctl.clono_print_opt.mean {
+                    let mut row = Vec::<String>::new();
+                    row.push("μ".to_string());
+                    for i in 0..lvars.len() {
+                        let mut x = lvars[i].clone();
+                        if x.contains(':') {
+                            x = x.before(":").to_string();
+                        }
+                        let mut found = false;
+                        let mut total = 0.0;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x {
+                                found = true;
+                                for k in 0..stats[j].1.len() {
+                                    total += stats[j].1[k];
+                                }
+                            }
+                        }
+                        let mean = (total / n as f64).round() as usize;
+                        if !found {
+                            row.push(String::new());
+                        } else {
+                            row.push(format!("{}", mean));
                         }
                     }
                     // This is necessary but should not be:
