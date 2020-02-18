@@ -176,6 +176,7 @@ pub struct ClonoPrintOpt {
     pub cvars: Vec<String>, // per-chain per-exact-clonotype columns
     pub lvars: Vec<String>, // per-exact-clonotype ('lead') columns
     pub chain_brief: bool,  // show abbreviated chain headers
+    pub total: bool,        // print total row
 }
 
 // Clonotype grouping options.

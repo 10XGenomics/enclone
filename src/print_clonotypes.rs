@@ -709,8 +709,8 @@ pub fn print_clonotypes(
 
                 // Insert placeholder for dots row.
 
-                let diff_pos = rows.len();
                 let cvars = &ctl.clono_print_opt.cvars;
+                let diff_pos = rows.len();
                 if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
                     let row = Vec::<String>::new();
                     rows.push(row);
@@ -722,6 +722,37 @@ pub fn print_clonotypes(
                     sr[j].0[0] = format!("{}", j + 1); // row number (#)
                     rows.push(sr[j].0.clone());
                     rows.append(&mut sr[j].1.clone());
+                }
+
+                // Add total row.
+
+                if ctl.clono_print_opt.total {
+                    let mut row = Vec::<String>::new();
+                    row.push("Σ".to_string());
+                    for i in 0..lvars.len() {
+                        let mut found = false;
+                        let mut total = 0.0;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == lvars[i] {
+                                found = true;
+                                for k in 0..stats[j].1.len() {
+                                    total += stats[j].1[k];
+                                }
+                            }
+                        }
+                        if !found {
+                            row.push(String::new());
+                        } else {
+                            row.push(format!("{}", total.round() as usize));
+                        }
+                    }
+                    // This is necessary but should not be:
+                    for cx in 0..cols {
+                        for _ in 0..rsi.cvars[cx].len() {
+                            row.push(String::new());
+                        }
+                    }
+                    rows.push(row);
                 }
 
                 // Make the diff row.

@@ -526,7 +526,8 @@ pub fn help3(args: &Vec<String>) {
              using \\bold{exactly} the following notation:\n\
              F=\"mean(x)>v\"\n\
              where x is a lead column variable arising from gene expression or a feature \
-             barcode and v is a floating-point number.  The requirement is that the mean \
+             barcode, or a cell/sample/donor/tag count, and v is a floating-point number. \
+             The requirement is that the mean \
              across all cells of the given variable is greater than v.  If this turns out \
              to be useful we will generalize it.\n\n",
         );

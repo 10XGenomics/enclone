@@ -263,28 +263,36 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
         } else if lvars[i] == "ncells".to_string() {
             lvar![lvars[i], format!("{}", mults[u])];
+            let counts = vec![1.0; mults[u]];
+            stats.push((lvars[i].clone(), counts));
         } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
             let mut count = 0;
+            let mut counts = Vec::<f64>::new();
             for j in 0..ex.clones.len() {
                 let x = &ex.clones[j][0];
                 if ctl.sample_info.dataset_id[x.dataset_index] == name {
                     count += 1;
+                    counts.push(1.0);
                 } else if x.sample_index.is_some()
                     && ctl.sample_info.sample_list[x.sample_index.unwrap()] == name
                 {
                     count += 1;
+                    counts.push(1.0);
                 } else if x.donor_index.is_some()
                     && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
                 {
                     count += 1;
+                    counts.push(1.0);
                 } else if x.tag_index.is_some()
                     && ctl.sample_info.tag_list[x.tag_index.unwrap()] == name
                 {
                     count += 1;
+                    counts.push(1.0);
                 }
             }
             lvar![lvars[i], format!("{}", count)];
+            stats.push((lvars[i].clone(), counts));
         } else if lvars[i] == "near".to_string() {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
