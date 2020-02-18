@@ -74,14 +74,16 @@ pub fn find_alleles(
                 if !partner.is_empty() {
                     if y.seq_del.len() >= refdata.refs[id].len() - ctl.heur.ref_v_trim {
                         for l in 0..x.clones.len() {
-                            let donor = ctl.sample_info.donor_index[x.clones[l][j].dataset_index];
-                            allxy[id].push((
-                                donor,
-                                y.seq_del.clone(),
-                                partner.clone(),
-                                m,
-                                x.clones[l][j].dataset_index,
-                            ));
+                            let donor = x.clones[l][j].donor_index;
+                            if donor.is_some() {
+                                allxy[id].push((
+                                    donor.unwrap(),
+                                    y.seq_del.clone(),
+                                    partner.clone(),
+                                    m,
+                                    x.clones[l][j].dataset_index,
+                                ));
+                            }
                         }
                     }
                 }
@@ -406,7 +408,11 @@ pub fn find_alleles(
 
                 // For each lena id from the donor, classify the alleles from that lena
                 // id according to the classification just derived.  Print the matrix.
+                // This is for diagnostic purposes only.
+                // Turned off because dataset_list was broken when sample_donor was
+                // added to SampleInfo.  (The printing had already been commented out.)
 
+                /*
                 let all = &alls[di];
                 let ll = &ctl.sample_info.dataset_list[donor_id];
                 let mut count = vec![vec![0; keep0.len()]; ll.len()];
@@ -426,7 +432,6 @@ pub fn find_alleles(
                         count[l as usize][m as usize] += 1;
                     }
                 }
-                /*
                 if ctl.allele_print_opt.con {
                     println!("MATRIX");
                     for l in 0..ll.len() {

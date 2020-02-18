@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Build input files for Immcantation.  This creates two files:
+// Build input files for Immcantation.  This is for experimental purposes only.
+// Creates two files:
 // filtered_contig.fasta
 // filtered_contig_annotations.csv.
 

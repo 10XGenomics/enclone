@@ -106,6 +106,8 @@ fn test_enclone() {
         // Note that we have deliberately "faked" two donors.  In reality there is one.
         // Here we make sure that non-specification of NDONOR works.
         "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
+        // 27. tests SUMMARY and NOPRINT
+        "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
@@ -227,7 +229,7 @@ fn test_enclone() {
                 fwriteln!(
                     log,
                     "enclone subtest {} failed.  If you are happy with the new output, \
-                     you can replace the\noutput by executing the folllowing command from \
+                     you can replace the\noutput by executing the following command from \
                      cellranger/lib/rust/enclone (essential!):\n",
                     it + 1
                 );

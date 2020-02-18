@@ -3,6 +3,7 @@
 use crate::defs::*;
 use io_utils::*;
 use marsoc::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use string_utils::*;
@@ -99,40 +100,35 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
             }
             for (ix, x) in datasetsx.iter().enumerate() {
                 let mut p = (*x).to_string();
-                // ◼ In CR 4.0, the way we get to outs below will likely need to change.
+                // ◼ In CR 4.0, the way we get to outs below will need to change.
+
+                // Specify the "outs" path p.
+                //
+                // Use case 1.  PRE is specified.
+
                 if ctl.gen_opt.pre != "" {
                     p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
+
+                // Use case 2.  It's an internal run, an id has been provided, and PRE
+                // was not specified.  Then we look internally.
+                } else if internal_run && p.parse::<u32>().is_ok() && ctl.gen_opt.pre == "" {
+                    p = format!("{}", get_outs(&p));
+
+                // Use case 3.  All else.
                 } else {
-                    if p.parse::<i32>().is_ok() && internal_run {
-                        p = format!("{}", get_outs(&p));
-                    } else if !p.ends_with("/outs") {
-                        p = format!("{}/outs", p);
-                    }
+                    p = format!("{}/outs", p);
                 }
-                if !path_exists(&p.rev_before("/outs")) {
-                    if !f.contains("=") {
-                        eprintln!("\nCan't find the path {}.\n", p);
-                        std::process::exit(1);
-                    } else if ctl.gen_opt.pre != "".to_string() {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, which after prefixing by PRE yields\n\
-                             {},\n\
-                             and that path does not exist.\n",
-                            f.before("="),
-                            x,
-                            p.rev_before("/outs")
-                        );
-                    } else {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, and that path does not exist.\n",
-                            f.before("="),
-                            x
-                        );
-                    }
-                    std::process::exit(1);
+
+                // Now, possibly, we should remove the /outs suffix.  We do this to allow for the
+                // case where the customer has copied Cell Ranger output files but not preserved
+                // the directory structure.  Or perhaps they appended /outs to their path.
+
+                if !path_exists(&p) {
+                    p = p.rev_before("/outs").to_string();
                 }
+
+                // If the path p doesn't exist, we have to give up.
+
                 if !path_exists(&p) {
                     if !f.contains("=") {
                         eprintln!("\nCan't find the path {}.\n", p);
@@ -157,6 +153,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     }
                     std::process::exit(1);
                 }
+
+                // Now work on the GEX path.
+
                 let mut pg = String::new();
                 if have_gex {
                     pg = datasets_gex[ix].to_string();
@@ -166,7 +165,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     if internal_run
                         && ctl.gen_opt.pre != ""
                         && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
-                        && pg.parse::<i32>().is_ok()
+                        && pg.parse::<u32>().is_ok()
                     {
                         pg = format!("{}", get_outs(&pg));
                     } else if ctl.gen_opt.pre != "" {
@@ -179,39 +178,15 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         }
                     }
 
-                    if !path_exists(&pg.rev_before("/outs")) {
-                        if ctl.gen_opt.pre != "".to_string() {
-                            if !f.contains("=") {
-                                eprintln!(
-                                    "\nThe enclone command line \
-                                     includes\n{}, which after prefixing by PRE yields\n\
-                                     {},\n\
-                                     and that path does not exist.\n",
-                                    pg0,
-                                    pg.rev_before("/outs")
-                                );
-                            } else {
-                                eprintln!(
-                                    "\nThe value given for {} on the enclone command line \
-                                     includes\n{}, which after prefixing by PRE yields\n\
-                                     {},\n\
-                                     and that path does not exist.\n",
-                                    f.before("="),
-                                    pg0,
-                                    pg.rev_before("/outs")
-                                );
-                            }
-                        } else {
-                            eprintln!(
-                                "\nThe value given for {} on the enclone command line \
-                                 includes\n{}, and that path does not exist.\n",
-                                f.before("="),
-                                pg.rev_before("/outs")
-                            );
-                        }
-                        std::process::exit(1);
+                    // Now, possibly, we should remove the /outs suffix, see discussion above.
+
+                    if !path_exists(&pg) {
+                        pg = pg.rev_before("/outs").to_string();
                     }
-                    if !path_exists(&p) {
+
+                    // Check for nonexistent path
+
+                    if !path_exists(&pg) {
                         if ctl.gen_opt.pre != "".to_string() {
                             eprintln!(
                                 "\nThe value given for GEX on the enclone command line \
@@ -232,6 +207,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         std::process::exit(1);
                     }
                 }
+
+                // OK everything worked, all set.
+
                 let donor_name = format!("d{}", id + 1);
                 let sample_name = format!("s{}", is + 1);
                 let mut dataset_name = (*x).to_string();
@@ -245,6 +223,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info.donor_index.push(id);
                 ctl.sample_info.donor_id.push(donor_name);
                 ctl.sample_info.sample_id.push(sample_name);
+                ctl.sample_info
+                    .sample_donor
+                    .push(HashMap::<String, (String, String)>::new());
             }
         }
     }
@@ -255,10 +236,8 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
         for k in i..j {
             x.push(k);
         }
-        ctl.sample_info.dataset_list.push(x);
         i = j;
     }
-    ctl.sample_info.donors = ctl.sample_info.dataset_list.len();
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -298,6 +277,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 std::process::exit(1);
             }
             let allowed_fields = vec![
+                "bc".to_string(),
                 "bcr".to_string(),
                 "donor".to_string(),
                 "gex".to_string(),
@@ -345,6 +325,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             let mut gpath = String::new();
             let mut sample = "s1".to_string();
             let mut donor = "d1".to_string();
+            let mut bc = "".to_string();
             for i in 0..fields.len() {
                 let x = &fields[i];
                 let mut y = val[i].to_string();
@@ -369,6 +350,63 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     sample = y.to_string();
                 } else if *x == "donor" {
                     donor = y.to_string();
+                } else if *x == "bc" && y.len() > 0 {
+                    bc = y.to_string();
+                }
+            }
+            let mut sample_donor = HashMap::<String, (String, String)>::new();
+            if bc != "".to_string() {
+                if ctl.gen_opt.pre != "".to_string() {
+                    bc = format!("{}/{}", ctl.gen_opt.pre, bc);
+                }
+                if !path_exists(&bc) {
+                    eprintln!(
+                        "\nIn your META file, a value for bc implies the existence of \
+                         a file\n{}\nbut that file does not exist.\n",
+                        bc
+                    );
+                    std::process::exit(1);
+                }
+                let f = open_for_read![&bc];
+                let mut first = true;
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if first {
+                        if s != "barcode,sample,donor".to_string() {
+                            eprintln!(
+                                "\nThe first line in the CSV file defined by bc in META \
+                                 must be\nbarcode,sample,donor\nbut it's not.  This is for the \
+                                 file\n{}\ndefined by bc.\n",
+                                bc
+                            );
+                            std::process::exit(1);
+                        }
+                        first = false;
+                    } else {
+                        let fields = s.split(',').collect::<Vec<&str>>();
+                        if fields.len() != 3 {
+                            eprintln!(
+                                "\nThere is a line in the CSV file defined by bc in META\n\
+                                 that does not have three fields.  That's wrong.  This is for the \
+                                 file\n{}\ndefined by bc.\n",
+                                bc
+                            );
+                            std::process::exit(1);
+                        }
+                        if !fields[0].contains('-') {
+                            eprintln!(
+                                "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
+                                 by bc in META.  That doesn't make sense because a barcode\n\
+                                 should include a hyphen.\n",
+                                fields[0], bc
+                            );
+                            std::process::exit(1);
+                        }
+                        sample_donor.insert(
+                            fields[0].to_string(),
+                            (fields[1].to_string(), fields[2].to_string()),
+                        );
+                    }
                 }
             }
             if ctl.gen_opt.pre != "".to_string() {
@@ -376,22 +414,23 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 if gpath != "".to_string() {
                     gpath = format!("{}/{}/outs", ctl.gen_opt.pre, gpath);
                 }
+            } else {
+                path = format!("{}/outs", path);
+                if gpath != "".to_string() {
+                    gpath = format!("{}/outs", gpath);
+                }
             }
             let mut dp = None;
             for j in 0..donors.len() {
                 if donor == donors[j] {
                     dp = Some(j);
                     ctl.sample_info.donor_index.push(j);
-                    ctl.sample_info.dataset_list[j].push(ctl.sample_info.descrips.len());
                     break;
                 }
             }
             if dp.is_none() {
                 ctl.sample_info.donor_index.push(donors.len());
                 donors.push(donor.clone());
-                ctl.sample_info
-                    .dataset_list
-                    .push(vec![ctl.sample_info.descrips.len()]);
             }
             ctl.sample_info.descrips.push(abbr.clone());
             ctl.sample_info.dataset_path.push(path);
@@ -399,7 +438,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.dataset_id.push(abbr);
             ctl.sample_info.donor_id.push(donor);
             ctl.sample_info.sample_id.push(sample);
+            ctl.sample_info.sample_donor.push(sample_donor);
         }
     }
-    ctl.sample_info.donors = donors.len();
 }

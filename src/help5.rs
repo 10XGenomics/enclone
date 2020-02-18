@@ -158,6 +158,8 @@ pub fn help5(args: &Vec<String>) {
             "phylogeny",
             "generate a phylogeny for the exact clonotypes within a clonotype"
         );
+
+        ldoc!("windows", "make enclone work on windows computers");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         print!("{}", log);
@@ -315,8 +317,7 @@ pub fn help5(args: &Vec<String>) {
         print("\\boldblue{5. What platforms does enclone run on?}\n\n");
         print(
             "1. linux/x86-64 (that's most servers)\n\
-             2. mac\n\
-             3. windows (maybe, we haven't yet tested).\n\n\
+             2. mac.\n\n\
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
@@ -343,7 +344,8 @@ pub fn help5(args: &Vec<String>) {
              enclone is to prevent cells from different donors from being placed in the same \
              clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
              employ this option, then clonotypes containing cells from more than one donor will be \
-             flagged as errors.  The primary reason for allowing entry of data from multiple \
+             flagged as errors, unless you use the \\bold{NWARN} option to turn off those \
+             warnings.  The primary reason for allowing entry of data from multiple \
              donors is to allow estimation of enclone's error rate.\n\n",
         );
 
@@ -404,6 +406,13 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
         print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
+
+        print("\\boldblue{15. Does enclone work under Windows?}\n\n");
+        print(
+            "No.  There are nontrivial technical problems with getting this to work.  If you're \
+             sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
+             know if you're interested in support for Windows.\n\n",
+        );
 
         std::process::exit(0);
     }

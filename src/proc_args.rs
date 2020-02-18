@@ -158,6 +158,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
             ctl.gen_opt.reuse = true;
+        } else if is_simple_arg(&args[i], "NWARN") {
+            ctl.gen_opt.nwarn = true;
         } else if args[i].starts_with("BINARY=") {
             ctl.gen_opt.binary = args[i].after("BINARY=").to_string();
         } else if args[i].starts_with("PROTO=") {
@@ -196,6 +198,29 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.mouse = true;
         } else if is_simple_arg(&args[i], "SUMMARY") {
             ctl.gen_opt.summary = true;
+        } else if args[i].starts_with("F=") {
+            let mut filt = args[i].after("F=").to_string();
+            if filt.starts_with('"') && filt.ends_with('"') {
+                filt = filt.after("\"").rev_before("\"").to_string();
+            }
+            if !filt.starts_with("mean(") || !filt.contains(")>") {
+                eprintln!("Illegal value for F.\n");
+                std::process::exit(1);
+            }
+            let var = filt.between("mean(", ")>");
+            let mut val = filt.after(">").to_string();
+            if !val.contains('.') {
+                val += ".0";
+            }
+            if !val.parse::<f64>().is_ok() {
+                eprintln!("Illegal value for F.\n");
+                std::process::exit(1);
+            }
+            ctl.clono_filt_opt
+                .bounds
+                .push((var.to_string(), val.force_f64()));
+        } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
+            ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {
         } else if args[i].starts_with("REF=") {
             ctl.gen_opt.refname = args[i].after("REF=").to_string();
@@ -233,6 +258,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.heavy_chain_reuse = true;
         } else if is_simple_arg(&args[i], "GROUP_HEAVY_CDR3") {
             ctl.clono_group_opt.heavy_cdr3_aa = true;
+        } else if is_simple_arg(&args[i], "GROUP_VJ_REFNAME") {
+            ctl.clono_group_opt.vj_refname = true;
         } else if is_simple_arg(&args[i], "NPLAIN") {
             ctl.pretty = true;
         } else if is_simple_arg(&args[i], "NO_REUSE") {
@@ -453,6 +480,33 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
     }
+    let mut donors = Vec::<String>::new();
+    let mut samples = Vec::<String>::new();
+    let mut sample_donor = Vec::<(String, String)>::new();
+    for i in 0..ctl.sample_info.n() {
+        for x in ctl.sample_info.sample_donor[i].iter() {
+            donors.push((x.1).1.clone());
+            samples.push((x.1).0.clone());
+            sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
+        }
+        donors.push(ctl.sample_info.donor_id[i].clone());
+        samples.push(ctl.sample_info.sample_id[i].clone());
+    }
+    unique_sort(&mut donors);
+    unique_sort(&mut samples);
+    unique_sort(&mut sample_donor);
+    ctl.sample_info.donors = donors.len();
+    ctl.sample_info.donor_list = donors.clone();
+    ctl.sample_info.sample_list = samples.clone();
+    let mut sample_donor_list = Vec::<(usize, usize)>::new();
+    for i in 0..sample_donor.len() {
+        sample_donor_list.push((
+            bin_position(&samples, &sample_donor[i].0) as usize,
+            bin_position(&donors, &sample_donor[i].1) as usize,
+        ));
+    }
+    unique_sort(&mut sample_donor_list);
+    ctl.sample_info.sample_donor_list = sample_donor_list;
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }

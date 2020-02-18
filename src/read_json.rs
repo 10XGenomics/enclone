@@ -14,6 +14,7 @@ use rayon::prelude::*;
 use serde_json::Value;
 use std::{collections::HashMap, io::BufReader, time::Instant};
 use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -70,6 +71,7 @@ pub fn json_error(json: Option<&str>) {
 // only the information that we need.
 
 pub fn read_json(
+    sample_info: &SampleInfo,
     li: usize,
     json: &String,
     refdata: &RefData,
@@ -332,6 +334,38 @@ pub fn read_json(
                 // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
                 let umi_count = v["umi_count"].as_i64().unwrap() as usize;
                 let read_count = v["read_count"].as_i64().unwrap() as usize;
+                let mut sample = None;
+                let mut donor = None;
+                if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
+                    sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
+                    donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+                } else {
+                    // the way we use s1 and d1 here is flaky
+                    if sample_info.sample_id[li].len() > 0
+                        && (sample_info.sample_id[li] != "s1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
+                    {
+                        sample = Some(sample_info.sample_id[li].clone());
+                    }
+                    if sample_info.donor_id[li].len() > 0
+                        && (sample_info.donor_id[li] != "d1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
+                    {
+                        donor = Some(sample_info.donor_id[li].clone());
+                    }
+                }
+                let mut sample_index = None;
+                let mut donor_index = None;
+                if sample.is_some() {
+                    if sample.is_some() {
+                        sample_index =
+                            Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+                    }
+                    if donor.is_some() {
+                        donor_index =
+                            Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+                    }
+                }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),
                     len: seq.len(),
@@ -357,6 +391,8 @@ pub fn read_json(
                     tigname: tigname.to_string(),
                     left: left,
                     dataset_index: li,
+                    sample_index: sample_index,
+                    donor_index: donor_index,
                     umi_count: umi_count,
                     read_count: read_count,
                     chain_type: chain_type.clone(),
@@ -447,6 +483,7 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(
+            &ctl.sample_info,
             li,
             &json,
             &refdata,
