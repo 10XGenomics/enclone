@@ -197,9 +197,12 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
                         eprintln!(
                             "\ntags = {}\n\
-                            You've used the lead variable {}, and yet {} \
+                             You've used the lead variable {}, and yet {} \
                              does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
-                            ctl.sample_info.tag_list.iter().format(","), x, name, msg
+                            ctl.sample_info.tag_list.iter().format(","),
+                            x,
+                            name,
+                            msg
                         );
                         std::process::exit(1);
                     }

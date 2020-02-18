@@ -401,7 +401,10 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                                  in the CSV file defined by bc in META\n\
                                  that has {} fields, which isn't right, because the header line\n\
                                  has {} fields..  This is for the file\n{}\ndefined by bc.\n",
-                                s, fields.len(), nf, bc
+                                s,
+                                fields.len(),
+                                nf,
+                                bc
                             );
                             std::process::exit(1);
                         }
