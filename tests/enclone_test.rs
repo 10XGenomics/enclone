@@ -108,6 +108,8 @@ fn test_enclone() {
         "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
         // 27. tests SUMMARY and NOPRINT
         "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",
+        // 28. tests BARCODE option
+        "BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
