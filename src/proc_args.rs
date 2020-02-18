@@ -174,6 +174,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_print_opt.full_seqc = true;
         } else if is_simple_arg(&args[i], "BARCODES") {
             ctl.clono_print_opt.barcodes = true;
+        } else if args[i].starts_with("BARCODE=") {
+            let bcs = args[i].after("BARCODE=").split(',').collect::<Vec<&str>>();
+            let mut x = Vec::<String>::new();
+            for j in 0..bcs.len() {
+                if !bcs[j].contains('-') {
+                    eprintln!(
+                        "\nValue for a barcode in BARCODE argument is invalid, must contain -.\n"
+                    );
+                    std::process::exit(1);
+                }
+                x.push(bcs[j].to_string());
+            }
+            ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&args[i], "GRAPH") {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&args[i], "NCROSS") {

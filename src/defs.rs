@@ -160,6 +160,7 @@ pub struct ClonoFiltOpt {
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<(String, f64)>, // bounds on certain variables
+    pub barcode: Vec<String>, // requires one of these barcodes
 }
 
 // Clonotype printing options.

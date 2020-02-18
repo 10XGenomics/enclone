@@ -476,6 +476,13 @@ pub fn help3(args: &Vec<String>) {
 
         ldoc!("DEL", "only show clonotypes exhibiting a deletion");
 
+        // doc BARCODE
+
+        ldoc!(
+            "BARCODE=bc1,...,bcn",
+            "only show clonotypes that use one of the given barcodes"
+        );
+
         // print main table
 
         let mut log = String::new();
