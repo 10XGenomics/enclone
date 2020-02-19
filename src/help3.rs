@@ -524,14 +524,15 @@ pub fn help3(args: &Vec<String>) {
         print(
             "\\bold{linear conditions}\n\n\
              enclone understands linear conditions of the form\n\
-             c1*v1 ± ... ± cn*vn > d\n\
+             \\bold{c1*v1 ± ... ± cn*vn > d}\n\
              where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
              and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
              >= or ≥ or < or <= or ≤.  \
-             Each vi is a lead variable (see \"enclone help lvars\") that has a numeric \
-             value (that makes sense: either ncells, or sample/donor/tag counts, or \
-             gene/feature barcode UMI counts).  In evaluating the condition, each vi is \
-             replaced by the mean of its values across all cells in the clonotype.\\n\n",
+             Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
+             represents a \
+             sample/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
+             condition, each vi is \
+             replaced by the \\bold{mean} of its values across all cells in the clonotype.\n\n",
         );
 
         // bounds
@@ -540,46 +541,51 @@ pub fn help3(args: &Vec<String>) {
             "\\bold{filtering by linear conditions}\n\n\
              enclone has the capability to filter by bounding certain lead variables, using \
              the command-line argument:\n\
-             F=\"L\"\n\
-             where L is a linear condition (as defined above).  Currently This is limited to \
-             the case where the lead variables have been selected!  Multiple bounds may be \
-             imposed by using multiple instances of \"F=...\".\n\n",
+             \\bold{F=\"L\"}\n\
+             where L is a linear condition (as defined above).  Currently this is limited to \
+             the case where the lead variables have been selected using \\bold{LVARS} or \
+             \\bold{LVARSP}!  Multiple bounds may be imposed by using\n\
+             multiple instances of \\bold{F=...} .\n\n",
         );
 
-        // gene scanning
+        // feature scanning
 
         print(
-            "\\bold{gene scanning\n\n\
-            enclone can scan all genes and feature barcodes to find those that are enriched \
+            "\\bold{feature scanning}\n\n\
+            If gene expression and/or feature barcode data have been generated, \
+            enclone can scan all features to find those that are enriched \
             in certain clonotypes relative to certain other clonotypes.  This feature is turned \
             on using the command line argument\n\
-            \\bold{SCAN=test,control,threshold}\n\
+            \\bold{SCAN=\"test,control,threshold\"}\n\
             where each of \\bold{test}, \\bold{control} and \\bold{threshold} are linear \
             conditions as defined above.  Blank spaces are ignored.  The \\bold{test} condition \
             defines the \"test clonotypes\" and the \\bold{control} condition defines the \
             \"control clonotypes\".  Currently, the lead variables in \\bold{test} and \
-            \\bold{control} must be used!  The \\bold{threshold} condition is special: it may use \
+            \\bold{control} must be specified by\n\
+            \\bold{LVARS} or \\bold{LVARSP}!  \
+            The \\bold{threshold} condition is special: it may use \
             only the variables \"t\" and \"c\" that represent the normalized UMI count for \
-            a particular gene or feature.  \
+            a particular gene or feature, for the test (t) or control (c) clonotypes.  \
             To get a meaningful result, you should specify \\bold{MIN_CELLS} appropriately \
             and manually examine the test and control clonotypes to make sure that they make \
             sense.\n\n\
             \
-            Example: suppose that your data are comprised of two samples named pre and post, \
-            representing time points relative to some event.  Then\n\
-            \\bold{SCAN=\"n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1\"\n\
+            \\bold{an example}\n\nSuppose that your data are comprised of two samples named pre \
+            and post, representing time points relative to some event.  Then\n\
+            \\bold{SCAN=\"n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1\"}\n\
             would define the test clonotypes to be those satisfying \
             n_post >= 10*n_pre (so having far more post cells then pre cells), \
             the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so having lots of \
-            pre cells), and thresholding on t >= 2*c * 0.1, so that the gene or feature must \
+            pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must \
             have a bit more than twice as many UMIs in the test than the control.  The 0.1 \
             is there to exclude noise from genes or features having very low UMI counts.\n\n\
             \
-            Gene scanning is not a proper statistical test.  It is a tool for providing a list \
-            of gene candidates that may then be examined in more detail by rerunning \
+            Feature scanning is not a proper statistical test.  It is a tool for generating a list \
+            of feature candidates that may then be examined in more detail by rerunning \
             enclone using some of the detected features as lead variables (appropriately \
-            suffixed).\n\n\
-            Caveat: currently gene scanning requires that each dataset have identical features.\n\n"
+            suffixed).  Ultimately the power of the scan is determined by having \"enough\" \
+            cells in both the test and control sets, and in having those sets cleanly defined.\n\n\
+            Currently feature scanning requires that each dataset have identical features.\n\n"
         );
 
         // done
