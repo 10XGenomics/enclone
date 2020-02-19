@@ -647,8 +647,9 @@ pub fn print_clonotypes(
                 stats = stats2;
                 for i in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[i];
-                    let mut vals = Vec::<f64>::new();
+                    let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
                         let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
@@ -662,8 +663,14 @@ pub fn print_clonotypes(
                                 bound.  Please see \"enclone help filter\".\n", x.var[i] );
                             std::process::exit(1);
                         }
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
                     }
-                    if !x.satisfied(&vals) {
+                    if !x.satisfied(&means) {
                         for u in 0..nexacts {
                             bads[u] = true;
                         }
@@ -674,8 +681,9 @@ pub fn print_clonotypes(
 
                 if ctl.gen_opt.gene_scan_test.is_some() {
                     let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
-                    let mut vals = Vec::<f64>::new();
+                    let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
                         let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
@@ -689,11 +697,18 @@ pub fn print_clonotypes(
                                 bound.  Please see \"enclone help filter\".\n", x.var[i] );
                             std::process::exit(1);
                         }
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
                     }
-                    res.9.push( x.satisfied(&vals) );
+                    res.9.push( x.satisfied(&means) );
                     let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
-                    let mut vals = Vec::<f64>::new();
+                    let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
                         let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
@@ -707,8 +722,14 @@ pub fn print_clonotypes(
                                 bound.  Please see \"enclone help filter\".\n", x.var[i] );
                             std::process::exit(1);
                         }
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
                     }
-                    res.10.push( x.satisfied(&vals) );
+                    res.10.push( x.satisfied(&means) );
                 }
 
                 // Done unless on second pass.
@@ -1024,16 +1045,29 @@ pub fn print_clonotypes(
                 count += 1;
             }
         }
+        let mut test_cells = 0;
+        for i in tests.iter() {
+            for u in exacts[*i].iter() {
+                test_cells += exact_clonotypes[*u].ncells();
+            }
+        }
+        println!( "{} clonotypes containing {} cells in test set", tests.len(), test_cells );
+        let mut control_cells = 0;
+        for i in controls.iter() {
+            for u in exacts[*i].iter() {
+                control_cells += exact_clonotypes[*u].ncells();
+            }
+        }
+        println!( "{} clonotypes containing {} cells in control set\n", 
+            controls.len(), control_cells );
         if tests.len() == 0 {
-            eprintln!( "\nGene scan failed, no test clonotypes.\n" );
+            eprintln!( "Gene scan failed, no test clonotypes.\n" );
             std::process::exit(1);
         }
         if controls.len() == 0 {
-            eprintln!( "\nGene scan failed, no control clonotypes.\n" );
+            eprintln!( "Gene scan failed, no control clonotypes.\n" );
             std::process::exit(1);
         }
-        println!( "{} clonotypes in test set", tests.len() );
-        println!( "{} clonotypes in controls set\n", controls.len() );
         println!( "enriched features\n" );
         for fid in 0..gex_info.gex_features[0].len() {
             // NOT SURE THIS IS BACKWARD COMPATIBLE!
@@ -1124,9 +1158,9 @@ pub fn print_clonotypes(
                 } else {
                     vals.push(control_mean);
                 }
-                if threshold.satisfied(&vals) {
-                    println!("{}", gex_info.gex_features[0][fid]);
-                }
+            }
+            if threshold.satisfied(&vals) {
+                println!("{}", gex_info.gex_features[0][fid]);
             }
         }
     }
