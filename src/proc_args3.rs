@@ -134,15 +134,27 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         eprintln!("\nCan't find the path {}.\n", p);
                         std::process::exit(1);
                     } else if ctl.gen_opt.pre != "".to_string() {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, which after prefixing by PRE yields\n\
-                             {},\n\
-                             and that path does not contain a subdirectory outs.\n",
-                            f.before("="),
-                            x,
-                            p.rev_before("/outs")
-                        );
+                        if !p.contains("/outs") {
+                            eprintln!(
+                                "\nThe value given for {} on the enclone command line \
+                                 includes\n{}, which after prefixing by PRE yields\n\
+                                 {},\n\
+                                 and that path does not exist.\n",
+                                f.before("="),
+                                x,
+                                p
+                            );
+                        } else {
+                            eprintln!(
+                                "\nThe value given for {} on the enclone command line \
+                                 includes\n{}, which after prefixing by PRE yields\n\
+                                 {},\n\
+                                 and that path does not contain a subdirectory outs.\n",
+                                f.before("="),
+                                x,
+                                p.rev_before("/outs")
+                            );
+                        }
                     } else {
                         eprintln!(
                             "\nThe value given for {} on the enclone command line \
