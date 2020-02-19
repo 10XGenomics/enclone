@@ -523,15 +523,16 @@ pub fn help3(args: &Vec<String>) {
 
         print(
             "\\bold{linear conditions}\n\n\
-            enclone understands linear conditions of the form\n\
-            c1*v1 ± ... ± cn*vn > d\n\
-            where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
-            and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
-            >= or ≥ or < or <= or ≤.  \
-            Each vi is a lead variable (see \"enclone help lvars\") that has a numeric \
-            value (that makes sense: either ncells, or sample/donor/tag counts, or \
-            gene/feature barcode UMI counts).  In evaluating the condition, each vi is \
-            replaced by the mean of its values across all cells in the clonotype.\\n\n" );
+             enclone understands linear conditions of the form\n\
+             c1*v1 ± ... ± cn*vn > d\n\
+             where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
+             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
+             >= or ≥ or < or <= or ≤.  \
+             Each vi is a lead variable (see \"enclone help lvars\") that has a numeric \
+             value (that makes sense: either ncells, or sample/donor/tag counts, or \
+             gene/feature barcode UMI counts).  In evaluating the condition, each vi is \
+             replaced by the mean of its values across all cells in the clonotype.\\n\n",
+        );
 
         // bounds
 
@@ -542,9 +543,9 @@ pub fn help3(args: &Vec<String>) {
              F=\"L\"\n\
              where L is a linear condition (as defined above).  Currently This is limited to \
              the case where the lead variables have been selected!  Multiple bounds may be \
-             imposed by using multiple instances of \"F=...\".\n\n"
+             imposed by using multiple instances of \"F=...\".\n\n",
         );
-             
+
         // gene scanning
 
         print(

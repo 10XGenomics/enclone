@@ -220,10 +220,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
         } else if args[i].starts_with("SCAN=") {
             let mut x = args[i].after("SCAN=").to_string();
-            x = x.replace(" ","").to_string();
+            x = x.replace(" ", "").to_string();
             let x = x.split(',').collect::<Vec<&str>>();
             if x.len() != 3 {
-                eprintln!( "\nArgument to SCAN must have three components.\n" );
+                eprintln!("\nArgument to SCAN must have three components.\n");
                 std::process::exit(1);
             }
             ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
@@ -231,7 +231,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             let threshold = LinearCondition::new(&x[2]);
             for i in 0..threshold.var.len() {
                 if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
-                    eprintln!( "\nIllegal variable in threshold for scan.\n" );
+                    eprintln!("\nIllegal variable in threshold for scan.\n");
                     std::process::exit(1);
                 }
             }
