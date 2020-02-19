@@ -216,26 +216,26 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "SUMMARY") {
             ctl.gen_opt.summary = true;
         } else if args[i].starts_with("F=") {
-            let mut filt = args[i].after("F=").to_string();
-            if filt.starts_with('"') && filt.ends_with('"') {
-                filt = filt.after("\"").rev_before("\"").to_string();
-            }
-            if !filt.starts_with("mean(") || !filt.contains(")>") {
-                eprintln!("Illegal value for F.\n");
+            let filt = args[i].after("F=").to_string();
+            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+        } else if args[i].starts_with("SCAN=") {
+            let mut x = args[i].after("SCAN=").to_string();
+            x = x.replace(" ","").to_string();
+            let x = x.split(',').collect::<Vec<&str>>();
+            if x.len() != 3 {
+                eprintln!( "\nArgument to SCAN must have three components.\n" );
                 std::process::exit(1);
             }
-            let var = filt.between("mean(", ")>");
-            let mut val = filt.after(">").to_string();
-            if !val.contains('.') {
-                val += ".0";
+            ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
+            ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1]));
+            let threshold = LinearCondition::new(&x[2]);
+            for i in 0..threshold.var.len() {
+                if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
+                    eprintln!( "\nIllegal variable in threshold for scan.\n" );
+                    std::process::exit(1);
+                }
             }
-            if !val.parse::<f64>().is_ok() {
-                eprintln!("Illegal value for F.\n");
-                std::process::exit(1);
-            }
-            ctl.clono_filt_opt
-                .bounds
-                .push((var.to_string(), val.force_f64()));
+            ctl.gen_opt.gene_scan_threshold = Some(threshold);
         } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {

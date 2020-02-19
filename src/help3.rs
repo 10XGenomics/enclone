@@ -519,17 +519,66 @@ pub fn help3(args: &Vec<String>) {
              https://docs.rs/regex.\n"
         );
 
+        // linear conditions
+
+        print(
+            "\\bold{linear conditions}\n\n\
+            enclone understands linear conditions of the form\n\
+            c1*v1 ± ... ± cn*vn > d\n\
+            where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
+            and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
+            >= or ≥ or < or <= or ≤.  \
+            Each vi is a lead variable (see \"enclone help lvars\") that has a numeric \
+            value (that makes sense: either ncells, or sample/donor/tag counts, or \
+            gene/feature barcode UMI counts).  In evaluating the condition, each vi is \
+            replaced by the mean of its values across all cells in the clonotype.\\n\n" );
+
         // bounds
 
         print(
-            "There is a very tentative capability to filter by bounding certain variables, \
-             using \\bold{exactly} the following notation:\n\
-             F=\"mean(x)>v\"\n\
-             where x is a lead column variable arising from gene expression or a feature \
-             barcode, or a cell/sample/donor/tag count, and v is a floating-point number. \
-             The requirement is that the mean \
-             across all cells of the given variable is greater than v.  If this turns out \
-             to be useful we will generalize it.\n\n",
+            "\\bold{filtering by linear conditions}\n\n\
+             enclone has the capability to filter by bounding certain lead variables, using \
+             the command-line argument:\n\
+             F=\"L\"\n\
+             where L is a linear condition (as defined above).  Currently This is limited to \
+             the case where the lead variables have been selected!  Multiple bounds may be \
+             imposed by using multiple instances of \"F=...\".\n\n"
+        );
+             
+        // gene scanning
+
+        print(
+            "\\bold{gene scanning\n\n\
+            enclone can scan all genes and feature barcodes to find those that are enriched \
+            in certain clonotypes relative to certain other clonotypes.  This feature is turned \
+            on using the command line argument\n\
+            \\bold{SCAN=test,control,threshold}\n\
+            where each of \\bold{test}, \\bold{control} and \\bold{threshold} are linear \
+            conditions as defined above.  Blank spaces are ignored.  The \\bold{test} condition \
+            defines the \"test clonotypes\" and the \\bold{control} condition defines the \
+            \"control clonotypes\".  Currently, the lead variables in \\bold{test} and \
+            \\bold{control} must be used!  The \\bold{threshold} condition is special: it may use \
+            only the variables \"t\" and \"c\" that represent the normalized UMI count for \
+            a particular gene or feature.  \
+            To get a meaningful result, you should specify \\bold{MIN_CELLS} appropriately \
+            and manually examine the test and control clonotypes to make sure that they make \
+            sense.\n\n\
+            \
+            Example: suppose that your data are comprised of two samples named pre and post, \
+            representing time points relative to some event.  Then\n\
+            \\bold{SCAN=\"n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1\"\n\
+            would define the test clonotypes to be those satisfying \
+            n_post >= 10*n_pre (so having far more post cells then pre cells), \
+            the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so having lots of \
+            pre cells), and thresholding on t >= 2*c * 0.1, so that the gene or feature must \
+            have a bit more than twice as many UMIs in the test than the control.  The 0.1 \
+            is there to exclude noise from genes or features having very low UMI counts.\n\n\
+            \
+            Gene scanning is not a proper statistical test.  It is a tool for providing a list \
+            of gene candidates that may then be examined in more detail by rerunning \
+            enclone using some of the detected features as lead variables (appropriately \
+            suffixed).\n\n\
+            Caveat: currently gene scanning requires that each dataset have identical features.\n\n"
         );
 
         // done

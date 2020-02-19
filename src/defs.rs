@@ -6,6 +6,7 @@ use mirror_sparse_matrix::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use string_utils::*;
 use vector_utils::*;
 
 // Clonotyping algorithm heuristics.
@@ -15,6 +16,129 @@ pub struct ClonotypeHeuristics {
     pub max_diffs: usize,
     pub ref_v_trim: usize,
     pub ref_j_trim: usize,
+}
+
+#[derive(Clone)]
+pub struct LinearCondition {
+    pub coeff: Vec<f64>,       // left hand side (lhs) coefficients
+    pub var:   Vec<String>,    // left hand side variables (parallel to coefficients)
+    pub rhs:   f64,            // right hand side; sum of lhs must exceed rhs
+    pub sense: String,         // le, ge, lt, gt
+}
+
+impl LinearCondition {
+
+    pub fn n(&self) -> usize {
+        self.coeff.len()
+    }
+
+    pub fn new(x: &str) -> LinearCondition {
+        let y = x.replace(" ","");
+        let lhs : String;
+        let mut rhs : String;
+        let sense : String;
+        if y.contains(">=") {
+            lhs = y.before(">=").to_string();
+            rhs = y.after(">=").to_string();
+            sense = "ge".to_string();
+        } else if y.contains('≥') {
+            lhs = y.before("≥").to_string();
+            rhs = y.after("≥").to_string();
+            sense = "ge".to_string();
+        } else if y.contains("<=") {
+            lhs = y.before("<=").to_string();
+            rhs = y.after("<=").to_string();
+            sense = "le".to_string();
+        } else if y.contains('≤') {
+            lhs = y.before("≤").to_string();
+            rhs = y.after("≤").to_string();
+            sense = "le".to_string();
+        } else if y.contains('<') {
+            lhs = y.before("<").to_string();
+            rhs = y.after("<").to_string();
+            sense = "lt".to_string();
+        } else if y.contains('>') {
+            lhs = y.before(">").to_string();
+            rhs = y.after(">").to_string();
+            sense = "gt".to_string();
+        } else {
+            eprintln!( "\nImproperly formatted condition, no inequality symbol, \
+                please type \"enclone help display\": {}.", x );
+            std::process::exit(1);
+        }
+        if !rhs.contains('.') {
+            rhs += ".0";
+        }
+        if !rhs.parse::<f64>().is_ok() {
+            eprintln!( "\nImproperly formatted condition, right-hand side invalid: {}.", x );
+            std::process::exit(1);
+        }
+        let rhs = rhs.force_f64();
+        let mut parts = Vec::<String>::new();
+        let mut last = 0;
+        let lhsx = lhs.as_bytes();
+        for i in 1..lhsx.len() {
+            if lhsx[i] == b'+' || lhsx[i] == b'-' {
+                if lhsx[last] != b'+' {
+                    parts.push( stringme(&lhsx[last..i]) );
+                } else {
+                    parts.push( stringme(&lhsx[last+1..i]) );
+                }
+                last = i;
+            }
+        }
+        let mut coeff = Vec::<f64>::new();
+        let mut var = Vec::<String>::new();
+        parts.push( lhs[last..].to_string() );
+        for i in 0..parts.len() {
+            if parts[i].contains('*') {
+                let mut coeffi = parts[i].before("*").to_string();
+                let vari = parts[i].after("*");
+                if !coeffi.contains('.') {
+                    coeffi += ".0";
+                }
+                if !coeffi.parse::<f64>().is_ok() {
+                    eprintln!( "\nImproperly formatted condition, coefficient {} is invalid: {}.", 
+                        coeffi, x );
+                    std::process::exit(1);
+                }
+                coeff.push( coeffi.force_f64() );
+                var.push(vari.to_string());
+            } else {
+                let mut coeffi = 1.0;
+                let mut start = 0;
+                if parts[i].starts_with('-') {
+                    coeffi = -1.0;
+                    start = 1;
+                }
+                coeff.push(coeffi);
+                var.push( parts[i][start..].to_string() );
+            }
+        }
+        LinearCondition {
+            coeff: coeff,
+            var: var,
+            rhs: rhs,
+            sense: sense,
+        }
+    }
+
+    pub fn satisfied(&self, val: &Vec<f64>) -> bool {
+        let mut lhs = 0.0;
+        for i in 0..self.coeff.len() {
+            lhs += self.coeff[i] * val[i];
+        }
+        if self.sense == "lt".to_string() {
+            return lhs < self.rhs;
+        } else if self.sense == "gt".to_string() {
+            return lhs > self.rhs;
+        } else if self.sense == "le".to_string() {
+            return lhs <= self.rhs;
+        } else {
+            return lhs >= self.rhs;
+        }
+    }
+
 }
 
 // Sample info data structure.
@@ -90,6 +214,9 @@ pub struct GeneralOpt {
     pub summary_clean: bool,
     pub cr_version: String,
     pub nwarn: bool,
+    pub gene_scan_test: Option<LinearCondition>,
+    pub gene_scan_control: Option<LinearCondition>,
+    pub gene_scan_threshold: Option<LinearCondition>,
 }
 
 // Allele finding algorithmic options.
@@ -159,7 +286,7 @@ pub struct ClonoFiltOpt {
     pub weak_foursies: bool, // filter weak foursies
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
-    pub bounds: Vec<(String, f64)>, // bounds on certain variables
+    pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub barcode: Vec<String>, // requires one of these barcodes
 }
 

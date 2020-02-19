@@ -241,7 +241,7 @@ pub fn help1(args: &Vec<String>) {
             "how to provide input to enclone (technical notes)"
         );
         ldoc!("enclone help parseable", "parseable output (long)");
-        ldoc!("enclone help filter", "clonotype filtering options (long)");
+        ldoc!("enclone help filter", "clonotype filtering options, gene scanning (long)");
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options");
         doc!("enclone help cvars", "per chain column options");
@@ -461,7 +461,7 @@ pub fn help1(args: &Vec<String>) {
              \\bold{PRE=/Users/me/enclone_data}.\n\
              • After checking environment variables, arguments on the command line are read from \
              left to right; if an argument name is repeated, only the \
-             rightmost value is used.\n\n",
+             rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
         print("\\bold{2. Color}\n\n");
         print_enclone(plain);
