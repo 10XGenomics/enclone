@@ -719,6 +719,49 @@ pub fn row_fill(
                     udiff = format!("%{}", ulen);
                 }
                 cvar![j, rsi.cvars[col][j], udiff];
+            } else if rsi.cvars[col][j] == "d_univ".to_string() {
+                let vid = ex.share[mid].v_ref_id;
+                let vref = &refdata.refs[vid].to_ascii_vec();
+                let jid = ex.share[mid].j_ref_id;
+                let jref = &refdata.refs[jid].to_ascii_vec();
+                let tig = &ex.share[mid].seq_del;
+                let n = tig.len();
+                let mut diffs = 0;
+                for p in 0..n {
+                    if tig[p] == b'-' {
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                        diffs += 1;
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) 
+                        && tig[p] != jref[jref.len() - (n - p)] {
+                        diffs += 1;
+                    }
+                }
+                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
+            } else if rsi.cvars[col][j] == "d_donor".to_string() {
+                let vid = ex.share[mid].v_ref_id;
+                let mut vref = refdata.refs[vid].to_ascii_vec();
+                if rsi.vpids[col].is_some() {
+                    vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+                }
+                let jid = ex.share[mid].j_ref_id;
+                let jref = &refdata.refs[jid].to_ascii_vec();
+                let tig = &ex.share[mid].seq_del;
+                let n = tig.len();
+                let mut diffs = 0;
+                for p in 0..n {
+                    if tig[p] == b'-' {
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                        diffs += 1;
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) 
+                        && tig[p] != jref[jref.len() - (n - p)] {
+                        diffs += 1;
+                    }
+                }
+                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
             } else if rsi.cvars[col][j] == "notes".to_string() {
                 cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
             } else if rsi.cvars[col][j] == "var".to_string() {

@@ -92,7 +92,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let cvars_allowed = vec![
         "var", "umed", "umax", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
-        "clen", "cdiff", "udiff", "notes",
+        "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
     ];
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
