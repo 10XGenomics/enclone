@@ -578,7 +578,7 @@ pub fn help3(args: &Vec<String>) {
             the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so having lots of \
             pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must \
             have a bit more than twice as many UMIs in the test than the control.  The 0.1 \
-            is there to exclude noise from genes or features having very low UMI counts.\n\n\
+            is there to exclude noise from features having very low UMI counts.\n\n\
             \
             Feature scanning is not a proper statistical test.  It is a tool for generating a list \
             of feature candidates that may then be examined in more detail by rerunning \
