@@ -32,6 +32,8 @@ only be obtained from _single cell_ data!  From such data, clonotypes can be com
 approximated, with high accuracy.  The method we use for this is described briefly in the online
 documentation for `enclone`, and will be described separately in more detail.
 
+<img src="img/circles.svg" alt="circles" title="circles" />
+
 ___________________________________________________________________________________________________
 
 ### The `enclone` software
