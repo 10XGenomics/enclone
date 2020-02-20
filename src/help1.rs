@@ -243,7 +243,7 @@ pub fn help1(args: &Vec<String>) {
         ldoc!("enclone help parseable", "parseable output (long)");
         ldoc!(
             "enclone help filter",
-            "clonotype filtering options, gene scanning (long)"
+            "clonotype filtering options, scanning for feature enrichment (long)"
         );
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options");
