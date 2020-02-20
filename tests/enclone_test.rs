@@ -110,8 +110,8 @@ fn test_enclone() {
         "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",
         // 28. tests BARCODE option
         "BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1",
-        // 29. tests parenthesized variable in F
-        "BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F=\"(IGHV3-7_g)>=4.5\" MIN_CHAINS=2",
+        // 29. tests parenthesized variable in F, SUM and MEAN
+        "BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F=\"(IGHV3-7_g)>=4.5\" MIN_CHAINS=2 SUM MEAN",
         // 30. tests d_univ and d_donor
         "BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW",
     ];
