@@ -532,7 +532,10 @@ pub fn help3(args: &Vec<String>) {
              represents a \
              sample/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
              condition, each vi is \
-             replaced by the \\bold{mean} of its values across all cells in the clonotype.\n\n",
+             replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
+             Because the minus sign - doubles as a hyphen and is used in some feature names, we \
+             allow parentheses around variable names to prevent erroneous parsing, like this \
+             \\bold{(IGHV3-7) >= 1}.\n\n"
         );
 
         // bounds
