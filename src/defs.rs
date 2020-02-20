@@ -82,8 +82,9 @@ impl LinearCondition {
         let mut parts = Vec::<String>::new();
         let mut last = 0;
         let lhsx = lhs.as_bytes();
-        for i in 1..lhsx.len() {
-            if lhsx[i] == b'+' || lhsx[i] == b'-' {
+        let mut parens = 0 as isize;
+        for i in 0..lhsx.len() {
+            if i > 0 && parens == 0 && (lhsx[i] == b'+' || lhsx[i] == b'-') {
                 if lhsx[last] != b'+' {
                     parts.push(stringme(&lhsx[last..i]));
                 } else {
@@ -91,11 +92,18 @@ impl LinearCondition {
                 }
                 last = i;
             }
+            if lhsx[i] == b'(' {
+                parens += 1;
+            } else if lhsx[i] == b')' {
+                parens -= 1;
+            }
         }
         let mut coeff = Vec::<f64>::new();
         let mut var = Vec::<String>::new();
         parts.push(lhs[last..].to_string());
         for i in 0..parts.len() {
+            parts[i] = parts[i].replace("(", "");
+            parts[i] = parts[i].replace(")", "");
             if parts[i].contains('*') {
                 let mut coeffi = parts[i].before("*").to_string();
                 let vari = parts[i].after("*");
