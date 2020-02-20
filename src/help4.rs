@@ -518,9 +518,18 @@ pub fn help4(args: &Vec<String>) {
             "number of base differences within V..J between this exact subclonotype and"
         );
         doc!("", "exact subclonotype n");
-        doc!("d_univ", "distance from universal reference, more specifically,");
-        doc!("", "number of base differences within V..J between this exact");
-        doc!("", "clonotype and universal reference, exclusive of indels, the last 15");
+        doc!(
+            "d_univ",
+            "distance from universal reference, more specifically,"
+        );
+        doc!(
+            "",
+            "number of base differences within V..J between this exact"
+        );
+        doc!(
+            "",
+            "clonotype and universal reference, exclusive of indels, the last 15"
+        );
         doc!("", "bases of the V and the first 15 bases of the J");
         doc!("d_donor", "distance from donor reference,");
         doc!("", "as above but computed using donor reference");

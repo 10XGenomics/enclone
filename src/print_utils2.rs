@@ -733,8 +733,9 @@ pub fn row_fill(
                     }
                     if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
                         diffs += 1;
-                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) 
-                        && tig[p] != jref[jref.len() - (n - p)] {
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && tig[p] != jref[jref.len() - (n - p)]
+                    {
                         diffs += 1;
                     }
                 }
@@ -756,8 +757,9 @@ pub fn row_fill(
                     }
                     if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
                         diffs += 1;
-                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) 
-                        && tig[p] != jref[jref.len() - (n - p)] {
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && tig[p] != jref[jref.len() - (n - p)]
+                    {
                         diffs += 1;
                     }
                 }
