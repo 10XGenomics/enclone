@@ -479,22 +479,27 @@ pub fn start_gen(
         fwriteln!(&mut mlog, "donors = {}", donor_names.iter().format(","));
         fwriteln!(&mut mlog, "datasets in which these donors appear:");
         for i in 0..donors.len() {
-            let mut lenas = Vec::<String>::new();
+            let mut datasets = Vec::<String>::new();
             for u in 0..nexacts {
                 let ex = &exact_clonotypes[exacts[u]];
                 for l in 0..ex.clones.len() {
                     if ex.clones[l][0].donor_index.is_some() {
                         if ex.clones[l][0].donor_index.unwrap() == donors[i] {
-                            lenas.push(
+                            datasets.push(
                                 ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
                             );
                         }
                     }
                 }
             }
-            unique_sort(&mut lenas);
+            unique_sort(&mut datasets);
             // This message is pretty flaky in the case where bc has been specified in META.
-            fwriteln!(&mut mlog, "donor {}: {}", i + 1, lenas.iter().format(","));
+            fwriteln!(
+                &mut mlog,
+                "donor {}: {}",
+                i + 1,
+                datasets.iter().format(",")
+            );
         }
     }
 

@@ -1191,7 +1191,7 @@ pub fn print_clonotypes(
 
     // Tally low gene expression count.
     // WARNING: THIS MAY ONLY WORK IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.
-    // And probably you should run on only one lena at a time.
+    // And probably you should run on only one dataset at a time.
     // And this probably doesn't belong inside print_clonotypes.
 
     if gex_info.gex_features.len() > 0 && !ctl.silent {
