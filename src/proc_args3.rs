@@ -232,7 +232,6 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info.dataset_path.push(p);
                 ctl.sample_info.gex_path.push(pg);
                 ctl.sample_info.dataset_id.push(dataset_name.clone());
-                ctl.sample_info.donor_index.push(id);
                 ctl.sample_info.donor_id.push(donor_name);
                 ctl.sample_info.sample_id.push(sample_name);
                 ctl.sample_info
@@ -241,15 +240,6 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info.tag.push(HashMap::<String, String>::new());
             }
         }
-    }
-    let mut i = 0;
-    while i < ctl.sample_info.donor_index.len() {
-        let j = next_diff(&ctl.sample_info.donor_index, i);
-        let mut x = Vec::<usize>::new();
-        for k in i..j {
-            x.push(k);
-        }
-        i = j;
     }
 }
 
@@ -454,12 +444,10 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             for j in 0..donors.len() {
                 if donor == donors[j] {
                     dp = Some(j);
-                    ctl.sample_info.donor_index.push(j);
                     break;
                 }
             }
             if dp.is_none() {
-                ctl.sample_info.donor_index.push(donors.len());
                 donors.push(donor.clone());
             }
             ctl.sample_info.descrips.push(abbr.clone());

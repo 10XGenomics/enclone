@@ -164,7 +164,6 @@ pub struct SampleInfo {
     pub dataset_path: Vec<String>, // map dataset index to vdj path
     pub gex_path: Vec<String>,     // map dataset index to gex path
     pub dataset_id: Vec<String>,   // map dataset index to dataset short name
-    pub donor_index: Vec<usize>,   // map dataset index to donor index
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
     // other
