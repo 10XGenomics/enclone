@@ -368,7 +368,7 @@ pub fn find_alleles(
                 // Print.
 
                 if ctl.allele_print_opt.con {
-                    println!("\nDONOR {}", donor_id + 1);
+                    println!("\nDONOR {} ({})", donor_id + 1, ctl.sample_info.donor_list[donor_id]);
                     println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
                     println!("ps = {}", ps.iter().format(","));
                     for x in keep.iter() {
