@@ -426,6 +426,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.fasta = args[i].after("EXFASTA=").to_string();
         } else if args[i].starts_with("FASTA=") {
             ctl.gen_opt.fasta_filename = args[i].after("FASTA=").to_string();
+        } else if args[i].starts_with("FASTA_AA=") {
+            ctl.gen_opt.fasta_aa_filename = args[i].after("FASTA_AA=").to_string();
         } else if args[i].starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", args[i].after("CDR3=")));
             if !reg.is_ok() {

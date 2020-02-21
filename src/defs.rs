@@ -207,6 +207,7 @@ pub struct GeneralOpt {
     pub reuse: bool,
     pub fasta: String,
     pub fasta_filename: String,
+    pub fasta_aa_filename: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub exact: Option<usize>,

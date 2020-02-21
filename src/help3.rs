@@ -209,7 +209,8 @@ pub fn help3(args: &Vec<String>) {
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
         print(
-            "If you want to generate FASTA output for each chain in each exact subclonotype, \
+            "If you want to generate nucleotide FASTA output for each chain in each exact \
+             subclonotype, \
              use the argument\n\\bold{FASTA=filename}.  The special case \\bold{stdout} will \
              cause the FASTA records to be shown as part of standard output.  The FASTA records \
              that are generated are of the form V(D)JC, where V is the full V segment (including \
@@ -217,6 +218,10 @@ pub fn help3(args: &Vec<String>) {
              If a particular chain in a particular exact subclonotype is not assigned a constant \
              region, then we use the constant region that was assigned to the clonotype.  If no \
              constant region at all was assigned, then the FASTA record is omitted.\n\n",
+        );
+        print(
+            "Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
+            FASTA file.\n\n",
         );
         let mut log = Vec::<u8>::new();
         if !plain {
