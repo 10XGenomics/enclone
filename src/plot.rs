@@ -231,6 +231,10 @@ pub fn plot_clonotypes(
     if ctl.gen_opt.plot_file.is_empty() {
         return;
     }
+    if exacts.is_empty() {
+        eprintln!("\nThere are no clonotypes to plot, giving up.\n");
+        std::process::exit(1);
+    }
     let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
