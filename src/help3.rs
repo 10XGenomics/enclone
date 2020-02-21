@@ -221,7 +221,7 @@ pub fn help3(args: &Vec<String>) {
         );
         print(
             "Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
-            FASTA file.\n\n",
+             FASTA file.\n\n",
         );
         let mut log = Vec::<u8>::new();
         if !plain {

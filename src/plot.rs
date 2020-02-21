@@ -186,8 +186,8 @@ fn circles_to_svg(
     assert!(!center.is_empty());
     assert!(radius.len() == n);
     assert!(color.len() == n);
-    assert!( boundary < width );
-    assert!( boundary < height );
+    assert!(boundary < width);
+    assert!(boundary < height);
     for i in 0..n {
         assert!(radius[i] > 0.0);
     }

@@ -2,8 +2,8 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
-use amino::*;
 use crate::defs::*;
+use amino::*;
 use ansi_escape::*;
 use equiv::EquivRel;
 use io_utils::*;
