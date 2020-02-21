@@ -3,6 +3,7 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::defs::*;
+use amino::*;
 use ansi_escape::*;
 use equiv::EquivRel;
 use io_utils::*;
@@ -57,6 +58,15 @@ pub fn group_and_print_clonotypes(
         "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_filename);
+            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+        }
+    };
+    #[allow(bare_trait_objects)]
+    let mut faaout = match ctl.gen_opt.fasta_aa_filename.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
             (Box::new(File::create(&path).unwrap()) as Box<Write>)
         }
     };
@@ -248,6 +258,47 @@ pub fn group_and_print_clonotypes(
                 }
             }
 
+            // Generate fasta amino acid output.
+
+            if ctl.gen_opt.fasta_aa_filename.len() > 0 {
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    for m in 0..mat[oo].len() {
+                        if mat[oo][m][k].is_some() {
+                            let r = mat[oo][m][k].unwrap();
+                            let ex = &exact_clonotypes[*u];
+                            fwriteln!(
+                                faaout,
+                                ">group{}.clonotype{}.exact{}.chain{}",
+                                groups,
+                                j + 1,
+                                k + 1,
+                                m + 1
+                            );
+                            let mut seq = ex.share[r].seq.clone();
+                            let mut cid = ex.share[r].c_ref_id;
+                            if cid.is_none() {
+                                for l in 0..exacts[oo].len() {
+                                    if mat[oo][m][l].is_some() {
+                                        let r2 = mat[oo][m][l].unwrap();
+                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
+                                        let cid2 = ex2.share[r2].c_ref_id;
+                                        if cid2.is_some() {
+                                            cid = cid2;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if cid.is_some() {
+                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
+                                seq.append(&mut cseq);
+                                fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
+                            }
+                        }
+                    }
+                }
+            }
+
             // Generate parseable output.
 
             if ctl.parseable_opt.pout.len() > 0 {
@@ -320,8 +371,8 @@ pub fn group_and_print_clonotypes(
         println!("   • number of datasets = {}", ctl.sample_info.n());
         println!("   • number of donors = {}", ctl.sample_info.donors);
         if !ctl.gen_opt.summary_clean {
-            println!("   • total elapsed time = {:.2} seconds", elapsed(&tall));
-            println!("   • peak memory = {:.2} GB", peak_mem_usage_gb());
+            println!("   • total elapsed time = {:.1} seconds", elapsed(&tall));
+            println!("   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
         println!("2. for the selected clonotypes");
         println!("   • number of clonotypes = {}", nclono);

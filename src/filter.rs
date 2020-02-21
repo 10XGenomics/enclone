@@ -26,6 +26,22 @@ pub fn survives_filter(
         return false;
     }
     let cols = rsi.vids.len();
+    if ctl.clono_filt_opt.barcode.len() > 0 {
+        let mut ok = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            for i in 0..ex.clones.len() {
+                for j in 0..ctl.clono_filt_opt.barcode.len() {
+                    if ex.clones[i][0].barcode == ctl.clono_filt_opt.barcode[j] {
+                        ok = true;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return false;
+        }
+    }
     if ctl.clono_filt_opt.del {
         let mut ok = false;
         for s in exacts.iter() {

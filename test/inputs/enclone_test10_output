@@ -3,6 +3,8 @@
 
 [1.1] CLONOTYPE = 133 CELLS
 [38;5;9m██[0m WARNING: This clonotype contains cells from multiple donors.
+donors = d1,d2
+datasets in which these donors appear:
 donor 1: 123085
 donor 2: 123089
 ┌──────────────────────────────────┬────────────────────────────────┬─────────────────────────────┐

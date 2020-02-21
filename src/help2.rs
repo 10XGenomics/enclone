@@ -429,7 +429,12 @@ pub fn help2(args: &Vec<String>) {
         rows.push(vec![
             "".to_string(),
             "".to_string(),
-            "to be used in case a particular barcode is not specified by bc".to_string(),
+            "to be used in case a particular barcode is not specified by bc;".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "a fourth field \"tag\" is allowed and may be arbitrarily specified".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
