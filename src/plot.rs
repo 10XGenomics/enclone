@@ -1,6 +1,9 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// The purpose of this file is the function plot_clonotypes.
+// The purpose of this file is the function plot_clonotypes.  It plots clonotypes as partial
+// hexagonal closest packings.  This is visually kind of satisfying, but also a bit weird looking.
+// In some cases, by eye, you can see rounder forms that could be created by relocating some of
+// the cells.
 
 use crate::defs::*;
 use io_utils::*;
