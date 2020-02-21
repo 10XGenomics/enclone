@@ -180,11 +180,14 @@ fn circles_to_svg(
     color: &Vec<String>,
     width: usize,
     height: usize,
+    boundary: usize,
 ) -> String {
     let n = center.len();
     assert!(!center.is_empty());
     assert!(radius.len() == n);
     assert!(color.len() == n);
+    assert!( boundary < width );
+    assert!( boundary < height );
     for i in 0..n {
         assert!(radius[i] > 0.0);
     }
@@ -207,6 +210,8 @@ fn circles_to_svg(
         ymin = ymin.min(center[i].1 - radius[i]);
         ymax = ymax.max(center[i].1 + radius[i]);
     }
+    let width = width - boundary;
+    let height = height - boundary;
     let scale = ((width as f64) / (xmax - xmin)).min((height as f64) / (ymax - ymin));
     for i in 0..n {
         center[i].0 -= xmin;
@@ -214,6 +219,8 @@ fn circles_to_svg(
         center[i].0 *= scale;
         center[i].1 *= scale;
         radius[i] *= scale;
+        center[i].0 += boundary as f64;
+        center[i].1 += boundary as f64;
     }
     for i in 0..center.len() {
         out += &format!(
@@ -290,10 +297,11 @@ pub fn plot_clonotypes(
     }
     const WIDTH: usize = 400;
     const HEIGHT: usize = 400;
+    const BOUNDARY: usize = 10;
     for i in 0..center.len() {
         center[i].1 = -center[i].1; // otherwise inverted, not sure why
     }
-    let svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT);
+    let svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
     let mut f = open_for_write_new![ctl.gen_opt.plot_file];
     fwriteln!(f, "{}", svg);
 }
