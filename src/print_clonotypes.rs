@@ -9,6 +9,7 @@ use crate::defs::*;
 use crate::filter::*;
 use crate::group::*;
 use crate::loupe::*;
+use crate::plot::*;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
 use crate::print_utils3::*;
@@ -1183,6 +1184,10 @@ pub fn print_clonotypes(
             }
         }
     }
+
+    // Plot clonotypes.
+    
+    plot_clonotypes( &ctl, &exacts, &exact_clonotypes );
 
     // Tally low gene expression count.
     // WARNING: THIS MAY ONLY WORK IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.

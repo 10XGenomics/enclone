@@ -231,6 +231,8 @@ pub struct GeneralOpt {
     pub gene_scan_test: Option<LinearCondition>,
     pub gene_scan_control: Option<LinearCondition>,
     pub gene_scan_threshold: Option<LinearCondition>,
+    pub plot_file: String,
+    pub sample_color_map: HashMap<String,String>,
 }
 
 // Allele finding algorithmic options.

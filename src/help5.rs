@@ -414,6 +414,19 @@ pub fn help5(args: &Vec<String>) {
              know if you're interested in support for Windows.\n\n",
         );
 
+        print("\\boldblue{16. Is there a way to plot clonotypes?}\n\n");
+        print(
+            "Yes.  There is a special argument\n\
+            \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
+            which creates an svg file of the given name, and assigns the given colors to the \
+            given samples.  Unspecified samples will be black.  The colors should be valid colors \
+            for use in an svg file, e.g. red, blue, green, etc.  Each cell is shown as a small \
+            disk having the given color, and each clonotype is shown as a cluster of these small \
+            disks, which are positioned at random.  To use this, you probably want to use the \
+            `MIN_CELLS` option \
+            (see \"enclone help filter\") so that tiny clonotypes do not dominate.\n\n",
+        );
+
         std::process::exit(0);
     }
 

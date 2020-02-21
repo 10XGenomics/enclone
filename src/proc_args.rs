@@ -236,6 +236,21 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             ctl.gen_opt.gene_scan_threshold = Some(threshold);
+        } else if args[i].starts_with("PLOT=") {
+            let x = args[i].after("PLOT=").split(',').collect::<Vec<&str>>();
+            if x.is_empty() {
+                eprintln!( "\nArgument to PLOT is invalid.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.plot_file = x[0].to_string();
+            for j in 1..x.len() {
+                if !x[j].contains( "->" ) {
+                    eprintln!( "\nArgument to PLOT is invalid.\n");
+                    std::process::exit(1);
+                }
+                ctl.gen_opt.sample_color_map.insert( x[j].before("->").to_string(),
+                    x[j].after("->").to_string() );
+            }
         } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {
