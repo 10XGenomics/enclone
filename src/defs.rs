@@ -6,6 +6,7 @@ use mirror_sparse_matrix::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use string_utils::*;
 use vector_utils::*;
 
 // Clonotyping algorithm heuristics.
@@ -17,6 +18,143 @@ pub struct ClonotypeHeuristics {
     pub ref_j_trim: usize,
 }
 
+#[derive(Clone)]
+pub struct LinearCondition {
+    pub coeff: Vec<f64>,  // left hand side (lhs) coefficients
+    pub var: Vec<String>, // left hand side variables (parallel to coefficients)
+    pub rhs: f64,         // right hand side; sum of lhs must exceed rhs
+    pub sense: String,    // le, ge, lt, gt
+}
+
+impl LinearCondition {
+    pub fn n(&self) -> usize {
+        self.coeff.len()
+    }
+
+    pub fn new(x: &str) -> LinearCondition {
+        let y = x.replace(" ", "");
+        let lhs: String;
+        let mut rhs: String;
+        let sense: String;
+        if y.contains(">=") {
+            lhs = y.before(">=").to_string();
+            rhs = y.after(">=").to_string();
+            sense = "ge".to_string();
+        } else if y.contains('≥') {
+            lhs = y.before("≥").to_string();
+            rhs = y.after("≥").to_string();
+            sense = "ge".to_string();
+        } else if y.contains("<=") {
+            lhs = y.before("<=").to_string();
+            rhs = y.after("<=").to_string();
+            sense = "le".to_string();
+        } else if y.contains('≤') {
+            lhs = y.before("≤").to_string();
+            rhs = y.after("≤").to_string();
+            sense = "le".to_string();
+        } else if y.contains('<') {
+            lhs = y.before("<").to_string();
+            rhs = y.after("<").to_string();
+            sense = "lt".to_string();
+        } else if y.contains('>') {
+            lhs = y.before(">").to_string();
+            rhs = y.after(">").to_string();
+            sense = "gt".to_string();
+        } else {
+            eprintln!(
+                "\nImproperly formatted condition, no inequality symbol, \
+                 please type \"enclone help display\": {}.",
+                x
+            );
+            std::process::exit(1);
+        }
+        if !rhs.contains('.') {
+            rhs += ".0";
+        }
+        if !rhs.parse::<f64>().is_ok() {
+            eprintln!(
+                "\nImproperly formatted condition, right-hand side invalid: {}.",
+                x
+            );
+            std::process::exit(1);
+        }
+        let rhs = rhs.force_f64();
+        let mut parts = Vec::<String>::new();
+        let mut last = 0;
+        let lhsx = lhs.as_bytes();
+        let mut parens = 0 as isize;
+        for i in 0..lhsx.len() {
+            if i > 0 && parens == 0 && (lhsx[i] == b'+' || lhsx[i] == b'-') {
+                if lhsx[last] != b'+' {
+                    parts.push(stringme(&lhsx[last..i]));
+                } else {
+                    parts.push(stringme(&lhsx[last + 1..i]));
+                }
+                last = i;
+            }
+            if lhsx[i] == b'(' {
+                parens += 1;
+            } else if lhsx[i] == b')' {
+                parens -= 1;
+            }
+        }
+        let mut coeff = Vec::<f64>::new();
+        let mut var = Vec::<String>::new();
+        parts.push(lhs[last..].to_string());
+        for i in 0..parts.len() {
+            parts[i] = parts[i].replace("(", "");
+            parts[i] = parts[i].replace(")", "");
+            if parts[i].contains('*') {
+                let mut coeffi = parts[i].before("*").to_string();
+                let vari = parts[i].after("*");
+                if !coeffi.contains('.') {
+                    coeffi += ".0";
+                }
+                if !coeffi.parse::<f64>().is_ok() {
+                    eprintln!(
+                        "\nImproperly formatted condition, coefficient {} is invalid: {}.",
+                        coeffi, x
+                    );
+                    std::process::exit(1);
+                }
+                coeff.push(coeffi.force_f64());
+                var.push(vari.to_string());
+            } else {
+                let mut coeffi = 1.0;
+                let mut start = 0;
+                if parts[i].starts_with('-') {
+                    coeffi = -1.0;
+                    start = 1;
+                }
+                coeff.push(coeffi);
+                var.push(parts[i][start..].to_string());
+            }
+        }
+        LinearCondition {
+            coeff: coeff,
+            var: var,
+            rhs: rhs,
+            sense: sense,
+        }
+    }
+
+    pub fn satisfied(&self, val: &Vec<f64>) -> bool {
+        let mut lhs = 0.0;
+        for i in 0..self.coeff.len() {
+            lhs += self.coeff[i] * val[i];
+        }
+        if self.sense == "lt".to_string() {
+            return lhs < self.rhs;
+        } else if self.sense == "gt".to_string() {
+            return lhs > self.rhs;
+        } else if self.sense == "le".to_string() {
+            return lhs <= self.rhs;
+        } else {
+            return lhs >= self.rhs;
+        }
+    }
+}
+
 // Sample info data structure.
 
 #[derive(Default)]
@@ -26,16 +164,18 @@ pub struct SampleInfo {
     pub dataset_path: Vec<String>, // map dataset index to vdj path
     pub gex_path: Vec<String>,     // map dataset index to gex path
     pub dataset_id: Vec<String>,   // map dataset index to dataset short name
-    pub donor_index: Vec<usize>,   // map dataset index to donor index
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
     // other
     pub donor_list: Vec<String>, // unique-sorted list of donor short names
     pub sample_list: Vec<String>, // unique-sorted list of sample short names
+    pub tag_list: Vec<String>,   // unique-sorted list of tag short names
     pub sample_donor_list: Vec<(usize, usize)>, // unique-sorted list of (sample, donor) indices
     pub donors: usize,           // number of donors
     // map dataset index to map of barcode to (sample,donor):
     pub sample_donor: Vec<HashMap<String, (String, String)>>,
+    // map dataset index to map of barcode to tag:
+    pub tag: Vec<HashMap<String, String>>,
 }
 
 impl SampleInfo {
@@ -66,6 +206,7 @@ pub struct GeneralOpt {
     pub reuse: bool,
     pub fasta: String,
     pub fasta_filename: String,
+    pub fasta_aa_filename: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub exact: Option<usize>,
@@ -87,6 +228,11 @@ pub struct GeneralOpt {
     pub summary_clean: bool,
     pub cr_version: String,
     pub nwarn: bool,
+    pub gene_scan_test: Option<LinearCondition>,
+    pub gene_scan_control: Option<LinearCondition>,
+    pub gene_scan_threshold: Option<LinearCondition>,
+    pub plot_file: String,
+    pub sample_color_map: HashMap<String, String>,
 }
 
 // Allele finding algorithmic options.
@@ -156,7 +302,8 @@ pub struct ClonoFiltOpt {
     pub weak_foursies: bool, // filter weak foursies
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
-    pub bounds: Vec<(String, f64)>, // bounds on certain variables
+    pub bounds: Vec<LinearCondition>, // bounds on certain variables
+    pub barcode: Vec<String>, // requires one of these barcodes
 }
 
 // Clonotype printing options.
@@ -172,6 +319,8 @@ pub struct ClonoPrintOpt {
     pub cvars: Vec<String>, // per-chain per-exact-clonotype columns
     pub lvars: Vec<String>, // per-exact-clonotype ('lead') columns
     pub chain_brief: bool,  // show abbreviated chain headers
+    pub sum: bool,          // print sum row
+    pub mean: bool,         // print mean row
 }
 
 // Clonotype grouping options.
@@ -250,6 +399,7 @@ pub struct TigData {
     pub dataset_index: usize,                 // index of dataset
     pub sample_index: Option<usize>,          // index of sample
     pub donor_index: Option<usize>,           // index of donor
+    pub tag_index: Option<usize>,             // index of tag
     pub umi_count: usize,                     // number of UMIs supporting contig
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
@@ -273,6 +423,7 @@ pub struct TigData0 {
     pub dataset_index: usize,        // index of dataset
     pub sample_index: Option<usize>, // index of sample
     pub donor_index: Option<usize>,  // index of donor
+    pub tag_index: Option<usize>,    // index of tag
     pub umi_count: usize,            // number of UMIs supporting contig
     pub read_count: usize,           // number of reads supporting contig
 }

@@ -354,9 +354,9 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "name, or a sample short name, or a donor short name; it may not name more than"
+            "name, or a sample short name, or a donor short name, or a tag short name;"
         );
-        doc!("", "one such category");
+        doc!("", "it may not name more than one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
         // nonpublic for now as we don't know if this is useful
@@ -518,6 +518,21 @@ pub fn help4(args: &Vec<String>) {
             "number of base differences within V..J between this exact subclonotype and"
         );
         doc!("", "exact subclonotype n");
+        doc!(
+            "d_univ",
+            "distance from universal reference, more specifically,"
+        );
+        doc!(
+            "",
+            "number of base differences within V..J between this exact"
+        );
+        doc!(
+            "",
+            "clonotype and universal reference, exclusive of indels, the last 15"
+        );
+        doc!("", "bases of the V and the first 15 bases of the J");
+        doc!("d_donor", "distance from donor reference,");
+        doc!("", "as above but computed using donor reference");
 
         // The rest.
 
@@ -617,6 +632,8 @@ pub fn help4(args: &Vec<String>) {
             "print full sequence for each chain in the first exact subclonotype,"
         );
         doc!("", "near the top of the printout for a given clonotype");
+        ldoc!("SUM", "print sum row for each clonotype");
+        doc!("MEAN", "print mean row for each clonotype");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

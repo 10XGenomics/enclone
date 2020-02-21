@@ -209,7 +209,8 @@ pub fn help3(args: &Vec<String>) {
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
         print(
-            "If you want to generate FASTA output for each chain in each exact subclonotype, \
+            "If you want to generate nucleotide FASTA output for each chain in each exact \
+             subclonotype, \
              use the argument\n\\bold{FASTA=filename}.  The special case \\bold{stdout} will \
              cause the FASTA records to be shown as part of standard output.  The FASTA records \
              that are generated are of the form V(D)JC, where V is the full V segment (including \
@@ -217,6 +218,10 @@ pub fn help3(args: &Vec<String>) {
              If a particular chain in a particular exact subclonotype is not assigned a constant \
              region, then we use the constant region that was assigned to the clonotype.  If no \
              constant region at all was assigned, then the FASTA record is omitted.\n\n",
+        );
+        print(
+            "Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
+             FASTA file.\n\n",
         );
         let mut log = Vec::<u8>::new();
         if !plain {
@@ -476,6 +481,13 @@ pub fn help3(args: &Vec<String>) {
 
         ldoc!("DEL", "only show clonotypes exhibiting a deletion");
 
+        // doc BARCODE
+
+        ldoc!(
+            "BARCODE=bc1,...,bcn",
+            "only show clonotypes that use one of the given barcodes"
+        );
+
         // print main table
 
         let mut log = String::new();
@@ -512,16 +524,76 @@ pub fn help3(args: &Vec<String>) {
              https://docs.rs/regex.\n"
         );
 
+        // linear conditions
+
+        print(
+            "\\bold{linear conditions}\n\n\
+             enclone understands linear conditions of the form\n\
+             \\bold{c1*v1 ± ... ± cn*vn > d}\n\
+             where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
+             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
+             >= or ≥ or < or <= or ≤.  \
+             Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
+             represents a \
+             sample/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
+             condition, each vi is \
+             replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
+             Because the minus sign - doubles as a hyphen and is used in some feature names, we \
+             allow parentheses around variable names to prevent erroneous parsing, like this \
+             \\bold{(IGHV3-7_g) >= 1}.\n\n",
+        );
+
         // bounds
 
         print(
-            "There is a very tentative capability to filter by bounding certain variables, \
-             using \\bold{exactly} the following notation:\n\
-             F=\"mean(x)>v\"\n\
-             where x is a lead column variable arising from gene expression or a feature \
-             barcode and v is a floating-point number.  The requirement is that the mean \
-             across all cells of the given variable is greater than v.  If this turns out \
-             to be useful we will generalize it.\n\n",
+            "\\bold{filtering by linear conditions}\n\n\
+             enclone has the capability to filter by bounding certain lead variables, using \
+             the command-line argument:\n\
+             \\bold{F=\"L\"}\n\
+             where L is a linear condition (as defined above).  Currently this is limited to \
+             the case where the lead variables have been selected using \\bold{LVARS} or \
+             \\bold{LVARSP}!  Multiple bounds may be imposed by using\n\
+             multiple instances of \\bold{F=...} .\n\n",
+        );
+
+        // feature scanning
+
+        print(
+            "\\bold{feature scanning}\n\n\
+            If gene expression and/or feature barcode data have been generated, \
+            enclone can scan all features to find those that are enriched \
+            in certain clonotypes relative to certain other clonotypes.  This feature is turned \
+            on using the command line argument\n\
+            \\bold{SCAN=\"test,control,threshold\"}\n\
+            where each of \\bold{test}, \\bold{control} and \\bold{threshold} are linear \
+            conditions as defined above.  Blank spaces are ignored.  The \\bold{test} condition \
+            defines the \"test clonotypes\" and the \\bold{control} condition defines the \
+            \"control clonotypes\".  Currently, the lead variables in \\bold{test} and \
+            \\bold{control} must be specified by\n\
+            \\bold{LVARS} or \\bold{LVARSP}!  \
+            The \\bold{threshold} condition is special: it may use \
+            only the variables \"t\" and \"c\" that represent the normalized UMI count for \
+            a particular gene or feature, for the test (t) or control (c) clonotypes.  \
+            To get a meaningful result, you should specify \\bold{MIN_CELLS} appropriately \
+            and manually examine the test and control clonotypes to make sure that they make \
+            sense.\n\n\
+            \
+            \\bold{an example}\n\nSuppose that your data are comprised of two samples named pre \
+            and post, representing time points relative to some event.  Then\n\
+            \\bold{SCAN=\"n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1\"}\n\
+            would define the test clonotypes to be those satisfying \
+            n_post >= 10*n_pre (so having far more post cells then pre cells), \
+            the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so having lots of \
+            pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must \
+            have a bit more than twice as many UMIs in the test than the control.  The 0.1 \
+            is there to exclude noise from features having very low UMI counts.\n\n\
+            \
+            Feature scanning is not a proper statistical test.  It is a tool for generating a list \
+            of feature candidates that may then be examined in more detail by rerunning \
+            enclone using some of the detected features as lead variables (appropriately \
+            suffixed).  Ultimately the power of the scan is determined by having \"enough\" \
+            cells in both the test and control sets, and in having those sets cleanly defined.\n\n\
+            Currently feature scanning requires that each dataset have identical features.\n\n"
         );
 
         // done

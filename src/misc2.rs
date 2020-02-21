@@ -207,6 +207,7 @@ pub fn create_exact_subclonotype_core(
                     dataset_index: tig_bc[t][m].dataset_index,
                     sample_index: tig_bc[t][m].sample_index,
                     donor_index: tig_bc[t][m].donor_index,
+                    tag_index: tig_bc[t][m].tag_index,
                     umi_count: tig_bc[t][m].umi_count,
                     read_count: tig_bc[t][m].read_count,
                 });

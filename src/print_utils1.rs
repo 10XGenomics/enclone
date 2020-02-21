@@ -199,6 +199,12 @@ pub fn make_diff_row(
                 if drows.len() >= 1 {
                     start += 2;
                 }
+                if ctl.clono_print_opt.sum {
+                    start += 1;
+                }
+                if ctl.clono_print_opt.mean {
+                    start += 1;
+                }
                 for k in start..rows.len() {
                     if rows[k][0].starts_with("$") {
                         continue;
@@ -443,7 +449,10 @@ pub fn start_gen(
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
-                donors.push(ex.clones[m][0].donor_index.unwrap());
+                let d = ex.clones[m][0].donor_index.unwrap();
+                if ctl.sample_info.donor_list[d].len() > 0 {
+                    donors.push(d);
+                }
             }
         }
     }
@@ -463,23 +472,34 @@ pub fn start_gen(
             &mut mlog,
             " WARNING: This clonotype contains cells from multiple donors."
         );
+        let mut donor_names = Vec::<String>::new();
         for i in 0..donors.len() {
-            let mut lenas = Vec::<String>::new();
+            donor_names.push(ctl.sample_info.donor_list[donors[i]].clone());
+        }
+        fwriteln!(&mut mlog, "donors = {}", donor_names.iter().format(","));
+        fwriteln!(&mut mlog, "datasets in which these donors appear:");
+        for i in 0..donors.len() {
+            let mut datasets = Vec::<String>::new();
             for u in 0..nexacts {
                 let ex = &exact_clonotypes[exacts[u]];
                 for l in 0..ex.clones.len() {
                     if ex.clones[l][0].donor_index.is_some() {
                         if ex.clones[l][0].donor_index.unwrap() == donors[i] {
-                            lenas.push(
+                            datasets.push(
                                 ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
                             );
                         }
                     }
                 }
             }
-            unique_sort(&mut lenas);
+            unique_sort(&mut datasets);
             // This message is pretty flaky in the case where bc has been specified in META.
-            fwriteln!(&mut mlog, "donor {}: {}", i + 1, lenas.iter().format(","));
+            fwriteln!(
+                &mut mlog,
+                "donor {}: {}",
+                i + 1,
+                datasets.iter().format(",")
+            );
         }
     }
 

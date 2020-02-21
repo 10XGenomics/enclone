@@ -368,7 +368,11 @@ pub fn find_alleles(
                 // Print.
 
                 if ctl.allele_print_opt.con {
-                    println!("\nDONOR {}", donor_id + 1);
+                    println!(
+                        "\nDONOR {} ({})",
+                        donor_id + 1,
+                        ctl.sample_info.donor_list[donor_id]
+                    );
                     println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
                     println!("ps = {}", ps.iter().format(","));
                     for x in keep.iter() {
@@ -486,9 +490,13 @@ pub fn sub_alts(
                     }
                 }
                 let mut donors = Vec::<usize>::new();
-                for lena in info[i].origin.iter() {
-                    donors.push(ctl.sample_info.donor_index[*lena]);
+                let ex = &exact_clonotypes[info[i].clonotype_index];
+                for m in 0..ex.clones.len() {
+                    if ex.clones[m][0].donor_index.is_some() {
+                        donors.push(ex.clones[m][0].donor_index.unwrap());
+                    }
                 }
+                unique_sort(&mut donors);
                 for donor in donors {
                     for m in 0..alt_refs.len() {
                         if alt_refs[m].0 == donor && alt_refs[m].1 == info[i].vsids[j] {

@@ -134,15 +134,27 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         eprintln!("\nCan't find the path {}.\n", p);
                         std::process::exit(1);
                     } else if ctl.gen_opt.pre != "".to_string() {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, which after prefixing by PRE yields\n\
-                             {},\n\
-                             and that path does not contain a subdirectory outs.\n",
-                            f.before("="),
-                            x,
-                            p.rev_before("/outs")
-                        );
+                        if !p.contains("/outs") {
+                            eprintln!(
+                                "\nThe value given for {} on the enclone command line \
+                                 includes\n{}, which after prefixing by PRE yields\n\
+                                 {},\n\
+                                 and that path does not exist.\n",
+                                f.before("="),
+                                x,
+                                p
+                            );
+                        } else {
+                            eprintln!(
+                                "\nThe value given for {} on the enclone command line \
+                                 includes\n{}, which after prefixing by PRE yields\n\
+                                 {},\n\
+                                 and that path does not contain a subdirectory outs.\n",
+                                f.before("="),
+                                x,
+                                p.rev_before("/outs")
+                            );
+                        }
                     } else {
                         eprintln!(
                             "\nThe value given for {} on the enclone command line \
@@ -220,23 +232,14 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 ctl.sample_info.dataset_path.push(p);
                 ctl.sample_info.gex_path.push(pg);
                 ctl.sample_info.dataset_id.push(dataset_name.clone());
-                ctl.sample_info.donor_index.push(id);
                 ctl.sample_info.donor_id.push(donor_name);
                 ctl.sample_info.sample_id.push(sample_name);
                 ctl.sample_info
                     .sample_donor
                     .push(HashMap::<String, (String, String)>::new());
+                ctl.sample_info.tag.push(HashMap::<String, String>::new());
             }
         }
-    }
-    let mut i = 0;
-    while i < ctl.sample_info.donor_index.len() {
-        let j = next_diff(&ctl.sample_info.donor_index, i);
-        let mut x = Vec::<usize>::new();
-        for k in i..j {
-            x.push(k);
-        }
-        i = j;
     }
 }
 
@@ -355,6 +358,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 }
             }
             let mut sample_donor = HashMap::<String, (String, String)>::new();
+            let mut tag = HashMap::<String, String>::new();
             if bc != "".to_string() {
                 if ctl.gen_opt.pre != "".to_string() {
                     bc = format!("{}/{}", ctl.gen_opt.pre, bc);
@@ -369,13 +373,22 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 }
                 let f = open_for_read![&bc];
                 let mut first = true;
+                let mut nf = 0;
                 for line in f.lines() {
                     let s = line.unwrap();
                     if first {
-                        if s != "barcode,sample,donor".to_string() {
+                        if s == "barcode,sample,donor".to_string() {
+                            nf = 3;
+                        } else if s == "barcode,sample,donor,tag".to_string() {
+                            nf = 4;
+                        }
+                        if nf == 0 {
                             eprintln!(
                                 "\nThe first line in the CSV file defined by bc in META \
-                                 must be\nbarcode,sample,donor\nbut it's not.  This is for the \
+                                 must be\nbarcode,sample,donor\n\
+                                 or\
+                                 \nbarcode,sample,donor,tag\n\
+                                 but it's not.  This is for the \
                                  file\n{}\ndefined by bc.\n",
                                 bc
                             );
@@ -384,11 +397,15 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                         first = false;
                     } else {
                         let fields = s.split(',').collect::<Vec<&str>>();
-                        if fields.len() != 3 {
+                        if fields.len() != nf {
                             eprintln!(
-                                "\nThere is a line in the CSV file defined by bc in META\n\
-                                 that does not have three fields.  That's wrong.  This is for the \
-                                 file\n{}\ndefined by bc.\n",
+                                "\nThere is a line\n{}\n\
+                                 in the CSV file defined by bc in META\n\
+                                 that has {} fields, which isn't right, because the header line\n\
+                                 has {} fields..  This is for the file\n{}\ndefined by bc.\n",
+                                s,
+                                fields.len(),
+                                nf,
                                 bc
                             );
                             std::process::exit(1);
@@ -406,6 +423,9 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                             fields[0].to_string(),
                             (fields[1].to_string(), fields[2].to_string()),
                         );
+                        if nf == 4 {
+                            tag.insert(fields[0].to_string(), fields[3].to_string());
+                        }
                     }
                 }
             }
@@ -424,12 +444,10 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             for j in 0..donors.len() {
                 if donor == donors[j] {
                     dp = Some(j);
-                    ctl.sample_info.donor_index.push(j);
                     break;
                 }
             }
             if dp.is_none() {
-                ctl.sample_info.donor_index.push(donors.len());
                 donors.push(donor.clone());
             }
             ctl.sample_info.descrips.push(abbr.clone());
@@ -439,6 +457,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.donor_id.push(donor);
             ctl.sample_info.sample_id.push(sample);
             ctl.sample_info.sample_donor.push(sample_donor);
+            ctl.sample_info.tag.push(tag);
         }
     }
 }

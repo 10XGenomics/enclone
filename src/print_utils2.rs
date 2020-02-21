@@ -184,8 +184,10 @@ pub fn row_fill(
                         let f = row[j].0;
                         let n = row[j].1;
                         if gex_info.is_gex[li][f] {
-                            let q = n as f64 / total_counts[l] as f64;
-                            entropy -= q * q.log2();
+                            if lvars.contains(&"entropy".to_string()) {
+                                let q = n as f64 / total_counts[l] as f64;
+                                entropy -= q * q.log2();
+                            }
                             raw_count += n;
                         }
                     }
@@ -263,24 +265,36 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
         } else if lvars[i] == "ncells".to_string() {
             lvar![lvars[i], format!("{}", mults[u])];
+            let counts = vec![1.0; mults[u]];
+            stats.push((lvars[i].clone(), counts));
         } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
             let name = lvars[i].after("n_");
             let mut count = 0;
+            let mut counts = Vec::<f64>::new();
             for j in 0..ex.clones.len() {
                 let x = &ex.clones[j][0];
                 if ctl.sample_info.dataset_id[x.dataset_index] == name {
                     count += 1;
+                    counts.push(1.0);
                 } else if x.sample_index.is_some()
                     && ctl.sample_info.sample_list[x.sample_index.unwrap()] == name
                 {
                     count += 1;
+                    counts.push(1.0);
                 } else if x.donor_index.is_some()
                     && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
                 {
                     count += 1;
+                    counts.push(1.0);
+                } else if x.tag_index.is_some()
+                    && ctl.sample_info.tag_list[x.tag_index.unwrap()] == name
+                {
+                    count += 1;
+                    counts.push(1.0);
                 }
             }
             lvar![lvars[i], format!("{}", count)];
+            stats.push((lvars[i].clone(), counts));
         } else if lvars[i] == "near".to_string() {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
@@ -705,6 +719,51 @@ pub fn row_fill(
                     udiff = format!("%{}", ulen);
                 }
                 cvar![j, rsi.cvars[col][j], udiff];
+            } else if rsi.cvars[col][j] == "d_univ".to_string() {
+                let vid = ex.share[mid].v_ref_id;
+                let vref = &refdata.refs[vid].to_ascii_vec();
+                let jid = ex.share[mid].j_ref_id;
+                let jref = &refdata.refs[jid].to_ascii_vec();
+                let tig = &ex.share[mid].seq_del;
+                let n = tig.len();
+                let mut diffs = 0;
+                for p in 0..n {
+                    if tig[p] == b'-' {
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                        diffs += 1;
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && tig[p] != jref[jref.len() - (n - p)]
+                    {
+                        diffs += 1;
+                    }
+                }
+                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
+            } else if rsi.cvars[col][j] == "d_donor".to_string() {
+                let vid = ex.share[mid].v_ref_id;
+                let mut vref = refdata.refs[vid].to_ascii_vec();
+                if rsi.vpids[col].is_some() {
+                    vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+                }
+                let jid = ex.share[mid].j_ref_id;
+                let jref = &refdata.refs[jid].to_ascii_vec();
+                let tig = &ex.share[mid].seq_del;
+                let n = tig.len();
+                let mut diffs = 0;
+                for p in 0..n {
+                    if tig[p] == b'-' {
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim && tig[p] != vref[p] {
+                        diffs += 1;
+                    } else if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && tig[p] != jref[jref.len() - (n - p)]
+                    {
+                        diffs += 1;
+                    }
+                }
+                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
             } else if rsi.cvars[col][j] == "notes".to_string() {
                 cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
             } else if rsi.cvars[col][j] == "var".to_string() {
