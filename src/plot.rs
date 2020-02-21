@@ -288,6 +288,9 @@ pub fn plot_clonotypes(
     }
     const WIDTH : usize = 400;
     const HEIGHT : usize = 400;
+    for i in 0..center.len() {
+        center[i].1 = -center[i].1; // otherwise inverted, not sure why
+    }
     let svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT );
     let mut f = open_for_write_new![ctl.gen_opt.plot_file];
     fwriteln!(f, "{}", svg);
