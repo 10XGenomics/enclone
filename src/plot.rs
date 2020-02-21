@@ -111,7 +111,7 @@ fn hex_coord(n: usize, r: f64) -> (f64, f64) {
 
 // Pack circles of given radii.  There is probably a literature on this, and this is probably
 // a very crappy algorithm.  The answer is certainly not optimal.  The run time is O(n^2) where
-// the constant includes a factor of 100.  Return centers for the circles.
+// the constant includes a factor of 10^5.  Return centers for the circles.
 
 fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     let mut c = Vec::<(f64, f64)>::new();
@@ -121,7 +121,9 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     c.push((0.0, 0.0));
     let mut bigr = r[0];
     let mut rand = 0i64;
-    // XXX -- supposed to be 100
+    // We use a ridiculously large sample.  Reducing it to 1000 substantially reduces symmetry.
+    // Presumably as the number of clusters increases, the sample would need to be increased
+    // (ideally) to increase symmetry.
     const SAMPLE: usize = 100000;
     const MUL: f64 = 1.5;
     for i in 1..r.len() {

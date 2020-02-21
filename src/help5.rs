@@ -424,7 +424,8 @@ pub fn help5(args: &Vec<String>) {
              disk having the given color, and each clonotype is shown as a cluster of these small \
              disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
-             (see \"enclone help filter\") so that tiny clonotypes do not dominate.\n\n",
+             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  Note that \
+             plotting may be slow.\n\n",
         );
 
         std::process::exit(0);
