@@ -213,6 +213,20 @@ pub fn read_json(
                             continue;
                         }
                         let feature_id = to_ref_index[&feature_id];
+                        let gene_name = a["feature"]["gene_name"]
+                                .to_string()
+                                .between("\"", "\"")
+                                .to_string();
+                        if refdata.name[feature_id] != gene_name {
+                            eprintln!( "\nThere is an inconsistency between the reference \
+                                file used to create the Cell Ranger output files in\n{}\nand the \
+                                reference that enclone is using.  The one has the gene \
+                                {} whereas the other\nhas the gene {}.\n\
+                                You should be able to remedy this by supplying\n\
+                                REF=vdj_reference_fasta_file as an argument to enclone.\n",
+                                json.rev_before("/"), gene_name, refdata.name[feature_id] );
+                            std::process::exit(1);
+                        }
                         let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
                         if region_type == "L-REGION+V-REGION" {
                             v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
