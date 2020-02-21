@@ -1,10 +1,14 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+// The purpose of this file is the function plot_clonotypes.
+
 use crate::defs::*;
 use io_utils::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
 // radius r, starting at the origin and going first to the right.  Return the coordinates of the
@@ -13,7 +17,7 @@ use std::io::*;
 //         AS:393993713143808@1470946829076/The-hexagonal-coordinate-system.png
 // There is no attempt at efficiency.
 
-pub fn hex_coord(n: usize, r: f64) -> (f64, f64) {
+fn hex_coord(n: usize, r: f64) -> (f64, f64) {
     // Special case.
     if n == 0 {
         return (0.0, 0.0);
@@ -25,13 +29,11 @@ pub fn hex_coord(n: usize, r: f64) -> (f64, f64) {
     let mut hpos = n - 1;
     loop {
         if hpos < k {
-            // WAS <= *******************************************************************
             break;
         }
         hpos -= k;
         hid += 1;
         k += 6;
-        // k *= 2;
     }
     // Find coordinates.
     let c = r * 3.0f64.sqrt() / 2.0; // center to center distance, divided by 2
@@ -42,7 +44,7 @@ pub fn hex_coord(n: usize, r: f64) -> (f64, f64) {
         // Traverse the six faces, as far as we have to go.
         for _ in 0..hid {
             x -= c;
-            y += 1.5; // was c
+            y += 1.5;
             p -= 1;
             if p == 0 {
                 break;
@@ -102,11 +104,13 @@ pub fn hex_coord(n: usize, r: f64) -> (f64, f64) {
     (x, y)
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Pack circles of given radii.  There is probably a literature on this, and this is probably
 // a very crappy algorithm.  The answer is certainly not optimal.  The run time is O(n^2) where
 // the constant includes a factor of 100.  Return centers for the circles.
 
-pub fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
+fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     let mut c = Vec::<(f64, f64)>::new();
     if r.is_empty() {
         return c;
@@ -121,7 +125,9 @@ pub fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
         let mut q = Vec::<(f64, f64, f64)>::new();
         loop {
             for _ in 0..SAMPLE {
-                // Get a random point in [-1,+1] x [-1,+1].
+                // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
+                // generator (from the internet) for speed and reproducibility, although there
+                // might be something better in the standard packages.
                 let rand1 = 6_364_136_223_846_793_005i64
                     .wrapping_mul(rand)
                     .wrapping_add(1_442_695_040_888_963_407);
@@ -158,10 +164,12 @@ pub fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     c
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Given a collection of circles having specified colors, create an svg string that shows the
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
 
-pub fn circles_to_svg(
+fn circles_to_svg(
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
@@ -213,6 +221,8 @@ pub fn circles_to_svg(
     out
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn plot_clonotypes(
     ctl: &EncloneControl,
     exacts: &Vec<Vec<usize>>,
@@ -253,16 +263,6 @@ pub fn plot_clonotypes(
         radii.push(radius);
     }
     let centers = pack_circles(&radii);
-
-    /*
-    for i in 0..clusters.len() {
-        println!( "\nCLUSTER {} ==> radius {} ==> {}, {}", i, radii[i], centers[i].0, centers[i].1 );
-        for j in 0..clusters[i].1.len() {
-            println!( "{} ==> {}, {}", j, clusters[i].1[j].0, clusters[i].1[j].1 );
-        }
-    }
-    */
-
     for i in 0..clusters.len() {
         for j in 0..clusters[i].1.len() {
             clusters[i].1[j].0 += centers[i].0;
