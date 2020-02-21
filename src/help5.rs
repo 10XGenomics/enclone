@@ -422,8 +422,8 @@ pub fn help5(args: &Vec<String>) {
              given samples.  Unspecified samples will be black.  The colors should be valid colors \
              for use in an svg file, e.g. red, blue, green, etc.  Each cell is shown as a small \
              disk having the given color, and each clonotype is shown as a cluster of these small \
-             disks, which are positioned at random.  To use this, you probably want to use the \
-             `MIN_CELLS` option \
+             disks, which are positioned at random.  We suggest using the \
+             \\bold{MIN_CELLS} option \
              (see \"enclone help filter\") so that tiny clonotypes do not dominate.\n\n",
         );
 
