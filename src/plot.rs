@@ -37,8 +37,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
     let mut x = hid as f64 * 2.0 * c;
     let mut y = 0.0;
     let mut p = hpos;
-    println!(""); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    printme!( n, hid, hpos, p ); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if p > 0 {
         // Traverse the six faces, as far as we have to go.
         for _ in 0..hid {
@@ -46,7 +44,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
             y += 1.5; // was c
             p -= 1;
             if p == 0 {
-                println!("take 1"); // XXX
                 break;
             }
         }
@@ -55,7 +52,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
                 x -= 2.0*c;
                 p -= 1;
                 if p == 0 {
-                    println!("take 2"); // XXX
                     break;
                 }
             }
@@ -65,7 +61,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
                     y -= 1.5;
                     p -= 1;
                     if p == 0 {
-                        println!("take 3"); // XXX
                         break;
                     }
                 }
@@ -75,7 +70,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
                         y -= 1.5;
                         p -= 1;
                         if p == 0 {
-                            println!("take 4"); // XXX
                             break;
                         }
                     }
@@ -93,7 +87,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
                                 y += 1.5;
                                 p -= 1;
                                 if p == 0 {
-                                    println!("take 5"); // XXX
                                     break;
                                 }
                             }
@@ -103,7 +96,6 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
             }
         }
     }
-    printme!(x, y); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     x *= 2.0 / 3.0f64.sqrt();
     y *= 2.0 / 3.0f64.sqrt();
     (x, y)
@@ -125,8 +117,6 @@ pub fn pack_circles( r: &Vec<f64> ) -> Vec<(f64,f64)> {
     const SAMPLE : usize = 100000;
     const MUL : f64 = 1.5;
     for i in 1..r.len() {
-        println!(""); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        printme!( i, bigr, r[i] ); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let mut q = Vec::<(f64,f64,f64)>::new();
         loop {
             for _ in 0..SAMPLE {
@@ -161,7 +151,6 @@ pub fn pack_circles( r: &Vec<f64> ) -> Vec<(f64,f64)> {
                 break;
             }
         }
-        printme!( q[0].1, q[0].2 ); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         c.push( (q[0].1, q[0].2) );
         bigr = bigr.max( r[i] + (c[i].0*c[i].0 + c[i].1*c[i].1).sqrt() );
     }
@@ -262,13 +251,14 @@ pub fn plot_clonotypes(
     }
     let centers = pack_circles(&radii);
 
-    // XXX:
+    /*
     for i in 0..clusters.len() {
         println!( "\nCLUSTER {} ==> radius {} ==> {}, {}", i, radii[i], centers[i].0, centers[i].1 );
         for j in 0..clusters[i].1.len() {
             println!( "{} ==> {}, {}", j, clusters[i].1[j].0, clusters[i].1[j].1 );
         }
     }
+    */
 
     for i in 0..clusters.len() {
         for j in 0..clusters[i].1.len() {
