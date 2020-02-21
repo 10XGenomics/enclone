@@ -29,7 +29,8 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
         }
         hpos -= k;
         hid += 1;
-        k *= 2;
+        k += 6;
+        // k *= 2;
     }
     // Find coordinates.
     let c = r * 3.0f64.sqrt() / 2.0; // center to center distance, divided by 2
@@ -103,6 +104,8 @@ pub fn hex_coord(n: usize, r: f64) -> (f64,f64) {
         }
     }
     printme!(x, y); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    x *= 2.0 / 3.0f64.sqrt();
+    y *= 2.0 / 3.0f64.sqrt();
     (x, y)
 }
 
