@@ -269,6 +269,15 @@ pub fn plot_clonotypes(
                 n += 1;
             }
         }
+
+        // Move the colors around to get vertical separation, e.g. blues on the left, reds
+        // on the right.
+
+        colors.sort();
+        coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+        // Save.
+
         let mut radius = 0.0f64;
         for j in 0..coords.len() {
             radius =
