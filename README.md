@@ -6,6 +6,10 @@ other vertebrate species.
 It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
 characterization of individual immune cells.
 
+<dl>
+    <p style=”padding: 10px; color: grey; background-color: white; border: black 2px solid”>Text</p>
+</dl>
+
 For the general audience: every time you get sick, your body mounts an immune response involving
 selective amplification of immune cells and mutations within them.
 enclone allows you to see the history of individual immune cells within a 
