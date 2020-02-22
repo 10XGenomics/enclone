@@ -71,7 +71,7 @@ ________________________________________________________________________________
 
 ### How to display clonotypes produced by `enclone`
 
-<img align="left" src="img/clono.svgz" alt="honeycomb plot" title="honeycomb plot" />
+<img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
 <br>
 
