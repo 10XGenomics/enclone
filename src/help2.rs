@@ -239,7 +239,7 @@ pub fn help2(args: &Vec<String>) {
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
              \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             \\blue{https://github.com/10XDev/enclone/blob/master/HISTORY.md} \
+             \\green{https://github.com/10XDev/enclone/blob/master/HISTORY.md} \
              \\blue{for the history of what was changed}\n\
              \\blue{and when.  We will try not to break} \
              \\blue{things, but when we first introduce a feature, it may}\n\

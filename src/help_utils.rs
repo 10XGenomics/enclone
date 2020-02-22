@@ -203,6 +203,36 @@ pub fn print_to(x: &str) -> String {
             } else {
                 i += 1;
             }
+        } else if y[i..].starts_with(&['\\', 'g', 'r', 'e', 'e', 'n', '{']) {
+            let mut j = i + 7;
+            while j < y.len() {
+                if y[j] == '}' {
+                    break;
+                }
+                j += 1;
+            }
+            if j < y.len() {
+                let mut log = Vec::<u8>::new();
+                unsafe {
+                    if !PLAIN {
+                        emit_green_escape(&mut log);
+                    }
+                }
+                s += &strme(&log);
+                for k in i + 7..j {
+                    s.push(y[k]);
+                }
+                let mut log = Vec::<u8>::new();
+                unsafe {
+                    if !PLAIN {
+                        emit_end_escape(&mut log);
+                    }
+                }
+                s += &strme(&log);
+                i = j + 1;
+            } else {
+                i += 1;
+            }
         } else if y[i..].starts_with(&['\\', 'b', 'o', 'l', 'd', 'r', 'e', 'd', '{']) {
             let mut j = i + 9;
             while j < y.len() {
