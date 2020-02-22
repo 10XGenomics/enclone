@@ -212,7 +212,7 @@ pub fn read_json(
                         if !to_ref_index.contains_key(&feature_id) {
                             continue;
                         }
-                        let feature_id = to_ref_index[&feature_id];
+                        let feature_idx = to_ref_index[&feature_id];
                         let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
                         if region_type == "L-REGION+V-REGION" {
                             v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
@@ -222,17 +222,18 @@ pub fn read_json(
                             .to_string()
                             .between("\"", "\"")
                             .to_string();
-                        if refdata.name[feature_id] != gene_name {
+                        if refdata.name[feature_idx] != gene_name {
                             eprintln!(
                                 "\nThere is an inconsistency between the reference \
                                  file used to create the Cell Ranger output files in\n{}\nand the \
-                                 reference that enclone is using.  The one has the gene \
-                                 {} whereas the other\nhas the gene {}.\n\
+                                 reference that enclone is using.  For example, the feature \
+                                 numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
                                  You should be able to remedy this by supplying\n\
-                                 REF=vdj_reference_fasta_file as an argument to enclone.\n",
+                                 REF=vdj_reference_fasta_filename as an argument to enclone.\n",
                                 json.rev_before("/"),
+                                feature_id,
                                 gene_name,
-                                refdata.name[feature_id]
+                                refdata.name[feature_idx]
                             );
                             std::process::exit(1);
                         }
@@ -248,7 +249,7 @@ pub fn read_json(
                             if chain == "IGH".to_string() || chain == "TRB".to_string() {
                                 left = true;
                             }
-                            v_ref_id = feature_id;
+                            v_ref_id = feature_idx;
                             cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
                         } else {
                             // also check for IG chain?????????????????????????????????????????
@@ -256,19 +257,19 @@ pub fn read_json(
                             let ref_len = a["annotation_length"].as_u64().unwrap() as usize;
                             if region_type == "J-REGION" && ref_stop == ref_len {
                                 tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
-                                j_ref_id = feature_id;
+                                j_ref_id = feature_idx;
                                 j_start = a["contig_match_start"].as_i64().unwrap() as usize;
                                 j_start_ref =
                                     a["annotation_match_start"].as_i64().unwrap() as usize;
                             }
                             if region_type == "5'UTR" {
-                                u_ref_id = Some(feature_id);
+                                u_ref_id = Some(feature_idx);
                             }
                             if region_type == "D-REGION" {
-                                d_ref_id = Some(feature_id);
+                                d_ref_id = Some(feature_idx);
                             }
                             if region_type == "C-REGION" {
-                                c_ref_id = Some(feature_id);
+                                c_ref_id = Some(feature_idx);
                                 c_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
                             }
                         }
