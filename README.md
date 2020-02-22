@@ -71,9 +71,9 @@ ________________________________________________________________________________
 
 ### How to display clonotypes produced by `enclone`
 
-You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, like this:
-
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
+
+You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, like this:
 
 In this instance, datasets from pre- and post-vaccination timepoints are displayed.  Clonotypes 
 containing at least ten cells are shown, and individual cells are labeled blue for pre-vaccination 
@@ -83,6 +83,7 @@ MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red"
 ```
 to the `enclone` command line.  That causes `enclone` to generate the image shown above as the file
 `clono.svg`.
+<p>
 
 ___________________________________________________________________________________________________
 
