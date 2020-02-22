@@ -443,7 +443,8 @@ pub fn help4(args: &Vec<String>) {
         print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.\n\n",
+             counts are rounded to the nearest integer.  Note that this normalization is not \
+             completely correct: we simply scale the counts, rather than subsample reads.\n\n",
         );
         if !help_all {
             std::process::exit(0);
