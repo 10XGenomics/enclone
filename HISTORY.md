@@ -14,6 +14,7 @@ Things that are not included here:
 * Bug fixes that do not change results.
 * Updates to documentation.
 * Anything "under the hood" that will not be visible when using `enclone`.
+* Any changes made prior to initial public availability.
 
 The complete history may be seen by cloning the `enclone` repo and typing `git log`.
 
