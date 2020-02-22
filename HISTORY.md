@@ -1,6 +1,6 @@
 # `enclone` history
 
-This page provides the history of what was changed in `enclone` and when.  
+This page provides a selective history of what was changed in `enclone` and when.  
 
 -----
 
