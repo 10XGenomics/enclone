@@ -73,6 +73,8 @@ ________________________________________________________________________________
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
+<br>
+
 You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, like this:
 
 In this instance, datasets from pre- and post-vaccination timepoints are displayed.  Clonotypes 
