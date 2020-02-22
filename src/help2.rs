@@ -238,6 +238,12 @@ pub fn help2(args: &Vec<String>) {
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
+             \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
+             \\blue{https://github.com/10XDev/enclone/blob/master/HISTORY.md} \
+             \\blue{for the history of what was changed}\n\
+             \\blue{and when.  We will try not to break} \
+             \\blue{things, but when we first introduce a feature, it may}\n\
+             \\blue{not be just right, and we may have to to perturb it later.}\n\n\
              \\bold{Critical things we want to hear from you}\n\n\
              1. If you have trouble understanding the documentation.\n\n\
              2. If enclone crashes.  We always need to see the output you got.  Often we will \
