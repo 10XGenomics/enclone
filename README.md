@@ -7,8 +7,8 @@ It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the 
 characterization of individual immune cells.
 
 For the general audience: every time you get sick, your body mounts an immune response involving
-selective amplification of immune cells and mutations within them.  From a biological sample 
-(such as a blood draw), enclone allows you to see the history of individual immune cells within a 
+selective amplification of immune cells and mutations within them.
+enclone allows you to see the history of individual immune cells within a 
 biological sample (such as a blood draw or biopsy): how they evolved in response to antigens, 
 including those in viruses, bacteria and tumors.  Understanding this is a highly active 
 research area with many mysteries that will take years if not decades to fully sort out, with 
