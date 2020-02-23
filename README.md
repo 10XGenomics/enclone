@@ -135,6 +135,7 @@ and that we may not be able to answer your question.
 
 ___________________________________________________________________________________________________
 
-### How to compile the `enclone` software (for experts!)
+### How to compile the `enclone` software
 
-Please see [compilation](COMPILE.md).
+It is not difficult but you should not need to do this unless you want to contribute
+to the `enclone` codebase.  Please see [compilation](COMPILE.md).
