@@ -473,7 +473,8 @@ pub fn help1(args: &Vec<String>) {
         print_enclone(plain);
         print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
-             and more\nimportantly for amino acids, to represent different codons.\n\n\
+             and more\nimportantly for amino acids, to represent different codons.  This is \
+             done automatically but you can turn it off....\n\n\
              \\boldred{PLEASE READ THIS:}\n\n\
              You can turn off escape codes by adding \\bold{PLAIN} to any command.  Use this if \
              you want to peruse output using a text editor which does not grok the escape \
