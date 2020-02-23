@@ -131,7 +131,7 @@ where the path is where your Cell Ranger output live, but there are many options
 about.  Most of the documentation for `enclone` lives in menus within it.  To get started you
 should:
 
-1. Type `enclone help`, and read the terminal setup instructions there.
+1. Type `enclone help`, to make sure your terminal window works for `enclone`.
 
 2. Type `enclone` to get to the main `enclone` help menu.
 
