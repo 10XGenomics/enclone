@@ -374,7 +374,7 @@ pub fn help1(args: &Vec<String>) {
              based on imperfect information.  V segments vary in their expression frequency and \
              thus the more cells which are present, the more complete the information will be.  It \
              is also not possible to accurately determine the last ~15 bases in a V chain from \
-             transcript data.\n\n\
+             transcript data because these bases are mutated during recombination.\n\n\
              \
              \\boldred{4}.  What joins are tested.  \
              Pairs of exact subclonotypes are considered for joining, as described below.  This \
