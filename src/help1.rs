@@ -269,6 +269,10 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("", "you can use this to search all the help pages");
         print_tab2(&rows);
+        print(
+            "Additional documentation may be found at \
+             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+        );
         if !help_all {
             std::process::exit(0);
         }
@@ -611,6 +615,7 @@ pub fn help1(args: &Vec<String>) {
         // print main table
 
         print_tab2(&rows);
+        println!("");
 
         // print footnote
 
