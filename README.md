@@ -128,8 +128,9 @@ ________________________________________________________________________________
 
 It can be as sample as typing e.g. `enclone BCR=/home/my_name/experiment_123`
 where the path is where your Cell Ranger output live, but there are many options to learn
-about.  Most of the documentation for `enclone` lives in menus within it.  To get started you
-should:
+about.  For example, if you want to combine many datasets, you can do that, but you probably
+need to provide a metadata file that describes the datasets.  You can find most of the `enclone`
+documentation within its online menus.  To get started you should:
 
 1. Type `enclone help`, to make sure your terminal window works for `enclone`.
 
