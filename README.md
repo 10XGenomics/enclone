@@ -138,14 +138,14 @@ documentation within its online menus.  To get started you should:
 
 ___________________________________________________________________________________________________
 
-### Questions
-
-Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
-and that we may not be able to answer your question.
-
-___________________________________________________________________________________________________
-
 ### How to compile the `enclone` software
 
 It is not difficult but you should not need to do this unless you want to contribute
 to the `enclone` codebase.  Please see [compilation](COMPILE.md).
+
+___________________________________________________________________________________________________
+
+### Questions
+
+Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
+and that we may not be able to answer your question.
