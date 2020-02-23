@@ -118,13 +118,22 @@ git clone git@github.com:10XDev/enclone.git
 and after doing that, `enclone/datasets` will be the directory containing the datasets
 that are prepackaged with `enclone`.
 
-7. Type `enclone help`, and read the terminal setup instructions there.
-
-8. Type `enclone` to get to the main `enclone` help menu.
-
 <b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
 executable and the datasets.  For the latter, you can simply type `git pull` inside the `enclone`
 directory as created above.
+
+___________________________________________________________________________________________________
+
+### How to run `enclone`
+
+It can be as sample as typing e.g. `enclone BCR=/home/my_name/experiment_123`
+where the path is where your Cell Ranger output live, but there are many options to learn
+about.  Most of the documentation for `enclone` lives in menus within it.  To get started you
+should:
+
+1. Type `enclone help`, and read the terminal setup instructions there.
+
+2. Type `enclone` to get to the main `enclone` help menu.
 
 ___________________________________________________________________________________________________
 
