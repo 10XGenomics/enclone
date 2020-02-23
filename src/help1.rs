@@ -457,7 +457,10 @@ pub fn help1(args: &Vec<String>) {
         print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
-             arguments.\n\
+             arguments.  You can set any command-line argument this way.  The reason why you might \
+             want to use this feature is if you find yourself using the same \
+             command-line option over and over, and it is more convenient to set it once as \
+             an environment variable.\n\
              • For example, setting the environment variable \\bold{ENCLONE_PRE} to \
              \\bold{/Users/me/enclone_data} \
              is equivalent to providing the command-line argument \
