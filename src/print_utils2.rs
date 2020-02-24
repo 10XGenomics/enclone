@@ -241,6 +241,8 @@ pub fn row_fill(
     }
 
     // Output lead variable columns.
+    // WARNING!  If you add lead variables, you may need to add them to the function
+    // LinearCondition::require_valid_variables.
 
     for i in 0..lvars.len() {
         if lvars[i].starts_with('g') && lvars[i].after("g").parse::<usize>().is_ok() {

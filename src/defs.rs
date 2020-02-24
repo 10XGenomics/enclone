@@ -63,7 +63,7 @@ impl LinearCondition {
         } else {
             eprintln!(
                 "\nImproperly formatted condition, no inequality symbol, \
-                 please type \"enclone help display\": {}.",
+                 please type \"enclone help display\": {}.\n",
                 x
             );
             std::process::exit(1);
@@ -73,7 +73,7 @@ impl LinearCondition {
         }
         if !rhs.parse::<f64>().is_ok() {
             eprintln!(
-                "\nImproperly formatted condition, right-hand side invalid: {}.",
+                "\nImproperly formatted condition, right-hand side invalid: {}.\n",
                 x
             );
             std::process::exit(1);
@@ -112,7 +112,7 @@ impl LinearCondition {
                 }
                 if !coeffi.parse::<f64>().is_ok() {
                     eprintln!(
-                        "\nImproperly formatted condition, coefficient {} is invalid: {}.",
+                        "\nImproperly formatted condition, coefficient {} is invalid: {}.\n",
                         coeffi, x
                     );
                     std::process::exit(1);
@@ -151,6 +151,38 @@ impl LinearCondition {
             return lhs <= self.rhs;
         } else {
             return lhs >= self.rhs;
+        }
+    }
+
+    pub fn require_valid_variables(&self, ctl: &EncloneControl) {
+        let lvars = &ctl.clono_print_opt.lvars;
+        let mut lvars0 = Vec::<String>::new();
+        let exclude = vec![
+            "datasets", "donors", "near", "far", "n_gex", "gex_med", "gex_max", "entropy", "ext",
+        ];
+        for j in 0..lvars.len() {
+            let mut ok = true;
+            for m in 0..exclude.len() {
+                if lvars[j] == exclude[m] {
+                    ok = false;
+                }
+            }
+            if lvars[j].starts_with("g") && lvars[j].after("g").parse::<usize>().is_ok() {
+                ok = false;
+            }
+            if ok {
+                lvars0.push(lvars[j].clone());
+            }
+        }
+        unique_sort(&mut lvars0);
+        for i in 0..self.var.len() {
+            if !bin_member(&lvars0, &self.var[i]) {
+                eprintln!(
+                    "\nFound invalid variable {} in linear condition.\n",
+                    self.var[i]
+                );
+                std::process::exit(1);
+            }
         }
     }
 }

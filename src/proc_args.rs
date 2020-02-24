@@ -552,4 +552,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
     proc_args_tail(&mut ctl, &args, internal_run);
+
+    // Check for invalid variables in linear conditions.
+
+    for i in 0..ctl.clono_filt_opt.bounds.len() {
+        ctl.clono_filt_opt.bounds[i].require_valid_variables(&ctl);
+    }
+    if ctl.gen_opt.gene_scan_test.is_some() {
+        ctl.gen_opt
+            .gene_scan_test
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+        ctl.gen_opt
+            .gene_scan_control
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+    }
 }
