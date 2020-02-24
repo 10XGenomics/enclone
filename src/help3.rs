@@ -142,7 +142,7 @@ pub fn help3(args: &Vec<String>) {
         doc!("raw_feature_bc_matrix/features.tsv.gz", "GEX");
         doc!("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         print_tab2(&rows);
-        println!("The exact files that are used could be changed in the future.\n");
+        println!("\nThe exact files that are used could be changed in the future.\n");
         // end_escape!();
         print(
             "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
@@ -255,6 +255,7 @@ pub fn help3(args: &Vec<String>) {
         doc!("group_id", "identifier of clonotype group - 0,1, ...");
         ldoc!("group_ncells", "total number of cells in the group");
         print_tab2(&rows);
+        println!("");
 
         rows.clear();
         bold!();
@@ -267,6 +268,7 @@ pub fn help3(args: &Vec<String>) {
         ldoc!("clonotype_ncells", "total number of cells in the clonotype");
         ldoc!("nchains", "total number of chains in the clonotype");
         print_tab2(&rows);
+        println!("");
 
         rows.clear();
         print(
@@ -301,6 +303,7 @@ pub fn help3(args: &Vec<String>) {
         doc!("", "all of these are comma-separated lists");
         doc!("", "but differ from the donor ref");
         print_tab2(&rows);
+        println!("");
 
         rows.clear();
         print("\\bold{4. per exact subclonotype fields}\n\n");
@@ -322,6 +325,7 @@ pub fn help3(args: &Vec<String>) {
         );
         doc!("the LVARS and LVARSP options.", "\\ext");
         print_tab2(&rows);
+        println!("");
 
         rows.clear();
         print(
@@ -375,6 +379,7 @@ pub fn help3(args: &Vec<String>) {
         );
         doc!("of CVARS and CVARSP (or the default behavior).", "\\ext");
         print_tab2(&rows);
+        println!("");
         if !help_all {
             std::process::exit(0);
         }

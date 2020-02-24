@@ -269,6 +269,10 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("", "you can use this to search all the help pages");
         print_tab2(&rows);
+        print(
+            "Additional documentation may be found at \
+             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+        );
         if !help_all {
             std::process::exit(0);
         }
@@ -374,7 +378,7 @@ pub fn help1(args: &Vec<String>) {
              based on imperfect information.  V segments vary in their expression frequency and \
              thus the more cells which are present, the more complete the information will be.  It \
              is also not possible to accurately determine the last ~15 bases in a V chain from \
-             transcript data.\n\n\
+             transcript data because these bases are mutated during recombination.\n\n\
              \
              \\boldred{4}.  What joins are tested.  \
              Pairs of exact subclonotypes are considered for joining, as described below.  This \
@@ -457,7 +461,10 @@ pub fn help1(args: &Vec<String>) {
         print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
-             arguments.\n\
+             arguments.  You can set any command-line argument this way.  The reason why you might \
+             want to use this feature is if you find yourself using the same \
+             command-line option over and over, and it is more convenient to set it once as \
+             an environment variable.\n\
              • For example, setting the environment variable \\bold{ENCLONE_PRE} to \
              \\bold{/Users/me/enclone_data} \
              is equivalent to providing the command-line argument \
@@ -470,7 +477,8 @@ pub fn help1(args: &Vec<String>) {
         print_enclone(plain);
         print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
-             and more\nimportantly for amino acids, to represent different codons.\n\n\
+             and more\nimportantly for amino acids, to represent different codons.  This is \
+             done automatically but you can turn it off....\n\n\
              \\boldred{PLEASE READ THIS:}\n\n\
              You can turn off escape codes by adding \\bold{PLAIN} to any command.  Use this if \
              you want to peruse output using a text editor which does not grok the escape \
@@ -607,6 +615,7 @@ pub fn help1(args: &Vec<String>) {
         // print main table
 
         print_tab2(&rows);
+        println!("");
 
         // print footnote
 
