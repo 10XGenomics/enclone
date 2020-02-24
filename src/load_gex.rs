@@ -190,7 +190,11 @@ pub fn load_gex(
                     load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
                     if *pre != "".to_string() {
-                        let go = ctl.sample_info.gex_path[i].clone();
+                        let mut go = ctl.sample_info.gex_path[i].clone();
+                        if go.ends_with("/HEAD/outs") {
+                            let id = go.rev_before("/HEAD/outs").rev_after("/");
+                            go = format!( "{}/{}/outs", pre, id );
+                        }
                         let dir_new = format!("{}/raw_feature_bc_matrix", go);
                         let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);
                         if !path_exists(&dir_new) {
@@ -226,6 +230,27 @@ pub fn load_gex(
                             copy(
                                 &format!("{}/barcodes.tsv.gz", dir),
                                 &format!("{}/barcodes.tsv.gz", dir_new),
+                            )
+                            .unwrap();
+                        }
+                        let mut fdir = format!("{}/filtered_feature_bc_matrix", gex_outs[i]);
+                        if !path_exists(&fdir) {
+                            fdir = format!("{}/filtered_gene_bc_matrices_mex", gex_outs[i]);
+                        }
+                        let fdir_new = format!("{}/filtered_feature_bc_matrix", go);
+                        if !path_exists(&fdir_new) {
+                            create_dir_all(&fdir_new).unwrap();
+                        }
+                        if path_exists(&format!("{}/GRCh38", fdir)) {
+                            copy(
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir),
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir_new),
+                            )
+                            .unwrap();
+                        } else {
+                            copy(
+                                &format!("{}/barcodes.tsv.gz", fdir),
+                                &format!("{}/barcodes.tsv.gz", fdir_new),
                             )
                             .unwrap();
                         }
