@@ -111,3 +111,5 @@ positive to be a clonotype that contains cells from multiple donors.
 
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
+
+ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotations

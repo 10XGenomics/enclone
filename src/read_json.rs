@@ -71,6 +71,7 @@ pub fn json_error(json: Option<&str>) {
 // only the information that we need.
 
 pub fn read_json(
+    accept_inconsistent: bool,
     sample_info: &SampleInfo,
     li: usize,
     json: &String,
@@ -222,7 +223,7 @@ pub fn read_json(
                             .to_string()
                             .between("\"", "\"")
                             .to_string();
-                        if refdata.name[feature_idx] != gene_name {
+                        if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
                             eprintln!(
                                 "\nThere is an inconsistency between the reference \
                                  file used to create the Cell Ranger output files in\n{}\nand the \
@@ -511,6 +512,7 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(
+            ctl.gen_opt.accept_inconsistent,
             &ctl.sample_info,
             li,
             &json,

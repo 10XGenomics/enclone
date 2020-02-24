@@ -191,6 +191,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&args[i], "GRAPH") {
             ctl.gen_opt.graph = true;
+        } else if is_simple_arg(&args[i], "ACCEPT_INCONSISTENT") {
+            ctl.gen_opt.accept_inconsistent = true;
         } else if is_simple_arg(&args[i], "NCROSS") {
             ctl.clono_filt_opt.ncross = true;
         } else if is_simple_arg(&args[i], "NWEAK_CHAINS") {
