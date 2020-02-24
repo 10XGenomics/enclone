@@ -292,10 +292,11 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{3. Why is enclone slow for me?}\n\n");
         print(
-            "It should not be.  When we use it, it typically takes a few seconds for a single \
-             dataset, and longer for multiple datasets.  If you have \
-             encountered an example where it is slow, please write to us, so we can improve its \
-             performance.\n\n",
+            "On a single VDJ dataset, it typically runs for us in a few seconds, on a Mac or Linux \
+             server.  Runs where we combine several hundred datasets execute in a couple minutes \
+             (on a server).  Your mileage could vary, and we are interested in cases where \
+             it is underperforming.  Let us know.  We are aware of several things that could be \
+             done to speed up enclone.\n\n",
         );
 
         print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");

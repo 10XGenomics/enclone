@@ -6,13 +6,13 @@ other vertebrate species.
 It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
 characterization of individual immune cells.
 
-For the general audience: every time you get sick, your body mounts an immune response involving
-selective amplification of immune cells and mutations within them.  From a biological sample 
-(such as a blood draw), enclone allows you to see the history of individual immune cells within a 
-biological sample (such as a blood draw or biopsy): how they evolved in response to antigens, 
-including those in viruses, bacteria and tumors.  Understanding this is a highly active 
-research area with many mysteries that will take years if not decades to fully sort out, with 
-profound implications for biology and medicine.  Welcome to the frontier!
+> For the general audience: every time you get sick, your body mounts an immune response involving
+> selective amplification of immune cells and mutations within them.
+> enclone allows you to see the history of individual immune cells within a 
+> biological sample (such as a blood draw or biopsy): how they evolved in response to antigens, 
+> including those in viruses, bacteria and tumors.  Understanding this is a highly active 
+> research area with many mysteries that will take years if not decades to fully sort out, with 
+> profound implications for biology and medicine.  Welcome to the frontier!
 
 `enclone` and this page are designed for immunologists, but if
 you're simply curious, there's nothing to stop you from downloading and playing with it.
@@ -69,6 +69,27 @@ as possible.  You can write to us at enclone@10xgenomics.com.
 
 ___________________________________________________________________________________________________
 
+### How to display clonotypes produced by `enclone`
+
+<img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
+
+<br>
+
+You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, as shown
+on the left.
+
+In this instance, datasets from pre- and post-vaccination timepoints are displayed.  Clonotypes 
+containing at least ten cells are shown, and individual cells are labeled blue for pre-vaccination 
+and red for post-vaccination.  To generate the plot, all that was needed was to add
+```
+MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red"
+```
+to the `enclone` command line.  That causes `enclone` to generate the image as the file `clono.svg`.
+
+<br>
+<br>
+
+___________________________________________________________________________________________________
 
 ### How to download and install `enclone`
 
@@ -97,13 +118,30 @@ git clone git@github.com:10XDev/enclone.git
 and after doing that, `enclone/datasets` will be the directory containing the datasets
 that are prepackaged with `enclone`.
 
-7. Type `enclone help`, and read the terminal setup instructions there.
-
-8. Type `enclone` to get to the main `enclone` help menu.
-
 <b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
 executable and the datasets.  For the latter, you can simply type `git pull` inside the `enclone`
 directory as created above.
+
+___________________________________________________________________________________________________
+
+### How to run `enclone`
+
+It can be as sample as typing e.g. `enclone BCR=/home/my_name/experiment_123`
+where the path is where your Cell Ranger outputs live, but there are many options to learn
+about.  For example, if you want to combine many datasets, you can do that, but you probably
+need to provide a metadata file that describes the datasets.  You can find most of the `enclone`
+documentation within its online menus.  To get started you should:
+
+1. Type `enclone help`, to make sure your terminal window works for `enclone`.
+
+2. Type `enclone` to get to the main `enclone` help menu.
+
+___________________________________________________________________________________________________
+
+### How to compile the `enclone` software
+
+It is not difficult but you should not need to do this unless you want to contribute
+to the `enclone` codebase.  Please see [compilation](COMPILE.md).
 
 ___________________________________________________________________________________________________
 
@@ -111,9 +149,3 @@ ________________________________________________________________________________
 
 Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
 and that we may not be able to answer your question.
-
-___________________________________________________________________________________________________
-
-### How to compile the `enclone` software (for experts!)
-
-Please see [compilation](COMPILE.md).

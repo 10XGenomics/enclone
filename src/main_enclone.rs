@@ -72,6 +72,13 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut refdata = RefData::new();
     let mut refx = String::new();
     if ctl.gen_opt.refname.len() > 0 {
+        if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
+            eprintln!(
+                "\nProblem with REF: \"{}\"\nis a directory, not a file.\n",
+                ctl.gen_opt.refname
+            );
+            std::process::exit(1);
+        }
         let fx = File::open(&ctl.gen_opt.refname);
         if fx.is_err() {
             eprintln!(
