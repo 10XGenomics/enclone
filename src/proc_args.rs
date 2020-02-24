@@ -51,7 +51,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.pre = args[i].after("PRE=").to_string();
         }
     }
-    ctl.gen_opt.h5 = true;
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -151,7 +150,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
-            ctl.gen_opt.h5 = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {

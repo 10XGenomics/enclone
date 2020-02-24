@@ -193,7 +193,7 @@ pub fn load_gex(
                         let mut go = ctl.sample_info.gex_path[i].clone();
                         if go.ends_with("/HEAD/outs") {
                             let id = go.rev_before("/HEAD/outs").rev_after("/");
-                            go = format!( "{}/{}/outs", pre, id );
+                            go = format!("{}/{}/outs", pre, id);
                         }
                         let dir_new = format!("{}/raw_feature_bc_matrix", go);
                         let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);

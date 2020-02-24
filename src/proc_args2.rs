@@ -289,6 +289,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.pretty = true;
     let mut nopretty = false;
+    ctl.gen_opt.h5 = true;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN") {
             ctl.pretty = false;
@@ -301,6 +302,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
         if is_simple_arg(&args[i], "CELLRANGER") {
             ctl.gen_opt.cellranger = true;
+        }
+        if is_simple_arg(&args[i], "NH5") {
+            ctl.gen_opt.h5 = false;
         }
     }
 
