@@ -412,7 +412,8 @@ pub fn help1(args: &Vec<String>) {
              specifically, given d shared mutations, and k total mutations (across the two cells), \
              we compute the probability p that an sample with replacement of k items from a set \
              whose size is the total number of bases in the V..J segments, yields at most k – d \
-             distinct elements.\n\n\
+             distinct elements.  The probability is an approximation, for the method please see\n\
+             \\green{https://docs.rs/stirling_numbers/0.1.0/stirling_numbers}.\n\n\
              \
              \\boldred{9}.  Are there too many CDR3 mutations?  \
              Next, let N be \"the number of DNA sequences that differ from the given CDR3 \
@@ -420,7 +421,7 @@ pub fn help1(args: &Vec<String>) {
              cd is the number of differences between the given CDR3 nucleotide sequences, and n \
              is the total length in nucleotides of the CDR3 sequences (for the two chains), we \
              compute the total number N of strings of length n that are obtainable by perturbing \
-             a given string of length n, which is sum( choose(n,m), m = 0..=cd) ).\n\n\
+             a given string of length n, which is\nsum( choose(n,m), m = 0..=cd) ).\n\n\
              \
              \\boldred{10}.  Key join criteria.  \
              Two cells sharing sufficiently many shared differences and sufficiently few \
