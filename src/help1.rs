@@ -430,7 +430,9 @@ pub fn help1(args: &Vec<String>) {
              fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
              two cells lie in the same true clonotype.  To join two cells into the same \
              clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
-             heuristically determined (and somewhat arbitrary) constant 1,000,000.\n\n\
+             constant 1,000,000.  This constant was arrived at by empirically balancing \
+             sensitivity and specificity across a large collection of datasets.  See discussion \
+             of performance below.\n\n\
              \
              \\boldred{11}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
