@@ -138,18 +138,16 @@ pub fn row_fill(
                     } else {
                         let z1 = gex_info.h5_indptr[li][p as usize] as usize;
                         let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                        let d: Vec<u32> = gex_info.h5_data[li]
+                        let d: Vec<u32> = d_readers[li]
                             .as_ref()
                             .unwrap()
-                            .as_reader()
                             .read_slice(&s![z1..z2])
                             .unwrap()
                             .to_vec();
                         d_all[l] = d.clone();
-                        let ind: Vec<u32> = gex_info.h5_indices[li]
+                        let ind: Vec<u32> = ind_readers[li]
                             .as_ref()
                             .unwrap()
-                            .as_reader()
                             .read_slice(&s![z1..z2])
                             .unwrap()
                             .to_vec();
