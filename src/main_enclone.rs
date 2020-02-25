@@ -280,7 +280,15 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Form equivalence relation on exact subclonotypes.
 
-    let eq: EquivRel = join_exacts(is_bcr, &refdata, &ctl, &exact_clonotypes, &info);
+    let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
+    let eq: EquivRel = join_exacts(
+        is_bcr,
+        &refdata,
+        &ctl,
+        &exact_clonotypes,
+        &info,
+        &mut join_info,
+    );
     if ctl.comp {
         if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
             println!("");
@@ -303,6 +311,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &eq,
         &gex_info,
+        &join_info,
     );
     if ctl.comp {
         println!("\nused {:.2} seconds making orbits", elapsed(&torb));

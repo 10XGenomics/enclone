@@ -30,7 +30,16 @@ pub fn group_and_print_clonotypes(
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
+    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
 ) {
+    // Build index to join info.
+
+    let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
+    for i in 0..join_info.len() {
+        to_join_info[join_info[i].0].push(i);
+        to_join_info[join_info[i].1].push(i);
+    }
+
     // Set up for parseable output.
 
     #[allow(bare_trait_objects)]
@@ -216,6 +225,17 @@ pub fn group_and_print_clonotypes(
                 m += 1;
             }
             last_width = m - 1;
+
+            // Print join info.
+
+            let mut ji = Vec::<usize>::new();
+            for u in exacts[oo].iter() {
+                ji.append(&mut to_join_info[*u].clone());
+            }
+            unique_sort(&mut ji);
+            for i in 0..ji.len() {
+                println!("{}", strme(&join_info[ji[i]].3));
+            }
 
             // Generate fasta output.
 

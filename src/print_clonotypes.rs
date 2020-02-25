@@ -56,6 +56,7 @@ pub fn print_clonotypes(
     info: &Vec<CloneInfo>,
     eq: &EquivRel,
     gex_info: &GexInfo,
+    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
 ) {
     // Make an abbreviation.
 
@@ -1041,6 +1042,7 @@ pub fn print_clonotypes(
         &ctl,
         &parseable_fields,
         &mut out_datas,
+        &join_info,
     );
 
     // Do gene scan.
