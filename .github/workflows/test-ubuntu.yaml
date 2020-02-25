@@ -1,6 +1,6 @@
-name: build master
+name: Check formatting
 # This workflow is triggered on pushes to the repository.
-on: pull request
+on: pull_request
 
 jobs:
   build:
