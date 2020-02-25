@@ -114,6 +114,8 @@ fn test_enclone() {
         "BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F=\"(IGHV3-7_g)>=4.5\" MIN_CHAINS=2 SUM MEAN",
         // 30. tests d_univ and d_donor
         "BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW",
+        // 31. tests Cell Ranger 3.1 output
+        "BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
