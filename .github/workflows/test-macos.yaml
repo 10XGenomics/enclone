@@ -1,11 +1,11 @@
-name: Check formatting
+name: Check formatting MacOS
 # This workflow is triggered on pushes to the repository.
 on: pull_request
 
 jobs:
   build:
     # Job name is Greeting
-    name: build-job
+    name: build-job-macos
     # This job runs on Linux
     runs-on: macos-latest
     steps:
