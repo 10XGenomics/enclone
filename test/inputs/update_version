@@ -1,0 +1,25 @@
+#!/bin/csh
+
+# CAUTION: hardcoded!
+
+set old = 13
+set new = 14
+
+set cnew = current{$new}
+set vold = version{$old}
+set vnew = version{$new}
+
+rm -rf $vnew
+cp -pr $vold $vnew
+cd $vnew
+foreach d (*)
+    echo "updating $d"
+    if ( -f /mnt/assembly/vdj/$cnew/$d/outs/all_contig_annotations.json ) then
+        rm $d/outs/all_contig_annotations.json.lz4
+        cp /mnt/assembly/vdj/$cnew/$d/outs/all_contig_annotations.json $d/outs
+        lz4 $d/outs/all_contig_annotations.json
+        rm $d/outs/all_contig_annotations.json
+    else if ( -f /mnt/assembly/vdj/$cnew/$d/outs/all_contig_annotations.json.lz4 ) then
+        cp /mnt/assembly/vdj/$cnew/$d/outs/all_contig_annotations.json.lz4 $d/outs
+    endif
+end
