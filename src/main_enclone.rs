@@ -70,7 +70,10 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Determine the Cell Ranger version that was used.  Really painful.
 
-    let json = format!("{}/all_contig_annotations.json", ctl.sample_info.dataset_path[0]);
+    let json = format!(
+        "{}/all_contig_annotations.json",
+        ctl.sample_info.dataset_path[0]
+    );
     let json_lz4 = format!(
         "{}/all_contig_annotations.json.lz4",
         ctl.sample_info.dataset_path[0]
@@ -109,7 +112,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut f = BufReader::new(open_maybe_compressed(&jsonx));
     match read_vector_entry_from_json(&mut f) {
         None => {
-            eprintln!( "\nFailure reading {}.\n", jsonx );
+            eprintln!("\nFailure reading {}.\n", jsonx);
         }
         Some(x) => {
             let v: Value = serde_json::from_str(strme(&x)).unwrap();
