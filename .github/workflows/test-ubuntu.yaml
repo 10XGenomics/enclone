@@ -22,3 +22,7 @@ jobs:
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release --bin enclone && export PATH=target/release:$PATH
+      - name: unit tests
+        run: cargo test --release -- --nocapture
