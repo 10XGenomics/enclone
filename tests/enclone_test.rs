@@ -116,6 +116,8 @@ fn test_enclone() {
         "BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW",
         // 31. tests Cell Ranger 3.1 output
         "BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW",
+        // 32. tests Cell Ranger 2.0 output and RE
+        "BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE",
     ];
     //                       id    ok   output
     let mut results = Vec::<(usize, bool, String)>::new();
