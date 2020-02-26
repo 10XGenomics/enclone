@@ -1,9 +1,9 @@
 name: Check formatting Ubuntu
 
-on: 
+on:
   push:
-  branches:
-  - meryl/github-actions-1
+    branches:
+    - meryl/github-actions-1
 
 jobs:
   build:
