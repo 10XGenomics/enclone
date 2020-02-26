@@ -1,6 +1,8 @@
 name: Check formatting Ubuntu
 # This workflow is triggered on pushes to the repository.
-on: pull_request
+on: push
+  branches:
+    meryl/github-actions-1     
 
 jobs:
   build:
@@ -19,10 +21,22 @@ jobs:
           rustfmt --version 
       - name: Checkout git repository
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/checkout
-        uses: actions/checkout@master
+      - uses: actions/checkout@meryl/github-actions-1
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
         run: cargo build --release --bin enclone && export PATH=target/release:$PATH
       - name: unit tests
         run: cargo test --release -- --nocapture
+      - name: copy build
+        run: cp target/release/enclone enclone-ubuntu-1.0.0
+      - name: push build
+        run: |
+          echo 'https://10xbuild:${{secrets.GITHUB_PAT}}@github.com' >~/.git-credentials
+          git config --global credential.helper store
+          git config --global user.name 'github action'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git add enclone-ubuntu-1.0.0
+          git commit -m "Update enclone-ubuntu-1.0.0"
+          git push
