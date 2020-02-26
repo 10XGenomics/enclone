@@ -27,13 +27,15 @@ jobs:
       - name: unit tests
         run: cargo test --release -- --nocapture
       - name: copy build
-        run: cp target/release/enclone enclone-ubuntu-1.0.0
+        run: |
+          mkdir -p releases
+          cp target/release/enclone releases/enclone-ubuntu-1.0.0
       - name: push build
         run: |
           git config --global credential.helper store
           git config --global user.name 'github action'
           echo ${GITHUB_REPOSITORY} 
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git add enclone-ubuntu-1.0.0
+          git add releases/enclone-ubuntu-1.0.0
           git commit -m "Update enclone-ubuntu-1.0.0"
-          git push
+          git push origin HEAD:master
