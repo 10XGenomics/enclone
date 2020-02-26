@@ -121,6 +121,9 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
+    if ctl.gen_opt.current_ref {
+        ctl.gen_opt.cr_version = "4.0".to_string();
+    }
 
     // Build reference data.
 
