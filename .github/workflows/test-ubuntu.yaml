@@ -29,4 +29,12 @@ jobs:
       - name: copy build
         run: cp target/release/enclone enclone-ubuntu-1.0.0
       - name: push build
-        run: echo 'https://10xbuild:${{secrets.GITHUB_PAT}}@github.com' >~/.git-credentials
+        run: |
+          echo 'https://10xbuild:${{secrets.GITHUB_PAT}}@github.com' >~/.git-credentials
+          git config --global credential.helper store
+          git config --global user.name 'github action'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git add enclone-ubuntu-1.0.0
+          git commit -m "Update enclone-ubuntu-1.0.0"
+          git push
