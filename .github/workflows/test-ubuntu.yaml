@@ -33,8 +33,7 @@ jobs:
           git config --global credential.helper store
           git config --global user.name 'github action'
           echo ${GITHUB_REPOSITORY} 
-          echo ${GITHUB_REF:11}
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY  
-          git checkout "${GITHUB_REF:11}"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout master  
           git add enclone-ubuntu-1.0.0
           git commit -m "Update enclone-ubuntu-1.0.0"
