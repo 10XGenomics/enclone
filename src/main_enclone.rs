@@ -121,7 +121,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
-    if ctl.gen_opt.current_ref {
+    if ctl.gen_opt.current_ref || ctl.gen_opt.cellranger {
         ctl.gen_opt.cr_version = "4.0".to_string();
     }
 
