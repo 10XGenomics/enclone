@@ -7,7 +7,6 @@ use equiv::EquivRel;
 use perf_stats::*;
 use stats_utils::*;
 use std::time::Instant;
-use string_utils::*;
 use vector_utils::*;
 
 // partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
@@ -33,24 +32,29 @@ pub fn finish_join(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
-    results: &Vec<(usize, usize, usize, usize, Vec<u8>, Vec<(usize, usize)>)>,
+    results: &Vec<(
+        usize,
+        usize,
+        usize,
+        usize,
+        Vec<(usize, usize, bool, Vec<u8>)>,
+        Vec<(usize, usize)>,
+    )>,
+    join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
 ) -> EquivRel {
     // Tally results.
 
     let (mut joins, mut errors) = (0, 0);
     let timer3 = Instant::now();
-    let mut fail_count = 0;
     for l in 0..results.len() {
         joins += results[l].2;
         errors += results[l].3;
-        let s = strme(&results[l].4);
-        for line in s.lines() {
-            let mut t = line.to_string();
-            if line == "FAIL ZZZ" {
-                fail_count += 1;
-                t = format!("FAIL {}", fail_count);
-            }
-            println!("{}", t);
+        for i in 0..results[l].4.len() {
+            let u1 = results[l].4[i].0;
+            let u2 = results[l].4[i].1;
+            let err = results[l].4[i].2;
+            let log = results[l].4[i].3.clone();
+            join_info.push((u1, u2, err, log));
         }
     }
     if !ctl.silent {

@@ -9,6 +9,7 @@ use crate::defs::*;
 use crate::explore::*;
 use debruijn::dna_string::*;
 use io_utils::*;
+use itertools::Itertools;
 use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
@@ -32,7 +33,7 @@ pub fn json_error(json: Option<&str>) {
         "\n\nHere are possible sources of this problem:\n\n\
          1. If the file was generated using \
          Cell Ranger version < 3.1, please either\nregenerate the file using the \
-         current version, or else run this program with the RE option to\n\
+         current Cell Ranger version, or else run this program with the RE option to\n\
          regenerate annotations from scratch, but we warn you that this code \
          is not guaranteed to run\ncorrectly on outdated json files.\n\n\
          2. Make sure you have the correct chain type, TCR or BCR.\n\n\
@@ -71,6 +72,7 @@ pub fn json_error(json: Option<&str>) {
 // only the information that we need.
 
 pub fn read_json(
+    accept_inconsistent: bool,
     sample_info: &SampleInfo,
     li: usize,
     json: &String,
@@ -143,7 +145,7 @@ pub fn read_json(
                 let cdr3_dna: String;
                 let mut cdr3_start: usize;
                 if v.get("version").is_some() {
-                    *cr_version = v["version"].to_string();
+                    *cr_version = v["version"].to_string().between("\"", "\"").to_string();
                 }
 
                 // Reannotate.
@@ -222,7 +224,7 @@ pub fn read_json(
                             .to_string()
                             .between("\"", "\"")
                             .to_string();
-                        if refdata.name[feature_idx] != gene_name {
+                        if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
                             eprintln!(
                                 "\nThere is an inconsistency between the reference \
                                  file used to create the Cell Ranger output files in\n{}\nand the \
@@ -511,6 +513,7 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(
+            ctl.gen_opt.accept_inconsistent,
             &ctl.sample_info,
             li,
             &json,
@@ -522,9 +525,24 @@ pub fn parse_json_annotations_files(
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
     });
+    let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
         ctl.gen_opt.cr_version = results[i].4.clone();
+        if results[i].4.len() == 0 {
+            versions.push("≤3.1".to_string());
+        } else {
+            versions.push(results[i].4.clone());
+        }
+    }
+    unique_sort(&mut versions);
+    if versions.len() > 1 {
+        eprintln!(
+            "\nYou're using output from multiple Cell Ranger versons = {},\n\
+             which is not allowed.\n",
+            versions.iter().format(", ")
+        );
+        std::process::exit(1);
     }
     if ctl.comp {
         println!("used {:.1} seconds loading from json", elapsed(&tl));
