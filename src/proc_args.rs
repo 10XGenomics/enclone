@@ -33,7 +33,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         } else if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
             internal_run = true;
-            ctl.gen_opt.pre = "/mnt/assembly/vdj/current13".to_string();
+            ctl.gen_opt.pre = "/mnt/assembly/vdj/current14".to_string();
         }
     }
     for i in 1..args.len() {
@@ -51,7 +51,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.pre = args[i].after("PRE=").to_string();
         }
     }
-    ctl.gen_opt.h5 = true;
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -146,12 +145,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
+        } else if is_simple_arg(&args[i], "CURRENT_REF") {
+            ctl.gen_opt.current_ref = true;
         } else if is_simple_arg(&args[i], "SUM") {
             ctl.clono_print_opt.sum = true;
         } else if is_simple_arg(&args[i], "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
-            ctl.gen_opt.h5 = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {
@@ -193,6 +193,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&args[i], "GRAPH") {
             ctl.gen_opt.graph = true;
+        } else if is_simple_arg(&args[i], "ACCEPT_INCONSISTENT") {
+            ctl.gen_opt.accept_inconsistent = true;
         } else if is_simple_arg(&args[i], "NCROSS") {
             ctl.clono_filt_opt.ncross = true;
         } else if is_simple_arg(&args[i], "NWEAK_CHAINS") {
@@ -552,4 +554,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
     proc_args_tail(&mut ctl, &args, internal_run);
+
+    // Check for invalid variables in linear conditions.
+
+    for i in 0..ctl.clono_filt_opt.bounds.len() {
+        ctl.clono_filt_opt.bounds[i].require_valid_variables(&ctl);
+    }
+    if ctl.gen_opt.gene_scan_test.is_some() {
+        ctl.gen_opt
+            .gene_scan_test
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+        ctl.gen_opt
+            .gene_scan_control
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+    }
 }

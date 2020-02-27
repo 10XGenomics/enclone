@@ -289,6 +289,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.pretty = true;
     let mut nopretty = false;
+    ctl.gen_opt.h5 = true;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN") {
             ctl.pretty = false;
@@ -301,6 +302,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
         if is_simple_arg(&args[i], "CELLRANGER") {
             ctl.gen_opt.cellranger = true;
+        }
+        if is_simple_arg(&args[i], "NH5") {
+            ctl.gen_opt.h5 = false;
         }
     }
 
@@ -488,6 +492,9 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         if ctl.gen_opt.descrip {
             println!("");
             for i in 0..ctl.sample_info.n() {
+                if i > 0 {
+                    println!("");
+                }
                 println!(
                     "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
                     ctl.sample_info.dataset_id[i],
@@ -496,6 +503,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
                     ctl.sample_info.donor_id[i],
                     ctl.sample_info.descrips[i]
                 );
+                println!("vdj path = {}", ctl.sample_info.dataset_path[i]);
+                if !ctl.sample_info.gex_path.is_empty() {
+                    println!("gex path = {}", ctl.sample_info.gex_path[i]);
+                }
             }
         }
     }
