@@ -175,6 +175,20 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 if pg != "".to_string() {
                     let pg0 = pg.clone();
                     if internal_run
+                        && ctl.gen_opt.h5
+                        && ctl.gen_opt.pre != ""
+                        && !path_exists(&format!(
+                            "{}/{}/outs/raw_gene_bc_matrices_h5.h5",
+                            ctl.gen_opt.pre, pg
+                        ))
+                        && !path_exists(&format!(
+                            "{}/{}/outs/raw_feature_bc_matrix.h5",
+                            ctl.gen_opt.pre, pg
+                        ))
+                        && pg.parse::<u32>().is_ok()
+                    {
+                        pg = format!("{}", get_outs(&pg));
+                    } else if internal_run
                         && ctl.gen_opt.pre != ""
                         && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
                         && pg.parse::<u32>().is_ok()

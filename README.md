@@ -31,7 +31,6 @@ Each cell in a clonotype is typically represented by two or three chains.  Such 
 only be obtained from _single cell_ data!  From such data, clonotypes can be computationally
 approximated, with high accuracy.  The method we use for this is described briefly in the online
 documentation for `enclone`, and will be described separately in more detail.
-
 ___________________________________________________________________________________________________
 
 ### The `enclone` software
@@ -50,45 +49,6 @@ to see.
 profiling toolkit, including
 [Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), 
 with which `enclone` will be integrated (later).
-
-___________________________________________________________________________________________________
-
-### How to understand `enclone` output
-
-The example below shows how `enclone` prints out clonotypes.  This is something you'll need
-to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
-documentation, and because you can easily play with the sample datasets, you can gradually
-figure out how it all works.
-
-<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
-`enclone` to print clonotypes in machine-readable forms that are suitable for input to other
-programs.
-
-We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
-as possible.  You can write to us at enclone@10xgenomics.com.
-
-___________________________________________________________________________________________________
-
-### How to display clonotypes produced by `enclone`
-
-<img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
-
-<br>
-
-You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, as shown
-on the left.
-
-In this instance, datasets from pre- and post-vaccination timepoints are displayed.  Clonotypes 
-containing at least ten cells are shown, and individual cells are labeled blue for pre-vaccination 
-and red for post-vaccination.  To generate the plot, all that was needed was to add
-```
-MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red"
-```
-to the `enclone` command line.  That causes `enclone` to generate the image as the file `clono.svg`.
-
-<br>
-<br>
-
 ___________________________________________________________________________________________________
 
 ### How to download and install `enclone`
@@ -121,12 +81,11 @@ that are prepackaged with `enclone`.
 <b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
 executable and the datasets.  For the latter, you can simply type `git pull` inside the `enclone`
 directory as created above.
-
 ___________________________________________________________________________________________________
 
 ### How to run `enclone`
 
-It can be as sample as typing e.g. `enclone BCR=/home/my_name/experiment_123`
+Running `enclone` can be as simple as typing e.g. `enclone BCR=/home/my_name/experiment_123`
 where the path is where your Cell Ranger outputs live, but there are many options to learn
 about.  For example, if you want to combine many datasets, you can do that, but you probably
 need to provide a metadata file that describes the datasets.  You can find most of the `enclone`
@@ -135,7 +94,42 @@ documentation within its online menus.  To get started you should:
 1. Type `enclone help`, to make sure your terminal window works for `enclone`.
 
 2. Type `enclone` to get to the main `enclone` help menu.
+___________________________________________________________________________________________________
 
+### How to understand `enclone` output
+
+The example below shows how `enclone` prints out clonotypes.  This is something you'll need
+to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
+documentation, and because you can easily play with the sample datasets, you can gradually
+figure out how it all works.
+
+<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
+`enclone` to print clonotypes in machine-readable forms that are suitable for input to other
+programs.
+
+We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
+as possible.  You can write to us at enclone@10xgenomics.com.
+___________________________________________________________________________________________________
+
+### How to display clonotypes produced by `enclone`
+
+<img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
+
+<br>
+
+You can select clonotypes in `enclone` and then display them using a "honeycomb" plot, as shown
+on the left.
+
+In this instance, datasets from pre- and post-vaccination timepoints are displayed.  Clonotypes 
+containing at least ten cells are shown, and individual cells are labeled blue for pre-vaccination 
+and red for post-vaccination.  To generate the plot, all that was needed was to add
+```
+MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red"
+```
+to the `enclone` command line.  That causes `enclone` to generate the image as the file `clono.svg`.
+
+<br>
+<br>
 ___________________________________________________________________________________________________
 
 ### How to compile the `enclone` software
