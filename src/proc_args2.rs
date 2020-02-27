@@ -492,6 +492,9 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         if ctl.gen_opt.descrip {
             println!("");
             for i in 0..ctl.sample_info.n() {
+                if i > 0 {
+                    println!("");
+                }
                 println!(
                     "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
                     ctl.sample_info.dataset_id[i],
@@ -500,6 +503,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
                     ctl.sample_info.donor_id[i],
                     ctl.sample_info.descrips[i]
                 );
+                println!("vdj path = {}", ctl.sample_info.dataset_path[i]);
+                if !ctl.sample_info.gex_path.is_empty() {
+                    println!("gex path = {}", ctl.sample_info.gex_path[i]);
+                }
             }
         }
     }
