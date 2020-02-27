@@ -38,5 +38,5 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git add releases/enclone-ubuntu-1.0.0
           git commit -m "Update enclone-ubuntu-1.0.0"
-          git pull origin HEAD:master
-          git push origin HEAD:master
+          git pull --rebase origin HEAD:master
+          git push --rebase origin HEAD:master
