@@ -17,9 +17,11 @@ jobs:
           esac
           rustc --version
           rustfmt --version 
-      - name: Checkout git repository
+      - name: Clone git repository
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/checkout
-        uses: actions/checkout@master
+        run: git clone git@github.com:10XDev/enclone.git
+      - name: Update submodules
+        run: git submodule update --init --recursive
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
@@ -35,7 +37,6 @@ jobs:
           git config --global credential.helper store
           git config --global user.name 'github action'
           echo ${GITHUB_REPOSITORY} 
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git add releases/enclone-ubuntu-1.0.0
           git commit -m "Update enclone-ubuntu-1.0.0"
           git pull --rebase origin HEAD:master
