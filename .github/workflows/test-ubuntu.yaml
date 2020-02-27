@@ -48,3 +48,4 @@ jobs:
             "prerelease": false,
             "assets": "enclone-ubuntu-1.0.0"
             }'
+          POST https://uploads.github.com/repos/${{ secrets.GITHUB_TOKEN }}/${{ github.repository }}/releases/1/assets?name=enclone-ubuntu-1.0.0
