@@ -1,0 +1,24 @@
+name: Check formatting MacOS
+# This workflow is triggered on pushes to the repository.
+on: pull_request
+
+jobs:
+  build:
+    # Job name is Greeting
+    name: build-job-macos
+    # This job runs on Linux
+    runs-on: macos-latest
+    steps:
+      - name: Install Rust
+        run: |
+          case $(rustc --version) in
+            "rustc 1.40.0"*) ;;
+            *) rustup default 1.40.0 ;;
+          esac
+          rustc --version
+          rustfmt --version 
+      - name: Checkout git repository
+      # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/checkout
+        uses: actions/checkout@master
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
