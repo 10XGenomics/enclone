@@ -23,12 +23,14 @@ use debruijn::dna_string::*;
 use equiv::EquivRel;
 use io_utils::*;
 use perf_stats::*;
+use serde_json::Value;
 use std::{
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     time::Instant,
 };
+use string_utils::*;
 use vector_utils::*;
 
 pub fn main_enclone(args: &Vec<String>) {
@@ -65,6 +67,63 @@ pub fn main_enclone(args: &Vec<String>) {
     // Get gene expression and antibody counts.
 
     let gex_info = get_gex_info(&mut ctl);
+
+    // Determine the Cell Ranger version that was used.  Really painful.
+
+    let json = format!(
+        "{}/all_contig_annotations.json",
+        ctl.sample_info.dataset_path[0]
+    );
+    let json_lz4 = format!(
+        "{}/all_contig_annotations.json.lz4",
+        ctl.sample_info.dataset_path[0]
+    );
+    if !path_exists(&json) && !path_exists(&json_lz4) {
+        eprintln!("can't find {} or {}", json, json_lz4);
+        std::process::exit(1);
+    }
+    let mut jsonx = json.clone();
+    if !path_exists(&json) {
+        jsonx = format!("{}.lz4", json);
+    }
+    if jsonx.contains('/') {
+        let p = jsonx.rev_before("/");
+        if !path_exists(&p) {
+            eprintln!(
+                "\nThere should be a directory\n\
+                 \"{}\"\n\
+                 but it does not exist.  Please check how you have specified the\n\
+                 input files to enclone, including the PRE argument.\n",
+                p
+            );
+            std::process::exit(1);
+        }
+    }
+    if !path_exists(&jsonx) {
+        eprintln!(
+            "\nThe path\n\
+             \"{}\"\n\
+             does not exist.  Please check how you have specified the\n\
+             input files to enclone, including the PRE argument.\n",
+            jsonx
+        );
+        std::process::exit(1);
+    }
+    let mut f = BufReader::new(open_maybe_compressed(&jsonx));
+    match read_vector_entry_from_json(&mut f) {
+        None => {
+            eprintln!("\nFailure reading {}.\n", jsonx);
+        }
+        Some(x) => {
+            let v: Value = serde_json::from_str(strme(&x)).unwrap();
+            if v.get("version").is_some() {
+                ctl.gen_opt.cr_version = v["version"].to_string().between("\"", "\"").to_string();
+            }
+        }
+    }
+    if ctl.gen_opt.current_ref || ctl.gen_opt.cellranger {
+        ctl.gen_opt.cr_version = "4.0".to_string();
+    }
 
     // Build reference data.
 
@@ -122,9 +181,17 @@ pub fn main_enclone(args: &Vec<String>) {
             std::process::exit(1);
         }
     } else if ctl.gen_opt.mouse {
-        refx = mouse_ref();
+        if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+            refx = mouse_ref_old();
+        } else {
+            refx = mouse_ref();
+        }
     } else {
-        refx = human_ref();
+        if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+            refx = human_ref_old();
+        } else {
+            refx = human_ref();
+        }
     }
     let ext_refx = String::new();
     let (mut is_tcr, mut is_bcr) = (true, true);
@@ -280,7 +347,15 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Form equivalence relation on exact subclonotypes.
 
-    let eq: EquivRel = join_exacts(is_bcr, &refdata, &ctl, &exact_clonotypes, &info);
+    let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
+    let eq: EquivRel = join_exacts(
+        is_bcr,
+        &refdata,
+        &ctl,
+        &exact_clonotypes,
+        &info,
+        &mut join_info,
+    );
     if ctl.comp {
         if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
             println!("");
@@ -303,6 +378,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &eq,
         &gex_info,
+        &join_info,
     );
     if ctl.comp {
         println!("\nused {:.2} seconds making orbits", elapsed(&torb));
