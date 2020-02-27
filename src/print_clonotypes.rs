@@ -56,6 +56,7 @@ pub fn print_clonotypes(
     info: &Vec<CloneInfo>,
     eq: &EquivRel,
     gex_info: &GexInfo,
+    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
 ) {
     // Make an abbreviation.
 
@@ -651,14 +652,15 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
-                        let mut found = false;
+                        // let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                found = true;
+                                // found = true;
                                 break;
                             }
                         }
+                        /*
                         if !found {
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
@@ -667,6 +669,7 @@ pub fn print_clonotypes(
                             );
                             std::process::exit(1);
                         }
+                        */
                         let mut mean = 0.0;
                         for j in 0..vals.len() {
                             mean += vals[j];
@@ -688,14 +691,15 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
-                        let mut found = false;
+                        // let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                found = true;
+                                // found = true;
                                 break;
                             }
                         }
+                        /*
                         if !found {
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
@@ -704,6 +708,7 @@ pub fn print_clonotypes(
                             );
                             std::process::exit(1);
                         }
+                        */
                         let mut mean = 0.0;
                         for j in 0..vals.len() {
                             mean += vals[j];
@@ -716,14 +721,15 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
-                        let mut found = false;
+                        // let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                found = true;
+                                // found = true;
                                 break;
                             }
                         }
+                        /*
                         if !found {
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
@@ -732,6 +738,7 @@ pub fn print_clonotypes(
                             );
                             std::process::exit(1);
                         }
+                        */
                         let mut mean = 0.0;
                         for j in 0..vals.len() {
                             mean += vals[j];
@@ -1035,6 +1042,7 @@ pub fn print_clonotypes(
         &ctl,
         &parseable_fields,
         &mut out_datas,
+        &join_info,
     );
 
     // Do gene scan.
