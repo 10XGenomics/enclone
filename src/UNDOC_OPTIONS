@@ -52,7 +52,6 @@ Optional arguments governing input and output files:
 - EXFASTA=f: dump fasta file f for V..J exact subclonotypes.
 
 Optional arguments that control printing of individual clonotypes:
-- GEX: see above
   There is an undocument option:
   - white   = percent of sequences implicated in whitelist expansion.
 - CHAIN_BRIEF: show abbreviated chain column headers
