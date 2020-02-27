@@ -392,6 +392,7 @@ pub fn group_and_print_clonotypes(
         println!("   • number of donors = {}", ctl.sample_info.donors);
         if !ctl.gen_opt.summary_clean {
             println!("   • total elapsed time = {:.1} seconds", elapsed(&tall));
+            #[cfg(not(target_os = "macos"))]
             println!("   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
         println!("2. for the selected clonotypes");
