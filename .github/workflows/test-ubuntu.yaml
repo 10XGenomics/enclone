@@ -19,9 +19,7 @@ jobs:
           rustfmt --version 
       - name: Clone git repository
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/checkout
-        run: git clone git@github.com:10XDev/enclone.git
-      - name: Update submodules
-        run: git submodule update --init --recursive
+        uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
