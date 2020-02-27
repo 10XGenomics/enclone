@@ -30,6 +30,7 @@ jobs:
         run: |
           mkdir -p releases
           cp target/release/enclone releases/enclone-ubuntu-1.0.0
+          chmod 327 releases/enclone-ubuntu-1.0.0
       - name: push build
         run: |
           git config --global credential.helper store
