@@ -47,6 +47,7 @@ jobs:
             "draft": false,
             "prerelease": false,
             }'
-          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          curl --request POST \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --data-binary @enclone-ubuntu-1.0.0 \
           "https://uploads.github.com/repos/10XDev/enclone/releases/1234/assets?name=enclone-ubuntu-1.0.0"
