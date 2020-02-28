@@ -159,13 +159,13 @@ pub fn row_fill(
                                 .unwrap()
                                 .to_vec();
                         }
-                        d_all[l] = d.clone();
-                        ind_all[l] = ind.clone();
                         for j in 0..d.len() {
                             if gex_info.is_gex[li][ind[j] as usize] {
                                 raw_count += d[j] as usize;
                             }
                         }
+                        d_all[l] = d;
+                        ind_all[l] = ind;
                     }
                     total_counts.push(raw_count);
                 }
