@@ -187,6 +187,24 @@ pub fn load_gex(
                     }
                 } else {
                     let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+
+                    let mut dir = format!("{}/raw_feature_bc_matrix", gex_outs[i]);
+                    if !path_exists(&dir) {
+                        dir = format!("{}/raw_gene_bc_matrices_mex", gex_outs[i]);
+                    }
+                    let mut matrix_file = format!("{}/matrix.mtx.gz", dir);
+                    if path_exists(&format!("{}/GRCh38", dir)) {
+                        matrix_file = format!("{}/GRCh38/matrix.mtx.gz", dir);
+                    }
+                    if !path_exists(&matrix_file) {
+                        eprintln!(
+                            "\nYou've used the NH5 option, but a gene expression directory \
+                             is incomplete for this purpose,\nbecause this file\n\
+                             {}\ndoes not exist.\n",
+                            matrix_file
+                        );
+                        std::process::exit(1);
+                    }
                     load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
                     if *pre != "".to_string() {
