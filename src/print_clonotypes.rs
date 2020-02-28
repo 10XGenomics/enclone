@@ -105,29 +105,18 @@ pub fn print_clonotypes(
             }
         }
     }
-    let mut d_data = Vec::<Option<Vec<u32>>>::new();
-    let mut ind_data = Vec::<Option<Vec<u32>>>::new();
+    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
     if ctl.gen_opt.h5 && ctl.gen_opt.h5_pre {
-        let mut results = Vec::<(usize, Option<Vec<u32>>, Option<Vec<u32>>)>::new();
         for li in 0..ctl.sample_info.n() {
-            results.push((li, None, None));
+            h5_data.push((li, Vec::new(), Vec::new()));
         }
-        results.par_iter_mut().for_each(|res| {
+        h5_data.par_iter_mut().for_each(|res| {
             let li = res.0;
             if ctl.sample_info.gex_path[li].len() > 0 {
-                res.1 = Some(d_readers[li].as_ref().unwrap().read_raw().unwrap());
-                res.2 = Some(ind_readers[li].as_ref().unwrap().read_raw().unwrap());
+                res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+                res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
             }
         });
-        for li in 0..ctl.sample_info.n() {
-            if ctl.sample_info.gex_path[li].len() > 0 {
-                d_data.push(Some(results[li].1.as_ref().unwrap().to_vec()));
-                ind_data.push(Some(results[li].2.as_ref().unwrap().to_vec()));
-            } else {
-                d_data.push(None);
-                ind_data.push(None);
-            }
-        }
     }
 
     // Traverse the orbits.
@@ -502,8 +491,7 @@ pub fn print_clonotypes(
                         &groups,
                         &d_readers,
                         &ind_readers,
-                        &d_data,
-                        &ind_data,
+                        &h5_data,
                         &mut stats,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();

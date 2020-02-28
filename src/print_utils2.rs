@@ -46,8 +46,7 @@ pub fn row_fill(
     groups: &HashMap<usize, Vec<usize>>,
     d_readers: &Vec<Option<h5::Reader>>,
     ind_readers: &Vec<Option<h5::Reader>>,
-    d_data: &Vec<Option<Vec<u32>>>,
-    ind_data: &Vec<Option<Vec<u32>>>,
+    h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<f64>)>,
 ) {
     // Redefine some things to reduce dependencies.
@@ -143,8 +142,8 @@ pub fn row_fill(
                         let d: Vec<u32>;
                         let ind: Vec<u32>;
                         if ctl.gen_opt.h5_pre {
-                            d = d_data[li].as_ref().unwrap()[z1..z2].to_vec();
-                            ind = ind_data[li].as_ref().unwrap()[z1..z2].to_vec();
+                            d = h5_data[li].1[z1..z2].to_vec();
+                            ind = h5_data[li].2[z1..z2].to_vec();
                         } else {
                             d = d_readers[li]
                                 .as_ref()
@@ -204,8 +203,8 @@ pub fn row_fill(
                     let d: Vec<u32>;
                     let ind: Vec<u32>;
                     if ctl.gen_opt.h5_pre {
-                        d = d_data[li].as_ref().unwrap()[z1..z2].to_vec();
-                        ind = ind_data[li].as_ref().unwrap()[z1..z2].to_vec();
+                        d = h5_data[li].1[z1..z2].to_vec();
+                        ind = h5_data[li].2[z1..z2].to_vec();
                     } else {
                         d = d_readers[li]
                             .as_ref()
