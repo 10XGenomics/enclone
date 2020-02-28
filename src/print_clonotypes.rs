@@ -274,16 +274,14 @@ pub fn print_clonotypes(
             rsi.mat = mat;
             let mat = &rsi.mat;
 
-            // Filter.
+            // Let n be the total number of cells in this pass.
 
             let n: usize = mults.iter().sum();
-            if pass == 2 {
-                if n < ctl.clono_filt_opt.ncells_low {
-                    continue;
-                }
-                if !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata) {
-                    continue;
-                }
+
+            // Filter.
+
+            if pass == 2 && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata) {
+                continue;
             }
 
             // Generate loupe data.
