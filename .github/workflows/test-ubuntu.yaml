@@ -37,7 +37,7 @@ jobs:
       - name: push build
         run: |
           curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/releases/1234 \
+          --url https://api.github.com/repos/${{ github.repository }}/releases \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --data '{
             "tag_name": "1.0.0",
@@ -50,4 +50,4 @@ jobs:
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --data-binary @enclone-ubuntu-1.0.0 \
-          "https://uploads.github.com/repos/10XDev/enclone/releases/1234/assets?name=enclone-ubuntu-1.0.0"
+          "https://uploads.github.com/repos/10XDev/enclone/releases/1/assets?name=enclone-ubuntu-1.0.0"
