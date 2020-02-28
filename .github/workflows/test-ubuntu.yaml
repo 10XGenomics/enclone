@@ -46,8 +46,13 @@ jobs:
             "body": "Description of the release",
             "draft": false,
             "prerelease": false
-            }'
+            }' > create_release_response.json
+          upload_url_key=$(grep "upload_url" create_release_response.json)
+          upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
+          echo $upload_url
+          new_asset_url=${$upload_url/\{?name,label\}/?name=enclone-ubuntu-1.0.0}
+          echo $new_asset
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --data-binary @enclone-ubuntu-1.0.0 \
-          "https://uploads.github.com/repos/10XDev/enclone/releases/24059184/assets?name=enclone-ubuntu-1.0.0"
+          $new_asset
