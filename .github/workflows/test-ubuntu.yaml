@@ -45,7 +45,7 @@ jobs:
             "name": "v1.0.0",
             "body": "Description of the release",
             "draft": false,
-            "prerelease": false,
+            "prerelease": false
             }'
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
