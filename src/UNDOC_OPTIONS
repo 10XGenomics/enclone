@@ -113,3 +113,5 @@ we can regress on output
 ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotations
 
 CURRENT_REF: temp option to force CR 4.0 reference
+
+H5_PRE: preload gex data rather than reading slice by slice

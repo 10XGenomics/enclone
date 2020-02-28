@@ -245,6 +245,7 @@ pub struct GeneralOpt {
     pub binary: String,
     pub proto: String,
     pub h5: bool,
+    pub h5_pre: bool,
     pub no_reuse: bool,
     pub descrip: bool,
     pub ext: String,

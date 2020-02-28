@@ -46,6 +46,8 @@ pub fn row_fill(
     groups: &HashMap<usize, Vec<usize>>,
     d_readers: &Vec<Option<h5::Reader>>,
     ind_readers: &Vec<Option<h5::Reader>>,
+    d_data: &Vec<Option<Vec<u32>>>,
+    ind_data: &Vec<Option<Vec<u32>>>,
     stats: &mut Vec<(String, Vec<f64>)>,
 ) {
     // Redefine some things to reduce dependencies.
@@ -138,19 +140,26 @@ pub fn row_fill(
                     } else {
                         let z1 = gex_info.h5_indptr[li][p as usize] as usize;
                         let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize; // is p+1 OK??
-                        let d: Vec<u32> = d_readers[li]
-                            .as_ref()
-                            .unwrap()
-                            .read_slice(&s![z1..z2])
-                            .unwrap()
-                            .to_vec();
+                        let d: Vec<u32>;
+                        let ind: Vec<u32>;
+                        if ctl.gen_opt.h5_pre {
+                            d = d_data[li].as_ref().unwrap()[z1..z2].to_vec();
+                            ind = ind_data[li].as_ref().unwrap()[z1..z2].to_vec();
+                        } else {
+                            d = d_readers[li]
+                                .as_ref()
+                                .unwrap()
+                                .read_slice(&s![z1..z2])
+                                .unwrap()
+                                .to_vec();
+                            ind = ind_readers[li]
+                                .as_ref()
+                                .unwrap()
+                                .read_slice(&s![z1..z2])
+                                .unwrap()
+                                .to_vec();
+                        }
                         d_all[l] = d.clone();
-                        let ind: Vec<u32> = ind_readers[li]
-                            .as_ref()
-                            .unwrap()
-                            .read_slice(&s![z1..z2])
-                            .unwrap()
-                            .to_vec();
                         ind_all[l] = ind.clone();
                         for j in 0..d.len() {
                             if gex_info.is_gex[li][ind[j] as usize] {

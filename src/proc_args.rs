@@ -152,6 +152,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
+        } else if is_simple_arg(&args[i], "H5_PRE") {
+            ctl.gen_opt.h5_pre = true;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {
