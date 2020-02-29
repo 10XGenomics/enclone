@@ -1117,68 +1117,46 @@ pub fn print_clonotypes(
                 .contains("Gene");
             let mut test_values = Vec::<f64>::new();
             let mut control_values = Vec::<f64>::new();
-            for j in 0..tests.len() {
-                for m in 0..exacts[tests[j]].len() {
-                    let ex = &exact_clonotypes[exacts[tests[j]][m]];
-                    for l in 0..ex.clones.len() {
-                        let li = ex.clones[l][0].dataset_index;
-                        let bc = ex.clones[l][0].barcode.clone();
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            let mut raw_count = 0 as f64;
-                            if !ctl.gen_opt.h5 {
-                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
-                                /*
-                                } else {
-                                    for j in 0..d_all[l].len() {
-                                        if ind_all[l][j] == fid as u32 {
-                                            raw_count = d_all[l][j] as f64;
-                                            break;
-                                        }
-                                    }
-                                */
-                            }
-                            let mult: f64;
-                            if gene {
-                                mult = gex_info.gex_mults[li];
-                            } else {
-                                mult = gex_info.fb_mults[li];
-                            }
-                            test_values.push(raw_count * mult);
-                        }
-                    }
+            for pass in 1..=2 {
+                let tc;
+                let vals;
+                if pass == 1 {
+                    tc = &tests;
+                    vals = &mut test_values;
+                } else {
+                    tc = &controls;
+                    vals = &mut control_values;
                 }
-            }
-            for j in 0..controls.len() {
-                for m in 0..exacts[controls[j]].len() {
-                    let ex = &exact_clonotypes[exacts[controls[j]][m]];
-                    for l in 0..ex.clones.len() {
-                        let li = ex.clones[l][0].dataset_index;
-                        let bc = ex.clones[l][0].barcode.clone();
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            let mut raw_count = 0 as f64;
-                            if !ctl.gen_opt.h5 {
-                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
-                                /*
-                                } else {
-                                    for j in 0..d_all[l].len() {
-                                        if ind_all[l][j] == fid as u32 {
-                                            raw_count = d_all[l][j] as f64;
-                                            break;
+                for j in 0..tc.len() {
+                    for m in 0..exacts[tc[j]].len() {
+                        let ex = &exact_clonotypes[exacts[tc[j]][m]];
+                        for l in 0..ex.clones.len() {
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = ex.clones[l][0].barcode.clone();
+                            let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                            if p >= 0 {
+                                let mut raw_count = 0 as f64;
+                                if !ctl.gen_opt.h5 {
+                                    raw_count =
+                                        gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                                    /*
+                                    } else {
+                                        for j in 0..d_all[l].len() {
+                                            if ind_all[l][j] == fid as u32 {
+                                                raw_count = d_all[l][j] as f64;
+                                                break;
+                                            }
                                         }
-                                    }
-                                */
+                                    */
+                                }
+                                let mult: f64;
+                                if gene {
+                                    mult = gex_info.gex_mults[li];
+                                } else {
+                                    mult = gex_info.fb_mults[li];
+                                }
+                                vals.push(raw_count * mult);
                             }
-                            let mult: f64;
-                            if gene {
-                                mult = gex_info.gex_mults[li];
-                            } else {
-                                mult = gex_info.fb_mults[li];
-                            }
-                            control_values.push(raw_count * mult);
                         }
                     }
                 }
