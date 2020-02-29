@@ -17,10 +17,12 @@ use crate::print_utils4::*;
 use crate::print_utils5::*;
 use crate::types::*;
 use equiv::EquivRel;
+use io_utils::*;
 use ndarray::s;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
+use std::io::Write;
 use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -1110,7 +1112,13 @@ pub fn print_clonotypes(
             std::process::exit(1);
         }
         println!("enriched features\n");
-        for fid in 0..gex_info.gex_features[0].len() {
+        let mut results = Vec::<(usize, Vec<u8>)>::new();
+        let nf = gex_info.gex_features[0].len();
+        for fid in 0..nf {
+            results.push((fid, Vec::<u8>::new()));
+        }
+        results.par_iter_mut().for_each(|res| {
+            let fid = res.0;
             // NOT SURE THIS IS BACKWARD COMPATIBLE!
             let gene = gex_info.gex_features[0][fid]
                 .after("\t")
@@ -1202,7 +1210,12 @@ pub fn print_clonotypes(
                 }
             }
             if threshold.satisfied(&vals) {
-                println!("{}", gex_info.gex_features[0][fid]);
+                fwriteln!(res.1, "{}", gex_info.gex_features[0][fid]);
+            }
+        });
+        for fid in 0..nf {
+            if results[fid].1.len() > 0 {
+                print!("{}", strme(&results[fid].1));
             }
         }
     }
