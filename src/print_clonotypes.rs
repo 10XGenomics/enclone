@@ -17,6 +17,7 @@ use crate::print_utils4::*;
 use crate::print_utils5::*;
 use crate::types::*;
 use equiv::EquivRel;
+use ndarray::s;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
@@ -1139,15 +1140,35 @@ pub fn print_clonotypes(
                                 if !ctl.gen_opt.h5 {
                                     raw_count =
                                         gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                    /*
+                                } else {
+                                    let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                                    // p+1 OK?
+                                    let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize;
+                                    let d: Vec<u32>;
+                                    let ind: Vec<u32>;
+                                    if ctl.gen_opt.h5_pre {
+                                        d = h5_data[li].1[z1..z2].to_vec();
+                                        ind = h5_data[li].2[z1..z2].to_vec();
                                     } else {
-                                        for j in 0..d_all[l].len() {
-                                            if ind_all[l][j] == fid as u32 {
-                                                raw_count = d_all[l][j] as f64;
-                                                break;
-                                            }
+                                        d = d_readers[li]
+                                            .as_ref()
+                                            .unwrap()
+                                            .read_slice(&s![z1..z2])
+                                            .unwrap()
+                                            .to_vec();
+                                        ind = ind_readers[li]
+                                            .as_ref()
+                                            .unwrap()
+                                            .read_slice(&s![z1..z2])
+                                            .unwrap()
+                                            .to_vec();
+                                    }
+                                    for j in 0..d.len() {
+                                        if ind[j] == fid as u32 {
+                                            raw_count = d[j] as f64;
+                                            break;
                                         }
-                                    */
+                                    }
                                 }
                                 let mult: f64;
                                 if gene {
