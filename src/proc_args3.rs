@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mut EncloneControl) {
+pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
     ctl.sample_info = SampleInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
         eprintln!("\nOnly one of TCR or BCR can be specified.\n");
@@ -111,7 +111,10 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
 
                 // Use case 2.  It's an internal run, an id has been provided, and PRE
                 // was not specified.  Then we look internally.
-                } else if internal_run && p.parse::<u32>().is_ok() && ctl.gen_opt.pre == "" {
+                } else if ctl.gen_opt.internal_run
+                    && p.parse::<u32>().is_ok()
+                    && ctl.gen_opt.pre == ""
+                {
                     p = format!("{}", get_outs(&p));
 
                 // Use case 3.  All else.
@@ -174,7 +177,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                 }
                 if pg != "".to_string() {
                     let pg0 = pg.clone();
-                    if internal_run
+                    if ctl.gen_opt.internal_run
                         && ctl.gen_opt.h5
                         && ctl.gen_opt.pre != ""
                         && !path_exists(&format!(
@@ -188,7 +191,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                         && pg.parse::<u32>().is_ok()
                     {
                         pg = format!("{}", get_outs(&pg));
-                    } else if internal_run
+                    } else if ctl.gen_opt.internal_run
                         && ctl.gen_opt.pre != ""
                         && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
                         && pg.parse::<u32>().is_ok()
@@ -197,7 +200,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, internal_run: bool, ctl: &mu
                     } else if ctl.gen_opt.pre != "" {
                         pg = format!("{}/{}/outs", ctl.gen_opt.pre, pg);
                     } else {
-                        if pg.parse::<i32>().is_ok() && internal_run {
+                        if pg.parse::<i32>().is_ok() && ctl.gen_opt.internal_run {
                             pg = format!("{}", get_outs(&pg));
                         } else {
                             pg = format!("{}/outs", pg);

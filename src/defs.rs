@@ -268,6 +268,7 @@ pub struct GeneralOpt {
     pub sample_color_map: HashMap<String, String>,
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
+    pub internal_run: bool,
 }
 
 // Allele finding algorithmic options.

@@ -134,7 +134,6 @@ fn test_enclone() {
         }
         let testn = test.replace("\"", "");
         let mut log = Vec::<u8>::new();
-        // fwriteln!( log, "\nenclone subtest {} of {}", it+1, tests.len() );
         let out_file = format!("test/inputs/enclone_test{}_output", it + 1);
         if !path_exists(&out_file) {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
@@ -165,6 +164,7 @@ fn test_enclone() {
             }
             // dubious use of expect:
             let new = new
+                .arg("FORCE_EXTERNAL")
                 .output()
                 .expect(&format!("failed to execute enclone for test{}", it + 1));
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
