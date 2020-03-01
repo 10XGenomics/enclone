@@ -25,6 +25,7 @@ use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
 use string_utils::*;
+use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -1112,10 +1113,10 @@ pub fn print_clonotypes(
             std::process::exit(1);
         }
         println!("enriched features\n");
-        let mut results = Vec::<(usize, Vec<u8>)>::new();
+        let mut results = Vec::<(usize, Vec<u8>, f64, f64, f64)>::new();
         let nf = gex_info.gex_features[0].len();
         for fid in 0..nf {
-            results.push((fid, Vec::<u8>::new()));
+            results.push((fid, Vec::<u8>::new(), 0.0, 0.0, 0.0));
         }
         results.par_iter_mut().for_each(|res| {
             let fid = res.0;
@@ -1210,14 +1211,39 @@ pub fn print_clonotypes(
                 }
             }
             if threshold.satisfied(&vals) {
-                fwriteln!(res.1, "{}", gex_info.gex_features[0][fid]);
+                fwrite!(res.1, "{}", gex_info.gex_features[0][fid]);
+                res.2 = test_mean;
+                res.3 = control_mean;
+                res.4 = test_mean / control_mean;
             }
         });
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+            "id".to_string(),
+            "name".to_string(),
+            "library_type".to_string(),
+            "test".to_string(),
+            "control".to_string(),
+            "enrichment".to_string(),
+        ];
+        rows.push(row);
         for fid in 0..nf {
             if results[fid].1.len() > 0 {
-                print!("{}", strme(&results[fid].1));
+                let stuff = strme(&results[fid].1);
+                let fields = stuff.split('\t').collect::<Vec<&str>>();
+                let mut row = Vec::<String>::new();
+                row.push(fields[0].to_string());
+                row.push(fields[1].to_string());
+                row.push(fields[2].to_string());
+                row.push(format!("{:.2}", results[fid].2));
+                row.push(format!("{:.2}", results[fid].3));
+                row.push(format!("{:.2}", results[fid].4));
+                rows.push(row);
             }
         }
+        let mut log = Vec::<u8>::new();
+        print_tabular(&mut log, &rows, 2, Some(b"lllrrr".to_vec()));
+        print!("{}", strme(&log));
     }
 
     // Plot clonotypes.
