@@ -328,8 +328,8 @@ fn test_enclone_prebuild() {
 
     // First pass: run with PREBUILD.
 
-    let testn = "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC PREBUILD";
     let it = 16;
+    let testn = format!("{} PREBUILD", TESTS[it]);
     let out_file = format!("test/inputs/enclone_test{}_output", it + 1);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
@@ -364,7 +364,7 @@ fn test_enclone_prebuild() {
 
     // Second pass: run without PREBUILD but using the matrix.bin that the first pass created.
 
-    let testn = "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC";
+    let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new("target/release/enclone");
     let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
