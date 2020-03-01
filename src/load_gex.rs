@@ -389,6 +389,14 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
                 }
+                if !path_exists(&f) {
+                    panic!(
+                        "Something has gone badly wrong, the h5 file\n\
+                         {}\n\
+                         does not exist.",
+                        f
+                    );
+                }
                 let h = h5::File::open(&f, "r").unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));
