@@ -1067,7 +1067,7 @@ pub fn print_clonotypes(
     // Do gene scan.
 
     if ctl.gen_opt.gene_scan_test.is_some() {
-        println!("\nGENE SCAN\n");
+        println!("\nFEATURE SCAN\n");
         let mut tests = Vec::<usize>::new();
         let mut controls = Vec::<usize>::new();
         let mut count = 0;
