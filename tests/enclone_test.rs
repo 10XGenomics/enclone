@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS : [&str; 32] = [
+const TESTS: [&str; 32] = [
     // 1. tests variant base after CDR3, parseable output
     "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes",
