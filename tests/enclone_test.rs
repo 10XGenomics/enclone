@@ -29,6 +29,8 @@ use string_utils::*;
 const TEST_FILES_VERSION: u8 = 14;
 const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[cfg(debug_assertions)]
 #[test]
 fn test_enclone_fail() {
@@ -41,6 +43,11 @@ fn test_enclone_fail() {
     println!("will be faster then the above.\n");
     assert!(0 == 1);
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// The following is a single test, containing many subtests, each of which is a regression test
+// for a given enclone command line.
 
 #[cfg(not(debug_assertions))]
 #[test]
@@ -85,6 +92,8 @@ fn test_enclone() {
         // 16. tests number of cells broken out by dataset
         "BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW",
         // 17. tests gex with PER_BC and tests n_gex
+        // See also enclone_test_prebuild below, that tests nearly the same thing,
+        // and tests versus the same output file.
         "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC",
         // 18. makes sure cross filtering is isn't applied to two samples from same donor
         "BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW",
@@ -282,9 +291,110 @@ fn test_enclone() {
     );
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
+// you also have to change this.
+//
+// WARNING: if this test in interrupted, then you could accidentally be left with matrix.bin,
+// and you would need to delete that file.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_enclone_prebuild() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+
+    // See if we're in a broken state.
+
+    if path_exists(&format!(
+        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        TEST_FILES_VERSION
+    )) {
+        panic!(
+            "\nenclone_test_prebuild: the file matrix.bin already existss.\n\
+             Perhaps a previous run of this test was interrupted.  Please delete the file."
+        );
+    }
+
+    // First pass: run with PREBUILD.
+
+    let testn = "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC PREBUILD";
+    let it = 16;
+    let out_file = format!("test/inputs/enclone_test{}_output", it + 1);
+    let old = read_to_string(&out_file).unwrap();
+    let args = testn.split(' ').collect::<Vec<&str>>();
+    let mut new = Command::new("target/release/enclone");
+    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    for i in 0..args.len() {
+        new = new.arg(&args[i]);
+    }
+    // dubious use of expect:
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute enclone_test_prebuild"));
+    // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
+    let new2 = stringme(&new.stdout);
+    if old != new2 {
+        eprintln!(
+            "\nenclone_test_prebuild: first pass output has changed.\n\
+             You may want to add more info to this failure message.\n\
+             And don't forget to remove matrix.bin.\n"
+        );
+        eprintln!("old output =\n{}\n", old);
+        eprintln!("new output =\n{}\n", new2);
+        std::process::exit(1);
+    }
+    if !path_exists(&format!(
+        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        TEST_FILES_VERSION
+    )) {
+        panic!("\nenclone_test_prebuild: did not create matrix.bin.");
+    }
+
+    // Second pass: run without PREBUILD but using the matrix.bin that the first pass created.
+
+    let testn = "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC";
+    let args = testn.split(' ').collect::<Vec<&str>>();
+    let mut new = Command::new("target/release/enclone");
+    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    for i in 0..args.len() {
+        new = new.arg(&args[i]);
+    }
+    // dubious use of expect:
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute enclone_test_prebuild"));
+    // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
+    let new2 = stringme(&new.stdout);
+    if old != new2 {
+        eprintln!(
+            "\nenclone_test_prebuild: second pass output has changed.\n\
+             You may want to add more info to this failure message.\n\
+             And don't forget to remove matrix.bin.\n"
+        );
+        eprintln!("new output =\n{}\n", new2);
+        std::process::exit(1);
+    }
+
+    // Clean up: delete matrix.bin.
+
+    std::fs::remove_file(&format!(
+        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        TEST_FILES_VERSION
+    ))
+    .unwrap();
+    println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // This test runs enclone for a few test inputs, with LOUPE output
 // turned on. It will then read both the bincode and proto file created
 // and asserts that we get the same data structure either way.
+
 #[cfg(not(debug_assertions))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
