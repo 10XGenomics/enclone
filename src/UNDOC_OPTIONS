@@ -113,6 +113,6 @@ ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotatio
 
 CURRENT_REF: temp option to force CR 4.0 reference
 
-H5_PRE: preload gex data rather than reading slice by slice
+H5_SLICE: read GEX data slice by slice rather than preloading
 
 FORCE_EXTERNAL: do not test for internal run

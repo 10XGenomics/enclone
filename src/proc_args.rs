@@ -56,6 +56,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Set up general options.
 
+    ctl.gen_opt.h5_pre = true;
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
     ctl.gen_opt.exact = None;
@@ -165,8 +166,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "PREBUILD") {
-        } else if is_simple_arg(&args[i], "H5_PRE") {
-            ctl.gen_opt.h5_pre = true;
+        } else if is_simple_arg(&args[i], "H5_SLICE") {
+            ctl.gen_opt.h5_pre = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {
