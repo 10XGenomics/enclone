@@ -217,13 +217,17 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
 
                     if !path_exists(&pg) {
                         if ctl.gen_opt.pre != "".to_string() {
+                            let mut pg = pg.clone();
+                            if pg.contains("/outs") {
+                                pg = pg.rev_before("/outs").to_string();
+                            }
                             eprintln!(
                                 "\nThe value given for GEX on the enclone command line \
                                  includes\n{}, which after prefixing by PRE yields\n\
                                  {},\n\
                                  and that path does not contain a subdirectory outs.\n",
                                 pg0,
-                                pg.rev_before("/outs")
+                                pg
                             );
                         } else {
                             eprintln!(
