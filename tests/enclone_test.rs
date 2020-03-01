@@ -323,16 +323,17 @@ fn test_enclone_prebuild() {
         TEST_FILES_VERSION
     )) {
         panic!(
-            "\nenclone_test_prebuild: the file matrix.bin already existss.\n\
+            "\nenclone_test_prebuild: the file matrix.bin already exists.\n\
              Perhaps a previous run of this test was interrupted.  Please delete the file."
         );
     }
 
-    // First pass: run with PREBUILD.
+    // First pass: run with NH5.
 
-    let it = 16;
-    let testn = format!("{} PREBUILD", TESTS[it]);
-    let out_file = format!("test/inputs/enclone_test{}_output", it + 1);
+    let test_id = 17;
+    let it = test_id - 1;
+    let testn = format!("{} NH5", TESTS[it]);
+    let out_file = format!("test/inputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new("target/release/enclone");
