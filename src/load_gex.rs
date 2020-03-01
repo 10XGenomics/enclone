@@ -359,25 +359,29 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut fb_mults,
         &mut gex_cell_barcodes,
     );
-    /*
-    if ctl.gen_opt.gene_scan_test.is_some() {
+    if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
         if allf.len() != 1 {
-            eprintln!( "\nCurrently, SCAN requires that all datasets have identical \
-                features, and they do not." );
-            eprintln!( "There are {} datasets and {} feature sets after removal of \
-                duplicates.", gex_features.len(), allf.len() );
-            eprintln!( "Classification of features sets:\n" );
+            eprintln!(
+                "\nCurrently, SCAN requires that all datasets have identical \
+                 features, and they do not."
+            );
+            eprintln!(
+                "There are {} datasets and {} feature sets after removal of \
+                 duplicates.",
+                gex_features.len(),
+                allf.len()
+            );
+            eprintln!("Classification of features sets:\n");
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
-                eprintln!( "{} ==> {}", ctl.sample_info.dataset_id[i], p );
+                eprintln!("{} ==> {}", ctl.sample_info.dataset_id[i], p);
             }
             eprintln!("");
             std::process::exit(1);
         }
     }
-    */
     let mut h5_data = Vec::<Option<Dataset>>::new();
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
