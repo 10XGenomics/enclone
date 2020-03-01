@@ -220,55 +220,57 @@ pub fn load_gex(
                         remove_file(&bin_file).unwrap();
                     }
                     write_to_file(&r.3, &bin_file);
-                    let old_json = format!("{}/metrics_summary_json.json", gex_outs[i]);
-                    let new_json = format!("{}/metrics_summary_json.json", go);
-                    copy(&old_json, &new_json).unwrap();
-                    if path_exists(&format!("{}/GRCh38", dir)) {
-                        copy(
-                            &format!("{}/GRCh38/genes.tsv.gz", dir),
-                            &format!("{}/GRCh38/genes.tsv.gz", dir_new),
-                        )
-                        .unwrap();
-                    } else {
-                        copy(
-                            &format!("{}/features.tsv.gz", dir),
-                            &format!("{}/features.tsv.gz", dir_new),
-                        )
-                        .unwrap();
-                    }
-                    if path_exists(&format!("{}/GRCh38", dir)) {
-                        copy(
-                            &format!("{}/GRCh38/barcodes.tsv.gz", dir),
-                            &format!("{}/GRCh38/barcodes.tsv.gz", dir_new),
-                        )
-                        .unwrap();
-                    } else {
-                        copy(
-                            &format!("{}/barcodes.tsv.gz", dir),
-                            &format!("{}/barcodes.tsv.gz", dir_new),
-                        )
-                        .unwrap();
-                    }
-                    let mut fdir = format!("{}/filtered_feature_bc_matrix", gex_outs[i]);
-                    if !path_exists(&fdir) {
-                        fdir = format!("{}/filtered_gene_bc_matrices_mex", gex_outs[i]);
-                    }
-                    let fdir_new = format!("{}/filtered_feature_bc_matrix", go);
-                    if !path_exists(&fdir_new) {
-                        create_dir_all(&fdir_new).unwrap();
-                    }
-                    if path_exists(&format!("{}/GRCh38", fdir)) {
-                        copy(
-                            &format!("{}/GRCh38/barcodes.tsv.gz", fdir),
-                            &format!("{}/GRCh38/barcodes.tsv.gz", fdir_new),
-                        )
-                        .unwrap();
-                    } else {
-                        copy(
-                            &format!("{}/barcodes.tsv.gz", fdir),
-                            &format!("{}/barcodes.tsv.gz", fdir_new),
-                        )
-                        .unwrap();
+                    if go != gex_outs[i] {
+                        let old_json = format!("{}/metrics_summary_json.json", gex_outs[i]);
+                        let new_json = format!("{}/metrics_summary_json.json", go);
+                        copy(&old_json, &new_json).unwrap();
+                        if path_exists(&format!("{}/GRCh38", dir)) {
+                            copy(
+                                &format!("{}/GRCh38/genes.tsv.gz", dir),
+                                &format!("{}/GRCh38/genes.tsv.gz", dir_new),
+                            )
+                            .unwrap();
+                        } else {
+                            copy(
+                                &format!("{}/features.tsv.gz", dir),
+                                &format!("{}/features.tsv.gz", dir_new),
+                            )
+                            .unwrap();
+                        }
+                        if path_exists(&format!("{}/GRCh38", dir)) {
+                            copy(
+                                &format!("{}/GRCh38/barcodes.tsv.gz", dir),
+                                &format!("{}/GRCh38/barcodes.tsv.gz", dir_new),
+                            )
+                            .unwrap();
+                        } else {
+                            copy(
+                                &format!("{}/barcodes.tsv.gz", dir),
+                                &format!("{}/barcodes.tsv.gz", dir_new),
+                            )
+                            .unwrap();
+                        }
+                        let mut fdir = format!("{}/filtered_feature_bc_matrix", gex_outs[i]);
+                        if !path_exists(&fdir) {
+                            fdir = format!("{}/filtered_gene_bc_matrices_mex", gex_outs[i]);
+                        }
+                        let fdir_new = format!("{}/filtered_feature_bc_matrix", go);
+                        if !path_exists(&fdir_new) {
+                            create_dir_all(&fdir_new).unwrap();
+                        }
+                        if path_exists(&format!("{}/GRCh38", fdir)) {
+                            copy(
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir),
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir_new),
+                            )
+                            .unwrap();
+                        } else {
+                            copy(
+                                &format!("{}/barcodes.tsv.gz", fdir),
+                                &format!("{}/barcodes.tsv.gz", fdir_new),
+                            )
+                            .unwrap();
+                        }
                     }
                 }
             }
