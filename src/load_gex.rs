@@ -178,7 +178,7 @@ pub fn load_gex(
                     elapsed(&tfb)
                 );
             }
-            if path_exists(&bin_file) {
+            if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
                 let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
                 if comp {

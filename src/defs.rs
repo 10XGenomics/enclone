@@ -269,6 +269,7 @@ pub struct GeneralOpt {
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,
+    pub force_h5: bool,
 }
 
 // Allele finding algorithmic options.
