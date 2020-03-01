@@ -196,7 +196,7 @@ pub fn load_gex(
                 }
                 if !path_exists(&matrix_file) {
                     eprintln!(
-                        "\nYou've used the PREBUILD option, but a gene expression directory \
+                        "\nYou've used the NH5 option, but a gene expression directory \
                          is incomplete for this purpose,\nbecause this file\n\
                          {}\ndoes not exist.\n",
                         matrix_file

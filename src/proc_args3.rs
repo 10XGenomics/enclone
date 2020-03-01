@@ -226,8 +226,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                                  includes\n{}, which after prefixing by PRE yields\n\
                                  {},\n\
                                  and that path does not contain a subdirectory outs.\n",
-                                pg0,
-                                pg
+                                pg0, pg
                             );
                         } else {
                             eprintln!(

@@ -303,7 +303,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if is_simple_arg(&args[i], "CELLRANGER") {
             ctl.gen_opt.cellranger = true;
         }
-        if is_simple_arg(&args[i], "PREBUILD") {
+        if is_simple_arg(&args[i], "NH5") {
             ctl.gen_opt.h5 = false;
         }
     }
