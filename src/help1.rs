@@ -191,7 +191,7 @@ pub fn help1(args: &Vec<String>) {
         );
         print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
-             Cell Ranger and Loupe,}\n\\boldblue{with which enclone is integrated.}  enclone \
+             Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
         let mut log1 = Vec::<u8>::new();
@@ -214,7 +214,7 @@ pub fn help1(args: &Vec<String>) {
         let s2 = stringme(&log2);
         doc!(&s1, &s2);
         ldoc_red!("enclone help", "help to test for correct setup");
-        doc_red!("enclone", "what you see here: guide to all the docs");
+        doc_red!("enclone", "what you see here: guide to all the doc");
         ldoc_red!("enclone help quick", "quick guide to getting started");
         ldoc_red!("enclone help how", "how enclone works (long)");
         ldoc_red!(
@@ -330,7 +330,7 @@ pub fn help1(args: &Vec<String>) {
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
              \
              enclone provides the foundation for fully understanding each cell's antigen \
-             specificity and the evolutionary relationship between cells within a sample.  \
+             affinity and the evolutionary relationship between cells within a sample.  \
              This starts with, for each cell, \
              \\bold{the full length sequence of all its VDJ receptor chains}.  Such data may be \
              obtained using the 10x Genomics immune profiling platform.\n\n\
@@ -347,9 +347,9 @@ pub fn help1(args: &Vec<String>) {
              2. Because of somatic hypermutation in B cells, it can be difficult to know that \
              two B cells share a common ancestor.\n\n\
              \
-             3. There is always some background noise (e.g. from ambient mRNA).  When building \
+             3. There is always some background noise, e.g. from ambient mRNA.  When building \
              large clonotypes, this noise tends to pile up, yielding ectopic chains, i.e. chains \
-             within a clonotype that are artifacts and do not represent true rearrangements.",
+             within a clonotype that are artifacts and do not represent true biology.",
         );
 
         // Print boxed algorithm.
@@ -415,13 +415,6 @@ pub fn help1(args: &Vec<String>) {
              distinct elements.  The probability is an approximation, for the method please see\n\
              \\green{https://docs.rs/stirling_numbers/0.1.0/stirling_numbers}.\n\n\
              \
-<<<<<<< HEAD
-             3. Two cells sharing sufficiently many shared differences and sufficiently few \
-             CDR3 differences are deemed to be in the same clonotype.  This depends on heuristics \
-             which are too detailed to describe on this page and are described elsewhere.\n\n\
-             \
-             4. Spurious chains are filtered out based on frequency and graph connections.",
-=======
              \\boldred{9}.  Are there too many CDR3 mutations?  \
              Next, let N be \"the number of DNA sequences that differ from the given CDR3 \
              sequences by at most the number of observed differences\".  More specifically, if \
@@ -444,7 +437,6 @@ pub fn help1(args: &Vec<String>) {
              \\boldred{11}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
              \"enclone help special\" for a description of the filters.\n\n",
->>>>>>> master
         );
 
         // Finish.
@@ -545,7 +537,7 @@ pub fn help1(args: &Vec<String>) {
 
         ldoc!(
             "clonotype",
-            "all the cells descended from a single partially rearranged T or B cell"
+            "all the cells descended from a single fully rearranged T or B cell"
         );
         doc!("", "(approximated computationally)");
 
