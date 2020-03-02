@@ -57,7 +57,7 @@ pub fn lookup_heavy_chain_reuse(
             let ex = &exact_clonotypes[info[i].clonotype_id];
 
             // Assume exact subclonotype has structure H+L.
-            // OMG do not assume that heavy comes before light.  It's not true!!!!!!!!!!!!!!!!!!!!!
+            // Do not assume that heavy comes before light.  It's not true!
 
             if ex.share.len() != 2 {
                 continue;
@@ -148,12 +148,12 @@ pub fn lookup_heavy_chain_reuse(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// If a V..J segment appears in exactly one lena id, with frequency n, let x be the total
+// If a V..J segment appears in exactly one sample ID, with frequency n, let x be the total
 // number of productive pairs for that lena, and let y be the total number of productive
-// pairs for all lena ids from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
-// that assuming even distribution, all instances of that V..J ended up in that one lena,
+// pairs for all sample IDs from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
+// that assuming even distribution, all instances of that V..J ended up in that one sample,
 // delete all the productive pairs for that V..J segment that do not have at least 100
-// supporting UMIs.  (Note no attempt to do bonferroni correction.)
+// supporting UMIs.  (Note no attempt to do Bonferroni correction.)
 //
 // For the case of two lena ids for one sample, with equal numbers of productive pairs in
 // each, this corresponds roughly to the case n = 20.
@@ -162,7 +162,7 @@ pub fn lookup_heavy_chain_reuse(
 //
 // There are only certain ways that these misdistribution events could happen:
 //
-// 1. A cell (and particularly a plasma cell or plasmablast) bursts after drawing cells to
+// 1. A cell (particularly a plasma cell or plasmablast) bursts after drawing cells to
 //    make libraries, leaving behind cell fragments that seed separate GEMs
 // (probably most likely).
 // 2. Multiple gel beads end up in one GEM.
@@ -199,7 +199,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             ) as usize;
         }
 
-        // For each lena index, and each sample, compute the total number of productive pairs.
+        // For each sample index, and each sample, compute the total number of productive pairs.
 
         let mut n_dataset_index = vec![0; ctl.sample_info.n()];
         let mut n_sample = vec![0; samples.len()];
@@ -211,13 +211,13 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             }
         }
 
-        // Find all the V..J segments, and for each, the number of times it appears in each lena id.
+        // Find all the V..J segments, and for each, the number of times it appears in each sample ID.
         //
         // Note that there is no point running this unless we have at least two lena ids, and in
-        // fact unless there is a sample with at least two lena ids.  Better: just gather data for
-        // the sample for which there are at least two lena ids.  Also no point if NCROSS.
+        // fact unless there is a sample with at least two sample IDs.  Better: just gather data for
+        // the sample for which there are at least two sample IDs.  Also no point if NCROSS.
 
-        let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, lena index, count)
+        let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, sample index, count)
         {
             for i in 0..tig_bc.len() {
                 for j in 0..tig_bc[i].len() {

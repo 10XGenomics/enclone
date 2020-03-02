@@ -249,7 +249,7 @@ pub fn print_clonotypes(
                 }
             }
 
-            // Generate loupe data.
+            // Generate Loupe data.
 
             if ( ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 ) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
@@ -634,7 +634,7 @@ pub fn print_clonotypes(
                 let mut logz = String::new();
                 make_table(&ctl, &mut rows, &justify, &mlog, &mut logz);
 
-                // Add phyologeny.
+                // Add phylogeny.
 
                 if ctl.toy {
                     let mut vrefs = Vec::<Vec<u8>>::new();
@@ -731,7 +731,7 @@ pub fn print_clonotypes(
 
     results.sort_by_key(|x| -x.8);
 
-    // Write loupe output.
+    // Write Loupe output.
 
     let mut all_loupe_clonotypes = Vec::<Clonotype>::new();
     for i in 0..results.len() {
@@ -766,7 +766,7 @@ pub fn print_clonotypes(
 
     // Tally low gene expression count.
     // WARNING: THIS MAY ONLY WORK IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.
-    // And probably you should run on only one lena at a time.
+    // And probably you should run on only one sample at a time.
     // And this probably doesn't belong inside print_clonotypes.
 
     if gex_info.gex_features.len() > 0 && !ctl.silent {

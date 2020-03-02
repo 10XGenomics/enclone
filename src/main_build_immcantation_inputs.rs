@@ -1,8 +1,10 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Build input files for Immcantation.  This creates two files:
-// filtered_contig.fasta
-// filtered_contig_annotations.csv.
+// * filtered_contig.fasta
+// * filtered_contig_annotations.csv.
+// Functionality of this code is dependent on stability and
+// structure of Immcantation outputs.
 
 use io_utils::*;
 use pretty_trace::*;
@@ -42,8 +44,8 @@ pub fn main_build_immcantation_inputs() {
     }
     lenas.sort();
 
-    // Concatenate the fasta files, prepending the lena id to the contig name.
-    // Also concatenate the csv files, prepending the lena id to the contig name.
+    // Concatenate the fasta files, prepending the sample ID to the contig name.
+    // Also concatenate the csv files, prepending the sample ID to the contig name.
 
     let mut g1 = open_for_write_new!["filtered_contig.fasta"];
     let mut g = open_for_write_new!["filtered_contig_annotations.csv"];

@@ -35,7 +35,7 @@ pub fn define_mat(
 
     unique_sort(&mut all_cdr3s);
 
-    // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough".
+    // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
     // 1. They have the same length and differ at no more than 4 positions.
     // 2. Each has a V..J sequence such that the two differ by no more than 50 positions.
 

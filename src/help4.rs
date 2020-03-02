@@ -140,7 +140,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "or after pipetting from the tube, and the resulting fragments seed GEMS,"
+            "or after pipetting from the tube, and the resulting fragments seed GEMs,"
         );
         doc!(
             "",

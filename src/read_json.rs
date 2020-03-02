@@ -32,8 +32,8 @@ pub fn json_error(json: Option<&str>) {
          1. If the file was generated using \
          Cell Ranger version < 3.1, please either\nregenerate the file using the \
          current version, or else run this program with the RE option to\n\
-         regenerate annotations from scratch, but we warn you that this code \
-         is not guaranteed to run\ncorrectly on outdated json files.\n\n\
+         regenerate annotations from scratch. WARNING: this code \
+         is not guaranteed to run\ncorrectly on outdated JSON files.\n\n\
          2. Make sure you have the correct chain type, TCR or BCR.\n\n\
          3. Make sure you have the correct reference sequence.  See \
          \"enclone help faq\".\n\n\
@@ -45,7 +45,7 @@ pub fn json_error(json: Option<&str>) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Parse the json annotations file.
+// Parse the JSON annotations file.
 //
 // Should try using:
 // https://martian-lang.github.io/martian-rust/doc/martian_filetypes/json_file/
@@ -66,7 +66,7 @@ pub fn json_error(json: Option<&str>) {
 //
 // and simply reading the file lines is several times faster.  So the way we parse the
 // files is suboptimal.  If we want to make this faster, one option would be to speed up
-// this code.  Another would be to write out a binary version of the json file that contains
+// this code.  Another would be to write out a binary version of the JSON file that contains
 // only the information that we need.
 
 pub fn read_json(
