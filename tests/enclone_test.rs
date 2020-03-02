@@ -94,7 +94,7 @@ fn test_enclone() {
         "BCR=52177 AMINO=cdr3 PER_BC CDR3=CATWDDSLSGPNWVF",
         // 21. test MIN_CHAINS_EXACT
         "BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3",
-        // 22. there was a FP
+        // 22. there was a false positive clonotype
         "BCR=\"165807;165808\" FAIL_ONLY=true EXPECT_NULL",
         // 23. here we were generating a fake alternate allele
         "BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30",
