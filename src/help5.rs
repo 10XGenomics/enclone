@@ -429,6 +429,16 @@ pub fn help5(args: &Vec<String>) {
              argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
         );
 
+        print("\\boldblue{17. Can I use enclone if I have only gene expression data?}\n\n");
+        print(
+            "Possibly.  In some cases this works very well, but in other cases it does not.  \
+            Success depends on dataset characteristics that have not been carefully investigated.  \
+            To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
+            it was a VDJ dataset, and you need to specify to Cell Ranger that the run is to be \
+            treated as BCR or TCR.  Two separate invocations can be used to get both.  Note also \
+            that Cell Ranger has been only minimally tested for this configuration.\n\n",
+        );
+
         std::process::exit(0);
     }
 
