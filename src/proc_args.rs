@@ -33,7 +33,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         } else if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
             internal_run = true;
-            ctl.gen_opt.pre = "/mnt/assembly/vdj/current13".to_string();
+            ctl.gen_opt.pre = "/mnt/assembly/vdj/current14".to_string();
         }
     }
     for i in 1..args.len() {
@@ -51,7 +51,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.pre = args[i].after("PRE=").to_string();
         }
     }
-    ctl.gen_opt.h5 = true;
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -92,7 +91,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let cvars_allowed = vec![
         "var", "umed", "umax", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
-        "clen", "cdiff", "udiff", "notes",
+        "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
     ];
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
@@ -146,8 +145,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
+        } else if is_simple_arg(&args[i], "CURRENT_REF") {
+            ctl.gen_opt.current_ref = true;
+        } else if is_simple_arg(&args[i], "SUM") {
+            ctl.clono_print_opt.sum = true;
+        } else if is_simple_arg(&args[i], "MEAN") {
+            ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
-            ctl.gen_opt.h5 = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {
@@ -158,6 +162,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
             ctl.gen_opt.reuse = true;
+        } else if is_simple_arg(&args[i], "NWARN") {
+            ctl.gen_opt.nwarn = true;
         } else if args[i].starts_with("BINARY=") {
             ctl.gen_opt.binary = args[i].after("BINARY=").to_string();
         } else if args[i].starts_with("PROTO=") {
@@ -172,8 +178,23 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_print_opt.full_seqc = true;
         } else if is_simple_arg(&args[i], "BARCODES") {
             ctl.clono_print_opt.barcodes = true;
+        } else if args[i].starts_with("BARCODE=") {
+            let bcs = args[i].after("BARCODE=").split(',').collect::<Vec<&str>>();
+            let mut x = Vec::<String>::new();
+            for j in 0..bcs.len() {
+                if !bcs[j].contains('-') {
+                    eprintln!(
+                        "\nValue for a barcode in BARCODE argument is invalid, must contain -.\n"
+                    );
+                    std::process::exit(1);
+                }
+                x.push(bcs[j].to_string());
+            }
+            ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&args[i], "GRAPH") {
             ctl.gen_opt.graph = true;
+        } else if is_simple_arg(&args[i], "ACCEPT_INCONSISTENT") {
+            ctl.gen_opt.accept_inconsistent = true;
         } else if is_simple_arg(&args[i], "NCROSS") {
             ctl.clono_filt_opt.ncross = true;
         } else if is_simple_arg(&args[i], "NWEAK_CHAINS") {
@@ -184,6 +205,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.weak_foursies = false;
         } else if is_simple_arg(&args[i], "NBC_DUP") {
             ctl.clono_filt_opt.bc_dup = false;
+        } else if is_simple_arg(&args[i], "NDONOR") {
+            ctl.clono_filt_opt.donor = true;
         } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
         } else if is_simple_arg(&args[i], "UTR_CON") {
@@ -194,6 +217,45 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.mouse = true;
         } else if is_simple_arg(&args[i], "SUMMARY") {
             ctl.gen_opt.summary = true;
+        } else if args[i].starts_with("F=") {
+            let filt = args[i].after("F=").to_string();
+            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+        } else if args[i].starts_with("SCAN=") {
+            let mut x = args[i].after("SCAN=").to_string();
+            x = x.replace(" ", "").to_string();
+            let x = x.split(',').collect::<Vec<&str>>();
+            if x.len() != 3 {
+                eprintln!("\nArgument to SCAN must have three components.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
+            ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1]));
+            let threshold = LinearCondition::new(&x[2]);
+            for i in 0..threshold.var.len() {
+                if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
+                    eprintln!("\nIllegal variable in threshold for scan.\n");
+                    std::process::exit(1);
+                }
+            }
+            ctl.gen_opt.gene_scan_threshold = Some(threshold);
+        } else if args[i].starts_with("PLOT=") {
+            let x = args[i].after("PLOT=").split(',').collect::<Vec<&str>>();
+            if x.is_empty() {
+                eprintln!("\nArgument to PLOT is invalid.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.plot_file = x[0].to_string();
+            for j in 1..x.len() {
+                if !x[j].contains("->") {
+                    eprintln!("\nArgument to PLOT is invalid.\n");
+                    std::process::exit(1);
+                }
+                ctl.gen_opt
+                    .sample_color_map
+                    .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
+            }
+        } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
+            ctl.gen_opt.summary_clean = true;
         } else if args[i].starts_with("EMAIL=") {
         } else if args[i].starts_with("REF=") {
             ctl.gen_opt.refname = args[i].after("REF=").to_string();
@@ -231,6 +293,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.heavy_chain_reuse = true;
         } else if is_simple_arg(&args[i], "GROUP_HEAVY_CDR3") {
             ctl.clono_group_opt.heavy_cdr3_aa = true;
+        } else if is_simple_arg(&args[i], "GROUP_VJ_REFNAME") {
+            ctl.clono_group_opt.vj_refname = true;
         } else if is_simple_arg(&args[i], "NPLAIN") {
             ctl.pretty = true;
         } else if is_simple_arg(&args[i], "NO_REUSE") {
@@ -248,7 +312,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
         } else if is_usize_arg(&args[i], "MAX_THREADS") {
             let nthreads = args[i].after("MAX_THREADS=").force_usize();
-            let _ = rayon::ThreadPoolBuilder::new().num_threads(nthreads).build_global();
+            let _ = rayon::ThreadPoolBuilder::new()
+                .num_threads(nthreads)
+                .build_global();
         } else if is_usize_arg(&args[i], "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(args[i].after("REQUIRED_FPS=").force_usize());
         } else if args[i].starts_with("PCOLS=") {
@@ -362,6 +428,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.fasta = args[i].after("EXFASTA=").to_string();
         } else if args[i].starts_with("FASTA=") {
             ctl.gen_opt.fasta_filename = args[i].after("FASTA=").to_string();
+        } else if args[i].starts_with("FASTA_AA=") {
+            ctl.gen_opt.fasta_aa_filename = args[i].after("FASTA_AA=").to_string();
         } else if args[i].starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", args[i].after("CDR3=")));
             if !reg.is_ok() {
@@ -449,8 +517,59 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
     }
+    let mut donors = Vec::<String>::new();
+    let mut samples = Vec::<String>::new();
+    let mut tags = Vec::<String>::new();
+    let mut sample_donor = Vec::<(String, String)>::new();
+    for i in 0..ctl.sample_info.n() {
+        for x in ctl.sample_info.sample_donor[i].iter() {
+            donors.push((x.1).1.clone());
+            samples.push((x.1).0.clone());
+            sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
+        }
+        for x in ctl.sample_info.tag[i].iter() {
+            tags.push((x.1).clone());
+        }
+        donors.push(ctl.sample_info.donor_id[i].clone());
+        samples.push(ctl.sample_info.sample_id[i].clone());
+    }
+    unique_sort(&mut donors);
+    unique_sort(&mut samples);
+    unique_sort(&mut tags);
+    unique_sort(&mut sample_donor);
+    ctl.sample_info.donors = donors.len();
+    ctl.sample_info.donor_list = donors.clone();
+    ctl.sample_info.sample_list = samples.clone();
+    ctl.sample_info.tag_list = tags;
+    let mut sample_donor_list = Vec::<(usize, usize)>::new();
+    for i in 0..sample_donor.len() {
+        sample_donor_list.push((
+            bin_position(&samples, &sample_donor[i].0) as usize,
+            bin_position(&donors, &sample_donor[i].1) as usize,
+        ));
+    }
+    unique_sort(&mut sample_donor_list);
+    ctl.sample_info.sample_donor_list = sample_donor_list;
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
     proc_args_tail(&mut ctl, &args, internal_run);
+
+    // Check for invalid variables in linear conditions.
+
+    for i in 0..ctl.clono_filt_opt.bounds.len() {
+        ctl.clono_filt_opt.bounds[i].require_valid_variables(&ctl);
+    }
+    if ctl.gen_opt.gene_scan_test.is_some() {
+        ctl.gen_opt
+            .gene_scan_test
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+        ctl.gen_opt
+            .gene_scan_control
+            .as_ref()
+            .unwrap()
+            .require_valid_variables(&ctl);
+    }
 }

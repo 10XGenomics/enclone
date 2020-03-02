@@ -172,7 +172,7 @@ pub fn create_exact_subclonotype_core(
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
-            
+
             u_ref_id: tig_bc[r][m].u_ref_id,
             v_ref_id: tig_bc[r][m].v_ref_id,
             v_ref_id_donor: None,
@@ -205,6 +205,9 @@ pub fn create_exact_subclonotype_core(
                     barcode: tig_bc[t][m].barcode.clone(),
                     tigname: tig_bc[t][m].tigname.clone(),
                     dataset_index: tig_bc[t][m].dataset_index,
+                    sample_index: tig_bc[t][m].sample_index,
+                    donor_index: tig_bc[t][m].donor_index,
+                    tag_index: tig_bc[t][m].tag_index,
                     umi_count: tig_bc[t][m].umi_count,
                     read_count: tig_bc[t][m].read_count,
                 });
@@ -216,7 +219,7 @@ pub fn create_exact_subclonotype_core(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Find exact subclonotypes.  
+// Find exact subclonotypes.
 
 pub fn find_exact_subclonotypes(
     ctl: &EncloneControl,
@@ -248,10 +251,14 @@ pub fn find_exact_subclonotypes(
                     || ( cid1.is_some() && cid2.is_some()
                         && refdata.name[cid1.unwrap()] != refdata.name[cid2.unwrap()] )
 
-
                     || ( cid1.is_some() && cid2.is_some()
                         && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
 
+                    // Check for different donors if NDONOR specified on command line.
+                    // Note funky redundancy in checking each chain
+
+                    || ( !ctl.clono_filt_opt.donor
+                        && tig_bc[r][m].donor_index != tig_bc[s][m].donor_index )
                 {
                     ok = false;
                     break;
@@ -292,7 +299,8 @@ pub fn find_exact_subclonotypes(
         }
 
         // Delete reused barcodes.  In principle we could instead choose the instance having
-        // higher UMI counts.
+        // higher UMI counts.  Also we might test for more evidence of concurrence, to avoid
+        // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
         if ctl.clono_filt_opt.bc_dup {

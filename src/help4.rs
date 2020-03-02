@@ -144,8 +144,30 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "yielding 'fake' cells.  The NCROSS option turns off this filtering step."
+            "yielding expanded 'fake' clonotypes that are residues of real single plasma"
         );
+        doc!(
+            "",
+            "cells.  The NCROSS options turns off this filter, which could be useful so"
+        );
+        doc!(
+            "",
+            "long as you interpret the restored clonotypes as representing what are"
+        );
+        doc!(
+            "",
+            "probably single cells.  There may also be other situations where the filter"
+        );
+        doc!(
+            "",
+            "should be turned off, and in particular the filter can do weird things if"
+        );
+        doc!(
+            "",
+            "inputs are somehow mis-specified to enclone.  Note that for purposes of"
+        );
+        doc!("", "this option, enclone defines a sample by the pair");
+        doc!("", "(sample name, donor name).");
         ldoc!(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of"
@@ -238,12 +260,34 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact subclonotype."
+            "By default, enclone filters out duplicated barcodes within an exact."
         );
         doc!(
             "",
-            "The NBC_DUP option turns off this filter."
+            "subclonotype.  The NBC_DUP option turns off this filter."
         );
+        ldoc!(
+            "NDONOR",
+            "By default, enclone will prevent cells from different donors from being"
+        );
+        doc!(
+            "",
+            "placed in the same clonotype.  The NDONOR option turns off this behavior, "
+        );
+        doc!(
+            "",
+            "thus allowing cells from different donors to be placed in the same"
+        );
+        doc!(
+            "",
+            "clonotype.  The main use of this option is for specificity testing, in"
+        );
+
+        doc!(
+            "",
+            "which data from different donors are deliberately combined in an attempt"
+        );
+        doc!("", "to find errors.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"
@@ -293,13 +337,12 @@ pub fn help4(args: &Vec<String>) {
         println!("lead column options\n");
         end_escape!();
         println!(
-            "These options define lead variables, which correspond to columns that\n\
-             appear once in each clonotype, on the left side, and have one entry for each\n\
+            "These options define lead variables, which correspond to columns that \
+             appear once in each\nclonotype, on the left side, and have one entry for each \
              exact subclonotype row.\n"
         );
         print(
-            "Lead variables are specified using\n\
-             \\bold{LVARS=x1,...,xn}\n\
+            "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
         doc!("datasets", "dataset identifiers");
@@ -311,11 +354,19 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "name, or a sample short name, or a donor short name; it may not name more than"
+            "name, or a sample short name, or a donor short name, or a tag short name;"
         );
-        doc!("", "one such category");
+        doc!("", "it may not name more than one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
+        // nonpublic for now as we don't know if this is useful
+        /*
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
+        */
+        doc!("n_gex", "number of cells reported by GEX");
         doc!(
             "",
             "(requires that gene expression data are provided as input)"
@@ -357,24 +408,27 @@ pub fn help4(args: &Vec<String>) {
             "these identifiers is arbitrary.  This option is best applied to cases where"
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
-        ldoc!(
-            "<antibody>_a",
-            "assuming that feature barcode data has been provided,"
+        ldoc!("<gene>_g", "");
+        doc!("<antibody>_ab", "");
+        doc!("<antigen>_ag", "");
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
+        doc!(
+            "",
+            "look for a declared feature of the given type with the given id or name,"
         );
         doc!(
             "",
-            "look for a feature line that starts with the given name, and"
-        );
-        doc!("", "then has a tab; report the mean UMI count value");
-        doc!(
-            "<gene name>_g",
-            "assuming that gene expression data has been provided,"
+            "and report the mean umi count for it; this assumes that gene expression"
         );
         doc!(
             "",
-            "look for a feature line that has the given name in the second"
+            "or feature barcode data have been generated; we also allow the form e.g."
         );
-        doc!("", "tab-delimited column; report the mean UMI count value");
+        doc!(
+            "",
+            "<abbr>:<gene>_g where abbr is an abbreviation to be shown as column header"
+        );
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);
@@ -389,7 +443,8 @@ pub fn help4(args: &Vec<String>) {
         print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.\n\n",
+             counts are rounded to the nearest integer.  Note that for this normalization, \
+             we simply scale the counts, rather than subsample reads.\n\n",
         );
         if !help_all {
             std::process::exit(0);
@@ -458,14 +513,27 @@ pub fn help4(args: &Vec<String>) {
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut"
         );
-        doc!( "",
-              "the beginning of C; elided if empty"
-        );
+        doc!("", "the beginning of C; elided if empty");
         ldoc!(
             "ndiff<n>",
             "number of base differences within V..J between this exact subclonotype and"
         );
-        doc!( "", "exact subclonotype n" );
+        doc!("", "exact subclonotype n");
+        doc!(
+            "d_univ",
+            "distance from universal reference, more specifically,"
+        );
+        doc!(
+            "",
+            "number of base differences within V..J between this exact"
+        );
+        doc!(
+            "",
+            "clonotype and universal reference, exclusive of indels, the last 15"
+        );
+        doc!("", "bases of the V and the first 15 bases of the J");
+        doc!("d_donor", "distance from donor reference,");
+        doc!("", "as above but computed using donor reference");
 
         // The rest.
 
@@ -565,6 +633,8 @@ pub fn help4(args: &Vec<String>) {
             "print full sequence for each chain in the first exact subclonotype,"
         );
         doc!("", "near the top of the printout for a given clonotype");
+        ldoc!("SUM", "print sum row for each clonotype");
+        doc!("MEAN", "print mean row for each clonotype");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);
@@ -574,11 +644,17 @@ pub fn help4(args: &Vec<String>) {
              placeholder, we have the following \"toy\" options:\n\n",
         );
         rows.clear();
+
         doc!(
             "GROUP_HEAVY_CDR3",
             "group by perfect identity of CDR3 amino acid sequence \
              of IGH or TRB"
         );
+        doc!(
+            "GROUP_VJ_REFNAME",
+            "group by sharing identical V and J reference gene names,"
+        );
+        doc!("", "but ignores foursies and moresies");
         ldoc!(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)"

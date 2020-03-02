@@ -94,8 +94,6 @@ pub fn make_table(
     for c in log.chars() {
         if c == '$' {
             logz.push('•');
-        } else if c == '+' {
-            logz.push('◼');
         } else if c == '%' {
             logz.push('+');
         } else {
@@ -200,6 +198,12 @@ pub fn make_diff_row(
                 let mut start = 5 + drows.len();
                 if drows.len() >= 1 {
                     start += 2;
+                }
+                if ctl.clono_print_opt.sum {
+                    start += 1;
+                }
+                if ctl.clono_print_opt.mean {
+                    start += 1;
                 }
                 for k in start..rows.len() {
                     if rows[k][0].starts_with("$") {
@@ -444,13 +448,17 @@ pub fn start_gen(
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
-            let lena = ex.clones[m][0].dataset_index;
-            donors.push(ctl.sample_info.donor_index[lena]);
+            if ex.clones[m][0].donor_index.is_some() {
+                let d = ex.clones[m][0].donor_index.unwrap();
+                if ctl.sample_info.donor_list[d].len() > 0 {
+                    donors.push(d);
+                }
+            }
         }
     }
     unique_sort(&mut donors);
     fwriteln!(&mut mlog, "CLONOTYPE = {} CELLS", n);
-    if donors.len() > 1 {
+    if donors.len() > 1 && !ctl.gen_opt.nwarn {
         if ctl.pretty {
             // emit_red_escape(&mut mlog);
             // what is below is a brighter red
@@ -460,20 +468,38 @@ pub fn start_gen(
         if ctl.pretty {
             emit_end_escape(&mut mlog);
         }
-        fwriteln!(&mut mlog, " WARNING: This clonotype contains cells from multiple donors.");
+        fwriteln!(
+            &mut mlog,
+            " WARNING: This clonotype contains cells from multiple donors."
+        );
+        let mut donor_names = Vec::<String>::new();
         for i in 0..donors.len() {
-            let mut lenas = Vec::<String>::new();
+            donor_names.push(ctl.sample_info.donor_list[donors[i]].clone());
+        }
+        fwriteln!(&mut mlog, "donors = {}", donor_names.iter().format(","));
+        fwriteln!(&mut mlog, "datasets in which these donors appear:");
+        for i in 0..donors.len() {
+            let mut datasets = Vec::<String>::new();
             for u in 0..nexacts {
                 let ex = &exact_clonotypes[exacts[u]];
                 for l in 0..ex.clones.len() {
-                    let li = ex.clones[l][0].dataset_index;
-                    if ctl.sample_info.donor_index[li] == donors[i] {
-                        lenas.push(ctl.sample_info.dataset_id[li].clone());
+                    if ex.clones[l][0].donor_index.is_some() {
+                        if ex.clones[l][0].donor_index.unwrap() == donors[i] {
+                            datasets.push(
+                                ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
+                            );
+                        }
                     }
                 }
             }
-            unique_sort(&mut lenas);
-            fwriteln!(&mut mlog, "donor {}: {}", i + 1, lenas.iter().format(","));
+            unique_sort(&mut datasets);
+            // This message is pretty flaky in the case where bc has been specified in META.
+            fwriteln!(
+                &mut mlog,
+                "donor {}: {}",
+                i + 1,
+                datasets.iter().format(",")
+            );
         }
     }
 

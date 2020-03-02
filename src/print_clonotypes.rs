@@ -9,6 +9,7 @@ use crate::defs::*;
 use crate::filter::*;
 use crate::group::*;
 use crate::loupe::*;
+use crate::plot::*;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
 use crate::print_utils3::*;
@@ -19,6 +20,7 @@ use equiv::EquivRel;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -46,6 +48,7 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
+    tall: &Instant,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
@@ -53,6 +56,7 @@ pub fn print_clonotypes(
     info: &Vec<CloneInfo>,
     eq: &EquivRel,
     gex_info: &GexInfo,
+    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
 ) {
     // Make an abbreviation.
 
@@ -97,13 +101,15 @@ pub fn print_clonotypes(
     let mut results = Vec::<(
         usize,
         Vec<String>,
-        Vec<(Vec<usize>,Vec<Vec<Option<usize>>>)>,
+        Vec<(Vec<usize>, Vec<Vec<Option<usize>>>)>,
         usize,
         usize,
         usize,
         Vec<Clonotype>,
         Vec<Vec<HashMap<String, String>>>,
         isize,
+        Vec<bool>,
+        Vec<bool>,
     )>::new();
     for i in 0..reps.len() {
         results.push((
@@ -116,7 +122,22 @@ pub fn print_clonotypes(
             Vec::<Clonotype>::new(),
             Vec::<Vec<HashMap<String, String>>>::new(),
             0,
+            Vec::<bool>::new(),
+            Vec::<bool>::new(),
         ));
+    }
+    let mut d_readers = Vec::<Option<h5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
+    if ctl.gen_opt.h5 {
+        for li in 0..ctl.sample_info.n() {
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            } else {
+                d_readers.push(None);
+                ind_readers.push(None);
+            }
+        }
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -251,7 +272,7 @@ pub fn print_clonotypes(
 
             // Generate Loupe data.
 
-            if ( ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0 ) && pass == 2 {
+            if (ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
                     &exact_clonotypes,
                     &exacts,
@@ -330,9 +351,9 @@ pub fn print_clonotypes(
                     );
                 }
 
-                // Done unless on second pass.
+                // Done unless on second pass.  Unless there are bounds.
 
-                if pass == 1 {
+                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 {
                     continue;
                 }
 
@@ -411,6 +432,13 @@ pub fn print_clonotypes(
                         groups.insert(d, c);
                     }
                 }
+
+                // Set up to record stats that assign a value to each cell for a given variable.
+
+                let mut stats = Vec::<(String, Vec<f64>)>::new();
+
+                // Build rows.
+
                 for u in 0..nexacts {
                     let mut typex = vec![false; cols];
                     let mut row = Vec::<String>::new();
@@ -424,6 +452,7 @@ pub fn print_clonotypes(
                     let mut d_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     let mut ind_all = vec![Vec::<u32>::new(); ex.clones.len()];
                     row_fill(
+                        pass,
                         u,
                         &ctl,
                         &exacts,
@@ -444,6 +473,9 @@ pub fn print_clonotypes(
                         &rsi,
                         &dref,
                         &groups,
+                        &d_readers,
+                        &ind_readers,
+                        &mut stats,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -472,20 +504,70 @@ pub fn print_clonotypes(
                     if ctl.clono_print_opt.bu {
                         for bcl in bli.iter() {
                             let mut row = Vec::<String>::new();
-                            row.push(format!("$ {}", bcl.0.clone()));
+                            let bc = &bcl.0;
+                            let li = bcl.1;
+                            row.push(format!("$ {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 if lvars[k] == "datasets".to_string() {
-                                    row.push(format!(
-                                        "{}",
-                                        ctl.sample_info.dataset_id[bcl.1].clone()
-                                    ));
+                                    row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
+                                } else if lvars[k] == "n_gex".to_string() && have_gex {
+                                    let mut n_gex = 0;
+                                    if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
+                                        n_gex = 1;
+                                    }
+                                    row.push(format!("{}", n_gex));
+                                } else if lvars[k] == "entropy".to_string() && have_gex {
+                                    // NOTE DUPLICATION WITH CODE BELOW.
+                                    let mut gex_count = 0;
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                    if p >= 0 {
+                                        let mut raw_count = 0;
+                                        if !ctl.gen_opt.h5 {
+                                            let row = gex_info.gex_matrices[li].row(p as usize);
+                                            for j in 0..row.len() {
+                                                let f = row[j].0;
+                                                let n = row[j].1;
+                                                if gex_info.is_gex[li][f] {
+                                                    raw_count += n;
+                                                }
+                                            }
+                                        } else {
+                                            let l = bcl.2;
+                                            for j in 0..d_all[l].len() {
+                                                if gex_info.is_gex[li][ind_all[l][j] as usize] {
+                                                    raw_count += d_all[l][j] as usize;
+                                                }
+                                            }
+                                        }
+                                        gex_count = raw_count;
+                                    }
+                                    let mut entropy = 0.0;
+                                    if p >= 0 {
+                                        if !ctl.gen_opt.h5 {
+                                            let row = gex_info.gex_matrices[li].row(p as usize);
+                                            for j in 0..row.len() {
+                                                let f = row[j].0;
+                                                let n = row[j].1;
+                                                if gex_info.is_gex[li][f] {
+                                                    let q = n as f64 / gex_count as f64;
+                                                    entropy += q * q.log2();
+                                                }
+                                            }
+                                        } else {
+                                            let l = bcl.2;
+                                            for j in 0..d_all[l].len() {
+                                                if gex_info.is_gex[li][ind_all[l][j] as usize] {
+                                                    let n = d_all[l][j] as usize;
+                                                    let q = n as f64 / gex_count as f64;
+                                                    entropy += q * q.log2();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    row.push(format!("{:.2}", entropy));
                                 } else if lvars[k] == "gex_med".to_string() && have_gex {
                                     let mut gex_count = 0;
-                                    let li = bcl.1;
-                                    let p = bin_position(
-                                        &gex_info.gex_barcodes[li],
-                                        &bcl.0.to_string(),
-                                    );
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
                                         if !ctl.gen_opt.h5 {
@@ -544,6 +626,135 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
+                // Apply bounds.
+
+                stats.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let mut stats2 = Vec::<(String, Vec<f64>)>::new();
+                let mut i = 0;
+                while i < stats.len() {
+                    let mut j = i + 1;
+                    while j < stats.len() {
+                        if stats[j].0 != stats[i].0 {
+                            break;
+                        }
+                        j += 1;
+                    }
+                    let mut all = Vec::<f64>::new();
+                    for k in i..j {
+                        all.append(&mut stats[k].1.clone());
+                    }
+                    stats2.push((stats[i].0.clone(), all));
+                    i = j;
+                }
+                stats = stats2;
+                for i in 0..ctl.clono_filt_opt.bounds.len() {
+                    let x = &ctl.clono_filt_opt.bounds[i];
+                    let mut means = Vec::<f64>::new();
+                    for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
+                        // let mut found = false;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x.var[i] {
+                                vals.append(&mut stats[j].1.clone());
+                                // found = true;
+                                break;
+                            }
+                        }
+                        /*
+                        if !found {
+                            eprintln!(
+                                "\nFailed to find the variable {} used in a \
+                                 bound.  Please see \"enclone help filter\".\n",
+                                x.var[i]
+                            );
+                            std::process::exit(1);
+                        }
+                        */
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
+                    }
+                    if !x.satisfied(&means) {
+                        for u in 0..nexacts {
+                            bads[u] = true;
+                        }
+                    }
+                }
+
+                // See if we're in the test and control sets for gene scan.
+
+                if ctl.gen_opt.gene_scan_test.is_some() {
+                    let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
+                    let mut means = Vec::<f64>::new();
+                    for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
+                        // let mut found = false;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x.var[i] {
+                                vals.append(&mut stats[j].1.clone());
+                                // found = true;
+                                break;
+                            }
+                        }
+                        /*
+                        if !found {
+                            eprintln!(
+                                "\nFailed to find the variable {} used in a \
+                                 bound.  Please see \"enclone help filter\".\n",
+                                x.var[i]
+                            );
+                            std::process::exit(1);
+                        }
+                        */
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
+                    }
+                    res.9.push(x.satisfied(&means));
+                    let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
+                    let mut means = Vec::<f64>::new();
+                    for i in 0..x.n() {
+                        let mut vals = Vec::<f64>::new();
+                        // let mut found = false;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x.var[i] {
+                                vals.append(&mut stats[j].1.clone());
+                                // found = true;
+                                break;
+                            }
+                        }
+                        /*
+                        if !found {
+                            eprintln!(
+                                "\nFailed to find the variable {} used in a \
+                                 bound.  Please see \"enclone help filter\".\n",
+                                x.var[i]
+                            );
+                            std::process::exit(1);
+                        }
+                        */
+                        let mut mean = 0.0;
+                        for j in 0..vals.len() {
+                            mean += vals[j];
+                        }
+                        mean /= n as f64;
+                        means.push(mean);
+                    }
+                    res.10.push(x.satisfied(&means));
+                }
+
+                // Done unless on second pass.
+
+                if pass == 1 {
+                    continue;
+                }
+
                 // Fill in exact_subclonotype_id, reorder.
 
                 if ctl.parseable_opt.pout.len() > 0 {
@@ -588,8 +799,8 @@ pub fn print_clonotypes(
 
                 // Insert placeholder for dots row.
 
-                let diff_pos = rows.len();
                 let cvars = &ctl.clono_print_opt.cvars;
+                let diff_pos = rows.len();
                 if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
                     let row = Vec::<String>::new();
                     rows.push(row);
@@ -601,6 +812,74 @@ pub fn print_clonotypes(
                     sr[j].0[0] = format!("{}", j + 1); // row number (#)
                     rows.push(sr[j].0.clone());
                     rows.append(&mut sr[j].1.clone());
+                }
+
+                // Add sum and mean rows.
+
+                if ctl.clono_print_opt.sum {
+                    let mut row = Vec::<String>::new();
+                    row.push("Σ".to_string());
+                    for i in 0..lvars.len() {
+                        let mut x = lvars[i].clone();
+                        if x.contains(':') {
+                            x = x.before(":").to_string();
+                        }
+                        let mut found = false;
+                        let mut total = 0.0;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x {
+                                found = true;
+                                for k in 0..stats[j].1.len() {
+                                    total += stats[j].1[k];
+                                }
+                            }
+                        }
+                        if !found {
+                            row.push(String::new());
+                        } else {
+                            row.push(format!("{}", total.round() as usize));
+                        }
+                    }
+                    // This is necessary but should not be:
+                    for cx in 0..cols {
+                        for _ in 0..rsi.cvars[cx].len() {
+                            row.push(String::new());
+                        }
+                    }
+                    rows.push(row);
+                }
+                if ctl.clono_print_opt.mean {
+                    let mut row = Vec::<String>::new();
+                    row.push("μ".to_string());
+                    for i in 0..lvars.len() {
+                        let mut x = lvars[i].clone();
+                        if x.contains(':') {
+                            x = x.before(":").to_string();
+                        }
+                        let mut found = false;
+                        let mut total = 0.0;
+                        for j in 0..stats.len() {
+                            if stats[j].0 == x {
+                                found = true;
+                                for k in 0..stats[j].1.len() {
+                                    total += stats[j].1[k];
+                                }
+                            }
+                        }
+                        let mean = total / n as f64;
+                        if !found {
+                            row.push(String::new());
+                        } else {
+                            row.push(format!("{:.1}", mean));
+                        }
+                    }
+                    // This is necessary but should not be:
+                    for cx in 0..cols {
+                        for _ in 0..rsi.cvars[cx].len() {
+                            row.push(String::new());
+                        }
+                    }
+                    rows.push(row);
                 }
 
                 // Make the diff row.
@@ -754,6 +1033,7 @@ pub fn print_clonotypes(
         out_datas.append(&mut results[i].7);
     }
     group_and_print_clonotypes(
+        &tall,
         &refdata,
         &pics,
         &exacts,
@@ -762,11 +1042,168 @@ pub fn print_clonotypes(
         &ctl,
         &parseable_fields,
         &mut out_datas,
+        &join_info,
     );
+
+    // Do gene scan.
+
+    if ctl.gen_opt.gene_scan_test.is_some() {
+        println!("\nGENE SCAN\n");
+        let mut tests = Vec::<usize>::new();
+        let mut controls = Vec::<usize>::new();
+        let mut count = 0;
+        for i in 0..reps.len() {
+            for j in 0..results[i].1.len() {
+                if results[i].9[j] {
+                    tests.push(count);
+                }
+                if results[i].10[j] {
+                    controls.push(count);
+                }
+                count += 1;
+            }
+        }
+        let mut test_cells = 0;
+        for i in tests.iter() {
+            for u in exacts[*i].iter() {
+                test_cells += exact_clonotypes[*u].ncells();
+            }
+        }
+        println!(
+            "{} clonotypes containing {} cells in test set",
+            tests.len(),
+            test_cells
+        );
+        let mut control_cells = 0;
+        for i in controls.iter() {
+            for u in exacts[*i].iter() {
+                control_cells += exact_clonotypes[*u].ncells();
+            }
+        }
+        println!(
+            "{} clonotypes containing {} cells in control set\n",
+            controls.len(),
+            control_cells
+        );
+        if tests.len() == 0 {
+            eprintln!("Gene scan failed, no test clonotypes.\n");
+            std::process::exit(1);
+        }
+        if controls.len() == 0 {
+            eprintln!("Gene scan failed, no control clonotypes.\n");
+            std::process::exit(1);
+        }
+        println!("enriched features\n");
+        for fid in 0..gex_info.gex_features[0].len() {
+            // NOT SURE THIS IS BACKWARD COMPATIBLE!
+            let gene = gex_info.gex_features[0][fid]
+                .after("\t")
+                .after("\t")
+                .contains("Gene");
+            let mut test_values = Vec::<f64>::new();
+            let mut control_values = Vec::<f64>::new();
+            for j in 0..tests.len() {
+                for m in 0..exacts[tests[j]].len() {
+                    let ex = &exact_clonotypes[exacts[tests[j]][m]];
+                    for l in 0..ex.clones.len() {
+                        let li = ex.clones[l][0].dataset_index;
+                        let bc = ex.clones[l][0].barcode.clone();
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            let mut raw_count = 0 as f64;
+                            if !ctl.gen_opt.h5 {
+                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
+                                /*
+                                } else {
+                                    for j in 0..d_all[l].len() {
+                                        if ind_all[l][j] == fid as u32 {
+                                            raw_count = d_all[l][j] as f64;
+                                            break;
+                                        }
+                                    }
+                                */
+                            }
+                            let mult: f64;
+                            if gene {
+                                mult = gex_info.gex_mults[li];
+                            } else {
+                                mult = gex_info.fb_mults[li];
+                            }
+                            test_values.push(raw_count * mult);
+                        }
+                    }
+                }
+            }
+            for j in 0..controls.len() {
+                for m in 0..exacts[controls[j]].len() {
+                    let ex = &exact_clonotypes[exacts[controls[j]][m]];
+                    for l in 0..ex.clones.len() {
+                        let li = ex.clones[l][0].dataset_index;
+                        let bc = ex.clones[l][0].barcode.clone();
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            let mut raw_count = 0 as f64;
+                            if !ctl.gen_opt.h5 {
+                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
+                                /*
+                                } else {
+                                    for j in 0..d_all[l].len() {
+                                        if ind_all[l][j] == fid as u32 {
+                                            raw_count = d_all[l][j] as f64;
+                                            break;
+                                        }
+                                    }
+                                */
+                            }
+                            let mult: f64;
+                            if gene {
+                                mult = gex_info.gex_mults[li];
+                            } else {
+                                mult = gex_info.fb_mults[li];
+                            }
+                            control_values.push(raw_count * mult);
+                        }
+                    }
+                }
+            }
+            let mut test_mean = 0.0;
+            for i in 0..test_values.len() {
+                test_mean += test_values[i];
+            }
+            test_mean /= test_values.len() as f64;
+            let mut control_mean = 0.0;
+            for i in 0..control_values.len() {
+                control_mean += control_values[i];
+            }
+            control_mean /= control_values.len() as f64;
+            let mut vals = Vec::<f64>::new();
+            let threshold = ctl.gen_opt.gene_scan_threshold.clone().unwrap();
+            for i in 0..threshold.var.len() {
+                if threshold.var[i] == "t".to_string() {
+                    vals.push(test_mean);
+                } else {
+                    vals.push(control_mean);
+                }
+            }
+            if threshold.satisfied(&vals) {
+                println!("{}", gex_info.gex_features[0][fid]);
+            }
+        }
+    }
+
+    // Plot clonotypes.
+
+    plot_clonotypes(&ctl, &exacts, &exact_clonotypes);
 
     // Tally low gene expression count.
     // WARNING: THIS MAY ONLY WORK IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.
+<<<<<<< HEAD
     // And probably you should run on only one sample at a time.
+=======
+    // And probably you should run on only one dataset at a time.
+>>>>>>> master
     // And this probably doesn't belong inside print_clonotypes.
 
     if gex_info.gex_features.len() > 0 && !ctl.silent {

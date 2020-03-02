@@ -27,6 +27,9 @@ fn test_traceback1() {
         .expect(&format!("very strange, failed to execute test_traceback1"));
     let morsel = "traceback1.rs:14";
     if !std::str::from_utf8(&cmd.stderr).unwrap().contains(&morsel) {
-        panic!("test_traceback1 failed because did not find {} as expected", morsel);
+        panic!(
+            "test_traceback1 failed because did not find {} as expected",
+            morsel
+        );
     }
 }

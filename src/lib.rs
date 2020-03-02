@@ -24,6 +24,7 @@ pub mod main_enclone;
 pub mod misc1;
 pub mod misc2;
 pub mod misc3;
+pub mod plot;
 pub mod print_clonotypes;
 pub mod print_utils1;
 pub mod print_utils2;

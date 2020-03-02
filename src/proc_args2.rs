@@ -6,10 +6,10 @@ use crate::help2::*;
 use crate::help3::*;
 use crate::help4::*;
 use crate::help5::*;
+use crate::misc1::*;
 use crate::proc_args::*;
 use io_utils::*;
 use itertools::*;
-use crate::misc1::*;
 use perf_stats::*;
 use pretty_trace::*;
 use std::{
@@ -105,12 +105,20 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             || *x == "ncells"
             || *x == "gex_med"
             || *x == "gex_max"
+            || *x == "n_gex"
+            || *x == "entropy"
             || *x == "near"
             || *x == "far"
             || *x == "ext"
             || gpvar)
         {
-            if !x.ends_with("_g") && !x.ends_with("_a") && !x.starts_with("n_") {
+            if !x.ends_with("_g")
+                && !x.ends_with("_ab")
+                && !x.starts_with("_ag")
+                && !x.starts_with("_cr")
+                && !x.starts_with("_cu")
+                && !x.starts_with("n_")
+            {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",
@@ -133,57 +141,83 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                     eprintln!("Giving up.\n");
                     std::process::exit(1);
                 }
-                if ff[2].starts_with("Antibody") {
-                    known_features.push(format!("{}_a", ff[0]));
-                } else {
-                    known_features.push(format!("{}_g", ff[1]));
+                for z in 0..2 {
+                    if ff[2].starts_with("Antibody") {
+                        known_features.push(format!("{}_ab", ff[z]));
+                    } else if ff[2].starts_with("Antigen") {
+                        known_features.push(format!("{}_ag", ff[z]));
+                    } else if ff[2].starts_with("CRISPR") {
+                        known_features.push(format!("{}_cr", ff[z]));
+                    } else if ff[2].starts_with("CUSTOM") {
+                        known_features.push(format!("{}_cu", ff[z]));
+                    } else {
+                        known_features.push(format!("{}_g", ff[z]));
+                    }
                 }
             }
         }
         unique_sort(&mut known_features);
         for i in 0..to_check.len() {
-            let x = to_check[i].clone();
+            let mut x = to_check[i].clone();
+            if x.contains(':') {
+                x = x.after(":").to_string();
+            }
             if !bin_member(&known_features, &x) {
                 let mut n_var = false;
                 if x.starts_with("n_") {
                     n_var = true;
-                    let mut indices = Vec::<usize>::new();
                     let mut is_dataset_name = false;
                     let mut is_sample_name = false;
                     let mut is_donor_name = false;
+                    let mut is_tag_name = false;
                     let name = x.after("n_").to_string();
-                    let s = ctl.sample_info.dataset_path.len();
+                    let s = ctl.sample_info.n();
                     for j in 0..s {
                         if ctl.sample_info.dataset_id[j] == name {
                             is_dataset_name = true;
-                            indices.push(j);
                         }
-                        if ctl.sample_info.sample_id[j] == name {
+                    }
+                    for j in 0..ctl.sample_info.sample_list.len() {
+                        if ctl.sample_info.sample_list[j] == name {
                             is_sample_name = true;
-                            indices.push(j);
                         }
-                        if ctl.sample_info.donor_id[j] == name {
+                    }
+                    for j in 0..ctl.sample_info.donor_list.len() {
+                        if ctl.sample_info.donor_list[j] == name {
                             is_donor_name = true;
-                            indices.push(j);
+                        }
+                    }
+                    for j in 0..ctl.sample_info.tag_list.len() {
+                        if ctl.sample_info.tag_list[j] == name {
+                            is_tag_name = true;
                         }
                     }
                     let msg = "Suggested reading: \"enclone help input\" and \
                                \"enclone help glossary\".\n";
-                    if !is_dataset_name && !is_sample_name && !is_donor_name {
+                    if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
                         eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             does not name a dataset, or a sample,\nor a donor.\n{}",
-                            x, name, msg
+                            "\ntags = {}\n\
+                             You've used the lead variable {}, and yet {} \
+                             does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
+                            ctl.sample_info.tag_list.iter().format(","),
+                            x,
+                            name,
+                            msg
                         );
                         std::process::exit(1);
                     }
-                    if is_dataset_name && indices.len() > 1 {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names more than one dataset.  That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
+                    let mut types = 0;
+                    if is_dataset_name {
+                        types += 1;
+                    }
+                    if is_sample_name {
+                        types += 1;
+                    }
+                    if is_donor_name {
+                        types += 1;
+                    }
+                    if is_tag_name {
+                        types += 1;
                     }
                     if is_dataset_name && is_sample_name && is_donor_name {
                         eprintln!(
@@ -217,8 +251,15 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                         );
                         std::process::exit(1);
                     }
-                    // could this get called twice on the same name, and what would that do?
-                    ctl.sample_info.name_list.insert(name, indices);
+                    if types != 1 {
+                        eprintln!(
+                            "\nYou've used the lead variable {}, and yet {} \
+                             names a tag and also a dataset, sample or donor.\n\
+                             That's ambiguous.\n{}",
+                            x, name, msg
+                        );
+                        std::process::exit(1);
+                    }
                 }
                 if !n_var {
                     eprintln!(
@@ -248,6 +289,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.pretty = true;
     let mut nopretty = false;
+    ctl.gen_opt.h5 = true;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN") {
             ctl.pretty = false;
@@ -260,6 +302,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
         if is_simple_arg(&args[i], "CELLRANGER") {
             ctl.gen_opt.cellranger = true;
+        }
+        if is_simple_arg(&args[i], "NH5") {
+            ctl.gen_opt.h5 = false;
         }
     }
 
@@ -304,7 +349,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
-            let exit_message : String;
+            let exit_message: String;
             if !ctl.gen_opt.cellranger {
                 exit_message =
                     format!( "Something has gone badly wrong.  Please check to make \
@@ -317,11 +362,12 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     Thank you and have a nice day!", 
                     env!("CARGO_PKG_VERSION"), VERSION_STRING );
             } else {
-                exit_message =
-                    format!( "Something has gone badly wrong.  You have probably \
-                    encountered an internal error\nin cellranger.  \
-                    Please email us at help@10xgenomics.com, including the traceback\nshown \
-                    above." );
+                exit_message = format!(
+                    "Something has gone badly wrong.  You have probably \
+                     encountered an internal error\nin cellranger.  \
+                     Please email us at help@10xgenomics.com, including the traceback\nshown \
+                     above."
+                );
             }
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
@@ -427,7 +473,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         ctl.sample_info.descrips.clear();
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();
-            let dir = ctl.sample_info.dataset_path[i].rev_before("/outs");
+            let mut dir = ctl.sample_info.dataset_path[i].clone();
+            if dir.ends_with("/outs") {
+                dir = dir.rev_before("/outs").to_string();
+            }
             let invo = format!("{}/_invocation", dir);
             if path_exists(&invo) {
                 let f = open_for_read![invo];
@@ -443,13 +492,21 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
         if ctl.gen_opt.descrip {
             println!("");
             for i in 0..ctl.sample_info.n() {
+                if i > 0 {
+                    println!("");
+                }
                 println!(
                     "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
                     ctl.sample_info.dataset_id[i],
+                    // sample_id and donor_id don't make sense if bc specified in META
                     ctl.sample_info.sample_id[i],
                     ctl.sample_info.donor_id[i],
                     ctl.sample_info.descrips[i]
                 );
+                println!("vdj path = {}", ctl.sample_info.dataset_path[i]);
+                if !ctl.sample_info.gex_path.is_empty() {
+                    println!("gex path = {}", ctl.sample_info.gex_path[i]);
+                }
             }
         }
     }

@@ -75,14 +75,16 @@ pub fn find_alleles(
                 if !partner.is_empty() {
                     if y.seq_del.len() >= refdata.refs[id].len() - ctl.heur.ref_v_trim {
                         for l in 0..x.clones.len() {
-                            let donor = ctl.sample_info.donor_index[x.clones[l][j].dataset_index];
-                            allxy[id].push((
-                                donor,
-                                y.seq_del.clone(),
-                                partner.clone(),
-                                m,
-                                x.clones[l][j].dataset_index,
-                            ));
+                            let donor = x.clones[l][j].donor_index;
+                            if donor.is_some() {
+                                allxy[id].push((
+                                    donor.unwrap(),
+                                    y.seq_del.clone(),
+                                    partner.clone(),
+                                    m,
+                                    x.clones[l][j].dataset_index,
+                                ));
+                            }
                         }
                     }
                 }
@@ -367,7 +369,11 @@ pub fn find_alleles(
                 // Print.
 
                 if ctl.allele_print_opt.con {
-                    println!("\nDONOR {}", donor_id + 1);
+                    println!(
+                        "\nDONOR {} ({})",
+                        donor_id + 1,
+                        ctl.sample_info.donor_list[donor_id]
+                    );
                     println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
                     println!("ps = {}", ps.iter().format(","));
                     for x in keep.iter() {
@@ -407,7 +413,11 @@ pub fn find_alleles(
 
                 // For each lena id from the donor, classify the alleles from that lena
                 // id according to the classification just derived.  Print the matrix.
+                // This is for diagnostic purposes only.
+                // Turned off because dataset_list was broken when sample_donor was
+                // added to SampleInfo.  (The printing had already been commented out.)
 
+                /*
                 let all = &alls[di];
                 let ll = &ctl.sample_info.dataset_list[donor_id];
                 let mut count = vec![vec![0; keep0.len()]; ll.len()];
@@ -427,7 +437,6 @@ pub fn find_alleles(
                         count[l as usize][m as usize] += 1;
                     }
                 }
-                /*
                 if ctl.allele_print_opt.con {
                     println!("MATRIX");
                     for l in 0..ll.len() {
@@ -482,9 +491,13 @@ pub fn sub_alts(
                     }
                 }
                 let mut donors = Vec::<usize>::new();
-                for lena in info[i].origin.iter() {
-                    donors.push(ctl.sample_info.donor_index[*lena]);
+                let ex = &exact_clonotypes[info[i].clonotype_index];
+                for m in 0..ex.clones.len() {
+                    if ex.clones[m][0].donor_index.is_some() {
+                        donors.push(ex.clones[m][0].donor_index.unwrap());
+                    }
                 }
+                unique_sort(&mut donors);
                 for donor in donors {
                     for m in 0..alt_refs.len() {
                         if alt_refs[m].0 == donor && alt_refs[m].1 == info[i].vsids[j] {

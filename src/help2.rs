@@ -192,7 +192,7 @@ pub fn help2(args: &Vec<String>) {
              directory /users/jdoe/enclone_data.  Then you can run this command:"
         );
         println!(
-            "\n% enclone PRE=/users/jdoe/enclone_data 123085 GEX=126106 \
+            "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
              LVARSP=gex_med,IGHV2-5_g,CD4_a CDR3=CALMGTYCSGDNCYSWFDPW"
         );
         if !plain {
@@ -234,10 +234,16 @@ pub fn help2(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
         begin_doc!("support");
         print(
-             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
+            "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
+             \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
+             \\green{https://github.com/10XDev/enclone/blob/master/HISTORY.md} \
+             \\blue{for the history of what was changed}\n\
+             \\blue{and when.  We will try not to break} \
+             \\blue{things, but when we first introduce a feature, it may}\n\
+             \\blue{not be just right, and we may have to to perturb it later.}\n\n\
              \\bold{Critical things we want to hear from you}\n\n\
              1. If you have trouble understanding the documentation.\n\n\
              2. If enclone crashes.  We always need to see the output you got.  Often we will \
@@ -296,10 +302,12 @@ pub fn help2(args: &Vec<String>) {
             "\nenclone has \\boldred{two} mechanisms for specifying input datasets: either \
              directly on the command line or via a supplementary metadata file. Only one mechanism \
              may be used at a time.\n\n\
-             In both cases, you will need to provide paths to Cell Ranger pipeline directories. \
-             Information about the files in those directories that are used may be found with \
-             \\bold{enclone help input_tech}. \
-             If you use the argument\n\\bold{PRE=p}\nthen \\bold{p/} will be prepended to all \
+             In both cases, you will need to provide paths to directories where the outputs of \
+             the Cell Ranger pipeline may be found.  enclone uses only some of the pipeline \
+             output files, so it is enough that those files are present in given directory, and \
+             the particular files that are needed may be found by typing \
+             \\bold{enclone help input_tech}.  \
+             If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
              pipeline paths.  Moreover (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
              \\bold{ENCLONE_PRE} to \\bold{p}.\n\n",
@@ -375,25 +383,16 @@ pub fn help2(args: &Vec<String>) {
         }
         let s3 = stringme(&log3);
         rows.push(vec![s1, s2, s3]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
-        rows.push(vec![
-            "tcr or bcr".to_string(),
+            "tcr".to_string(),
             "(required!)".to_string(),
-            "path to dataset, or abbr:path, where abbr is used as an".to_string(),
+            "path to dataset, or abbr:path, where abbr is an abbreviated".to_string(),
         ]);
         rows.push(vec![
+            "or bcr".to_string(),
             "".to_string(),
-            "".to_string(),
-            "abbreviated name for the dataset; exactly one of tcr or bcr".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "must be used".to_string(),
+            "name for the dataset; exactly one of tcr or bcr must be used".to_string(),
         ]);
         rows.push(vec![
             "gex".to_string(),
@@ -405,25 +404,43 @@ pub fn help2(args: &Vec<String>) {
             "".to_string(),
             "of FB data".to_string(),
         ]);
-        rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "sample".to_string(),
             "s1".to_string(),
             "abbreviated name of sample".to_string(),
         ]);
-        rows.push(vec![
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-            "\\hline".to_string(),
-        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "donor".to_string(),
             "d1".to_string(),
             "abbreviated name of donor".to_string(),
+        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
+        rows.push(vec![
+            "bc".to_string(),
+            "null".to_string(),
+            "name of CSV file with header \"barcode,sample,donor\" that".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "assigns a sample and donor name to each barcode; if sample and/or".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "donor are also specified, then those are treated as default values".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "to be used in case a particular barcode is not specified by bc;".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "a fourth field \"tag\" is allowed and may be arbitrarily specified".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);

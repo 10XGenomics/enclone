@@ -3,20 +3,25 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::defs::*;
+use amino::*;
 use ansi_escape::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;
+use perf_stats::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
 use std::path::Path;
+use std::time::Instant;
 use string_utils::*;
+use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
 pub fn group_and_print_clonotypes(
+    tall: &Instant,
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
@@ -25,7 +30,16 @@ pub fn group_and_print_clonotypes(
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
+    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
 ) {
+    // Build index to join info.
+
+    let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
+    for i in 0..join_info.len() {
+        to_join_info[join_info[i].0].push(i);
+        to_join_info[join_info[i].1].push(i);
+    }
+
     // Set up for parseable output.
 
     #[allow(bare_trait_objects)]
@@ -56,6 +70,15 @@ pub fn group_and_print_clonotypes(
             (Box::new(File::create(&path).unwrap()) as Box<Write>)
         }
     };
+    #[allow(bare_trait_objects)]
+    let mut faaout = match ctl.gen_opt.fasta_aa_filename.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
+            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+        }
+    };
 
     // Group clonotypes and make output.
 
@@ -83,9 +106,36 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
     }
+    if ctl.clono_group_opt.vj_refname {
+        let mut all = Vec::<(Vec<String>, usize)>::new();
+        for i in 0..pics.len() {
+            let ex = &exact_clonotypes[exacts[i][0]];
+            let mut s = Vec::<String>::new();
+            for j in 0..ex.share.len() {
+                s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                s.push(refdata.name[ex.share[j].j_ref_id].clone());
+            }
+            s.sort();
+            all.push((s, i));
+        }
+        // Note duplication with above code.
+        all.sort();
+        let mut i = 0;
+        while i < all.len() {
+            let j = next_diff1_2(&all, i as i32) as usize;
+            for k in i + 1..j {
+                e.join(all[i].1 as i32, all[k].1 as i32);
+            }
+            i = j;
+        }
+    }
     let mut groups = 0;
     let mut greps = Vec::<i32>::new();
     e.orbit_reps(&mut greps);
+
+    // Sort so that larger groups (as measured by cells) come first.
+
+    let mut grepsn = Vec::<(usize, usize)>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(greps[i], &mut o);
@@ -100,6 +150,17 @@ pub fn group_and_print_clonotypes(
                 n += exact_clonotypes[s[k]].clones.len();
             }
         }
+        grepsn.push((n, i));
+    }
+    reverse_sort(&mut grepsn);
+
+    // Now print.
+
+    for z in 0..grepsn.len() {
+        let i = grepsn[z].1;
+        let n = grepsn[z].0;
+        let mut o = Vec::<i32>::new();
+        e.orbit(greps[i], &mut o);
         groups += 1;
 
         // Generate human readable output.
@@ -165,16 +226,33 @@ pub fn group_and_print_clonotypes(
             }
             last_width = m - 1;
 
+            // Print join info.
+
+            let mut ji = Vec::<usize>::new();
+            for u in exacts[oo].iter() {
+                ji.append(&mut to_join_info[*u].clone());
+            }
+            unique_sort(&mut ji);
+            for i in 0..ji.len() {
+                println!("{}", strme(&join_info[ji[i]].3));
+            }
+
             // Generate fasta output.
 
             if ctl.gen_opt.fasta_filename.len() > 0 {
-                for (k,u) in exacts[oo].iter().enumerate() {
+                for (k, u) in exacts[oo].iter().enumerate() {
                     for m in 0..mat[oo].len() {
                         if mat[oo][m][k].is_some() {
                             let r = mat[oo][m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
-                            fwriteln!( fout, 
-                                ">group{}.clonotype{}.exact{}.chain{}", groups, j+1, k+1, m+1 );
+                            fwriteln!(
+                                fout,
+                                ">group{}.clonotype{}.exact{}.chain{}",
+                                groups,
+                                j + 1,
+                                k + 1,
+                                m + 1
+                            );
                             let mut seq = ex.share[r].seq.clone();
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
@@ -192,8 +270,49 @@ pub fn group_and_print_clonotypes(
                             }
                             if cid.is_some() {
                                 let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append( &mut cseq );
-                                fwriteln!( fout, "{}", strme(&seq) );
+                                seq.append(&mut cseq);
+                                fwriteln!(fout, "{}", strme(&seq));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Generate fasta amino acid output.
+
+            if ctl.gen_opt.fasta_aa_filename.len() > 0 {
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    for m in 0..mat[oo].len() {
+                        if mat[oo][m][k].is_some() {
+                            let r = mat[oo][m][k].unwrap();
+                            let ex = &exact_clonotypes[*u];
+                            fwriteln!(
+                                faaout,
+                                ">group{}.clonotype{}.exact{}.chain{}",
+                                groups,
+                                j + 1,
+                                k + 1,
+                                m + 1
+                            );
+                            let mut seq = ex.share[r].seq.clone();
+                            let mut cid = ex.share[r].c_ref_id;
+                            if cid.is_none() {
+                                for l in 0..exacts[oo].len() {
+                                    if mat[oo][m][l].is_some() {
+                                        let r2 = mat[oo][m][l].unwrap();
+                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
+                                        let cid2 = ex2.share[r2].c_ref_id;
+                                        if cid2.is_some() {
+                                            cid = cid2;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if cid.is_some() {
+                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
+                                seq.append(&mut cseq);
+                                fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
                             }
                         }
                     }
@@ -238,25 +357,93 @@ pub fn group_and_print_clonotypes(
     // Print summary stats.
 
     if ctl.gen_opt.summary {
-        println!( "\nSummary statistics for the selected clonotypes" );
+        println!("\nSUMMARY STATISTICS");
+        println!("1. overall");
         let nclono = exacts.len();
+        let mut nclono2 = 0;
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
+        let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
         for i in 0..nclono {
+            let mut n = 0;
             for j in 0..exacts[i].len() {
-                ncells += exact_clonotypes[exacts[i][j]].ncells();
+                let ex = &exact_clonotypes[exacts[i][j]];
+                n += ex.ncells();
+                for k in 0..ex.clones.len() {
+                    let x = &ex.clones[k][0];
+                    sd.push((x.sample_index, x.donor_index));
+                }
             }
-            nchains.push( mat[i].len() );
+            if n >= 2 {
+                nclono2 += 1;
+            }
+            ncells += n;
+            nchains.push(mat[i].len());
         }
-        println!( "• number of clonotypes = {}", nclono );
-        println!( "• number of cells = {}", ncells );
+        sd.sort();
+        let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
+        let mut i = 0;
+        while i < sd.len() {
+            let j = next_diff(&sd, i);
+            sdx.push((sd[i].0, sd[i].1, j - i));
+            i = j;
+        }
+        println!("   • number of datasets = {}", ctl.sample_info.n());
+        println!("   • number of donors = {}", ctl.sample_info.donors);
+        if !ctl.gen_opt.summary_clean {
+            println!("   • total elapsed time = {:.1} seconds", elapsed(&tall));
+            #[cfg(not(target_os = "macos"))]
+            println!("   • peak memory = {:.1} GB", peak_mem_usage_gb());
+        }
+        println!("2. for the selected clonotypes");
+        println!("   • number of clonotypes = {}", nclono);
+        println!(
+            "   • number of clonotypes having at least two cells = {}",
+            nclono2
+        );
+        println!("   • number of cells in clonotypes = {}", ncells);
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
             let j = next_diff(&nchains, i);
-            println!( "• number of clonotypes having {} chains = {}", nchains[i], j-i );
+            println!(
+                "   • number of clonotypes having {} chains = {}",
+                nchains[i],
+                j - i
+            );
             i = j;
         }
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+            "sample".to_string(),
+            "donor".to_string(),
+            "ncells".to_string(),
+        ];
+        rows.push(row);
+        let row = vec!["\\hline".to_string(); 3];
+        rows.push(row);
+        for i in 0..sdx.len() {
+            let mut row = Vec::<String>::new();
+            if sdx[i].0.is_some() {
+                row.push(format!(
+                    "{}",
+                    ctl.sample_info.sample_list[sdx[i].0.unwrap()]
+                ));
+            } else {
+                row.push("?".to_string());
+            }
+            if sdx[i].1.is_some() {
+                row.push(format!("{}", ctl.sample_info.donor_list[sdx[i].1.unwrap()]));
+            } else {
+                row.push("?".to_string());
+            }
+            row.push(format!("{}", sdx[i].2));
+            rows.push(row);
+        }
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false);
+        log = log.replace("\n", "\n   ");
+        print!("   {}", log);
     }
 
     // Test for required number of false positives.

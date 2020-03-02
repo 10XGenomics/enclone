@@ -26,6 +26,22 @@ pub fn survives_filter(
         return false;
     }
     let cols = rsi.vids.len();
+    if ctl.clono_filt_opt.barcode.len() > 0 {
+        let mut ok = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            for i in 0..ex.clones.len() {
+                for j in 0..ctl.clono_filt_opt.barcode.len() {
+                    if ex.clones[i][0].barcode == ctl.clono_filt_opt.barcode[j] {
+                        ok = true;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return false;
+        }
+    }
     if ctl.clono_filt_opt.del {
         let mut ok = false;
         for s in exacts.iter() {
@@ -204,12 +220,13 @@ pub fn survives_filter(
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];
         for m in 0..ex.clones.len() {
-            let lena = ex.clones[m][0].dataset_index;
-            donors.push(ctl.sample_info.donor_index[lena]);
+            if ex.clones[m][0].donor_index.is_some() {
+                donors.push(ex.clones[m][0].donor_index.unwrap());
+            }
         }
     }
     unique_sort(&mut donors);
-    if ctl.clono_filt_opt.fail_only && donors.len() == 1 {
+    if ctl.clono_filt_opt.fail_only && donors.len() <= 1 {
         return false;
     }
     return true;

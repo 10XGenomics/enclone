@@ -8,5 +8,5 @@ use main_enclone::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    main_enclone( &args );
+    main_enclone(&args);
 }

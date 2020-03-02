@@ -9,11 +9,13 @@ use crate::defs::*;
 use crate::explore::*;
 use debruijn::dna_string::*;
 use io_utils::*;
+use itertools::Itertools;
 use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::{collections::HashMap, io::BufReader, time::Instant};
 use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -31,9 +33,15 @@ pub fn json_error(json: Option<&str>) {
         "\n\nHere are possible sources of this problem:\n\n\
          1. If the file was generated using \
          Cell Ranger version < 3.1, please either\nregenerate the file using the \
+<<<<<<< HEAD
          current version, or else run this program with the RE option to\n\
          regenerate annotations from scratch. WARNING: this code \
          is not guaranteed to run\ncorrectly on outdated JSON files.\n\n\
+=======
+         current Cell Ranger version, or else run this program with the RE option to\n\
+         regenerate annotations from scratch, but we warn you that this code \
+         is not guaranteed to run\ncorrectly on outdated json files.\n\n\
+>>>>>>> master
          2. Make sure you have the correct chain type, TCR or BCR.\n\n\
          3. Make sure you have the correct reference sequence.  See \
          \"enclone help faq\".\n\n\
@@ -70,11 +78,14 @@ pub fn json_error(json: Option<&str>) {
 // only the information that we need.
 
 pub fn read_json(
+    accept_inconsistent: bool,
+    sample_info: &SampleInfo,
     li: usize,
     json: &String,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
     reannotate: bool,
+    cr_version: &mut String,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -139,6 +150,9 @@ pub fn read_json(
                 let cdr3_aa: String;
                 let cdr3_dna: String;
                 let mut cdr3_start: usize;
+                if v.get("version").is_some() {
+                    *cr_version = v["version"].to_string().between("\"", "\"").to_string();
+                }
 
                 // Reannotate.
 
@@ -206,11 +220,30 @@ pub fn read_json(
                         if !to_ref_index.contains_key(&feature_id) {
                             continue;
                         }
-                        let feature_id = to_ref_index[&feature_id];
+                        let feature_idx = to_ref_index[&feature_id];
                         let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
                         if region_type == "L-REGION+V-REGION" {
                             v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
                             v_stop_ref = a["annotation_match_end"].as_i64().unwrap() as usize;
+                        }
+                        let gene_name = a["feature"]["gene_name"]
+                            .to_string()
+                            .between("\"", "\"")
+                            .to_string();
+                        if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
+                            eprintln!(
+                                "\nThere is an inconsistency between the reference \
+                                 file used to create the Cell Ranger output files in\n{}\nand the \
+                                 reference that enclone is using.  For example, the feature \
+                                 numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
+                                 You should be able to remedy this by supplying\n\
+                                 REF=vdj_reference_fasta_filename as an argument to enclone.\n",
+                                json.rev_before("/"),
+                                feature_id,
+                                gene_name,
+                                refdata.name[feature_idx]
+                            );
+                            std::process::exit(1);
                         }
                         if region_type == "L-REGION+V-REGION" && ref_start == 0 {
                             let chain = a["feature"]["chain"]
@@ -224,7 +257,7 @@ pub fn read_json(
                             if chain == "IGH".to_string() || chain == "TRB".to_string() {
                                 left = true;
                             }
-                            v_ref_id = feature_id;
+                            v_ref_id = feature_idx;
                             cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
                         } else {
                             // also check for IG chain?????????????????????????????????????????
@@ -232,19 +265,19 @@ pub fn read_json(
                             let ref_len = a["annotation_length"].as_u64().unwrap() as usize;
                             if region_type == "J-REGION" && ref_stop == ref_len {
                                 tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
-                                j_ref_id = feature_id;
+                                j_ref_id = feature_idx;
                                 j_start = a["contig_match_start"].as_i64().unwrap() as usize;
-                                j_start_ref 
-                                    = a["annotation_match_start"].as_i64().unwrap() as usize;
+                                j_start_ref =
+                                    a["annotation_match_start"].as_i64().unwrap() as usize;
                             }
                             if region_type == "5'UTR" {
-                                u_ref_id = Some(feature_id);
+                                u_ref_id = Some(feature_idx);
                             }
                             if region_type == "D-REGION" {
-                                d_ref_id = Some(feature_id);
+                                d_ref_id = Some(feature_idx);
                             }
                             if region_type == "C-REGION" {
-                                c_ref_id = Some(feature_id);
+                                c_ref_id = Some(feature_idx);
                                 c_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
                             }
                         }
@@ -328,6 +361,46 @@ pub fn read_json(
                 // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
                 let umi_count = v["umi_count"].as_i64().unwrap() as usize;
                 let read_count = v["read_count"].as_i64().unwrap() as usize;
+                let mut sample = None;
+                let mut donor = None;
+                let mut tag = None;
+                if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
+                    sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
+                    donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+                } else {
+                    // the way we use s1 and d1 here is flaky
+                    if sample_info.sample_id[li].len() > 0
+                        && (sample_info.sample_id[li] != "s1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
+                    {
+                        sample = Some(sample_info.sample_id[li].clone());
+                    }
+                    if sample_info.donor_id[li].len() > 0
+                        && (sample_info.donor_id[li] != "d1".to_string()
+                            || sample_info.sample_donor[li].len() == 0)
+                    {
+                        donor = Some(sample_info.donor_id[li].clone());
+                    }
+                }
+                if sample_info.tag[li].contains_key(&barcode.clone()) {
+                    tag = Some(sample_info.tag[li][&barcode.clone()].clone());
+                }
+                let mut sample_index = None;
+                let mut donor_index = None;
+                let mut tag_index = None;
+                if sample.is_some() {
+                    if sample.is_some() {
+                        sample_index =
+                            Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+                    }
+                    if donor.is_some() {
+                        donor_index =
+                            Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+                    }
+                }
+                if tag.is_some() {
+                    tag_index = Some(bin_position(&sample_info.tag_list, &tag.unwrap()) as usize);
+                }
                 tigs.push(TigData {
                     cdr3_dna: cdr3_dna.to_string(),
                     len: seq.len(),
@@ -353,6 +426,9 @@ pub fn read_json(
                     tigname: tigname.to_string(),
                     left: left,
                     dataset_index: li,
+                    sample_index: sample_index,
+                    donor_index: donor_index,
+                    tag_index: tag_index,
                     umi_count: umi_count,
                     read_count: read_count,
                     chain_type: chain_type.clone(),
@@ -404,7 +480,7 @@ pub fn read_json(
 // Parse the json annotations files.
 
 pub fn parse_json_annotations_files(
-    ctl: &EncloneControl,
+    mut ctl: &mut EncloneControl,
     tig_bc: &mut Vec<Vec<TigData>>,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
@@ -416,6 +492,7 @@ pub fn parse_json_annotations_files(
         Vec<(String, usize)>,
         Vec<Vec<TigData>>,
         Vec<Vec<u8>>, // logs
+        String,
     )>::new();
     for i in 0..ctl.sample_info.dataset_path.len() {
         results.push((
@@ -423,6 +500,7 @@ pub fn parse_json_annotations_files(
             Vec::<(String, usize)>::new(),
             Vec::<Vec<TigData>>::new(),
             Vec::<Vec<u8>>::new(),
+            String::new(),
         ));
     }
     // note: only tracking truncated seq and quals initially
@@ -440,13 +518,37 @@ pub fn parse_json_annotations_files(
             eprintln!("can't find {} or {}", json, json_lz4);
             std::process::exit(1);
         }
-        let tig_bc: Vec<Vec<TigData>> =
-            read_json(li, &json, &refdata, &to_ref_index, ctl.gen_opt.reannotate);
+        let tig_bc: Vec<Vec<TigData>> = read_json(
+            ctl.gen_opt.accept_inconsistent,
+            &ctl.sample_info,
+            li,
+            &json,
+            &refdata,
+            &to_ref_index,
+            ctl.gen_opt.reannotate,
+            &mut res.4,
+        );
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
     });
+    let mut versions = Vec::<String>::new();
     for i in 0..results.len() {
         tig_bc.append(&mut results[i].2.clone());
+        ctl.gen_opt.cr_version = results[i].4.clone();
+        if results[i].4.len() == 0 {
+            versions.push("≤3.1".to_string());
+        } else {
+            versions.push(results[i].4.clone());
+        }
+    }
+    unique_sort(&mut versions);
+    if versions.len() > 1 {
+        eprintln!(
+            "\nYou're using output from multiple Cell Ranger versons = {},\n\
+             which is not allowed.\n",
+            versions.iter().format(", ")
+        );
+        std::process::exit(1);
     }
     if ctl.comp {
         println!("used {:.1} seconds loading from json", elapsed(&tl));
