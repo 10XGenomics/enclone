@@ -369,7 +369,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Start to generate parseable output.  And other things.
+// Start to generate parseable output, warn about multi-donor clonotypes, and other things.
 
 pub fn start_gen(
     ctl: &EncloneControl,

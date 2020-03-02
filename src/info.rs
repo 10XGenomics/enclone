@@ -167,7 +167,7 @@ pub fn build_info(
                     vs.push(r.clone());
                     vs_notes.push("".to_string());
 
-                    // Make note on insertion.  Rounded down to mod 3 position.  Note that
+                    // Make note on insertion.  Rounded down to modulo 3 position.  Note that
                     // rounding down doesn't necessarily make sense.
 
                     let ins_len = (x.annv[1].0 - x.annv[0].0 - x.annv[0].1) as usize;

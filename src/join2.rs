@@ -69,7 +69,7 @@ pub fn finish_join(
         }
     }
 
-    // Join orbits that cross subclones of a clone.  This arose because we split up multichain
+    // Join orbits that cross subclones of a clone.  This arose because we split up multi-chain
     // clonotypes into two-chain clonotypes.
 
     let mut ox = Vec::<(usize, i32)>::new();

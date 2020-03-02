@@ -1,4 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// This set of functions writes a protobuf data structure that
+// Loupe uses to access clonotype data.
 
 use crate::proto_io::write_proto;
 use vdj_ann::*;
