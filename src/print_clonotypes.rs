@@ -17,11 +17,15 @@ use crate::print_utils4::*;
 use crate::print_utils5::*;
 use crate::types::*;
 use equiv::EquivRel;
+use io_utils::*;
+use ndarray::s;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::collections::HashMap;
+use std::io::Write;
 use std::time::Instant;
 use string_utils::*;
+use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -90,6 +94,35 @@ pub fn print_clonotypes(
         }
     }
 
+    // Load the GEX data.
+
+    let mut d_readers = Vec::<Option<h5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
+    if ctl.gen_opt.h5 {
+        for li in 0..ctl.sample_info.n() {
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            } else {
+                d_readers.push(None);
+                ind_readers.push(None);
+            }
+        }
+    }
+    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
+    if ctl.gen_opt.h5 && ctl.gen_opt.h5_pre {
+        for li in 0..ctl.sample_info.n() {
+            h5_data.push((li, Vec::new(), Vec::new()));
+        }
+        h5_data.par_iter_mut().for_each(|res| {
+            let li = res.0;
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+                res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
+            }
+        });
+    }
+
     // Traverse the orbits.
 
     // 0: index in reps
@@ -125,19 +158,6 @@ pub fn print_clonotypes(
             Vec::<bool>::new(),
             Vec::<bool>::new(),
         ));
-    }
-    let mut d_readers = Vec::<Option<h5::Reader>>::new();
-    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
-    if ctl.gen_opt.h5 {
-        for li in 0..ctl.sample_info.n() {
-            if ctl.sample_info.gex_path[li].len() > 0 {
-                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
-                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
-            } else {
-                d_readers.push(None);
-                ind_readers.push(None);
-            }
-        }
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -258,16 +278,14 @@ pub fn print_clonotypes(
             rsi.mat = mat;
             let mat = &rsi.mat;
 
-            // Filter.
+            // Let n be the total number of cells in this pass.
 
             let n: usize = mults.iter().sum();
-            if pass == 2 {
-                if n < ctl.clono_filt_opt.ncells_low {
-                    continue;
-                }
-                if !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata) {
-                    continue;
-                }
+
+            // Filter.
+
+            if pass == 2 && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata) {
+                continue;
             }
 
             // Generate loupe data.
@@ -475,6 +493,7 @@ pub fn print_clonotypes(
                         &groups,
                         &d_readers,
                         &ind_readers,
+                        &h5_data,
                         &mut stats,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
@@ -1048,7 +1067,7 @@ pub fn print_clonotypes(
     // Do gene scan.
 
     if ctl.gen_opt.gene_scan_test.is_some() {
-        println!("\nGENE SCAN\n");
+        println!("\nFEATURE SCAN\n");
         let mut tests = Vec::<usize>::new();
         let mut controls = Vec::<usize>::new();
         let mut count = 0;
@@ -1094,7 +1113,13 @@ pub fn print_clonotypes(
             std::process::exit(1);
         }
         println!("enriched features\n");
-        for fid in 0..gex_info.gex_features[0].len() {
+        let mut results = Vec::<(usize, Vec<u8>, f64, f64, f64)>::new();
+        let nf = gex_info.gex_features[0].len();
+        for fid in 0..nf {
+            results.push((fid, Vec::<u8>::new(), 0.0, 0.0, 0.0));
+        }
+        results.par_iter_mut().for_each(|res| {
+            let fid = res.0;
             // NOT SURE THIS IS BACKWARD COMPATIBLE!
             let gene = gex_info.gex_features[0][fid]
                 .after("\t")
@@ -1102,68 +1127,66 @@ pub fn print_clonotypes(
                 .contains("Gene");
             let mut test_values = Vec::<f64>::new();
             let mut control_values = Vec::<f64>::new();
-            for j in 0..tests.len() {
-                for m in 0..exacts[tests[j]].len() {
-                    let ex = &exact_clonotypes[exacts[tests[j]][m]];
-                    for l in 0..ex.clones.len() {
-                        let li = ex.clones[l][0].dataset_index;
-                        let bc = ex.clones[l][0].barcode.clone();
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            let mut raw_count = 0 as f64;
-                            if !ctl.gen_opt.h5 {
-                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
-                                /*
-                                } else {
-                                    for j in 0..d_all[l].len() {
-                                        if ind_all[l][j] == fid as u32 {
-                                            raw_count = d_all[l][j] as f64;
-                                            break;
-                                        }
-                                    }
-                                */
-                            }
-                            let mult: f64;
-                            if gene {
-                                mult = gex_info.gex_mults[li];
-                            } else {
-                                mult = gex_info.fb_mults[li];
-                            }
-                            test_values.push(raw_count * mult);
-                        }
-                    }
+            for pass in 1..=2 {
+                let tc;
+                let vals;
+                if pass == 1 {
+                    tc = &tests;
+                    vals = &mut test_values;
+                } else {
+                    tc = &controls;
+                    vals = &mut control_values;
                 }
-            }
-            for j in 0..controls.len() {
-                for m in 0..exacts[controls[j]].len() {
-                    let ex = &exact_clonotypes[exacts[controls[j]][m]];
-                    for l in 0..ex.clones.len() {
-                        let li = ex.clones[l][0].dataset_index;
-                        let bc = ex.clones[l][0].barcode.clone();
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            let mut raw_count = 0 as f64;
-                            if !ctl.gen_opt.h5 {
-                                raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                                // WARNING: gene scan only implemented for NH5!!!!!!!!!!!!!!!!!!!!!!!!!
-                                /*
+                for j in 0..tc.len() {
+                    for m in 0..exacts[tc[j]].len() {
+                        let ex = &exact_clonotypes[exacts[tc[j]][m]];
+                        for l in 0..ex.clones.len() {
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = ex.clones[l][0].barcode.clone();
+                            let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                            if p >= 0 {
+                                let mut raw_count = 0 as f64;
+                                if !ctl.gen_opt.h5 {
+                                    raw_count =
+                                        gex_info.gex_matrices[li].value(p as usize, fid) as f64;
                                 } else {
-                                    for j in 0..d_all[l].len() {
-                                        if ind_all[l][j] == fid as u32 {
-                                            raw_count = d_all[l][j] as f64;
+                                    let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                                    // p+1 OK?
+                                    let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize;
+                                    let d: Vec<u32>;
+                                    let ind: Vec<u32>;
+                                    if ctl.gen_opt.h5_pre {
+                                        d = h5_data[li].1[z1..z2].to_vec();
+                                        ind = h5_data[li].2[z1..z2].to_vec();
+                                    } else {
+                                        d = d_readers[li]
+                                            .as_ref()
+                                            .unwrap()
+                                            .read_slice(&s![z1..z2])
+                                            .unwrap()
+                                            .to_vec();
+                                        ind = ind_readers[li]
+                                            .as_ref()
+                                            .unwrap()
+                                            .read_slice(&s![z1..z2])
+                                            .unwrap()
+                                            .to_vec();
+                                    }
+                                    for j in 0..d.len() {
+                                        if ind[j] == fid as u32 {
+                                            raw_count = d[j] as f64;
                                             break;
                                         }
                                     }
-                                */
+                                }
+                                let mult: f64;
+                                if gene {
+                                    mult = gex_info.gex_mults[li];
+                                } else {
+                                    mult = gex_info.fb_mults[li];
+                                }
+                                vals.push(raw_count * mult);
                             }
-                            let mult: f64;
-                            if gene {
-                                mult = gex_info.gex_mults[li];
-                            } else {
-                                mult = gex_info.fb_mults[li];
-                            }
-                            control_values.push(raw_count * mult);
                         }
                     }
                 }
@@ -1188,9 +1211,39 @@ pub fn print_clonotypes(
                 }
             }
             if threshold.satisfied(&vals) {
-                println!("{}", gex_info.gex_features[0][fid]);
+                fwrite!(res.1, "{}", gex_info.gex_features[0][fid]);
+                res.2 = test_mean;
+                res.3 = control_mean;
+                res.4 = test_mean / control_mean;
+            }
+        });
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+            "id".to_string(),
+            "name".to_string(),
+            "library_type".to_string(),
+            "test".to_string(),
+            "control".to_string(),
+            "enrichment".to_string(),
+        ];
+        rows.push(row);
+        for fid in 0..nf {
+            if results[fid].1.len() > 0 {
+                let stuff = strme(&results[fid].1);
+                let fields = stuff.split('\t').collect::<Vec<&str>>();
+                let mut row = Vec::<String>::new();
+                row.push(fields[0].to_string());
+                row.push(fields[1].to_string());
+                row.push(fields[2].to_string());
+                row.push(format!("{:.2}", results[fid].2));
+                row.push(format!("{:.2}", results[fid].3));
+                row.push(format!("{:.2}", results[fid].4));
+                rows.push(row);
             }
         }
+        let mut log = Vec::<u8>::new();
+        print_tabular(&mut log, &rows, 2, Some(b"lllrrr".to_vec()));
+        print!("{}", strme(&log));
     }
 
     // Plot clonotypes.

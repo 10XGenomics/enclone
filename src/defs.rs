@@ -245,6 +245,7 @@ pub struct GeneralOpt {
     pub binary: String,
     pub proto: String,
     pub h5: bool,
+    pub h5_pre: bool,
     pub no_reuse: bool,
     pub descrip: bool,
     pub ext: String,
@@ -267,6 +268,8 @@ pub struct GeneralOpt {
     pub sample_color_map: HashMap<String, String>,
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
+    pub internal_run: bool,
+    pub force_h5: bool,
 }
 
 // Allele finding algorithmic options.

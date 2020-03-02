@@ -425,8 +425,19 @@ pub fn help5(args: &Vec<String>) {
              disk having the given color, and each clonotype is shown as a cluster of these small \
              disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
-             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  Note that \
-             plotting is potentially slow.\n\n",
+             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
+             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
+        );
+
+        print("\\boldblue{17. Can I use enclone if I have only gene expression data?}\n\n");
+        print(
+            "Possibly.  In some cases this works very well, but in other cases it does not.  \
+            Success depends on dataset characteristics that have not been carefully investigated.  \
+            To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
+            it was a VDJ dataset, and you need to specify to Cell Ranger that the run is to be \
+            treated as BCR or TCR.  Two separate invocations can be used to get both.  Note also \
+            that Cell Ranger has been only minimally tested for this configuration and that this \
+            is not an officially supported Cell Ranger configuration.\n\n",
         );
 
         std::process::exit(0);

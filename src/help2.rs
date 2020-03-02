@@ -318,6 +318,18 @@ pub fn help2(args: &Vec<String>) {
              displays.\n\n",
         );
         print(
+            "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n\
+             ┃ enclone can use gene expression and feature barcode data, as represented by a feature matrix.  ┃\n\
+             ┃ Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not   ┃\n\
+             ┃ optimized for interactive use.  Therefore enclone provides an alternate file structure, which  ┃\n\
+             ┃ speeds up enclone overall by up to \\boldred{50%}.  To use this, add the argument \\bold{NH5} to the enclone      ┃\n\
+             ┃ command line.  This will work so long as you have write permission on input directories.  The  ┃\n\
+             ┃ first time you run enclone (using given inputs), the alternate file will be written; then      ┃\n\
+             ┃ subsequent invocations will be faster.   Like with other enclone command-line options, if you  ┃\n\
+             ┃ you want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.                 ┃\n\
+             ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n\n",
+        );
+        print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\
              \\bold{TCR=/home/jdoe/runs/sample345}\n\
              or likewise for \\bold{BCR}.  A more complicated syntax is allowed in which commas, \

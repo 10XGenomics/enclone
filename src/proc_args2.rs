@@ -401,7 +401,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run: bool) {
+pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     let tall = Instant::now();
     let mut lvars_specified = false;
     for i in 1..args.len() {
@@ -469,7 +469,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>, internal_run
     // since it will look in outs for the file.
 
     let tinv = Instant::now();
-    if internal_run {
+    if ctl.gen_opt.internal_run {
         ctl.sample_info.descrips.clear();
         for i in 0..ctl.sample_info.dataset_path.len() {
             let mut d = ctl.sample_info.dataset_id[i].clone();

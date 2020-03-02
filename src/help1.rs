@@ -235,7 +235,10 @@ pub fn help1(args: &Vec<String>) {
             "enclone help support",
             "how we can help, enclone@10xgenomics.com"
         );
-        ldoc!("enclone help input", "how to provide input to enclone");
+        ldoc!(
+            "enclone help input",
+            "how to provide input to enclone (long)"
+        );
         doc!(
             "enclone help input_tech",
             "how to provide input to enclone (technical notes)"
