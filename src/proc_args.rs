@@ -502,10 +502,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_usize_arg(&args[i], "ONESIE_MULT") {
             ctl.onesie_mult = args[i].after("ONESIE_MULT=").force_usize();
         } else if args[i].starts_with("PRE=") {
-        } else if args[i] == "NOPAR" {
-            let _ = rayon::ThreadPoolBuilder::new()
-                .num_threads(2)
-                .build_global();
         } else if is_usize_arg(&args[i], "MIN_CELLS") {
             ctl.clono_filt_opt.ncells_low = args[i].after("MIN_CELLS=").force_usize();
         } else if is_usize_arg(&args[i], "MAX_CELLS") {

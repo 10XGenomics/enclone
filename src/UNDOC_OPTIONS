@@ -64,7 +64,6 @@ Other optional arguments:
 - WEAK: for EXP, print all and show weaks
 - GRAPH: show logging from light-heavy graph construction
 - UTR_CON: run experimental UTR consensus code
-- NOPAR: turn off parallelization
 - CON_CON: run experimental constant region consensus code
 - NSILENT: turn on extra logging
 - RE: reannotate instead of using the annotation in the json file, useful for two purposes:
