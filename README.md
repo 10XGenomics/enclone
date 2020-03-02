@@ -53,23 +53,22 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Decide if you want to install `enclone` on a Linux or Mac computer.  Please let us know if
-availability on other platforms is important to you.
+1. Decide if you want to install `enclone` on a Linux or Mac computer (or both).  Please let us 
+know if availability on other platforms is important to you.
 
-2. Decide if you want the absolute latest version, or the most fully tested version.
+2. Go to the [enclone release page](https://github.com/10XDev/enclone/releases) and download
+the latest release(s) for the platform(s) that you need.  That's at the top of the page.
+At a later date, there will also be separately numbered releases that have passed a more extensive
+set of tests.
 
-3. Click one of these links to download the binary executables.
-
-<b>TO DO: PUT LINKS HERE</b>
-
-4. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
+3. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location
 might be `~/bin`.
 
 <b>TO DO: link to pathing tutorial</b>
 
-5. Change your path so that it includes this location.
+4. Change your path so that it includes this location.
 
-6. Download the sample data.
+5. Download the sample data.
 
 The easiest way to do this is to type
 ```

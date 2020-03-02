@@ -25,6 +25,9 @@ pub fn survives_filter(
     if n == 0 {
         return false;
     }
+    if n < ctl.clono_filt_opt.ncells_low {
+        return false;
+    }
     let cols = rsi.vids.len();
     if ctl.clono_filt_opt.barcode.len() > 0 {
         let mut ok = false;

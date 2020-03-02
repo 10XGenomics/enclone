@@ -64,7 +64,6 @@ Other optional arguments:
 - WEAK: for EXP, print all and show weaks
 - GRAPH: show logging from light-heavy graph construction
 - UTR_CON: run experimental UTR consensus code
-- NOPAR: turn off parallelization
 - CON_CON: run experimental constant region consensus code
 - NSILENT: turn on extra logging
 - RE: reannotate instead of using the annotation in the json file, useful for two purposes:
@@ -81,7 +80,6 @@ Other optional arguments:
 - HEAVY_CHAIN_REUSE: look for instances of heavy chain reuse
 - BINARY=filename: generate binary output file
 - PROTO=filename: generate proto output file
-- NH5: do not get gene expression values from the h5 file
 - NO_REUSE: exit if significant barcode reuse found, intended to detect accidental inclusion
             of multiple datasets from the same cDNA from the same GEM well
 - DUMP_LENAS: special option to dump the list of lena ids and exit.
@@ -110,6 +108,11 @@ positive to be a clonotype that contains cells from multiple donors.
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
 
-ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotations
+ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotations and feature refs
 
 CURRENT_REF: temp option to force CR 4.0 reference
+
+H5_SLICE: read GEX data slice by slice rather than preloading
+H5: force use of H5, even if matrix.bin has been built
+
+FORCE_EXTERNAL: do not test for internal run

@@ -178,32 +178,49 @@ pub fn load_gex(
                     elapsed(&tfb)
                 );
             }
-            if !ctl.gen_opt.h5 {
-                if path_exists(&bin_file) {
-                    let t = Instant::now();
-                    read_from_file(&mut r.3, &bin_file);
-                    if comp {
-                        println!("-- used {:.2} seconds reading matrix.bin", elapsed(&t));
+            if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
+                let t = Instant::now();
+                read_from_file(&mut r.3, &bin_file);
+                if comp {
+                    println!("-- used {:.2} seconds reading matrix.bin", elapsed(&t));
+                }
+            } else if !ctl.gen_opt.h5 {
+                let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+                let mut dir = format!("{}/raw_feature_bc_matrix", gex_outs[i]);
+                if !path_exists(&dir) {
+                    dir = format!("{}/raw_gene_bc_matrices_mex", gex_outs[i]);
+                }
+                let mut matrix_file = format!("{}/matrix.mtx.gz", dir);
+                if path_exists(&format!("{}/GRCh38", dir)) {
+                    matrix_file = format!("{}/GRCh38/matrix.mtx.gz", dir);
+                }
+                if !path_exists(&matrix_file) {
+                    eprintln!(
+                        "\nYou've used the NH5 option, but a gene expression directory \
+                         is incomplete for this purpose,\nbecause this file\n\
+                         {}\ndoes not exist.\n",
+                        matrix_file
+                    );
+                    std::process::exit(1);
+                }
+                load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
+                r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
+                if *pre != "".to_string() || !ctl.gen_opt.internal_run {
+                    let mut go = ctl.sample_info.gex_path[i].clone();
+                    if go.ends_with("/HEAD/outs") {
+                        let id = go.rev_before("/HEAD/outs").rev_after("/");
+                        go = format!("{}/{}/outs", pre, id);
                     }
-                } else {
-                    let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-                    load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
-                    r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
-                    if *pre != "".to_string() {
-                        let mut go = ctl.sample_info.gex_path[i].clone();
-                        if go.ends_with("/HEAD/outs") {
-                            let id = go.rev_before("/HEAD/outs").rev_after("/");
-                            go = format!("{}/{}/outs", pre, id);
-                        }
-                        let dir_new = format!("{}/raw_feature_bc_matrix", go);
-                        let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);
-                        if !path_exists(&dir_new) {
-                            create_dir_all(&dir_new).unwrap();
-                        }
-                        if path_exists(&bin_file) {
-                            remove_file(&bin_file).unwrap();
-                        }
-                        write_to_file(&r.3, &bin_file);
+                    let dir_new = format!("{}/raw_feature_bc_matrix", go);
+                    let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);
+                    if !path_exists(&dir_new) {
+                        create_dir_all(&dir_new).unwrap();
+                    }
+                    if path_exists(&bin_file) {
+                        remove_file(&bin_file).unwrap();
+                    }
+                    write_to_file(&r.3, &bin_file);
+                    if go != gex_outs[i] {
                         let old_json = format!("{}/metrics_summary_json.json", gex_outs[i]);
                         let new_json = format!("{}/metrics_summary_json.json", go);
                         copy(&old_json, &new_json).unwrap();
@@ -342,25 +359,29 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut fb_mults,
         &mut gex_cell_barcodes,
     );
-    /*
-    if ctl.gen_opt.gene_scan_test.is_some() {
+    if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
         if allf.len() != 1 {
-            eprintln!( "\nCurrently, SCAN requires that all datasets have identical \
-                features, and they do not." );
-            eprintln!( "There are {} datasets and {} feature sets after removal of \
-                duplicates.", gex_features.len(), allf.len() );
-            eprintln!( "Classification of features sets:\n" );
+            eprintln!(
+                "\nCurrently, SCAN requires that all datasets have identical \
+                 features, and they do not."
+            );
+            eprintln!(
+                "There are {} datasets and {} feature sets after removal of \
+                 duplicates.",
+                gex_features.len(),
+                allf.len()
+            );
+            eprintln!("Classification of features sets:\n");
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
-                eprintln!( "{} ==> {}", ctl.sample_info.dataset_id[i], p );
+                eprintln!("{} ==> {}", ctl.sample_info.dataset_id[i], p);
             }
             eprintln!("");
             std::process::exit(1);
         }
     }
-    */
     let mut h5_data = Vec::<Option<Dataset>>::new();
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
@@ -371,6 +392,10 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
                 let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
+                }
+                if !path_exists(&f) {
+                    eprintln!("\nThere's a missing input file:\n{}.\n", f);
+                    std::process::exit(1);
                 }
                 let h = h5::File::open(&f, "r").unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
