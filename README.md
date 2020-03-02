@@ -58,7 +58,7 @@ know if availability on other platforms is important to you.
 
 2. Go to the [enclone release page](https://github.com/10XDev/enclone/releases) and download
 the latest release(s) for the platform(s) that you need.  That's at the top of the page.
-At a later data, there will also be separately numbered releases that have passed a more extensive
+At a later date, there will also be separately numbered releases that have passed a more extensive
 set of tests.
 
 3. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
