@@ -3,7 +3,7 @@
 // Given output of a clonotyping algorithm which took as inputs the pipeline outputs for the lenas 
 // in enclone.testdata, find how many of the clonotypes cross donors.  The clonotyping algorithm
 // should be a file with lines of the form:
-// lena barcode clonotype_id.
+// sampleID barcode clonotype_id.
 
 /*
  
