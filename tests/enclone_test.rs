@@ -139,7 +139,7 @@ const TESTS: [&str; 33] = [
 fn test_enclone() {
     PrettyTrace::new().on();
     let t = Instant::now();
-    //                       id    ok   output
+    //                       id     ok    output
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
