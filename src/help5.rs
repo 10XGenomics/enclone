@@ -436,7 +436,8 @@ pub fn help5(args: &Vec<String>) {
             To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
             it was a VDJ dataset, and you need to specify to Cell Ranger that the run is to be \
             treated as BCR or TCR.  Two separate invocations can be used to get both.  Note also \
-            that Cell Ranger has been only minimally tested for this configuration.\n\n",
+            that Cell Ranger has been only minimally tested for this configuration and that this \
+            is not an officially supported Cell Ranger configuration.\n\n",
         );
 
         std::process::exit(0);
