@@ -52,7 +52,7 @@ pub fn join_core(
                 continue;
             }
 
-            // Require that junctions have the same length.  Ugly.
+            // Require that CDR3s have the same length.  Ugly.
             // First part should be a tautology.
 
             let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
@@ -267,7 +267,7 @@ pub fn join_core(
                 }
             }
 
-            // Cap junction diffs.
+            // Cap CDR3 diffs.
 
             if cd > 10 || (!is_bcr && cd > 0) {
                 continue;
