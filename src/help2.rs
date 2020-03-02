@@ -276,7 +276,7 @@ pub fn help2(args: &Vec<String>) {
              for enclone needs to go through this point of access (or the next one).\n\n",
         );
         print(
-            "If you are github-savvy, we also welcome github issues if applicable and you \
+            "If you are GitHub-savvy, we also welcome GitHub issues if applicable and you \
              prefer that route.  If you can make the enclone code better, go for it!  Make sure \
              the internal tests are successful, submit a \
              pull request, and if we can use your code (no guarantees), we'll add you as an \

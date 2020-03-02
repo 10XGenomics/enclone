@@ -32,16 +32,17 @@ pub fn find_alleles(
     // datasets from the same donors.
     //
     // This calculation has to be made separately for each donor, which means that in a certain
-    // sense the algorithm is not blind to the truth data.  But it is the right thing to do.
+    // sense the algorithm is not blinded to the truth data.  However, separating this calculation out
+    // per donor is the right thing to do.
     //
     // Alternate alleles might correspond to duplicated segments, which is fine, as
     // for purposes of this code that's functionally equivalent to bona fide alternate alleles.
     //
     // We do not attempt to calculate the last 15 bases of an alternate allele.  These
     // bases are just copied.  If we want to really know these bases we may need to
-    // have actual genomic sequences.  That would also provide a control for these calculations.
+    // have actual genomic sequences which could also provide a control for these calculations.
     //
-    // Tried to do this for J segments too but was unsuccessful.
+    // Attempts to also do this for J segments were unsuccessful.
     //
     // Limitations and to do items:
     // 1. Hypothetically we could make a library of alternate alleles and use that
