@@ -47,6 +47,9 @@ pub fn print_enclone(plain: bool) {
     }
 }
 
+// This encodes the color codes for each possible codon of a given amino acid
+// that could be found in a BCR or TCR sequence.
+
 pub fn colored_codon_table(plainx: bool) -> String {
     let plain = b"\
         Alanine        A  GCT GCC GCA GCG\n\

@@ -102,7 +102,7 @@ pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata
 // Exploratory code to understand exact subclonotype consensus formation.
 //
 // 1. Not clear if we want to do this for exact subclonotypes or for clonotypes.
-// 2. Or should we be computing by utr?
+// 2. Or should we be computing by UTR?
 // 3. And should we set this aside as not needing to be solved now? ***************
 //
 // - might be nice to show forward instead of reverse
