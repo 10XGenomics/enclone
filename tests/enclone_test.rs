@@ -84,8 +84,8 @@ const TESTS: [&str; 34] = [
     "TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout",
     // 14. this added because it got better when a bug in bads detection was fixed
     "TCR=163914 CDR3=CASRLGGEETQYF",
-    // 15. tests insertion
-    "BCR=86233 CDR3=CVTEGKGDSVYLEKW CVARS=notes AMINO=cdr3,var",
+    // 15. tests insertion, range for AMINO
+    "BCR=86233 CVARS=notes AMINO=cdr3,var,115-120 CDR3=CARGLVVVYAIFDYW",
     // BCR=123085 CDR3=CARHPAPNYGFWSGYYKTDNWFDPW ==> alt example if we need to dump 86233
     // 16. tests number of cells broken out by dataset
     "BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW",
@@ -142,9 +142,6 @@ const TESTS: [&str; 34] = [
 fn test_enclone() {
     PrettyTrace::new().on();
     let t = Instant::now();
-<<<<<<< HEAD
-    //                       id     ok    output
-=======
     let tests = vec![
         // 1. tests variant base after CDR3, parseable output
         "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
