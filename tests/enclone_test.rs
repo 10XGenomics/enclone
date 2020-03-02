@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 33] = [
+const TESTS: [&str; 34] = [
     // 1. tests variant base after CDR3, parseable output
     "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes",
@@ -127,6 +127,9 @@ const TESTS: [&str; 33] = [
     "BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE",
     // 33. tests SCAN
     "BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10 SCAN=\"(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1\" NOPRINT",
+    // 34. tests honeycomb plot
+    // (This yields a lot of output so will be annoying to debug if something changes.)
+    "BCR=123085:123089 MIN_CELLS=50 PLOT=\"stdout,s1->blue,s2->red\" NOPRINT",
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
