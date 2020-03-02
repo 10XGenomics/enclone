@@ -8,6 +8,8 @@ use string_utils::*;
 use tables::*;
 use vector_utils::*;
 
+const VERSION_STRING: &'static str = env!("VERSION_STRING");
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn help5(args: &Vec<String>) {
@@ -438,6 +440,28 @@ pub fn help5(args: &Vec<String>) {
             treated as BCR or TCR.  Two separate invocations can be used to get both.  Note also \
             that Cell Ranger has been only minimally tested for this configuration and that this \
             is not an officially supported Cell Ranger configuration.\n\n",
+        );
+
+        print("\\boldblue{18. How can I cite enclone?}\n\n");
+        println!("This version of enclone has been provided under a non-disclosure agreement,");
+        println!(
+            "however once enclone has officially launched, you will be able to cite this \
+             version as:"
+        );
+        let mut log = Vec::<u8>::new();
+        emit_green_escape(&mut log);
+        print!("{}", strme(&log));
+        println!(
+            "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
+            VERSION_STRING.before(",")
+        );
+        emit_end_escape(&mut log);
+        print!("{}", strme(&log));
+        print(
+            "At some point subsequent to that, there will be a white paper that you can also \
+             refer to.  In addition, you should provide the arguments that you used when you ran \
+             enclone, and indicate the version of Cell Ranger that was used \
+             to generate its inputs.\n\n",
         );
 
         std::process::exit(0);
