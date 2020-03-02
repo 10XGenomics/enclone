@@ -536,6 +536,22 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("", "and ends with a partial codon (its first base)");
 
+        // doc CDR3
+
+        doc!(
+            "CDR3",
+            "The terms CDR3 and junction are commonly mistaken and often used"
+        );
+        doc!(
+            "",
+            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the"
+        );
+        doc!(
+            "",
+            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini"
+        );
+        doc!("", "respectively).");
+
         // doc clonotype
 
         ldoc!(
