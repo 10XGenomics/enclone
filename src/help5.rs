@@ -226,7 +226,7 @@ pub fn help5(args: &Vec<String>) {
              with colors:\n\
              1. Take a screenshot.\n\
              2. Open a new terminal window, type the enclone command, and then convert the \
-             terminal window into a PDF.  See \\bold{enclone help faq} for related \
+             terminal window into a pdf.  See \\bold{enclone help faq} for related \
              instructions.\n\n",
         );
         if !help_all {
@@ -279,17 +279,6 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
         println!(
-<<<<<<< HEAD
-            "We don't know how in general, but the following works for us from a Mac:\n\n\
-             A. Open a new terminal window\n\
-             B. Make it 110 characters wide; font should be fixed width and roughly 12pt\n\
-             C. Type \"enclone help all NOPAGER\"\n\
-             D. Type command-A to select all\n\
-             E. Type option-command-P to print selection\n\
-             F. Click the PDF button in the lower left (drop down menu)\n\
-             G. Click \"Open in Preview\"\n\
-             H. Then print (or save the PDF, if you prefer).\n"
-=======
             "We don't know how in general, but the following works for us from a mac:\n\n\
              A. open a new terminal window\n\
              B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
@@ -299,7 +288,6 @@ pub fn help5(args: &Vec<String>) {
              F. click the PDF button in the lower left (drop down menu)\n\
              G. click \"Open in Preview\"\n\
              H. then print (or save the pdf, if you prefer).\n"
->>>>>>> master
         );
 
         print("\\boldblue{3. Why is enclone slow for me?}\n\n");
@@ -329,13 +317,8 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{5. What platforms does enclone run on?}\n\n");
         print(
-<<<<<<< HEAD
-            "1. Linux/x86-64 (that's most servers)\n\
-             2. Mac OS X\n\
-=======
             "1. linux/x86-64 (that's most servers)\n\
              2. mac.\n\n\
->>>>>>> master
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
@@ -386,13 +369,8 @@ pub fn help5(args: &Vec<String>) {
         print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
         print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
-<<<<<<< HEAD
-            one of the filters described in \\bold{enclone help special}, which you can \
-            turn off.  We also delete cells for which more than four chains were found.\n\n",
-=======
              one of the filters described in \\bold{enclone help special}, and which you can \
              turn off.  We also delete cells for which more than four chains were found.\n\n",
->>>>>>> master
         );
 
         print("\\boldblue{12. Can enclone print summary stats?}\n\n");
