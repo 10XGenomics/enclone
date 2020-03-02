@@ -61,7 +61,10 @@ the latest release(s) for the platform(s) that you need.  That's at the top of t
 At a later date, there will also be separately numbered releases that have passed a more extensive
 set of tests.
 
-3. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location 
+3. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location
+might be `~/bin`.
+
+<b>TO DO: link to pathing tutorial</b>
 
 4. Change your path so that it includes this location.
 
