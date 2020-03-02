@@ -158,6 +158,8 @@ pub fn help5(args: &Vec<String>) {
             "phylogeny",
             "generate a phylogeny for the exact clonotypes within a clonotype"
         );
+
+        ldoc!("windows", "make enclone work on windows computers");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         print!("{}", log);
@@ -277,6 +279,7 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
         println!(
+<<<<<<< HEAD
             "We don't know how in general, but the following works for us from a Mac:\n\n\
              A. Open a new terminal window\n\
              B. Make it 110 characters wide; font should be fixed width and roughly 12pt\n\
@@ -286,14 +289,26 @@ pub fn help5(args: &Vec<String>) {
              F. Click the PDF button in the lower left (drop down menu)\n\
              G. Click \"Open in Preview\"\n\
              H. Then print (or save the PDF, if you prefer).\n"
+=======
+            "We don't know how in general, but the following works for us from a mac:\n\n\
+             A. open a new terminal window\n\
+             B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
+             C. type \"enclone help all NOPAGER\"\n\
+             D. type command-A to select all\n\
+             E. type option-command-P to print selection\n\
+             F. click the PDF button in the lower left (drop down menu)\n\
+             G. click \"Open in Preview\"\n\
+             H. then print (or save the pdf, if you prefer).\n"
+>>>>>>> master
         );
 
         print("\\boldblue{3. Why is enclone slow for me?}\n\n");
         print(
-            "It should not be.  When we use it, it typically takes a few seconds for a single \
-             dataset, and longer for multiple datasets.  If you have \
-             encountered an example where it is slow, please write to us, so we can improve its \
-             performance.\n\n",
+            "On a single VDJ dataset, it typically runs for us in a few seconds, on a Mac or Linux \
+             server.  Runs where we combine several hundred datasets execute in a couple minutes \
+             (on a server).  Your mileage could vary, and we are interested in cases where \
+             it is underperforming.  Let us know.  We are aware of several things that could be \
+             done to speed up enclone.\n\n",
         );
 
         print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");
@@ -314,8 +329,13 @@ pub fn help5(args: &Vec<String>) {
 
         print("\\boldblue{5. What platforms does enclone run on?}\n\n");
         print(
+<<<<<<< HEAD
             "1. Linux/x86-64 (that's most servers)\n\
              2. Mac OS X\n\
+=======
+            "1. linux/x86-64 (that's most servers)\n\
+             2. mac.\n\n\
+>>>>>>> master
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
@@ -337,10 +357,15 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
-        print( "Yes.  Type \\bold{enclone help input} for details.  If we encounter a clonotype \
-            containing data from more than one donor, it will be flagged as an error.  The primary \
-            reason for allowing entry of data from multiple donors is to allow estimation of \
-            enclone's error rate.\n\n" );
+        print(
+            "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
+             enclone is to prevent cells from different donors from being placed in the same \
+             clonotype.  The \\bold{NDONOR} option may be used to turn off this behavior.  If you \
+             employ this option, then clonotypes containing cells from more than one donor will be \
+             flagged as errors, unless you use the \\bold{NWARN} option to turn off those \
+             warnings.  The primary reason for allowing entry of data from multiple \
+             donors is to allow estimation of enclone's error rate.\n\n",
+        );
 
         print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
         print(
@@ -353,47 +378,78 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
-        print( 
+        print(
             "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
-            get zero.\n\n",
+             get zero.\n\n",
         );
 
         print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
-        print( 
+        print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
+<<<<<<< HEAD
             one of the filters described in \\bold{enclone help special}, which you can \
             turn off.  We also delete cells for which more than four chains were found.\n\n",
+=======
+             one of the filters described in \\bold{enclone help special}, and which you can \
+             turn off.  We also delete cells for which more than four chains were found.\n\n",
+>>>>>>> master
         );
 
         print("\\boldblue{12. Can enclone print summary stats?}\n\n");
-        print( 
+        print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
-            printed.  If you only want to see the summary stats, then also add the option \
-            \\bold{NOPRINT}.\n\n",
+             printed.  If you only want to see the summary stats, then also add the option \
+             \\bold{NOPRINT}.\n\n",
         );
 
         print("\\boldblue{13. What is the notes column?}\n\n");
-        print( 
-            "The notes column appears if one of two relatively rare events occurs:\n\
-            1. An insertion is detected in a chain sequence, relative to the reference.\n\
-            2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
-            the beginning of the C segment.\n\
-            The latter could correspond to one of several phenomena:\n\
-            a. A transcript has an insertion between its J and C segments.\n   \
-            This can happen.  See e.g. Behlke MA, Loh DY.\n   \
-            Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
-            Nature 322(1986), 379-382.\n\
-            b. There is an error in a reference sequence segment.\n   \
-            We have tried to eliminate all such errors from the built-in references for\n   \
-            human and mouse.\n\
-            c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
-               Cell Ranger pipeline just happened to pick a nonstandard one.\n\
-            d. There was a technical artifact and the sequence does not actually represent\n   \
-            an mRNA molecule.\n\n",
+        print(
+            "The notes column appears if one of two relatively rare events occurs:\n\n\
+             1. An insertion is detected in a chain sequence, relative to the reference.\n\n\
+             2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
+             the beginning of the C segment.\n\
+             The latter could correspond to one of several phenomena:\n\
+             a. A transcript has an insertion between its J and C segments.\n   \
+             This can happen.  See e.g. Behlke MA, Loh DY.\n   \
+             Alternative splicing of murine T-cell receptor beta-chain transcripts.\n   \
+             Nature 322(1986), 379-382.\n\
+             b. There is an error in a reference sequence segment.\n   \
+             We have tried to eliminate all such errors from the built-in references for\n   \
+             human and mouse.\n\
+             c. A cell produced a nonstandard transcript and also standard ones, and the\n   \
+             Cell Ranger pipeline just happened to pick a nonstandard one.\n\
+             d. There was a technical artifact and the sequence does not actually represent\n   \
+             an mRNA molecule.\n\n\
+             If you supply enclone with output from Cell Ranger 3.1, \
+             and J and C segments overlap by exactly one, this will not be noted.  \
+             The reason for this is that many of the reference sequences supplied with \
+             Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting \
+             in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print( "Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n" );
+        print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
+
+        print("\\boldblue{15. Does enclone work under Windows?}\n\n");
+        print(
+            "No.  There are nontrivial technical problems with getting this to work.  If you're \
+             sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
+             know if you're interested in support for Windows.\n\n",
+        );
+
+        print("\\boldblue{16. Is there a way to plot clonotypes?}\n\n");
+        print(
+            "Yes.  There is a special argument\n\
+             \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
+             which creates an svg file of the given name, and assigns the given colors to the \
+             given samples.  Unspecified samples will be black.  The colors should be valid colors \
+             for use in an svg file, e.g. red, blue, green, etc.  Each cell is shown as a small \
+             disk having the given color, and each clonotype is shown as a cluster of these small \
+             disks, which are positioned at random.  We suggest using the \
+             \\bold{MIN_CELLS} option \
+             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  Note that \
+             plotting is potentially slow.\n\n",
+        );
 
         std::process::exit(0);
     }

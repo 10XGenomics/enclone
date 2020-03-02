@@ -1,10 +1,17 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+<<<<<<< HEAD
 // Build input files for Immcantation.  This creates two files:
 // * filtered_contig.fasta
 // * filtered_contig_annotations.csv.
 // Functionality of this code is dependent on stability and
 // structure of Immcantation outputs.
+=======
+// Build input files for Immcantation.  This is for experimental purposes only.
+// Creates two files:
+// filtered_contig.fasta
+// filtered_contig_annotations.csv.
+>>>>>>> master
 
 use io_utils::*;
 use pretty_trace::*;
@@ -17,7 +24,7 @@ pub fn main_build_immcantation_inputs() {
 
     // Location of files.
 
-    let pre = "/mnt/assembly/vdj/current13";
+    let pre = "/mnt/assembly/vdj/current14";
 
     // Get the list of lena ids.
 

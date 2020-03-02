@@ -13,10 +13,9 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
+pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
     tig_bc.sort_by(|x, y| -> Ordering {
         for i in 0..x.len() {
-
             // Order by number of chains.
 
             if i >= y.len() {
@@ -31,14 +30,12 @@ pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
                 return Ordering::Greater;
 
             // Order by chain length.
-
             } else if x[i].len < y[i].len {
                 return Ordering::Less;
             } else if x[i].len > y[i].len {
                 return Ordering::Greater;
 
             // Order by chain sequence.
-
             } else if x[i].seq < y[i].seq {
                 return Ordering::Less;
             } else if x[i].seq > y[i].seq {
@@ -57,7 +54,6 @@ pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
                 return Ordering::Greater;
 
             // Order by constant region name.
-
             } else if cid1.is_some()
                 && cid2.is_some()
                 && refdata.name[cid1.unwrap()] < refdata.name[cid2.unwrap()]
@@ -70,12 +66,21 @@ pub fn sort_tig_bc(tig_bc: &mut Vec<Vec<TigData>>, refdata: &RefData) {
                 return Ordering::Greater;
 
             // Order by JC delta.
-
-            } else if x[i].c_start.is_some() && y[i].c_start.is_some()
-                && x[i].c_start.unwrap() + y[i].j_stop < y[i].c_start.unwrap() + x[i].j_stop {
+            } else if x[i].c_start.is_some()
+                && y[i].c_start.is_some()
+                && x[i].c_start.unwrap() + y[i].j_stop < y[i].c_start.unwrap() + x[i].j_stop
+            {
                 return Ordering::Less;
-            } else if x[i].c_start.is_some() && y[i].c_start.is_some()
-                && x[i].c_start.unwrap() + y[i].j_stop > y[i].c_start.unwrap() + x[i].j_stop {
+            } else if x[i].c_start.is_some()
+                && y[i].c_start.is_some()
+                && x[i].c_start.unwrap() + y[i].j_stop > y[i].c_start.unwrap() + x[i].j_stop
+            {
+                return Ordering::Greater;
+
+            // Order by donor if NDONOR option used.
+            } else if !ctl.clono_filt_opt.donor && x[i].donor_index < y[i].donor_index {
+                return Ordering::Less;
+            } else if !ctl.clono_filt_opt.donor && x[i].donor_index > y[i].donor_index {
                 return Ordering::Greater;
             }
         }

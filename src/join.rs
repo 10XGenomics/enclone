@@ -2,6 +2,10 @@
 
 // This file provides the single function join_exacts, which computes the equivalence relation
 // on exact subclonotypes.
+//
+// Note that in principle the specificity of joining might be increased by using nonproductive
+// contigs that represent the sequence of the "other" allele.  This does not look easy to
+// execute.
 
 use vdj_ann::*;
 
@@ -31,6 +35,7 @@ pub fn join_exacts(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
+    mut join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
 ) -> EquivRel {
     // Run special option for joining by barcode identity.
 
@@ -77,8 +82,14 @@ pub fn join_exacts(
     // Find potential joins.
 
     let mut i = 0;
-    //                       i,     j,     joins, errors,log,     joinlist
-    let mut results = Vec::<(usize, usize, usize, usize, Vec<u8>, Vec<(usize, usize)>)>::new();
+    let mut results = Vec::<(
+        usize,                              // i
+        usize,                              // j
+        usize,                              // joins
+        usize,                              // errors
+        Vec<(usize, usize, bool, Vec<u8>)>, // log+ (index1, index2, err?, log)
+        Vec<(usize, usize)>,                // joinlist
+    )>::new();
     while i < info.len() {
         let mut j = i + 1;
         while j < info.len() {
@@ -87,9 +98,17 @@ pub fn join_exacts(
             }
             j += 1;
         }
-        results.push((i, j, 0, 0, Vec::<u8>::new(), Vec::<(usize, usize)>::new()));
+        results.push((
+            i,
+            j,
+            0,
+            0,
+            Vec::<(usize, usize, bool, Vec<u8>)>::new(),
+            Vec::<(usize, usize)>::new(),
+        ));
         i = j;
     }
+    // Not sure that fixing the size of this is safe.
     let sr = stirling2_ratio_table::<f64>(3000);
     if !ctl.silent {
         println!("comparing {} simple clonotypes", info.len());
@@ -102,7 +121,7 @@ pub fn join_exacts(
         let (i, j) = (r.0, r.1);
         let joins = &mut r.2;
         let errors = &mut r.3;
-        let log = &mut r.4;
+        let logplus = &mut r.4;
         let mut pot = Vec::<PotentialJoin>::new();
         let mut eq: EquivRel = EquivRel::new((j - i) as i32);
 
@@ -221,15 +240,16 @@ pub fn join_exacts(
                 continue;
             }
 
-            // Print.
+            // Print join.
 
+            let mut log = Vec::<u8>::new();
             fwriteln!(
                 log,
                 "\n====================================================\
                  ==============================================="
             );
             if err {
-                fwriteln!(log, "\nFAIL ZZZ");
+                fwriteln!(log, "\nJOIN ERROR");
             }
             let (mut lena1, mut lena2) = (Vec::<String>::new(), Vec::<String>::new());
             for l1 in info[k1].origin.iter() {
@@ -388,12 +408,12 @@ pub fn join_exacts(
                         if !info[k1].has_del[m] {
                             fwriteln!(log, "chain {}, tig 1", m + 1);
                             let t1 = DnaString::from_acgt_bytes(&tig1);
-                            print_annotations(&t1, &refdata, log, false, true, false);
+                            print_annotations(&t1, &refdata, &mut log, false, true, false);
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 1", m + 1);
-                        print_annotations(&otig1, &refdata, log, false, true, false);
+                        print_annotations(&otig1, &refdata, &mut log, false, true, false);
                     }
                     if ctl.join_print_opt.seq {
                         fwriteln!(log, "chain {}, tig 2 = {}", m + 1, otig2.to_string());
@@ -403,12 +423,12 @@ pub fn join_exacts(
                         if !info[k2].has_del[m] {
                             fwriteln!(log, "chain {}, tig 2", m + 1);
                             let t2 = DnaString::from_acgt_bytes(&tig2);
-                            print_annotations(&t2, &refdata, log, false, true, false);
+                            print_annotations(&t2, &refdata, &mut log, false, true, false);
                         }
                     }
                     if ctl.join_print_opt.ann {
                         fwriteln!(log, "chain {}, tig 2", m + 1);
-                        print_annotations(&otig2, &refdata, log, false, true, false);
+                        print_annotations(&otig2, &refdata, &mut log, false, true, false);
                     }
                 }
             }
@@ -421,10 +441,11 @@ pub fn join_exacts(
                     fwriteln!(log, "{:?}", strme(&info[k2].tigs[x]));
                 }
             }
+            logplus.push((info[k1].clonotype_index, info[k2].clonotype_index, err, log));
         }
     });
     if ctl.comp {
         println!("{:.2} seconds used in main part of join", elapsed(&timer2));
     }
-    finish_join(&ctl, &exact_clonotypes, &info, &results)
+    finish_join(&ctl, &exact_clonotypes, &info, &results, &mut join_info)
 }

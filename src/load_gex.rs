@@ -16,6 +16,7 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -26,6 +27,7 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     gex_mults: &mut Vec<f64>,
     fb_mults: &mut Vec<f64>,
+    gex_cell_barcodes: &mut Vec<Vec<String>>,
 ) {
     let pre = &ctl.gen_opt.pre;
     let comp = ctl.comp;
@@ -36,6 +38,7 @@ pub fn load_gex(
         MirrorSparseMatrix,
         Option<f64>,
         Option<f64>,
+        Vec<String>,
     )>::new();
     for i in 0..ctl.sample_info.gex_path.len() {
         results.push((
@@ -45,6 +48,7 @@ pub fn load_gex(
             MirrorSparseMatrix::new(),
             None,
             None,
+            Vec::<String>::new(),
         ));
     }
     let gex_outs = &ctl.sample_info.gex_path;
@@ -68,6 +72,24 @@ pub fn load_gex(
                 );
                 std::process::exit(1);
             }
+            let cb1 = format!("{}/filtered_feature_bc_matrix/barcodes.tsv.gz", gex_outs[i]);
+            let cb2 = format!(
+                "{}/filtered_gene_bc_matrices_mex/barcodes.tsv.gz",
+                gex_outs[i]
+            );
+            let mut cb = cb1.clone();
+            if !path_exists(&cb) {
+                cb = cb2.clone();
+                if !path_exists(&cb) {
+                    eprintln!(
+                        "\nSomething wrong with GEX argument:\nneither the path {}\nnor \
+                         the path {} exists.\n",
+                        cb1, cb2
+                    );
+                    std::process::exit(1);
+                }
+            }
+            read_maybe_unzipped(&cb, &mut r.6);
             let json = format!("{}/metrics_summary_json.json", gex_outs[i]);
             if !path_exists(&json) {
                 eprintln!(
@@ -168,7 +190,11 @@ pub fn load_gex(
                     load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
                     if *pre != "".to_string() {
-                        let go = ctl.sample_info.gex_path[i].clone();
+                        let mut go = ctl.sample_info.gex_path[i].clone();
+                        if go.ends_with("/HEAD/outs") {
+                            let id = go.rev_before("/HEAD/outs").rev_after("/");
+                            go = format!("{}/{}/outs", pre, id);
+                        }
                         let dir_new = format!("{}/raw_feature_bc_matrix", go);
                         let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);
                         if !path_exists(&dir_new) {
@@ -207,13 +233,35 @@ pub fn load_gex(
                             )
                             .unwrap();
                         }
+                        let mut fdir = format!("{}/filtered_feature_bc_matrix", gex_outs[i]);
+                        if !path_exists(&fdir) {
+                            fdir = format!("{}/filtered_gene_bc_matrices_mex", gex_outs[i]);
+                        }
+                        let fdir_new = format!("{}/filtered_feature_bc_matrix", go);
+                        if !path_exists(&fdir_new) {
+                            create_dir_all(&fdir_new).unwrap();
+                        }
+                        if path_exists(&format!("{}/GRCh38", fdir)) {
+                            copy(
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir),
+                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir_new),
+                            )
+                            .unwrap();
+                        } else {
+                            copy(
+                                &format!("{}/barcodes.tsv.gz", fdir),
+                                &format!("{}/barcodes.tsv.gz", fdir_new),
+                            )
+                            .unwrap();
+                        }
                     }
                 }
             }
         }
+        unique_sort(&mut r.6);
     });
 
-    // Check for lvars tha don't make sense.
+    // Check for lvars that don't make sense.
 
     let mut have_gex = false;
     let mut have_fb = false;
@@ -226,7 +274,12 @@ pub fn load_gex(
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
-        if *x == "gex_med".to_string() || *x == "gex_max".to_string() || x.ends_with("_g") {
+        if *x == "gex_med".to_string()
+            || *x == "gex_max".to_string()
+            || x.ends_with("_g")
+            || *x == "n_gex".to_string()
+            || *x == "entropy".to_string()
+        {
             if !have_gex {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
@@ -236,7 +289,7 @@ pub fn load_gex(
                 std::process::exit(1);
             }
         }
-        if x.ends_with("_a") {
+        if x.ends_with("_ab") || x.ends_with("_ag") || x.ends_with("_cr") || x.ends_with("_cu") {
             if !have_fb {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
@@ -265,6 +318,7 @@ pub fn load_gex(
             fb_mult = results[i].5.unwrap();
         }
         fb_mults.push(fb_mult);
+        gex_cell_barcodes.push(results[i].6.clone());
     }
 }
 
@@ -278,6 +332,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut gex_mults = Vec::<f64>::new();
     let mut fb_mults = Vec::<f64>::new();
+    let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -285,7 +340,27 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_matrices,
         &mut gex_mults,
         &mut fb_mults,
+        &mut gex_cell_barcodes,
     );
+    /*
+    if ctl.gen_opt.gene_scan_test.is_some() {
+        let mut allf = gex_features.clone();
+        unique_sort(&mut allf);
+        if allf.len() != 1 {
+            eprintln!( "\nCurrently, SCAN requires that all datasets have identical \
+                features, and they do not." );
+            eprintln!( "There are {} datasets and {} feature sets after removal of \
+                duplicates.", gex_features.len(), allf.len() );
+            eprintln!( "Classification of features sets:\n" );
+            for i in 0..gex_features.len() {
+                let p = bin_position(&allf, &gex_features[i]);
+                eprintln!( "{} ==> {}", ctl.sample_info.dataset_id[i], p );
+            }
+            eprintln!("");
+            std::process::exit(1);
+        }
+    }
+    */
     let mut h5_data = Vec::<Option<Dataset>>::new();
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
@@ -315,10 +390,18 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         for j in 0..gex_features[i].len() {
             let f = &gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
-            if ff[2].starts_with(&"Antibody") {
-                feature_id[i].insert(format!("{}_a", ff[0]), j);
-            } else {
-                feature_id[i].insert(format!("{}_g", ff[1]), j);
+            for z in 0..2 {
+                if ff[2].starts_with(&"Antibody") {
+                    feature_id[i].insert(format!("{}_ab", ff[z]), j);
+                } else if ff[2].starts_with(&"Antigen") {
+                    feature_id[i].insert(format!("{}_ag", ff[z]), j);
+                } else if ff[2].starts_with(&"CRISPR") {
+                    feature_id[i].insert(format!("{}_cr", ff[z]), j);
+                } else if ff[2].starts_with(&"CUSTOM") {
+                    feature_id[i].insert(format!("{}_cu", ff[z]), j);
+                } else if ff[2].starts_with(&"Gene") {
+                    feature_id[i].insert(format!("{}_g", ff[z]), j);
+                }
             }
         }
     }
@@ -344,6 +427,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         gex_features: gex_features,
         gex_barcodes: gex_barcodes,
         gex_matrices: gex_matrices,
+        gex_cell_barcodes: gex_cell_barcodes,
         gex_mults: gex_mults,
         fb_mults: fb_mults,
         h5_data: h5_data,

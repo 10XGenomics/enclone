@@ -3,8 +3,8 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use ansi_escape::*;
 use crate::misc1::*;
+use ansi_escape::*;
 use pretty_trace::*;
 use std::env;
 use string_utils::*;
@@ -30,7 +30,7 @@ pub fn help1(args: &Vec<String>) {
         setup_pager(!nopager);
     }
     let mut help_all = false;
-    if args.len() == 3 && args[1] == "help" && args[2] == "all" {
+    if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
         unsafe {
             HELP_ALL = true;
         }
@@ -216,7 +216,7 @@ pub fn help1(args: &Vec<String>) {
         ldoc_red!("enclone help", "help to test for correct setup");
         doc_red!("enclone", "what you see here: guide to all the docs");
         ldoc_red!("enclone help quick", "quick guide to getting started");
-        ldoc_red!("enclone help how", "how enclone works");
+        ldoc_red!("enclone help how", "how enclone works (long)");
         ldoc_red!(
             "enclone help command",
             "info about enclone command line argument processing"
@@ -241,7 +241,10 @@ pub fn help1(args: &Vec<String>) {
             "how to provide input to enclone (technical notes)"
         );
         ldoc!("enclone help parseable", "parseable output (long)");
-        ldoc!("enclone help filter", "clonotype filtering options");
+        ldoc!(
+            "enclone help filter",
+            "clonotype filtering options, scanning for feature enrichment (long)"
+        );
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options");
         doc!("enclone help cvars", "per chain column options");
@@ -266,6 +269,10 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("", "you can use this to search all the help pages");
         print_tab2(&rows);
+        print(
+            "Additional documentation may be found at \
+             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+        );
         if !help_all {
             std::process::exit(0);
         }
@@ -349,35 +356,103 @@ pub fn help1(args: &Vec<String>) {
 
         print(
             "To address these challenges, the enclone algorithm has several steps, which we \
-             briefly outline:\n\n",
+             outline:\n\n",
         );
-        print_with_box(
-            "1. For samples from a given donor, enclone first \
-             derives \"donor reference sequences\" \
+        print(
+            "\\boldred{1}.  Input data.  \
+             enclone gets its information from the file all_contig_annotations.json that is \
+             produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated \
+             V and J segment.  The V segment alignment may have a single indel whose length is \
+             divisible by three, and in that case, the V reference sequence is edited either to \
+             delete or insert sequence.  In the insertion case, the bases are taken from the \
+             contig.  These indels are noted in the enclone output.\n\n\
+             \
+             \\boldred{2}.  Exact subclonotypes.  \
+             enclone groups cells into exact subclonotypes, provided that they have the same \
+             number of chains, identical V..J sequences, identical C segment assignments, \
+             and the same distance between the J stop and the C start (which is usually zero).\n\n\
+             \
+             \\boldred{3}.  Finding the germline sequences.  \
+             For samples from a given donor, enclone derives \"donor reference sequences\" \
              for the V chains present in the donor's genome.  This is powerful, even though \
              based on imperfect information.  V segments vary in their expression frequency and \
              thus the more cells which are present, the more complete the information will be.  It \
              is also not possible to accurately determine the last ~15 bases in a V chain from \
-             transcript data.\n\n\
+             transcript data because these bases are mutated during recombination.\n\n\
              \
-             2. enclone next finds shared differences betweens cells, that is, for two cells, \
-             common mutations from the reference sequence, using the donor reference for the V \
-             segments and the universal reference for the J segments.\n\n\
+             \\boldred{4}.  What joins are tested.  \
+             Pairs of exact subclonotypes are considered for joining, as described below.  This \
+             process only considers exact subclonotypes have two or three chains.  There is some \
+             separate joining for the case of one chain.  Exact subclonotypes having four chains \
+             are not joined at present.  These cases are clearly harder because these exact \
+             subclonotypes are highly enriched for cell doublets, which we discard if we can \
+             identify as such.\n\n\
              \
+             \\boldred{5}.  Initial grouping.  \
+             For each pair of exact subclonotypes, and for each pair of chains in each of the \
+             two exact subclonotypes, for which V..J has the same length for the corresponding \
+             chains, and the CDR3 segments have the same length for the corresponding chains, \
+             enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
+             \
+             \\boldred{6}.  Error bounding.  \
+             To proceed, as a minimum requirement, there must be at most 50 total \
+             mismatches \
+             between the two exact subclonotypes, within the given two V..J segments.\n\n\
+             \
+             \\boldred{7}.  Shared mutations.  \
+             enclone next finds shared mutations betweens exact subclonotypes, that is, for \
+             two exact subclonotypes, common mutations from the reference sequence, using the \
+             donor reference for the V segments and the universal reference for the J segments.  \
+             Shared mutations are supposed to be somatic hypermutations, that would be evidence \
+             of common ancestry.  By using the donor reference sequences, most shared germline \
+             mutations are excluded, and this is critical for the algorithm's success.\n\n\
+             \
+             \\boldred{8}.  Are there enough shared mutations?  \
+             We find the probability p that “the shared mutations occur by chance”.  More \
+             specifically, given d shared mutations, and k total mutations (across the two cells), \
+             we compute the probability p that an sample with replacement of k items from a set \
+             whose size is the total number of bases in the V..J segments, yields at most k – d \
+             distinct elements.  The probability is an approximation, for the method please see\n\
+             \\green{https://docs.rs/stirling_numbers/0.1.0/stirling_numbers}.\n\n\
+             \
+<<<<<<< HEAD
              3. Two cells sharing sufficiently many shared differences and sufficiently few \
              CDR3 differences are deemed to be in the same clonotype.  This depends on heuristics \
              which are too detailed to describe on this page and are described elsewhere.\n\n\
              \
              4. Spurious chains are filtered out based on frequency and graph connections.",
+=======
+             \\boldred{9}.  Are there too many CDR3 mutations?  \
+             Next, let N be \"the number of DNA sequences that differ from the given CDR3 \
+             sequences by at most the number of observed differences\".  More specifically, if \
+             cd is the number of differences between the given CDR3 nucleotide sequences, and n \
+             is the total length in nucleotides of the CDR3 sequences (for the two chains), we \
+             compute the total number N of strings of length n that are obtainable by perturbing \
+             a given string of length n, which is\nsum( choose(n,m), m = 0..=cd) ).\n\n\
+             \
+             \\boldred{10}.  Key join criteria.  \
+             Two cells sharing sufficiently many shared differences and sufficiently few \
+             CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, \
+             and the lower N is, the more likely it is that the shared mutations represent bona \
+             fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
+             two cells lie in the same true clonotype.  To join two cells into the same \
+             clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
+             constant 1,000,000.  This constant was arrived at by empirically balancing \
+             sensitivity and specificity across a large collection of datasets.  See discussion \
+             of performance below.\n\n\
+             \
+             \\boldred{11}.  Junk.  \
+             Spurious chains are filtered out based on frequency and connections. See \
+             \"enclone help special\" for a description of the filters.\n\n",
+>>>>>>> master
         );
 
         // Finish.
 
         print( "We are actively working to improve the algorithm.  To test the performance of the \
-            current version, we combined data from 452 BCR libraries from 36 donors, which yielded \
-            \\boldred{9114} clonotypes having at least two cells each, of \
-            which \\boldred{22 (0.24%)} \
-            contained data from multiple donors.  These are errors.\n\n" );
+            current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
+            \\boldred{9573} clonotypes having at least two cells each, of which \
+            \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n" );
         if !help_all {
             std::process::exit(0);
         }
@@ -397,20 +472,24 @@ pub fn help1(args: &Vec<String>) {
         print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
-             arguments.\n\
+             arguments.  You can set any command-line argument this way.  The reason why you might \
+             want to use this feature is if you find yourself using the same \
+             command-line option over and over, and it is more convenient to set it once as \
+             an environment variable.\n\
              • For example, setting the environment variable \\bold{ENCLONE_PRE} to \
              \\bold{/Users/me/enclone_data} \
              is equivalent to providing the command-line argument \
              \\bold{PRE=/Users/me/enclone_data}.\n\
              • After checking environment variables, arguments on the command line are read from \
              left to right; if an argument name is repeated, only the \
-             rightmost value is used.\n\n",
+             rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
         print("\\bold{2. Color}\n\n");
         print_enclone(plain);
         print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
-             and more\nimportantly for amino acids, to represent different codons.\n\n\
+             and more\nimportantly for amino acids, to represent different codons.  This is \
+             done automatically but you can turn it off....\n\n\
              \\boldred{PLEASE READ THIS:}\n\n\
              You can turn off escape codes by adding \\bold{PLAIN} to any command.  Use this if \
              you want to peruse output using a text editor which does not grok the escape \
@@ -476,11 +555,11 @@ pub fn help1(args: &Vec<String>) {
         let mut w2 = b"all cells having identical transcripts".to_vec();
         emit_bold_escape(&mut w2);
         emit_red_escape(&mut w2);
-        w2.append( &mut " ○".as_bytes().to_vec() );
+        w2.append(&mut " ○".as_bytes().to_vec());
         emit_end_escape(&mut w2);
         let x2 = stringme(&w2);
         rows.push(vec![x1, x2]);
-        doc!( "", "(every clonotype is a union of exact subclonotypes)" );
+        doc!("", "(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
 
@@ -547,17 +626,20 @@ pub fn help1(args: &Vec<String>) {
         // print main table
 
         print_tab2(&rows);
+        println!("");
 
         // print footnote
 
-        print( "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
-            that cells:\n\
-            • have the same number of productive contigs identified\n\
-            • that these have identical bases within V..J\n\
-            • that they are assigned the same constant region reference sequences\n\
-            • and that the difference between the V stop and the C start is the same\n  \
-              (noting that this difference is nearly always zero).\n\
-            Note that we allow mutations within the 5'-UTR and constant regions.\n\n" );
+        print(
+            "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
+             that cells:\n\
+             • have the same number of productive contigs identified\n\
+             • that these have identical bases within V..J\n\
+             • that they are assigned the same constant region reference sequences\n\
+             • and that the difference between the V stop and the C start is the same\n  \
+             (noting that this difference is nearly always zero).\n\
+             Note that we allow mutations within the 5'-UTR and constant regions.\n\n",
+        );
 
         // conventions
 
