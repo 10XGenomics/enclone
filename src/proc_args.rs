@@ -361,12 +361,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             for x in ctl.clono_print_opt.amino.iter() {
-                if !(*x == "cdr3"
-                    || *x == "var"
-                    || *x == "share"
-                    || *x == "donor"
-                    || *x == "donorn")
-                {
+                let mut ok = false;
+                if *x == "cdr3" || *x == "var" || *x == "share" || *x == "donor" || *x == "donorn" {
+                    ok = true;
+                } else if x.contains('-') {
+                    let (start, stop) = (x.before("-"), x.after("-"));
+                    if start.parse::<usize>().is_ok() && stop.parse::<usize>().is_ok() {
+                        if start.force_usize() <= stop.force_usize() {
+                            ok = true;
+                        }
+                    }
+                }
+                if !ok {
                     eprintln!(
                         "\nUnrecognized variable {} for AMINO.  Please type \
                          \"enclone help amino\".\n",
