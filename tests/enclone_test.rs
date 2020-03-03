@@ -188,9 +188,11 @@ fn test_enclone() {
             // dubious use of expect:
             let new = new
                 .arg("FORCE_EXTERNAL")
-                // Cap number of threads at 64.  Surprisingly, for testing on a 64-core
-                // server, this significantly reduces wallclock.
-                .arg("MAX_CORES=64")
+                // Cap number of cores at 24.  Surprisingly, for testing on a 64-core
+                // server, this significantly reduces wallclock.  And substituting either
+                // 16 or 64 is slower.  Slower at the time of testing!  As we add tests or
+                // change the algorithms, this may change.
+                .arg("MAX_CORES=24")
                 .output()
                 .expect(&format!("failed to execute enclone for test{}", it + 1));
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
