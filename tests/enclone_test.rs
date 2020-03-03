@@ -190,7 +190,7 @@ fn test_enclone() {
                 .arg("FORCE_EXTERNAL")
                 // Cap number of threads at 64.  Surprisingly, for testing on a 64-core
                 // server, this significantly reduces wallclock.
-                .arg("MAX_THREADS=64")
+                .arg("MAX_CORES=64")
                 .output()
                 .expect(&format!("failed to execute enclone for test{}", it + 1));
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();

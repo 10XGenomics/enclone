@@ -408,7 +408,11 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
+        print(
+            "You can use the command-line argument \\bold{MAX_CORES=n} to cap the number of \
+             cores used in parallel loops.  The number of threads used is typically one \
+             higher.\n\n",
+        );
 
         print("\\boldblue{15. Does enclone work under Windows?}\n\n");
         print(
