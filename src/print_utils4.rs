@@ -175,6 +175,14 @@ pub fn build_show_aa(
     let cols = rsi.vids.len();
     let mut show_aa = vec![Vec::<usize>::new(); cols];
     for cx in 0..cols {
+        for x in ctl.clono_print_opt.amino.iter() {
+            if x.contains('-') {
+                let (start, stop) = (x.before("-").force_usize(), x.after("-").force_usize());
+                for p in start..=stop {
+                    show_aa[cx].push(p);
+                }
+            }
+        }
         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
             for j in 0..rsi.cdr3_lens[cx] {
                 let p = rsi.cdr3_starts[cx] / 3 + j;
