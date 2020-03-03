@@ -9,6 +9,7 @@ use crate::defs::*;
 use debruijn::{dna_string::*, Mer};
 use itertools::Itertools;
 use perf_stats::*;
+use rayon::prelude::*;
 use stats_utils::*;
 use std::cmp::*;
 use std::time::Instant;
@@ -32,8 +33,8 @@ pub fn find_alleles(
     // datasets from the same donors.
     //
     // This calculation has to be made separately for each donor, which means that in a certain
-    // sense the algorithm is not blinded to the truth data.  However, separating this calculation out
-    // per donor is the right thing to do.
+    // sense the algorithm is not blinded to the truth data.  However, separating this calculation
+    // out per donor is the right thing to do.
     //
     // Alternate alleles might correspond to duplicated segments, which is fine, as
     // for purposes of this code that's functionally equivalent to bona fide alternate alleles.
@@ -94,10 +95,18 @@ pub fn find_alleles(
 
     // Process each reference id.
 
+    let mut vs = Vec::<usize>::new();
     for id in 0..refdata.refs.len() {
-        if !refdata.is_v(id) {
-            continue;
+        if refdata.is_v(id) {
+            vs.push(id);
         }
+    }
+    let mut results = Vec::<(usize, Vec<(usize, usize, DnaString)>)>::new();
+    for v in vs.iter() {
+        results.push((*v, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let id = res.0;
         let mut allx = allxy[id].clone();
 
         // Divide by donor.
@@ -407,7 +416,7 @@ pub fn find_alleles(
                             }
                             b.set_mut(ps[i], c);
                         }
-                        alt_refs.push((donor_id, id, b));
+                        res.1.push((donor_id, id, b));
                     }
                 }
 
@@ -446,6 +455,9 @@ pub fn find_alleles(
                 */
             }
         }
+    });
+    for i in 0..results.len() {
+        alt_refs.append(&mut results[i].1);
     }
     if ctl.comp {
         println!(
