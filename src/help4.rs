@@ -287,7 +287,10 @@ pub fn help4(args: &Vec<String>) {
             "",
             "which data from different donors are deliberately combined in an attempt"
         );
-        doc!("", "to find errors.  Use of the bc field for META input specification");
+        doc!(
+            "",
+            "to find errors.  Use of the bc field for META input specification"
+        );
         doc!("", "automatically turns on this option.");
         ldoc!(
             "KEEP_IMPROPER",
