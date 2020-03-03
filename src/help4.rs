@@ -272,22 +272,23 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "placed in the same clonotype.  The MIX_DONORS option turns off this behavior, "
+            "placed in the same clonotype.  The MIX_DONORS option turns off this"
         );
         doc!(
             "",
-            "thus allowing cells from different donors to be placed in the same"
+            "behavior, thus allowing cells from different donors to be placed in the"
         );
         doc!(
             "",
-            "clonotype.  The main use of this option is for specificity testing, in"
+            "same clonotype.  The main use of this option is for specificity testing, in"
         );
 
         doc!(
             "",
             "which data from different donors are deliberately combined in an attempt"
         );
-        doc!("", "to find errors.");
+        doc!("", "to find errors.  Use of the bc field for META input specification");
+        doc!("", "automatically turns on this option.");
         ldoc!(
             "KEEP_IMPROPER",
             "An exact subclonotype is improper if it does not have one chain"

@@ -454,6 +454,11 @@ pub fn help2(args: &Vec<String>) {
             "".to_string(),
             "a fourth field \"tag\" is allowed and may be arbitrarily specified".to_string(),
         ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "Use of bc automatically turns on the MIX_DONORS option".to_string(),
+        ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
         println!("{}", log);

@@ -571,6 +571,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     unique_sort(&mut sample_donor_list);
     ctl.sample_info.sample_donor_list = sample_donor_list;
+    for i in 0..ctl.sample_info.sample_donor.len() {
+        if ctl.sample_info.sample_donor[i].len() > 0 {
+            ctl.clono_filt_opt.donor = true;
+        }
+    }
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
