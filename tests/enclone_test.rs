@@ -75,7 +75,7 @@ const TESTS: [&str; 34] = [
     "BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC",
     // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share NDONOR",
+    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share MIX_DONORS",
     // 11. tests META
     "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
     // 12. this added because it got better when a noise filter was added, also tests umax
@@ -111,7 +111,7 @@ const TESTS: [&str; 34] = [
     "TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF",
     // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    // Here we make sure that non-specification of NDONOR works.
+    // Here we make sure that non-specification of MIX_DONORS works.
     "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
     // 27. tests SUMMARY and NOPRINT
     "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",

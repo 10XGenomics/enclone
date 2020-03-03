@@ -253,7 +253,7 @@ pub fn find_exact_subclonotypes(
                     || ( cid1.is_some() && cid2.is_some()
                         && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
 
-                    // Check for different donors if NDONOR specified on command line.
+                    // Check for different donors if MIX_DONORS specified on command line.
                     // Note funky redundancy in checking each chain
 
                     || ( !ctl.clono_filt_opt.donor

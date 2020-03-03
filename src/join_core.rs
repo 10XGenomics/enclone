@@ -102,7 +102,7 @@ pub fn join_core(
                 continue;
             }
 
-            // Unless NDONOR specified, do not join across donors.
+            // Unless MIX_DONORS specified, do not join across donors.
             // And test for error.
             //
             // WARNING!  There are actually two cases: where an individual exact subclonotype

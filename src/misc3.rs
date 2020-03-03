@@ -83,7 +83,7 @@ pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata
             {
                 return Ordering::Greater;
 
-            // Order by donor if NDONOR option used.
+            // Order by donor if MIX_DONORS option used.
             } else if !ctl.clono_filt_opt.donor && x[i].donor_index < y[i].donor_index {
                 return Ordering::Less;
             } else if !ctl.clono_filt_opt.donor && x[i].donor_index > y[i].donor_index {

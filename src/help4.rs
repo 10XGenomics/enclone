@@ -267,12 +267,12 @@ pub fn help4(args: &Vec<String>) {
             "subclonotype.  The NBC_DUP option turns off this filter."
         );
         ldoc!(
-            "NDONOR",
+            "MIX_DONORS",
             "By default, enclone will prevent cells from different donors from being"
         );
         doc!(
             "",
-            "placed in the same clonotype.  The NDONOR option turns off this behavior, "
+            "placed in the same clonotype.  The MIX_DONORS option turns off this behavior, "
         );
         doc!(
             "",

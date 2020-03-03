@@ -224,7 +224,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.weak_foursies = false;
         } else if is_simple_arg(&args[i], "NBC_DUP") {
             ctl.clono_filt_opt.bc_dup = false;
-        } else if is_simple_arg(&args[i], "NDONOR") {
+        } else if is_simple_arg(&args[i], "MIX_DONORS") {
             ctl.clono_filt_opt.donor = true;
         } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
