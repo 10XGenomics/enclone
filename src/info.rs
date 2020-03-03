@@ -13,6 +13,7 @@ use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
 use io_utils::*;
 use perf_stats::*;
+use rayon::prelude::*;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -24,7 +25,9 @@ pub fn build_info(
 ) -> Vec<CloneInfo> {
     // Build info about clonotypes.  We create a data structure info.
     // An entry in info is a clonotype having appropriate properties.
-    // This is a holdover from an earlier approach.  It may be a pointless conversion.
+    //
+    // Much of the information in a CloneInfo object is redundant.  So we could probably
+    // improve both time and space computational performance by reducing that redundancy.
 
     let timer = Instant::now();
     let mut total_clones = 0;
@@ -32,7 +35,12 @@ pub fn build_info(
         total_clones += exact_clonotypes[i].ncells();
     }
     let mut info = Vec::<CloneInfo>::new();
+    let mut results = Vec::<(usize, Vec<CloneInfo>, ExactClonotype)>::new();
     for i in 0..exact_clonotypes.len() {
+        results.push((i, Vec::new(), exact_clonotypes[i].clone()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         let mut lens = Vec::<usize>::new();
         let mut tigs = Vec::<Vec<u8>>::new();
         let mut tigs_amino = Vec::<Vec<u8>>::new();
@@ -47,7 +55,7 @@ pub fn build_info(
         let mut chain_types = Vec::<String>::new();
         let mut vs_notes = Vec::<String>::new();
         let mut vs_notesx = Vec::<String>::new();
-        let p = &mut exact_clonotypes[i];
+        let p = &mut res.2;
         for j in 0..p.share.len() {
             let x = &mut p.share[j];
             tigsp.push(DnaString::from_acgt_bytes(&x.seq));
@@ -256,7 +264,7 @@ pub fn build_info(
                         let vsidsx = [vsids[i1], vsids[i2]].to_vec();
                         let jsidsx = [jsids[i1], jsids[i2]].to_vec();
                         let exact_cols = vec![i1, i2];
-                        info.push(CloneInfo {
+                        res.1.push(CloneInfo {
                             lens: lensx,
                             tigs: tigsx,
                             tigs_amino: tigs_aminox,
@@ -295,7 +303,7 @@ pub fn build_info(
             for i in 0..tigs.len() {
                 exact_cols.push(i);
             }
-            info.push(CloneInfo {
+            res.1.push(CloneInfo {
                 lens: lens,
                 tigs: tigs,
                 tigs_amino: tigs_amino,
@@ -317,8 +325,21 @@ pub fn build_info(
                 chain_types: chain_types,
             });
         }
+    });
+
+    // Cumulate info.  This is single threaded and could probably be speeded up.
+
+    for i in 0..results.len() {
+        info.append(&mut results[i].1);
+        exact_clonotypes[i] = results[i].2.clone();
     }
-    info.sort();
+
+    // Sort info.
+
+    info.par_sort();
+
+    // Done.
+
     if ctl.comp {
         println!("used {:.2} seconds building info", elapsed(&timer));
     }

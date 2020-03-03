@@ -329,8 +329,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.ext = args[i].after("EXT=").to_string();
         } else if is_usize_arg(&args[i], "PCHAINS") {
             ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
-        } else if is_usize_arg(&args[i], "MAX_THREADS") {
-            let nthreads = args[i].after("MAX_THREADS=").force_usize();
+        } else if is_usize_arg(&args[i], "MAX_CORES") {
+            let nthreads = args[i].after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
                 .num_threads(nthreads)
                 .build_global();
@@ -361,12 +361,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             for x in ctl.clono_print_opt.amino.iter() {
-                if !(*x == "cdr3"
-                    || *x == "var"
-                    || *x == "share"
-                    || *x == "donor"
-                    || *x == "donorn")
-                {
+                let mut ok = false;
+                if *x == "cdr3" || *x == "var" || *x == "share" || *x == "donor" || *x == "donorn" {
+                    ok = true;
+                } else if x.contains('-') {
+                    let (start, stop) = (x.before("-"), x.after("-"));
+                    if start.parse::<usize>().is_ok() && stop.parse::<usize>().is_ok() {
+                        if start.force_usize() <= stop.force_usize() {
+                            ok = true;
+                        }
+                    }
+                }
+                if !ok {
                     eprintln!(
                         "\nUnrecognized variable {} for AMINO.  Please type \
                          \"enclone help amino\".\n",

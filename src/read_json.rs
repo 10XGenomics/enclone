@@ -324,6 +324,13 @@ pub fn read_json(
                     }
                 }
 
+                // Correct CDR3 start for insertion.
+
+                if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
+                    let ins = annv[1].0 - annv[0].0 - annv[0].1;
+                    cdr3_start -= ins as usize;
+                }
+
                 // Keep going.
 
                 if tig_start < 0 || tig_stop < 0 {
