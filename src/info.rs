@@ -25,7 +25,9 @@ pub fn build_info(
 ) -> Vec<CloneInfo> {
     // Build info about clonotypes.  We create a data structure info.
     // An entry in info is a clonotype having appropriate properties.
-    // This is a holdover from an earlier approach.  It may be a pointless conversion.
+    //
+    // Much of the information in a CloneInfo object is redundant.  So we could probably
+    // improve both time and space computational performance by reducing that redundancy.
 
     let timer = Instant::now();
     let mut total_clones = 0;
@@ -324,11 +326,20 @@ pub fn build_info(
             });
         }
     });
+
+    // Cumulate info.  This is single threaded and could probably be speeded up.
+
     for i in 0..results.len() {
         info.append(&mut results[i].1);
         exact_clonotypes[i] = results[i].2.clone();
     }
-    info.sort();
+
+    // Sort info.
+
+    info.par_sort();
+
+    // Done.
+
     if ctl.comp {
         println!("used {:.2} seconds building info", elapsed(&timer));
     }
