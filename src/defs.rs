@@ -449,6 +449,7 @@ pub struct TigData {
 // TigData0: data for each cell
 // TigData1: shared data
 
+#[derive(Clone)]
 pub struct TigData0 {
     pub quals: Vec<u8>,              // quality scores, truncated to V..J
     pub v_start: usize,              // start of V on full contig sequence
@@ -465,6 +466,7 @@ pub struct TigData0 {
     pub read_count: usize,           // number of reads supporting contig
 }
 
+#[derive(Clone)]
 pub struct TigData1 {
     pub cdr3_dna: String,                     // CDR3 DNA sequence
     pub seq: Vec<u8>,                         // V..J contig subsequence
@@ -495,6 +497,7 @@ pub struct TigData1 {
     pub js: DnaString,     // reference J segment
 }
 
+#[derive(Clone)]
 pub struct ExactClonotype {
     pub share: Vec<TigData1>,       // clone info that is shared
     pub clones: Vec<Vec<TigData0>>, // clone info, excluding shared stuff
