@@ -462,10 +462,10 @@ pub fn help5(args: &Vec<String>) {
         emit_end_escape(&mut log);
         print!("{}", strme(&log));
         print(
-            "At some point subsequent to that, there will be a white paper that you can also \
-             refer to.  In addition, you should provide the arguments that you used when you ran \
-             enclone, and indicate the version of Cell Ranger that was used \
-             to generate its inputs.\n\n",
+            "At some point subsequent to that, there will be a white paper to which you can refer, \
+            in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
+            provide the arguments that you used when you ran enclone and indicate the version of \
+            Cell Ranger that you used to generate the input data.\n\n",
         );
 
         std::process::exit(0);
