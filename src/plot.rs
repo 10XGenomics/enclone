@@ -311,6 +311,10 @@ pub fn plot_clonotypes(
         center[i].1 = -center[i].1; // otherwise inverted, not sure why
     }
     let svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
-    let mut f = open_for_write_new![ctl.gen_opt.plot_file];
-    fwriteln!(f, "{}", svg);
+    if ctl.gen_opt.plot_file != "stdout".to_string() {
+        let mut f = open_for_write_new![ctl.gen_opt.plot_file];
+        fwriteln!(f, "{}", svg);
+    } else {
+        println!("{}", svg);
+    }
 }

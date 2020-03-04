@@ -143,7 +143,7 @@ pub fn main_enclone(args: &Vec<String>) {
             eprintln!(
                 "\nProblem with REF: unable to read from the file\n\
                  \"{}\".\nPlease check that that path makes sense and that you have read \
-                 permission for it.\n",
+                 permission along that path.\n",
                 ctl.gen_opt.refname
             );
             std::process::exit(1);

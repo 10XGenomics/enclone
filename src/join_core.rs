@@ -256,7 +256,7 @@ pub fn join_core(
                 continue;
             }
 
-            // Compute CDR3 diffs.  Ugly.
+            // Compute junction diffs.  Ugly.
 
             let mut cd = 0 as isize;
             for l in 0..x1.len() {

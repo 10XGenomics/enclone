@@ -8,6 +8,8 @@ use string_utils::*;
 use tables::*;
 use vector_utils::*;
 
+const VERSION_STRING: &'static str = env!("VERSION_STRING");
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn help5(args: &Vec<String>) {
@@ -406,7 +408,11 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print("Yes, you may use the command line argument \\bold{MAX_THREADS=n} to do this.\n\n");
+        print(
+            "You can use the command-line argument \\bold{MAX_CORES=n} to cap the number of \
+             cores used in parallel loops.  The number of threads used is typically one \
+             higher.\n\n",
+        );
 
         print("\\boldblue{15. Does enclone work under Windows?}\n\n");
         print(
@@ -425,8 +431,41 @@ pub fn help5(args: &Vec<String>) {
              disk having the given color, and each clonotype is shown as a cluster of these small \
              disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
-             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  Note that \
-             plotting is potentially slow.\n\n",
+             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
+             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
+        );
+
+        print("\\boldblue{17. Can I use enclone if I have only gene expression data?}\n\n");
+        print(
+            "Possibly.  In some cases this works very well, but in other cases it does not.  \
+            Success depends on dataset characteristics that have not been carefully investigated.  \
+            To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
+            it was a VDJ dataset, and you need to specify to Cell Ranger that the run is to be \
+            treated as BCR or TCR.  Two separate invocations can be used to get both.  Note also \
+            that Cell Ranger has been only minimally tested for this configuration and that this \
+            is not an officially supported Cell Ranger configuration.\n\n",
+        );
+
+        print("\\boldblue{18. How can I cite enclone?}\n\n");
+        println!("This version of enclone has been provided under a non-disclosure agreement,");
+        println!(
+            "however once enclone has officially launched, you will be able to cite this \
+             version as:"
+        );
+        let mut log = Vec::<u8>::new();
+        emit_green_escape(&mut log);
+        print!("{}", strme(&log));
+        println!(
+            "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
+            VERSION_STRING.before(",")
+        );
+        emit_end_escape(&mut log);
+        print!("{}", strme(&log));
+        print(
+            "At some point subsequent to that, there will be a white paper to which you can refer, \
+            in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
+            provide the arguments that you used when you ran enclone and indicate the version of \
+            Cell Ranger that you used to generate the input data.\n\n",
         );
 
         std::process::exit(0);
