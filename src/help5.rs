@@ -427,7 +427,10 @@ pub fn help5(args: &Vec<String>) {
              \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
              which creates an svg file of the given name, and assigns the given colors to the \
              given samples.  Unspecified samples will be black.  The colors should be valid colors \
-             for use in an svg file, e.g. red, blue, green, etc.  Each cell is shown as a small \
+             for use in an svg file.  They can be named colors like red or blue (see \
+             \\green{https://www.w3.org/TR/SVG11/types.html#ColorKeywords} for a full list) \
+             or a hex specification like #00FFFF for aqua.  The full color description for svg \
+             is at \\green{https://www.w3.org/TR/SVGColor12}.  Each cell is shown as a small \
              disk having the given color, and each clonotype is shown as a cluster of these small \
              disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
