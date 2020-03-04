@@ -421,24 +421,7 @@ pub fn help5(args: &Vec<String>) {
              know if you're interested in support for Windows.\n\n",
         );
 
-        print("\\boldblue{16. Is there a way to plot clonotypes?}\n\n");
-        print(
-            "Yes.  There is a special argument\n\
-             \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
-             which creates an svg file of the given name, and assigns the given colors to the \
-             given samples.  Unspecified samples will be black.  The colors should be valid colors \
-             for use in an svg file.  They can be named colors like red or blue (see \
-             \\green{https://www.w3.org/TR/SVG11/types.html#ColorKeywords} for a full list) \
-             or a hex specification like #00FFFF for aqua.  The full color description for svg \
-             is at \\green{https://www.w3.org/TR/SVGColor12}.  Each cell is shown as a small \
-             disk having the given color, and each clonotype is shown as a cluster of these small \
-             disks, which are positioned at random.  We suggest using the \
-             \\bold{MIN_CELLS} option \
-             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
-             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
-        );
-
-        print("\\boldblue{17. Can I use enclone if I have only gene expression data?}\n\n");
+        print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
         print(
             "Possibly.  In some cases this works very well, but in other cases it does not.  \
             Success depends on dataset characteristics that have not been carefully investigated.  \
@@ -449,7 +432,7 @@ pub fn help5(args: &Vec<String>) {
             is not an officially supported Cell Ranger configuration.\n\n",
         );
 
-        print("\\boldblue{18. How can I cite enclone?}\n\n");
+        print("\\boldblue{17. How can I cite enclone?}\n\n");
         println!("This version of enclone has been provided under a non-disclosure agreement,");
         println!(
             "however once enclone has officially launched, you will be able to cite this \

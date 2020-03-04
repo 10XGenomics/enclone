@@ -136,7 +136,6 @@ ________________________________________________________________________________
 
 It is not difficult but you should not need to do this unless you want to contribute
 to the `enclone` codebase.  Please see [compilation](COMPILE.md).
-See also [honeycomb plots](#honeycomb).
 
 ___________________________________________________________________________________________________
 

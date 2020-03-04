@@ -294,6 +294,44 @@ pub fn help2(args: &Vec<String>) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Provide plot help.
+
+    if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
+        begin_doc!("plot");
+        println!("");
+        bold!();
+        println!("plotting clonotypes\n");
+        end_escape!();
+        print(
+            "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
+            dots, one per cell.  You can see an example at \
+            \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
+            To generate such a plot, use the argument\n\
+             \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
+             which creates an svg file of the given name, and assigns the given colors to the \
+             given samples.  Unspecified samples will be black.\n\n\
+             \
+             The colors should be valid colors \
+             for use in an svg file.  They can be named colors like red or blue (see \
+             \\green{https://www.w3.org/TR/SVG11/types.html#ColorKeywords} for a full list) \
+             or a hex specification like #00FFFF for aqua.  The full color description for svg \
+             is at\n\
+             \\green{https://www.w3.org/TR/SVGColor12}.\n\n\
+             \
+             Each cell is shown as a small \
+             disk having the given color, and each clonotype is shown as a cluster of these small \
+             disks, which are positioned at random.  We suggest using the \
+             \\bold{MIN_CELLS} option \
+             (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
+             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
+        );
+        if !help_all {
+            std::process::exit(0);
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Provide input help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input") || help_all {
