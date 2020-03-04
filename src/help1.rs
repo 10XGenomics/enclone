@@ -244,7 +244,10 @@ pub fn help1(args: &Vec<String>) {
             "how to provide input to enclone (technical notes)"
         );
         doc!("enclone help parseable", "parseable output (long)");
-        doc!("enclone help plot", "generate a honeycomb plot showing clonotypes");
+        doc!(
+            "enclone help plot",
+            "generate a honeycomb plot showing clonotypes"
+        );
         ldoc!(
             "enclone help filter",
             "clonotype filtering options, scanning for feature enrichment (long)"

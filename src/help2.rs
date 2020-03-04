@@ -304,9 +304,9 @@ pub fn help2(args: &Vec<String>) {
         end_escape!();
         print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
-            dots, one per cell.  You can see an example at \
-            \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
-            To generate such a plot, use the argument\n\
+             dots, one per cell.  You can see an example at \
+             \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
+             To generate such a plot, use the argument\n\
              \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
              which creates an svg file of the given name, and assigns the given colors to the \
              given samples.  Unspecified samples will be black.\n\n\
