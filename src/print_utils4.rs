@@ -35,7 +35,7 @@ pub fn define_mat(
 
     unique_sort(&mut all_cdr3s);
 
-    // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough".
+    // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
     // 1. They have the same length and differ at no more than 4 positions.
     // 2. Each has a V..J sequence such that the two differ by no more than 50 positions.
 
@@ -175,6 +175,14 @@ pub fn build_show_aa(
     let cols = rsi.vids.len();
     let mut show_aa = vec![Vec::<usize>::new(); cols];
     for cx in 0..cols {
+        for x in ctl.clono_print_opt.amino.iter() {
+            if x.contains('-') {
+                let (start, stop) = (x.before("-").force_usize(), x.after("-").force_usize());
+                for p in start..=stop {
+                    show_aa[cx].push(p);
+                }
+            }
+        }
         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
             for j in 0..rsi.cdr3_lens[cx] {
                 let p = rsi.cdr3_starts[cx] / 3 + j;

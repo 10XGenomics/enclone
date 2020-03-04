@@ -21,19 +21,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     };
     ctl.heur = heur;
 
-    // Mine environment variables and fetch command line args.
+    // Form the combined set of command-line arguments and "command-line" arguments
+    // implied by environment variables.
 
     let targs = Instant::now();
     let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
-    let mut internal_run = false;
     for (key, value) in env::vars() {
         if key.starts_with("ENCLONE_") {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
-        } else if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
-            internal_run = true;
-            ctl.gen_opt.pre = "/mnt/assembly/vdj/current14".to_string();
         }
     }
     for i in 1..args.len() {
@@ -41,8 +38,25 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     args = args2;
 
+    // Test for internal run.
+
+    for (key, value) in env::vars() {
+        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+            ctl.gen_opt.internal_run = true;
+        }
+    }
+    for i in 1..args.len() {
+        if args[i] == "FORCE_EXTERNAL".to_string() {
+            ctl.gen_opt.internal_run = false;
+        }
+    }
+    if ctl.gen_opt.internal_run {
+        ctl.gen_opt.pre = "/mnt/assembly/vdj/current14".to_string();
+    }
+
     // Set up general options.
 
+    ctl.gen_opt.h5_pre = true;
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
     ctl.gen_opt.exact = None;
@@ -145,6 +159,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
+        } else if is_simple_arg(&args[i], "H5") {
+            ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&args[i], "CURRENT_REF") {
             ctl.gen_opt.current_ref = true;
         } else if is_simple_arg(&args[i], "SUM") {
@@ -152,6 +168,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&args[i], "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&args[i], "NH5") {
+        } else if is_simple_arg(&args[i], "H5_SLICE") {
+            ctl.gen_opt.h5_pre = false;
         } else if is_simple_arg(&args[i], "DESCRIP") {
             ctl.gen_opt.descrip = true;
         } else if is_simple_arg(&args[i], "CTRLC") {
@@ -162,6 +180,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.weak = true;
         } else if is_simple_arg(&args[i], "REUSE") {
             ctl.gen_opt.reuse = true;
+        } else if is_simple_arg(&args[i], "FORCE_EXTERNAL") {
         } else if is_simple_arg(&args[i], "NWARN") {
             ctl.gen_opt.nwarn = true;
         } else if args[i].starts_with("BINARY=") {
@@ -310,8 +329,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.ext = args[i].after("EXT=").to_string();
         } else if is_usize_arg(&args[i], "PCHAINS") {
             ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
-        } else if is_usize_arg(&args[i], "MAX_THREADS") {
-            let nthreads = args[i].after("MAX_THREADS=").force_usize();
+        } else if is_usize_arg(&args[i], "MAX_CORES") {
+            let nthreads = args[i].after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
                 .num_threads(nthreads)
                 .build_global();
@@ -342,12 +361,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             for x in ctl.clono_print_opt.amino.iter() {
-                if !(*x == "cdr3"
-                    || *x == "var"
-                    || *x == "share"
-                    || *x == "donor"
-                    || *x == "donorn")
-                {
+                let mut ok = false;
+                if *x == "cdr3" || *x == "var" || *x == "share" || *x == "donor" || *x == "donorn" {
+                    ok = true;
+                } else if x.contains('-') {
+                    let (start, stop) = (x.before("-"), x.after("-"));
+                    if start.parse::<usize>().is_ok() && stop.parse::<usize>().is_ok() {
+                        if start.force_usize() <= stop.force_usize() {
+                            ok = true;
+                        }
+                    }
+                }
+                if !ok {
                     eprintln!(
                         "\nUnrecognized variable {} for AMINO.  Please type \
                          \"enclone help amino\".\n",
@@ -483,10 +508,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_usize_arg(&args[i], "ONESIE_MULT") {
             ctl.onesie_mult = args[i].after("ONESIE_MULT=").force_usize();
         } else if args[i].starts_with("PRE=") {
-        } else if args[i] == "NOPAR" {
-            let _ = rayon::ThreadPoolBuilder::new()
-                .num_threads(2)
-                .build_global();
         } else if is_usize_arg(&args[i], "MIN_CELLS") {
             ctl.clono_filt_opt.ncells_low = args[i].after("MIN_CELLS=").force_usize();
         } else if is_usize_arg(&args[i], "MAX_CELLS") {
@@ -507,7 +528,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             || args[i].starts_with("BCR=")
             || (args[i].len() > 0 && args[i].as_bytes()[0] >= b'0' && args[i].as_bytes()[0] <= b'9')
         {
-            proc_xcr(&args[i], &gex, have_gex, internal_run, &mut ctl);
+            proc_xcr(&args[i], &gex, have_gex, &mut ctl);
         } else {
             eprintln!("\nUnrecognized argument {}.\n", args[i]);
             std::process::exit(1);
@@ -553,7 +574,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
-    proc_args_tail(&mut ctl, &args, internal_run);
+    proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.
 

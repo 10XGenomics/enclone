@@ -276,7 +276,7 @@ pub fn help2(args: &Vec<String>) {
              for enclone needs to go through this point of access (or the next one).\n\n",
         );
         print(
-            "If you are github-savvy, we also welcome github issues if applicable and you \
+            "If you are GitHub-savvy, we also welcome GitHub issues if applicable and you \
              prefer that route.  If you can make the enclone code better, go for it!  Make sure \
              the internal tests are successful, submit a \
              pull request, and if we can use your code (no guarantees), we'll add you as an \
@@ -316,6 +316,18 @@ pub fn help2(args: &Vec<String>) {
             "Both input forms involve abbreviated names (discussed below), which should be as \
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
+        );
+        print(
+            "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n\
+             ┃ enclone can use gene expression and feature barcode data, as represented by a feature matrix.  ┃\n\
+             ┃ Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not   ┃\n\
+             ┃ optimized for interactive use.  Therefore enclone provides an alternate file structure, which  ┃\n\
+             ┃ speeds up enclone overall by up to \\boldred{50%}.  To use this, add the argument \\bold{NH5} to the enclone      ┃\n\
+             ┃ command line.  This will work so long as you have write permission on input directories.  The  ┃\n\
+             ┃ first time you run enclone (using given inputs), the alternate file will be written; then      ┃\n\
+             ┃ subsequent invocations will be faster.   Like with other enclone command-line options, if you  ┃\n\
+             ┃ you want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.                 ┃\n\
+             ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n\n",
         );
         print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\

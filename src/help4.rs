@@ -140,7 +140,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "or after pipetting from the tube, and the resulting fragments seed GEMS,"
+            "or after pipetting from the tube, and the resulting fragments seed GEMs,"
         );
         doc!(
             "",
@@ -578,6 +578,10 @@ pub fn help4(args: &Vec<String>) {
             "positions in chain where the donor reference differs nonsynonymously"
         );
         doc!("", "from the universal reference");
+        ldoc!(
+            "a-b",
+            "amino acids numbered a through b (zero-based, inclusive)"
+        );
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
         println!("{}", log);

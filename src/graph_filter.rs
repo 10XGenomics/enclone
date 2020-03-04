@@ -6,6 +6,7 @@ use crate::defs::*;
 use graph_simple::GraphSimple;
 use io_utils::*;
 use petgraph::prelude::*;
+use rayon::prelude::*;
 use std::cmp::*;
 use std::io::Write;
 use string_utils::*;
@@ -35,9 +36,15 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
             seqs.push((x.seq.clone(), x.left, x.cdr3_aa.clone(), x.v_ref_id));
         }
     }
-    unique_sort(&mut seqs);
+    seqs.par_sort();
+    seqs.dedup();
     let mut edges0 = Vec::<(usize, usize, usize)>::new();
+    let mut results = Vec::<(usize, Vec<(usize, usize, usize)>)>::new();
     for i in 0..tig_bc.len() {
+        results.push((i, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         for j1 in 0..tig_bc[i].len() {
             if tig_bc[i][j1].left {
                 let x1 = &tig_bc[i][j1];
@@ -52,11 +59,14 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                             &seqs,
                             &(x2.seq.clone(), false, x2.cdr3_aa.clone(), x2.v_ref_id),
                         ) as usize;
-                        edges0.push((p1, p2, min(x1.umi_count, x2.umi_count)));
+                        res.1.push((p1, p2, min(x1.umi_count, x2.umi_count)));
                     }
                 }
             }
         }
+    });
+    for i in 0..results.len() {
+        edges0.append(&mut results[i].1.clone());
     }
     edges0.sort();
     let mut edges1 = Vec::<(usize, usize, (usize, usize))>::new();
@@ -94,7 +104,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     const MAX_PARTNERS: usize = 50;
     let mut kills = Vec::<(usize, usize)>::new();
     let mut badones = Vec::<usize>::new();
+    let mut results = Vec::<(usize, Vec<(usize, usize)>, Vec<usize>, Vec<u8>)>::new();
     for v in 0..g.node_count() {
+        results.push((v, Vec::new(), Vec::new(), Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let v = res.0;
+        let log = &mut res.3;
         if g.n_to(v) > 1 {
             let mut stats = Vec::<(usize, usize, usize)>::new();
             fwriteln!(log, "\nlight chain {} = {}", v, seqs[v].2);
@@ -124,7 +140,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                     let numi_best = stats[0].0;
                     let ncells_best = stats[0].1;
                     if numi_best >= MIN_RATIO_KILL * max(1, numi) && numi <= MAX_KILL {
-                        kills.push((v, stats[i].2));
+                        res.1.push((v, stats[i].2));
                     } else if numi_best >= numi && ncells_best >= MIN_RATIO_KILL * max(1, ncells) {
                         if ncells <= MAX_KILL_CELLS {
                             let w = stats[i].2;
@@ -138,7 +154,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                                     seqs[v].2, seqs[stats[0].2].2, ncells_best, numi_best
                                 );
                             }
-                            kills.push((v, w));
+                            res.1.push((v, w));
                         } else {
                             let w = stats[i].2;
                             for j in 0..g.n_from(w) {
@@ -149,7 +165,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                                     && ncellsx >= MIN_RATIO_KILL * ncells
                                     && numix >= MIN_RATIO_KILL * numi
                                 {
-                                    kills.push((v, w));
+                                    res.1.push((v, w));
                                 }
                             }
                         }
@@ -158,13 +174,23 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
             }
         }
         if g.n_to(v) > MAX_PARTNERS {
-            badones.push(v);
+            res.2.push(v);
         }
+    });
+    for i in 0..results.len() {
+        kills.append(&mut results[i].1.clone());
+        badones.append(&mut results[i].2.clone());
+        log.append(&mut results[i].3.clone());
     }
     kills.sort();
     // presumably badly inefficient
     let mut to_delete = vec![false; tig_bc.len()];
+    let mut results = Vec::<(usize, bool)>::new();
     for i in 0..tig_bc.len() {
+        results.push((i, false));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         for j1 in 0..tig_bc[i].len() {
             if tig_bc[i][j1].left {
                 continue;
@@ -180,7 +206,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                 let m2 = (x2.seq.clone(), x2.left, x2.cdr3_aa.clone(), x2.v_ref_id);
                 let p2 = bin_position(&seqs, &m2) as usize;
                 if bin_member(&kills, &(p1, p2)) {
-                    to_delete[i] = true;
+                    res.1 = true;
                 }
             }
         }
@@ -189,9 +215,12 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
             let m0 = (x0.seq.clone(), x0.left, x0.cdr3_aa.clone(), x0.v_ref_id);
             let p = bin_position(&seqs, &m0) as usize;
             if bin_member(&badones, &p) {
-                to_delete[i] = true;
+                res.1 = true;
             }
         }
+    });
+    for i in 0..tig_bc.len() {
+        to_delete[i] = results[i].1;
     }
     erase_if(&mut tig_bc, &to_delete);
     if graph {
@@ -207,7 +236,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     const MAX_KILL_HEAVY: usize = 6;
     const MAX_KILL_HEAVY_CELLS: usize = 1;
     let mut kills = Vec::<(usize, usize)>::new();
+    let mut results = Vec::<(usize, Vec<(usize, usize)>, Vec<u8>)>::new();
     for v in 0..g.node_count() {
+        results.push((v, Vec::new(), Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let v = res.0;
+        let log = &mut res.2;
         if g.n_from(v) > 1 {
             let mut stats = Vec::<((usize, usize), usize)>::new();
             fwriteln!(log, "\nheavy chain {} = {}", v, seqs[v].2);
@@ -231,15 +266,24 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                     && (stats[i].0).0 <= MAX_KILL_HEAVY
                     && (stats[i].0).1 <= MAX_KILL_HEAVY_CELLS
                 {
-                    kills.push((v, stats[i].1));
+                    res.1.push((v, stats[i].1));
                 }
             }
         }
+    });
+    for i in 0..results.len() {
+        kills.append(&mut results[i].1.clone());
+        log.append(&mut results[i].2.clone());
     }
     kills.sort();
     // presumably badly inefficient
     let mut to_delete = vec![false; tig_bc.len()];
+    let mut results = Vec::<(usize, bool)>::new();
     for i in 0..tig_bc.len() {
+        results.push((i, false));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         for j1 in 0..tig_bc[i].len() {
             if !tig_bc[i][j1].left {
                 continue;
@@ -255,10 +299,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                 let m2 = (x2.seq.clone(), x2.left, x2.cdr3_aa.clone(), x2.v_ref_id);
                 let p2 = bin_position(&seqs, &m2) as usize;
                 if bin_member(&kills, &(p1, p2)) {
-                    to_delete[i] = true;
+                    res.1 = true;
                 }
             }
         }
+    });
+    for i in 0..tig_bc.len() {
+        to_delete[i] = results[i].1;
     }
     erase_if(&mut tig_bc, &to_delete);
     if graph {

@@ -172,8 +172,8 @@ pub fn help3(args: &Vec<String>) {
              140 fields by default.\n\n\
              It is also possible to specify any subset of these fields, and there are a few other\n\
              choices, which we describe.\n\n\
-             Parseable output is targetted primarily at R users, because of the ease of inputting\n\
-             a CSV file from R.\n\n\
+             Parseable output is targeted primarily at R and Python users, because of the ease of\n\
+             wrangling CSV files with these languages.\n\n\
              Parseable output is invoked by using the argument"
         );
         bold!();

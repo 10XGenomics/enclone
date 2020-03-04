@@ -235,7 +235,10 @@ pub fn help1(args: &Vec<String>) {
             "enclone help support",
             "how we can help, enclone@10xgenomics.com"
         );
-        ldoc!("enclone help input", "how to provide input to enclone");
+        ldoc!(
+            "enclone help input",
+            "how to provide input to enclone (long)"
+        );
         doc!(
             "enclone help input_tech",
             "how to provide input to enclone (technical notes)"
@@ -532,6 +535,22 @@ pub fn help1(args: &Vec<String>) {
             "segment to the end of the J segment; this sequence begins with a stop codon"
         );
         doc!("", "and ends with a partial codon (its first base)");
+
+        // doc CDR3
+
+        doc!(
+            "CDR3",
+            "The terms CDR3 and junction are commonly mistaken and often used"
+        );
+        doc!(
+            "",
+            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the"
+        );
+        doc!(
+            "",
+            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini"
+        );
+        doc!("", "respectively).");
 
         // doc clonotype
 
