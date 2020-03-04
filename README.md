@@ -110,7 +110,7 @@ We are greatly interested in your feedback and ideas you may have to make `enclo
 as possible.  You can write to us at enclone@10xgenomics.com.
 ___________________________________________________________________________________________________
 
-[](#honeycomb}
+[](#honeycomb)
 ### How to display clonotypes produced by `enclone`
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
