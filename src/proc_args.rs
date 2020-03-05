@@ -159,8 +159,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
-        } else if is_simple_arg(&args[i], "LEGEND") {
+        } else if args[i] == "LEGEND" {
             ctl.gen_opt.use_legend = true;
+        } else if args[i].starts_with("LEGEND=") {
+            let x = parse_csv(&args[i].after("LEGEND="));
+            if x.len() == 0 || x.len() % 2 != 0 {
+                eprintln!("\nValue of LEGEND doesn't make sense.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.use_legend = true;
+            for i in 0..x.len() / 2 {
+                ctl.gen_opt
+                    .legend
+                    .push((x[2 * i].clone(), x[2 * i + 1].clone()));
+            }
         } else if is_simple_arg(&args[i], "H5") {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&args[i], "CURRENT_REF") {

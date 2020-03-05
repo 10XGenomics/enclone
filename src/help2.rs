@@ -325,7 +325,10 @@ pub fn help2(args: &Vec<String>) {
              (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
              argument may be \"stdout\".  Note that plotting is potentially slow.\n\n\
              To add a legend to the graph, add the argument \\bold{LEGEND} to your command \
-             line.\n\n",
+             line.  This will give you an auto-generated legend.  You can also customize the \
+             legend by adding the argument\n\
+             \\bold{LEGEND=color1,\"text1\",...,colorn,\"textn\"}\n\
+             to the command line.\n\n",
         );
         if !help_all {
             std::process::exit(0);

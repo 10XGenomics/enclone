@@ -11,7 +11,7 @@ pub fn arial_width(s: &str, font_size: usize) -> f64 {
     let mut len = 0;
     for c in s.chars() {
         let p = bin_position1_2(&ARIAL_1000_WIDTH_TABLE, &c);
-        if p == 0 {
+        if p < 0 {
             len += DEFAULT_WIDTH;
         } else {
             len += ARIAL_1000_WIDTH_TABLE[p as usize].1;
@@ -22,7 +22,8 @@ pub fn arial_width(s: &str, font_size: usize) -> f64 {
 
 // Note that the following table must be sorted.
 
-const ARIAL_1000_WIDTH_TABLE: [(char, usize); 65] = [
+const ARIAL_1000_WIDTH_TABLE: [(char, usize); 66] = [
+    (' ', 278),
     ('-', 334),
     ('.', 278),
     ('0', 557),

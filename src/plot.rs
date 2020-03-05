@@ -323,13 +323,23 @@ pub fn plot_clonotypes(
     if ctl.gen_opt.use_legend {
         let mut colors = Vec::<String>::new();
         let mut max_string_width = 0.0f64;
+        if ctl.gen_opt.legend.len() == 0 {
+            for s in samples.iter() {
+                let mut color = "black".to_string();
+                if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                    color = ctl.gen_opt.sample_color_map[s].clone();
+                }
+                colors.push(color);
+            }
+        } else {
+            samples.clear();
+            for i in 0..ctl.gen_opt.legend.len() {
+                colors.push(ctl.gen_opt.legend[i].0.clone());
+                samples.push(ctl.gen_opt.legend[i].1.clone());
+            }
+        }
         for s in samples.iter() {
             max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
-            let mut color = "black".to_string();
-            if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
-                color = ctl.gen_opt.sample_color_map[s].clone();
-            }
-            colors.push(color);
         }
 
         // Calculate the actual height of the svg.
