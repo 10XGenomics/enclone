@@ -8,7 +8,6 @@
 use crate::defs::*;
 use crate::string_width::*;
 use io_utils::*;
-use std::cmp::max;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
@@ -323,26 +322,40 @@ pub fn plot_clonotypes(
 
     if ctl.gen_opt.use_legend {
         let mut colors = Vec::<String>::new();
-        let mut max_len = 0;
+        let mut max_string_width = 0.0f64;
         for s in samples.iter() {
-            max_len = max(max_len, s.len());
+            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
             let mut color = "black".to_string();
             if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
                 color = ctl.gen_opt.sample_color_map[s].clone();
             }
             colors.push(color);
         }
+
+        // Calculate the actual height of the svg.
+
+        let mut actual_height = 0.0f64;
+        let fields = svg.split(' ').collect::<Vec<&str>>();
+        let mut y = 0.0;
+        for i in 0..fields.len() {
+            if fields[i].starts_with("cy=") {
+                y = fields[i].between("\"", "\"").force_f64();
+            }
+            if fields[i].starts_with("r=") {
+                let r = fields[i].between("\"", "\"").force_f64();
+                actual_height = actual_height.max(y + r);
+            }
+        }
+
+        // Build the legend.
+
         let n = samples.len();
         const FONT_SIZE: usize = 20;
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
         let legend_height = FONT_SIZE * n + BOUNDARY * n;
-        let mut max_string_width = 0.0f64;
-        for s in samples.iter() {
-            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
-        }
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let legend_ystart = HEIGHT + BOUNDARY;
+        let legend_ystart = actual_height + BOUNDARY as f64;
         svg = svg.rev_before("<").to_string();
         svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
@@ -373,7 +386,8 @@ pub fn plot_clonotypes(
         }
         let svg1 = svg.before("height=");
         let svg2 = svg.after("height=\"").after("\"");
-        let new_height = HEIGHT + legend_height + LEGEND_BOX_STROKE_WIDTH * 2 + BOUNDARY;
+        let new_height =
+            actual_height + (legend_height + LEGEND_BOX_STROKE_WIDTH * 2 + BOUNDARY) as f64;
         svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
 
         /*
