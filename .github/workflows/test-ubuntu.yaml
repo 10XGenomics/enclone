@@ -2,14 +2,8 @@ name: Check formatting Ubuntu
 
 on:
   push:
-    branches:
-      - meryl/github-actions-1
-
-#on:
-  #push:
-    #tags:
-    #- 'auto_*'
-
+    tags:
+    - 'auto_*'
 jobs:
   build:
     # Job name is Greeting
@@ -39,22 +33,16 @@ jobs:
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-${tag_num}
-          echo "make binary tag_num:" $tag_num
-          echo "release tag_num: " $tag_num
-          echo "GET request"
+          echo "GET latest release"
           echo "curl --request GET --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
-          echo "catting tagged_release_response: "
           cat tagged_release_response.json
           upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
           upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
-          echo "upload_url"
-          echo $upload_url
           new_asset_url=${upload_url/\{?name,label\}/?name=enclone-ubuntu-${tag_num}}
-          echo "new_asset"
-          echo $new_asset_url
+          echo "POST binary to latest release"
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-Type: application/octet-stream' \
