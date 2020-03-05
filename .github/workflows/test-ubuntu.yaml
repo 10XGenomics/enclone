@@ -1,9 +1,14 @@
 name: Check formatting Ubuntu
 
-on: 
+on:
   push:
     branches:
       - meryl/github-actions-1
+
+#on:
+  #push:
+    #tags:
+    #- 'auto_*'
 
 jobs:
   build:
@@ -29,12 +34,12 @@ jobs:
         run: cargo build --release --bin enclone && export PATH=target/release:$PATH
       - name: unit tests
         run: cargo test --release -- --nocapture
-      - name: copy build
+      - name: make binary
         run: |
-          mkdir -p releases
-          cp target/release/enclone enclone-ubuntu-auto-0
+          tag_num=$(git describe --tags)
+          cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-auto-0
-      - name: push build
+      - name: make release from tag
         run: |
           curl --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/releases \
@@ -50,10 +55,10 @@ jobs:
           upload_url_key=$(grep "upload_url" create_release_response.json | sed 's/,*$//g')
           upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
           echo $upload_url
-          new_asset_url=${upload_url/\{?name,label\}/?name=enclone-ubuntu-auto-0}
+          new_asset_url=${upload_url/\{?name,label\}/?name=enclone-ubuntu-${tag_num}}
           echo $new_asset_url
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-Type: application/octet-stream' \
-          --data-binary @enclone-ubuntu-auto-0 \
+          --data-binary @enclone-ubuntu-${tag_num} \
           --url $new_asset_url
