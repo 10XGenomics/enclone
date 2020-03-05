@@ -36,7 +36,7 @@ jobs:
         run: cargo test --release -- --nocapture
       - name: make binary
         run: |
-          tag_num=$(git ls-remote --refs --sort=-v:refname | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
+          tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-${tag_num}
       - name: get release upload URL from tag
