@@ -39,8 +39,10 @@ jobs:
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-${tag_num}
+          echo "make binary tag_num:" $tag_num
       - name: get release upload URL from tag
         run: |
+          echo "release tag_num: " $tag_num
           echo "GET request"
           echo "curl --request GET --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json"
           curl --request GET \
