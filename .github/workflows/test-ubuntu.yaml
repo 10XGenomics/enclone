@@ -34,7 +34,6 @@ jobs:
           cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-${tag_num}
           echo "GET latest release"
-          echo "curl --request GET --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
