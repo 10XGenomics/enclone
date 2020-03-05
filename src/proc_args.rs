@@ -337,6 +337,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.noprint = true;
         } else if args[i].starts_with("POUT=") {
             ctl.parseable_opt.pout = args[i].after("POUT=").to_string();
+        } else if is_simple_arg(&args[i], "PBARCODE") {
+            ctl.parseable_opt.pbarcode = true;
         } else if args[i].starts_with("DONOR_REF_FILE=") {
             ctl.gen_opt.dref_file = args[i].after("DONOR_REF_FILE=").to_string();
         } else if args[i].starts_with("EXT=") {
