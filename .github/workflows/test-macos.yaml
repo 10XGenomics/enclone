@@ -1,7 +1,9 @@
-name: Check formatting MacOS
-# This workflow is triggered on pushes to the repository.
-on: pull_request
+name: Check formatting Ubuntu
 
+on:
+  push:
+    tags:
+    - 'auto_*'
 jobs:
   build:
     # Job name is Greeting
@@ -17,8 +19,31 @@ jobs:
           esac
           rustc --version
           rustfmt --version 
-      - name: Checkout git repository
+      - name: Clone git repository
       # This step uses GitHub's hello-world-javascript-action: https://github.com/actions/checkout
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release --bin enclone && export PATH=target/release:$PATH
+      - name: unit tests
+        run: cargo test --release -- --nocapture
+      - name: make binary
+        run: |
+          tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
+          cp target/release/enclone enclone-macos-${tag_num}
+          chmod 755 enclone-macos-${tag_num}
+          echo "GET latest release"
+          curl --request GET \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
+          cat tagged_release_response.json
+          upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
+          upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
+          new_asset_url=${upload_url/\{?name,label\}/?name=enclone-macos-${tag_num}}
+          echo "POST binary to latest release"
+          curl --request POST \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-Type: application/octet-stream' \
+          --data-binary @enclone-macos-${tag_num} \
+          --url $new_asset_url
