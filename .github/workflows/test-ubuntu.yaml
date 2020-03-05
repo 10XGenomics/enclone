@@ -36,19 +36,18 @@ jobs:
         run: cargo test --release -- --nocapture
       - name: make binary
         run: |
-          all_refs=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone)
-          echo "all_refs:" $all_refs
-          all_tags=$(git ls-remote --tags --sort=-v:refname  https://github.com/10XDev/enclone)
-          echo "all_tags: " $all_tags
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
-          echo "tag_num: " $tag_num
           cp target/release/enclone enclone-ubuntu-${tag_num}
           chmod 755 enclone-ubuntu-${tag_num}
       - name: get release upload URL from tag
         run: |
+          echo "GET request"
+          echo "curl --request GET --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
+          echo "catting tagged_release_response: "
+          cat tagged_release_response.json
           upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
           upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
           echo "upload_url"
