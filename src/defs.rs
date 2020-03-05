@@ -266,6 +266,7 @@ pub struct GeneralOpt {
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
     pub sample_color_map: HashMap<String, String>,
+    pub use_legend: bool,
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,

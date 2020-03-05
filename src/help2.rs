@@ -323,7 +323,9 @@ pub fn help2(args: &Vec<String>) {
              disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
              (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
-             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n",
+             argument may be \"stdout\".  Note that plotting is potentially slow.\n\n\
+             To add a legend to the graph, add the argument \\bold{LEGEND} to your command \
+             line.\n\n",
         );
         if !help_all {
             std::process::exit(0);

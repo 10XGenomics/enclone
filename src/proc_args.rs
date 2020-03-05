@@ -159,6 +159,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&args[i], "EXP") {
             ctl.gen_opt.exp = true;
+        } else if is_simple_arg(&args[i], "LEGEND") {
+            ctl.gen_opt.use_legend = true;
         } else if is_simple_arg(&args[i], "H5") {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&args[i], "CURRENT_REF") {
