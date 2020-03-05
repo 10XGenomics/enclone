@@ -355,7 +355,7 @@ pub fn plot_clonotypes(
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
         let legend_height = FONT_SIZE * n + BOUNDARY * n;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let legend_ystart = actual_height + BOUNDARY as f64;
+        let legend_ystart = actual_height + (BOUNDARY * 2) as f64;
         svg = svg.rev_before("<").to_string();
         svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
@@ -367,7 +367,7 @@ pub fn plot_clonotypes(
             LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..samples.len() {
-            let y = legend_ystart as f64 + BOUNDARY as f64 * 2.0 + (BOUNDARY * i) as f64 * 2.5;
+            let y = legend_ystart as f64 + BOUNDARY as f64 * 2.5 + (BOUNDARY * i) as f64 * 2.5;
             svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
@@ -384,22 +384,9 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let svg1 = svg.before("height=");
-        let svg2 = svg.after("height=\"").after("\"");
-        let new_height =
-            actual_height + (legend_height + LEGEND_BOX_STROKE_WIDTH * 2 + BOUNDARY) as f64;
+        let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
+        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
         svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
-
-        /*
-        <rect x="20" y="380" width="65" height="55"
-          style="fill:white;stroke:black;stroke-width:2" />
-
-        <text x="40" y="400" font-family="Arial" font-size="20">pre</text>
-        <text x="40" y="425" font-family="Arial" font-size="20">post</text>
-
-        <circle cx="30" cy="395" r="4" fill="blue" />
-        <circle cx="30" cy="420" r="4" fill="red" />
-        */
     }
 
     // Output the svg file.
