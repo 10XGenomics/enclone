@@ -380,7 +380,7 @@ pub fn plot_clonotypes(
         const FONT_SIZE: usize = 20;
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
-        let legend_height = FONT_SIZE * n + BOUNDARY * n;
+        let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
         let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
         svg = svg.rev_before("<").to_string();
@@ -390,7 +390,9 @@ pub fn plot_clonotypes(
             BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..samples.len() {
-            let y = legend_ystart as f64 + BOUNDARY as f64 * 2.5 + (BOUNDARY * i) as f64 * 2.5;
+            let y = legend_ystart as f64
+                + BOUNDARY as f64 * 2.5
+                + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
             svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
