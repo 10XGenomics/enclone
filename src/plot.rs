@@ -269,6 +269,23 @@ pub fn plot_clonotypes(
                         color = ctl.gen_opt.sample_color_map[s].clone();
                     }
                 }
+                if ctl.gen_opt.sample_color_map.is_empty() {
+                    let mut dataset_colors = false;
+                    for c in ctl.sample_info.color.iter() {
+                        if !c.is_empty() {
+                            dataset_colors = true;
+                        }
+                    }
+                    let di = ex.clones[j][0].dataset_index;
+                    if dataset_colors {
+                        color = ctl.sample_info.color[di].clone();
+                    } else {
+                        let bc = &ex.clones[j][0].barcode;
+                        if ctl.sample_info.barcode_color[di].contains_key(bc) {
+                            color = ctl.sample_info.barcode_color[di][bc].clone();
+                        }
+                    }
+                }
                 colors.push(color);
                 coords.push(hex_coord(n, 1.0));
                 n += 1;

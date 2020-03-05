@@ -198,6 +198,7 @@ pub struct SampleInfo {
     pub dataset_id: Vec<String>,   // map dataset index to dataset short name
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
+    pub color: Vec<String>,        // map dataset to color
     // other
     pub donor_list: Vec<String>, // unique-sorted list of donor short names
     pub sample_list: Vec<String>, // unique-sorted list of sample short names
@@ -208,6 +209,8 @@ pub struct SampleInfo {
     pub sample_donor: Vec<HashMap<String, (String, String)>>,
     // map dataset index to map of barcode to tag:
     pub tag: Vec<HashMap<String, String>>,
+    // map dataset index to map of barcode to color:
+    pub barcode_color: Vec<HashMap<String, String>>,
 }
 
 impl SampleInfo {

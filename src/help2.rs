@@ -306,21 +306,32 @@ pub fn help2(args: &Vec<String>) {
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \
              \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
-             To generate such a plot, use the argument\n\
+             \
+             enclone provides three ways to assign colors in such a plot.  We describe them in \
+             order of precedence, i.e. color data for the first will be used if provided, etc.\n\n\
+             \
+             The first way is to use the argument\n\
              \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
              which creates an svg file of the given name, and assigns the given colors to the \
              given samples.  Unspecified samples will be black.\n\n\
              \
-             The colors should be valid colors \
-             for use in an svg file.  They can be named colors like red or blue (see \
+             The second way is to provide simply\n\
+             \\bold{PLOT=filename}\non the command line, and then provide the \\bold{color} field \
+             in the CSV defined by the \\bold{META} option.  This assigns a color to each \
+             dataset.\n\n\
+             \
+             The third way is to use the simple \\bold{PLOT} specification, and assign a color to \
+             each barcode using the \\bold{bc} field for \\bold{META}.\n\n\
+             \
+             The colors should be valid colors for use in an svg file.  They can be named colors \
+             like red or blue (see \
              \\green{https://www.w3.org/TR/SVG11/types.html#ColorKeywords} for a full list) \
              or a hex specification like #00FFFF for aqua.  The full color description for svg \
              is at\n\
              \\green{https://www.w3.org/TR/SVGColor12}.\n\n\
              \
-             Each cell is shown as a small \
-             disk having the given color, and each clonotype is shown as a cluster of these small \
-             disks, which are positioned at random.  We suggest using the \
+             Each cell is shown as a disk having the given color, and each clonotype is shown as \
+             a cluster of these disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
              (see \"enclone help filter\") so that tiny clonotypes do not dominate.  The filename \
              argument may be \"stdout\".  Note that plotting is potentially slow.\n\n\
@@ -465,11 +476,18 @@ pub fn help2(args: &Vec<String>) {
             "s1".to_string(),
             "abbreviated name of sample".to_string(),
         ]);
+
         rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
             "donor".to_string(),
             "d1".to_string(),
             "abbreviated name of donor".to_string(),
+        ]);
+        rows.push(vec!["\\hline".to_string(); 3]);
+        rows.push(vec![
+            "color".to_string(),
+            "null".to_string(),
+            "color to associate to this dataset (for PLOT option)".to_string(),
         ]);
         rows.push(vec!["\\hline".to_string(); 3]);
         rows.push(vec![
@@ -497,10 +515,21 @@ pub fn help2(args: &Vec<String>) {
             "".to_string(),
             "a fourth field \"tag\" is allowed and may be arbitrarily specified".to_string(),
         ]);
+
         rows.push(vec![
             "".to_string(),
             "".to_string(),
-            "Use of bc automatically turns on the MIX_DONORS option".to_string(),
+            "Use of bc automatically turns on the MIX_DONORS option.  There is".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "an optional field \"color\" that assigns a color to a barcode,".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "".to_string(),
+            "and which is used by the PLOT option.".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
