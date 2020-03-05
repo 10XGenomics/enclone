@@ -38,7 +38,7 @@ jobs:
         run: |
           all_refs=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone)
           echo "all_refs:" $$all_refs
-          all_tags=$(git ls-remote --tagss --sort=-v:refname  https://github.com/10XDev/enclone)
+          all_tags=$(git ls-remote --tags --sort=-v:refname  https://github.com/10XDev/enclone)
           echo "all_tags: " $all_tags
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           echo "tag_num: " $tag_num
