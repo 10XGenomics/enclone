@@ -355,7 +355,7 @@ pub fn plot_clonotypes(
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
         let legend_height = FONT_SIZE * n + BOUNDARY * n;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let legend_ystart = actual_height + (BOUNDARY * 2) as f64;
+        let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
         svg = svg.rev_before("<").to_string();
         svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
