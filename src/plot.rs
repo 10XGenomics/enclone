@@ -360,25 +360,21 @@ pub fn plot_clonotypes(
         svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
-            BOUNDARY * 2,
-            legend_ystart,
-            legend_width,
-            legend_height,
-            LEGEND_BOX_STROKE_WIDTH
+            BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..samples.len() {
             let y = legend_ystart as f64 + BOUNDARY as f64 * 2.5 + (BOUNDARY * i) as f64 * 2.5;
             svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
-                BOUNDARY * 4,
+                BOUNDARY * 3,
                 y,
                 FONT_SIZE,
                 samples[i]
             );
             svg += &format!(
                 "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
-                BOUNDARY * 3,
+                BOUNDARY * 2,
                 y - BOUNDARY as f64 / 2.0,
                 LEGEND_CIRCLE_RADIUS,
                 colors[i]
