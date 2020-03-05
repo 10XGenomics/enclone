@@ -6,6 +6,7 @@
 // the cells.
 
 use crate::defs::*;
+use crate::string_width::*;
 use io_utils::*;
 use std::cmp::max;
 use std::fs::File;
@@ -336,7 +337,11 @@ pub fn plot_clonotypes(
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
         let legend_height = FONT_SIZE * n + BOUNDARY * n;
-        let legend_width = BOUNDARY as f64 * 2.5 + (FONT_SIZE as f64 / 2.0) * max_len as f64;
+        let mut max_string_width = 0.0f64;
+        for s in samples.iter() {
+            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
+        }
+        let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
         let legend_ystart = HEIGHT + BOUNDARY;
         svg = svg.rev_before("<").to_string();
         svg += &format!(
