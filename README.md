@@ -130,6 +130,8 @@ to the `enclone` command line.  That caused `enclone` to generate the image as t
 
 <br>
 <br>
+<br>
+<br>
 ___________________________________________________________________________________________________
 
 ### How to compile the `enclone` software
