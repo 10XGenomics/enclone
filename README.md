@@ -53,10 +53,10 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Open a terminal window.  This can be on a Linux or Mac computer.  Please let us 
+<b>1.</b> Open a terminal window.  This can be on a Linux or Mac computer.  Please let us 
 know if availability on other platforms is important to you.
 
-2. Type the following to download the `enclone` executable:
+<b>2.</b> Type the following to download the `enclone` executable:
 ```
 mkdir -p ~/bin; cd ~/bin
 wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
@@ -67,7 +67,7 @@ This gets you the absolute latest version of `enclone`.  You can repeat this ste
 wan to update.  At a later date, there will also be 
 separately numbered releases that have passed a more extensive set of tests.
 
-3. Type the following to download the `enclone` test datasets (and all the source code, but
+<b>3.</b> Type the following to download the `enclone` test datasets (and all the source code, but
 you probably won't need that):
 ```
 cd
