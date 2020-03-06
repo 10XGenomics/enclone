@@ -74,7 +74,7 @@ you probably won't need that):
 cd
 git clone git@github.com:10XDev/enclone.git
 ```
-Then `~/enclone/datasets` will be the directory containing the datasets
+At this point `~/enclone/datasets` will contain the datasets
 that are prepackaged with `enclone`.  If you subsequently want to update this, do
 ```
 cd ~/enclone
