@@ -6,10 +6,13 @@
 // the cells.
 
 use crate::defs::*;
+use crate::string_width::*;
 use io_utils::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+use string_utils::*;
+use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -250,6 +253,7 @@ pub fn plot_clonotypes(
     let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
+    let mut samples = Vec::<String>::new();
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
@@ -260,8 +264,26 @@ pub fn plot_clonotypes(
                 let mut color = "black".to_string();
                 if ex.clones[j][0].sample_index.is_some() {
                     let s = &ctl.sample_info.sample_list[ex.clones[j][0].sample_index.unwrap()];
+                    samples.push(s.clone());
                     if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
                         color = ctl.gen_opt.sample_color_map[s].clone();
+                    }
+                }
+                if ctl.gen_opt.sample_color_map.is_empty() {
+                    let mut dataset_colors = false;
+                    for c in ctl.sample_info.color.iter() {
+                        if !c.is_empty() {
+                            dataset_colors = true;
+                        }
+                    }
+                    let di = ex.clones[j][0].dataset_index;
+                    if dataset_colors {
+                        color = ctl.sample_info.color[di].clone();
+                    } else {
+                        let bc = &ex.clones[j][0].barcode;
+                        if ctl.sample_info.barcode_color[di].contains_key(bc) {
+                            color = ctl.sample_info.barcode_color[di][bc].clone();
+                        }
                     }
                 }
                 colors.push(color);
@@ -269,6 +291,7 @@ pub fn plot_clonotypes(
                 n += 1;
             }
         }
+        unique_sort(&mut samples);
 
         // Move the colors around to get vertical separation, e.g. blues on the left, reds
         // on the right.
@@ -310,7 +333,89 @@ pub fn plot_clonotypes(
     for i in 0..center.len() {
         center[i].1 = -center[i].1; // otherwise inverted, not sure why
     }
-    let svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+    let mut svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+
+    // Add legend.
+
+    if ctl.gen_opt.use_legend {
+        let mut colors = Vec::<String>::new();
+        let mut max_string_width = 0.0f64;
+        if ctl.gen_opt.legend.len() == 0 {
+            for s in samples.iter() {
+                let mut color = "black".to_string();
+                if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                    color = ctl.gen_opt.sample_color_map[s].clone();
+                }
+                colors.push(color);
+            }
+        } else {
+            samples.clear();
+            for i in 0..ctl.gen_opt.legend.len() {
+                colors.push(ctl.gen_opt.legend[i].0.clone());
+                samples.push(ctl.gen_opt.legend[i].1.clone());
+            }
+        }
+        for s in samples.iter() {
+            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
+        }
+
+        // Calculate the actual height of the svg.
+
+        let mut actual_height = 0.0f64;
+        let fields = svg.split(' ').collect::<Vec<&str>>();
+        let mut y = 0.0;
+        for i in 0..fields.len() {
+            if fields[i].starts_with("cy=") {
+                y = fields[i].between("\"", "\"").force_f64();
+            }
+            if fields[i].starts_with("r=") {
+                let r = fields[i].between("\"", "\"").force_f64();
+                actual_height = actual_height.max(y + r);
+            }
+        }
+
+        // Build the legend.
+
+        let n = samples.len();
+        const FONT_SIZE: usize = 20;
+        const LEGEND_CIRCLE_RADIUS: usize = 4;
+        const LEGEND_BOX_STROKE_WIDTH: usize = 2;
+        let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
+        let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
+        let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        svg = svg.rev_before("<").to_string();
+        svg += &format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+             style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
+            BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+        );
+        for i in 0..samples.len() {
+            let y = legend_ystart as f64
+                + BOUNDARY as f64 * 2.5
+                + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
+            svg += &format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                BOUNDARY * 3,
+                y,
+                FONT_SIZE,
+                samples[i]
+            );
+            svg += &format!(
+                "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
+                BOUNDARY * 2,
+                y - BOUNDARY as f64 / 2.0,
+                LEGEND_CIRCLE_RADIUS,
+                colors[i]
+            );
+        }
+        let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
+        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+        svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+    }
+
+    // Output the svg file.
+
     if ctl.gen_opt.plot_file != "stdout".to_string() {
         let mut f = open_for_write_new![ctl.gen_opt.plot_file];
         fwriteln!(f, "{}", svg);

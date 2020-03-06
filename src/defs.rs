@@ -198,6 +198,7 @@ pub struct SampleInfo {
     pub dataset_id: Vec<String>,   // map dataset index to dataset short name
     pub donor_id: Vec<String>,     // map dataset index to donor short name
     pub sample_id: Vec<String>,    // map dataset id to sample short name
+    pub color: Vec<String>,        // map dataset to color
     // other
     pub donor_list: Vec<String>, // unique-sorted list of donor short names
     pub sample_list: Vec<String>, // unique-sorted list of sample short names
@@ -208,6 +209,8 @@ pub struct SampleInfo {
     pub sample_donor: Vec<HashMap<String, (String, String)>>,
     // map dataset index to map of barcode to tag:
     pub tag: Vec<HashMap<String, String>>,
+    // map dataset index to map of barcode to color:
+    pub barcode_color: Vec<HashMap<String, String>>,
 }
 
 impl SampleInfo {
@@ -266,6 +269,8 @@ pub struct GeneralOpt {
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
     pub sample_color_map: HashMap<String, String>,
+    pub use_legend: bool,
+    pub legend: Vec<(String, String)>,
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,
@@ -377,6 +382,7 @@ pub struct ParseableOpt {
     pub pchains: usize,          // number of chains to show in parseable output
     pub pcols: Vec<String>,      // column names to show in parseable output
     pub pcols_sort: Vec<String>, // sorted column names to show in parseable output
+    pub pbarcode: bool,          // generate output per barcode rather than per exact subclonotype
 }
 
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given

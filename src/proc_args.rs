@@ -141,64 +141,106 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Traverse arguments.
 
     for i in 1..args.len() {
-        if is_simple_arg(&args[i], "SEQ") {
+        let mut arg = args[i].to_string();
+
+        // Strip out certain quoted expressions.
+
+        if arg.contains("=\"") && arg.ends_with("\"") {
+            let mut quotes = 0;
+            for c in arg.chars() {
+                if c == '\"' {
+                    quotes += 1;
+                }
+            }
+            if quotes == 2 {
+                arg = format!("{}={}", arg.before("="), arg.between("\"", "\""));
+            }
+        }
+
+        // Check for weird case that might arise if testing code is screwed up.
+
+        if arg.len() == 0 {
+            eprintln!(
+                "\nYou've passed a null argument to enclone.  Normally that isn't \
+                 possible.\nPlease take a detailed look at how you're invoking enclone.\n"
+            );
+            std::process::exit(1);
+        }
+
+        // Process the argument.
+
+        if is_simple_arg(&arg, "SEQ") {
             ctl.join_print_opt.seq = true;
-        } else if is_simple_arg(&args[i], "ANN") {
+        } else if is_simple_arg(&arg, "ANN") {
             ctl.join_print_opt.ann = true;
-        } else if is_simple_arg(&args[i], "ANN0") {
+        } else if is_simple_arg(&arg, "ANN0") {
             ctl.join_print_opt.ann0 = true;
-        } else if is_simple_arg(&args[i], "DUMP_LENAS") {
-        } else if is_simple_arg(&args[i], "BC") {
+        } else if is_simple_arg(&arg, "DUMP_LENAS") {
+        } else if is_simple_arg(&arg, "BC") {
             ctl.join_print_opt.show_bc = true;
-        } else if is_simple_arg(&args[i], "PER_BC") {
+        } else if is_simple_arg(&arg, "PER_BC") {
             ctl.clono_print_opt.bu = true;
-        } else if is_simple_arg(&args[i], "COMP") {
-        } else if is_simple_arg(&args[i], "CON") {
+        } else if is_simple_arg(&arg, "COMP") {
+        } else if is_simple_arg(&arg, "CON") {
             ctl.allele_print_opt.con = true;
-        } else if is_simple_arg(&args[i], "CON_TRACE") {
+        } else if is_simple_arg(&arg, "CON_TRACE") {
             ctl.allele_print_opt.con_trace = true;
-        } else if is_simple_arg(&args[i], "EXP") {
+        } else if is_simple_arg(&arg, "EXP") {
             ctl.gen_opt.exp = true;
-        } else if is_simple_arg(&args[i], "H5") {
+        } else if arg == "LEGEND" {
+            ctl.gen_opt.use_legend = true;
+        } else if arg.starts_with("LEGEND=") {
+            let x = parse_csv(&arg.after("LEGEND="));
+            if x.len() == 0 || x.len() % 2 != 0 {
+                eprintln!("\nValue of LEGEND doesn't make sense.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.use_legend = true;
+            for i in 0..x.len() / 2 {
+                ctl.gen_opt
+                    .legend
+                    .push((x[2 * i].clone(), x[2 * i + 1].clone()));
+            }
+        } else if is_simple_arg(&arg, "H5") {
             ctl.gen_opt.force_h5 = true;
-        } else if is_simple_arg(&args[i], "CURRENT_REF") {
+        } else if is_simple_arg(&arg, "CURRENT_REF") {
             ctl.gen_opt.current_ref = true;
-        } else if is_simple_arg(&args[i], "SUM") {
+        } else if is_simple_arg(&arg, "SUM") {
             ctl.clono_print_opt.sum = true;
-        } else if is_simple_arg(&args[i], "MEAN") {
+        } else if is_simple_arg(&arg, "MEAN") {
             ctl.clono_print_opt.mean = true;
-        } else if is_simple_arg(&args[i], "NH5") {
-        } else if is_simple_arg(&args[i], "H5_SLICE") {
+        } else if is_simple_arg(&arg, "NH5") {
+        } else if is_simple_arg(&arg, "H5_SLICE") {
             ctl.gen_opt.h5_pre = false;
-        } else if is_simple_arg(&args[i], "DESCRIP") {
+        } else if is_simple_arg(&arg, "DESCRIP") {
             ctl.gen_opt.descrip = true;
-        } else if is_simple_arg(&args[i], "CTRLC") {
-        } else if is_simple_arg(&args[i], "FORCE") {
+        } else if is_simple_arg(&arg, "CTRLC") {
+        } else if is_simple_arg(&arg, "FORCE") {
             ctl.force = true;
-        } else if is_simple_arg(&args[i], "CELLRANGER") {
-        } else if is_simple_arg(&args[i], "WEAK") {
+        } else if is_simple_arg(&arg, "CELLRANGER") {
+        } else if is_simple_arg(&arg, "WEAK") {
             ctl.gen_opt.weak = true;
-        } else if is_simple_arg(&args[i], "REUSE") {
+        } else if is_simple_arg(&arg, "REUSE") {
             ctl.gen_opt.reuse = true;
-        } else if is_simple_arg(&args[i], "FORCE_EXTERNAL") {
-        } else if is_simple_arg(&args[i], "NWARN") {
+        } else if is_simple_arg(&arg, "FORCE_EXTERNAL") {
+        } else if is_simple_arg(&arg, "NWARN") {
             ctl.gen_opt.nwarn = true;
-        } else if args[i].starts_with("BINARY=") {
-            ctl.gen_opt.binary = args[i].after("BINARY=").to_string();
-        } else if args[i].starts_with("PROTO=") {
-            ctl.gen_opt.proto = args[i].after("PROTO=").to_string();
-        } else if is_simple_arg(&args[i], "PRINT_FAILED_JOINS") {
+        } else if arg.starts_with("BINARY=") {
+            ctl.gen_opt.binary = arg.after("BINARY=").to_string();
+        } else if arg.starts_with("PROTO=") {
+            ctl.gen_opt.proto = arg.after("PROTO=").to_string();
+        } else if is_simple_arg(&arg, "PRINT_FAILED_JOINS") {
             ctl.join_print_opt.quiet = false;
-        } else if is_simple_arg(&args[i], "NOTE_SIMPLE") {
+        } else if is_simple_arg(&arg, "NOTE_SIMPLE") {
             ctl.clono_print_opt.note_simple = true;
-        } else if is_simple_arg(&args[i], "SEQC") {
+        } else if is_simple_arg(&arg, "SEQC") {
             ctl.clono_print_opt.seqc = true;
-        } else if is_simple_arg(&args[i], "FULL_SEQC") {
+        } else if is_simple_arg(&arg, "FULL_SEQC") {
             ctl.clono_print_opt.full_seqc = true;
-        } else if is_simple_arg(&args[i], "BARCODES") {
+        } else if is_simple_arg(&arg, "BARCODES") {
             ctl.clono_print_opt.barcodes = true;
-        } else if args[i].starts_with("BARCODE=") {
-            let bcs = args[i].after("BARCODE=").split(',').collect::<Vec<&str>>();
+        } else if arg.starts_with("BARCODE=") {
+            let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
             let mut x = Vec::<String>::new();
             for j in 0..bcs.len() {
                 if !bcs[j].contains('-') {
@@ -210,37 +252,37 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
-        } else if is_simple_arg(&args[i], "GRAPH") {
+        } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
-        } else if is_simple_arg(&args[i], "ACCEPT_INCONSISTENT") {
+        } else if is_simple_arg(&arg, "ACCEPT_INCONSISTENT") {
             ctl.gen_opt.accept_inconsistent = true;
-        } else if is_simple_arg(&args[i], "NCROSS") {
+        } else if is_simple_arg(&arg, "NCROSS") {
             ctl.clono_filt_opt.ncross = true;
-        } else if is_simple_arg(&args[i], "NWEAK_CHAINS") {
+        } else if is_simple_arg(&arg, "NWEAK_CHAINS") {
             ctl.clono_filt_opt.weak_chains = false;
-        } else if is_simple_arg(&args[i], "NWEAK_ONESIES") {
+        } else if is_simple_arg(&arg, "NWEAK_ONESIES") {
             ctl.clono_filt_opt.weak_onesies = false;
-        } else if is_simple_arg(&args[i], "NFOURSIE_KILL") {
+        } else if is_simple_arg(&arg, "NFOURSIE_KILL") {
             ctl.clono_filt_opt.weak_foursies = false;
-        } else if is_simple_arg(&args[i], "NBC_DUP") {
+        } else if is_simple_arg(&arg, "NBC_DUP") {
             ctl.clono_filt_opt.bc_dup = false;
-        } else if is_simple_arg(&args[i], "NDONOR") {
+        } else if is_simple_arg(&arg, "MIX_DONORS") {
             ctl.clono_filt_opt.donor = true;
-        } else if is_simple_arg(&args[i], "HAVE_ONESIE") {
+        } else if is_simple_arg(&arg, "HAVE_ONESIE") {
             ctl.clono_filt_opt.have_onesie = true;
-        } else if is_simple_arg(&args[i], "UTR_CON") {
+        } else if is_simple_arg(&arg, "UTR_CON") {
             ctl.gen_opt.utr_con = true;
-        } else if is_simple_arg(&args[i], "CON_CON") {
+        } else if is_simple_arg(&arg, "CON_CON") {
             ctl.gen_opt.con_con = true;
-        } else if is_simple_arg(&args[i], "MOUSE") {
+        } else if is_simple_arg(&arg, "MOUSE") {
             ctl.gen_opt.mouse = true;
-        } else if is_simple_arg(&args[i], "SUMMARY") {
+        } else if is_simple_arg(&arg, "SUMMARY") {
             ctl.gen_opt.summary = true;
-        } else if args[i].starts_with("F=") {
-            let filt = args[i].after("F=").to_string();
+        } else if arg.starts_with("F=") {
+            let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
-        } else if args[i].starts_with("SCAN=") {
-            let mut x = args[i].after("SCAN=").to_string();
+        } else if arg.starts_with("SCAN=") {
+            let mut x = arg.after("SCAN=").to_string();
             x = x.replace(" ", "").to_string();
             let x = x.split(',').collect::<Vec<&str>>();
             if x.len() != 3 {
@@ -257,8 +299,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
             ctl.gen_opt.gene_scan_threshold = Some(threshold);
-        } else if args[i].starts_with("PLOT=") {
-            let x = args[i].after("PLOT=").split(',').collect::<Vec<&str>>();
+        } else if arg.starts_with("PLOT=") {
+            let x = arg.after("PLOT=").split(',').collect::<Vec<&str>>();
             if x.is_empty() {
                 eprintln!("\nArgument to PLOT is invalid.\n");
                 std::process::exit(1);
@@ -273,89 +315,91 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     .sample_color_map
                     .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
             }
-        } else if is_simple_arg(&args[i], "SUMMARY_CLEAN") {
+        } else if is_simple_arg(&arg, "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
-        } else if args[i].starts_with("EMAIL=") {
-        } else if args[i].starts_with("REF=") {
-            ctl.gen_opt.refname = args[i].after("REF=").to_string();
-        } else if is_simple_arg(&args[i], "NSILENT") {
+        } else if arg.starts_with("EMAIL=") {
+        } else if arg.starts_with("REF=") {
+            ctl.gen_opt.refname = arg.after("REF=").to_string();
+        } else if is_simple_arg(&arg, "NSILENT") {
             ctl.silent = false;
-        } else if is_simple_arg(&args[i], "TOY") {
+        } else if is_simple_arg(&arg, "TOY") {
             ctl.toy = true;
-        } else if is_simple_arg(&args[i], "RE") {
+        } else if is_simple_arg(&arg, "RE") {
             ctl.gen_opt.reannotate = true;
-        } else if is_simple_arg(&args[i], "WHITEF") {
+        } else if is_simple_arg(&arg, "WHITEF") {
             ctl.clono_filt_opt.whitef = true;
-        } else if is_simple_arg(&args[i], "PROTECT_BADS") {
+        } else if is_simple_arg(&arg, "PROTECT_BADS") {
             ctl.clono_filt_opt.protect_bads = true;
-        } else if is_simple_arg(&args[i], "NWHITEF") {
+        } else if is_simple_arg(&arg, "NWHITEF") {
             ctl.gen_opt.nwhitef = true;
-        } else if is_simple_arg(&args[i], "FAIL_ONLY=true") {
+        } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
-        } else if is_simple_arg(&args[i], "FAIL_ONLY=false") {
+        } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
             ctl.clono_filt_opt.fail_only = false;
-        } else if is_simple_arg(&args[i], "CHAIN_BRIEF") {
+        } else if is_simple_arg(&arg, "CHAIN_BRIEF") {
             ctl.clono_print_opt.chain_brief = true;
-        } else if is_simple_arg(&args[i], "NGRAPH_FILTER") {
+        } else if is_simple_arg(&arg, "NGRAPH_FILTER") {
             ctl.gen_opt.ngraph_filter = true;
-        } else if is_simple_arg(&args[i], "INDELS") {
+        } else if is_simple_arg(&arg, "INDELS") {
             ctl.gen_opt.indels = true;
-        } else if is_simple_arg(&args[i], "INSERTIONS") {
+        } else if is_simple_arg(&arg, "INSERTIONS") {
             ctl.gen_opt.insertions = true;
-        } else if is_simple_arg(&args[i], "DEBUG_TABLE_PRINTING") {
+        } else if is_simple_arg(&arg, "DEBUG_TABLE_PRINTING") {
             ctl.debug_table_printing = true;
-        } else if is_simple_arg(&args[i], "KEEP_IMPROPER") {
+        } else if is_simple_arg(&arg, "KEEP_IMPROPER") {
             ctl.merge_all_impropers = true;
-        } else if is_simple_arg(&args[i], "NQUAL") {
+        } else if is_simple_arg(&arg, "NQUAL") {
             ctl.clono_filt_opt.qual_filter = false;
-        } else if is_simple_arg(&args[i], "HEAVY_CHAIN_REUSE") {
+        } else if is_simple_arg(&arg, "HEAVY_CHAIN_REUSE") {
             ctl.gen_opt.heavy_chain_reuse = true;
-        } else if is_simple_arg(&args[i], "GROUP_HEAVY_CDR3") {
+        } else if is_simple_arg(&arg, "GROUP_HEAVY_CDR3") {
             ctl.clono_group_opt.heavy_cdr3_aa = true;
-        } else if is_simple_arg(&args[i], "GROUP_VJ_REFNAME") {
+        } else if is_simple_arg(&arg, "GROUP_VJ_REFNAME") {
             ctl.clono_group_opt.vj_refname = true;
-        } else if is_simple_arg(&args[i], "NPLAIN") {
+        } else if is_simple_arg(&arg, "NPLAIN") {
             ctl.pretty = true;
-        } else if is_simple_arg(&args[i], "NO_REUSE") {
+        } else if is_simple_arg(&arg, "NO_REUSE") {
             ctl.gen_opt.no_reuse = true;
-        } else if is_simple_arg(&args[i], "NOPAGER") {
-        } else if is_simple_arg(&args[i], "NOPRINT") {
+        } else if is_simple_arg(&arg, "NOPAGER") {
+        } else if is_simple_arg(&arg, "NOPRINT") {
             ctl.gen_opt.noprint = true;
-        } else if args[i].starts_with("POUT=") {
-            ctl.parseable_opt.pout = args[i].after("POUT=").to_string();
-        } else if args[i].starts_with("DONOR_REF_FILE=") {
-            ctl.gen_opt.dref_file = args[i].after("DONOR_REF_FILE=").to_string();
-        } else if args[i].starts_with("EXT=") {
-            ctl.gen_opt.ext = args[i].after("EXT=").to_string();
-        } else if is_usize_arg(&args[i], "PCHAINS") {
-            ctl.parseable_opt.pchains = args[i].after("PCHAINS=").force_usize();
-        } else if is_usize_arg(&args[i], "MAX_CORES") {
-            let nthreads = args[i].after("MAX_CORES=").force_usize();
+        } else if arg.starts_with("POUT=") {
+            ctl.parseable_opt.pout = arg.after("POUT=").to_string();
+        } else if is_simple_arg(&arg, "PBARCODE") {
+            ctl.parseable_opt.pbarcode = true;
+        } else if arg.starts_with("DONOR_REF_FILE=") {
+            ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
+        } else if arg.starts_with("EXT=") {
+            ctl.gen_opt.ext = arg.after("EXT=").to_string();
+        } else if is_usize_arg(&arg, "PCHAINS") {
+            ctl.parseable_opt.pchains = arg.after("PCHAINS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CORES") {
+            let nthreads = arg.after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
                 .num_threads(nthreads)
                 .build_global();
-        } else if is_usize_arg(&args[i], "REQUIRED_FPS") {
-            ctl.gen_opt.required_fps = Some(args[i].after("REQUIRED_FPS=").force_usize());
-        } else if args[i].starts_with("PCOLS=") {
+        } else if is_usize_arg(&arg, "REQUIRED_FPS") {
+            ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
+        } else if arg.starts_with("PCOLS=") {
             ctl.parseable_opt.pcols.clear();
-            for x in args[i].after("PCOLS=").split(',').collect::<Vec<&str>>() {
+            for x in arg.after("PCOLS=").split(',').collect::<Vec<&str>>() {
                 ctl.parseable_opt.pcols.push(x.to_string());
                 ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
             }
-        } else if is_simple_arg(&args[i], "PLAIN") {
-        } else if is_simple_arg(&args[i], "NOPRETTY") {
-        } else if args[i].starts_with("VJ=") {
-            ctl.clono_filt_opt.vj = args[i].after("VJ=").as_bytes().to_vec();
+        } else if is_simple_arg(&arg, "PLAIN") {
+        } else if is_simple_arg(&arg, "NOPRETTY") {
+        } else if arg.starts_with("VJ=") {
+            ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();
             for c in ctl.clono_filt_opt.vj.iter() {
                 if !(*c == b'A' || *c == b'C' || *c == b'G' || *c == b'T') {
                     eprintln!("\nIllegal value for VJ, must be over alphabet ACGT.\n");
                     std::process::exit(1);
                 }
             }
-        } else if args[i].starts_with("AMINO=") {
+        } else if arg.starts_with("AMINO=") {
             ctl.clono_print_opt.amino.clear();
-            for x in args[i].after("AMINO=").split(',').collect::<Vec<&str>>() {
+            for x in arg.after("AMINO=").split(',').collect::<Vec<&str>>() {
                 if x != "" {
                     ctl.clono_print_opt.amino.push(x.to_string());
                 }
@@ -381,9 +425,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
             }
-        } else if args[i].starts_with("CVARS=") {
+        } else if arg.starts_with("CVARS=") {
             ctl.clono_print_opt.cvars.clear();
-            for x in args[i].after("CVARS=").split(',').collect::<Vec<&str>>() {
+            for x in arg.after("CVARS=").split(',').collect::<Vec<&str>>() {
                 if x.len() > 0 {
                     ctl.clono_print_opt.cvars.push(x.to_string());
                 }
@@ -405,8 +449,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
             }
-        } else if args[i].starts_with("CVARSP=") {
-            let cvarsp = args[i].after("CVARSP=").split(',').collect::<Vec<&str>>();
+        } else if arg.starts_with("CVARSP=") {
+            let cvarsp = arg.after("CVARSP=").split(',').collect::<Vec<&str>>();
             for x in cvarsp.iter() {
                 let mut ok = cvars_allowed.contains(&x);
                 if x.starts_with("ndiff")
@@ -427,66 +471,66 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             for x in cvarsp {
                 ctl.clono_print_opt.cvars.push(x.to_string());
             }
-        } else if args[i].starts_with("LVARS=") {
+        } else if arg.starts_with("LVARS=") {
             ctl.clono_print_opt.lvars.clear();
-            for x in args[i].after("LVARS=").split(',').collect::<Vec<&str>>() {
+            for x in arg.after("LVARS=").split(',').collect::<Vec<&str>>() {
                 ctl.clono_print_opt.lvars.push(x.to_string());
             }
-        } else if args[i].starts_with("LVARSP=") {
-            let lvarsp = args[i].after("LVARSP=").split(',').collect::<Vec<&str>>();
+        } else if arg.starts_with("LVARSP=") {
+            let lvarsp = arg.after("LVARSP=").split(',').collect::<Vec<&str>>();
             for x in lvarsp {
                 ctl.clono_print_opt.lvars.push(x.to_string());
             }
-        } else if is_f64_arg(&args[i], "MAX_SCORE") {
-            ctl.join_alg_opt.max_score = args[i].after("MAX_SCORE=").force_f64();
-        } else if is_simple_arg(&args[i], "CDIFF") {
+        } else if is_f64_arg(&arg, "MAX_SCORE") {
+            ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
+        } else if is_simple_arg(&arg, "CDIFF") {
             ctl.clono_filt_opt.cdiff = true;
-        } else if is_simple_arg(&args[i], "DEL") {
+        } else if is_simple_arg(&arg, "DEL") {
             ctl.clono_filt_opt.del = true;
-        } else if is_usize_arg(&args[i], "MIN_DATASETS") {
-            ctl.clono_filt_opt.min_datasets = args[i].after("MIN_DATASETS=").force_usize();
-        } else if is_usize_arg(&args[i], "MIN_GROUP") {
-            ctl.clono_group_opt.min_group = args[i].after("MIN_GROUP=").force_usize();
-        } else if is_simple_arg(&args[i], "BCJOIN") {
+        } else if is_usize_arg(&arg, "MIN_DATASETS") {
+            ctl.clono_filt_opt.min_datasets = arg.after("MIN_DATASETS=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_GROUP") {
+            ctl.clono_group_opt.min_group = arg.after("MIN_GROUP=").force_usize();
+        } else if is_simple_arg(&arg, "BCJOIN") {
             ctl.join_alg_opt.bcjoin = true;
-        } else if args[i].starts_with("EXFASTA=") {
-            ctl.gen_opt.fasta = args[i].after("EXFASTA=").to_string();
-        } else if args[i].starts_with("FASTA=") {
-            ctl.gen_opt.fasta_filename = args[i].after("FASTA=").to_string();
-        } else if args[i].starts_with("FASTA_AA=") {
-            ctl.gen_opt.fasta_aa_filename = args[i].after("FASTA_AA=").to_string();
-        } else if args[i].starts_with("CDR3=") {
-            let reg = Regex::new(&format!("^{}$", args[i].after("CDR3=")));
+        } else if arg.starts_with("EXFASTA=") {
+            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
+        } else if arg.starts_with("FASTA=") {
+            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
+        } else if arg.starts_with("FASTA_AA=") {
+            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
+        } else if arg.starts_with("CDR3=") {
+            let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
             if !reg.is_ok() {
                 eprintln!(
                     "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
-                    args[i].after("CDR3=")
+                    arg.after("CDR3=")
                 );
                 std::process::exit(1);
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
-        } else if args[i].starts_with("GEX=") {
-        } else if is_usize_arg(&args[i], "MIN_MULT") {
-            ctl.allele_alg_opt.min_mult = args[i].after("MIN_MULT=").force_usize();
-        } else if is_usize_arg(&args[i], "MIN_EXACTS") {
-            ctl.clono_filt_opt.min_exacts = args[i].after("MIN_EXACTS=").force_usize();
-        } else if is_simple_arg(&args[i], "VDUP") {
+        } else if arg.starts_with("GEX=") {
+        } else if is_usize_arg(&arg, "MIN_MULT") {
+            ctl.allele_alg_opt.min_mult = arg.after("MIN_MULT=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_EXACTS") {
+            ctl.clono_filt_opt.min_exacts = arg.after("MIN_EXACTS=").force_usize();
+        } else if is_simple_arg(&arg, "VDUP") {
             ctl.clono_filt_opt.vdup = true;
-        } else if is_usize_arg(&args[i], "MIN_CHAINS") {
-            ctl.clono_filt_opt.min_chains = args[i].after("MIN_CHAINS=").force_usize();
-        } else if is_usize_arg(&args[i], "MAX_CHAINS") {
-            ctl.clono_filt_opt.max_chains = args[i].after("MAX_CHAINS=").force_usize();
-        } else if is_usize_arg(&args[i], "CHAINS") {
-            ctl.clono_filt_opt.min_chains = args[i].after("CHAINS=").force_usize();
-            ctl.clono_filt_opt.max_chains = args[i].after("CHAINS=").force_usize();
-        } else if args[i].starts_with("SEG=") {
-            let fields = args[i].after("SEG=").split('|').collect::<Vec<&str>>();
+        } else if is_usize_arg(&arg, "MIN_CHAINS") {
+            ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CHAINS") {
+            ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
+        } else if is_usize_arg(&arg, "CHAINS") {
+            ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
+            ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
+        } else if arg.starts_with("SEG=") {
+            let fields = arg.after("SEG=").split('|').collect::<Vec<&str>>();
             for x in fields.iter() {
                 ctl.clono_filt_opt.seg.push(x.to_string());
             }
             ctl.clono_filt_opt.seg.sort();
-        } else if args[i].starts_with("SEGN=") {
-            let fields = args[i].after("SEGN=").split('|').collect::<Vec<&str>>();
+        } else if arg.starts_with("SEGN=") {
+            let fields = arg.after("SEGN=").split('|').collect::<Vec<&str>>();
             for x in fields.iter() {
                 if !x.parse::<i32>().is_ok() {
                     eprintln!("\nInvalid argument to SEGN.\n");
@@ -495,42 +539,42 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.clono_filt_opt.segn.push(x.to_string());
             }
             ctl.clono_filt_opt.segn.sort();
-        } else if is_usize_arg(&args[i], "MIN_CELLS_EXACT") {
-            ctl.gen_opt.min_cells_exact = args[i].after("MIN_CELLS_EXACT=").force_usize();
-        } else if is_usize_arg(&args[i], "MIN_CHAINS_EXACT") {
-            ctl.gen_opt.min_chains_exact = args[i].after("MIN_CHAINS_EXACT=").force_usize();
-        } else if is_usize_arg(&args[i], "EXACT") {
-            ctl.gen_opt.exact = Some(args[i].after("EXACT=").force_usize());
-        } else if is_usize_arg(&args[i], "MIN_UMI") {
-            ctl.clono_filt_opt.min_umi = args[i].after("MIN_UMI=").force_usize();
-        } else if is_usize_arg(&args[i], "MIN_ALT") {
-            ctl.allele_alg_opt.min_alt = args[i].after("MIN_ALT=").force_usize();
-        } else if is_usize_arg(&args[i], "ONESIE_MULT") {
-            ctl.onesie_mult = args[i].after("ONESIE_MULT=").force_usize();
-        } else if args[i].starts_with("PRE=") {
-        } else if is_usize_arg(&args[i], "MIN_CELLS") {
-            ctl.clono_filt_opt.ncells_low = args[i].after("MIN_CELLS=").force_usize();
-        } else if is_usize_arg(&args[i], "MAX_CELLS") {
-            ctl.clono_filt_opt.ncells_high = args[i].after("MAX_CELLS=").force_usize();
-        } else if is_usize_arg(&args[i], "CELLS") {
-            ctl.clono_filt_opt.ncells_low = args[i].after("CELLS=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_CELLS_EXACT") {
+            ctl.gen_opt.min_cells_exact = arg.after("MIN_CELLS_EXACT=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_CHAINS_EXACT") {
+            ctl.gen_opt.min_chains_exact = arg.after("MIN_CHAINS_EXACT=").force_usize();
+        } else if is_usize_arg(&arg, "EXACT") {
+            ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
+        } else if is_usize_arg(&arg, "MIN_UMI") {
+            ctl.clono_filt_opt.min_umi = arg.after("MIN_UMI=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_ALT") {
+            ctl.allele_alg_opt.min_alt = arg.after("MIN_ALT=").force_usize();
+        } else if is_usize_arg(&arg, "ONESIE_MULT") {
+            ctl.onesie_mult = arg.after("ONESIE_MULT=").force_usize();
+        } else if arg.starts_with("PRE=") {
+        } else if is_usize_arg(&arg, "MIN_CELLS") {
+            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CELLS") {
+            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
+        } else if is_usize_arg(&arg, "CELLS") {
+            ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
-        } else if is_simple_arg(&args[i], "EASY") {
+        } else if is_simple_arg(&arg, "EASY") {
             ctl.join_alg_opt.easy = true;
-        } else if is_usize_arg(&args[i], "PFREQ") {
-            ctl.join_print_opt.pfreq = args[i].after("PFREQ=").force_usize();
-        } else if args[i].starts_with("HAPS=") {
+        } else if is_usize_arg(&arg, "PFREQ") {
+            ctl.join_print_opt.pfreq = arg.after("PFREQ=").force_usize();
+        } else if arg.starts_with("HAPS=") {
             // done above
-        } else if args[i].starts_with("META=") {
-            let f = args[i].after("META=");
+        } else if arg.starts_with("META=") {
+            let f = arg.after("META=");
             proc_meta(&f, &mut ctl);
-        } else if args[i].starts_with("TCR=")
-            || args[i].starts_with("BCR=")
-            || (args[i].len() > 0 && args[i].as_bytes()[0] >= b'0' && args[i].as_bytes()[0] <= b'9')
+        } else if arg.starts_with("TCR=")
+            || arg.starts_with("BCR=")
+            || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
         {
-            proc_xcr(&args[i], &gex, have_gex, &mut ctl);
+            proc_xcr(&arg, &gex, have_gex, &mut ctl);
         } else {
-            eprintln!("\nUnrecognized argument {}.\n", args[i]);
+            eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
         }
     }
@@ -571,6 +615,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     unique_sort(&mut sample_donor_list);
     ctl.sample_info.sample_donor_list = sample_donor_list;
+    for i in 0..ctl.sample_info.sample_donor.len() {
+        if ctl.sample_info.sample_donor[i].len() > 0 {
+            ctl.clono_filt_opt.donor = true;
+        }
+    }
     if ctl.comp {
         println!("-- used {:.2} seconds processing args", elapsed(&targs));
     }
