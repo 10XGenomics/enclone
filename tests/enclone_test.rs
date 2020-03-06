@@ -338,13 +338,17 @@ fn test_enclone_prebuild() {
 
     // See if we're in a broken state.
 
-    if path_exists(&format!(
+    let mb = format!(
         "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
         TEST_FILES_VERSION
-    )) {
+    );
+    if path_exists(&mb) {
         panic!(
             "\nenclone_test_prebuild: the file matrix.bin already exists.\n\
-             Perhaps a previous run of this test was interrupted.  Please delete the file."
+             Perhaps a previous run of this test failed or was was interrupted.\n\
+             Please delete the file\n\
+             {}\n",
+            mb
         );
     }
 
