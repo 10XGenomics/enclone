@@ -36,7 +36,7 @@ jobs:
       - name: post release assets
       # This step finds the latest tagged version of enclone and upload the enclone linux build to Github.
         run: |
-          # Get latest tag from https://github.com/10XDev/enclon
+          # Get latest tag from https://github.com/10XDev/enclone
           tag_num=$(git ls-remote --refs --sort=-v:refname https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           echo "tag num: " $tag_num
           test_url=https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num}
@@ -45,6 +45,12 @@ jobs:
           mkdir -p linux
           cp target/release/enclone linux/.
           chmod 755 linux/enclone
+          echo "list all releases"
+          curl --request GET \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --url https://api.github.com/repos/${{ github.repository }}/releases > all_releases.json
+          echo "All releases: "
+          cat all_releases.json
           echo "GET latest release"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
