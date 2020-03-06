@@ -167,7 +167,6 @@ fn test_enclone() {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
         }
-        let testn = test.replace("\"", "");
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
         if !path_exists(&out_file) {
@@ -191,7 +190,7 @@ fn test_enclone() {
             res.2 = stringme(&log);
         } else {
             let old = read_to_string(&out_file).unwrap();
-            let args = testn.split(' ').collect::<Vec<&str>>();
+            let args = test.split(' ').collect::<Vec<&str>>();
             let mut new = Command::new("target/release/enclone");
             let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
             for i in 0..args.len() {
