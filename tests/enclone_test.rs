@@ -78,7 +78,7 @@ const TESTS: [&str; 35] = [
     "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share \
      MIX_DONORS",
     // 11. tests META
-    "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
+    "META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
     // 12. this added because it got better when a noise filter was added, also tests umax
     "TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax",
     // 13. this added because it got better when a noise filter was added; also test FASTA
@@ -135,7 +135,7 @@ const TESTS: [&str; 35] = [
     // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
     // Note that the specification of PRE overrides our usual specification.
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    "PRE= META=test/inputs/meta_test35 MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout \
+    "PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout \
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
 ];
 
