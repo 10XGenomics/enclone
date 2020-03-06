@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 34] = [
+const TESTS: [&str; 35] = [
     // 1. tests variant base after CDR3, parseable output
     "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes",
@@ -130,6 +130,10 @@ const TESTS: [&str; 34] = [
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
     "BCR=123085:123089 MIN_CELLS=50 PLOT=\"stdout,s1->blue,s2->red\" NOPRINT",
+    // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
+    // Note that the specification of PRE overrides our usual specification.
+    // (This yields a lot of output so will be annoying to debug if something changes.)
+    "PRE= META=test/inputs/meta_test35 MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
