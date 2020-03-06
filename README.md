@@ -67,7 +67,7 @@ This gets you the absolute latest version of `enclone`.  You can repeat this ste
 want to update.  At a later date, there will also be separately numbered releases that have passed 
 a more extensive set of tests.
 
-<b>3.</b> Type the following to download the `enclone` test datasets (and all the source code, but
+<b>3.</b> Type the following to download the `enclone` test datasets (and the source code, but
 you probably won't need that):
 ```
 cd
