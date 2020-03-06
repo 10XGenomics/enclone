@@ -54,7 +54,7 @@ ________________________________________________________________________________
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
 ### How to download and install `enclone`
 
-<b>1.</b> Open a terminal window.  This can be on a Linux or Mac computer.  Please let us 
+Open a terminal window on your Linux or Mac computer. Please let us
 know if availability on other platforms is important to you.
 
 <b>2.</b> Type the following to download the `enclone` executable:
