@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 35] = [
+const TESTS: [&str; 36] = [
     // 1. tests variant base after CDR3, parseable output
     "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes",
@@ -137,6 +137,8 @@ const TESTS: [&str; 35] = [
     // (This yields a lot of output so will be annoying to debug if something changes.)
     "PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout \
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
+    // 36. tests PBARCODE
+    "BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2",
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
