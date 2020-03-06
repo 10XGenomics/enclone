@@ -45,7 +45,7 @@ jobs:
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
-         # Find the upload URL for release assets.
+          # Find the upload URL for release assets.
           cat tagged_release_response.json
           upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
           upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
