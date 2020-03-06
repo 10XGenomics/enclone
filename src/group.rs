@@ -332,23 +332,49 @@ pub fn group_and_print_clonotypes(
                     fwriteln!(pout, "{}", pcols.iter().format(","));
                 }
                 let x = &out_datas[oo];
-                for y in x.iter() {
-                    for (i, c) in pcols.iter().enumerate() {
-                        if i > 0 {
-                            fwrite!(pout, ",");
-                        }
-                        if y.contains_key(c) {
-                            let val = &y[c];
-                            if !val.contains(',') {
-                                fwrite!(pout, "{}", val);
-                            } else {
-                                fwrite!(pout, "\"{}\"", val);
+                for (u, y) in x.iter().enumerate() {
+                    if !ctl.parseable_opt.pbarcode {
+                        for (i, c) in pcols.iter().enumerate() {
+                            if i > 0 {
+                                fwrite!(pout, ",");
                             }
-                        } else {
-                            fwrite!(pout, "");
+                            if y.contains_key(c) {
+                                let val = &y[c];
+                                if !val.contains(',') {
+                                    fwrite!(pout, "{}", val);
+                                } else {
+                                    fwrite!(pout, "\"{}\"", val);
+                                }
+                            } else {
+                                fwrite!(pout, "");
+                            }
+                        }
+                        fwriteln!(pout, "");
+                    } else {
+                        let n = exact_clonotypes[exacts[oo][u]].ncells();
+                        for m in 0..n {
+                            for (i, c) in pcols.iter().enumerate() {
+                                if i > 0 {
+                                    fwrite!(pout, ",");
+                                }
+                                if y.contains_key(c) {
+                                    let mut val = y[c].to_string();
+                                    if c == "barcodes" {
+                                        let fields = val.split(',').collect::<Vec<&str>>();
+                                        val = fields[m].to_string();
+                                    }
+                                    if !val.contains(',') {
+                                        fwrite!(pout, "{}", val);
+                                    } else {
+                                        fwrite!(pout, "\"{}\"", val);
+                                    }
+                                } else {
+                                    fwrite!(pout, "");
+                                }
+                            }
+                            fwriteln!(pout, "");
                         }
                     }
-                    fwriteln!(pout, "");
                 }
             }
         }
