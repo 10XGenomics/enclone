@@ -56,5 +56,5 @@ jobs:
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-Type: application/octet-stream' \
-          --data-binary @linux/enclone} \
+          --data-binary @linux/enclone \
           --url $new_asset_url
