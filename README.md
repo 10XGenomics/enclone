@@ -124,14 +124,12 @@ In this instance, datasets from pre- and post-vaccination timepoints are display
 containing at least ten cells are shown, and individual cells are labeled blue for pre-vaccination 
 and red for post-vaccination.  To generate the plot, all that was needed was to add
 ```
-MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell""
+MIN_CELLS=10 PLOT="clono.svg,pre->blue,post->red 
+LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell"
 ```
 to the `enclone` command line.  That caused `enclone` to generate the image as the file `clono.svg`.
 
-<br>
-<br>
-<br>
-<br>
+<br><br><br><br><br>
 ___________________________________________________________________________________________________
 
 ### How to compile the `enclone` software
