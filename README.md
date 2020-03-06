@@ -64,8 +64,8 @@ or on a mac
 wget https://github.com/10XDev/enclone/releases/download/latest/mac/enclone
 ```
 This gets you the absolute latest version of `enclone`.  You can repeat this step if you ever
-wan to update.  At a later date, there will also be 
-separately numbered releases that have passed a more extensive set of tests.
+want to update.  At a later date, there will also be separately numbered releases that have passed 
+a more extensive set of tests.
 
 <b>3.</b> Type the following to download the `enclone` test datasets (and all the source code, but
 you probably won't need that):
@@ -79,6 +79,9 @@ that are prepackaged with `enclone`.  If you subsequently want to update this, d
 cd ~/enclone
 git pull
 ```
+
+<b>4.</b> Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
+if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 ___________________________________________________________________________________________________
 
 ### How to run `enclone`
