@@ -80,6 +80,8 @@ that are prepackaged with `enclone`.  If you subsequently want to update this, d
 cd ~/enclone
 git pull
 ```
+This assumes that you have not touched the repo since you first cloned it.  Otherwise you should
+`git checkout master` first.
 
 <b>4.</b> Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
