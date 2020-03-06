@@ -54,91 +54,90 @@ fn test_enclone_fail() {
 
 const TESTS: [&str; 36] = [
     // 1. tests variant base after CDR3, parseable output
-    "BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout \
-     PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes",
+    r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
+     PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
     // 2. tests many donor ref differences, test comp and var and donorn
-    "BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,var AMINO=cdr3,var,share,donorn",
+    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,var AMINO=cdr3,var,share,donorn"###,
     // 3. tests motif in CDR3, CHAINS, utot, flipped args in CVARS, on tiny dataset
-    "BCR=85333 CDR3=\"CAA.*\" CHAINS=2 CVARS=const,utot",
+    r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,utot"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-    "BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab,CD25_ab,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC \
-     CVARSP=ulen,udiff",
+    r###"BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab,CD25_ab,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC
+     CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
-    "TCR=101287 MIN_CELLS=100",
+    r###"TCR=101287 MIN_CELLS=100"###,
     // 6. tests AMINO=
-    "BCR=86237 CELLS=3 AMINO= CVARS=umed,rmed,cdr3_dna",
+    r###"BCR=86237 CELLS=3 AMINO= CVARS=umed,rmed,cdr3_dna"###,
     // 7. tests SHM deletion
-    "BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far",
+    r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change
-    "TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor",
+    r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_BC
-    "BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC",
+    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC"###,
     // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share \
-     MIX_DONORS",
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share
+     MIX_DONORS"###,
     // 11. tests META
-    "META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
+    r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,
     // 12. this added because it got better when a noise filter was added, also tests umax
-    "TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax",
+    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
-    "TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout",
+    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
     // 14. this added because it got better when a bug in bads detection was fixed
-    "TCR=163914 CDR3=CASRLGGEETQYF",
+    r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
     // 15. tests insertion and AMINO range
-    "BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113",
-    // BCR=123085 CDR3=CARHPAPNYGFWSGYYKTDNWFDPW ==> alt example if we need to dump 86233
+    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 16. tests number of cells broken out by dataset
-    "BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW",
+    r###"BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
     // 17. tests gex with PER_BC and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    "BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC",
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
-    "BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW",
+    r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
-    "BCR=123085 CDR3=CARRYFGVVADAFDIW",
+    r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
     // 20. example affected by whitelist (gel bead oligo contamination) filtering
-    "BCR=52177 AMINO=cdr3 PER_BC CDR3=CATWDDSLSGPNWVF",
+    r###"BCR=52177 AMINO=cdr3 PER_BC CDR3=CATWDDSLSGPNWVF"###,
     // 21. test MIN_CHAINS_EXACT
-    "BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3",
+    r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 22. there was a false positive clonotype
-    "BCR=\"165807;165808\" FAIL_ONLY=true EXPECT_NULL",
+    r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
     // 23. here we were generating a fake alternate allele
-    "BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30",
+    r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
     // 24. an example that uses IGHE
-    "BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW",
+    r###"BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW"###,
     // 25. add mouse B6 example that had messed up constant regions
-    "TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF",
+    r###"TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF"###,
     // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     // Here we make sure that non-specification of MIX_DONORS works.
-    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW",
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW"###,
     // 27. tests SUMMARY and NOPRINT
-    "BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT",
+    r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
     // 28. tests BARCODE option
-    "BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1",
+    r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
     // 29. tests parenthesized variable in F, SUM and MEAN
-    "BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F=\"(IGHV3-7_g)>=4.5\" MIN_CHAINS=2 SUM MEAN",
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F="(IGHV3-7_g)>=4.5" MIN_CHAINS=2 SUM MEAN"###,
     // 30. tests d_univ and d_donor
-    "BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW",
+    r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
-    "BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW",
+    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW"###,
     // 32. tests Cell Ranger 2.0 output and RE
-    "BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE",
+    r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
-    "BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10 \
-     SCAN=\"(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1\" NOPRINT",
+    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10
+     SCAN="(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    "BCR=123085:123089 MIN_CELLS=50 PLOT=\"stdout,s1->blue,s2->red\" NOPRINT",
+    r###"BCR=123085:123089 MIN_CELLS=50 PLOT="stdout,s1->blue,s2->red" NOPRINT"###,
     // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
     // Note that the specification of PRE overrides our usual specification.
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    "PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout \
-     LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
+    r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
+     LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
     // 36. tests PBARCODE
-    "BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2",
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2"###,
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -159,6 +158,10 @@ fn test_enclone() {
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let mut test = TESTS[it].to_string();
+        test = test.replace("\n", "");
+        for _ in 0..3 {
+            test = test.replace("  ", " ");
+        }
         let mut expect_null = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
