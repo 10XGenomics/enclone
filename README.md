@@ -129,7 +129,7 @@ LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell"
 ```
 to the `enclone` command line.  That caused `enclone` to generate the image as the file `clono.svg`.
 
-<br><br><br><br><br>
+<br><br><br><br>
 ___________________________________________________________________________________________________
 
 ### How to compile the `enclone` software
