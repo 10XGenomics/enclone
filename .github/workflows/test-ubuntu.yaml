@@ -40,8 +40,6 @@ jobs:
           tag_num=$(git ls-remote --refs --sort=-v:refname https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
           echo "tag num: " $tag_num
           test_url=https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num}
-          echo "test_url: "
-          echo $test_url
           mkdir -p linux
           cp target/release/enclone linux/.
           chmod 755 linux/enclone
