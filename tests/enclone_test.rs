@@ -130,7 +130,8 @@ const TESTS: [&str; 36] = [
      SCAN="(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    r###"BCR=123085:123089 MIN_CELLS=50 PLOT="stdout,s1->blue,s2->red" NOPRINT"###,
+    r###"BCR=123085:123089 MIN_CELLS=10 PLOT="stdout,s1->red,s2->blue" NOPRINT
+     LEGEND=red,"cell from 123085",blue,"cell from 123089""###,
     // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
     // Note that the specification of PRE overrides our usual specification.
     // (This yields a lot of output so will be annoying to debug if something changes.)
@@ -190,7 +191,43 @@ fn test_enclone() {
             res.2 = stringme(&log);
         } else {
             let old = read_to_string(&out_file).unwrap();
-            let args = test.split(' ').collect::<Vec<&str>>();
+
+            // Get arguments, by parsing command, breaking at blanks, but not if they're in quotes.
+            // This is identical to parse_csv, except for the splitting character.
+            // Should refactor.
+
+            let mut args = Vec::<String>::new();
+            let mut w = Vec::<char>::new();
+            for c in test.chars() {
+                w.push(c);
+            }
+            let (mut quotes, mut i) = (0, 0);
+            while i < w.len() {
+                let mut j = i;
+                while j < w.len() {
+                    if quotes % 2 == 0 && w[j] == ' ' {
+                        break;
+                    }
+                    if w[j] == '"' {
+                        quotes += 1;
+                    }
+                    j += 1;
+                }
+                let (mut start, mut stop) = (i, j);
+                if stop - start >= 2 && w[start] == '"' && w[stop - 1] == '"' {
+                    start += 1;
+                    stop -= 1;
+                }
+                let mut s = String::new();
+                for m in start..stop {
+                    s.push(w[m]);
+                }
+                args.push(s);
+                i = j + 1;
+            }
+
+            // Form the command and execute it.
+
             let mut new = Command::new("target/release/enclone");
             let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
             for i in 0..args.len() {
