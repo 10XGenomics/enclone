@@ -75,7 +75,8 @@ const TESTS: [&str; 35] = [
     "BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC",
     // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share MIX_DONORS",
+    "BCR=\"123085;123089\" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share \
+     MIX_DONORS",
     // 11. tests META
     "META=test/inputs/meta_test11 CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med",
     // 12. this added because it got better when a noise filter was added, also tests umax
@@ -126,14 +127,16 @@ const TESTS: [&str; 35] = [
     // 32. tests Cell Ranger 2.0 output and RE
     "BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE",
     // 33. tests SCAN
-    "BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10 SCAN=\"(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1\" NOPRINT",
+    "BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10 \
+     SCAN=\"(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1\" NOPRINT",
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
     "BCR=123085:123089 MIN_CELLS=50 PLOT=\"stdout,s1->blue,s2->red\" NOPRINT",
     // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
     // Note that the specification of PRE overrides our usual specification.
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    "PRE= META=test/inputs/meta_test35 MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
+    "PRE= META=test/inputs/meta_test35 MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout \
+     LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned",
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
