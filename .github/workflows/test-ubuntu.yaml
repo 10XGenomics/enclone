@@ -50,7 +50,7 @@ jobs:
           upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
           upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
           # Substitute release asset in the upload URL
-          new_asset_url=${upload_url/\{?name,label\}/?name=linux/enclone
+          new_asset_url=${upload_url/\{?name,label\}/?name=linux/enclone}
           echo "POST binary to latest release"
           # Post binary
           curl --request POST \
