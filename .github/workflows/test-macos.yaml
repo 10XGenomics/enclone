@@ -1,4 +1,4 @@
-name: Check formatting Ubuntu
+name: Build enclone mac 
 
 on:
   #push:
