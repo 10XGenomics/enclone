@@ -51,6 +51,7 @@ profiling toolkit, including
 with which `enclone` will be integrated (later).
 ___________________________________________________________________________________________________
 
+<a name="download" style="display:block; position:relative; top:-150px;"></a>
 ### How to download and install `enclone`
 
 <b>1.</b> Open a terminal window.  This can be on a Linux or Mac computer.  Please let us 
