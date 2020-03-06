@@ -206,8 +206,9 @@ pub fn help3(args: &Vec<String>) {
         );
         print(
             "There is an alternate parseable output mode in which one line is emitted for each \
-             barcode.  This mode is enabled adding the argument \\bold{PBARCODE} to the \
-             command line.\n\n",
+             barcode.  This mode is enabled by adding the argument \\bold{PBARCODE} to the \
+             command line.  Each exact subclonotype then yields a sequence of output lines that \
+             are identical except for their barcodes field (currently).\n\n",
         );
         print(
             "If you want to completely suppress the generation of visual clonotypes, add \
