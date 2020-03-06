@@ -1,9 +1,12 @@
 name: Check formatting Ubuntu
 
 on:
+  #push:
+    #tags:
+    #- 'auto_*'
   push:
-    tags:
-    - 'auto_*'
+    branches:
+      - meryl/github-actions-1
 jobs:
   build:
     # Job name is Greeting
