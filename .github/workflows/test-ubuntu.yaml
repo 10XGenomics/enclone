@@ -38,17 +38,22 @@ jobs:
         run: |
           # Get latest tag from https://github.com/10XDev/enclone
           tag_num=$(git ls-remote --refs --sort=-v:refname https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
-          echo "tag num: " $tag_num
           test_url=https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num}
           mkdir -p linux
           cp target/release/enclone linux/.
           chmod 755 linux/enclone
-          echo "list all releases"
-          curl --request GET \
+          # Making release from latest tag 
+          curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --url https://api.github.com/repos/${{ github.repository }}/releases > all_releases.json
-          echo "All releases: "
-          cat all_releases.json
+          --url https://api.github.com/repos/${{ github.repository }}/releases
+          --data '{
+            "tag_name": ${tag_num},
+            "target_commitish": "master",
+            "name": ${tag_num],
+            "body": "enclone release" $tag_num,
+            "draft": false,
+            "prerelease": false
+            }'
           echo "GET latest release"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
