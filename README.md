@@ -53,33 +53,32 @@ ________________________________________________________________________________
 
 ### How to download and install `enclone`
 
-1. Decide if you want to install `enclone` on a Linux or Mac computer (or both).  Please let us 
+1. Open a terminal window.  This can be on a Linux or Mac computer.  Please let us 
 know if availability on other platforms is important to you.
 
-2. Go to the [enclone release page](https://github.com/10XDev/enclone/releases) and download
-the latest release(s) for the platform(s) that you need.  That's at the top of the page.
-At a later date, there will also be separately numbered releases that have passed a more extensive
-set of tests.
-
-3. Move the file to an appropriate location.  For a desktop or laptop, an appropriate location
-might be `~/bin`.
-
-<b>TO DO: link to pathing tutorial</b>
-
-4. Change your path so that it includes this location.
-
-5. Download the sample data.
-
-The easiest way to do this is to type
+2. Type the following to download the `enclone` executable:
 ```
+mkdir -p ~/bin; cd ~/bin
+wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
+or on a mac
+wget https://github.com/10XDev/enclone/releases/download/latest/mac/enclone
+```
+This gets you the absolute latest version of `enclone`.  You can repeat this step if you ever
+wan to update.  At a later date, there will also be 
+separately numbered releases that have passed a more extensive set of tests.
+
+3. Type the following to download the `enclone` test datasets (and all the source code, but
+you probably won't need that):
+```
+cd
 git clone git@github.com:10XDev/enclone.git
 ```
-and after doing that, `enclone/datasets` will be the directory containing the datasets
-that are prepackaged with `enclone`.
-
-<b>Updates.</b> If you later choose to update `enclone`, you should update both the binary
-executable and the datasets.  For the latter, you can simply type `git pull` inside the `enclone`
-directory as created above.
+Then `~/enclone/datasets` will be the directory containing the datasets
+that are prepackaged with `enclone`.  If you subsequently want to update this, do
+```
+cd ~/enclone
+git pull
+```
 ___________________________________________________________________________________________________
 
 ### How to run `enclone`
