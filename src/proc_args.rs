@@ -60,7 +60,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
     ctl.gen_opt.exact = None;
-    for i in (1..args.len()).rev() {
+    for i in 1..args.len() {
         if args[i].starts_with("PRE=") {
             ctl.gen_opt.pre = args[i].after("PRE=").to_string();
         }
