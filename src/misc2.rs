@@ -229,8 +229,7 @@ pub fn find_exact_subclonotypes(
     let texact = Instant::now();
     let mut exact_clonotypes = Vec::<ExactClonotype>::new();
     let mut r = 0;
-    let mut max_exact = 0;
-    let mut _count = 0;
+    let mut groups = Vec::<(usize, usize)>::new();
     while r < tig_bc.len() {
         let mut s = r + 1;
         while s < tig_bc.len() {
@@ -254,7 +253,7 @@ pub fn find_exact_subclonotypes(
                     || ( cid1.is_some() && cid2.is_some()
                         && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
 
-                    // Check for different donors if NDONOR specified on command line.
+                    // Check for different donors if MIX_DONORS specified on command line.
                     // Note funky redundancy in checking each chain
 
                     || ( !ctl.clono_filt_opt.donor
@@ -269,6 +268,17 @@ pub fn find_exact_subclonotypes(
             }
             s += 1;
         }
+        groups.push((r, s));
+        r = s;
+    }
+    let mut results = Vec::<(usize, Vec<ExactClonotype>)>::new();
+    for i in 0..groups.len() {
+        results.push((i, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let r = groups[i].0;
+        let s = groups[i].1;
 
         // Print reused barcodes.
 
@@ -322,6 +332,7 @@ pub fn find_exact_subclonotypes(
 
         // Explore consensus.
 
+        let mut _count = 0;
         study_consensus(
             &mut _count,
             &ctl,
@@ -338,13 +349,18 @@ pub fn find_exact_subclonotypes(
         // Save exact subclonotype.
 
         if clones.len() > 0 {
-            exact_clonotypes.push(ExactClonotype {
+            res.1.push(ExactClonotype {
                 share: share,
                 clones: clones,
             });
-            max_exact = max(max_exact, s - r);
         }
-        r = s;
+    });
+    let mut max_exact = 0;
+    for i in 0..results.len() {
+        if results[i].1.len() > 0 {
+            max_exact = max(max_exact, results[i].1[0].ncells());
+            exact_clonotypes.append(&mut results[i].1);
+        }
     }
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {
         println!("");
