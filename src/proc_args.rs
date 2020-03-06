@@ -141,6 +141,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Traverse arguments.
 
     for i in 1..args.len() {
+        if args[i].len() == 0 {
+            eprintln!(
+                "\nYou've passed a null argument to enclone.  Normally that isn't \
+                 possible.\nTake a detailed look at hoehw you're invoking enclone.\n"
+            );
+            std::process::exit(1);
+        }
         if is_simple_arg(&args[i], "SEQ") {
             ctl.join_print_opt.seq = true;
         } else if is_simple_arg(&args[i], "ANN") {
