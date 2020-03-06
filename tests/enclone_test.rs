@@ -164,7 +164,7 @@ fn test_enclone() {
         }
         let testn = test.replace("\"", "");
         let mut log = Vec::<u8>::new();
-        let out_file = format!("test/inputs/enclone_test{}_output", it + 1);
+        let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
         if !path_exists(&out_file) {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
@@ -176,7 +176,7 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/enclone_test{}_output\n",
+                 > test/inputs/outputs/enclone_test{}_output\n",
                 TEST_FILES_VERSION,
                 test,
                 it + 1
@@ -282,7 +282,7 @@ fn test_enclone() {
                 fwriteln!(
                     log,
                     "enclone PRE=test/inputs/version{} {} \
-                     > test/inputs/enclone_test{}_output\n",
+                     > test/inputs/outputs/enclone_test{}_output\n",
                     TEST_FILES_VERSION,
                     test,
                     it + 1
@@ -348,7 +348,7 @@ fn test_enclone_prebuild() {
     let test_id = 17;
     let it = test_id - 1;
     let testn = format!("{} NH5", TESTS[it]);
-    let out_file = format!("test/inputs/enclone_test{}_output", test_id);
+    let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new("target/release/enclone");
