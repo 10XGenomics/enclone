@@ -52,8 +52,8 @@ jobs:
             "draft": false,
             "prerelease": false
             }
-            EOF
-            )
+          EOF
+          )
           # Making release from latest tag 
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
