@@ -289,6 +289,8 @@ pub fn make_diff_row(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Define the set "parseable_fields" of fields that the could occur in parseable output.
+
 pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.
 
@@ -314,6 +316,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
+    eprintln!("lvars = {}", lvars.iter().format(","));
     for x in lvars.iter() {
         speaker!(x);
     }
@@ -366,6 +369,11 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     for x in pcols_sort.iter() {
         if !bin_member(&pfsort, x) {
             eprintln!("\nUnknown parseable output field: {}.\n", x);
+            eprintln!(
+                "Note that the allowed fields depend on your specification for the \
+                 LVARS or LVARSP,\nand CVARS or CVARSP options.  Please see \
+                 \"enclone help parseable\".\n"
+            );
             std::process::exit(1);
         }
     }
