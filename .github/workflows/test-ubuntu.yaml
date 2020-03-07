@@ -48,7 +48,7 @@ jobs:
             "tag_name": ${tag_num},
             "target_commitish": "master",
             "name": ${tag_num},
-            "body": "enclone release" ${tag_num},
+            "body": "enclone release",
             "draft": false,
             "prerelease": false
             }
