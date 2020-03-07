@@ -396,7 +396,8 @@ pub fn help2(args: &Vec<String>) {
              everything \
              after the final slash in the directory name (e.g. \\bold{sample345} in the above \
              example), or the entire name if there is no slash; \
-             samples and donors are assigned identifers s1,... and d1,..., respectively.\n\n",
+             samples and donors are assigned identifers s1,... and d1,..., respectively; \
+             numbering of samples restarts with each new donor.\n\n",
         );
         print(
             "Examples:\n\
