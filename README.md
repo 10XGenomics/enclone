@@ -41,9 +41,9 @@ running!  To use `enclone`, you need to know how to run command-line tools.  Thi
 can be learned easily, particularly if you have a friend or colleague who can help you
 get started.  You do not need to be able to program, or anything of that sort.
 
-`enclone` is fast, typically responding in seconds.  It is intended as an experimental tool.
-You can dynamically change your command line to select specific clonotypes and fields you wish
-to see.
+`enclone` is fast, typically responding in seconds (if run on a single dataset).  It is intended 
+as an experimental tool.  You can dynamically change your command line to select specific 
+clonotypes and fields you wish to see.  You can run `enclone` on a laptop or a desktop or a server.
 
 `enclone` is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
 profiling toolkit, including
