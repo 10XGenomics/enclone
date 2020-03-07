@@ -163,7 +163,7 @@ pub fn help5(args: &Vec<String>) {
 
         ldoc!("windows", "make enclone work on windows computers");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         print!("{}", log);
         println!(
             "\nPlease let us know if you are interested in these features, or if there are\n\

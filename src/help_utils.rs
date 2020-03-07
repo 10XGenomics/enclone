@@ -360,7 +360,7 @@ pub fn print_with_box(x: &str) {
         rows.push(vec![z.to_string()]);
     }
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false);
+    print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, false);
     println!("{}", log);
 }
 
@@ -392,6 +392,6 @@ pub fn banner(x: &str, plain: bool) {
 
 pub fn print_tab2(rows: &Vec<Vec<String>>) {
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+    print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
     print!("{}", log);
 }

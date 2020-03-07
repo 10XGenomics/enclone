@@ -65,7 +65,14 @@ pub fn make_table(
         }
         println!("");
     }
-    print_tabular_vbox(&mut log, &rows, 2, &justify, ctl.debug_table_printing);
+    print_tabular_vbox(
+        &mut log,
+        &rows,
+        2,
+        &justify,
+        ctl.debug_table_printing,
+        false,
+    );
     if ctl.debug_table_printing {
         println!("{}", log);
     }

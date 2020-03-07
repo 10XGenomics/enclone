@@ -323,7 +323,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "for which you would like to see a simplified view.");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);
@@ -431,7 +431,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("<custom>_cu", "to be shown");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
@@ -540,7 +540,7 @@ pub fn help4(args: &Vec<String>) {
 
         let mut log = String::new();
         // was ... rows.clone()
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "At least one variable must be listed.  The default is \\bold{umed,const,notes}.  \
@@ -584,7 +584,7 @@ pub fn help4(args: &Vec<String>) {
             "amino acids numbered a through b (zero-based, inclusive)"
         );
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "Note that we compute positions in base space, and then divide by three to get \
@@ -641,7 +641,7 @@ pub fn help4(args: &Vec<String>) {
         ldoc!("SUM", "print sum row for each clonotype");
         doc!("MEAN", "print mean row for each clonotype");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "\\bold{options that control clonotype grouping}\n\n\
@@ -665,7 +665,7 @@ pub fn help4(args: &Vec<String>) {
             "minimum number of clonotypes in group to print (default = 1)"
         );
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);

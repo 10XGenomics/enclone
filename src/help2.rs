@@ -533,7 +533,7 @@ pub fn help2(args: &Vec<String>) {
             "and which is used by the PLOT option.".to_string(),
         ]);
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);

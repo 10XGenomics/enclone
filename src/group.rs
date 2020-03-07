@@ -467,7 +467,7 @@ pub fn group_and_print_clonotypes(
             rows.push(row);
         }
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
         log = log.replace("\n", "\n   ");
         print!("   {}", log);
     }

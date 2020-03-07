@@ -502,7 +502,7 @@ pub fn help3(args: &Vec<String>) {
         // print main table
 
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
 
         // footnote for CDR3
@@ -522,7 +522,7 @@ pub fn help3(args: &Vec<String>) {
             "have a CDR3 that contains DYIID inside it".to_string(),
         ]);
         log.clear();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         println!(
             "Note that double quotes should be used if the pattern \
