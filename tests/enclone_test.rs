@@ -73,7 +73,7 @@ const TESTS: [&str; 36] = [
     r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_BC
     r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC"###,
-    // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
+    // 10. tests multiple datasets and also LVARS=ncells,samples,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,samples,donors,datasets AMINO=share
      MIX_DONORS"###,
