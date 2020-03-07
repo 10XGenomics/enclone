@@ -316,7 +316,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
-    eprintln!("lvars = {}", lvars.iter().format(","));
     for x in lvars.iter() {
         speaker!(x);
     }
