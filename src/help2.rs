@@ -391,13 +391,16 @@ pub fn help2(args: &Vec<String>) {
              same sample, colons between datasets from the same donor, and semicolons separate \
              donors.  If semicolons are used, the value must be quoted.\n\n",
         );
-        print(
-            "Using this input system, each dataset is assigned an abbreviated name, which is \
-             everything \
-             after the final slash in the directory name (e.g. \\bold{sample345} in the above \
-             example), or the entire name if there is no slash; \
+        print_with_box(
+            "\\bold{Naming.}  Using this input system, each dataset is assigned an abbreviated \
+             name, which is \
+             everything after the final slash in the directory name (e.g. \\bold{sample345} in the \
+             above example), or the entire name if there is no slash; \
              samples and donors are assigned identifers s1,... and d1,..., respectively; \
-             numbering of samples restarts with each new donor.\n\n",
+             numbering of samples restarts with each new donor.  \\bold{To specify samples}\n\
+             \\bold{and donors, use the second input form, and see in particular} \
+             \\green{abbr:path}\\bold{.}",
+            true,
         );
         print(
             "Examples:\n\
