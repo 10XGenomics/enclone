@@ -169,7 +169,7 @@ pub fn finish_join(
         println!("whitelist contamination rate = {:.2}%", bad_rate);
     }
     if ctl.comp {
-        println!("{:.2} seconds used in tail of join", elapsed(&timer3));
+        println!("used {:.2} seconds in tail of join", elapsed(&timer3));
     }
     eq
 }

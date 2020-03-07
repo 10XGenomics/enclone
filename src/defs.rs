@@ -395,6 +395,7 @@ pub struct EncloneControl {
     pub silent: bool,                     // turn off extra logging
     pub force: bool,                      // make joins even if redundant
     pub comp: bool,                       // print computational performance stats
+    pub comp2: bool,                      // print more detailed computational performance stats
     pub debug_table_printing: bool,       // turn on debugging for table printing
     pub onesie_mult: usize,               // see main.rs
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes

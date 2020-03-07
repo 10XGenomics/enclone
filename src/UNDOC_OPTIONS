@@ -13,7 +13,8 @@ Optional arguments that control basic execution:
           so that it seems like HAPS is not working.  If this occurs, you can try using CTRLC
           to "profile by hand".
 - CTRLC: traceback on control-C
-- COMP: show computational performance.
+- COMP: show computational performance
+- COMP2: show computational performance with more details).
 
 Optional arguments controlling printing of join events:
 - SEQ: print sequences of contigs, before truncation to V..J

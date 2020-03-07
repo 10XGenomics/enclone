@@ -376,7 +376,7 @@ pub fn find_exact_subclonotypes(
     }
     if ctl.comp {
         println!(
-            "used {:.1} seconds finding exact subclonotypes, peak mem = {:.2} GB",
+            "used {:.2} seconds finding exact subclonotypes, peak mem = {:.2} GB",
             elapsed(&texact),
             peak_mem_usage_gb()
         );
