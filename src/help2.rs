@@ -371,17 +371,17 @@ pub fn help2(args: &Vec<String>) {
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
         );
-        print(
-            "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n\
-             ┃ enclone can use gene expression and feature barcode data, as represented by a feature matrix.  ┃\n\
-             ┃ Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not   ┃\n\
-             ┃ optimized for interactive use.  Therefore enclone provides an alternate file structure, which  ┃\n\
-             ┃ speeds up enclone overall by up to \\boldred{50%}.  To use this, add the argument \\bold{NH5} to the enclone      ┃\n\
-             ┃ command line.  This will work so long as you have write permission on input directories.  The  ┃\n\
-             ┃ first time you run enclone (using given inputs), the alternate file will be written; then      ┃\n\
-             ┃ subsequent invocations will be faster.   Like with other enclone command-line options, if you  ┃\n\
-             ┃ you want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.                 ┃\n\
-             ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n\n",
+        print_with_box(
+            "enclone can use gene expression and feature barcode data, as represented by a feature \
+             matrix.  Cell Ranger stores this matrix in an hdf5 file, which while generally very \
+             efficient, is not optimized for interactive use.  Therefore enclone provides an \
+             alternate file structure, which speeds up enclone overall by up to \\boldred{50%}.  \
+             To use this, add the argument \\bold{NH5} to the enclone command line.  This will \
+             work so long as you have write permission on input directories.  The first time you \
+             run enclone (using given inputs), the alternate file will be written; then subsequent \
+             invocations will be faster.   Like with other enclone command-line options, if you \
+             want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.",
+            true
         );
         print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\

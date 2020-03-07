@@ -357,6 +357,7 @@ pub fn help1(args: &Vec<String>) {
              3. There is always some background noise, e.g. from ambient mRNA.  When building \
              large clonotypes, this noise tends to pile up, yielding ectopic chains, i.e. chains \
              within a clonotype that are artifacts and do not represent true biology.",
+            false,
         );
 
         // Print boxed algorithm.
