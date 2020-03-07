@@ -337,7 +337,7 @@ pub fn help2(args: &Vec<String>) {
              argument may be \"stdout\".  Note that plotting is potentially slow.\n\n\
              To add a legend to the graph, add the argument \\bold{LEGEND} to your command \
              line.  This will give you an auto-generated legend.  You can also customize the \
-             legend by adding the argument\n\
+             legend by adding an argument of the form\n\
              \\bold{LEGEND=color1,\"text1\",...,colorn,\"textn\"}\n\
              to the command line.\n\n",
         );
