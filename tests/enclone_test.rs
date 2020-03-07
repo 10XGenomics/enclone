@@ -75,7 +75,7 @@ const TESTS: [&str; 36] = [
     r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC"###,
     // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,samples,donors,datasets AMINO=share
      MIX_DONORS"###,
     // 11. tests META
     r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,

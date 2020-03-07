@@ -101,6 +101,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if !(*x == "datasets"
+            || *x == "samples"
             || *x == "donors"
             || *x == "ncells"
             || *x == "gex_med"
