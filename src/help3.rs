@@ -190,9 +190,7 @@ pub fn help3(args: &Vec<String>) {
              \\bold{PCHAINS=n}\n\
              The parseable output fields may be specified using\n\
              \\bold{PCOLS=x1,...,xn}\n\
-             where each xi is one of the field names shown below.\n\
-             There is a separate description there of how gene expression and feature barcode\n\
-             columns are obtained.",
+             where each xi is one of the field names shown below.",
             true,
         );
         print(
@@ -315,14 +313,16 @@ pub fn help3(args: &Vec<String>) {
             "like \"barcodes\", but restricted to the dataset with the given name"
         );
         ldoc!(
-            "In addition, there is a field for each lead variable, as documented at",
+            "In addition, every lead variable may be specified as a field.  \
+             See \"enclone help lvars\".",
             "\\ext"
         );
         doc!(
-            "\"enclone help lvars\", which has a default value, that may be modified using",
+            "However, to use such a field here, the lead variable must be specified using \
+             the LVARS",
             "\\ext"
         );
-        doc!("the LVARS and LVARSP options.", "\\ext");
+        doc!("or LVARSP options (or be in the default set).", "\\ext");
         print_tab2(&rows);
         println!("");
 
@@ -369,14 +369,18 @@ pub fn help3(args: &Vec<String>) {
             "amino acids that vary across the clonotype (synonymous changes included)"
         );
         ldoc!(
-            "In addition, per chain, there is a field for each variable as described at",
+            "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
             "\\ext"
         );
         doc!(
-            "\"enclone help cvars\", after suffixing with <i>, and depending on specification",
+            "See \"enclone help cvars\".  However to use such a field here, the chain variable \
+             must be ",
             "\\ext"
         );
-        doc!("of CVARS and CVARSP (or the default behavior).", "\\ext");
+        doc!(
+            "specified using the CVARS or CVARSP options (or be in the default set).",
+            "\\ext"
+        );
         print_tab2(&rows);
         println!("");
         if !help_all {
