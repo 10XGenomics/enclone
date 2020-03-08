@@ -4,6 +4,8 @@
 
 use crate::help_utils::*;
 use ansi_escape::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 use tables::*;
 use vector_utils::*;
@@ -233,10 +235,7 @@ pub fn help3(args: &Vec<String>) {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
         }
-        for _ in 0..99 {
-            log.push(b'-');
-        }
-        log.push(b'\n');
+        fwriteln!(log, "───────────────────────");
         if !plain {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
@@ -246,9 +245,7 @@ pub fn help3(args: &Vec<String>) {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
         }
-        for _ in 0..99 {
-            log.push(b'-');
-        }
+        fwrite!(log, "───────────────────────");
         if !plain {
             emit_end_escape(&mut log);
         }
