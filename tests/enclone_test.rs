@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 37] = [
+const TESTS: [&str; 38] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -137,10 +137,13 @@ const TESTS: [&str; 37] = [
     // (This yields a lot of output so will be annoying to debug if something changes.)
     r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
-    // 36. tests PBARCODE
-    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2"###,
+    // 36. tests PCELL
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL PCOLS=barcodes,const1,const2"###,
     // 37. tests parseable output of barcodes for a given dataset
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
+     CDR3=CAVTIFGVRTALPYYYALDVW"###,
+    // 38. tests parseable output of barcodes for a given dataset, using PCELL
+    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
 ];
 

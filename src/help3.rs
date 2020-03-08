@@ -199,9 +199,9 @@ pub fn help3(args: &Vec<String>) {
         );
         print(
             "There is an alternate parseable output mode in which one line is emitted for each \
-             barcode.  This mode is enabled by adding the argument \\bold{PBARCODE} to the \
-             command line.  Each exact subclonotype then yields a sequence of output lines that \
-             are identical except for their barcodes field (currently).\n\n",
+             cell, rather then each exact subclonotype.  This mode is enabled by adding the \
+             argument \\bold{PCELL} to the command line.  Each exact subclonotype then yields a \
+             sequence of output lines that are identical except as noted below.\n\n",
         );
         print(
             "If you want to completely suppress the generation of visual clonotypes, add \
@@ -312,6 +312,11 @@ pub fn help3(args: &Vec<String>) {
             "<dataset>_barcodes",
             "like \"barcodes\", but restricted to the dataset with the given name"
         );
+        doc!(
+            "",
+            "For barcodes and <dataset>_barcodes, if you specify the PCELL option,"
+        );
+        doc!("", "then at most one barcode is shown per line.");
         ldoc!(
             "In addition, every lead variable may be specified as a field.  \
              See \"enclone help lvars\".",
