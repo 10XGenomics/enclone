@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 36] = [
+const TESTS: [&str; 37] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -139,6 +139,9 @@ const TESTS: [&str; 36] = [
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
     // 36. tests PBARCODE
     r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2"###,
+    // 37. tests parseable output of barcodes for a given dataset
+    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
+     CDR3=CAVTIFGVRTALPYYYALDVW"###,
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
