@@ -175,32 +175,25 @@ pub fn help3(args: &Vec<String>) {
              It is also possible to specify any subset of these fields, and there are a few other\n\
              choices, which we describe.\n\n\
              Parseable output is targeted primarily at R and Python users, because of the ease of\n\
-             wrangling CSV files with these languages.\n\n\
-             Parseable output is invoked by using the argument"
+             wrangling CSV files with these languages.\n"
         );
-        bold!();
-        println!("POUT=filename");
-        end_escape!();
-        println!(
-            "specifying the name of the file that is to be written to.\n\
+        print_with_box(
+            "Parseable output is invoked by using the argument\n\
+             \\bold{POUT=filename}\n\
+             specifying the name of the file that is to be written to.\n\
              [The filename \"stdout\" may be used for a preview; in that case the parseable \
              output is\n\
              generated separately for each clonotype and the two output types are integrated.]\n\
              By default, we show four chains for each clonotype, regardless of how many chains it\n\
              has, filling in with null entries.  One may instead specify n chains using the \
-             argument"
-        );
-        bold!();
-        println!("PCHAINS=n");
-        end_escape!();
-        println!("The parseable output fields may be specified using");
-        bold!();
-        println!("PCOLS=x1,...,xn");
-        end_escape!();
-        println!(
-            "where each xi is one of the field names shown below.\n\
+             argument\n\
+             \\bold{PCHAINS=n}\n\
+             The parseable output fields may be specified using\n\
+             \\bold{PCOLS=x1,...,xn}\n\
+             where each xi is one of the field names shown below.\n\
              There is a separate description there of how gene expression and feature barcode\n\
-             columns are obtained.\n"
+             columns are obtained.",
+            true,
         );
         print(
             "Over time additional fields may be added and the order of fields may \
