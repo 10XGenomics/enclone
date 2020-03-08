@@ -604,8 +604,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     unique_sort(&mut tags);
     unique_sort(&mut sample_donor);
     ctl.sample_info.donors = donors.len();
-    ctl.sample_info.donor_list = donors.clone();
+    ctl.sample_info.dataset_list = ctl.sample_info.dataset_id.clone();
+    unique_sort(&mut ctl.sample_info.dataset_list);
     ctl.sample_info.sample_list = samples.clone();
+    ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.tag_list = tags;
     let mut sample_donor_list = Vec::<(usize, usize)>::new();
     for i in 0..sample_donor.len() {

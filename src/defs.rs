@@ -200,11 +200,12 @@ pub struct SampleInfo {
     pub sample_id: Vec<String>,    // map dataset id to sample short name
     pub color: Vec<String>,        // map dataset to color
     // other
-    pub donor_list: Vec<String>, // unique-sorted list of donor short names
-    pub sample_list: Vec<String>, // unique-sorted list of sample short names
-    pub tag_list: Vec<String>,   // unique-sorted list of tag short names
+    pub dataset_list: Vec<String>, // unique-sorted list of dataset short names
+    pub sample_list: Vec<String>,  // unique-sorted list of sample short names
+    pub donor_list: Vec<String>,   // unique-sorted list of donor short names
+    pub tag_list: Vec<String>,     // unique-sorted list of tag short names
     pub sample_donor_list: Vec<(usize, usize)>, // unique-sorted list of (sample, donor) indices
-    pub donors: usize,           // number of donors
+    pub donors: usize,             // number of donors
     // map dataset index to map of barcode to (sample,donor):
     pub sample_donor: Vec<HashMap<String, (String, String)>>,
     // map dataset index to map of barcode to tag:

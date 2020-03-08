@@ -370,6 +370,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     speaker!("nchains");
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
+    for x in ctl.sample_info.dataset_list.iter() {
+        speaker!(&format!("{}_barcodes", x));
+    }
     let mut pfsort = parseable_fields.clone();
     unique_sort(&mut pfsort);
     for x in pcols_sort.iter() {
@@ -440,6 +443,21 @@ pub fn start_gen(
         }
         bc.sort();
         speak!(u, "barcodes", format!("{}", bc.iter().format(",")));
+        for d in ctl.sample_info.dataset_list.iter() {
+            let mut bc = Vec::<String>::new();
+            for i in 0..exact_clonotypes[exacts[u]].clones.len() {
+                let q = &exact_clonotypes[exacts[u]].clones[i];
+                if ctl.sample_info.dataset_id[q[0].dataset_index] == *d {
+                    bc.push(q[0].barcode.clone());
+                }
+            }
+            bc.sort();
+            speak!(
+                u,
+                &format!("{}_barcodes", d),
+                format!("{}", bc.iter().format(","))
+            );
+        }
         for cx in 0..cols {
             let vid = rsi.vids[cx];
             speakc!(u, cx, "v_name", refdata.name[vid]);
