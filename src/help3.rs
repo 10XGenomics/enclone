@@ -321,6 +321,10 @@ pub fn help3(args: &Vec<String>) {
             "barcodes",
             "comma-separated list of barcodes for the exact subclonotype"
         );
+        doc!(
+            "<dataset>_barcodes",
+            "like \"barcodes\", but restricted to the dataset with the given name"
+        );
         ldoc!(
             "In addition, there is a field for each lead variable, as documented at",
             "\\ext"
