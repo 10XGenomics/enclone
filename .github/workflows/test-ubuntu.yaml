@@ -44,22 +44,18 @@ jobs:
           cp target/release/enclone linux/.
           chmod 755 linux/enclone
           # store release data in variable
-          post_data=$(jq -n '{
-            "tag_name": "auto_7",
-            "target_commitish": "master",
-            "name": "auto_7",
-            "body": "enclone release",
-            "draft": false,
-            "prerelease": false
-            }')
-          echo "post_data"
-          echo ${post_data}
           # Making release from latest tag 
-          echo "curl --request POST --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --url https://api.github.com/repos/${{ github.repository }}/releases  --data ${post_data}"
           curl --request POST \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --url https://api.github.com/repos/${{ github.repository }}/releases \
-          --data ${post_data}
+          --data '{
+            "tag_name": '\"''${tag_num}''\"',
+            "target_commitish": "master",
+            "name": '\"''${tag_num}''\"',
+            "body": "Description of the release",
+            "draft": false,
+            "prerelease": false
+            }' > create_release_response.json
           echo "GET latest release"
           curl --request GET \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
