@@ -238,7 +238,7 @@ fn circles_to_svg(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Here, and in "enclone help color", we swap the order of colors, please the last three before
+// Here, and in "enclone help color", we swap the order of colors, placing the last three before
 // the first three.  This is because the last three seem to make a better three-color palette.
 
 fn substitute_enclone_color(color: &mut String) {
