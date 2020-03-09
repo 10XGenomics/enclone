@@ -323,7 +323,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "for which you would like to see a simplified view.");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);
@@ -350,6 +350,7 @@ pub fn help4(args: &Vec<String>) {
              where each xi is one of:\n\n",
         );
         doc!("datasets", "dataset identifiers");
+        doc!("samples", "sample identifiers");
         doc!("donors", "donor identifiers");
         ldoc!("ncells", "number of cells");
         doc!(
@@ -412,29 +413,25 @@ pub fn help4(args: &Vec<String>) {
             "these identifiers is arbitrary.  This option is best applied to cases where"
         );
         doc!("", "all exact subclonotypes have a complete set of chains.");
-        ldoc!("<gene>_g", "");
-        doc!("<antibody>_ab", "");
-        doc!("<antigen>_ag", "");
-        doc!("<crispr>_cr", "");
-        doc!("<custom>_cu", "");
-        doc!(
-            "",
-            "look for a declared feature of the given type with the given id or name,"
+        ldoc!(
+            "<gene>_g",
+            "all five feature types: look for a declared feature of the given type with"
         );
         doc!(
-            "",
-            "and report the mean umi count for it; this assumes that gene expression"
+            "<antibody>_ab",
+            "the given id or name, and report the mean UMI count for it; this assumes"
         );
         doc!(
-            "",
-            "or feature barcode data have been generated; we also allow the form e.g."
+            "<antigen>_ag",
+            "that gene expression or feature barcodes have been generated; we also"
         );
         doc!(
-            "",
-            "<abbr>:<gene>_g where abbr is an abbreviation to be shown as column header"
+            "<crispr>_cr",
+            "allow the form e.g. <abbr>:<gene>_g where abbr is an abbreviation"
         );
+        doc!("<custom>_cu", "to be shown");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
@@ -543,7 +540,7 @@ pub fn help4(args: &Vec<String>) {
 
         let mut log = String::new();
         // was ... rows.clone()
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "At least one variable must be listed.  The default is \\bold{umed,const,notes}.  \
@@ -587,7 +584,7 @@ pub fn help4(args: &Vec<String>) {
             "amino acids numbered a through b (zero-based, inclusive)"
         );
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "Note that we compute positions in base space, and then divide by three to get \
@@ -612,8 +609,8 @@ pub fn help4(args: &Vec<String>) {
         begin_doc!("display");
         print("\n\\bold{other options that control clonotype display}\n\n");
         doc!(
-            "PER_BC",
-            "expand out each exact clonotype line, showing one line per barcode,"
+            "PER_CELL",
+            "expand out each exact clonotype line, showing one line per cell,"
         );
         doc!(
             "",
@@ -644,7 +641,7 @@ pub fn help4(args: &Vec<String>) {
         ldoc!("SUM", "print sum row for each clonotype");
         doc!("MEAN", "print mean row for each clonotype");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
             "\\bold{options that control clonotype grouping}\n\n\
@@ -668,7 +665,7 @@ pub fn help4(args: &Vec<String>) {
             "minimum number of clonotypes in group to print (default = 1)"
         );
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);

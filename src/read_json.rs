@@ -552,6 +552,6 @@ pub fn parse_json_annotations_files(
         std::process::exit(1);
     }
     if ctl.comp {
-        println!("used {:.1} seconds loading from json", elapsed(&tl));
+        println!("used {:.2} seconds loading from json", elapsed(&tl));
     }
 }
