@@ -45,9 +45,9 @@ jobs:
           # store release data in variable
           post_data=$(cat << EOF
             {
-            "tag_name": ${tag_num},
+            "tag_name": \"${tag_num}\",
             "target_commitish": "master",
-            "name": ${tag_num},
+            "name": \"${tag_num}\",
             "body": "enclone release",
             "draft": false,
             "prerelease": false
