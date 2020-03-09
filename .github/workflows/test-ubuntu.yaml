@@ -44,12 +44,13 @@ jobs:
           chmod 755 linux/enclone
           # store release data in variable
           post_data=$(cat << EOF
-            "tag_name": "auto_7",
-            "target_commitish": "master",
-            "name": "${tag_num}",
-            "body": "enclone release",
-            "draft": false,
-            "prerelease": false
+            {
+            \"tag_name\": \"auto_7\",
+            \"target_commitish\": \"master\",
+            \"name\": \"$(tag_num)\",
+            \"body\": \"enclone release\",
+            \"draft\": false,
+            \"prerelease\": false
             }
           EOF
           )
