@@ -609,8 +609,8 @@ pub fn help4(args: &Vec<String>) {
         begin_doc!("display");
         print("\n\\bold{other options that control clonotype display}\n\n");
         doc!(
-            "PER_BC",
-            "expand out each exact clonotype line, showing one line per barcode,"
+            "PER_CELL",
+            "expand out each exact clonotype line, showing one line per cell,"
         );
         doc!(
             "",
