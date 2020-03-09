@@ -38,6 +38,7 @@ jobs:
         run: |
           # Get latest tag from https://github.com/10XDev/enclone
           tag_num=$(git ls-remote --refs --sort=-v:refname https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
+          echo "tag_num: " $tag_num
           test_url=https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num}
           mkdir -p linux
           cp target/release/enclone linux/.
@@ -45,12 +46,12 @@ jobs:
           # store release data in variable
           post_data=$(cat << EOF
             {
-            \"tag_name\": \"auto_7\",
-            \"target_commitish\": \"master\",
-            \"name\": \"$(tag_num)\",
-            \"body\": \"enclone release\",
-            \"draft\": false,
-            \"prerelease\": false
+            "tag_name": "auto_7",
+            "target_commitish": "master",
+            "name": "auto_7",
+            "body": "enclone release",
+            "draft": false,
+            "prerelease": false
             }
           EOF
           )
