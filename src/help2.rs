@@ -330,6 +330,9 @@ pub fn help2(args: &Vec<String>) {
              is at\n\
              \\green{https://www.w3.org/TR/SVGColor12}.\n\n\
              \
+             enclone also recognizes the color abbreviations @1, ..., @6, which refer to \
+             enclone's color blind friendly palette (see \"enclone help color\").\n\n\
+             \
              Each cell is shown as a disk having the given color, and each clonotype is shown as \
              a cluster of these disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
@@ -337,7 +340,7 @@ pub fn help2(args: &Vec<String>) {
              argument may be \"stdout\".  Note that plotting is potentially slow.\n\n\
              To add a legend to the graph, add the argument \\bold{LEGEND} to your command \
              line.  This will give you an auto-generated legend.  You can also customize the \
-             legend by adding the argument\n\
+             legend by adding an argument of the form\n\
              \\bold{LEGEND=color1,\"text1\",...,colorn,\"textn\"}\n\
              to the command line.\n\n",
         );
@@ -371,17 +374,17 @@ pub fn help2(args: &Vec<String>) {
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
         );
-        print(
-            "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n\
-             ┃ enclone can use gene expression and feature barcode data, as represented by a feature matrix.  ┃\n\
-             ┃ Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not   ┃\n\
-             ┃ optimized for interactive use.  Therefore enclone provides an alternate file structure, which  ┃\n\
-             ┃ speeds up enclone overall by up to \\boldred{50%}.  To use this, add the argument \\bold{NH5} to the enclone      ┃\n\
-             ┃ command line.  This will work so long as you have write permission on input directories.  The  ┃\n\
-             ┃ first time you run enclone (using given inputs), the alternate file will be written; then      ┃\n\
-             ┃ subsequent invocations will be faster.   Like with other enclone command-line options, if you  ┃\n\
-             ┃ you want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.                 ┃\n\
-             ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n\n",
+        print_with_box(
+            "enclone can use gene expression and feature barcode data, as represented by a feature \
+             matrix.  Cell Ranger stores this matrix in an hdf5 file, which while generally very \
+             efficient, is not optimized for interactive use.  Therefore enclone provides an \
+             alternate file structure, which speeds up enclone overall by up to \\boldred{50%}.  \
+             To use this, add the argument \\bold{NH5} to the enclone command line.  This will \
+             work so long as you have write permission on input directories.  The first time you \
+             run enclone (using given inputs), the alternate file will be written; then subsequent \
+             invocations will be faster.   Like with other enclone command-line options, if you \
+             want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.",
+            true
         );
         print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\
@@ -391,12 +394,16 @@ pub fn help2(args: &Vec<String>) {
              same sample, colons between datasets from the same donor, and semicolons separate \
              donors.  If semicolons are used, the value must be quoted.\n\n",
         );
-        print(
-            "Using this input system, each dataset is assigned an abbreviated name, which is \
-             everything \
-             after the final slash in the directory name (e.g. \\bold{sample345} in the above \
-             example), or the entire name if there is no slash; \
-             samples and donors are assigned identifers s1,... and d1,..., respectively.\n\n",
+        print_with_box(
+            "\\bold{Naming.}  Using this input system, each dataset is assigned an abbreviated \
+             name, which is \
+             everything after the final slash in the directory name (e.g. \\bold{sample345} in the \
+             above example), or the entire name if there is no slash; \
+             samples and donors are assigned identifers s1,... and d1,..., respectively; \
+             numbering of samples restarts with each new donor.  \\bold{To specify samples}\n\
+             \\bold{and donors, use the second input form, and see in particular} \
+             \\green{abbr:path}\\bold{.}",
+            true,
         );
         print(
             "Examples:\n\
@@ -532,7 +539,7 @@ pub fn help2(args: &Vec<String>) {
             "and which is used by the PLOT option.".to_string(),
         ]);
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false, false);
         println!("{}", log);
         if !help_all {
             std::process::exit(0);

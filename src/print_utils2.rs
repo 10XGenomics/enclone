@@ -263,6 +263,19 @@ pub fn row_fill(
         if lvars[i].starts_with('g') && lvars[i].after("g").parse::<usize>().is_ok() {
             let d = lvars[i].after("g").force_usize();
             lvar![lvars[i], format!("{}", groups[&d][u] + 1)];
+        } else if lvars[i] == "samples".to_string() {
+            let mut samples = Vec::<String>::new();
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].sample_index.is_some() {
+                    samples.push(
+                        ctl.sample_info.sample_id[ex.clones[j][0].sample_index.unwrap()].clone(),
+                    );
+                } else {
+                    samples.push("?".to_string());
+                }
+            }
+            unique_sort(&mut samples);
+            lvar![lvars[i], format!("{}", samples.iter().format(","))];
         } else if lvars[i] == "datasets".to_string() {
             lvar![lvars[i], format!("{}", lenas.iter().format(","))];
         } else if lvars[i] == "donors".to_string() {

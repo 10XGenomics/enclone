@@ -338,7 +338,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let tdonor = Instant::now();
     let drefs = make_donor_refs(&alt_refs, &refdata);
     if ctl.comp {
-        println!("\nused {:.2} seconds making donor refs", elapsed(&tdonor));
+        println!("used {:.2} seconds making donor refs", elapsed(&tdonor));
     }
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
@@ -356,11 +356,13 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &mut join_info,
     );
+    /*
     if ctl.comp {
         if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
             println!("");
         }
     }
+    */
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
@@ -381,14 +383,17 @@ pub fn main_enclone(args: &Vec<String>) {
         &join_info,
     );
     if ctl.comp {
-        println!("\nused {:.2} seconds making orbits", elapsed(&torb));
+        if !ctl.gen_opt.noprint {
+            println!("");
+        }
+        println!("used {:.2} seconds making orbits", elapsed(&torb));
     }
 
     // Report computational performance.
 
     if ctl.comp {
         println!(
-            "{:.2} seconds total, peak mem = {:.2} GB",
+            "\nused {:.2} seconds total, peak mem = {:.2} GB",
             elapsed(&tall),
             peak_mem_usage_gb()
         );

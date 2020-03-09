@@ -52,7 +52,7 @@ fn test_enclone_fail() {
 
 // Define a bunch of tests.
 
-const TESTS: [&str; 36] = [
+const TESTS: [&str; 38] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -71,11 +71,11 @@ const TESTS: [&str; 36] = [
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change
     r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
-    // 9. tests PER_BC
-    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_BC"###,
-    // 10. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
+    // 9. tests PER_CELL
+    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
+    // 10. tests multiple datasets and also LVARS=ncells,samples,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,donors,datasets AMINO=share
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,samples,donors,datasets AMINO=share
      MIX_DONORS"###,
     // 11. tests META
     r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,
@@ -89,16 +89,16 @@ const TESTS: [&str; 36] = [
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 16. tests number of cells broken out by dataset
     r###"BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
-    // 17. tests gex with PER_BC and tests n_gex
+    // 17. tests gex with PER_CELL and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_BC"###,
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
     r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
     // 20. example affected by whitelist (gel bead oligo contamination) filtering
-    r###"BCR=52177 AMINO=cdr3 PER_BC CDR3=CATWDDSLSGPNWVF"###,
+    r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF"###,
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 22. there was a false positive clonotype
@@ -137,8 +137,14 @@ const TESTS: [&str; 36] = [
     // (This yields a lot of output so will be annoying to debug if something changes.)
     r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
-    // 36. tests PBARCODE
-    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PBARCODE PCOLS=barcodes,const1,const2"###,
+    // 36. tests PCELL
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL PCOLS=barcodes,const1,const2"###,
+    // 37. tests parseable output of barcodes for a given dataset
+    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
+     CDR3=CAVTIFGVRTALPYYYALDVW"###,
+    // 38. tests parseable output of barcodes for a given dataset, using PCELL
+    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes PCELL
+     CDR3=CAVTIFGVRTALPYYYALDVW"###,
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
