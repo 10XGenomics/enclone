@@ -43,16 +43,14 @@ jobs:
           cp target/release/enclone linux/.
           chmod 755 linux/enclone
           # store release data in variable
-          post_data=$(cat << EOF
-            {
+          post_data=$(jq -n '{
             tag_name: "${tag_num}",
             target_commitish: "master",
             name: "${tag_num}",
             body: "enclone release",
             draft: false,
             prerelease: false
-            }
-          EOF
+            }'
           )
           echo "post_data"
           echo ${post_data}
