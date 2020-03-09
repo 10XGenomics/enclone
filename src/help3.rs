@@ -4,6 +4,8 @@
 
 use crate::help_utils::*;
 use ansi_escape::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 use tables::*;
 use vector_utils::*;
@@ -173,32 +175,23 @@ pub fn help3(args: &Vec<String>) {
              It is also possible to specify any subset of these fields, and there are a few other\n\
              choices, which we describe.\n\n\
              Parseable output is targeted primarily at R and Python users, because of the ease of\n\
-             wrangling CSV files with these languages.\n\n\
-             Parseable output is invoked by using the argument"
+             wrangling CSV files with these languages.\n"
         );
-        bold!();
-        println!("POUT=filename");
-        end_escape!();
-        println!(
-            "specifying the name of the file that is to be written to.\n\
+        print_with_box(
+            "Parseable output is invoked by using the argument\n\
+             \\bold{POUT=filename}\n\
+             specifying the name of the file that is to be written to.\n\
              [The filename \"stdout\" may be used for a preview; in that case the parseable \
              output is\n\
              generated separately for each clonotype and the two output types are integrated.]\n\
              By default, we show four chains for each clonotype, regardless of how many chains it\n\
              has, filling in with null entries.  One may instead specify n chains using the \
-             argument"
-        );
-        bold!();
-        println!("PCHAINS=n");
-        end_escape!();
-        println!("The parseable output fields may be specified using");
-        bold!();
-        println!("PCOLS=x1,...,xn");
-        end_escape!();
-        println!(
-            "where each xi is one of the field names shown below.\n\
-             There is a separate description there of how gene expression and feature barcode\n\
-             columns are obtained.\n"
+             argument\n\
+             \\bold{PCHAINS=n}\n\
+             The parseable output fields may be specified using\n\
+             \\bold{PCOLS=x1,...,xn}\n\
+             where each xi is one of the field names shown below.",
+            true,
         );
         print(
             "Over time additional fields may be added and the order of fields may \
@@ -206,38 +199,34 @@ pub fn help3(args: &Vec<String>) {
         );
         print(
             "There is an alternate parseable output mode in which one line is emitted for each \
-             barcode.  This mode is enabled by adding the argument \\bold{PBARCODE} to the \
-             command line.  Each exact subclonotype then yields a sequence of output lines that \
-             are identical except for their barcodes field (currently).\n\n",
+             cell, rather then each exact subclonotype.  This mode is enabled by adding the \
+             argument \\bold{PCELL} to the command line.  Each exact subclonotype then yields a \
+             sequence of output lines that are identical except as noted below.\n\n",
         );
         print(
             "If you want to completely suppress the generation of visual clonotypes, add \
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
-        print(
-            "If you want to generate nucleotide FASTA output for each chain in each exact \
-             subclonotype, \
-             use the argument\n\\bold{FASTA=filename}.  The special case \\bold{stdout} will \
+        print_with_box(
+            "\\bold{FASTA output.}  This is a separate feature. \
+             To generate nucleotide FASTA output for each chain in each exact subclonotype, \
+             use the argument \\bold{FASTA=filename}.  The special case \\bold{stdout} will \
              cause the FASTA records to be shown as part of standard output.  The FASTA records \
              that are generated are of the form V(D)JC, where V is the full V segment (including \
              the leader) and C is the full constant region, copied verbatim from the reference.  \
              If a particular chain in a particular exact subclonotype is not assigned a constant \
              region, then we use the constant region that was assigned to the clonotype.  If no \
-             constant region at all was assigned, then the FASTA record is omitted.\n\n",
-        );
-        print(
-            "Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
-             FASTA file.\n\n",
+             constant region at all was assigned, then the FASTA record is omitted.  \
+             Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
+             FASTA file.",
+            true,
         );
         let mut log = Vec::<u8>::new();
         if !plain {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
         }
-        for _ in 0..99 {
-            log.push(b'-');
-        }
-        log.push(b'\n');
+        fwriteln!(log, "───────────────────────");
         if !plain {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
@@ -247,9 +236,7 @@ pub fn help3(args: &Vec<String>) {
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
         }
-        for _ in 0..99 {
-            log.push(b'-');
-        }
+        fwrite!(log, "───────────────────────");
         if !plain {
             emit_end_escape(&mut log);
         }
@@ -321,15 +308,26 @@ pub fn help3(args: &Vec<String>) {
             "barcodes",
             "comma-separated list of barcodes for the exact subclonotype"
         );
+        doc!(
+            "<dataset>_barcodes",
+            "like \"barcodes\", but restricted to the dataset with the given name"
+        );
+        doc!(
+            "",
+            "For barcodes and <dataset>_barcodes, if you specify the PCELL option,"
+        );
+        doc!("", "then at most one barcode is shown per line.");
         ldoc!(
-            "In addition, there is a field for each lead variable, as documented at",
+            "In addition, every lead variable may be specified as a field.  \
+             See \"enclone help lvars\".",
             "\\ext"
         );
         doc!(
-            "\"enclone help lvars\", which has a default value, that may be modified using",
+            "However, to use such a field here, the lead variable must be specified using \
+             the LVARS",
             "\\ext"
         );
-        doc!("the LVARS and LVARSP options.", "\\ext");
+        doc!("or LVARSP options (or be in the default set).", "\\ext");
         print_tab2(&rows);
         println!("");
 
@@ -376,14 +374,18 @@ pub fn help3(args: &Vec<String>) {
             "amino acids that vary across the clonotype (synonymous changes included)"
         );
         ldoc!(
-            "In addition, per chain, there is a field for each variable as described at",
+            "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
             "\\ext"
         );
         doc!(
-            "\"enclone help cvars\", after suffixing with <i>, and depending on specification",
+            "See \"enclone help cvars\".  However to use such a field here, the chain variable \
+             must be ",
             "\\ext"
         );
-        doc!("of CVARS and CVARSP (or the default behavior).", "\\ext");
+        doc!(
+            "specified using the CVARS or CVARSP options (or be in the default set).",
+            "\\ext"
+        );
         print_tab2(&rows);
         println!("");
         if !help_all {
@@ -502,7 +504,7 @@ pub fn help3(args: &Vec<String>) {
         // print main table
 
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
 
         // footnote for CDR3
@@ -522,7 +524,7 @@ pub fn help3(args: &Vec<String>) {
             "have a CDR3 that contains DYIID inside it".to_string(),
         ]);
         log.clear();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         println!(
             "Note that double quotes should be used if the pattern \

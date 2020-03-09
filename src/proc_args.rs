@@ -178,9 +178,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&arg, "DUMP_LENAS") {
         } else if is_simple_arg(&arg, "BC") {
             ctl.join_print_opt.show_bc = true;
-        } else if is_simple_arg(&arg, "PER_BC") {
+        } else if is_simple_arg(&arg, "PER_CELL") {
             ctl.clono_print_opt.bu = true;
         } else if is_simple_arg(&arg, "COMP") {
+        } else if is_simple_arg(&arg, "COMP2") {
         } else if is_simple_arg(&arg, "CON") {
             ctl.allele_print_opt.con = true;
         } else if is_simple_arg(&arg, "CON_TRACE") {
@@ -365,7 +366,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.noprint = true;
         } else if arg.starts_with("POUT=") {
             ctl.parseable_opt.pout = arg.after("POUT=").to_string();
-        } else if is_simple_arg(&arg, "PBARCODE") {
+        } else if is_simple_arg(&arg, "PCELL") {
             ctl.parseable_opt.pbarcode = true;
         } else if arg.starts_with("DONOR_REF_FILE=") {
             ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
@@ -603,8 +604,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     unique_sort(&mut tags);
     unique_sort(&mut sample_donor);
     ctl.sample_info.donors = donors.len();
-    ctl.sample_info.donor_list = donors.clone();
+    ctl.sample_info.dataset_list = ctl.sample_info.dataset_id.clone();
+    unique_sort(&mut ctl.sample_info.dataset_list);
     ctl.sample_info.sample_list = samples.clone();
+    ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.tag_list = tags;
     let mut sample_donor_list = Vec::<(usize, usize)>::new();
     for i in 0..sample_donor.len() {
@@ -620,8 +623,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    if ctl.comp {
-        println!("-- used {:.2} seconds processing args", elapsed(&targs));
+    if ctl.comp2 {
+        println!("\n-- used {:.2} seconds processing args", elapsed(&targs));
     }
     proc_args_tail(&mut ctl, &args);
 

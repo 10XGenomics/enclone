@@ -114,7 +114,7 @@ pub fn join_exacts(
         println!("comparing {} simple clonotypes", info.len());
     }
     if ctl.comp {
-        println!("{:.2} seconds used in join setup", elapsed(&timer1));
+        println!("used {:.2} seconds in join setup", elapsed(&timer1));
     }
     let timer2 = Instant::now();
     results.par_iter_mut().for_each(|r| {
@@ -445,7 +445,7 @@ pub fn join_exacts(
         }
     });
     if ctl.comp {
-        println!("{:.2} seconds used in main part of join", elapsed(&timer2));
+        println!("used {:.2} seconds in main part of join", elapsed(&timer2));
     }
     finish_join(&ctl, &exact_clonotypes, &info, &results, &mut join_info)
 }

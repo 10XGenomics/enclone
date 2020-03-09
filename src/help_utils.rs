@@ -352,7 +352,9 @@ pub fn print_to(x: &str) -> String {
     ans
 }
 
-pub fn print_with_box(x: &str) {
+// Print text in a box, expanding \\bold{...} etc..
+
+pub fn print_with_box(x: &str, bold_box: bool) {
     let y = print_to(x);
     let mut rows = Vec::<Vec<String>>::new();
     let lines = y.split('\n').collect::<Vec<&str>>();
@@ -360,7 +362,7 @@ pub fn print_with_box(x: &str) {
         rows.push(vec![z.to_string()]);
     }
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false);
+    print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
     println!("{}", log);
 }
 
@@ -392,6 +394,6 @@ pub fn banner(x: &str, plain: bool) {
 
 pub fn print_tab2(rows: &Vec<Vec<String>>) {
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+    print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
     print!("{}", log);
 }
