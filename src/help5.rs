@@ -464,6 +464,10 @@ pub fn help5(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
         begin_doc!("developer");
         print("\n\\bold{a few options for developers}\n\n");
+        print(
+            "For instructions on how to compile, please see\n\
+             \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
+        );
         doc!(
             "COMP",
             "report computational performance stats; use this with NOPRINT if you"
