@@ -238,6 +238,27 @@ fn circles_to_svg(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Here, and in "enclone help color", we swap the order of colors, please the last three before
+// the first three.  This is because the last three seem to make a better three-color palette.
+
+fn substitute_enclone_color(color: &mut String) {
+    if *color == "@1".to_string() {
+        *color = "rgb(0,95,175)".to_string();
+    } else if *color == "@2".to_string() {
+        *color = "rgb(215,135,175)".to_string();
+    } else if *color == "@3".to_string() {
+        *color = "rgb(0,175,135)".to_string();
+    } else if *color == "@4".to_string() {
+        *color = "rgb(215,95,0)".to_string();
+    } else if *color == "@5".to_string() {
+        *color = "rgb(95,175,255)".to_string();
+    } else if *color == "@6".to_string() {
+        *color = "rgb(215,175,0)".to_string();
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn plot_clonotypes(
     ctl: &EncloneControl,
     exacts: &Vec<Vec<usize>>,
@@ -299,6 +320,12 @@ pub fn plot_clonotypes(
         colors.sort();
         coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
+        // Substitute enclone colors.
+
+        for j in 0..colors.len() {
+            substitute_enclone_color(&mut colors[j]);
+        }
+
         // Save.
 
         let mut radius = 0.0f64;
@@ -354,6 +381,9 @@ pub fn plot_clonotypes(
                 colors.push(ctl.gen_opt.legend[i].0.clone());
                 samples.push(ctl.gen_opt.legend[i].1.clone());
             }
+        }
+        for i in 0..colors.len() {
+            substitute_enclone_color(&mut colors[i]);
         }
         for s in samples.iter() {
             max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));

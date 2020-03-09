@@ -177,12 +177,17 @@ pub fn help5(args: &Vec<String>) {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide color help.
+    //
+    // Here, and in substitute_enclone_color in plot.rs, we swap the order of colors, placing the
+    // last three before the first three.  This is because the last three seem to make a better
+    // three-color palette.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
         begin_doc!("color");
         println!("\nHere is the color palette that enclone uses for amino acids:\n");
         let mut pal = String::new();
-        for s in 0..6 {
+        for i in 0..6 {
+            let s = best_color_order(i);
             let mut log = Vec::<u8>::new();
             if !plain {
                 print_color(s, &mut log);
@@ -194,7 +199,7 @@ pub fn help5(args: &Vec<String>) {
                 emit_end_escape(&mut log);
                 pal += &stringme(&log);
             }
-            if s < 6 {
+            if i < 6 {
                 pal.push(' ');
             }
         }

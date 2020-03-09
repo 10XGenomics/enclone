@@ -330,6 +330,9 @@ pub fn help2(args: &Vec<String>) {
              is at\n\
              \\green{https://www.w3.org/TR/SVGColor12}.\n\n\
              \
+             enclone also recognizes the color abbreviations @1, ..., @6, which refer to \
+             enclone's color blind friendly palette (see \"enclone help color\").\n\n\
+             \
              Each cell is shown as a disk having the given color, and each clonotype is shown as \
              a cluster of these disks, which are positioned at random.  We suggest using the \
              \\bold{MIN_CELLS} option \
