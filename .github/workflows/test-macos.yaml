@@ -30,7 +30,7 @@ jobs:
       - name: build-enclone
         run: cargo build --release --bin enclone && export PATH=target/release:$PATH
       - name: unit tests
-        run: cargo test --release -- --nocapture
+        run: cargo test --release -- --nocapture --bin traceback1
       - name: make binary
         run: |
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)

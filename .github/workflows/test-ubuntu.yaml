@@ -51,8 +51,7 @@ jobs:
             "body": "enclone release",
             "draft": false,
             "prerelease": false
-            }'
-          )
+            }')
           echo "post_data"
           echo ${post_data}
           # Making release from latest tag 
