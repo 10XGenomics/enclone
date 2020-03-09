@@ -29,6 +29,8 @@ jobs:
         run: cargo fmt -- --check
       - name: build-enclone
         run: cargo build --release && export PATH=target/release:$PATH
+      - name: some find and replace troubleshooting
+        run: sed -i "s|morsel$|std::str::from_utf8(&cmd.stderr).unwrap()|g" enclone/src/bin/traceback1.rs 
       - name: unit tests
         run: cargo test --release --bin traceback1
       - name: make binary
