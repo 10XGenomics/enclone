@@ -163,7 +163,7 @@ pub fn help5(args: &Vec<String>) {
 
         ldoc!("windows", "make enclone work on windows computers");
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         print!("{}", log);
         println!(
             "\nPlease let us know if you are interested in these features, or if there are\n\
@@ -177,12 +177,17 @@ pub fn help5(args: &Vec<String>) {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide color help.
+    //
+    // Here, and in substitute_enclone_color in plot.rs, we swap the order of colors, placing the
+    // last three before the first three.  This is because the last three seem to make a better
+    // three-color palette.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
         begin_doc!("color");
         println!("\nHere is the color palette that enclone uses for amino acids:\n");
         let mut pal = String::new();
-        for s in 0..6 {
+        for i in 0..6 {
+            let s = best_color_order(i);
             let mut log = Vec::<u8>::new();
             if !plain {
                 print_color(s, &mut log);
@@ -194,7 +199,7 @@ pub fn help5(args: &Vec<String>) {
                 emit_end_escape(&mut log);
                 pal += &stringme(&log);
             }
-            if s < 6 {
+            if i < 6 {
                 pal.push(' ');
             }
         }
@@ -455,6 +460,80 @@ pub fn help5(args: &Vec<String>) {
         );
 
         std::process::exit(0);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Provide developer help.
+
+    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
+        begin_doc!("developer");
+        print("\n\\bold{a few options for developers}\n\n");
+        print(
+            "For instructions on how to compile, please see\n\
+             \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
+        );
+        doc!(
+            "COMP",
+            "report computational performance stats; use this with NOPRINT if you"
+        );
+        doc!(
+            "",
+            "only want to see the computational performance stats, and with NOPAGER if you"
+        );
+        doc!("", "want output to be unbuffered");
+        doc!(
+            "COMP2",
+            "like COMP, but adds more detailed lines that are prefixed with --"
+        );
+        ldoc!(
+            "CTRLC",
+            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive"
+        );
+        doc!(
+            "",
+            "but easy profiling method, to know what the code is doing if it seems to be"
+        );
+        doc!("", "very slow");
+        ldoc!(
+            "HAPS=n",
+            "Interrupt code n times, at one second intervals, get a traceback, and then tally"
+        );
+        doc!(
+            "",
+            "the tracebacks.  This only works if the n tracebacks can be obtained before"
+        );
+        doc!(
+            "",
+            "enclone terminates.  Interrupts that occur in the allocator are ignored, and"
+        );
+        doc!(
+            "",
+            "in some cases, this accounts for most interrupts, resulting in confusing"
+        );
+        doc!(
+            "",
+            "output.  In such cases, consider using CTRLC or a more sophisticated tool"
+        );
+        doc!(
+            "",
+            "like perf.  Also HAPS only reports on the master thread, so to get useful"
+        );
+        doc!(
+            "",
+            "information, you probably need to change an instance in the code of"
+        );
+        doc!(
+            "",
+            "par_iter_mut to iter_mut, to turn off parallelization for a strategically"
+        );
+        doc!("", "selected section.");
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
+        println!("{}", log);
+        if !help_all {
+            std::process::exit(0);
+        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

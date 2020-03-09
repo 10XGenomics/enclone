@@ -101,6 +101,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if !(*x == "datasets"
+            || *x == "samples"
             || *x == "donors"
             || *x == "ncells"
             || *x == "gex_med"
@@ -299,6 +300,10 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
         if is_simple_arg(&args[i], "COMP") {
             ctl.comp = true;
+        }
+        if is_simple_arg(&args[i], "COMP2") {
+            ctl.comp = true;
+            ctl.comp2 = true;
         }
         if is_simple_arg(&args[i], "CELLRANGER") {
             ctl.gen_opt.cellranger = true;
@@ -510,7 +515,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
     }
-    if ctl.comp {
+    if ctl.comp2 {
         println!("-- used {:.2} seconds reading invocation", elapsed(&tinv));
     }
 
@@ -518,6 +523,9 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     // run of enclone.
 
     if ctl.comp {
+        if !ctl.comp2 {
+            println!("");
+        }
         println!("used {:.2} seconds in proc_args_tail", elapsed(&tall));
     }
 }

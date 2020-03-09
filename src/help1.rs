@@ -216,7 +216,7 @@ pub fn help1(args: &Vec<String>) {
         ldoc_red!("enclone help", "help to test for correct setup");
         doc_red!("enclone", "what you see here: guide to all the doc");
         ldoc_red!("enclone help quick", "quick guide to getting started");
-        ldoc_red!("enclone help how", "how enclone works (long)");
+        doc_red!("enclone help how", "how enclone works (long)");
         ldoc_red!(
             "enclone help command",
             "info about enclone command line argument processing"
@@ -270,6 +270,7 @@ pub fn help1(args: &Vec<String>) {
             "ideas for features that might be implemented"
         );
         doc!("enclone help faq", "frequently asked questions (long)");
+        doc!("enclone help developer", "a few things for developers");
         doc!(
             "enclone help all",
             "concatenation of all the help pages (long, wide);"
@@ -357,6 +358,7 @@ pub fn help1(args: &Vec<String>) {
              3. There is always some background noise, e.g. from ambient mRNA.  When building \
              large clonotypes, this noise tends to pile up, yielding ectopic chains, i.e. chains \
              within a clonotype that are artifacts and do not represent true biology.",
+            false,
         );
 
         // Print boxed algorithm.

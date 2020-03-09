@@ -351,7 +351,8 @@ pub fn group_and_print_clonotypes(
                         }
                         fwriteln!(pout, "");
                     } else {
-                        let n = exact_clonotypes[exacts[oo][u]].ncells();
+                        let ex = &exact_clonotypes[exacts[oo][u]];
+                        let n = ex.ncells();
                         for m in 0..n {
                             for (i, c) in pcols.iter().enumerate() {
                                 if i > 0 {
@@ -362,6 +363,15 @@ pub fn group_and_print_clonotypes(
                                     if c == "barcodes" {
                                         let fields = val.split(',').collect::<Vec<&str>>();
                                         val = fields[m].to_string();
+                                    } else if c.ends_with("_barcodes") {
+                                        let valx = val.clone();
+                                        let fields = valx.split(',').collect::<Vec<&str>>();
+                                        val = String::new();
+                                        for x in fields.iter() {
+                                            if *x == ex.clones[m][0].barcode {
+                                                val = x.to_string();
+                                            }
+                                        }
                                     }
                                     if !val.contains(',') {
                                         fwrite!(pout, "{}", val);
@@ -467,7 +477,7 @@ pub fn group_and_print_clonotypes(
             rows.push(row);
         }
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false);
+        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
         log = log.replace("\n", "\n   ");
         print!("   {}", log);
     }
