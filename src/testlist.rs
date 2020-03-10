@@ -31,8 +31,8 @@ pub const TESTS: [&str; 38] = [
      MIX_DONORS"###,
     // 11. tests META
     r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,
-    // 12. this added because it got better when a noise filter was added, also tests umax
-    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax"###,
+    // 12. this added because it got better when a noise filter was added, also tests u_max
+    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
     // 14. this added because it got better when a bug in bads detection was fixed

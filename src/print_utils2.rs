@@ -478,7 +478,7 @@ pub fn row_fill(
         numis.sort();
         let median_numis = numis[numis.len() / 2];
         let utot: usize = numis.iter().sum();
-        let umax = *numis.iter().max().unwrap();
+        let u_max = *numis.iter().max().unwrap();
         nreads.sort();
         let median_nreads = nreads[nreads.len() / 2];
 
@@ -798,8 +798,8 @@ pub fn row_fill(
                 cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
             } else if rsi.cvars[col][j] == "u_med".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
-            } else if rsi.cvars[col][j] == "umax".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", umax)];
+            } else if rsi.cvars[col][j] == "u_max".to_string() {
+                cvar![j, rsi.cvars[col][j], format!("{}", u_max)];
             } else if rsi.cvars[col][j] == "utot".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", utot)];
             } else if rsi.cvars[col][j] == "rmed".to_string() {
