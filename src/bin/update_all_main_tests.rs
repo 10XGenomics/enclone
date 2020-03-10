@@ -9,7 +9,7 @@ use io_utils::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::fs::File;
-use std::io::{BufWriter,Write};
+use std::io::{BufWriter, Write};
 use std::process::Command;
 use string_utils::*;
 
@@ -77,5 +77,5 @@ fn main() {
         let new2 = stringme(&new.stdout);
         let mut f = open_for_write_new![&out_file];
         fwrite!(f, "{}", new2);
-    } );
+    });
 }
