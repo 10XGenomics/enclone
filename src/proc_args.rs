@@ -85,7 +85,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "share".to_string(),
         "donor".to_string(),
     ];
-    ctl.clono_print_opt.cvars = vec!["umed".to_string(), "const".to_string(), "notes".to_string()];
+    ctl.clono_print_opt.cvars = vec![
+        "u_med".to_string(),
+        "const".to_string(),
+        "notes".to_string(),
+    ];
     ctl.clono_print_opt.lvars = vec!["datasets".to_string(), "ncells".to_string()];
 
     ctl.clono_group_opt.min_group = 1;
@@ -104,7 +108,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.onesie_mult = 10_000;
 
     let cvars_allowed = vec![
-        "var", "umed", "umax", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
+        "var", "u_med", "umax", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
         "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
     ];
 

@@ -167,7 +167,7 @@ pub fn help2(args: &Vec<String>) {
              • The \"dot and x\" line has xs where there's a difference *within* the clonotype.\n\
              • Amino acids are shown if they differ from the universal reference or are in \
              the CDR3.\n\
-             • umed = median UMI count for a chain in the exact subclonotype.\n\
+             • u_med = median UMI count for a chain in the exact subclonotype.\n\
              • const = const region name for a chain in the exact subclonotype.\n"
         );
         print(
@@ -193,7 +193,7 @@ pub fn help2(args: &Vec<String>) {
         );
         println!(
             "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
-             LVARSP=gex_med,IGHV2-5_g,CD4_a CDR3=CALMGTYCSGDNCYSWFDPW"
+             LVARSP=gex_med,IGHV2-5_g,CD4_ab CDR3=CALMGTYCSGDNCYSWFDPW"
         );
         if !plain {
             print!("{}", include_str!("example2"));

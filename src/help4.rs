@@ -478,10 +478,22 @@ pub fn help4(args: &Vec<String>) {
             "var",
             "bases at positions in chain that vary across the clonotype"
         );
-        ldoc!("umed", "median VDJ umi count for each exact subclonotype");
-        doc!("umax", "max VDJ umi count for each exact subclonotype");
-        doc!("utot", "total VDJ umi count for each exact subclonotype");
-        ldoc!("rmed", "median VDJ read count for each exact subclonotype");
+        ldoc!(
+            "u_med",
+            "VDJ UMI count for each exact subclonotype, median across cells"
+        );
+        doc!(
+            "u_max",
+            "VDJ UMI count for each exact subclonotype, max across cells"
+        );
+        doc!(
+            "u_Σ or u_sum",
+            "VDJ UMI count for each exact subclonotype, total across cells"
+        );
+        ldoc!(
+            "r_med",
+            "VDJ read count for each exact subclonotype, median across cells"
+        );
         ldoc!("const", "constant region name");
         ldoc!(
             "comp",
@@ -543,7 +555,7 @@ pub fn help4(args: &Vec<String>) {
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
-            "At least one variable must be listed.  The default is \\bold{umed,const,notes}.  \
+            "At least one variable must be listed.  The default is \\bold{u_med,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
         if !help_all {

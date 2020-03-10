@@ -796,7 +796,7 @@ pub fn row_fill(
                 cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
             } else if rsi.cvars[col][j] == "var".to_string() {
                 cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
-            } else if rsi.cvars[col][j] == "umed".to_string() {
+            } else if rsi.cvars[col][j] == "u_med".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
             } else if rsi.cvars[col][j] == "umax".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", umax)];
