@@ -32,7 +32,7 @@ jobs:
       - name: build-enclone
         run: cargo build --release --bin enclone && export PATH=target/release:$PATH
       - name: unit tests
-        run: cargo test --release -- --nocapture --bin enclone
+        run: cargo test --release --bin enclone -- --nocapture 
       - name: post release assets
       # This step finds the latest tagged version of enclone and upload the enclone MacOS build to Github.
         run: |
