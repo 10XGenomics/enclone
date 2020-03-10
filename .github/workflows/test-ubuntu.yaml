@@ -1,9 +1,12 @@
 name: Build enclone linux
 
 on:
+  #push:
+    #tags:
+    #- 'auto_*'
   push:
-    tags:
-    - 'auto_*'
+    branches:
+      - meryl/github-actions-1
 
 jobs:
   build:
