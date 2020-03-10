@@ -56,24 +56,26 @@ pub fn row_fill(
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 {
-                if ctl.parseable_opt.pcols.is_empty()
-                    || bin_member(&ctl.parseable_opt.pcols, &$var.to_string())
-                {
-                    let mut v = $var.to_string();
-                    v = v.replace("Σ", "sum");
-                    v = v.replace("μ", "mean");
+                let mut v = $var.to_string();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
+                if ctl.parseable_opt.pcols.is_empty() || bin_member(&ctl.parseable_opt.pcols, &v) {
                     out_data[$u].insert(v, $val);
                 }
             }
         };
     }
-    let pcols_sort = &ctl.parseable_opt.pcols_sort;
+    let mut pcols_sort = ctl.parseable_opt.pcols_sort.clone();
+    for i in 0..pcols_sort.len() {
+        pcols_sort[i] = pcols_sort[i].replace("_Σ", "_sum");
+        pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
+    }
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
                 let mut v = $var.to_string();
-                v = v.replace("Σ", "sum");
-                v = v.replace("μ", "mean");
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                     out_data[$u].insert(varc, format!("{}", $val));

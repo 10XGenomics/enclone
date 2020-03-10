@@ -490,6 +490,10 @@ pub fn help4(args: &Vec<String>) {
             "u_Σ or u_sum",
             "VDJ UMI count for each exact subclonotype, total across cells"
         );
+        doc!(
+            "",
+            "(the Greek letter form is not used in parseable output)"
+        );
         ldoc!(
             "r_med",
             "VDJ read count for each exact subclonotype, median across cells"

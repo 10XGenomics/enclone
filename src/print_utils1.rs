@@ -376,11 +376,16 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     let mut pfsort = parseable_fields.clone();
     unique_sort(&mut pfsort);
     for x in pcols_sort.iter() {
-        if !bin_member(&pfsort, x) {
+        let y = x.clone();
+        let mut y_alt = y.clone();
+        y_alt = y_alt.replace("_Σ", "_sum");
+        y_alt = y_alt.replace("_μ", "_mean");
+        if !bin_member(&pfsort, &y) && !bin_member(&pfsort, &y_alt) {
             eprintln!("\nUnknown parseable output field: {}.\n", x);
             eprintln!(
                 "Note that the allowed fields depend on your specification for the \
-                 LVARS or LVARSP,\nand CVARS or CVARSP options.  Please see \
+                 LVARS or LVARSP,\nand CVARS or CVARSP options, and that for the latter two,\n\
+                 suffixing by the column number is required.  Please see \
                  \"enclone help parseable\".\n"
             );
             std::process::exit(1);

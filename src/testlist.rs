@@ -49,8 +49,8 @@ pub const TESTS: [&str; 38] = [
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
     r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
-    // 20. example affected by whitelist (gel bead oligo contamination) filtering
-    r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF"###,
+    // 20. example affected by whitelist (gel bead oligo contamination) filtering, and test u_Σ
+    r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
     // 21. test MIN_CHAINS_EXACT
     r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
     // 22. there was a false positive clonotype
@@ -89,8 +89,9 @@ pub const TESTS: [&str; 38] = [
     // (This yields a lot of output so will be annoying to debug if something changes.)
     r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
-    // 36. tests PCELL
-    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL PCOLS=barcodes,const1,const2"###,
+    // 36. tests PCELL and u_Σ in PCOLS (both forms)
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL CVARSP=u_Σ
+        PCOLS=barcodes,const1,const2,u_Σ1,u_sum1"###,
     // 37. tests parseable output of barcodes for a given dataset
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
