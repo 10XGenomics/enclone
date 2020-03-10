@@ -59,6 +59,29 @@ pub fn help1(args: &Vec<String>) {
             break;
         }
     }
+    macro_rules! doc_greenish {
+        ($n1:expr, $n2:expr) => {
+            if !plain {
+                let r1 = format!("[38;5;36m{}[0m", $n1);
+                let r2 = format!("[38;5;36m{}[0m", $n2);
+                rows.push(vec![r1, r2]);
+            } else {
+                rows.push(vec![$n1.to_string(), $n2.to_string()]);
+            }
+        };
+    }
+    macro_rules! ldoc_greenish {
+        ($n1:expr, $n2:expr) => {
+            rows.push(vec!["\\hline".to_string(); 2]);
+            if !plain {
+                let r1 = format!("[38;5;36m{}[0m", $n1);
+                let r2 = format!("[38;5;36m{}[0m", $n2);
+                rows.push(vec![r1, r2]);
+            } else {
+                rows.push(vec![$n1.to_string(), $n2.to_string()]);
+            }
+        };
+    }
     macro_rules! doc_red {
         ($n1:expr, $n2:expr) => {
             if !plain {
@@ -217,7 +240,7 @@ pub fn help1(args: &Vec<String>) {
         doc_red!("enclone", "what you see here: guide to all the doc");
         ldoc_red!("enclone help quick", "quick guide to getting started");
         doc_red!("enclone help how", "how enclone works (long)");
-        ldoc_red!(
+        doc_red!(
             "enclone help command",
             "info about enclone command line argument processing"
         );
@@ -271,11 +294,11 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("enclone help faq", "frequently asked questions (long)");
         doc!("enclone help developer", "a few things for developers");
-        doc!(
+        ldoc_greenish!(
             "enclone help all",
-            "concatenation of all the help pages (long, wide);"
+            "concatenation of all the help pages (long, wide)"
         );
-        doc!("", "you can use this to search all the help pages");
+        doc_greenish!("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
         print_tab2(&rows);
         print(
             "Additional documentation may be found at \
