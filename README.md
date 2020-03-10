@@ -57,7 +57,7 @@ ________________________________________________________________________________
 <b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please let us
 know if availability on other platforms is important to you.
 
-<b>2.  Download `enclone`.</b>  Type the following to download the `enclone` executable:
+<b>2.  Download enclone.</b>  Type the following to download the `enclone` executable:
 ```
 mkdir -p ~/bin; cd ~/bin
 wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
