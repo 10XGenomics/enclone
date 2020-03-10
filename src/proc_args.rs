@@ -108,7 +108,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.onesie_mult = 10_000;
 
     let cvars_allowed = vec![
-        "var", "u_med", "u_max", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
+        "var", "u_med", "u_max", "comp", "u_Σ", "rmed", "const", "white", "cdr3_dna", "ulen",
         "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
     ];
 
@@ -387,7 +387,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
         } else if arg.starts_with("PCOLS=") {
             ctl.parseable_opt.pcols.clear();
-            for x in arg.after("PCOLS=").split(',').collect::<Vec<&str>>() {
+            let p = arg.after("PCOLS=").split(',').collect::<Vec<&str>>();
+            for i in 0..p.len() {
+                let mut x = p[i].to_string();
+                x = x.replace("_sum", "_Σ");
+                x = x.replace("_mean", "_μ");
                 ctl.parseable_opt.pcols.push(x.to_string());
                 ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
@@ -436,6 +440,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 if x.len() > 0 {
                     ctl.clono_print_opt.cvars.push(x.to_string());
                 }
+            }
+            for x in ctl.clono_print_opt.cvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
             }
             for x in ctl.clono_print_opt.cvars.iter() {
                 let mut ok = cvars_allowed.contains(&(*x).as_str());

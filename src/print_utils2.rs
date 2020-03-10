@@ -59,7 +59,10 @@ pub fn row_fill(
                 if ctl.parseable_opt.pcols.is_empty()
                     || bin_member(&ctl.parseable_opt.pcols, &$var.to_string())
                 {
-                    out_data[$u].insert($var.to_string(), $val);
+                    let mut v = $var.to_string();
+                    v = v.replace("Σ", "sum");
+                    v = v.replace("μ", "mean");
+                    out_data[$u].insert(v, $val);
                 }
             }
         };
@@ -68,7 +71,10 @@ pub fn row_fill(
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
-                let varc = format!("{}{}", $var, $col + 1);
+                let mut v = $var.to_string();
+                v = v.replace("Σ", "sum");
+                v = v.replace("μ", "mean");
+                let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                     out_data[$u].insert(varc, format!("{}", $val));
                 }
@@ -800,7 +806,7 @@ pub fn row_fill(
                 cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
             } else if rsi.cvars[col][j] == "u_max".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", u_max)];
-            } else if rsi.cvars[col][j] == "utot".to_string() {
+            } else if rsi.cvars[col][j] == "u_Σ".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", utot)];
             } else if rsi.cvars[col][j] == "rmed".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", median_nreads)];
