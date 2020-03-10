@@ -53,6 +53,8 @@ pub fn row_fill(
 
     let mat = &rsi.mat;
     let lvars = &ctl.clono_print_opt.lvars;
+    let clonotype_id = exacts[u];
+    let ex = &exact_clonotypes[clonotype_id];
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 {
@@ -60,7 +62,12 @@ pub fn row_fill(
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty() || bin_member(&ctl.parseable_opt.pcols, &v) {
-                    out_data[$u].insert(v, $val);
+                    if !ctl.parseable_opt.pbarcode {
+                        out_data[$u].insert(v, $val);
+                    } else {
+                        let valn = format!("{}", vec![$val; ex.ncells()].iter().format(";"));
+                        out_data[$u].insert(v, valn);
+                    }
                 }
             }
         };
@@ -78,7 +85,13 @@ pub fn row_fill(
                 v = v.replace("_μ", "_mean");
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    out_data[$u].insert(varc, format!("{}", $val));
+                    if !ctl.parseable_opt.pbarcode {
+                        out_data[$u].insert(varc, format!("{}", $val));
+                    } else {
+                        let valn 
+                            = format!("{}", vec![$val.clone(); ex.ncells()].iter().format(";"));
+                        out_data[$u].insert(varc, valn);
+                    }
                 }
             }
         };
@@ -111,8 +124,6 @@ pub fn row_fill(
     // Compute dataset indices, gex_med, gex_max, n_gex, entropy.
 
     let mut dataset_indices = Vec::<usize>::new();
-    let clonotype_id = exacts[u];
-    let ex = &exact_clonotypes[clonotype_id];
     for l in 0..ex.clones.len() {
         dataset_indices.push(ex.clones[l][0].dataset_index);
     }

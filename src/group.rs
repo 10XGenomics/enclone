@@ -363,20 +363,8 @@ pub fn group_and_print_clonotypes(
                                     fwrite!(pout, ",");
                                 }
                                 if y.contains_key(c) {
-                                    let mut val = y[c].to_string();
-                                    if c == "barcodes" {
-                                        let fields = val.split(',').collect::<Vec<&str>>();
-                                        val = fields[m].to_string();
-                                    } else if c.ends_with("_barcodes") {
-                                        let valx = val.clone();
-                                        let fields = valx.split(',').collect::<Vec<&str>>();
-                                        val = String::new();
-                                        for x in fields.iter() {
-                                            if *x == ex.clones[m][0].barcode {
-                                                val = x.to_string();
-                                            }
-                                        }
-                                    }
+                                    let vals = y[c].split(';').collect::<Vec<&str>>();
+                                    let val = vals[m];
                                     if !val.contains(',') {
                                         fwrite!(pout, "{}", val);
                                     } else {

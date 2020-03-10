@@ -28,16 +28,6 @@ pub fn vars_and_shares(
     // Copied stuff.
 
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
-                let varc = format!("{}{}", $var, $col + 1);
-                if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
-                    out_data[$u].insert(varc, format!("{}", $val));
-                }
-            }
-        };
-    }
     let nexacts = exacts.len();
     let cols = rsi.vids.len();
 
@@ -121,6 +111,23 @@ pub fn vars_and_shares(
         }
         unique_sort(&mut sa);
         for u in 0..nexacts {
+            let ex = &exact_clonotypes[exacts[u]];
+            macro_rules! speakc {
+                ($u:expr, $col:expr, $var:expr, $val:expr) => {
+                    if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                        let varc = format!("{}{}", $var, $col + 1);
+                        if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
+                            if !ctl.parseable_opt.pbarcode {
+                                out_data[$u].insert(varc, $val);
+                            } else {
+                                let valn 
+                                    = format!("{}", vec![$val; ex.ncells()].iter().format(";"));
+                                out_data[$u].insert(varc, valn);
+                            }
+                        }
+                    }
+                };
+            }
             speakc![
                 u,
                 cx,

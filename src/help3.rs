@@ -312,11 +312,12 @@ pub fn help3(args: &Vec<String>) {
             "<dataset>_barcodes",
             "like \"barcodes\", but restricted to the dataset with the given name"
         );
+        doc!("barcode", "if PCELL is specified, barcode for one cell");
         doc!(
-            "",
-            "For barcodes and <dataset>_barcodes, if you specify the PCELL option,"
+            "<dataset>_barcode",
+            "if PCELL is specified, barcode for one cell, or null, if the barcode is"
         );
-        doc!("", "then at most one barcode is shown per line.");
+        doc!("", "not from the given dataset");
         ldoc!(
             "In addition, every lead variable may be specified as a field.  \
              See \"enclone help lvars\".",
