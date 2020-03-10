@@ -363,13 +363,12 @@ pub fn group_and_print_clonotypes(
                                     fwrite!(pout, ",");
                                 }
                                 if y.contains_key(c) {
-                                    let val;
-                                    if y[c].len() > 1 {
-                                        let vals = y[c].split(';').collect::<Vec<&str>>();
-                                        val = vals[m].to_string();
-                                    } else {
-                                        val = y[c].clone();
+                                    let mut id = 0;
+                                    let vals = y[c].split(';').collect::<Vec<&str>>();
+                                    if vals.len() > 1 {
+                                        id = m;
                                     }
+                                    let val = vals[id];
                                     if !val.contains(',') {
                                         fwrite!(pout, "{}", val);
                                     } else {

@@ -373,6 +373,12 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     for x in ctl.sample_info.dataset_list.iter() {
         speaker!(&format!("{}_barcodes", x));
     }
+    if ctl.parseable_opt.pbarcode {
+        speaker!("barcode");
+        for x in ctl.sample_info.dataset_list.iter() {
+            speaker!(&format!("{}_barcode", x));
+        }
+    }
     let mut pfsort = parseable_fields.clone();
     unique_sort(&mut pfsort);
     for x in pcols_sort.iter() {

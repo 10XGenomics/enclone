@@ -91,11 +91,11 @@ pub const TESTS: [&str; 38] = [
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
     // 36. tests PCELL and u_Σ in PCOLS (both forms)
     r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL CVARSP=u_Σ
-        PCOLS=barcodes,const1,const2,u_Σ1,u_sum1"###,
+        PCOLS=barcode,const1,const2,u_Σ1,u_sum1"###,
     // 37. tests parseable output of barcodes for a given dataset
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
     // 38. tests parseable output of barcodes for a given dataset, using PCELL
-    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes PCELL
+    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
 ];
