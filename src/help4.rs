@@ -494,6 +494,8 @@ pub fn help4(args: &Vec<String>) {
             "",
             "(the Greek letter form is not used in parseable output)"
         );
+        doc!("u", "VDJ UMI count for each cell");
+        doc!("", "(null except for use with PER_CELL and PCELL)");
         ldoc!(
             "r_med",
             "VDJ read count for each exact subclonotype, median across cells"
