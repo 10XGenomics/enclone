@@ -810,7 +810,7 @@ pub fn row_fill(
                 cvar![j, rsi.cvars[col][j], format!("{}", u_max)];
             } else if rsi.cvars[col][j] == "u_Σ".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", utot)];
-            } else if rsi.cvars[col][j] == "rmed".to_string() {
+            } else if rsi.cvars[col][j] == "r_med".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", median_nreads)];
             } else if rsi.cvars[col][j] == "const".to_string() {
                 let mut constx = Vec::<String>::new();
