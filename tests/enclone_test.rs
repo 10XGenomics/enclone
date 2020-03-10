@@ -53,6 +53,9 @@ fn test_enclone_fail() {
 
 // The following is a single test, containing many subtests, each of which is a regression test
 // for a given enclone command line.
+//
+// If you ever need to change the output of all tests, use the main program
+// update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
 #[cfg(not(debug_assertions))]
 #[test]
