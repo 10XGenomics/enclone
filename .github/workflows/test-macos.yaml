@@ -23,7 +23,7 @@ jobs:
           esac
           rustc --version
           rustfmt --version 
-      - name: Clone git repository
+      - name: Checkout enclone master
       # This step uses GitHub's javascript-action: https://github.com/actions/checkout
         uses: actions/checkout@master
       - name: Check Rust formatting
