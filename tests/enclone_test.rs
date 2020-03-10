@@ -25,7 +25,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::fs::read_to_string;
+use std::fs::{read_to_string, remove_file};
 use std::io::Write;
 use std::process::Command;
 use std::time::Instant;
@@ -272,30 +272,18 @@ fn test_enclone() {
 
 // Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
 // you also have to change this.
-//
-// WARNING: if this test in interrupted, then you could accidentally be left with matrix.bin,
-// and you would need to delete that file.
 
 #[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
-
-    // See if we're in a broken state.
-
     let mb = format!(
         "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
-        panic!(
-            "\nenclone_test_prebuild: the file matrix.bin already exists.\n\
-             Perhaps a previous run of this test failed or was was interrupted.\n\
-             Please delete the file\n\
-             {}\n",
-            mb
-        );
+        remove_file(&mb).unwrap();
     }
 
     // First pass: run with NH5.
@@ -321,8 +309,7 @@ fn test_enclone_prebuild() {
     if old != new2 {
         eprintln!(
             "\nenclone_test_prebuild: first pass output has changed.\n\
-             You may want to add more info to this failure message.\n\
-             And don't forget to remove matrix.bin.\n"
+             You may want to add more info to this failure message.\n"
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
