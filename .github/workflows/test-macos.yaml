@@ -34,7 +34,7 @@ jobs:
           pwd
           sed -i "" "s|morsel$|std::str::from_utf8(\&cmd.stderr).unwrap()|g" src/bin/traceback1.rs 
       - name: unit tests
-        run: cargo test --release --bin traceback1
+        run: cargo test --release --bin enclone
       - name: make binary
         run: |
           tag_num=$(git ls-remote --refs --sort=-v:refname  https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
