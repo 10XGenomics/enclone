@@ -18,7 +18,6 @@ use crate::print_utils5::*;
 use crate::types::*;
 use equiv::EquivRel;
 use io_utils::*;
-use itertools::Itertools;
 use ndarray::s;
 use rayon::prelude::*;
 use stats_utils::*;
@@ -770,20 +769,13 @@ pub fn print_clonotypes(
 
                 if ctl.parseable_opt.pout.len() > 0 {
                     for u in 0..nexacts {
-                        let ex = &exact_clonotypes[exacts[u]];
                         macro_rules! speak {
                             ($u:expr, $var:expr, $val:expr) => {
                                 if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
-                                    if pcols_sort.is_empty() 
-                                        || bin_member(&pcols_sort, &$var.to_string()) {
-                                        if !ctl.parseable_opt.pbarcode {
-                                            out_data[$u].insert($var.to_string(), $val);
-                                        } else {
-                                            let valn =
-                                                format!("{}", 
-                                                    vec![$val; ex.ncells()].iter().format(";"));
-                                            out_data[$u].insert($var.to_string(), valn);
-                                        }
+                                    if pcols_sort.is_empty()
+                                        || bin_member(&pcols_sort, &$var.to_string())
+                                    {
+                                        out_data[$u].insert($var.to_string(), $val);
                                     }
                                 }
                             };

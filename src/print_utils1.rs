@@ -456,12 +456,34 @@ pub fn start_gen(
                     bc.push(q[0].barcode.clone());
                 }
             }
-            bc.sort();
             speak!(
                 u,
                 &format!("{}_barcodes", d),
                 format!("{}", bc.iter().format(","))
             );
+        }
+        if ctl.parseable_opt.pbarcode {
+            let mut bc = Vec::<String>::new();
+            for x in exact_clonotypes[exacts[u]].clones.iter() {
+                bc.push(x[0].barcode.clone());
+            }
+            speak!(u, "barcode", format!("{}", bc.iter().format(";")));
+            for d in ctl.sample_info.dataset_list.iter() {
+                let mut bc = Vec::<String>::new();
+                for i in 0..exact_clonotypes[exacts[u]].clones.len() {
+                    let q = &exact_clonotypes[exacts[u]].clones[i];
+                    if ctl.sample_info.dataset_id[q[0].dataset_index] == *d {
+                        bc.push(q[0].barcode.clone());
+                    } else {
+                        bc.push("".to_string());
+                    }
+                }
+                speak!(
+                    u,
+                    &format!("{}_barcode", d),
+                    format!("{}", bc.iter().format(";"))
+                );
+            }
         }
         for cx in 0..cols {
             let vid = rsi.vids[cx];

@@ -62,12 +62,7 @@ pub fn row_fill(
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty() || bin_member(&ctl.parseable_opt.pcols, &v) {
-                    if !ctl.parseable_opt.pbarcode {
-                        out_data[$u].insert(v, $val);
-                    } else {
-                        let valn = format!("{}", vec![$val; ex.ncells()].iter().format(";"));
-                        out_data[$u].insert(v, valn);
-                    }
+                    out_data[$u].insert(v, $val);
                 }
             }
         };
@@ -85,13 +80,7 @@ pub fn row_fill(
                 v = v.replace("_μ", "_mean");
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    if !ctl.parseable_opt.pbarcode {
-                        out_data[$u].insert(varc, format!("{}", $val));
-                    } else {
-                        let valn 
-                            = format!("{}", vec![$val.clone(); ex.ncells()].iter().format(";"));
-                        out_data[$u].insert(varc, valn);
-                    }
+                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
