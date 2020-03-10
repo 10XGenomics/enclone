@@ -38,4 +38,5 @@ pub mod proto_io;
 pub mod read_json;
 pub mod string_width;
 pub mod subset_json;
+pub mod testlist;
 pub mod types;
