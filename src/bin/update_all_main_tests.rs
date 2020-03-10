@@ -13,8 +13,6 @@ use std::io::{BufWriter,Write};
 use std::process::Command;
 use string_utils::*;
 
-const TEST_FILES_VERSION: u8 = 14;
-
 fn main() {
     PrettyTrace::new().on();
     let mut results = Vec::<(usize, bool, String)>::new();

@@ -1,5 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+pub const TEST_FILES_VERSION: u8 = 14;
+
 // Main list of tests for enclone.
 
 pub const TESTS: [&str; 38] = [
