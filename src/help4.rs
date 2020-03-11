@@ -15,9 +15,15 @@ pub fn help4(args: &Vec<String>) {
 
     let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
+
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
             rows.push(vec![$n1.to_string(), $n2.to_string()]);
+        };
+    }
+    macro_rules! docpr {
+        ($n1:expr, $n2:expr) => {
+            rows.push(vec![print_to($n1), print_to($n2)]);
         };
     }
     macro_rules! ldoc {
@@ -494,12 +500,12 @@ pub fn help4(args: &Vec<String>) {
             "",
             "(the Greek letter form is not used in parseable output)"
         );
-        doc!("u", "VDJ UMI count for each cell");
-        doc!("", "(null except for use with PER_CELL and PCELL)");
+        docpr!("u", "VDJ UMI count for each cell \\red{◉}");
         ldoc!(
             "r_med",
             "VDJ read count for each exact subclonotype, median across cells"
         );
+        docpr!("r", "VDJ read count for each cell \\red{◉}");
         ldoc!("const", "constant region name");
         ldoc!(
             "comp",
@@ -560,6 +566,12 @@ pub fn help4(args: &Vec<String>) {
         // was ... rows.clone()
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
+        print(
+            "\\red{◉} These have null value, except when used with either the \\bold{PER_CELL} \
+             option, which generates one line of human-readable output per cell (see \
+             \"enclone help display\"), or the \\bold{PCELL} option, which generates one line \
+             of parseable output per cell (see \"enclone help parseable\").\n\n",
+        );
         print(
             "At least one variable must be listed.  The default is \\bold{u_med,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
