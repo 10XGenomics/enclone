@@ -115,7 +115,7 @@ pub fn row_fill(
         };
     }
 
-    // Compute dataset indices, gex_med, gex_max, n_gex, entropy.
+    // Compute dataset indices, gex_med, gex_max, n_gex_Σ, n_gex, entropy.
 
     let mut dataset_indices = Vec::<usize>::new();
     for l in 0..ex.clones.len() {
@@ -129,6 +129,7 @@ pub fn row_fill(
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
     let mut n_gex = 0;
+    let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
@@ -191,6 +192,9 @@ pub fn row_fill(
         if !gex_info.gex_barcodes.is_empty() {
             if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
                 n_gex += 1;
+                n_gexs.push(1);
+            } else {
+                n_gexs.push(0);
             }
             let mut count = 0;
             let mut entropy = 0.0;
@@ -308,7 +312,7 @@ pub fn row_fill(
             lvar![lvars[i], format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
             stats.push((lvars[i].clone(), counts));
-        } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
+        } else if lvars[i].starts_with("n_") && !lvars[i].starts_with("n_gex") {
             let name = lvars[i].after("n_");
             let mut count = 0;
             let mut counts = Vec::<f64>::new();
@@ -380,8 +384,17 @@ pub fn row_fill(
             }
         } else if lvars[i] == "gex_med".to_string() {
             lvar![lvars[i], format!("{}", gex_median)];
-        } else if lvars[i] == "n_gex".to_string() {
+        } else if lvars[i] == "n_gex_Σ".to_string() {
             lvar![lvars[i], format!("{}", n_gex)];
+        } else if lvars[i] == "n_gex".to_string() {
+            row.push("-".to_string());
+            if pass == 2 {
+                speak!(
+                    u,
+                    "n_gex".to_string(),
+                    format!("{}", n_gexs.iter().format(";"))
+                );
+            }
         } else if lvars[i] == "entropy".to_string() {
             lvar![lvars[i], format!("{:.2}", entropy)];
         } else if lvars[i] == "gex_max".to_string() {

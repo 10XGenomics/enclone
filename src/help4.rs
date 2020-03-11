@@ -361,13 +361,12 @@ pub fn help4(args: &Vec<String>) {
         ldoc!("ncells", "number of cells");
         doc!(
             "n_<name>",
-            "number of cells associated to the given name, which can be a dataset short"
+            "number of cells associated to the given name, which can be a dataset"
         );
         doc!(
             "",
-            "name, or a sample short name, or a donor short name, or a tag short name;"
+            "or sample or donor or tag short name; may name only one such category"
         );
-        doc!("", "it may not name more than one such category");
         ldoc!("gex_med", "median gene expression UMI count");
         doc!("gex_max", "max gene expression UMI count");
         // nonpublic for now as we don't know if this is useful
@@ -377,10 +376,11 @@ pub fn help4(args: &Vec<String>) {
             "Shannon entropy of GEX UMI counts (median across cells)"
         );
         */
-        doc!("n_gex", "number of cells reported by GEX");
+        doc!("n_gex_Σ or n_gex_sum", "number of cells reported by GEX");
+        docpr!("n_gex", "is this cell called by GEX (0 or 1) \\red{◉}");
         doc!(
             "",
-            "(requires that gene expression data are provided as input)"
+            "(all these require that gene expression data are provided as input)"
         );
         ldoc!(
             "near",
@@ -392,7 +392,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "both only compare to cells having chains in the same columns of the clonotype;"
+            "both compare to cells having chains in the same columns of the clonotype,"
         );
         doc!(
             "",
@@ -400,45 +400,54 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!(
             "g<d>",
-            "Here d is a nonnegative integer.  Then all the exact subclonotypes are grouped"
+            "Here d is a nonnegative integer.  Then all the exact subclonotypes are"
         );
         doc!(
             "",
-            "according to the Hamming distance of their V..J sequences.  Those within"
+            "grouped according to the Hamming distance of their V..J sequences.  Those"
         );
         doc!(
             "",
-            "distance d are defined to be in the same group, and this is extended"
+            "within distance d are defined to be in the same group, and this is"
         );
         doc!(
             "",
-            "transitively.  The group identifier 1, 2, ... is shown.  The ordering of"
+            "extended transitively.  The group identifier 1, 2, ... is shown.  The"
         );
         doc!(
             "",
-            "these identifiers is arbitrary.  This option is best applied to cases where"
+            "ordering of these identifiers is arbitrary.  This option is best applied"
         );
-        doc!("", "all exact subclonotypes have a complete set of chains.");
+        doc!(
+            "",
+            "to cases where all exact subclonotypes have a complete set of chains."
+        );
         ldoc!(
             "<gene>_g",
-            "all five feature types: look for a declared feature of the given type with"
+            "all five feature types: look for a declared feature of the given type"
         );
         doc!(
             "<antibody>_ab",
-            "the given id or name, and report the mean UMI count for it; this assumes"
+            "with the given id or name; report the mean UMI count for it; this assumes"
         );
         doc!(
             "<antigen>_ag",
-            "that gene expression or feature barcodes have been generated; we also"
+            "that gene expression or feature barcodes have been generated; we allow"
         );
         doc!(
             "<crispr>_cr",
-            "allow the form e.g. <abbr>:<gene>_g where abbr is an abbreviation"
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be"
         );
-        doc!("<custom>_cu", "to be shown");
+        doc!("<custom>_cu", "shown");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
+        print(
+            "\\red{◉} These have null value, except when used with either the \\bold{PER_CELL} \
+             option, which generates one line of human-readable output per cell (see \
+             \"enclone help display\"), or the \\bold{PCELL} option, which generates one line \
+             of parseable output per cell (see \"enclone help parseable\").\n\n",
+        );
         print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
@@ -450,7 +459,7 @@ pub fn help4(args: &Vec<String>) {
         print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.  Note that for this normalization, \
+             counts are rounded to the nearest integer.  For this normalization, \
              we simply scale the counts, rather than subsample reads.\n\n",
         );
         if !help_all {

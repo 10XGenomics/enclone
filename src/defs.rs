@@ -167,7 +167,8 @@ impl LinearCondition {
         let lvars = &ctl.clono_print_opt.lvars;
         let mut lvars0 = Vec::<String>::new();
         let exclude = vec![
-            "datasets", "donors", "near", "far", "n_gex", "gex_med", "gex_max", "entropy", "ext",
+            "datasets", "donors", "near", "far", "n_gex_Σ", "n_gex", "gex_med", "gex_max",
+            "entropy", "ext",
         ];
         for j in 0..lvars.len() {
             let mut ok = true;
