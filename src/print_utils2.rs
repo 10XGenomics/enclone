@@ -54,6 +54,7 @@ pub fn row_fill(
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
+    let cvars = &ctl.clono_print_opt.cvars;
     let lvars = &ctl.clono_print_opt.lvars;
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -77,12 +78,14 @@ pub fn row_fill(
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
-                let mut v = $var.to_string();
+                let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    out_data[$u].insert(varc, format!("{}", $val));
+                    if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(&$var.as_str()) {
+                        out_data[$u].insert(varc, format!("{}", $val));
+                    }
                 }
             }
         };
@@ -497,7 +500,9 @@ pub fn row_fill(
 
         macro_rules! cvar {
             ($i: expr, $var:expr, $val:expr) => {
-                cx[col][$i] = $val.clone();
+                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                    cx[col][$i] = $val.clone();
+                }
                 speakc!(u, col, $var, $val);
             };
         }
@@ -524,22 +529,22 @@ pub fn row_fill(
 
         // Speak some other column entries.
 
-        speakc!(u, col, "vj_seq", stringme(&ex.share[mid].seq));
-        speakc!(u, col, "seq", stringme(&ex.share[mid].full_seq));
-        speakc!(u, col, "v_start", ex.share[mid].v_start);
+        speakc!(u, col, "vj_seq".to_string(), stringme(&ex.share[mid].seq));
+        speakc!(u, col, "seq".to_string(), stringme(&ex.share[mid].full_seq));
+        speakc!(u, col, "v_start".to_string(), ex.share[mid].v_start);
         let cid = ex.share[mid].c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
-            speakc!(u, col, "const_id", refdata.id[cid]);
+            speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
         }
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             let uid = uid.unwrap();
-            speakc!(u, col, "utr_id", refdata.id[uid]);
-            speakc!(u, col, "utr_name", refdata.name[uid]);
+            speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
+            speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
         }
-        speakc!(u, col, "cdr3_start", ex.share[mid].cdr3_start);
-        speakc!(u, col, "cdr3_aa", ex.share[mid].cdr3_aa);
+        speakc!(u, col, "cdr3_start".to_string(), ex.share[mid].cdr3_start);
+        speakc!(u, col, "cdr3_aa".to_string(), ex.share[mid].cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);
@@ -556,12 +561,27 @@ pub fn row_fill(
                 }
             }
         }
-        speakc!(u, col, "var_aa", strme(&varaa));
+        speakc!(u, col, "var_aa".to_string(), strme(&varaa));
 
         // Create column entry.
 
-        for j in 0..rsi.cvars[col].len() {
-            if rsi.cvars[col][j] == "amino".to_string() {
+        let rsi_vars = &rsi.cvars[col];
+        let mut all_vars = rsi_vars.clone();
+        for j in 0..CVARS_ALLOWED.len() {
+            let var = &CVARS_ALLOWED[j];
+            if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(var) {
+                if !rsi_vars.contains(&var.to_string()) {
+                    all_vars.push(var.to_string());
+                }
+            }
+        }
+        for j in 0..all_vars.len() {
+            let col_var = j < rsi_vars.len();
+            if !col_var && ctl.parseable_opt.pout.len() == 0 {
+                continue;
+            }
+            let var = &all_vars[j];
+            if *var == "amino".to_string() && col_var {
                 let cs = rsi.cdr3_starts[col] / 3;
                 let n = rsi.cdr3_lens[col];
                 for k in 0..show_aa[col].len() {
@@ -589,7 +609,7 @@ pub fn row_fill(
                         cx[col][j] += " ";
                     }
                 }
-            } else if rsi.cvars[col][j] == "comp".to_string() {
+            } else if *var == "comp".to_string() {
                 let mut comp = 1000000;
                 let td = &ex.share[mid];
                 let tig = &td.seq;
@@ -657,19 +677,19 @@ pub fn row_fill(
                     }
                     comp = min(comp, count);
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", comp)];
-            } else if rsi.cvars[col][j] == "cdr3_dna".to_string() {
-                cvar![j, rsi.cvars[col][j], ex.share[mid].cdr3_dna.clone()];
-            } else if rsi.cvars[col][j] == "ulen".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", ex.share[mid].v_start)];
-            } else if rsi.cvars[col][j] == "clen".to_string() {
+                cvar![j, var, format!("{}", comp)];
+            } else if *var == "cdr3_dna".to_string() {
+                cvar![j, var, ex.share[mid].cdr3_dna.clone()];
+            } else if *var == "ulen".to_string() {
+                cvar![j, *var, format!("{}", ex.share[mid].v_start)];
+            } else if *var == "clen".to_string() {
                 cvar![
                     j,
-                    rsi.cvars[col][j],
+                    var,
                     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
                 ];
-            } else if rsi.cvars[col][j].starts_with("ndiff") {
-                let u0 = rsi.cvars[col][j].after("ndiff").force_usize() - 1;
+            } else if var.starts_with("ndiff") {
+                let u0 = var.after("ndiff").force_usize() - 1;
                 if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
                     let m0 = mat[col][u0].unwrap();
                     let m = mat[col][u].unwrap();
@@ -681,11 +701,11 @@ pub fn row_fill(
                             ndiff += 1;
                         }
                     }
-                    cvar![j, rsi.cvars[col][j], format!("{}", ndiff)];
+                    cvar![j, *var, format!("{}", ndiff)];
                 } else {
-                    cvar![j, rsi.cvars[col][j], "_".to_string()];
+                    cvar![j, *var, "_".to_string()];
                 }
-            } else if rsi.cvars[col][j] == "cdiff".to_string() {
+            } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;
                 let cid = ex.share[mid].c_ref_id;
@@ -716,8 +736,8 @@ pub fn row_fill(
                 } else if clen > 0 {
                     cdiff = format!("%{}", clen);
                 }
-                cvar![j, rsi.cvars[col][j], cdiff];
-            } else if rsi.cvars[col][j] == "udiff".to_string() {
+                cvar![j, var, cdiff];
+            } else if *var == "udiff".to_string() {
                 let ulen = ex.share[mid].v_start;
                 let uid = ex.share[mid].u_ref_id;
                 let mut udiff = String::new();
@@ -756,8 +776,8 @@ pub fn row_fill(
                 } else if ulen > 0 {
                     udiff = format!("%{}", ulen);
                 }
-                cvar![j, rsi.cvars[col][j], udiff];
-            } else if rsi.cvars[col][j] == "d_univ".to_string() {
+                cvar![j, var, udiff];
+            } else if *var == "d_univ".to_string() {
                 let vid = ex.share[mid].v_ref_id;
                 let vref = &refdata.refs[vid].to_ascii_vec();
                 let jid = ex.share[mid].j_ref_id;
@@ -777,8 +797,8 @@ pub fn row_fill(
                         diffs += 1;
                     }
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
-            } else if rsi.cvars[col][j] == "d_donor".to_string() {
+                cvar![j, var, format!("{}", diffs)];
+            } else if *var == "d_donor".to_string() {
                 let vid = ex.share[mid].v_ref_id;
                 let mut vref = refdata.refs[vid].to_ascii_vec();
                 if rsi.vpids[col].is_some() {
@@ -801,16 +821,18 @@ pub fn row_fill(
                         diffs += 1;
                     }
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
-            } else if rsi.cvars[col][j] == "notes".to_string() {
-                cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
-            } else if rsi.cvars[col][j] == "var".to_string() {
-                cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
-            } else if rsi.cvars[col][j] == "u_med".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
-            } else if rsi.cvars[col][j] == "u".to_string() {
-                let var = rsi.cvars[col][j].clone();
-                cx[col][j] = "".to_string();
+                cvar![j, var, format!("{}", diffs)];
+            } else if *var == "notes".to_string() {
+                cvar![j, var, ex.share[mid].vs_notesx.clone()];
+            } else if *var == "var".to_string() {
+                cvar![j, var, stringme(&varmat[u][col])];
+            } else if *var == "u_med".to_string() {
+                cvar![j, var, format!("{}", median_numis)];
+            } else if *var == "u".to_string() {
+                let var = var.clone();
+                if col_var {
+                    cx[col][j] = "".to_string();
+                }
                 if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
@@ -824,13 +846,13 @@ pub fn row_fill(
                         out_data[u].insert(varc, format!("{}", vals));
                     }
                 }
-            } else if rsi.cvars[col][j] == "u_max".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", u_max)];
-            } else if rsi.cvars[col][j] == "u_Σ".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", utot)];
-            } else if rsi.cvars[col][j] == "r_med".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", median_nreads)];
-            } else if rsi.cvars[col][j] == "const".to_string() {
+            } else if *var == "u_max".to_string() {
+                cvar![j, var, format!("{}", u_max)];
+            } else if *var == "u_Σ".to_string() {
+                cvar![j, var, format!("{}", utot)];
+            } else if *var == "r_med".to_string() {
+                cvar![j, var, format!("{}", median_nreads)];
+            } else if *var == "const".to_string() {
                 let mut constx = Vec::<String>::new();
                 let cid = ex.share[mid].c_ref_id;
                 if cid.is_some() {
@@ -841,15 +863,11 @@ pub fn row_fill(
                 unique_sort(&mut constx);
                 // This is overcomplicated because there is now at most one
                 // const entry per exact subclonotype.
-                cvar![
-                    j,
-                    rsi.cvars[col][j],
-                    format!("{}", constx.iter().format(","))
-                ];
+                cvar![j, var, format!("{}", constx.iter().format(","))];
 
             // Compute potential whitelist contamination percent.  And filter.
             // This is an undocumented option.
-            } else if rsi.cvars[col][j] == "white".to_string() || ctl.clono_filt_opt.whitef {
+            } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
                 for l in 0..ex.clones.len() {
                     let li = ex.clones[l][0].dataset_index;
@@ -893,7 +911,7 @@ pub fn row_fill(
                 }
                 */
                 let junk_rate = percent_ratio(junk, ex.clones.len());
-                if rsi.cvars[col][j] == "white".to_string() {
+                if *var == "white".to_string() && col_var {
                     cx[col][j] = format!("{:.1}", junk_rate);
                 }
                 // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -16,6 +16,8 @@ pub const CVARS_ALLOWED: [&str; 18] = [
     "ulen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
 ];
 
+pub const CVARS_ALLOWED_CELL: [&str; 2] = ["u", "r"];
+
 // Clonotyping algorithm heuristics.
 
 #[derive(Default)]

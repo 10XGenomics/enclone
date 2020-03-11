@@ -301,7 +301,6 @@ pub fn make_diff_row(
 pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.
 
-    let cvars = &ctl.clono_print_opt.cvars;
     let lvars = &ctl.clono_print_opt.lvars;
 
     // Define parseable output columns.  The entire machinery for parseable output is controlled
@@ -327,8 +326,10 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         speaker!(x);
     }
     for col in 0..ctl.parseable_opt.pchains {
-        for x in cvars.iter() {
-            speakerc!(col, x);
+        for x in CVARS_ALLOWED.iter() {
+            if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(x) {
+                speakerc!(col, x);
+            }
         }
         for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
             speakerc!(col, x);
