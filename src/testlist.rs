@@ -4,7 +4,7 @@ pub const TEST_FILES_VERSION: u8 = 14;
 
 // Main list of tests for enclone.
 
-pub const TESTS: [&str; 38] = [
+pub const TESTS: [&str; 39] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -98,4 +98,6 @@ pub const TESTS: [&str; 38] = [
     // 38. tests parseable output of barcodes for a given dataset, using PCELL
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
+    // 39. tests u field in parseable output
+    r###"BCR=85333 POUT=stdout PCOLS=barcode,u_med1,u1 CVARSP=u PCELL CDR3=CAADGGGDQYYYMDVW"###,
 ];

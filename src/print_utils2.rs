@@ -1,5 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+// This file contains the single function row_fill.
+
 use crate::defs::*;
 use crate::print_utils1::*;
 use crate::types::*;
@@ -806,6 +808,22 @@ pub fn row_fill(
                 cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
             } else if rsi.cvars[col][j] == "u_med".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
+            } else if rsi.cvars[col][j] == "u".to_string() {
+                let var = rsi.cvars[col][j].clone();
+                cx[col][j] = "".to_string();
+                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += ";";
+                            }
+                            vals += &format!("{}", ex.clones[k][mid].umi_count);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
             } else if rsi.cvars[col][j] == "u_max".to_string() {
                 cvar![j, rsi.cvars[col][j], format!("{}", u_max)];
             } else if rsi.cvars[col][j] == "u_Σ".to_string() {
