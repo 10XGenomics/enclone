@@ -852,6 +852,24 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", utot)];
             } else if *var == "r_med".to_string() {
                 cvar![j, var, format!("{}", median_nreads)];
+            } else if *var == "r".to_string() {
+                let var = var.clone();
+                if col_var {
+                    cx[col][j] = "".to_string();
+                }
+                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += ";";
+                            }
+                            vals += &format!("{}", ex.clones[k][mid].read_count);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
             } else if *var == "const".to_string() {
                 let mut constx = Vec::<String>::new();
                 let cid = ex.share[mid].c_ref_id;
