@@ -9,6 +9,13 @@ use std::collections::HashMap;
 use string_utils::*;
 use vector_utils::*;
 
+// Variable names.
+
+pub const CVARS_ALLOWED: [&str; 18] = [
+    "var", "u_med", "u_max", "u_Σ", "u", "comp", "r_med", "r", "const", "white", "cdr3_dna",
+    "ulen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
+];
+
 // Clonotyping algorithm heuristics.
 
 #[derive(Default)]

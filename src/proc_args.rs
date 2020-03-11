@@ -107,11 +107,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.onesie_mult = 10_000;
 
-    let cvars_allowed = vec![
-        "var", "u_med", "u_max", "u_Σ", "u", "comp", "r_med", "r", "const", "white", "cdr3_dna",
-        "ulen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
-    ];
-
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
     let mut have_tcr = false;
@@ -446,7 +441,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 *x = x.replace("_mean", "_μ");
             }
             for x in ctl.clono_print_opt.cvars.iter() {
-                let mut ok = cvars_allowed.contains(&(*x).as_str());
+                let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
                 if x.starts_with("ndiff")
                     && x.after("ndiff").parse::<usize>().is_ok()
                     && x.after("ndiff").force_usize() >= 1
@@ -465,7 +460,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg.starts_with("CVARSP=") {
             let cvarsp = arg.after("CVARSP=").split(',').collect::<Vec<&str>>();
             for x in cvarsp.iter() {
-                let mut ok = cvars_allowed.contains(&x);
+                let mut ok = CVARS_ALLOWED.contains(&x);
                 if x.starts_with("ndiff")
                     && x.after("ndiff").parse::<usize>().is_ok()
                     && x.after("ndiff").force_usize() >= 1
