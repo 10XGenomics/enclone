@@ -3,7 +3,7 @@ name: Build enclone MacOS
 on:
   push:
     tags:
-    - 'auto_*'
+    - '*'
 
 jobs:
   build:
