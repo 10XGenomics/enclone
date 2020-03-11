@@ -1,12 +1,9 @@
 name: Build enclone MacOS
 
 on:
-  #push:
-    #tags:
-    #- 'auto_*'
   push:
-    branches:
-      - meryl/github-actions-1
+    tags:
+    - 'auto_*'
 
 jobs:
   build:
