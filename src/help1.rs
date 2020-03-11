@@ -276,7 +276,7 @@ pub fn help1(args: &Vec<String>) {
             "clonotype filtering options, scanning for feature enrichment (long)"
         );
         doc!("enclone help special", "special filtering options (long)");
-        ldoc!("enclone help lvars", "lead column options");
+        ldoc!("enclone help lvars", "lead column options (long)");
         doc!("enclone help cvars", "per chain column options");
         doc!(
             "enclone help amino",

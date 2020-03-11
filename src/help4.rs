@@ -32,6 +32,12 @@ pub fn help4(args: &Vec<String>) {
             rows.push(vec![$n1.to_string(), $n2.to_string()]);
         };
     }
+    macro_rules! ldocpr {
+        ($n1:expr, $n2:expr) => {
+            rows.push(vec!["\\hline".to_string(); 2]);
+            rows.push(vec![print_to($n1), print_to($n2)]);
+        };
+    }
     let mut plain = false;
     for i in 0..args.len() {
         if args[i] == "PLAIN" {
@@ -423,22 +429,24 @@ pub fn help4(args: &Vec<String>) {
             "to cases where all exact subclonotypes have a complete set of chains."
         );
         ldoc!(
-            "<gene>_g",
+            "<gene>_g_Σ",
             "all five feature types: look for a declared feature of the given type"
         );
         doc!(
-            "<antibody>_ab",
+            "<antibody>_ab_Σ",
             "with the given id or name; report the mean UMI count for it; this assumes"
         );
         doc!(
-            "<antigen>_ag",
+            "<antigen>_ag_Σ",
             "that gene expression or feature barcodes have been generated; we allow"
         );
         doc!(
-            "<crispr>_cr",
+            "<crispr>_cr_Σ",
             "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be"
         );
-        doc!("<custom>_cu", "shown");
+        doc!("<custom>_cu_Σ", "shown");
+        doc!("(\"Σ\" replaceable by \"sum\")", "");
+        ldocpr!("<gene_>_g etc.", "same as above but for one cell \\red{◉}");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
