@@ -458,7 +458,10 @@ pub fn help3(args: &Vec<String>) {
             "SEGN=\"s_1|...|s_n\"",
             "only show clonotypes using one of the given reference segment numbers"
         );
-        doc!("", "both: looks for V, D, J and C segments; double quote only");
+        doc!(
+            "",
+            "both: looks for V, D, J and C segments; double quote only"
+        );
         doc!("", "needed if n > 1");
 
         // doc MIN_EXACTS
