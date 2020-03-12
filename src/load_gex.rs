@@ -315,7 +315,15 @@ pub fn load_gex(
                 std::process::exit(1);
             }
         }
-        if x.ends_with("_ab") || x.ends_with("_ag") || x.ends_with("_cr") || x.ends_with("_cu") {
+        if x.ends_with("_ab")
+            || x.ends_with("_ag")
+            || x.ends_with("_cr")
+            || x.ends_with("_cu")
+            || x.ends_with("_ab_Σ")
+            || x.ends_with("_ag_Σ")
+            || x.ends_with("_cr_Σ")
+            || x.ends_with("_cu_Σ")
+        {
             if !have_fb {
                 eprintln!(
                     "\nYou've supplied the lead column variable {},\nbut it would appear \
