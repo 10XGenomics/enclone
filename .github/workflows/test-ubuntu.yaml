@@ -1,9 +1,9 @@
 name: Build enclone linux
 
 on:
-  push:
+  create:
     tags:
-    - '*'
+    - 'auto_*'
 
 jobs:
   build:

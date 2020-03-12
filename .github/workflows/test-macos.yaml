@@ -1,9 +1,9 @@
 name: Build enclone MacOS
 
 on:
-  push:
+  create:
     tags:
-    - '*'
+    - 'auto_*'
 
 jobs:
   build:
