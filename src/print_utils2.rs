@@ -701,6 +701,12 @@ pub fn row_fill(
                     var,
                     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
                 ];
+            } else if *var == "vjlen".to_string() {
+                cvar![
+                    j,
+                    var,
+                    format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+                ];
             } else if var.starts_with("ndiff") {
                 let u0 = var.after("ndiff").force_usize() - 1;
                 if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {

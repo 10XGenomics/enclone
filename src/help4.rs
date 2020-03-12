@@ -530,8 +530,12 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!("cdr3_dna", "the CDR3_DNA sequence");
         ldoc!(
+            "vjlen",
+            "number of bases from the start of the V region to the end of the J region"
+        );
+        doc!(
             "clen",
-            "length of observed constant sequence (usually truncated at primer start)"
+            "length of observed constant region (usually truncated at primer start)"
         );
         doc!("ulen", "length of observed 5'-UTR sequence");
         doc!(
