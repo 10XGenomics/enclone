@@ -452,14 +452,14 @@ pub fn help3(args: &Vec<String>) {
 
         ldoc!(
             "SEG=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given VDJ segment names"
+            "only show clonotypes using one of the given reference segment names"
         );
-        doc!("", "(double quotes only needed if n > 1)");
         doc!(
             "SEGN=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given VDJ segment numbers"
+            "only show clonotypes using one of the given reference segment numbers"
         );
-        doc!("", "(double quotes only needed if n > 1)");
+        doc!("", "both: looks for V, D, J and C segments; double quote only");
+        doc!("", "needed if n > 1");
 
         // doc MIN_EXACTS
 
