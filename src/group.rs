@@ -48,7 +48,7 @@ pub fn group_and_print_clonotypes(
         "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.parseable_opt.pout);
-            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+            Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
     let mut pcols = ctl.parseable_opt.pcols.clone();
@@ -71,7 +71,7 @@ pub fn group_and_print_clonotypes(
         "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_filename);
-            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+            Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
     #[allow(bare_trait_objects)]
@@ -80,7 +80,7 @@ pub fn group_and_print_clonotypes(
         "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
-            (Box::new(File::create(&path).unwrap()) as Box<Write>)
+            Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
 
