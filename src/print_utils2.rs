@@ -625,8 +625,9 @@ pub fn row_fill(
                         cx[col][j] += " ";
                     }
                 }
-            } else if *var == "comp".to_string() {
+            } else if *var == "comp".to_string() || *var == "edit".to_string() {
                 let mut comp = 1000000;
+                let mut edit = String::new();
                 let td = &ex.share[mid];
                 let tig = &td.seq;
                 let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
@@ -648,13 +649,12 @@ pub fn row_fill(
                     // Start to build reference concatenation.  First append the V segment.
 
                     let mut concat = Vec::<u8>::new();
-                    let mut x = refdata.refs[rsi.vids[col]].to_ascii_vec();
+                    let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
                     if rsi.vpids[col].is_none() {
-                        concat.append(&mut x);
                     } else {
-                        let mut y = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-                        concat.append(&mut y);
+                        vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
                     }
+                    concat.append(&mut vref.clone());
 
                     // Append the D segment if IGH/TRB.
 
@@ -673,24 +673,30 @@ pub fn row_fill(
                     let al = aligner.semiglobal(&tig, &concat);
                     let mut m = 0;
                     let mut pos = al.xstart;
+                    let mut rpos = (al.ystart as isize) - (vref.len() as isize);
                     let mut count = 0;
                     let start = td.cdr3_start;
                     let stop = td.cdr3_start + 3 * td.cdr3_aa.len();
+                    let mut edits = Vec::<String>::new();
                     while m < al.operations.len() {
                         let n = next_diff(&al.operations, m);
                         match al.operations[m] {
                             Match => {
                                 pos += 1;
+                                rpos += 1;
                             }
                             Subst => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("S{}", rpos));
                                 }
                                 pos += 1;
+                                rpos += 1;
                             }
                             Del => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("D{}:{}", rpos, n - m));
                                 }
                                 pos += n - m;
                                 m = n - 1;
@@ -698,16 +704,25 @@ pub fn row_fill(
                             Ins => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("I{}:{}", rpos, n - m));
                                 }
+                                rpos += (n - m) as isize;
                                 m = n - 1;
                             }
                             _ => {}
                         };
                         m += 1;
                     }
-                    comp = min(comp, count);
+                    if count < comp {
+                        comp = count;
+                        edit = format!("{}", edits.iter().format(""));
+                    }
                 }
-                cvar![j, var, format!("{}", comp)];
+                if *var == "comp".to_string() {
+                    cvar![j, var, format!("{}", comp)];
+                } else {
+                    cvar![j, var, format!("{}", edit)];
+                }
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "ulen".to_string() {

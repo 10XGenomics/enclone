@@ -525,9 +525,43 @@ pub fn help4(args: &Vec<String>) {
         docpr!("r", "VDJ read count for each cell \\red{◉}");
         ldoc!("const", "constant region name");
         ldoc!(
-            "comp",
-            "a measure of CDR3 complexity (currently computed inefficiently)"
+            "edit",
+            "a string that partially defines the edit of the reference V(D)J concatenation"
         );
+        doc!(
+            "",
+            "that gives rise to the observed CDR3; this uses a coordinate system in which"
+        );
+        doc!(
+            "",
+            "0 is the first base of the J ref segment (or the first base of the D ref"
+        );
+        doc!(
+            "",
+            "segment for IGH and TRB); for example D-4:4 denotes the deletion of the last"
+        );
+        doc!(
+            "",
+            "4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V"
+        );
+        doc!(
+            "",
+            "and I0:2;S5 denotes that plus a substitution at position 5; in computing"
+        );
+        doc!(
+            "",
+            "\"edit\", for IGH and TRB, we always test every possible D segment,"
+        );
+        doc!(
+            "",
+            "regardless of whether one is annotated, and pick the best one; for this"
+        );
+        doc!("", "reason, \"edit\" may be slow");
+        doc!(
+            "comp",
+            "a measure of CDR3 complexity, which is the total number of S, D and I"
+        );
+        doc!("", "symbols in \"edit\" as defined above");
         ldoc!("cdr3_dna", "the CDR3_DNA sequence");
         ldoc!(
             "vjlen",

@@ -924,6 +924,7 @@ pub fn print_clonotypes(
                             || rsi.cvars[cx][m] == "cdr3_dna".to_string()
                             || rsi.cvars[cx][m] == "cdiff".to_string()
                             || rsi.cvars[cx][m] == "notes".to_string()
+                            || rsi.cvars[cx][m] == "edit".to_string()
                         {
                             justify.push(b'l');
                         } else {

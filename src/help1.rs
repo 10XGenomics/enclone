@@ -277,7 +277,7 @@ pub fn help1(args: &Vec<String>) {
         );
         doc!("enclone help special", "special filtering options (long)");
         ldoc!("enclone help lvars", "lead column options (long)");
-        doc!("enclone help cvars", "per chain column options");
+        doc!("enclone help cvars", "per chain column options (long)");
         doc!(
             "enclone help amino",
             "per chain column options for amino acids"
