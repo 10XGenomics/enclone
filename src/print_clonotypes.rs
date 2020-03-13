@@ -516,7 +516,7 @@ pub fn print_clonotypes(
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
-                            row.push(format!("$ {}", bc.clone()));
+                            row.push(format!("$  {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));

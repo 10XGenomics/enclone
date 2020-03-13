@@ -418,7 +418,7 @@ pub fn build_table_stuff(
     if !ctl.clono_print_opt.bu {
         row1.push("#".to_string());
     } else {
-        row1.push("# barcode".to_string());
+        row1.push("#  barcode".to_string());
     }
     justify.push(b'l');
     for i in 0..lvars.len() {
