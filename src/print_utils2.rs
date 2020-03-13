@@ -631,17 +631,22 @@ pub fn row_fill(
                 let tig = &td.seq;
                 let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
                 let mut aligner = Aligner::new(-6, -1, &score);
+
+                // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
+                // there is just one pass.
+
                 let mut z = 1;
                 if ex.share[mid].left {
-                    z = refdata.refs.len();
+                    z = refdata.ds.len();
                 }
-
-                // Go through every reference record.  Nuts.
-
-                for d in 0..z {
-                    if ex.share[mid].left && !refdata.is_d(d) {
-                        continue;
+                for di in 0..z {
+                    let mut d = 0;
+                    if ex.share[mid].left {
+                        d = refdata.ds[di];
                     }
+
+                    // Start to build reference concatenation.  First append the V segment.
+
                     let mut concat = Vec::<u8>::new();
                     let mut x = refdata.refs[rsi.vids[col]].to_ascii_vec();
                     if rsi.vpids[col].is_none() {
@@ -650,12 +655,21 @@ pub fn row_fill(
                         let mut y = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
                         concat.append(&mut y);
                     }
+
+                    // Append the D segment if IGH/TRB.
+
                     if ex.share[mid].left {
                         let mut x = refdata.refs[d].to_ascii_vec();
                         concat.append(&mut x);
                     }
+
+                    // Append the J segment.
+
                     let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
                     concat.append(&mut x);
+
+                    // Align the V..J sequence on the contig to the reference concatenation.
+
                     let al = aligner.semiglobal(&tig, &concat);
                     let mut m = 0;
                     let mut pos = al.xstart;
