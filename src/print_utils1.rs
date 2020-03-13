@@ -98,14 +98,48 @@ pub fn make_table(
 
     // Make some character substitutions.
 
+    let mut barcode = false;
+    let mut x = Vec::<char>::new();
     for c in log.chars() {
-        if c == '$' {
-            logz.push('•');
-        } else if c == '%' {
+        x.push(c);
+    }
+    let mut j = 0;
+    while j < x.len() {
+        let c = x[j];
+
+        // % is a placeholder for +, so make the substitution.
+
+        if c == '%' {
             logz.push('+');
+
+        // $ is a placeholder for •, and $ is only in barcodes line if PER_CELL is specified.
+        // In plain mode, we just make the substitution, whereas in fancy mode, we change the
+        // text and background color for the entire line.
+        } else if c == '$' {
+            if ctl.pretty {
+                *logz += "[01;38;5;200m[01;48;5;229m•";
+                barcode = true;
+            } else {
+                logz.push('•');
+            }
+
+        // In a barcode line, elide end escapes.  Not exactly sure how these get here.
+        } else if barcode && c == '' && x[j + 1] == '[' && x[j + 2] == '0' && x[j + 3] == 'm' {
+            j += 3;
+
+        // In a barcode line, hop around │ symbols, which should not be colorized.
+        } else if barcode && c == '│' && x[j + 1] != '\n' {
+            *logz += "[0m│";
+            *logz += "[01;38;5;200m[01;48;5;229m";
+        } else if barcode && c == '│' && x[j + 1] == '\n' {
+            *logz += "[0m│";
+            barcode = false;
+
+        // Otherwise just save the character.
         } else {
             logz.push(c);
         }
+        j += 1;
     }
 }
 
@@ -213,7 +247,7 @@ pub fn make_diff_row(
                     start += 1;
                 }
                 for k in start..rows.len() {
-                    if rows[k][0].starts_with("$") {
+                    if rows[k][0].contains("$") {
                         continue;
                     }
                     if rows[k][ncall + z + nc].len() > 0 {
