@@ -436,6 +436,9 @@ pub fn row_fill(
             if y.contains(':') {
                 y = y.after(":").to_string();
             }
+            if y.contains("_μ") {
+                y = y.before("_μ").to_string();
+            }
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();

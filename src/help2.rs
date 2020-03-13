@@ -193,7 +193,7 @@ pub fn help2(args: &Vec<String>) {
         );
         println!(
             "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
-             LVARSP=gex_med,IGHV2-5_g_Σ,CD4_ab_Σ CDR3=CALMGTYCSGDNCYSWFDPW"
+             LVARSP=gex_med,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"
         );
         if !plain {
             print!("{}", include_str!("example2"));

@@ -429,23 +429,23 @@ pub fn help4(args: &Vec<String>) {
             "to cases where all exact subclonotypes have a complete set of chains."
         );
         ldoc!(
-            "<gene>_g_Σ",
+            "<gene>_g_μ",
             "all five feature types: look for a declared feature of the given type"
         );
         doc!(
-            "<antibody>_ab_Σ",
+            "<antibody>_ab_μ",
             "with the given id or name; report the mean UMI count for it; this assumes"
         );
         doc!(
-            "<antigen>_ag_Σ",
+            "<antigen>_ag_μ",
             "that gene expression or feature barcodes have been generated; we allow"
         );
         doc!(
-            "<crispr>_cr_Σ",
+            "<crispr>_cr_μ",
             "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be"
         );
-        doc!("<custom>_cu_Σ", "shown");
-        doc!("(\"Σ\" replaceable by \"sum\")", "");
+        doc!("<custom>_cu_μ", "shown");
+        doc!("(\"μ\" replaceable by \"mean\")", "");
         ldocpr!("<gene_>_g etc.", "same as above but for one cell \\red{◉}");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);

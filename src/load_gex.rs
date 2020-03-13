@@ -302,6 +302,7 @@ pub fn load_gex(
         if *x == "gex_med".to_string()
             || *x == "gex_max".to_string()
             || x.ends_with("_g")
+            || x.ends_with("_g_μ")
             || *x == "n_gex_Σ".to_string()
             || *x == "n_gex".to_string()
             || *x == "entropy".to_string()
@@ -319,10 +320,10 @@ pub fn load_gex(
             || x.ends_with("_ag")
             || x.ends_with("_cr")
             || x.ends_with("_cu")
-            || x.ends_with("_ab_Σ")
-            || x.ends_with("_ag_Σ")
-            || x.ends_with("_cr_Σ")
-            || x.ends_with("_cu_Σ")
+            || x.ends_with("_ab_μ")
+            || x.ends_with("_ag_μ")
+            || x.ends_with("_cr_μ")
+            || x.ends_with("_cu_μ")
         {
             if !have_fb {
                 eprintln!(

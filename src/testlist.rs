@@ -13,7 +13,7 @@ pub const TESTS: [&str; 39] = [
     // 3. tests motif in CDR3, CHAINS, u_sum, flipped args in CVARS, on tiny dataset
     r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-    r###"BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab_Σ,CD25_ab_Σ,IGLV3-1_g_Σ,RPS27_g_Σ
+    r###"BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,RPS27_g_μ
      CELLS=3 FULL_SEQC
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
@@ -45,7 +45,7 @@ pub const TESTS: [&str; 39] = [
     // 17. tests gex with PER_CELL and tests n_gex_Σ, n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex_Σ,n_gex,CD19_ab_Σ CELLS=3 PER_CELL"###,
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex_Σ,n_gex,CD19_ab_μ CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
@@ -71,7 +71,7 @@ pub const TESTS: [&str; 39] = [
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
     // 29. tests parenthesized variable in F, SUM and MEAN
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_Σ F="(IGHV3-7_g_Σ)>=4.5" MIN_CHAINS=2 SUM MEAN"###,
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN"###,
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
@@ -79,8 +79,8 @@ pub const TESTS: [&str; 39] = [
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
-    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g_Σ MIN_CELLS=10
-     SCAN="(IGHV1-69D_g_Σ)>=100,(IGHV1-69D_g_Σ)<=1,t-10*c>=0.1" NOPRINT"###,
+    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
+     SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
     r###"BCR=123085:123089 MIN_CELLS=10 PLOT="stdout,s1->red,s2->blue" NOPRINT

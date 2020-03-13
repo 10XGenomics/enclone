@@ -98,6 +98,9 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 
 pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     let mut to_check = Vec::<String>::new();
+    let ends = [
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
+    ];
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if !(*x == "datasets"
@@ -114,13 +117,13 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             || *x == "ext"
             || gpvar)
         {
-            if !x.ends_with("_g")
-                && !x.ends_with("_ab")
-                && !x.starts_with("_ag")
-                && !x.starts_with("_cr")
-                && !x.starts_with("_cu")
-                && !x.starts_with("n_")
-            {
+            let mut end_ok = false;
+            for i in 0..ends.len() {
+                if x.ends_with(&ends[i]) {
+                    end_ok = true;
+                }
+            }
+            if !end_ok && !x.starts_with("n_") {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",
@@ -145,15 +148,15 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                 }
                 for z in 0..2 {
                     if ff[2].starts_with("Antibody") {
-                        known_features.push(format!("{}_ab", ff[z]));
+                        known_features.push(format!("{}_ab_μ", ff[z]));
                     } else if ff[2].starts_with("Antigen") {
-                        known_features.push(format!("{}_ag", ff[z]));
+                        known_features.push(format!("{}_ag_μ", ff[z]));
                     } else if ff[2].starts_with("CRISPR") {
-                        known_features.push(format!("{}_cr", ff[z]));
+                        known_features.push(format!("{}_cr_μ", ff[z]));
                     } else if ff[2].starts_with("CUSTOM") {
-                        known_features.push(format!("{}_cu", ff[z]));
+                        known_features.push(format!("{}_cu_μ", ff[z]));
                     } else {
-                        known_features.push(format!("{}_g", ff[z]));
+                        known_features.push(format!("{}_g_μ", ff[z]));
                     }
                 }
             }
