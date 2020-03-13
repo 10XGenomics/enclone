@@ -415,7 +415,11 @@ pub fn build_table_stuff(
     let lvars = &ctl.clono_print_opt.lvars;
     let cols = rsi.vids.len();
     let nexacts = exacts.len();
-    row1.push("#".to_string());
+    if !ctl.clono_print_opt.bu {
+        row1.push("#".to_string());
+    } else {
+        row1.push("# barcode".to_string());
+    }
     justify.push(b'l');
     for i in 0..lvars.len() {
         let mut x = lvars[i].to_string();
