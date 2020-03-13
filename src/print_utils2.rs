@@ -357,7 +357,7 @@ pub fn row_fill(
                 dist = min(dist, d);
             }
             if dist == 1_000_000 {
-                lvar![lvars[i], "-".to_string()];
+                lvar![lvars[i], "".to_string()];
             } else {
                 lvar![lvars[i], format!("{}", dist)];
             }
@@ -378,7 +378,7 @@ pub fn row_fill(
                 dist = max(dist, d);
             }
             if dist == -1 as isize {
-                lvar![lvars[i], "-".to_string()];
+                lvar![lvars[i], "".to_string()];
             } else {
                 lvar![lvars[i], format!("{}", dist)];
             }
@@ -387,7 +387,7 @@ pub fn row_fill(
         } else if lvars[i] == "n_gex_Σ".to_string() {
             lvar![lvars[i], format!("{}", n_gex)];
         } else if lvars[i] == "n_gex".to_string() {
-            row.push("-".to_string());
+            row.push("".to_string());
             if pass == 2 {
                 speak!(
                     u,

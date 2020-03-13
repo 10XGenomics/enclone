@@ -602,14 +602,14 @@ pub fn print_clonotypes(
                                     }
                                     row.push(format!("{}", gex_count));
                                 } else {
-                                    row.push("-".to_string());
+                                    row.push("".to_string());
                                 }
                             }
                             let mut ncall = 0;
                             for k in 0..cols {
                                 ncall += rsi.cvars[k].len();
                             }
-                            let mut cx = vec!["-".to_string(); ncall];
+                            let mut cx = vec!["".to_string(); ncall];
                             let ex = &exact_clonotypes[exacts[u]];
                             let mut cp = 0;
                             for col in 0..cols {
