@@ -303,7 +303,7 @@ pub fn load_gex(
             || *x == "gex_max".to_string()
             || x.ends_with("_g")
             || x.ends_with("_g_μ")
-            || *x == "n_gex_Σ".to_string()
+            || *x == "n_gex_cell".to_string()
             || *x == "n_gex".to_string()
             || *x == "entropy".to_string()
         {

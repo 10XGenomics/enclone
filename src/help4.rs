@@ -382,8 +382,7 @@ pub fn help4(args: &Vec<String>) {
             "Shannon entropy of GEX UMI counts (median across cells)"
         );
         */
-        doc!("n_gex_Σ or n_gex_sum", "number of cells reported by GEX");
-        docpr!("n_gex", "is this cell called by GEX (0 or 1) \\red{◉}");
+        docpr!("n_gex", "number of cells reported by GEX \\red{◉}");
         doc!(
             "",
             "(all these require that gene expression data are provided as input)"
@@ -445,16 +444,17 @@ pub fn help4(args: &Vec<String>) {
             "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be"
         );
         doc!("<custom>_cu_μ", "shown");
-        doc!("(\"μ\" replaceable by \"mean\")", "");
+        doc!("(\"μ\" can be \"mean\")", "");
         ldocpr!("<gene_>_g etc.", "same as above but for one cell \\red{◉}");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
-            "\\red{◉} These have null value, except when used with either the \\bold{PER_CELL} \
-             option, which generates one line of human-readable output per cell (see \
-             \"enclone help display\"), or the \\bold{PCELL} option, which generates one line \
-             of parseable output per cell (see \"enclone help parseable\").\n\n",
+            "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
+             each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
+             (\"see enclone help parseable\"), for parseable output, \
+             both the given field, which applies to the exact subclonotype, and an additional \
+             field, suffixed by _cell, are shown, where the latter applies to just one cell.\n\n",
         );
         print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \

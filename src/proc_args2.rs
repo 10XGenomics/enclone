@@ -109,7 +109,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
             || *x == "ncells"
             || *x == "gex_med"
             || *x == "gex_max"
-            || *x == "n_gex_Σ"
+            || *x == "n_gex_cell"
             || *x == "n_gex"
             || *x == "entropy"
             || *x == "near"

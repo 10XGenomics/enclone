@@ -115,7 +115,7 @@ pub fn row_fill(
         };
     }
 
-    // Compute dataset indices, gex_med, gex_max, n_gex_Σ, n_gex, entropy.
+    // Compute dataset indices, gex_med, gex_max, n_gex_cell, n_gex, entropy.
 
     let mut dataset_indices = Vec::<usize>::new();
     for l in 0..ex.clones.len() {
@@ -384,14 +384,14 @@ pub fn row_fill(
             }
         } else if lvars[i] == "gex_med".to_string() {
             lvar![lvars[i], format!("{}", gex_median)];
-        } else if lvars[i] == "n_gex_Σ".to_string() {
-            lvar![lvars[i], format!("{}", n_gex)];
         } else if lvars[i] == "n_gex".to_string() {
+            lvar![lvars[i], format!("{}", n_gex)];
+        } else if lvars[i] == "n_gex_cell".to_string() {
             row.push("".to_string());
             if pass == 2 {
                 speak!(
                     u,
-                    "n_gex".to_string(),
+                    "n_gex_cell".to_string(),
                     format!("{}", n_gexs.iter().format(";"))
                 );
             }
