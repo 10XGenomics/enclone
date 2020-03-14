@@ -426,7 +426,7 @@ pub fn row_fill(
             }
             lvar![lvars[i], s.clone()];
         } else {
-            let mut count = 0.0;
+            // let mut count = 0.0;
             let mut counts = Vec::<f64>::new();
             let mut x = lvars[i].clone();
             let mut y = lvars[i].clone();
@@ -463,13 +463,19 @@ pub fn row_fill(
                         } else {
                             mult = gex_info.fb_mults[li];
                         }
-                        count += raw_count * mult;
+                        // count += raw_count * mult;
                         counts.push(raw_count * mult);
                     }
                 }
             }
-            stats.push((x.clone(), counts));
-            lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
+            stats.push((x.clone(), counts.clone()));
+            let mut counts_sorted = counts.clone();
+            counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            lvar![
+                x,
+                format!("{}", counts_sorted[counts_sorted.len() / 2].round())
+            ];
+            // lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
         }
     }
 

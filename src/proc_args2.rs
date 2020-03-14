@@ -148,14 +148,19 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                 }
                 for z in 0..2 {
                     if ff[2].starts_with("Antibody") {
+                        known_features.push(format!("{}_ab", ff[z]));
                         known_features.push(format!("{}_ab_μ", ff[z]));
                     } else if ff[2].starts_with("Antigen") {
+                        known_features.push(format!("{}_ag", ff[z]));
                         known_features.push(format!("{}_ag_μ", ff[z]));
                     } else if ff[2].starts_with("CRISPR") {
+                        known_features.push(format!("{}_cr", ff[z]));
                         known_features.push(format!("{}_cr_μ", ff[z]));
                     } else if ff[2].starts_with("CUSTOM") {
+                        known_features.push(format!("{}_cu", ff[z]));
                         known_features.push(format!("{}_cu_μ", ff[z]));
                     } else {
+                        known_features.push(format!("{}_g", ff[z]));
                         known_features.push(format!("{}_g_μ", ff[z]));
                     }
                 }
