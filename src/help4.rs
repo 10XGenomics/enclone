@@ -470,7 +470,8 @@ pub fn help4(args: &Vec<String>) {
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
              counts are rounded to the nearest integer.  For this normalization, \
-             we simply scale the counts, rather than subsample reads.\n\n",
+             we simply scale the counts, rather than subsample reads.  If you want to turn off \
+             the normalization, add the argument \\bold{FULL_COUNTS} to the command line.\n\n",
         );
         if !help_all {
             std::process::exit(0);

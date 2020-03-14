@@ -597,8 +597,12 @@ pub fn print_clonotypes(
                                                 }
                                             }
                                         }
-                                        gex_count =
-                                            (raw_count * gex_info.gex_mults[li]).round() as usize;
+                                        if !ctl.gen_opt.full_counts {
+                                            gex_count = (raw_count * gex_info.gex_mults[li]).round()
+                                                as usize;
+                                        } else {
+                                            gex_count = raw_count.round() as usize;
+                                        }
                                     }
                                     row.push(format!("{}", gex_count));
                                 } else {
@@ -1188,7 +1192,11 @@ pub fn print_clonotypes(
                                 } else {
                                     mult = gex_info.fb_mults[li];
                                 }
-                                vals.push(raw_count * mult);
+                                if !ctl.gen_opt.full_counts {
+                                    vals.push(raw_count * mult);
+                                } else {
+                                    vals.push(raw_count);
+                                }
                             }
                         }
                     }

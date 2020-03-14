@@ -294,6 +294,7 @@ pub struct GeneralOpt {
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,
     pub force_h5: bool,
+    pub full_counts: bool,
 }
 
 // Allele finding algorithmic options.

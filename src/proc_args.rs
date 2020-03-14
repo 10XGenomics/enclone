@@ -205,6 +205,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&arg, "CURRENT_REF") {
             ctl.gen_opt.current_ref = true;
+        } else if is_simple_arg(&arg, "FULL_COUNTS") {
+            ctl.gen_opt.full_counts = true;
         } else if is_simple_arg(&arg, "SUM") {
             ctl.clono_print_opt.sum = true;
         } else if is_simple_arg(&arg, "MEAN") {

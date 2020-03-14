@@ -249,7 +249,11 @@ pub fn row_fill(
                     d_all[l] = d;
                     ind_all[l] = ind;
                 }
-                count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                if !ctl.gen_opt.full_counts {
+                    count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                } else {
+                    count = (raw_count as f64).round() as usize;
+                }
             }
             counts.push(count);
             entropies.push(entropy);
@@ -464,7 +468,11 @@ pub fn row_fill(
                             mult = gex_info.fb_mults[li];
                         }
                         // count += raw_count * mult;
-                        counts.push(raw_count * mult);
+                        if !ctl.gen_opt.full_counts {
+                            counts.push(raw_count * mult);
+                        } else {
+                            counts.push(raw_count);
+                        }
                     }
                 }
             }
