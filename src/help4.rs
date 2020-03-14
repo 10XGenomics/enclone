@@ -373,20 +373,6 @@ pub fn help4(args: &Vec<String>) {
             "",
             "or sample or donor or tag short name; may name only one such category"
         );
-        ldoc!("gex_med", "median gene expression UMI count");
-        doc!("gex_max", "max gene expression UMI count");
-        // nonpublic for now as we don't know if this is useful
-        /*
-        doc!(
-            "entropy",
-            "Shannon entropy of GEX UMI counts (median across cells)"
-        );
-        */
-        docpr!("n_gex", "number of cells reported by GEX \\red{◉}");
-        doc!(
-            "",
-            "(all these require that gene expression data are provided as input)"
-        );
         ldoc!(
             "near",
             "Hamming distance of V..J DNA sequence to nearest neighbor"
@@ -427,28 +413,37 @@ pub fn help4(args: &Vec<String>) {
             "",
             "to cases where all exact subclonotypes have a complete set of chains."
         );
-        ldoc!(
-            "<gene>_g_μ",
-            "all five feature types: look for a declared feature of the given type"
+        ldocpr!("gex", "\\red{◉} median gene expression UMI count");
+        docpr!("n_gex", "\\red{◉} number of cells reported by GEX");
+        // nonpublic for now as we don't know if this is useful
+        /*
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
+        */
+        ldocpr!(
+            "<gene>_g",
+            "\\red{◉} all five feature types: look for a declared feature of the \
+             given type"
         );
         doc!(
-            "<antibody>_ab_μ",
-            "with the given id or name; report the mean UMI count for it; this assumes"
+            "<antibody>_ab",
+            "with the given id or name; report the median UMI count for it; we allow"
         );
         doc!(
-            "<antigen>_ag_μ",
-            "that gene expression or feature barcodes have been generated; we allow"
+            "<antigen>_ag",
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown"
         );
-        doc!(
-            "<crispr>_cr_μ",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be"
-        );
-        doc!("<custom>_cu_μ", "shown");
-        doc!("(\"μ\" can be \"mean\")", "");
-        ldocpr!("<gene_>_g etc.", "same as above but for one cell \\red{◉}");
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
+        print!("{}", log);
+        print(
+            "For gene expression and feature barcode stats, such data must be provided \
+             as input to enclone.\n\n",
+        );
         print(
             "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
              each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
@@ -457,13 +452,20 @@ pub fn help4(args: &Vec<String>) {
              field, suffixed by _cell, are shown, where the latter applies to just one cell.\n\n",
         );
         print(
+            "\\red{◉} Count variables (except n_gex) all have additional forms, indicated by \
+             suffixes:\n  \
+             • _mean or equivalently _μ\n  \
+             • _min or _max\n  \
+             • _sum or equivalently _Σ\n\
+             which provide the indicated statistic instead of the median.\n\
+             The Greek letter forms may be used optionally on input and are used for visual \
+             output to save space.\n\n",
+        );
+        print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
         );
-        print(
-            "\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the default \
-             list.\n\n",
-        );
+        print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
         print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
