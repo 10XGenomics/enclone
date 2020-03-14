@@ -70,14 +70,14 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Determine the Cell Ranger version that was used.  Really painful.
 
-    let json = format!(
-        "{}/all_contig_annotations.json",
-        ctl.sample_info.dataset_path[0]
-    );
-    let json_lz4 = format!(
-        "{}/all_contig_annotations.json.lz4",
-        ctl.sample_info.dataset_path[0]
-    );
+    let ann;
+    if !ctl.gen_opt.cellranger {
+        ann = "all_contig_annotations.json";
+    } else {
+        ann = "contig_annotations.json";
+    }
+    let json = format!("{}/{}", ctl.sample_info.dataset_path[0], ann);
+    let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[0], ann);
     if !path_exists(&json) && !path_exists(&json_lz4) {
         eprintln!("can't find {} or {}", json, json_lz4);
         std::process::exit(1);
