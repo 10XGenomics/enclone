@@ -575,7 +575,7 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     row.push(format!("{:.2}", entropy));
-                                } else if lvars[k] == "gex_med".to_string() && have_gex {
+                                } else if lvars[k] == "gex".to_string() && have_gex {
                                     let mut gex_count = 0;
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {

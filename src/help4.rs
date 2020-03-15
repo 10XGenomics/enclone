@@ -459,7 +459,8 @@ pub fn help4(args: &Vec<String>) {
              • _sum or equivalently _Σ\n\
              which provide the indicated statistic instead of the median.\n\
              The Greek letter forms may be used optionally on input and are used for visual \
-             output to save space.\n\n",
+             output to save space.  The additional forms do not show cell-by-cell values \
+             when used with the \\bold{PER_CELL} option.\n\n",
         );
         print(
             "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \

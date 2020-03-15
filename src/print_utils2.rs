@@ -115,7 +115,8 @@ pub fn row_fill(
         };
     }
 
-    // Compute dataset indices, gex_med, gex_max, n_gex_cell, n_gex, entropy.
+    // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
+    // n_gex_cell, n_gex, entropy.
 
     let mut dataset_indices = Vec::<usize>::new();
     for l in 0..ex.clones.len() {
@@ -128,6 +129,7 @@ pub fn row_fill(
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
+    let mut fcounts = Vec::<f64>::new();
     let mut n_gex = 0;
     let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
@@ -197,6 +199,7 @@ pub fn row_fill(
                 n_gexs.push(0);
             }
             let mut count = 0;
+            let mut fcount = 0.0;
             let mut entropy = 0.0;
             let p = bin_position(&gex_info.gex_barcodes[li], &bc);
             if p >= 0 {
@@ -251,11 +254,14 @@ pub fn row_fill(
                 }
                 if !ctl.gen_opt.full_counts {
                     count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                    fcount = raw_count as f64 * gex_info.gex_mults[li];
                 } else {
                     count = (raw_count as f64).round() as usize;
+                    fcount = raw_count as f64;
                 }
             }
             counts.push(count);
+            fcounts.push(fcount);
             entropies.push(entropy);
         }
     }
@@ -265,10 +271,13 @@ pub fn row_fill(
             *gex_low += 1;
         }
     }
-    let (mut gex_median, mut gex_max) = (0, 0);
+    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0);
     if counts.len() > 0 {
         gex_median = counts[counts.len() / 2];
+        gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
+        gex_sum = fcounts.iter().sum::<f64>().round() as usize;
+        gex_mean = (gex_sum as f64 / fcounts.len() as f64).round() as usize;
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
@@ -386,7 +395,7 @@ pub fn row_fill(
             } else {
                 lvar![lvars[i], format!("{}", dist)];
             }
-        } else if lvars[i] == "gex_med".to_string() {
+        } else if lvars[i] == "gex".to_string() {
             lvar![lvars[i], format!("{}", gex_median)];
         } else if lvars[i] == "n_gex".to_string() {
             lvar![lvars[i], format!("{}", n_gex)];
@@ -401,8 +410,14 @@ pub fn row_fill(
             }
         } else if lvars[i] == "entropy".to_string() {
             lvar![lvars[i], format!("{:.2}", entropy)];
+        } else if lvars[i] == "gex_min".to_string() {
+            lvar![lvars[i], format!("{}", gex_min)];
         } else if lvars[i] == "gex_max".to_string() {
             lvar![lvars[i], format!("{}", gex_max)];
+        } else if lvars[i] == "gex_mean".to_string() {
+            lvar![lvars[i], format!("{}", gex_mean)];
+        } else if lvars[i] == "gex_sum".to_string() {
+            lvar![lvars[i], format!("{}", gex_sum)];
         } else if lvars[i] == "ext".to_string() {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {

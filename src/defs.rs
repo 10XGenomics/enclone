@@ -173,8 +173,11 @@ impl LinearCondition {
             "far",
             "n_gex_cell",
             "n_gex",
-            "gex_med",
+            "gex",
+            "gex_min",
             "gex_max",
+            "gex_mean",
+            "gex_sum",
             "entropy",
             "ext",
         ];

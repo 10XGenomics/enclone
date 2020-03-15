@@ -299,8 +299,11 @@ pub fn load_gex(
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
-        if *x == "gex_med".to_string()
+        if *x == "gex".to_string()
+            || *x == "gex_min".to_string()
             || *x == "gex_max".to_string()
+            || *x == "gex_mean".to_string()
+            || *x == "gex_sum".to_string()
             || x.ends_with("_g")
             || x.ends_with("_g_μ")
             || *x == "n_gex_cell".to_string()
