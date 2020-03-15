@@ -536,6 +536,7 @@ pub fn row_fill(
         numis.sort();
         let median_numis = numis[numis.len() / 2];
         let utot: usize = numis.iter().sum();
+        let u_min = *numis.iter().min().unwrap();
         let u_max = *numis.iter().max().unwrap();
         nreads.sort();
         let median_nreads = nreads[nreads.len() / 2];
@@ -906,12 +907,10 @@ pub fn row_fill(
                 cvar![j, var, ex.share[mid].vs_notesx.clone()];
             } else if *var == "var".to_string() {
                 cvar![j, var, stringme(&varmat[u][col])];
-            } else if *var == "u_med".to_string() {
-                cvar![j, var, format!("{}", median_numis)];
             } else if *var == "u".to_string() {
                 let var = var.clone();
                 if col_var {
-                    cx[col][j] = "".to_string();
+                    cx[col][j] = format!("{}", median_numis);
                 }
                 if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
@@ -926,6 +925,8 @@ pub fn row_fill(
                         out_data[u].insert(varc, format!("{}", vals));
                     }
                 }
+            } else if *var == "u_min".to_string() {
+                cvar![j, var, format!("{}", u_min)];
             } else if *var == "u_max".to_string() {
                 cvar![j, var, format!("{}", u_max)];
             } else if *var == "u_Σ".to_string() {

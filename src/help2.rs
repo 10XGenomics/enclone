@@ -167,7 +167,7 @@ pub fn help2(args: &Vec<String>) {
              • The \"dot and x\" line has xs where there's a difference *within* the clonotype.\n\
              • Amino acids are shown if they differ from the universal reference or are in \
              the CDR3.\n\
-             • u_med = median UMI count for a chain in the exact subclonotype.\n\
+             • u = median UMI count for a chain in the exact subclonotype.\n\
              • const = const region name for a chain in the exact subclonotype.\n"
         );
         print(

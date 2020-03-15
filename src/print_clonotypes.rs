@@ -621,7 +621,7 @@ pub fn print_clonotypes(
                                 if m.is_some() {
                                     let m = m.unwrap();
                                     for p in 0..rsi.cvars[col].len() {
-                                        if rsi.cvars[col][p] == "u_med".to_string() {
+                                        if rsi.cvars[col][p] == "u".to_string() {
                                             let numi = ex.clones[bcl.2][m].umi_count;
                                             cx[cp + p] = format!("{}", numi);
                                         }

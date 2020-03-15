@@ -505,28 +505,14 @@ pub fn help4(args: &Vec<String>) {
             "var",
             "bases at positions in chain that vary across the clonotype"
         );
-        ldoc!(
-            "u_med",
-            "VDJ UMI count for each exact subclonotype, median across cells"
+        ldocpr!(
+            "u",
+            "\\red{◉} VDJ UMI count for each exact subclonotype, median across cells"
         );
-        doc!(
-            "u_max",
-            "VDJ UMI count for each exact subclonotype, max across cells"
+        docpr!(
+            "r",
+            "\\red{◉} VDJ read count for each exact subclonotype, median across cells"
         );
-        doc!(
-            "u_Σ or u_sum",
-            "VDJ UMI count for each exact subclonotype, total across cells"
-        );
-        doc!(
-            "",
-            "(the Greek letter form is not used in parseable output)"
-        );
-        docpr!("u", "VDJ UMI count for each cell \\red{◉}");
-        ldoc!(
-            "r_med",
-            "VDJ read count for each exact subclonotype, median across cells"
-        );
-        docpr!("r", "VDJ read count for each cell \\red{◉}");
         ldoc!("const", "constant region name");
         ldoc!(
             "edit",
@@ -626,13 +612,25 @@ pub fn help4(args: &Vec<String>) {
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
         print(
-            "\\red{◉} These have null value, except when used with either the \\bold{PER_CELL} \
-             option, which generates one line of human-readable output per cell (see \
-             \"enclone help display\"), or the \\bold{PCELL} option, which generates one line \
-             of parseable output per cell (see \"enclone help parseable\").\n\n",
+            "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
+             each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
+             (\"see enclone help parseable\"), for parseable output, \
+             both the given field, which applies to the exact subclonotype, and an additional \
+             field, suffixed by _cell, are shown, where the latter applies to just one cell.\n\n",
         );
         print(
-            "At least one variable must be listed.  The default is \\bold{u_med,const,notes}.  \
+            "\\red{◉} Count variables (except n_gex) all have additional forms, indicated by \
+             suffixes:\n  \
+             • _mean or equivalently _μ\n  \
+             • _min or _max\n  \
+             • _sum or equivalently _Σ\n\
+             which provide the indicated statistic instead of the median.\n\
+             The Greek letter forms may be used optionally on input and are used for visual \
+             output to save space.  The additional forms do not show cell-by-cell values \
+             when used with the \\bold{PER_CELL} option.\n\n",
+        );
+        print(
+            "At least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
         if !help_all {

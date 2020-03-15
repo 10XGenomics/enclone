@@ -85,11 +85,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "share".to_string(),
         "donor".to_string(),
     ];
-    ctl.clono_print_opt.cvars = vec![
-        "u_med".to_string(),
-        "const".to_string(),
-        "notes".to_string(),
-    ];
+    ctl.clono_print_opt.cvars = vec!["u".to_string(), "const".to_string(), "notes".to_string()];
     ctl.clono_print_opt.lvars = vec!["datasets".to_string(), "ncells".to_string()];
 
     ctl.clono_group_opt.min_group = 1;
