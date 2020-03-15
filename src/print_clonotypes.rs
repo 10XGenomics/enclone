@@ -518,6 +518,7 @@ pub fn print_clonotypes(
                             let li = bcl.1;
                             row.push(format!("$  {}", bc.clone()));
                             for k in 0..lvars.len() {
+                                let nr = row.len();
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
                                 } else if lvars[k] == "n_gex".to_string() && have_gex {
@@ -606,6 +607,44 @@ pub fn print_clonotypes(
                                     }
                                     row.push(format!("{}", gex_count));
                                 } else {
+                                    let mut y = lvars[k].clone();
+                                    if y.contains(':') {
+                                        y = y.after(":").to_string();
+                                    }
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                    if p >= 0 {
+                                        if gex_info.feature_id[li].contains_key(&y) {
+                                            let fid = gex_info.feature_id[li][&y];
+                                            let mut raw_count = 0 as f64;
+                                            if !ctl.gen_opt.h5 {
+                                                raw_count = gex_info.gex_matrices[li]
+                                                    .value(p as usize, fid)
+                                                    as f64;
+                                            } else {
+                                                for j in 0..d_all[k].len() {
+                                                    if ind_all[k][j] == fid as u32 {
+                                                        raw_count = d_all[k][j] as f64;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            let mult: f64;
+                                            if y.ends_with("_g") {
+                                                mult = gex_info.gex_mults[li];
+                                            } else {
+                                                mult = gex_info.fb_mults[li];
+                                            }
+                                            let count;
+                                            if !ctl.gen_opt.full_counts {
+                                                count = (raw_count * mult).round() as f64;
+                                            } else {
+                                                count = raw_count.round() as f64;
+                                            }
+                                            row.push(format!("{}", count));
+                                        }
+                                    }
+                                }
+                                if row.len() == nr {
                                     row.push("".to_string());
                                 }
                             }
