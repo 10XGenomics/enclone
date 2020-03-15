@@ -105,6 +105,16 @@ pub fn make_table(
     }
     let mut j = 0;
     while j < x.len() {
+        // DEFAULT
+        const TEXTCOLOR: usize = 200;
+        const BACKGROUND: usize = 229;
+
+        // NOT CRAZY
+        /*
+        const TEXTCOLOR: usize = 200;
+        const BACKGROUND: usize = 225;
+        */
+
         let c = x[j];
 
         // % is a placeholder for +, so make the substitution.
@@ -117,7 +127,7 @@ pub fn make_table(
         // text and background color for the entire line.
         } else if c == '$' {
             if ctl.pretty {
-                *logz += "[01;38;5;200m[01;48;5;229m•";
+                *logz += &format!("[01;38;5;{}m[01;48;5;{}m•", TEXTCOLOR, BACKGROUND);
                 barcode = true;
             } else {
                 logz.push('•');
@@ -130,7 +140,7 @@ pub fn make_table(
         // In a barcode line, hop around │ symbols, which should not be colorized.
         } else if barcode && c == '│' && x[j + 1] != '\n' {
             *logz += "[0m│";
-            *logz += "[01;38;5;200m[01;48;5;229m";
+            *logz += &format!("[01;38;5;{}m[01;48;5;{}m", TEXTCOLOR, BACKGROUND);
         } else if barcode && c == '│' && x[j + 1] == '\n' {
             *logz += "[0m│";
             barcode = false;
