@@ -512,7 +512,7 @@ pub fn print_clonotypes(
 
                     let mut subrows = Vec::<Vec<String>>::new();
                     if ctl.clono_print_opt.bu {
-                        for bcl in bli.iter() {
+                        for (kb, bcl) in bli.iter().enumerate() {
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
@@ -621,9 +621,9 @@ pub fn print_clonotypes(
                                                     .value(p as usize, fid)
                                                     as f64;
                                             } else {
-                                                for j in 0..d_all[k].len() {
-                                                    if ind_all[k][j] == fid as u32 {
-                                                        raw_count = d_all[k][j] as f64;
+                                                for j in 0..d_all[kb].len() {
+                                                    if ind_all[kb][j] == fid as u32 {
+                                                        raw_count = d_all[kb][j] as f64;
                                                         break;
                                                     }
                                                 }

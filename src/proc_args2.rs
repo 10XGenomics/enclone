@@ -217,10 +217,11 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                             is_tag_name = true;
                         }
                     }
-                    let msg = "Suggested reading: \"enclone help input\" and \
+                    let msg = "\nSuggested reading: \"enclone help input\" and \
                                \"enclone help glossary\".\n";
                     if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
                         eprintln!(
+                            // The following line is cryptic as a user message:
                             "\ntags = {}\n\
                              You've used the lead variable {}, and yet {} \
                              does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
