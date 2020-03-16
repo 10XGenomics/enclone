@@ -19,7 +19,7 @@ pub const TESTS: [&str; 39] = [
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
     // 6. tests AMINO=
-    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r_med,cdr3_dna"###,
+    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change
@@ -100,6 +100,6 @@ pub const TESTS: [&str; 39] = [
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
     // 39. tests u and r fields in parseable output
-    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u1_cell,r_med2,r2 PCELL CVARSP=r_med
+    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u1_cell,r2,r2 PCELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
 ];

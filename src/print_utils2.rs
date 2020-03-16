@@ -950,9 +950,9 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", u_mean)];
             } else if *var == "u_Σ".to_string() {
                 cvar![j, var, format!("{}", utot)];
-            } else if *var == "r_med".to_string() {
-                cvar![j, var, format!("{}", median_nreads)];
             } else if *var == "r".to_string() {
+                cvar![j, var, format!("{}", median_nreads)];
+            } else if *var == "r_cell".to_string() {
                 let var = var.clone();
                 if col_var {
                     cx[col][j] = "".to_string();
