@@ -536,6 +536,7 @@ pub fn row_fill(
         numis.sort();
         let median_numis = numis[numis.len() / 2];
         let utot: usize = numis.iter().sum();
+        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
         let u_min = *numis.iter().min().unwrap();
         let u_max = *numis.iter().max().unwrap();
         nreads.sort();
@@ -929,6 +930,8 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", u_min)];
             } else if *var == "u_max".to_string() {
                 cvar![j, var, format!("{}", u_max)];
+            } else if *var == "u_μ".to_string() {
+                cvar![j, var, format!("{}", u_mean)];
             } else if *var == "u_Σ".to_string() {
                 cvar![j, var, format!("{}", utot)];
             } else if *var == "r_med".to_string() {
