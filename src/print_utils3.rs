@@ -328,7 +328,7 @@ pub fn insert_reference_rows(
         for pass in 1..=2 {
             let mut row = Vec::<String>::new();
             if pass == 1 {
-                row.push("universal ref".to_string());
+                row.push("reference".to_string());
             } else {
                 row.push("donor ref".to_string());
             }
