@@ -480,7 +480,7 @@ pub fn row_fill(
                             }
                         }
                         let mult: f64;
-                        if x.ends_with("_g") {
+                        if y.ends_with("_g") {
                             mult = gex_info.gex_mults[li];
                         } else {
                             mult = gex_info.fb_mults[li];
