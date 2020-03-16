@@ -444,6 +444,131 @@ pub fn help4(args: &Vec<String>) {
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
         );
+
+
+
+
+        print(
+            "\\red{◉} These variables have some alternate versions, \
+             as shown in the table below:\n"
+        );
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![ 
+            "variable".to_string(),
+            "semantics".to_string(),
+            "visual".to_string(),
+            "visual".to_string(),
+            "parseable".to_string(),
+            "parseable".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![ 
+            "".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "(one cell)".to_string(),
+            "".to_string(),
+            "(one cell)".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![ "\\hline".to_string(); 6 ];
+        rows.push(row);
+        let row = vec![
+            "x".to_string(),
+            "median over cells".to_string(),
+            "yes".to_string(),
+            "this cell".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_mean".to_string(),
+            "mean over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_μ".to_string(),
+            "(same as above)".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_sum".to_string(),
+            "sum over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_Σ".to_string(),
+            "(same as above)".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_min".to_string(),
+            "min over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_max".to_string(),
+            "max over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_cell".to_string(),
+            "this cell".to_string(),
+            "no".to_string(),
+            "no".to_string(),
+            "no".to_string(),
+            "this cell".to_string(),
+        ];
+        rows.push(row);
+        {
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
+            print!("{}", log);
+        }
+        print(
+            "Some explanation is required.  If you use enclone without certain options, you \
+             get the \"visual\" column.\n\
+             • Add the option \\bold{PER_CELL} \
+             (see \"enclone help display\") and then you get visual output with extra lines for \
+             each cell within an exact subclonotype, and each of those extra lines is described by \
+             the \"visual (one cell)\" column.\n\
+             • If you generate parseable output (see \"enclone help parseable\"), then you get \
+             the \"parseable\" column for that output, unless you specify \\bold{PCELL}, \
+             and then you get the last column.\n\
+             • For the forms with μ and Σ, the Greek letters are only used in column headings for \
+             visual output (to save space), and optionally, in names of fields on the command \
+             line.\n\
+             \\green{▶} If you try out these features, you'll see exactly what happens! \
+             \\green{◀}\n\n"
+        );
+
+
+
         print_with_box(
             "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
              each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
