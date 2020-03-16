@@ -446,11 +446,7 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
         let mut rows = Vec::<Vec<String>>::new();
-        let row = vec![
-            "sample".to_string(),
-            "donor".to_string(),
-            "ncells".to_string(),
-        ];
+        let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
         rows.push(row);
         let row = vec!["\\hline".to_string(); 3];
         rows.push(row);

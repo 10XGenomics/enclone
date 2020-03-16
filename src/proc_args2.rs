@@ -106,7 +106,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
         if !(*x == "datasets"
             || *x == "samples"
             || *x == "donors"
-            || *x == "ncells"
+            || *x == "n"
             || *x == "gex"
             || *x == "gex_min"
             || *x == "gex_max"

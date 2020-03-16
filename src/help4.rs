@@ -364,7 +364,7 @@ pub fn help4(args: &Vec<String>) {
         doc!("datasets", "dataset identifiers");
         doc!("samples", "sample identifiers");
         doc!("donors", "donor identifiers");
-        ldoc!("ncells", "number of cells");
+        ldoc!("n", "number of cells");
         doc!(
             "n_<name>",
             "number of cells associated to the given name, which can be a dataset"
@@ -462,7 +462,7 @@ pub fn help4(args: &Vec<String>) {
             true,
         );
         print(
-            "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
+            "The default is \\bold{datasets,n}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
         );
         print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");

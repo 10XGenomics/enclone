@@ -321,7 +321,7 @@ pub fn row_fill(
             }
             unique_sort(&mut donors);
             lvar![lvars[i], format!("{}", donors.iter().format(","))];
-        } else if lvars[i] == "ncells".to_string() {
+        } else if lvars[i] == "n".to_string() {
             lvar![lvars[i], format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
             stats.push((lvars[i].clone(), counts));
