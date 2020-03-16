@@ -7,31 +7,31 @@ pub const TEST_FILES_VERSION: u8 = 14;
 pub const TESTS: [&str; 39] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
-     PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
+     PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
     // 2. tests many donor ref differences, test comp and var and donorn
     r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,var AMINO=cdr3,var,share,donorn"###,
     // 3. tests motif in CDR3, CHAINS, u_sum, flipped args in CVARS, on tiny dataset
     r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-    r###"BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,RPS27_g_μ
+    r###"BCR=86237 GEX=85679 LVARSP=gex,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,RPS27_g_μ
      CELLS=3 FULL_SEQC
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
     // 6. tests AMINO=
-    r###"BCR=86237 CELLS=3 AMINO= CVARS=u_med,r_med,cdr3_dna"###,
+    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r_med,cdr3_dna"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change
     r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_CELL
     r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
-    // 10. tests multiple datasets and also LVARS=ncells,samples,donors,datasets, and share
+    // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,samples,donors,datasets AMINO=share
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,samples,donors,datasets AMINO=share
      MIX_DONORS"###,
     // 11. tests META
-    r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,
+    r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
     // 12. this added because it got better when a noise filter was added, also tests u_max
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
@@ -41,7 +41,7 @@ pub const TESTS: [&str; 39] = [
     // 15. tests insertion and AMINO range
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 16. tests number of cells broken out by dataset
-    r###"BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
+    r###"BCR=123085,123089 LVARS=n,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
     // 17. tests gex with PER_CELL and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
@@ -62,7 +62,7 @@ pub const TESTS: [&str; 39] = [
     r###"BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW"###,
     // 25. add mouse B6 example that had messed up constant regions
     r###"TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF"###,
-    // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
+    // 26. tests multiple datasets and also LVARS=n,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     // Here we make sure that non-specification of MIX_DONORS works.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW"###,
@@ -100,6 +100,6 @@ pub const TESTS: [&str; 39] = [
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
     // 39. tests u and r fields in parseable output
-    r###"BCR=85333 POUT=stdout PCOLS=barcode,u_med1,u1,r_med2,r2 PCELL CVARSP=r_med
+    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u1_cell,r_med2,r2 PCELL CVARSP=r_med
         CDR3=CAADGGGDQYYYMDVW"###,
 ];
