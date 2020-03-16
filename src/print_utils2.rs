@@ -496,7 +496,7 @@ pub fn row_fill(
                     }
                 }
             }
-            stats.push((x.clone(), counts.clone()));
+            stats.push((x.clone(), fcounts.clone()));
             let mut counts_sorted = counts.clone();
             counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
             let sum = fcounts.iter().sum::<f64>();
