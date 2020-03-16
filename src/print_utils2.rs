@@ -445,18 +445,21 @@ pub fn row_fill(
             }
             lvar![lvars[i], s.clone()];
         } else {
-            // let mut count = 0.0;
             let mut counts = Vec::<f64>::new();
-            let mut x = lvars[i].clone();
-            let mut y = lvars[i].clone();
+            let (mut x, mut y) = (lvars[i].clone(), lvars[i].clone());
             if x.contains(':') {
                 x = x.before(":").to_string();
             }
             if y.contains(':') {
                 y = y.after(":").to_string();
             }
-            if y.contains("_μ") {
-                y = y.before("_μ").to_string();
+            let y0 = y.clone();
+            let suffixes = ["_min", "_max", "_μ", "_Σ"];
+            for s in suffixes.iter() {
+                if y.ends_with(s) {
+                    y = y.before(&s).to_string();
+                    break;
+                }
             }
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
@@ -482,9 +485,8 @@ pub fn row_fill(
                         } else {
                             mult = gex_info.fb_mults[li];
                         }
-                        // count += raw_count * mult;
                         if !ctl.gen_opt.full_counts {
-                            counts.push(raw_count * mult);
+                            counts.push((raw_count as f64 * mult).round() as f64);
                         } else {
                             counts.push(raw_count);
                         }
@@ -494,11 +496,22 @@ pub fn row_fill(
             stats.push((x.clone(), counts.clone()));
             let mut counts_sorted = counts.clone();
             counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            lvar![
-                x,
-                format!("{}", counts_sorted[counts_sorted.len() / 2].round())
-            ];
-            // lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
+            let sum = counts.iter().sum::<f64>();
+            let mean = sum / counts.len() as f64;
+            if y0.ends_with("_min") {
+                lvar![x, format!("{}", counts_sorted[0].round())];
+            } else if y0.ends_with("_max") {
+                lvar![x, format!("{}", counts_sorted[counts.len() - 1].round())];
+            } else if y0.ends_with("_mean") {
+                lvar![x, format!("{}", mean.round())];
+            } else if y0.ends_with("_sum") {
+                lvar![x, format!("{}", sum.round())];
+            } else {
+                lvar![
+                    x,
+                    format!("{}", counts_sorted[counts_sorted.len() / 2].round())
+                ];
+            }
         }
     }
 

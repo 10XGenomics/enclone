@@ -98,9 +98,16 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 
 pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     let mut to_check = Vec::<String>::new();
-    let ends = [
+    let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
     ];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let mut ends = Vec::<String>::new();
+    for x in ends0.iter() {
+        for y in suffixes.iter() {
+            ends.push(format!("{}{}", x, y));
+        }
+    }
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if !(*x == "datasets"
@@ -151,20 +158,25 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
                 }
                 for z in 0..2 {
                     if ff[2].starts_with("Antibody") {
-                        known_features.push(format!("{}_ab", ff[z]));
-                        known_features.push(format!("{}_ab_μ", ff[z]));
+                        for s in suffixes.iter() {
+                            known_features.push(format!("{}_ab{}", ff[z], s));
+                        }
                     } else if ff[2].starts_with("Antigen") {
-                        known_features.push(format!("{}_ag", ff[z]));
-                        known_features.push(format!("{}_ag_μ", ff[z]));
+                        for s in suffixes.iter() {
+                            known_features.push(format!("{}_ag{}", ff[z], s));
+                        }
                     } else if ff[2].starts_with("CRISPR") {
-                        known_features.push(format!("{}_cr", ff[z]));
-                        known_features.push(format!("{}_cr_μ", ff[z]));
+                        for s in suffixes.iter() {
+                            known_features.push(format!("{}_cr{}", ff[z], s));
+                        }
                     } else if ff[2].starts_with("CUSTOM") {
-                        known_features.push(format!("{}_cu", ff[z]));
-                        known_features.push(format!("{}_cu_μ", ff[z]));
+                        for s in suffixes.iter() {
+                            known_features.push(format!("{}_cu{}", ff[z], s));
+                        }
                     } else {
-                        known_features.push(format!("{}_g", ff[z]));
-                        known_features.push(format!("{}_g_μ", ff[z]));
+                        for s in suffixes.iter() {
+                            known_features.push(format!("{}_g{}", ff[z], s));
+                        }
                     }
                 }
             }
