@@ -166,16 +166,17 @@ pub fn help3(args: &Vec<String>) {
         bold!();
         println!("parseable output");
         end_escape!();
-        println!(
-            "\nThe standard output of enclone is designed to be read by humans, but is not\n\
-             readily parseable by computers.  We supplement this with parseable output that can\n\
-             be read by computers, but is highly verbose and not intended to be read by humans.\n\n\
-             This output is in the form of a CSV file having an exhaustive list of around\n\
-             140 fields by default.\n\n\
-             It is also possible to specify any subset of these fields, and there are a few other\n\
-             choices, which we describe.\n\n\
-             Parseable output is targeted primarily at R and Python users, because of the ease of\n\
-             wrangling CSV files with these languages.\n"
+        print(
+            "\nThe standard output of enclone is designed to be read by humans, but is not \
+             readily parseable by computers.  We supplement this with parseable output that can \
+             be easily read by computers.\n\n\
+             \
+             The default behavior for this is to generate a CSV file having \"every possible\" \
+             field (over a hundred).  We also provide an option to print only selected fields, \
+             and some options which enable inspection, short of generating a separate CSV file.\n\n\
+             \
+             Parseable output is targeted primarily at R and Python users, because of the ease of \
+             wrangling CSV files with these languages.\n\n",
         );
         print_with_box(
             "Parseable output is invoked by using the argument\n\
