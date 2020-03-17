@@ -414,7 +414,7 @@ pub fn help4(args: &Vec<String>) {
             "to cases where all exact subclonotypes have a complete set of chains."
         );
         ldocpr!("gex", "\\red{◉} median gene expression UMI count");
-        docpr!("n_gex", "\\red{◉} number of cells reported by GEX");
+        docpr!("n_gex", "\\blue{◉} number of cells reported by GEX");
         // nonpublic for now as we don't know if this is useful
         /*
         doc!(
@@ -566,25 +566,10 @@ pub fn help4(args: &Vec<String>) {
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
         )));
-
-        println!("");
-
-        print_with_box(
-            "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
-             each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
-             (\"see enclone help parseable\"), for parseable output, \
-             both the given field, which applies to the exact subclonotype, and an additional \
-             field, suffixed by _cell, are shown, where the latter applies to just one cell.\n\n\
-             Count variables (except n_gex) all have additional forms, indicated by \
-             suffixes:\n\
-             • _mean or equivalently _μ\n\
-             • _min or _max\n\
-             • _sum or equivalently _Σ\n\
-             which provide the indicated statistic instead of the median.  \
-             The Greek letter forms may be used optionally on input and are used for visual \
-             output to save space.  The additional forms do not show cell-by-cell values \
-             when used with the \\bold{PER_CELL} option.",
-            true,
+        print(
+            "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
+             visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
+             and the x_mean etc. forms do not apply.\n\n",
         );
         print(
             "The default is \\bold{datasets,n}, except that datasets is suppressed if \
