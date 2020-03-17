@@ -870,7 +870,7 @@ pub fn print_clonotypes(
                 for col in 0..cols {
                     width += rsi.cvars[col].len();
                 }
-                rows.push( vec!["\\hline".to_string(); width] );
+                rows.push(vec!["\\hline".to_string(); width]);
 
                 // Insert placeholder for dots row.
 
