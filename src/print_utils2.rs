@@ -955,10 +955,7 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", median_nreads)];
             } else if *var == "r_cell".to_string() {
                 let var = var.clone();
-                if col_var {
-                    cx[col][j] = "".to_string();
-                }
-                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                if col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                         let mut vals = String::new();
