@@ -864,6 +864,14 @@ pub fn print_clonotypes(
                     &ctl, &rsi, &show_aa, &refdata, &dref, &row1, &mut drows, &mut rows,
                 );
 
+                // Insert horizontal line.
+
+                let mut width = 1 + lvars.len();
+                for col in 0..cols {
+                    width += rsi.cvars[col].len();
+                }
+                rows.push( vec!["\\hline".to_string(); width] );
+
                 // Insert placeholder for dots row.
 
                 let cvars = &ctl.clono_print_opt.cvars;

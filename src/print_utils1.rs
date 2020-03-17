@@ -280,7 +280,7 @@ pub fn make_diff_row(
         for j in 0..cols {
             for z in 0..rsi.cvars[j].len() {
                 let mut c = Vec::<Vec<u8>>::new();
-                let mut start = 5 + drows.len();
+                let mut start = 6 + drows.len();
                 if drows.len() >= 1 {
                     start += 2;
                 }
