@@ -99,6 +99,7 @@ pub fn make_table(
     // Make some character substitutions.
 
     let mut barcode = false;
+    let mut header = false;
     let mut x = Vec::<char>::new();
     for c in log.chars() {
         x.push(c);
@@ -106,14 +107,20 @@ pub fn make_table(
     let mut j = 0;
     while j < x.len() {
         // DEFAULT
+        /*
         const TEXTCOLOR: usize = 200;
         const BACKGROUND: usize = 229;
+        */
 
         // NOT CRAZY
         /*
         const TEXTCOLOR: usize = 200;
         const BACKGROUND: usize = 225;
         */
+
+        // NEW COLOR SCHEME
+        const TEXTCOLOR: usize = 18;
+        const BACKGROUND: usize = 255;
 
         let c = x[j];
 
@@ -125,9 +132,11 @@ pub fn make_table(
         // $ is a placeholder for •, and $ is only in barcodes line if PER_CELL is specified.
         // In plain mode, we just make the substitution, whereas in fancy mode, we change the
         // text and background color for the entire line.
+        // *** bullets now off ***
         } else if c == '$' {
             if ctl.pretty {
-                *logz += &format!("[01;38;5;{}m[01;48;5;{}m•", TEXTCOLOR, BACKGROUND);
+                // *logz += &format!("[01;38;5;{}m[01;48;5;{}m•", TEXTCOLOR, BACKGROUND);
+                *logz += &format!("[38;5;{}m[48;5;{}m ", TEXTCOLOR, BACKGROUND);
                 barcode = true;
             } else {
                 logz.push('•');
@@ -139,11 +148,36 @@ pub fn make_table(
 
         // In a barcode line, hop around │ symbols, which should not be colorized.
         } else if barcode && c == '│' && x[j + 1] != '\n' {
-            *logz += "[0m│";
-            *logz += &format!("[01;38;5;{}m[01;48;5;{}m", TEXTCOLOR, BACKGROUND);
+            // *logz += "[0m│";
+            *logz += &format!("[0m[48;5;{}m│", BACKGROUND);
+            // *logz += &format!("[01;38;5;{}m[01;48;5;{}m", TEXTCOLOR, BACKGROUND);
+            *logz += &format!("[38;5;{}m[48;5;{}m", TEXTCOLOR, BACKGROUND);
         } else if barcode && c == '│' && x[j + 1] == '\n' {
             *logz += "[0m│";
+            // *logz += &format!("[0m[48;5;{}m│[0m", BACKGROUND);
             barcode = false;
+
+        // Do similar things for header line, but bold the line instead.
+        } else if c == '#' {
+            if ctl.pretty {
+                *logz += &format!("[01m#");
+                header = true;
+            } else {
+                logz.push('#');
+            }
+
+        // In a header line, elide end escapes.  Not exactly sure how these get here.
+        // (did not check to see if this does anything)
+        } else if header && c == '' && x[j + 1] == '[' && x[j + 2] == '0' && x[j + 3] == 'm' {
+            j += 3;
+
+        // In a header line, hop around │ symbols, which should not be colorized.
+        } else if header && c == '│' && x[j + 1] != '\n' {
+            *logz += "[0m│";
+            *logz += &format!("[01m");
+        } else if header && c == '│' && x[j + 1] == '\n' {
+            *logz += "[0m│";
+            header = false;
 
         // Otherwise just save the character.
         } else {
