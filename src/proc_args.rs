@@ -589,6 +589,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+    if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
+        eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
+        std::process::exit(1);
+    }
     if ctl.sample_info.n() == 0 {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);

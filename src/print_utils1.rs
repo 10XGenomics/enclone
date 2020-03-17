@@ -341,6 +341,8 @@ pub fn make_diff_row(
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Define the set "parseable_fields" of fields that the could occur in parseable output.
+// It is super annoying that we test this after most computations have completed rather than
+// early in the enclone process.
 
 pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.
@@ -371,7 +373,10 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     }
     for col in 0..ctl.parseable_opt.pchains {
         for x in CVARS_ALLOWED.iter() {
-            if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(x) {
+            speakerc!(col, x);
+        }
+        if ctl.parseable_opt.pbarcode {
+            for x in CVARS_ALLOWED_PCELL.iter() {
                 speakerc!(col, x);
             }
         }

@@ -83,9 +83,7 @@ pub fn row_fill(
                 v = v.replace("_μ", "_mean");
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
-                    if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(&$var.as_str()) {
-                        out_data[$u].insert(varc, format!("{}", $val));
-                    }
+                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
@@ -632,10 +630,14 @@ pub fn row_fill(
         let mut all_vars = rsi_vars.clone();
         for j in 0..CVARS_ALLOWED.len() {
             let var = &CVARS_ALLOWED[j];
-            if ctl.parseable_opt.pbarcode || !CVARS_ALLOWED_CELL.contains(var) {
-                if !rsi_vars.contains(&var.to_string()) {
-                    all_vars.push(var.to_string());
-                }
+            if !rsi_vars.contains(&var.to_string()) {
+                all_vars.push(var.to_string());
+            }
+        }
+        for j in 0..CVARS_ALLOWED_PCELL.len() {
+            let var = &CVARS_ALLOWED_PCELL[j];
+            if !rsi_vars.contains(&var.to_string()) {
+                all_vars.push(var.to_string());
             }
         }
         for j in 0..all_vars.len() {
