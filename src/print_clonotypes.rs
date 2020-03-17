@@ -866,11 +866,13 @@ pub fn print_clonotypes(
 
                 // Insert horizontal line.
 
-                let mut width = 1 + lvars.len();
-                for col in 0..cols {
-                    width += rsi.cvars[col].len();
+                if !drows.is_empty() {
+                    let mut width = 1 + lvars.len();
+                    for col in 0..cols {
+                        width += rsi.cvars[col].len();
+                    }
+                    rows.push(vec!["\\hline".to_string(); width]);
                 }
-                rows.push(vec!["\\hline".to_string(); width]);
 
                 // Insert placeholder for dots row.
 

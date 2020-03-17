@@ -293,9 +293,9 @@ pub fn make_diff_row(
         for j in 0..cols {
             for z in 0..rsi.cvars[j].len() {
                 let mut c = Vec::<Vec<u8>>::new();
-                let mut start = 6 + drows.len();
+                let mut start = 5 + drows.len();
                 if drows.len() >= 1 {
-                    start += 2;
+                    start += 3;
                 }
                 if ctl.clono_print_opt.sum {
                     start += 1;
@@ -377,16 +377,20 @@ pub fn make_diff_row(
             }
             ncall += rsi.cvars[j].len();
         }
-        for i in 0..row1.len() {
-            if xrow_filled[i] {
-                row1[i] = xrow[i].clone();
+        if !drows.is_empty() {
+            for i in 0..row1.len() {
+                if xrow_filled[i] {
+                    row1[i] = xrow[i].clone();
+                }
             }
         }
         rows[diff_pos] = row1.to_vec();
     } else {
-        for i in 0..row1.len() {
-            if xrow_filled[i] {
-                row1[i] = xrow[i].clone();
+        if !drows.is_empty() {
+            for i in 0..row1.len() {
+                if xrow_filled[i] {
+                    row1[i] = xrow[i].clone();
+                }
             }
         }
         for i in 0..row1.len() {

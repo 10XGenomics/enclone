@@ -487,8 +487,11 @@ pub fn build_table_stuff(
     for cx in 0..cols {
         for j in 0..rsi.cvars[cx].len() {
             if rsi.cvars[cx][j] != "amino".to_string() {
-                // row.push(rsi.cvars[cx][j].to_string());
-                row.push("".to_string());
+                if drows.is_empty() {
+                    row.push(rsi.cvars[cx][j].to_string());
+                } else {
+                    row.push("".to_string());
+                }
             } else {
                 for u in 0..nexacts {
                     let m = rsi.mat[cx][u];
