@@ -344,107 +344,10 @@ pub fn help4(args: &Vec<String>) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Provide lvars help.
+    // Function that provides an explanation used for both enclone help lvars and
+    // enclone help cvars.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
-        begin_doc!("lvars");
-        println!("");
-        bold!();
-        println!("lead column options\n");
-        end_escape!();
-        println!(
-            "These options define lead variables, which correspond to columns that \
-             appear once in each\nclonotype, on the left side, and have one entry for each \
-             exact subclonotype row.\n"
-        );
-        print(
-            "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
-             where each xi is one of:\n\n",
-        );
-        doc!("datasets", "dataset identifiers");
-        doc!("samples", "sample identifiers");
-        doc!("donors", "donor identifiers");
-        ldoc!("n", "number of cells");
-        doc!(
-            "n_<name>",
-            "number of cells associated to the given name, which can be a dataset"
-        );
-        doc!(
-            "",
-            "or sample or donor or tag short name; may name only one such category"
-        );
-        ldoc!(
-            "near",
-            "Hamming distance of V..J DNA sequence to nearest neighbor"
-        );
-        doc!(
-            "far",
-            "Hamming distance of V..J DNA sequence to farthest neighbor"
-        );
-        doc!(
-            "",
-            "both compare to cells having chains in the same columns of the clonotype,"
-        );
-        doc!(
-            "",
-            "with - shown if there is no other exact subclonotype to compare to"
-        );
-        ldoc!(
-            "g<d>",
-            "Here d is a nonnegative integer.  Then all the exact subclonotypes are"
-        );
-        doc!(
-            "",
-            "grouped according to the Hamming distance of their V..J sequences.  Those"
-        );
-        doc!(
-            "",
-            "within distance d are defined to be in the same group, and this is"
-        );
-        doc!(
-            "",
-            "extended transitively.  The group identifier 1, 2, ... is shown.  The"
-        );
-        doc!(
-            "",
-            "ordering of these identifiers is arbitrary.  This option is best applied"
-        );
-        doc!(
-            "",
-            "to cases where all exact subclonotypes have a complete set of chains."
-        );
-        ldocpr!("gex", "\\red{◉} median gene expression UMI count");
-        docpr!("n_gex", "\\blue{◉} number of cells reported by GEX");
-        // nonpublic for now as we don't know if this is useful
-        /*
-        doc!(
-            "entropy",
-            "Shannon entropy of GEX UMI counts (median across cells)"
-        );
-        */
-        ldocpr!(
-            "<gene>_g",
-            "\\red{◉} all five feature types: look for a declared feature of the \
-             given type"
-        );
-        doc!(
-            "<antibody>_ab",
-            "with the given id or name; report the median UMI count for it; we allow"
-        );
-        doc!(
-            "<antigen>_ag",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown"
-        );
-        doc!("<crispr>_cr", "");
-        doc!("<custom>_cu", "");
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        print!("{}", log);
-        print(
-            "For gene expression and feature barcode stats, such data must be provided \
-             as input to enclone.\n\n",
-        );
-
+    fn explain_alt_versions() {
         print!(
             "{}",
             gray_left_bar(&print_to(
@@ -545,11 +448,9 @@ pub fn help4(args: &Vec<String>) {
             "this cell".to_string(),
         ];
         rows.push(row);
-        {
-            let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
-            print!("{}", gray_left_bar(&log));
-        }
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
+        print!("{}", gray_left_bar(&log));
         print!( "{}", gray_left_bar(&print_to(
             "Some explanation is required.  If you use enclone without certain options, you \
              get the \"visual\" column.\n\
@@ -566,6 +467,111 @@ pub fn help4(args: &Vec<String>) {
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
         )));
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Provide lvars help.
+
+    if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
+        begin_doc!("lvars");
+        println!("");
+        bold!();
+        println!("lead column options\n");
+        end_escape!();
+        println!(
+            "These options define lead variables, which correspond to columns that \
+             appear once in each\nclonotype, on the left side, and have one entry for each \
+             exact subclonotype row.\n"
+        );
+        print(
+            "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
+             where each xi is one of:\n\n",
+        );
+        doc!("datasets", "dataset identifiers");
+        doc!("samples", "sample identifiers");
+        doc!("donors", "donor identifiers");
+        ldoc!("n", "number of cells");
+        doc!(
+            "n_<name>",
+            "number of cells associated to the given name, which can be a dataset"
+        );
+        doc!(
+            "",
+            "or sample or donor or tag short name; may name only one such category"
+        );
+        ldoc!(
+            "near",
+            "Hamming distance of V..J DNA sequence to nearest neighbor"
+        );
+        doc!(
+            "far",
+            "Hamming distance of V..J DNA sequence to farthest neighbor"
+        );
+        doc!(
+            "",
+            "both compare to cells having chains in the same columns of the clonotype,"
+        );
+        doc!(
+            "",
+            "with - shown if there is no other exact subclonotype to compare to"
+        );
+        ldoc!(
+            "g<d>",
+            "Here d is a nonnegative integer.  Then all the exact subclonotypes are"
+        );
+        doc!(
+            "",
+            "grouped according to the Hamming distance of their V..J sequences.  Those"
+        );
+        doc!(
+            "",
+            "within distance d are defined to be in the same group, and this is"
+        );
+        doc!(
+            "",
+            "extended transitively.  The group identifier 1, 2, ... is shown.  The"
+        );
+        doc!(
+            "",
+            "ordering of these identifiers is arbitrary.  This option is best applied"
+        );
+        doc!(
+            "",
+            "to cases where all exact subclonotypes have a complete set of chains."
+        );
+        ldocpr!("gex", "\\red{◉} median gene expression UMI count");
+        docpr!("n_gex", "\\blue{◉} number of cells reported by GEX");
+        // nonpublic for now as we don't know if this is useful
+        /*
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
+        */
+        ldocpr!(
+            "<gene>_g",
+            "\\red{◉} all five feature types: look for a declared feature of the \
+             given type"
+        );
+        doc!(
+            "<antibody>_ab",
+            "with the given id or name; report the median UMI count for it; we allow"
+        );
+        doc!(
+            "<antigen>_ag",
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown"
+        );
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
+        print!("{}", log);
+        print(
+            "For gene expression and feature barcode stats, such data must be provided \
+             as input to enclone.\n\n",
+        );
+        explain_alt_versions();
         print(
             "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
@@ -720,25 +726,9 @@ pub fn help4(args: &Vec<String>) {
         // was ... rows.clone()
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
-        print_with_box(
-            "\\red{◉} If used with \\bold{PER_CELL} option (see \"enclone help display\"), for \
-             each cell, show the value for that cell.  If used with the \\bold{PCELL} option, \
-             (\"see enclone help parseable\"), for parseable output, \
-             both the given field, which applies to the exact subclonotype, and an additional \
-             field, suffixed by _cell, are shown, where the latter applies to just one cell.\n\n\
-             Count variables (except n_gex) all have additional forms, indicated by \
-             suffixes:\n\
-             • _mean or equivalently _μ\n\
-             • _min or _max\n\
-             • _sum or equivalently _Σ\n\
-             which provide the indicated statistic instead of the median.  \
-             The Greek letter forms may be used optionally on input and are used for visual \
-             output to save space.  The additional forms do not show cell-by-cell values \
-             when used with the \\bold{PER_CELL} option.",
-            true,
-        );
+        explain_alt_versions();
         print(
-            "At least one variable must be listed.  The default is \\bold{u,const,notes}.  \
+            "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
         if !help_all {
