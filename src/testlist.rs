@@ -99,7 +99,7 @@ pub const TESTS: [&str; 39] = [
     // 38. tests parseable output of barcodes for a given dataset, using PCELL
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
-    // 39. tests u and r fields in parseable output
-    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
+    // 39. tests u and r fields in parseable output, and tests stdouth
+    r###"BCR=85333 POUT=stdouth PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
 ];

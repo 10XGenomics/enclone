@@ -46,6 +46,7 @@ pub fn group_and_print_clonotypes(
     let mut pout = match ctl.parseable_opt.pout.as_str() {
         "" => (Box::new(stdout()) as Box<Write>),
         "stdout" => (Box::new(stdout()) as Box<Write>),
+        "stdouth" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.parseable_opt.pout);
             Box::new(File::create(&path).unwrap()) as Box<Write>
@@ -326,6 +327,7 @@ pub fn group_and_print_clonotypes(
             // Generate parseable output.
 
             if ctl.parseable_opt.pout.len() > 0 {
+                let mut rows = Vec::<Vec<String>>::new();
                 for m in 0..out_datas[oo].len() {
                     out_datas[oo][m].insert("group_id".to_string(), format!("{}", groups));
                     out_datas[oo][m]
@@ -335,40 +337,19 @@ pub fn group_and_print_clonotypes(
                 if ctl.parseable_opt.pout == "stdout".to_string() {
                     fwriteln!(pout, "{}", pcols.iter().format(","));
                 }
+                if ctl.parseable_opt.pout == "stdouth".to_string() {
+                    rows.push(pcols.clone());
+                }
                 let x = &out_datas[oo];
                 for (u, y) in x.iter().enumerate() {
                     if !ctl.parseable_opt.pbarcode {
-                        for (i, c) in pcols.iter().enumerate() {
-                            if i > 0 {
-                                fwrite!(pout, ",");
-                            }
-                            if y.contains_key(c) {
-                                let val = &y[c];
-                                if !val.contains(',') {
-                                    fwrite!(pout, "{}", val);
-                                } else {
-                                    fwrite!(pout, "\"{}\"", val);
-                                }
-                            } else {
-                                fwrite!(pout, "");
-                            }
-                        }
-                        fwriteln!(pout, "");
-                    } else {
-                        let ex = &exact_clonotypes[exacts[oo][u]];
-                        let n = ex.ncells();
-                        for m in 0..n {
+                        if ctl.parseable_opt.pout != "stdouth".to_string() {
                             for (i, c) in pcols.iter().enumerate() {
                                 if i > 0 {
                                     fwrite!(pout, ",");
                                 }
                                 if y.contains_key(c) {
-                                    let mut id = 0;
-                                    let vals = y[c].split(';').collect::<Vec<&str>>();
-                                    if vals.len() > 1 {
-                                        id = m;
-                                    }
-                                    let val = vals[id];
+                                    let val = &y[c];
                                     if !val.contains(',') {
                                         fwrite!(pout, "{}", val);
                                     } else {
@@ -379,8 +360,70 @@ pub fn group_and_print_clonotypes(
                                 }
                             }
                             fwriteln!(pout, "");
+                        } else {
+                            let mut row = Vec::<String>::new();
+                            for c in pcols.iter() {
+                                if y.contains_key(c) {
+                                    let val = &y[c];
+                                    row.push(val.clone());
+                                } else {
+                                    row.push("".to_string());
+                                }
+                            }
+                            rows.push(row);
+                        }
+                    } else {
+                        let ex = &exact_clonotypes[exacts[oo][u]];
+                        let n = ex.ncells();
+                        if ctl.parseable_opt.pout != "stdouth".to_string() {
+                            for m in 0..n {
+                                for (i, c) in pcols.iter().enumerate() {
+                                    if i > 0 {
+                                        fwrite!(pout, ",");
+                                    }
+                                    if y.contains_key(c) {
+                                        let mut id = 0;
+                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        if vals.len() > 1 {
+                                            id = m;
+                                        }
+                                        let val = vals[id];
+                                        if !val.contains(',') {
+                                            fwrite!(pout, "{}", val);
+                                        } else {
+                                            fwrite!(pout, "\"{}\"", val);
+                                        }
+                                    } else {
+                                        fwrite!(pout, "");
+                                    }
+                                }
+                                fwriteln!(pout, "");
+                            }
+                        } else {
+                            for m in 0..n {
+                                let mut row = Vec::<String>::new();
+                                for c in pcols.iter() {
+                                    if y.contains_key(c) {
+                                        let mut id = 0;
+                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        if vals.len() > 1 {
+                                            id = m;
+                                        }
+                                        let val = vals[id];
+                                        row.push(val.to_string());
+                                    } else {
+                                        row.push("".to_string());
+                                    }
+                                }
+                                rows.push(row);
+                            }
                         }
                     }
+                }
+                if ctl.parseable_opt.pout == "stdouth".to_string() {
+                    let mut log = Vec::<u8>::new();
+                    print_tabular(&mut log, &rows, 2, Some(vec![b'r'; rows[0].len()]));
+                    print!("{}", strme(&log));
                 }
             }
         }

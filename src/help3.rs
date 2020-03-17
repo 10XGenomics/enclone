@@ -184,9 +184,11 @@ pub fn help3(args: &Vec<String>) {
              specifying the name of the file that is to be written to.\n\
              \
              [01;47m [0m The filename \"stdout\" may be used for a preview; in that case \
-             the parseable output is\n\
-             [01;47m [0m generated separately for each clonotype and the two output types \
-             are integrated.\n\
+             parseable output is generated\n\
+             [01;47m [0m separately for each clonotype and the two output types \
+             are integrated.  There is also\n\
+             [01;47m [0m \"stdouth\", which is similar, but uses spaces instead \
+             of commas, and lines things up in columns.\n\
              \
              By default, we show four chains for each clonotype, regardless of how many chains it\n\
              has, filling in with null entries.  One may instead specify n chains using the \
