@@ -663,6 +663,9 @@ pub fn print_clonotypes(
                                         if rsi.cvars[col][p] == "u".to_string() {
                                             let numi = ex.clones[bcl.2][m].umi_count;
                                             cx[cp + p] = format!("{}", numi);
+                                        } else if rsi.cvars[col][p] == "r".to_string() {
+                                            let r = ex.clones[bcl.2][m].read_count;
+                                            cx[cp + p] = format!("{}", r);
                                         }
                                     }
                                 }
