@@ -273,6 +273,19 @@ pub fn make_diff_row(
     row1: &mut Vec<String>,
     rows: &mut Vec<Vec<String>>,
 ) {
+    let mut xrow = vec!["".to_string(); row1.len()];
+    let mut xrow_filled = vec![false; row1.len()];
+    for cx in 0..cols {
+        for j in 0..rsi.cvars[cx].len() {
+            if rsi.cvars[cx][j] != "amino".to_string() {
+                xrow.push(rsi.cvars[cx][j].to_string());
+                xrow_filled.push(true);
+            } else {
+                xrow.push("".to_string());
+                xrow_filled.push(false);
+            }
+        }
+    }
     let nc = row1.len();
     let cvars = &ctl.clono_print_opt.cvars;
     if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
@@ -364,8 +377,18 @@ pub fn make_diff_row(
             }
             ncall += rsi.cvars[j].len();
         }
+        for i in 0..row1.len() {
+            if xrow_filled[i] {
+                row1[i] = xrow[i].clone();
+            }
+        }
         rows[diff_pos] = row1.to_vec();
     } else {
+        for i in 0..row1.len() {
+            if xrow_filled[i] {
+                row1[i] = xrow[i].clone();
+            }
+        }
         for i in 0..row1.len() {
             rows[diff_pos - 1][i] = row1[i].clone();
         }
