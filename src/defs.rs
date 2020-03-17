@@ -11,9 +11,9 @@ use vector_utils::*;
 
 // Variable names.
 
-pub const CVARS_ALLOWED: [&str; 20] = [
-    "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "const", "white", "cdr3_dna",
-    "ulen", "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
+pub const CVARS_ALLOWED: [&str; 22] = [
+    "var", "u", "u_cell", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_cell", "const",
+    "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
 ];
 
 pub const CVARS_ALLOWED_CELL: [&str; 2] = ["u", "r"];

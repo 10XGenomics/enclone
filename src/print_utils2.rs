@@ -925,11 +925,10 @@ pub fn row_fill(
             } else if *var == "var".to_string() {
                 cvar![j, var, stringme(&varmat[u][col])];
             } else if *var == "u".to_string() {
+                cvar![j, var, format!("{}", median_numis)];
+            } else if *var == "u_cell".to_string() {
                 let var = var.clone();
-                if col_var {
-                    cx[col][j] = format!("{}", median_numis);
-                }
-                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                if col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                         let mut vals = String::new();

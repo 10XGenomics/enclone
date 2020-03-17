@@ -445,15 +445,15 @@ pub fn help4(args: &Vec<String>) {
              as input to enclone.\n\n",
         );
 
-
-
-
-        print!( "{}", gray_left_bar(&print_to(
-            "\\red{◉} These variables have some alternate versions, \
-             as shown in the table below:\n\n"
-        )));
+        print!(
+            "{}",
+            gray_left_bar(&print_to(
+                "\\red{◉} These variables have some alternate versions, \
+                 as shown in the table below:\n\n"
+            ))
+        );
         let mut rows = Vec::<Vec<String>>::new();
-        let row = vec![ 
+        let row = vec![
             "variable".to_string(),
             "semantics".to_string(),
             "visual".to_string(),
@@ -462,7 +462,7 @@ pub fn help4(args: &Vec<String>) {
             "parseable".to_string(),
         ];
         rows.push(row);
-        let row = vec![ 
+        let row = vec![
             "".to_string(),
             "".to_string(),
             "".to_string(),
@@ -471,7 +471,7 @@ pub fn help4(args: &Vec<String>) {
             "(one cell)".to_string(),
         ];
         rows.push(row);
-        let row = vec![ "\\hline".to_string(); 6 ];
+        let row = vec!["\\hline".to_string(); 6];
         rows.push(row);
         let row = vec![
             "x".to_string(),

@@ -418,6 +418,6 @@ pub fn gray_left_bar(s: &str) -> String {
             t += &gray;
         }
     }
-    t.push(x[x.len()-1]);
+    t.push(x[x.len() - 1]);
     t
 }

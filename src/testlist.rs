@@ -100,6 +100,6 @@ pub const TESTS: [&str; 39] = [
     r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcode,123089_barcode PCELL
      CDR3=CAVTIFGVRTALPYYYALDVW"###,
     // 39. tests u and r fields in parseable output
-    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u1_cell,r2,r2 PCELL CVARSP=r
+    r###"BCR=85333 POUT=stdout PCOLS=barcode,u1,u_cell1,r2,r2 PCELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
 ];
