@@ -876,9 +876,8 @@ pub fn print_clonotypes(
 
                 // Insert placeholder for dots row.
 
-                let cvars = &ctl.clono_print_opt.cvars;
                 let diff_pos = rows.len();
-                if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
+                if !drows.is_empty() {
                     let row = Vec::<String>::new();
                     rows.push(row);
                 }

@@ -287,8 +287,7 @@ pub fn make_diff_row(
         }
     }
     let nc = row1.len();
-    let cvars = &ctl.clono_print_opt.cvars;
-    if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
+    if !drows.is_empty() {
         let mut ncall = 0;
         for j in 0..cols {
             for z in 0..rsi.cvars[j].len() {
