@@ -209,9 +209,11 @@ fn test_enclone() {
                 }
                 fwrite!(log, "old:\n{}", old);
                 fwrite!(log, "new:\n{}", new2);
-                fwriteln!(log, "stderr has {} lines:", new_err.len());
-                for i in 0..new_err.len() {
-                    fwriteln!(log, "{}", new_err[i]);
+                if new_err.len() != 1 || new_err[0].len() != 0 {
+                    fwriteln!(log, "stderr has {} lines:", new_err.len());
+                    for i in 0..new_err.len() {
+                        fwriteln!(log, "{}", new_err[i]);
+                    }
                 }
                 // let f = format!(
                 //     "test/inputs/version{}/{}/outs/all_contig_annotations.json.lz4",
