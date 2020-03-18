@@ -288,10 +288,11 @@ pub fn row_fill(
     // LinearCondition::require_valid_variables.
 
     for i in 0..lvars.len() {
-        if lvars[i].starts_with('g') && lvars[i].after("g").parse::<usize>().is_ok() {
-            let d = lvars[i].after("g").force_usize();
-            lvar![lvars[i], format!("{}", groups[&d][u] + 1)];
-        } else if lvars[i] == "samples".to_string() {
+        let x = &lvars[i];
+        if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
+            let d = x.after("g").force_usize();
+            lvar![x, format!("{}", groups[&d][u] + 1)];
+        } else if x == "samples" {
             let mut samples = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].sample_index.is_some() {
@@ -303,10 +304,10 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut samples);
-            lvar![lvars[i], format!("{}", samples.iter().format(","))];
-        } else if lvars[i] == "datasets".to_string() {
-            lvar![lvars[i], format!("{}", lenas.iter().format(","))];
-        } else if lvars[i] == "donors".to_string() {
+            lvar![x, format!("{}", samples.iter().format(","))];
+        } else if x == "datasets" {
+            lvar![x, format!("{}", lenas.iter().format(","))];
+        } else if x == "donors" {
             let mut donors = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
@@ -318,13 +319,13 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut donors);
-            lvar![lvars[i], format!("{}", donors.iter().format(","))];
-        } else if lvars[i] == "n".to_string() {
-            lvar![lvars[i], format!("{}", mults[u])];
+            lvar![x, format!("{}", donors.iter().format(","))];
+        } else if x == "n" {
+            lvar![x, format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
-            stats.push((lvars[i].clone(), counts));
-        } else if lvars[i].starts_with("n_") && !lvars[i].starts_with("n_gex") {
-            let name = lvars[i].after("n_");
+            stats.push((x.to_string(), counts));
+        } else if x.starts_with("n_") && !x.starts_with("n_gex") {
+            let name = x.after("n_");
             let mut count = 0;
             let mut counts = Vec::<f64>::new();
             for j in 0..ex.clones.len() {
@@ -349,9 +350,9 @@ pub fn row_fill(
                     counts.push(1.0);
                 }
             }
-            lvar![lvars[i], format!("{}", count)];
-            stats.push((lvars[i].clone(), counts));
-        } else if lvars[i] == "near".to_string() {
+            lvar![x, format!("{}", count)];
+            stats.push((x.to_string(), counts));
+        } else if x == "near" {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
                 if i2 == u || fp[i2] != fp[u] {
@@ -368,11 +369,11 @@ pub fn row_fill(
                 dist = min(dist, d);
             }
             if dist == 1_000_000 {
-                lvar![lvars[i], "".to_string()];
+                lvar![x, "".to_string()];
             } else {
-                lvar![lvars[i], format!("{}", dist)];
+                lvar![x, format!("{}", dist)];
             }
-        } else if lvars[i] == "far".to_string() {
+        } else if x == "far" {
             let mut dist = -1 as isize;
             for i2 in 0..varmat.len() {
                 if i2 == u || fp[i2] != fp[u] {
@@ -389,15 +390,15 @@ pub fn row_fill(
                 dist = max(dist, d);
             }
             if dist == -1 as isize {
-                lvar![lvars[i], "".to_string()];
+                lvar![x, "".to_string()];
             } else {
-                lvar![lvars[i], format!("{}", dist)];
+                lvar![x, format!("{}", dist)];
             }
-        } else if lvars[i] == "gex".to_string() {
-            lvar![lvars[i], format!("{}", gex_median)];
-        } else if lvars[i] == "n_gex".to_string() {
-            lvar![lvars[i], format!("{}", n_gex)];
-        } else if lvars[i] == "n_gex_cell".to_string() {
+        } else if x == "gex" {
+            lvar![x, format!("{}", gex_median)];
+        } else if x == "n_gex" {
+            lvar![x, format!("{}", n_gex)];
+        } else if x == "n_gex_cell" {
             row.push("".to_string());
             if pass == 2 {
                 speak!(
@@ -406,17 +407,17 @@ pub fn row_fill(
                     format!("{}", n_gexs.iter().format(";"))
                 );
             }
-        } else if lvars[i] == "entropy".to_string() {
-            lvar![lvars[i], format!("{:.2}", entropy)];
-        } else if lvars[i] == "gex_min".to_string() {
-            lvar![lvars[i], format!("{}", gex_min)];
-        } else if lvars[i] == "gex_max".to_string() {
-            lvar![lvars[i], format!("{}", gex_max)];
-        } else if lvars[i] == "gex_mean".to_string() {
-            lvar![lvars[i], format!("{}", gex_mean)];
-        } else if lvars[i] == "gex_sum".to_string() {
-            lvar![lvars[i], format!("{}", gex_sum)];
-        } else if lvars[i] == "ext".to_string() {
+        } else if x == "entropy" {
+            lvar![x, format!("{:.2}", entropy)];
+        } else if x == "gex_min" {
+            lvar![x, format!("{}", gex_min)];
+        } else if x == "gex_max" {
+            lvar![x, format!("{}", gex_max)];
+        } else if x == "gex_mean" {
+            lvar![x, format!("{}", gex_mean)];
+        } else if x == "gex_sum" {
+            lvar![x, format!("{}", gex_sum)];
+        } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
                 let li = ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone();
@@ -441,11 +442,11 @@ pub fn row_fill(
                 );
                 j = k;
             }
-            lvar![lvars[i], s.clone()];
+            lvar![x, s.clone()];
         } else {
             let mut counts = Vec::<f64>::new();
             let mut fcounts = Vec::<f64>::new();
-            let (mut x, mut y) = (lvars[i].clone(), lvars[i].clone());
+            let (mut x, mut y) = (x.to_string(), x.to_string());
             if x.contains(':') {
                 x = x.before(":").to_string();
             }
