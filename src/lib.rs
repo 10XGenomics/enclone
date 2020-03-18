@@ -34,6 +34,7 @@ pub mod print_utils5;
 pub mod proc_args;
 pub mod proc_args2;
 pub mod proc_args3;
+pub mod proc_args_check;
 pub mod proto_io;
 pub mod read_json;
 pub mod string_width;

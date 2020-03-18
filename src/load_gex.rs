@@ -3,7 +3,7 @@
 // Load gene expression and antibody data.
 
 use crate::defs::*;
-use crate::proc_args2::*;
+use crate::proc_args_check::*;
 use h5::Dataset;
 use io_utils::*;
 use load_feature_bc::*;
