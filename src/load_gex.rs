@@ -462,7 +462,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
 
     // Check lvars args.
 
-    check_lvars(&mut ctl, &gex_features);
+    check_lvars(&ctl, &gex_features);
 
     // Answer.
 

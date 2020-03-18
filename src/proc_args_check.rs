@@ -35,7 +35,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 
 // Check lvars args.
 
-pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
+pub fn check_lvars(ctl: &EncloneControl, gex_features: &Vec<Vec<String>>) {
     let mut to_check = Vec::<String>::new();
     let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
