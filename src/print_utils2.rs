@@ -105,8 +105,10 @@ pub fn row_fill(
     // both human-readable and parseable output for lead variables.
 
     macro_rules! lvar {
-        ($var:expr, $val:expr) => {
-            row.push($val);
+        ($i: expr, $var:expr, $val:expr) => {
+            if $i < lvars.len() {
+                row.push($val)
+            }
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
@@ -287,11 +289,17 @@ pub fn row_fill(
     // WARNING!  If you add lead variables, you may need to add them to the function
     // LinearCondition::require_valid_variables.
 
-    for i in 0..lvars.len() {
-        let x = &lvars[i];
+    let mut all_lvars = lvars.clone();
+    for i in 0..LVARS_ALLOWED.len() {
+        if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
+            all_lvars.push(LVARS_ALLOWED[i].to_string());
+        }
+    }
+    for i in 0..all_lvars.len() {
+        let x = &all_lvars[i];
         if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
             let d = x.after("g").force_usize();
-            lvar![x, format!("{}", groups[&d][u] + 1)];
+            lvar![i, x, format!("{}", groups[&d][u] + 1)];
         } else if x == "samples" {
             let mut samples = Vec::<String>::new();
             for j in 0..ex.clones.len() {
@@ -304,9 +312,9 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut samples);
-            lvar![x, format!("{}", samples.iter().format(","))];
+            lvar![i, x, format!("{}", samples.iter().format(","))];
         } else if x == "datasets" {
-            lvar![x, format!("{}", lenas.iter().format(","))];
+            lvar![i, x, format!("{}", lenas.iter().format(","))];
         } else if x == "donors" {
             let mut donors = Vec::<String>::new();
             for j in 0..ex.clones.len() {
@@ -319,9 +327,9 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut donors);
-            lvar![x, format!("{}", donors.iter().format(","))];
+            lvar![i, x, format!("{}", donors.iter().format(","))];
         } else if x == "n" {
-            lvar![x, format!("{}", mults[u])];
+            lvar![i, x, format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
             stats.push((x.to_string(), counts));
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
@@ -350,7 +358,7 @@ pub fn row_fill(
                     counts.push(1.0);
                 }
             }
-            lvar![x, format!("{}", count)];
+            lvar![i, x, format!("{}", count)];
             stats.push((x.to_string(), counts));
         } else if x == "near" {
             let mut dist = 1_000_000;
@@ -369,9 +377,9 @@ pub fn row_fill(
                 dist = min(dist, d);
             }
             if dist == 1_000_000 {
-                lvar![x, "".to_string()];
+                lvar![i, x, "".to_string()];
             } else {
-                lvar![x, format!("{}", dist)];
+                lvar![i, x, format!("{}", dist)];
             }
         } else if x == "far" {
             let mut dist = -1 as isize;
@@ -390,16 +398,18 @@ pub fn row_fill(
                 dist = max(dist, d);
             }
             if dist == -1 as isize {
-                lvar![x, "".to_string()];
+                lvar![i, x, "".to_string()];
             } else {
-                lvar![x, format!("{}", dist)];
+                lvar![i, x, format!("{}", dist)];
             }
         } else if x == "gex" {
-            lvar![x, format!("{}", gex_median)];
+            lvar![i, x, format!("{}", gex_median)];
         } else if x == "n_gex" {
-            lvar![x, format!("{}", n_gex)];
+            lvar![i, x, format!("{}", n_gex)];
         } else if x == "n_gex_cell" {
-            row.push("".to_string());
+            if i < lvars.len() {
+                row.push("".to_string());
+            }
             if pass == 2 {
                 speak!(
                     u,
@@ -408,15 +418,15 @@ pub fn row_fill(
                 );
             }
         } else if x == "entropy" {
-            lvar![x, format!("{:.2}", entropy)];
+            lvar![i, x, format!("{:.2}", entropy)];
         } else if x == "gex_min" {
-            lvar![x, format!("{}", gex_min)];
+            lvar![i, x, format!("{}", gex_min)];
         } else if x == "gex_max" {
-            lvar![x, format!("{}", gex_max)];
+            lvar![i, x, format!("{}", gex_max)];
         } else if x == "gex_mean" {
-            lvar![x, format!("{}", gex_mean)];
+            lvar![i, x, format!("{}", gex_mean)];
         } else if x == "gex_sum" {
-            lvar![x, format!("{}", gex_sum)];
+            lvar![i, x, format!("{}", gex_sum)];
         } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
@@ -442,7 +452,7 @@ pub fn row_fill(
                 );
                 j = k;
             }
-            lvar![x, s.clone()];
+            lvar![i, x, s.clone()];
         } else {
             let mut counts = Vec::<f64>::new();
             let mut fcounts = Vec::<f64>::new();
@@ -501,15 +511,16 @@ pub fn row_fill(
             let sum = fcounts.iter().sum::<f64>();
             let mean = sum / counts.len() as f64;
             if y0.ends_with("_min") {
-                lvar![x, format!("{}", counts_sorted[0].round())];
+                lvar![i, x, format!("{}", counts_sorted[0].round())];
             } else if y0.ends_with("_max") {
-                lvar![x, format!("{}", counts_sorted[counts.len() - 1].round())];
+                lvar![i, x, format!("{}", counts_sorted[counts.len() - 1].round())];
             } else if y0.ends_with("_μ") {
-                lvar![x, format!("{}", mean.round())];
+                lvar![i, x, format!("{}", mean.round())];
             } else if y0.ends_with("_Σ") {
-                lvar![x, format!("{}", sum.round())];
+                lvar![i, x, format!("{}", sum.round())];
             } else {
                 lvar![
+                    i,
                     x,
                     format!("{}", counts_sorted[counts_sorted.len() / 2].round())
                 ];
