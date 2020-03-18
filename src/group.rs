@@ -329,7 +329,11 @@ pub fn group_and_print_clonotypes(
 
             // Generate parseable output.
 
-            if ctl.parseable_opt.pout.len() > 0 {
+            if ctl.parseable_opt.pout.len() > 0
+                && (!ctl.gen_opt.noprint
+                    || (ctl.parseable_opt.pout != "stdout".to_string()
+                        && ctl.parseable_opt.pout != "stdouth".to_string()))
+            {
                 let mut rows = Vec::<Vec<String>>::new();
                 for m in 0..out_datas[oo].len() {
                     out_datas[oo][m].insert("group_id".to_string(), format!("{}", groups));
