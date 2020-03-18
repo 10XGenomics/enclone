@@ -74,13 +74,18 @@ fn test_enclone() {
             test = test.replace("  ", " ");
         }
         let mut expect_null = false;
+        let mut expect_fail = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
         }
+        if test.contains(" EXPECT_FAIL") {
+            test = test.replace(" EXPECT_FAIL", "");
+            expect_fail = true;
+        }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
-        if !path_exists(&out_file) {
+        if !path_exists(&out_file) && !expect_fail {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
                 log,
@@ -100,7 +105,10 @@ fn test_enclone() {
             fwriteln!(log, "and then adding/committing the new file.");
             res.2 = stringme(&log);
         } else {
-            let old = read_to_string(&out_file).unwrap();
+            let mut old = String::new();
+            if !expect_fail {
+                old = read_to_string(&out_file).unwrap();
+            }
 
             // Get arguments, by parsing command, breaking at blanks, but not if they're in quotes.
             // This is identical to parse_csv, except for the splitting character.
@@ -155,7 +163,42 @@ fn test_enclone() {
                 .expect(&format!("failed to execute enclone for test{}", it + 1));
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
             let new2 = stringme(&new.stdout);
-            if old == new2 {
+
+            // Process tests that were supposed to fail.
+
+            if expect_fail {
+                res.1 = false;
+                if new.status.code().is_none() {
+                    fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                    fwriteln!(
+                        log,
+                        "Something really funky happened, status code unavailable.\n"
+                    );
+                } else {
+                    let status = new.status.code().unwrap();
+                    if status == 0 {
+                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                        fwriteln!(
+                            log,
+                            "That test was supposed to have failed, but instead \
+                             succeeded.\n"
+                        );
+                    } else if status != 1 {
+                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                        fwriteln!(
+                            log,
+                            "That test was supposed to have failed with exit status 1,\n\
+                             but instead failed with exit status {}.\n",
+                            status
+                        );
+                    } else {
+                        res.1 = true;
+                    }
+                }
+                res.2 = stringme(&log);
+
+            // Process tests that yield the expected stdout.
+            } else if old == new2 {
                 res.1 = true;
                 if old.len() <= 1 && !expect_null {
                     fwriteln!(
@@ -172,6 +215,8 @@ fn test_enclone() {
                     res.1 = false;
                 }
                 res.2 = stringme(&log);
+
+            // Process tests that yield unexpected stdout.
             } else {
                 fwriteln!(log, "\nSubtest {}: old and new differ", it + 1);
                 fwriteln!(
