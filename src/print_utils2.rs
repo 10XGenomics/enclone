@@ -265,6 +265,7 @@ pub fn row_fill(
             entropies.push(entropy);
         }
     }
+    let count_unsorted = counts.clone();
     counts.sort();
     for n in counts.iter() {
         if *n < 100 {
@@ -404,6 +405,10 @@ pub fn row_fill(
             }
         } else if x == "gex" {
             lvar![i, x, format!("{}", gex_median)];
+        } else if x == "gex_cell" {
+            if pass == 2 {
+                speak!(u, x, format!("{}", count_unsorted.iter().format(";")));
+            }
         } else if x == "n_gex" {
             lvar![i, x, format!("{}", n_gex)];
         } else if x == "n_gex_cell" {
@@ -519,11 +524,11 @@ pub fn row_fill(
             } else if y0.ends_with("_Σ") {
                 lvar![i, x, format!("{}", sum.round())];
             } else {
-                lvar![
-                    i,
-                    x,
-                    format!("{}", counts_sorted[counts_sorted.len() / 2].round())
-                ];
+                let mut median = 0.0;
+                if counts_sorted.len() > 0 {
+                    median = counts_sorted[counts_sorted.len() / 2].round();
+                }
+                lvar![i, x, format!("{}", median)];
             }
         }
     }

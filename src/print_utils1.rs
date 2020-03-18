@@ -428,7 +428,13 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
-    for x in lvars.iter() {
+    let mut all_lvars = lvars.clone();
+    for i in 0..LVARS_ALLOWED.len() {
+        if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
+            all_lvars.push(LVARS_ALLOWED[i].to_string());
+        }
+    }
+    for x in all_lvars.iter() {
         speaker!(x);
     }
     for col in 0..ctl.parseable_opt.pchains {
