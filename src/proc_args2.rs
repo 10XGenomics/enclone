@@ -109,6 +109,10 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
+        if x.ends_with("_cell") {
+            eprintln!("\nFields ending with _cell cannot be used in LVARS or LVARSP.\n");
+            std::process::exit(1);
+        }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if !(LVARS_ALLOWED.contains(&x.as_str()) || gpvar) {
             let mut end_ok = false;
