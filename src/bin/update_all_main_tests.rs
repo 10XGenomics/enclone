@@ -2,6 +2,9 @@
 
 // Update the output of all main tests.
 //
+// Do not do this unless you're highly confident that it's safe to do so, without
+// manually examining the outputs.
+//
 // Note duplication of some code with enclone/tests/enclone_test.rs.
 
 use enclone::testlist::*;
