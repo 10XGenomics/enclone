@@ -428,10 +428,29 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
+    let mut have_gex = false;
+    for i in 0..ctl.sample_info.gex_path.len() {
+        if ctl.sample_info.gex_path[i].len() > 0 {
+            have_gex = true;
+        }
+    }
     let mut all_lvars = lvars.clone();
     for i in 0..LVARS_ALLOWED.len() {
-        if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
-            all_lvars.push(LVARS_ALLOWED[i].to_string());
+        let x = &LVARS_ALLOWED[i];
+        if !have_gex {
+            if *x == "gex".to_string()
+                || x.starts_with("gex_")
+                || x.ends_with("_g")
+                || x.ends_with("_g_μ")
+                || *x == "n_gex_cell".to_string()
+                || *x == "n_gex".to_string()
+                || *x == "entropy".to_string()
+            {
+                continue;
+            }
+        }
+        if !lvars.contains(&x.to_string()) {
+            all_lvars.push(x.to_string());
         }
     }
     for x in all_lvars.iter() {
