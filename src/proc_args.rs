@@ -3,6 +3,7 @@
 use crate::defs::*;
 use crate::proc_args2::*;
 use crate::proc_args3::*;
+use crate::proc_args_check::*;
 use perf_stats::*;
 use regex::Regex;
 use std::{env, time::Instant};
@@ -438,23 +439,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 *x = x.replace("_sum", "_Σ");
                 *x = x.replace("_mean", "_μ");
             }
-            for x in ctl.clono_print_opt.cvars.iter() {
-                let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
-                if x.starts_with("ndiff")
-                    && x.after("ndiff").parse::<usize>().is_ok()
-                    && x.after("ndiff").force_usize() >= 1
-                {
-                    ok = true;
-                }
-                if !ok {
-                    eprintln!(
-                        "\nUnrecognized variable {} for CVARS.  Please type \
-                         \"enclone help cvars\".\n",
-                        x
-                    );
-                    std::process::exit(1);
-                }
-            }
+            check_cvars(&ctl);
         } else if arg.starts_with("CVARSP=") {
             for x in arg.after("CVARSP=").split(',').collect::<Vec<&str>>() {
                 if x.len() > 0 {
@@ -465,23 +450,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 *x = x.replace("_sum", "_Σ");
                 *x = x.replace("_mean", "_μ");
             }
-            for x in ctl.clono_print_opt.cvars.iter() {
-                let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
-                if x.starts_with("ndiff")
-                    && x.after("ndiff").parse::<usize>().is_ok()
-                    && x.after("ndiff").force_usize() >= 1
-                {
-                    ok = true;
-                }
-                if !ok {
-                    eprintln!(
-                        "\nUnrecognized variable {} for CVARSP.  Please type \
-                         \"enclone help cvars\".\n",
-                        x
-                    );
-                    std::process::exit(1);
-                }
-            }
+            check_cvars(&ctl);
         } else if arg.starts_with("LVARS=") {
             ctl.clono_print_opt.lvars.clear();
             for x in arg.after("LVARS=").split(',').collect::<Vec<&str>>() {

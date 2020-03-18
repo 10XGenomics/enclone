@@ -9,6 +9,30 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Check cvars args.
+
+pub fn check_cvars(ctl: &EncloneControl) {
+    for x in ctl.clono_print_opt.cvars.iter() {
+        let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
+        if x.starts_with("ndiff")
+            && x.after("ndiff").parse::<usize>().is_ok()
+            && x.after("ndiff").force_usize() >= 1
+        {
+            ok = true;
+        }
+        if !ok {
+            eprintln!(
+                "\nUnrecognized variable {} for CVARS or CVARSP.  \
+                 Please type \"enclone help cvars\".\n",
+                x
+            );
+            std::process::exit(1);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Check lvars args.
 
 pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
