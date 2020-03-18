@@ -110,23 +110,7 @@ pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
     }
     for x in ctl.clono_print_opt.lvars.iter() {
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !(*x == "datasets"
-            || *x == "samples"
-            || *x == "donors"
-            || *x == "n"
-            || *x == "gex"
-            || *x == "gex_min"
-            || *x == "gex_max"
-            || *x == "gex_mean"
-            || *x == "gex_sum"
-            || *x == "n_gex_cell"
-            || *x == "n_gex"
-            || *x == "entropy"
-            || *x == "near"
-            || *x == "far"
-            || *x == "ext"
-            || gpvar)
-        {
+        if !(LVARS_ALLOWED.contains(&x.as_str()) || gpvar) {
             let mut end_ok = false;
             for i in 0..ends.len() {
                 if x.ends_with(&ends[i]) {

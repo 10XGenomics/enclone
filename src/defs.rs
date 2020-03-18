@@ -9,7 +9,25 @@ use std::collections::HashMap;
 use string_utils::*;
 use vector_utils::*;
 
-// Variable names.
+// Field (variable) names.
+
+pub const LVARS_ALLOWED: [&str; 15] = [
+    "datasets",
+    "samples",
+    "donors",
+    "n",
+    "gex",
+    "gex_min",
+    "gex_max",
+    "gex_mean",
+    "gex_sum",
+    "n_gex_cell",
+    "n_gex",
+    "entropy",
+    "near",
+    "far",
+    "ext",
+];
 
 pub const CVARS_ALLOWED: [&str; 20] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "const", "white", "cdr3_dna",
