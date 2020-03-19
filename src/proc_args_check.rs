@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Check lvars, cvars, and pcols.  Sadly repetitive.
+// Check lvars, cvars, and pcols.
 
 use crate::defs::*;
 use itertools::*;
@@ -11,10 +11,66 @@ use vector_utils::*;
 
 fn check_gene_fb(
     ctl: &EncloneControl, 
-    gex_features: &Vec<Vec<String>>,
+    gex_info: &GexInfo,
     to_check: &Vec<String>,
     category: &str,
 ) {
+    let g_ends0 = ["_g"];
+    let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let (mut g_ends, mut fb_ends) = (Vec::<String>::new(), Vec::<String>::new());
+    for x in g_ends0.iter() {
+        for y in suffixes.iter() {
+            g_ends.push(format!("{}{}", x, y));
+        }
+    }
+    for x in fb_ends0.iter() {
+        for y in suffixes.iter() {
+            fb_ends.push(format!("{}{}", x, y));
+        }
+    }
+    for x in to_check.iter() {
+        if !gex_info.have_gex {
+            let mut problem = false;
+            for y in g_ends.iter() {
+                if x.ends_with(y) {
+                    problem = true;
+                }
+            }
+            if problem || *x == "gex".to_string()
+                || x.starts_with("gex_")
+                || *x == "n_gex_cell".to_string()
+                || *x == "n_gex".to_string()
+                || *x == "entropy".to_string()
+            {
+                if category == "parseable {
+                    eprint("\nParseable field {} does not make sense because gene expression \
+                        data were not provided as input.\n", x);
+                } else {
+                    eprint("\nLead variable {} does not make sense because gene expression \
+                        data were not provided as input.\n", x);
+                }
+                std::process::exit(1);
+            }
+        }
+        if !gex_info.have_fb {
+            for y in g_ends.iter() {
+                if x.ends_with(y)
+                {
+                    if category == "parseable {
+                        eprint("\nParseable field {} does not make sense because feature barcode \
+                            data were not provided as input.\n", x);
+                        );
+                    } else {
+                        eprint("\nLead variable {} does not make sense because feature barcode \
+                            data were not provided as input.\n", x);
+                        );
+                    }
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
     let mut known_features = Vec::<String>::new();
     for i in 0..gex_features.len() {
         for j in 0..gex_features[i].len() {
@@ -181,132 +237,29 @@ fn check_gene_fb(
 
 // Check pcols args.
 
-pub fn check_pcols(ctl: &EncloneControl) {
+pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
-    let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
-    ];
-    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
-    let mut ends = Vec::<String>::new();
-    for x in ends0.iter() {
-        for y in suffixes.iter() {
-            ends.push(format!("{}{}", x, y));
-        }
-    }
-    let mut have_gex = false;
-    for i in 0..ctl.sample_info.gex_path.len() {
-        if ctl.sample_info.gex_path[i].len() > 0 {
-            have_gex = true;
-        }
-    }
     for x in ctl.parseable_opt.pcols.iter() {
-        if !have_gex {
-            if *x == "gex".to_string()
-                || x.starts_with("gex_")
-                || x.ends_with("_g")
-                || x.ends_with("_g_μ")
-                || *x == "n_gex_cell".to_string()
-                || *x == "n_gex".to_string()
-                || *x == "entropy".to_string()
-            {
-                eprint("\nParseable field {} does not make sense because gene expression \
-                    data were not provided as input.\n");
-                std::process::exit(1);
+        let mut ok = false;
+        for y in PLVARS_ALLOWED.iter() {
+            if *x == *y {
+                ok = true;
             }
         }
-
-        *** what about fb data ***
-
-        let mut ok = false;
-
-
-
-
-
-
-    for col in 0..ctl.parseable_opt.pchains {
-        for x in CVARS_ALLOWED.iter() {
-            speakerc!(col, x);
+        for y in ctl.sample_info.dataset_list.iter() {
+            if *x == format!("{}_barcodes", y) {
+                ok = true;
+            }
         }
         if ctl.parseable_opt.pbarcode {
-            for x in CVARS_ALLOWED_PCELL.iter() {
-                speakerc!(col, x);
-            }
-        }
-        for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
-            speakerc!(col, x);
-        }
-        for x in &[
-            "var_indices_dna",
-            "var_indices_aa",
-            "share_indices_dna",
-            "share_indices_aa",
-        ] {
-            speakerc!(col, x);
-        }
-        for x in &[
-            "v_start",
-            "const_id",
-            "utr_id",
-            "utr_name",
-            "cdr3_start",
-            "cdr3_aa",
-        ] {
-            speakerc!(col, x);
-        }
-        for x in &["seq", "vj_seq", "var_aa"] {
-            speakerc!(col, x);
-        }
-        for i in 0..pcols_sort.len() {
-            if pcols_sort[i].starts_with('q') && pcols_sort[i].ends_with(&format!("_{}", col + 1)) {
-                let x = pcols_sort[i].after("q").rev_before("_");
-                if x.parse::<usize>().is_ok() {
-                    parseable_fields.push(pcols_sort[i].clone());
+            speaker!("barcode");
+            for x in ctl.sample_info.dataset_list.iter() {
+                if *x == format!("{}_barcode", x) {
+                    ok = true;
                 }
             }
         }
-    }
-    speaker!("group_id");
-    speaker!("group_ncells");
-    speaker!("clonotype_id");
-    speaker!("clonotype_ncells");
-    speaker!("nchains");
-    speaker!("exact_subclonotype_id");
-    speaker!("barcodes");
-    for x in ctl.sample_info.dataset_list.iter() {
-        speaker!(&format!("{}_barcodes", x));
-    }
-    if ctl.parseable_opt.pbarcode {
-        speaker!("barcode");
-        for x in ctl.sample_info.dataset_list.iter() {
-            speaker!(&format!("{}_barcode", x));
-        }
-    }
-    let mut pfsort = parseable_fields.clone();
-    unique_sort(&mut pfsort);
-    for x in pcols_sort.iter() {
-        let y = x.clone();
-        let mut y_alt = y.clone();
-        y_alt = y_alt.replace("_Σ", "_sum");
-        y_alt = y_alt.replace("_μ", "_mean");
-        if !bin_member(&pfsort, &y) && !bin_member(&pfsort, &y_alt) {
-            eprintln!("\nUnknown parseable output field: {}.\n", x);
-            eprintln!(
-                "Note that the allowed fields depend on your specification for the \
-                 LVARS or LVARSP,\nand CVARS or CVARSP options, and that for the latter two,\n\
-                 suffixing by the column number is required.  Please see \
-                 \"enclone help parseable\".\n"
-            );
-            std::process::exit(1);
-        }
-    }
-}
-
-
-
-
-
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
@@ -315,7 +268,12 @@ pub fn check_pcols(ctl: &EncloneControl) {
                 let ps = format!( "{}", p );
                 if x.ends_with(&ps) {
                     let y = x.rev_before(&ps);
-                    if CVARS_ALLOWED.contains(&y) {
+                    if CVARS_ALLOWED.contains(&y) || CVARS_ALLOWED_PCELL.contains(&y) {
+                        ok = true;
+                    } else if PCVARS_ALLOWED.contains(&y) {
+                        ok = true;
+                    } else if y.starts_with('q') && y.ends_with('_') 
+                        && y.between("q", "_").parse::<usize>().is_ok() {
                         ok = true;
                     } else if y.starts_with("ndiff") {
                         && y.after("ndiff").parse::<usize>().is_ok()
@@ -347,7 +305,7 @@ pub fn check_pcols(ctl: &EncloneControl) {
         }
     }
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_features, &to_check, "parseable");
+        check_gene_fb(&ctl, &gex_info, &to_check, "parseable");
     }
 }
 
@@ -379,7 +337,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 
 // Check lvars args.
 
-pub fn check_lvars(ctl: &EncloneControl, gex_features: &Vec<Vec<String>>) {
+pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut to_check = Vec::<String>::new();
     let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",

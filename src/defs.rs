@@ -37,6 +37,18 @@ pub const CVARS_ALLOWED: [&str; 20] = [
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
 
+pub const PLVARS_ALLOWED: [&str; 7] = [
+    "group_id", "group_ncells", "clonotype_id", "clonotype_ncells", "nchains", 
+    "exact_subclonotype_id", "barcodes",
+];
+
+pub const PCVARS_ALLOWED: [&str; 19] = [
+    "v_name", "d_name", "j_name", "v_id", "d_id", "j_id",
+    "var_indices_dna", "var_indices_aa", "share_indices_dna", "share_indices_aa",
+    "v_start", "const_id", "utr_id", "utr_name", "cdr3_start", "cdr3_aa",
+    "seq", "vj_seq", "var_aa",
+];
+
 // Clonotyping algorithm heuristics.
 
 #[derive(Default)]
@@ -606,7 +618,7 @@ pub struct CloneInfo {
     pub chain_types: Vec<String>, // chain types
 }
 
-// Gene expression stuff.
+// Gene expression stuff.  
 
 #[derive(Default)]
 pub struct GexInfo {
@@ -621,6 +633,8 @@ pub struct GexInfo {
     pub h5_indptr: Vec<Vec<u32>>,
     pub is_gex: Vec<Vec<bool>>,
     pub feature_id: Vec<HashMap<String, usize>>,
+    pub have_gex: bool,
+    pub have_fb: bool,
 }
 
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains
