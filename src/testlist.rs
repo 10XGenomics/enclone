@@ -4,7 +4,7 @@ pub const TEST_FILES_VERSION: u8 = 14;
 
 // Main list of tests for enclone.
 
-pub const TESTS: [&str; 43] = [
+pub const TESTS: [&str; 44] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -110,4 +110,7 @@ pub const TESTS: [&str; 43] = [
     r###"BCR=85333 CDR3=CQQRSNWPLYTF POUT=stdouth PCOLS=gex_cell PCELL PER_CELL EXPECT_FAIL"###,
     // 43. test case that should fail because _cell variables can't be used in LVARS
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW LVARS=gex_cell EXPECT_FAIL"###,
+    // 44. test _cell
+    r###"BCR=86237 GEX=85679 LVARSP=gex,RPS27_g_μ CELLS=3 POUT=stdouth
+        PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell PCELL"###,
 ];

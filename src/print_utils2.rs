@@ -64,7 +64,9 @@ pub fn row_fill(
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
-                if ctl.parseable_opt.pcols.is_empty() || bin_member(&ctl.parseable_opt.pcols, &v) {
+                if ctl.parseable_opt.pcols.is_empty()
+                    || bin_member(&ctl.parseable_opt.pcols_sort, &v)
+                {
                     out_data[$u].insert(v, $val);
                 }
             }
@@ -291,9 +293,17 @@ pub fn row_fill(
     // LinearCondition::require_valid_variables.
 
     let mut all_lvars = lvars.clone();
-    for i in 0..LVARS_ALLOWED.len() {
-        if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
-            all_lvars.push(LVARS_ALLOWED[i].to_string());
+    if ctl.parseable_opt.pcols.is_empty() {
+        for i in 0..LVARS_ALLOWED.len() {
+            if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
+                all_lvars.push(LVARS_ALLOWED[i].to_string());
+            }
+        }
+    } else {
+        for i in 0..ctl.parseable_opt.pcols.len() {
+            if !lvars.contains(&ctl.parseable_opt.pcols[i].to_string()) {
+                all_lvars.push(ctl.parseable_opt.pcols[i].to_string());
+            }
         }
     }
     for i in 0..all_lvars.len() {
@@ -459,8 +469,7 @@ pub fn row_fill(
             }
             lvar![i, x, s.clone()];
         } else {
-            let mut counts = Vec::<f64>::new();
-            let mut fcounts = Vec::<f64>::new();
+            let (mut counts, mut fcounts) = (Vec::<f64>::new(), Vec::<f64>::new());
             let (mut x, mut y) = (x.to_string(), x.to_string());
             if x.contains(':') {
                 x = x.before(":").to_string();
@@ -469,19 +478,21 @@ pub fn row_fill(
                 y = y.after(":").to_string();
             }
             let y0 = y.clone();
-            let suffixes = ["_min", "_max", "_μ", "_Σ"];
+            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell"];
             for s in suffixes.iter() {
                 if y.ends_with(s) {
-                    y = y.before(&s).to_string();
+                    y = y.rev_before(&s).to_string();
                     break;
                 }
             }
+            let mut computed = false;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                if p >= 0 {
-                    if gex_info.feature_id[li].contains_key(&y) {
+                if gex_info.feature_id[li].contains_key(&y) {
+                    computed = true;
+                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                    if p >= 0 {
                         let fid = gex_info.feature_id[li][&y];
                         let mut raw_count = 0 as f64;
                         if !ctl.gen_opt.h5 {
@@ -510,25 +521,32 @@ pub fn row_fill(
                     }
                 }
             }
-            stats.push((x.clone(), fcounts.clone()));
-            let mut counts_sorted = counts.clone();
-            counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            let sum = fcounts.iter().sum::<f64>();
-            let mean = sum / counts.len() as f64;
-            if y0.ends_with("_min") {
-                lvar![i, x, format!("{}", counts_sorted[0].round())];
-            } else if y0.ends_with("_max") {
-                lvar![i, x, format!("{}", counts_sorted[counts.len() - 1].round())];
-            } else if y0.ends_with("_μ") {
-                lvar![i, x, format!("{}", mean.round())];
-            } else if y0.ends_with("_Σ") {
-                lvar![i, x, format!("{}", sum.round())];
-            } else {
-                let mut median = 0.0;
-                if counts_sorted.len() > 0 {
-                    median = counts_sorted[counts_sorted.len() / 2].round();
+            if computed {
+                stats.push((x.clone(), fcounts.clone()));
+                let mut counts_sorted = counts.clone();
+                counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let sum = fcounts.iter().sum::<f64>();
+                let mean = sum / counts.len() as f64;
+                if y0.ends_with("_min") {
+                    lvar![i, x, format!("{}", counts_sorted[0].round())];
+                } else if y0.ends_with("_max") {
+                    lvar![i, x, format!("{}", counts_sorted[counts.len() - 1].round())];
+                } else if y0.ends_with("_μ") {
+                    lvar![i, x, format!("{}", mean.round())];
+                } else if y0.ends_with("_Σ") {
+                    lvar![i, x, format!("{}", sum.round())];
+                } else if y0.ends_with("_cell") {
+                    if pass == 2 {
+                        let val = format!("{}", counts.iter().format(";"));
+                        speak!(u, x, val);
+                    }
+                } else {
+                    let mut median = 0.0;
+                    if counts_sorted.len() > 0 {
+                        median = counts_sorted[counts_sorted.len() / 2].round();
+                    }
+                    lvar![i, x, format!("{}", median)];
                 }
-                lvar![i, x, format!("{}", median)];
             }
         }
     }

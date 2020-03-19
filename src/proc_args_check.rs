@@ -116,7 +116,11 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
         if x.contains(':') {
             x = x.after(":").to_string();
         }
-        if !bin_member(&known_features, &x) {
+        let mut y = x.clone();
+        if category == "parseable" && y.ends_with("_cell") {
+            y = y.before("_cell").to_string();
+        }
+        if !bin_member(&known_features, &y) {
             let mut n_var = false;
             if x.starts_with("n_") {
                 n_var = true;
