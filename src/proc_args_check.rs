@@ -9,12 +9,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn check_gene_fb(
-    ctl: &EncloneControl, 
-    gex_info: &GexInfo,
-    to_check: &Vec<String>,
-    category: &str,
-) {
+fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String>, category: &str) {
     let g_ends0 = ["_g"];
     let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
@@ -37,33 +32,43 @@ fn check_gene_fb(
                     problem = true;
                 }
             }
-            if problem || *x == "gex".to_string()
+            if problem
+                || *x == "gex".to_string()
                 || x.starts_with("gex_")
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
                 || *x == "entropy".to_string()
             {
-                if category == "parseable {
-                    eprint("\nParseable field {} does not make sense because gene expression \
-                        data were not provided as input.\n", x);
+                if category == "parseable" {
+                    eprintln!(
+                        "\nParseable field {} does not make sense because gene expression \
+                         data\nwere not provided as input.\n",
+                        x
+                    );
                 } else {
-                    eprint("\nLead variable {} does not make sense because gene expression \
-                        data were not provided as input.\n", x);
+                    eprintln!(
+                        "\nLead variable {} does not make sense because gene expression \
+                         data\nwere not provided as input.\n",
+                        x
+                    );
                 }
                 std::process::exit(1);
             }
         }
         if !gex_info.have_fb {
             for y in g_ends.iter() {
-                if x.ends_with(y)
-                {
-                    if category == "parseable {
-                        eprint("\nParseable field {} does not make sense because feature barcode \
-                            data were not provided as input.\n", x);
+                if x.ends_with(y) {
+                    if category == "parseable" {
+                        eprintln!(
+                            "\nParseable field {} does not make sense because feature \
+                             barcode data\nwere not provided as input.\n",
+                            x
                         );
                     } else {
-                        eprint("\nLead variable {} does not make sense because feature barcode \
-                            data were not provided as input.\n", x);
+                        eprintln!(
+                            "\nLead variable {} does not make sense because feature barcode \
+                             data\nwere not provided as input.\n",
+                            x
                         );
                     }
                     std::process::exit(1);
@@ -72,9 +77,9 @@ fn check_gene_fb(
         }
     }
     let mut known_features = Vec::<String>::new();
-    for i in 0..gex_features.len() {
-        for j in 0..gex_features[i].len() {
-            let f = &gex_features[i][j];
+    for i in 0..gex_info.gex_features.len() {
+        for j in 0..gex_info.gex_features[i].len() {
+            let f = &gex_info.gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
             if ff.len() != 3 {
                 eprintln!("Unexpected structure of features file, at this line\n{}", f);
@@ -253,7 +258,9 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         if ctl.parseable_opt.pbarcode {
-            speaker!("barcode");
+            if *x == "barcode" {
+                ok = true;
+            }
             for x in ctl.sample_info.dataset_list.iter() {
                 if *x == format!("{}_barcode", x) {
                     ok = true;
@@ -265,19 +272,22 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             ok = true;
         } else {
             for p in 1..=pchains {
-                let ps = format!( "{}", p );
+                let ps = format!("{}", p);
                 if x.ends_with(&ps) {
                     let y = x.rev_before(&ps);
                     if CVARS_ALLOWED.contains(&y) || CVARS_ALLOWED_PCELL.contains(&y) {
                         ok = true;
                     } else if PCVARS_ALLOWED.contains(&y) {
                         ok = true;
-                    } else if y.starts_with('q') && y.ends_with('_') 
-                        && y.between("q", "_").parse::<usize>().is_ok() {
+                    } else if y.starts_with('q')
+                        && y.ends_with('_')
+                        && y.between("q", "_").parse::<usize>().is_ok()
+                    {
                         ok = true;
-                    } else if y.starts_with("ndiff") {
-                        && y.after("ndiff").parse::<usize>().is_ok()
-                        && y.after("ndiff").force_usize() >= 1
+                    } else if y.starts_with("ndiff")
+                        && y.ends_with("vj")
+                        && y.between("ndiff", "vj").parse::<usize>().is_ok()
+                        && y.between("ndiff", "vj").force_usize() >= 1
                     {
                         ok = true;
                         break;
@@ -286,22 +296,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         if !ok {
-            let mut end_ok = false;
-            for i in 0..ends.len() {
-                if x.ends_with(&ends[i]) {
-                    end_ok = true;
-                }
-            }
-            if !end_ok && !x.starts_with("n_") {
-                eprintln!(
-                    "\nUnrecognized variable {} for PCOLS.  Please type \
-                     \"enclone help parseable\".\n",
-                    x
-                );
-                std::process::exit(1);
-            } else {
-                to_check.push(x.clone());
-            }
+            to_check.push(x.clone());
         }
     }
     if !to_check.is_empty() {
@@ -317,8 +312,9 @@ pub fn check_cvars(ctl: &EncloneControl) {
     for x in ctl.clono_print_opt.cvars.iter() {
         let mut ok = CVARS_ALLOWED.contains(&(*x).as_str());
         if x.starts_with("ndiff")
-            && x.after("ndiff").parse::<usize>().is_ok()
-            && x.after("ndiff").force_usize() >= 1
+            && x.ends_with("vj")
+            && x.between("ndiff", "vj").parse::<usize>().is_ok()
+            && x.between("ndiff", "vj").force_usize() >= 1
         {
             ok = true;
         }
@@ -375,6 +371,6 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     if !to_check.is_empty() {
-        check_gene_fb(&ctl, &gex_features, &to_check, "lead");
+        check_gene_fb(&ctl, &gex_info, &to_check, "lead");
     }
 }

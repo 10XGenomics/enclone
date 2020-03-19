@@ -700,7 +700,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "the beginning of C; elided if empty");
         ldoc!(
-            "ndiff<n>",
+            "ndiff<n>vj",
             "number of base differences within V..J between this exact subclonotype and"
         );
         doc!("", "exact subclonotype n");

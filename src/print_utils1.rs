@@ -401,8 +401,8 @@ pub fn make_diff_row(
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Define the set "parseable_fields" of fields that the could occur in parseable output.
-// It is super annoying that we test this after most computations have completed rather than
-// early in the enclone process.
+//
+// The overlap with code in proc_args_check.rs is not nice.
 
 pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.

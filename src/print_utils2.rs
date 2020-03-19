@@ -806,7 +806,7 @@ pub fn row_fill(
                     format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
                 ];
             } else if var.starts_with("ndiff") {
-                let u0 = var.after("ndiff").force_usize() - 1;
+                let u0 = var.between("ndiff", "vj").force_usize() - 1;
                 if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
                     let m0 = mat[col][u0].unwrap();
                     let m = mat[col][u].unwrap();
