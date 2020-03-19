@@ -973,18 +973,7 @@ pub fn print_clonotypes(
                 for cx in 0..cols {
                     justify.push(b'|');
                     for m in 0..rsi.cvars[cx].len() {
-                        if rsi.cvars[cx][m] == "amino".to_string()
-                            || rsi.cvars[cx][m] == "var".to_string()
-                            || rsi.cvars[cx][m] == "const".to_string()
-                            || rsi.cvars[cx][m] == "cdr3_dna".to_string()
-                            || rsi.cvars[cx][m] == "cdiff".to_string()
-                            || rsi.cvars[cx][m] == "notes".to_string()
-                            || rsi.cvars[cx][m] == "edit".to_string()
-                        {
-                            justify.push(b'l');
-                        } else {
-                            justify.push(b'r');
-                        }
+                        justify.push(justification(&rsi.cvars[cx][m]));
                     }
                 }
                 let mut logz = String::new();

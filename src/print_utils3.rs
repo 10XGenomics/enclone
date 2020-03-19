@@ -2,6 +2,7 @@
 
 use crate::defs::*;
 use crate::print_utils1::*;
+use crate::print_utils5::*;
 use crate::types::*;
 use amino::*;
 use ansi_escape::*;
@@ -427,11 +428,7 @@ pub fn build_table_stuff(
             x = x.before(":").to_string();
         }
         row1.push(x.clone());
-        if x == "datasets".to_string() || x == "donors".to_string() || x == "ext".to_string() {
-            justify.push(b'l');
-        } else {
-            justify.push(b'r');
-        }
+        justify.push(justification(&x));
     }
 
     // Insert main chain row.  Then insert chain info row if we're using CHAIN_SPLIT.

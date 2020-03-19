@@ -3,6 +3,7 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::defs::*;
+use crate::print_utils5::*;
 use amino::*;
 use ansi_escape::*;
 use equiv::EquivRel;
@@ -429,7 +430,11 @@ pub fn group_and_print_clonotypes(
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
                     let mut log = Vec::<u8>::new();
-                    print_tabular(&mut log, &rows, 2, Some(vec![b'r'; rows[0].len()]));
+                    let mut justify = Vec::<u8>::new();
+                    for x in rows[0].iter() {
+                        justify.push(justification(&x));
+                    }
+                    print_tabular(&mut log, &rows, 2, Some(justify));
                     print!("{}", strme(&log));
                 }
             }
