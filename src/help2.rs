@@ -3,6 +3,7 @@
 // Test for help request.
 
 use crate::help_utils::*;
+use crate::testlist::*;
 use ansi_escape::*;
 use std::env;
 use string_utils::*;
@@ -117,7 +118,7 @@ pub fn help2(args: &Vec<String>) {
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
              directory /users/jdoe/enclone_data.  Then you can run this command:"
         );
-        println!("\n% enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW");
+        println!("\n% enclone PRE=/users/jdoe/enclone_data {}", EXAMPLES[0]);
         if !plain {
             print!("{}", include_str!("example1"));
         } else {
@@ -191,10 +192,7 @@ pub fn help2(args: &Vec<String>) {
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
              directory /users/jdoe/enclone_data.  Then you can run this command:"
         );
-        println!(
-            "\n% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 \
-             LVARSP=gex_med,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"
-        );
+        println!("\n% enclone PRE=/users/jdoe/enclone_data {}", EXAMPLES[1]);
         if !plain {
             print!("{}", include_str!("example2"));
         } else {

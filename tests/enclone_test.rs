@@ -317,6 +317,39 @@ fn test_enclone() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test that examples are what we claim they are.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_enclone_examples() {
+    PrettyTrace::new().on();
+    for t in 0..EXAMPLES.len() {
+        let testn = format!("{}", EXAMPLES[t]);
+        let out_file = format!("src/example{}", t + 1);
+        let old = read_to_string(&out_file).unwrap();
+        let args = testn.split(' ').collect::<Vec<&str>>();
+        let mut new = Command::new("target/release/enclone");
+        let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+        for i in 0..args.len() {
+            new = new.arg(&args[i]);
+        }
+        let new = new
+            .arg("FORCE_EXTERNAL")
+            .output()
+            .expect(&format!("failed to execute test_enclone_examples"));
+        let new2 = stringme(&new.stdout);
+        if old != new2 {
+            eprintln!(
+                "\nenclone_test_examples: the file example{} is not up to date\n",
+                t + 1
+            );
+            std::process::exit(1);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
 // you also have to change this.
 
@@ -350,7 +383,7 @@ fn test_enclone_prebuild() {
     let new = new
         .arg("FORCE_EXTERNAL")
         .output()
-        .expect(&format!("failed to execute enclone_test_prebuild"));
+        .expect(&format!("failed to execute test_enclone_prebuild"));
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
     let new2 = stringme(&new.stdout);
     if old != new2 {

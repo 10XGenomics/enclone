@@ -114,3 +114,12 @@ pub const TESTS: [&str; 44] = [
     r###"BCR=86237 GEX=85679 LVARSP=gex,RPS27_g_μ CELLS=3 POUT=stdouth
         PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell PCELL"###,
 ];
+
+// List of examples in documentation.
+
+pub const EXAMPLES: [&str; 2] = [
+    // 1.
+    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###,
+    // 2.
+    r###"BCR=123085 GEX=126106 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+];
