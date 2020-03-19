@@ -261,6 +261,14 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
+        if !gex_info.have_gex && (x == "gex_cell" || x == "n_gex_cell") {
+            eprintln!(
+                "\nCan't use parseable variable {} without having gene \
+                 expression data.\n",
+                x
+            );
+            std::process::exit(1);
+        }
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
         } else {
@@ -268,7 +276,9 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
                 let ps = format!("{}", p);
                 if x.ends_with(&ps) {
                     let y = x.rev_before(&ps);
-                    if CVARS_ALLOWED.contains(&y) || CVARS_ALLOWED_PCELL.contains(&y) {
+                    if CVARS_ALLOWED.contains(&y)
+                        || (ctl.parseable_opt.pbarcode && CVARS_ALLOWED_PCELL.contains(&y))
+                    {
                         ok = true;
                     } else if PCVARS_ALLOWED.contains(&y) {
                         ok = true;
