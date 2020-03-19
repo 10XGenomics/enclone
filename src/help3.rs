@@ -329,12 +329,6 @@ pub fn help3(args: &Vec<String>) {
              See \"enclone help lvars\".",
             "\\ext"
         );
-        doc!(
-            "However, to use such a field here, the lead variable must be specified using \
-             the LVARS",
-            "\\ext"
-        );
-        doc!("or LVARSP options (or be in the default set).", "\\ext");
         print_tab2(&rows);
         println!("");
 
@@ -384,15 +378,7 @@ pub fn help3(args: &Vec<String>) {
             "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
             "\\ext"
         );
-        doc!(
-            "See \"enclone help cvars\".  However to use such a field here, the chain variable \
-             must be ",
-            "\\ext"
-        );
-        doc!(
-            "specified using the CVARS or CVARSP options (or be in the default set).",
-            "\\ext"
-        );
+        doc!("See \"enclone help cvars\".", "\\ext");
         print_tab2(&rows);
         println!("");
         if !help_all {
