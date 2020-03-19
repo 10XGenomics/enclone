@@ -3,7 +3,6 @@
 // Check lvars, cvars, and pcols.
 
 use crate::defs::*;
-use itertools::*;
 use string_utils::*;
 use vector_utils::*;
 
@@ -56,7 +55,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             }
         }
         if !gex_info.have_fb {
-            for y in g_ends.iter() {
+            for y in fb_ends.iter() {
                 if x.ends_with(y) {
                     if category == "parseable" {
                         eprintln!(
@@ -151,15 +150,9 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                            \"enclone help glossary\".\n";
                 if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
                     eprintln!(
-                        // The following line is cryptic as a user message:
-                        "\ntags = {}\n\
-                         You've used the {} variable {}, and yet {} \
+                        "\nYou've used the {} variable {}, and yet {} \
                          does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
-                        category,
-                        ctl.sample_info.tag_list.iter().format(","),
-                        x,
-                        name,
-                        msg
+                        category, x, name, msg
                     );
                     std::process::exit(1);
                 }
@@ -261,8 +254,8 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             if *x == "barcode" {
                 ok = true;
             }
-            for x in ctl.sample_info.dataset_list.iter() {
-                if *x == format!("{}_barcode", x) {
+            for y in ctl.sample_info.dataset_list.iter() {
+                if *x == format!("{}_barcode", y) {
                     ok = true;
                 }
             }
