@@ -56,7 +56,7 @@ pub fn group_and_print_clonotypes(
     let mut pcols = ctl.parseable_opt.pcols.clone();
     for i in 0..pcols.len() {
         pcols[i] = pcols[i].replace("_Σ", "_sum");
-        pcols[i] = pcols[i].replace("_u", "_mean");
+        pcols[i] = pcols[i].replace("_μ", "_mean");
     }
     if pcols.is_empty() {
         pcols = parseable_fields.clone();

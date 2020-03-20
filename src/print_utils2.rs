@@ -77,6 +77,7 @@ pub fn row_fill(
         pcols_sort[i] = pcols_sort[i].replace("_Σ", "_sum");
         pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
     }
+    pcols_sort.sort();
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
@@ -589,6 +590,10 @@ pub fn row_fill(
         let u_min = *numis.iter().min().unwrap();
         let u_max = *numis.iter().max().unwrap();
         nreads.sort();
+        let rtot: usize = nreads.iter().sum();
+        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+        let r_min = *nreads.iter().min().unwrap();
+        let r_max = *nreads.iter().max().unwrap();
         let median_nreads = nreads[nreads.len() / 2];
 
         // Set up chain variable macro.  This is the mechanism for generating
@@ -988,6 +993,14 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", utot)];
             } else if *var == "r".to_string() {
                 cvar![j, var, format!("{}", median_nreads)];
+            } else if *var == "r_min".to_string() {
+                cvar![j, var, format!("{}", r_min)];
+            } else if *var == "r_max".to_string() {
+                cvar![j, var, format!("{}", r_max)];
+            } else if *var == "r_μ".to_string() {
+                cvar![j, var, format!("{}", r_mean)];
+            } else if *var == "r_Σ".to_string() {
+                cvar![j, var, format!("{}", rtot)];
             } else if *var == "r_cell".to_string() {
                 let var = var.clone();
                 if col + 1 <= ctl.parseable_opt.pchains {
