@@ -8,8 +8,8 @@ pub const TESTS: [&str; 46] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
-    // 2. tests many donor ref differences, test comp and var and donorn
-    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,var AMINO=cdr3,var,share,donorn"###,
+    // 2. tests many donor ref differences, test comp, edit and var and donorn
+    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,edit,var AMINO=cdr3,var,share,donorn"###,
     // 3. tests motif in CDR3, CHAINS, u_sum, flipped args in CVARS, on tiny dataset
     r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
