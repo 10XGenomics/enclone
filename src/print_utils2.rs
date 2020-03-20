@@ -439,9 +439,9 @@ pub fn row_fill(
             lvar![i, x, format!("{}", gex_min)];
         } else if x == "gex_max" {
             lvar![i, x, format!("{}", gex_max)];
-        } else if x == "gex_mean" {
+        } else if x == "gex_μ" {
             lvar![i, x, format!("{}", gex_mean)];
-        } else if x == "gex_sum" {
+        } else if x == "gex_Σ" {
             lvar![i, x, format!("{}", gex_sum)];
         } else if x == "ext" {
             let mut exts = Vec::<String>::new();
