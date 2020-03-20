@@ -265,7 +265,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !gex_info.have_gex && (x == "gex_cell" || x == "n_gex_cell") {
+        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex")) {
             eprintln!(
                 "\nCan't use parseable variable {} without having gene \
                  expression data.\n",
@@ -353,6 +353,14 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
+        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex")) {
+            eprintln!(
+                "\nCan't use LVARS or LVARSP variable {} without having gene \
+                 expression data.\n",
+                x
+            );
+            std::process::exit(1);
+        }
         if x.ends_with("_cell") {
             eprintln!("\nFields ending with _cell cannot be used in LVARS or LVARSP.\n");
             std::process::exit(1);
