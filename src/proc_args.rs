@@ -456,10 +456,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             for x in arg.after("LVARS=").split(',').collect::<Vec<&str>>() {
                 ctl.clono_print_opt.lvars.push(x.to_string());
             }
+            for x in ctl.clono_print_opt.lvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
+            }
         } else if arg.starts_with("LVARSP=") {
             let lvarsp = arg.after("LVARSP=").split(',').collect::<Vec<&str>>();
             for x in lvarsp {
                 ctl.clono_print_opt.lvars.push(x.to_string());
+            }
+            for x in ctl.clono_print_opt.lvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
