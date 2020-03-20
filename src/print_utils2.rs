@@ -552,6 +552,11 @@ pub fn row_fill(
         }
     }
 
+    // Sanity check.  It's here because if it fails and that failue was not detected, something
+    // exceptionally cryptic would happen downstream.
+
+    assert_eq!(row.len(), lvars.len() + 1);
+
     // Get the relevant barcodes.
 
     let mut bli = Vec::<(String, usize, usize)>::new();
