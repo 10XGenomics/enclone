@@ -10,8 +10,8 @@ pub const TESTS: [&str; 46] = [
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
     // 2. tests many donor ref differences, test comp, edit and var and donorn
     r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,edit,var AMINO=cdr3,var,share,donorn"###,
-    // 3. tests motif in CDR3, CHAINS, u_sum, flipped args in CVARS, on tiny dataset
-    r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum"###,
+    // 3. tests motif in CDR3, CHAINS, u_sum, ulen, flipped args in CVARS, on tiny dataset
+    r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum,ulen"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
     r###"BCR=86237 GEX=85679 LVARSP=gex,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,RPS27_g_μ
      CELLS=3 FULL_SEQC
