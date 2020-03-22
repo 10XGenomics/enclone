@@ -451,8 +451,10 @@ pub fn help4(args: &Vec<String>) {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
         print!("{}", gray_left_bar(&log));
-        print!( "{}", gray_left_bar(&print_to(
-            "Some explanation is required.  If you use enclone without certain options, you \
+        print!(
+            "{}",
+            gray_left_bar(&print_to(
+                "Some explanation is required.  If you use enclone without certain options, you \
              get the \"visual\" column.\n\
              • Add the option \\bold{PER_CELL} \
              (see \"enclone help display\") and then you get visual output with extra lines for \
@@ -466,7 +468,8 @@ pub fn help4(args: &Vec<String>) {
              line.\n\
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
-        )));
+            ))
+        );
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

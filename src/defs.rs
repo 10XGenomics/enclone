@@ -350,6 +350,7 @@ pub struct GeneralOpt {
     pub internal_run: bool,
     pub force_h5: bool,
     pub full_counts: bool,
+    pub html: bool,
 }
 
 // Allele finding algorithmic options.

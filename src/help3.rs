@@ -602,7 +602,7 @@ pub fn help3(args: &Vec<String>) {
             enclone using some of the detected features as lead variables (appropriately \
             suffixed).  Ultimately the power of the scan is determined by having \"enough\" \
             cells in both the test and control sets, and in having those sets cleanly defined.\n\n\
-            Currently feature scanning requires that each dataset have identical features.\n\n"
+            Currently feature scanning requires that each dataset have identical features.\n\n",
         );
 
         // done

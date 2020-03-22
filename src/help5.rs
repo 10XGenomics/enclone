@@ -263,7 +263,8 @@ pub fn help5(args: &Vec<String>) {
         );
 
         print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
-        println!( "We can think of two possibilities:\n\n\
+        println!(
+            "We can think of two possibilities:\n\n\
             A. The escape characters that enclone emits for color and bolding are not getting\n\
             translated.  You have some options:\n\
             (a) Turn off escape character generation by adding PLAIN to your enclone commands.\n\
@@ -277,7 +278,8 @@ pub fn help5(args: &Vec<String>) {
             this:\n\
             (a) Make your terminal window wider or reduce the font size.\n\
             (b) Identify the field that is very wide and use the column controls to remove that\n\
-            field.  See the help for lvars and cvars.  For example," );
+            field.  See the help for lvars and cvars.  For example,"
+        );
         print(
             "\\bold{AMINO=cdr3}\n\
              may help, or even\n\
@@ -457,6 +459,13 @@ pub fn help5(args: &Vec<String>) {
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",
+        );
+
+        print("\\boldblue{18. How enclone output html?}\n\n");
+
+        print(
+            "Yes, just add the argument \\bold{HTML} to the command line.  Currently this does \
+            not work with help.\n\n",
         );
 
         std::process::exit(0);

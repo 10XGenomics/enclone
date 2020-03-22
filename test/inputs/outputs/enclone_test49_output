@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="color:#005fff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span></span>
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬──────────────────────────┐
+│           │  CHAIN 1                 │
+│           │  322|IGLV1-36 ◼ 316|IGLJ3│
+│           ├──────────────────────────┤
+│           │  1111111111111           │
+│           │  0001111111111           │
+│           │  7890123456789           │
+│           │  ═════CDR3════           │
+│reference  │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span></span>◦◦◦◦◦◦◦◦           │
+│donor ref  │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span></span>◦◦◦◦◦◦◦◦           │
+├───────────┼──────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span></span>│<span style="font-weight:bold;">  .............  u  const </span></span>│
+│1  1       │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span><span style="color:#005faf;font-weight:bold;">DSLN</span><span style="color:#d75f00;font-weight:bold;">GWVF</span></span>  6  IGLC3 │
+└───────────┴──────────────────────────┘
+>group1.clonotype1.exact1.chain1
+ATGGCCTGGTCCCCTCTCTTCCTCACCCTCATCACTCACTGTGCAGGGTCCTGGGCCCAGTCTGTGCTGACTCAGCCACCCTCGGTGTCTGAAGCCCCCAGGCAGAGGGTCACCATCTCCTGTTCTGGAAGCAGCTCCAACATCGGAAATAATGCTGTAAACTGGTACCAGCAGCTCCCAGGAAAGGCTCCCAAACTCCTCATCTATTATGATGATCTGCTGCCCTCAGGGGTCTCTGACCGATTCTCTGGCTCCAAGTCTGGCACCTCAGCCTCCCTGGCCATCAGTGGGCTCCAGTCTGAGGATGAGGCTGATTATTACTGTGCAGCATGGGATGACAGCCTGAATGGTTGGGTGTTCGGCGGAGGGACCAAGCTGACCGTCCTAGGTCAGCCCAAGGCTGCCCCCTCGGTCACTCTGTTCCCACCCTCCTCTGAGGAGCTTCAAGCCAACAAGGCCACACTGGTGTGTCTCATAAGTGACTTCTACCCGGGAGCCGTGACAGTGGCCTGGAAGGCAGATAGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCACACCCTCCAAACAAAGCAACAACAAGTACGCGGCCAGCAGCTACCTGAGCCTGACGCCTGAGCAGTGGAAGTCCCACAAAAGCTACAGCTGCCAGGTCACGCATGAAGGGAGCACCGTGGAGAAGACAGTGGCCCCTACAGAATGTTCA
+>group1.clonotype1.exact1.chain1
+MAWSPLFLTLITHCAGSWAQSVLTQPPSVSEAPRQRVTISCSGSSSNIGNNAVNWYQQLPGKAPKLLIYYDDLLPSGVSDRFSGSKSGTSASLAISGLQSEDEADYYCAAWDDSLNGWVFGGGTKLTVLGQPKAAPSVTLFPPSSEELQANKATLVCLISDFYPGAVTVAWKADSSPVKAGVETTTPSKQSNNKYAASSYLSLTPEQWKSHKSYSCQVTHEGSTVEKTVAPTECS
+barcodes            n
+AGGGTGAAGCGTGAAC-1  1
+</pre>
+</body>
+</html>
+

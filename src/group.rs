@@ -5,6 +5,7 @@
 use crate::defs::*;
 use crate::print_utils5::*;
 use amino::*;
+use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use equiv::EquivRel;
 use io_utils::*;
@@ -165,6 +166,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print.
 
+    let mut logx = Vec::<u8>::new();
     for z in 0..grepsn.len() {
         let i = grepsn[z].1;
         let n = grepsn[z].0;
@@ -175,38 +177,44 @@ pub fn group_and_print_clonotypes(
         // Generate human readable output.
 
         if !ctl.gen_opt.noprint {
-            println!("");
+            fwriteln!(logx, "");
             if last_width > 0 {
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_eight_bit_color_escape(&mut log, 44);
-                    print!("{}", strme(&log));
+                    fwrite!(logx, "{}", strme(&log));
                 }
-                print!("╺");
+                fwrite!(logx, "╺");
                 for _ in 0..last_width - 2 {
-                    print!("━");
+                    fwrite!(logx, "━");
                 }
-                print!("╸");
-                println!("\n");
+                fwrite!(logx, "╸");
+                fwriteln!(logx, "\n");
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_end_escape(&mut log);
-                    print!("{}", strme(&log));
+                    fwrite!(logx, "{}", strme(&log));
                 }
             }
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_bold_escape(&mut log);
                 emit_eight_bit_color_escape(&mut log, 27);
-                print!("{}", strme(&log));
+                fwrite!(logx, "{}", strme(&log));
             }
-            print!("[{}] GROUP = {} CLONOTYPES = {} CELLS", groups, o.len(), n);
+            fwrite!(
+                logx,
+                "[{}] GROUP = {} CLONOTYPES = {} CELLS",
+                groups,
+                o.len(),
+                n
+            );
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_end_escape(&mut log);
-                print!("{}", strme(&log));
+                fwrite!(logx, "{}", strme(&log));
             }
-            println!("");
+            fwriteln!(logx, "");
         }
         let mut group_ncells = 0;
         for j in 0..o.len() {
@@ -218,7 +226,7 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                print!("\n[{}.{}] {}", groups, j + 1, pics[oo]);
+                fwrite!(logx, "\n[{}.{}] {}", groups, j + 1, pics[oo]);
             }
             let x = &pics[oo];
             let mut y = Vec::<char>::new();
@@ -243,7 +251,7 @@ pub fn group_and_print_clonotypes(
             }
             unique_sort(&mut ji);
             for i in 0..ji.len() {
-                println!("{}", strme(&join_info[ji[i]].3));
+                fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
             // Generate fasta output.
@@ -254,14 +262,25 @@ pub fn group_and_print_clonotypes(
                         if mat[oo][m][k].is_some() {
                             let r = mat[oo][m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
-                            fwriteln!(
-                                fout,
-                                ">group{}.clonotype{}.exact{}.chain{}",
-                                groups,
-                                j + 1,
-                                k + 1,
-                                m + 1
-                            );
+                            if ctl.gen_opt.fasta_filename != "stdout".to_string() {
+                                fwriteln!(
+                                    fout,
+                                    ">group{}.clonotype{}.exact{}.chain{}",
+                                    groups,
+                                    j + 1,
+                                    k + 1,
+                                    m + 1
+                                );
+                            } else {
+                                fwriteln!(
+                                    logx,
+                                    ">group{}.clonotype{}.exact{}.chain{}",
+                                    groups,
+                                    j + 1,
+                                    k + 1,
+                                    m + 1
+                                );
+                            }
                             let mut seq = ex.share[r].seq.clone();
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
@@ -280,7 +299,11 @@ pub fn group_and_print_clonotypes(
                             if cid.is_some() {
                                 let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
                                 seq.append(&mut cseq);
-                                fwriteln!(fout, "{}", strme(&seq));
+                                if ctl.gen_opt.fasta_filename != "stdout".to_string() {
+                                    fwriteln!(fout, "{}", strme(&seq));
+                                } else {
+                                    fwriteln!(logx, "{}", strme(&seq));
+                                }
                             }
                         }
                     }
@@ -295,14 +318,25 @@ pub fn group_and_print_clonotypes(
                         if mat[oo][m][k].is_some() {
                             let r = mat[oo][m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
-                            fwriteln!(
-                                faaout,
-                                ">group{}.clonotype{}.exact{}.chain{}",
-                                groups,
-                                j + 1,
-                                k + 1,
-                                m + 1
-                            );
+                            if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
+                                fwriteln!(
+                                    faaout,
+                                    ">group{}.clonotype{}.exact{}.chain{}",
+                                    groups,
+                                    j + 1,
+                                    k + 1,
+                                    m + 1
+                                );
+                            } else {
+                                fwriteln!(
+                                    logx,
+                                    ">group{}.clonotype{}.exact{}.chain{}",
+                                    groups,
+                                    j + 1,
+                                    k + 1,
+                                    m + 1
+                                );
+                            }
                             let mut seq = ex.share[r].seq.clone();
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
@@ -321,7 +355,11 @@ pub fn group_and_print_clonotypes(
                             if cid.is_some() {
                                 let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
                                 seq.append(&mut cseq);
-                                fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
+                                if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
+                                    fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
+                                } else {
+                                    fwriteln!(logx, "{}", strme(&aa_seq(&seq, 0)));
+                                }
                             }
                         }
                     }
@@ -343,7 +381,7 @@ pub fn group_and_print_clonotypes(
                     out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
                 }
                 if ctl.parseable_opt.pout == "stdout".to_string() {
-                    fwriteln!(pout, "{}", pcols.iter().format(","));
+                    fwriteln!(logx, "{}", pcols.iter().format(","));
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
                     rows.push(pcols.clone());
@@ -354,20 +392,40 @@ pub fn group_and_print_clonotypes(
                         if ctl.parseable_opt.pout != "stdouth".to_string() {
                             for (i, c) in pcols.iter().enumerate() {
                                 if i > 0 {
-                                    fwrite!(pout, ",");
+                                    if ctl.parseable_opt.pout != "stdout".to_string() {
+                                        fwrite!(pout, ",");
+                                    } else {
+                                        fwrite!(logx, ",");
+                                    }
                                 }
                                 if y.contains_key(c) {
                                     let val = &y[c];
                                     if !val.contains(',') {
-                                        fwrite!(pout, "{}", val);
+                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                            fwrite!(pout, "{}", val);
+                                        } else {
+                                            fwrite!(logx, "{}", val);
+                                        }
                                     } else {
-                                        fwrite!(pout, "\"{}\"", val);
+                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                            fwrite!(pout, "\"{}\"", val);
+                                        } else {
+                                            fwrite!(logx, "\"{}\"", val);
+                                        }
                                     }
                                 } else {
-                                    fwrite!(pout, "");
+                                    if ctl.parseable_opt.pout != "stdout".to_string() {
+                                        fwrite!(pout, "");
+                                    } else {
+                                        fwrite!(logx, "");
+                                    }
                                 }
                             }
-                            fwriteln!(pout, "");
+                            if ctl.parseable_opt.pout != "stdout".to_string() {
+                                fwriteln!(pout, "");
+                            } else {
+                                fwriteln!(logx, "");
+                            }
                         } else {
                             let mut row = Vec::<String>::new();
                             for c in pcols.iter() {
@@ -387,7 +445,11 @@ pub fn group_and_print_clonotypes(
                             for m in 0..n {
                                 for (i, c) in pcols.iter().enumerate() {
                                     if i > 0 {
-                                        fwrite!(pout, ",");
+                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                            fwrite!(pout, ",");
+                                        } else {
+                                            fwrite!(logx, ",");
+                                        }
                                     }
                                     if y.contains_key(c) {
                                         let mut id = 0;
@@ -397,15 +459,31 @@ pub fn group_and_print_clonotypes(
                                         }
                                         let val = vals[id];
                                         if !val.contains(',') {
-                                            fwrite!(pout, "{}", val);
+                                            if ctl.parseable_opt.pout != "stdout".to_string() {
+                                                fwrite!(pout, "{}", val);
+                                            } else {
+                                                fwrite!(logx, "{}", val);
+                                            }
                                         } else {
-                                            fwrite!(pout, "\"{}\"", val);
+                                            if ctl.parseable_opt.pout != "stdout".to_string() {
+                                                fwrite!(pout, "\"{}\"", val);
+                                            } else {
+                                                fwrite!(logx, "\"{}\"", val);
+                                            }
                                         }
                                     } else {
-                                        fwrite!(pout, "");
+                                        if ctl.parseable_opt.pout != "stdout".to_string() {
+                                            fwrite!(pout, "");
+                                        } else {
+                                            fwrite!(logx, "");
+                                        }
                                     }
                                 }
-                                fwriteln!(pout, "");
+                                if ctl.parseable_opt.pout != "stdout".to_string() {
+                                    fwriteln!(pout, "");
+                                } else {
+                                    fwriteln!(logx, "");
+                                }
                             }
                         } else {
                             for m in 0..n {
@@ -435,7 +513,7 @@ pub fn group_and_print_clonotypes(
                         justify.push(justification(&x));
                     }
                     print_tabular(&mut log, &rows, 2, Some(justify));
-                    print!("{}", strme(&log));
+                    fwrite!(logx, "{}", strme(&log));
                 }
             }
         }
@@ -444,8 +522,8 @@ pub fn group_and_print_clonotypes(
     // Print summary stats.
 
     if ctl.gen_opt.summary {
-        println!("\nSUMMARY STATISTICS");
-        println!("1. overall");
+        fwriteln!(logx, "\nSUMMARY STATISTICS");
+        fwriteln!(logx, "1. overall");
         let nclono = exacts.len();
         let mut nclono2 = 0;
         let mut ncells = 0;
@@ -475,25 +553,31 @@ pub fn group_and_print_clonotypes(
             sdx.push((sd[i].0, sd[i].1, j - i));
             i = j;
         }
-        println!("   • number of datasets = {}", ctl.sample_info.n());
-        println!("   • number of donors = {}", ctl.sample_info.donors);
+        fwriteln!(logx, "   • number of datasets = {}", ctl.sample_info.n());
+        fwriteln!(logx, "   • number of donors = {}", ctl.sample_info.donors);
         if !ctl.gen_opt.summary_clean {
-            println!("   • total elapsed time = {:.1} seconds", elapsed(&tall));
+            fwriteln!(
+                logx,
+                "   • total elapsed time = {:.1} seconds",
+                elapsed(&tall)
+            );
             #[cfg(not(target_os = "macos"))]
-            println!("   • peak memory = {:.1} GB", peak_mem_usage_gb());
+            fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
-        println!("2. for the selected clonotypes");
-        println!("   • number of clonotypes = {}", nclono);
-        println!(
+        fwriteln!(logx, "2. for the selected clonotypes");
+        fwriteln!(logx, "   • number of clonotypes = {}", nclono);
+        fwriteln!(
+            logx,
             "   • number of clonotypes having at least two cells = {}",
             nclono2
         );
-        println!("   • number of cells in clonotypes = {}", ncells);
+        fwriteln!(logx, "   • number of cells in clonotypes = {}", ncells);
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
             let j = next_diff(&nchains, i);
-            println!(
+            fwriteln!(
+                logx,
                 "   • number of clonotypes having {} chains = {}",
                 nchains[i],
                 j - i
@@ -526,7 +610,22 @@ pub fn group_and_print_clonotypes(
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
         log = log.replace("\n", "\n   ");
-        print!("   {}", log);
+        fwrite!(logx, "   {}", log);
+    }
+
+    // Print to stdout.
+
+    if !ctl.gen_opt.html {
+        print!("{}", strme(&logx));
+    } else {
+        let s = convert_text_with_ansi_escapes_to_html(
+            strme(&logx),
+            "", // source
+            "", // title
+            "Menlo",
+            12,
+        );
+        print!("{}", s);
     }
 
     // Test for required number of false positives.
