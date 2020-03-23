@@ -95,13 +95,19 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+    for i in 1..args.len() {
+        if is_simple_arg(&args[i], "STABLE_DOC") {
+            ctl.gen_opt.stable_doc = true;
+        }
+    }
+
     // Provide help if requested.
 
     help1(&args);
-    help2(&args);
+    help2(&args, &ctl);
     help3(&args);
     help4(&args);
-    help5(&args);
+    help5(&args, &ctl);
 
     // Pretest for some options.
 

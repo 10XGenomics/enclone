@@ -106,3 +106,5 @@ H5_SLICE: read GEX data slice by slice rather than preloading
 H5: force use of H5, even if matrix.bin has been built
 
 FORCE_EXTERNAL: do not test for internal run
+
+STABLE_DOC: print documentation in a way that it won't change when the git version changes

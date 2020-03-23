@@ -2,6 +2,7 @@
 //
 // Test for help request, under development.
 
+use crate::defs::*;
 use crate::help_utils::*;
 use ansi_escape::*;
 use string_utils::*;
@@ -12,7 +13,7 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help5(args: &Vec<String>) {
+pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // Set up.
 
     let mut args = args.clone();
@@ -448,10 +449,17 @@ pub fn help5(args: &Vec<String>) {
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
         print!("{}", strme(&log));
-        println!(
-            "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
-            VERSION_STRING.before(",")
-        );
+        if !ctl.gen_opt.stable_doc {
+            println!(
+                "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
+                VERSION_STRING.before(",")
+            );
+        } else {
+            println!(
+                "10x Genomics, https://github.com/10XGenomics/enclone,\n\
+                    (your enclone version information will be printed here)."
+            );
+        }
         emit_end_escape(&mut log);
         print!("{}", strme(&log));
         print(

@@ -2,6 +2,7 @@
 
 // Test for help request.
 
+use crate::defs::*;
 use crate::help_utils::*;
 use crate::testlist::*;
 use ansi_escape::*;
@@ -14,7 +15,7 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help2(args: &Vec<String>) {
+pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Set up.
 
     let mut args = args.clone();
@@ -247,7 +248,11 @@ pub fn help2(args: &Vec<String>) {
              2. If enclone crashes.  We always need to see the output you got.  Often we will \
              need data to reproduce the problem.  Please also send this version information:\n",
         );
-        println!("{} = {}.\n", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+        if !ctl.gen_opt.stable_doc {
+            println!("{} = {}.\n", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+        } else {
+            println!("(your enclone version information will be printed here).\n");
+        }
         print(
             "3. If you're sure that enclone made a mistake.  Usually an actionable mistake is \
              exhibited via a single clonotype or two, along with your explanation as to why it's \

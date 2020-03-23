@@ -453,7 +453,7 @@ problems, questions or comments (see below).  If you prefer you may submit a Git
 
 2. If enclone crashes.  We always need to see the output you got.  Often we will need data to
 reproduce the problem.  Please also send this version information:
-0.1.0 = dj/14:3bd25a7+, release, linux [x86_64].
+(your enclone version information will be printed here).
 
 3. If you're sure that enclone made a mistake.  Usually an actionable mistake is exhibited via a
 single clonotype or two, along with your explanation as to why it's wrong!  And we may need the
@@ -1465,7 +1465,8 @@ this is not an officially supported Cell Ranger configuration.
 
 This version of enclone has been provided under a non-disclosure agreement,
 however once enclone has officially launched, you will be able to cite this version as:
-[01;32m10x Genomics, https://github.com/10XGenomics/enclone, version dj/14:3bd25a7+.
+[01;32m10x Genomics, https://github.com/10XGenomics/enclone,
+(your enclone version information will be printed here).
 [01;32m[0mAt some point subsequent to that, there will be a white paper to which you can refer, in addition
 to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide the arguments
 that you used when you ran enclone and indicate the version of Cell Ranger that you used to

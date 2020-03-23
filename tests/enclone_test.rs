@@ -361,6 +361,7 @@ fn test_help_output() {
     let mut new = Command::new("target/release/enclone");
     let mut new = new.arg("help");
     new = new.arg("all");
+    new = new.arg("STABLE_DOC");
     let new = new
         .arg("FORCE_EXTERNAL")
         .output()
@@ -368,8 +369,8 @@ fn test_help_output() {
     let new2 = stringme(&new.stdout);
     if old != new2 {
         eprintln!(
-            "\nYou need to update help output by typing \"enclone help all > help.all\" in\n\
-                the src directory, assuming that the change is expected.\n"
+            "\nYou need to update help output by typing \"enclone help all STABLE_DOC> help.all\" \
+                in\nthe src directory, assuming that the change is expected.\n"
         );
         std::process::exit(1);
     }
