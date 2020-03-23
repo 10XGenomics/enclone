@@ -369,7 +369,7 @@ fn test_help_output() {
     let new2 = stringme(&new.stdout);
     if old != new2 {
         eprintln!(
-            "\nYou need to update help output by typing \"enclone help all STABLE_DOC> help.all\" \
+            "\nYou need to update help output by typing \"enclone help all STABLE_DOC > help.all\" \
                 in\nthe src directory, assuming that the change is expected.\n"
         );
         std::process::exit(1);

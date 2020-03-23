@@ -110,9 +110,9 @@ pub fn help3(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
         begin_doc!("input_tech");
-        println!("");
+        print("\n");
         bold!();
-        println!("information about providing input to enclone (technical notes)\n");
+        print("information about providing input to enclone (technical notes)\n\n");
         end_escape!();
         print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
@@ -144,7 +144,7 @@ pub fn help3(args: &Vec<String>) {
         doc!("raw_feature_bc_matrix/features.tsv.gz", "GEX");
         doc!("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         print_tab2(&rows);
-        println!("\nThe exact files that are used could be changed in the future.\n");
+        print("\nThe exact files that are used could be changed in the future.\n\n");
         // end_escape!();
         print(
             "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
@@ -162,9 +162,9 @@ pub fn help3(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || help_all {
         begin_doc!("parseable");
-        println!("");
+        print("\n");
         bold!();
-        println!("parseable output");
+        print("parseable output\n");
         end_escape!();
         print(
             "\nThe standard output of enclone is designed to be read by humans, but is not \
@@ -249,16 +249,16 @@ pub fn help3(args: &Vec<String>) {
         println!("{}\n", strme(&log));
         rows.clear();
         bold!();
-        println!("1. per clonotype group fields\n");
+        print("1. per clonotype group fields\n\n");
         end_escape!();
         doc!("group_id", "identifier of clonotype group - 0,1, ...");
         ldoc!("group_ncells", "total number of cells in the group");
         print_tab2(&rows);
-        println!("");
+        print("\n");
 
         rows.clear();
         bold!();
-        println!("2. per clonotype fields\n");
+        print("2. per clonotype fields\n\n");
         end_escape!();
         doc!(
             "clonotype_id",
@@ -267,7 +267,7 @@ pub fn help3(args: &Vec<String>) {
         ldoc!("clonotype_ncells", "total number of cells in the clonotype");
         ldoc!("nchains", "total number of chains in the clonotype");
         print_tab2(&rows);
-        println!("");
+        print("\n");
 
         rows.clear();
         print(
@@ -302,7 +302,7 @@ pub fn help3(args: &Vec<String>) {
         doc!("", "all of these are comma-separated lists");
         doc!("", "but differ from the donor ref");
         print_tab2(&rows);
-        println!("");
+        print("\n");
 
         rows.clear();
         print("\\bold{4. per exact subclonotype fields}\n\n");
@@ -330,14 +330,14 @@ pub fn help3(args: &Vec<String>) {
             "\\ext"
         );
         print_tab2(&rows);
-        println!("");
+        print("\n");
 
         rows.clear();
         print(
             "\\bold{5. per chain, per exact subclonotype fields, where <i> is 1,2,... \
              (see above)}\n\n",
         );
-        println!("[all apply to chain i of a particular exact clonotype]\n");
+        print("[all apply to chain i of a particular exact clonotype]\n\n");
         doc!("vj_seq<i>", "DNA sequence of V..J");
         doc!("seq<i>", "full DNA sequence");
         doc!(
@@ -380,7 +380,7 @@ pub fn help3(args: &Vec<String>) {
         );
         doc!("See \"enclone help cvars\".", "\\ext");
         print_tab2(&rows);
-        println!("");
+        print("\n");
         if !help_all {
             std::process::exit(0);
         }
@@ -392,14 +392,14 @@ pub fn help3(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || help_all {
         begin_doc!("filter");
-        println!("");
+        print("\n");
 
         // intro
 
         bold!();
-        println!("clonotype filtering options\n");
+        print("clonotype filtering options\n\n");
         end_escape!();
-        println!("these options cause only certain clonotypes to be printed\n");
+        print("these options cause only certain clonotypes to be printed\n\n");
 
         // doc *CELLS
 
@@ -505,7 +505,7 @@ pub fn help3(args: &Vec<String>) {
 
         // footnote for CDR3
 
-        println!("* Examples of how to specify CDR3:\n");
+        print("* Examples of how to specify CDR3:\n\n");
         let mut rows = Vec::<Vec<String>>::new();
         rows.push(vec![
             "CDR3=CARPKSDYIIDAFDIW".to_string(),
@@ -522,9 +522,9 @@ pub fn help3(args: &Vec<String>) {
         log.clear();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
-        println!(
+        print(
             "Note that double quotes should be used if the pattern \
-             contains characters other than letters.\n"
+             contains characters other than letters.\n\n",
         );
         println!(
             "A gentle introduction to regular expressions may be found at\n\
