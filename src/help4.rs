@@ -478,9 +478,9 @@ pub fn help4(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
         begin_doc!("lvars");
-        println!("");
+        print("\n");
         bold!();
-        println!("lead column options\n");
+        print("lead column options\n\n");
         end_escape!();
         println!(
             "These options define lead variables, which correspond to columns that \

@@ -251,7 +251,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         if !ctl.gen_opt.stable_doc {
             println!("{} = {}.\n", env!("CARGO_PKG_VERSION"), VERSION_STRING);
         } else {
-            println!("(your enclone version information will be printed here).\n");
+            print("(your enclone version information will be printed here).\n\n");
         }
         print(
             "3. If you're sure that enclone made a mistake.  Usually an actionable mistake is \
@@ -301,9 +301,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
         begin_doc!("plot");
-        println!("");
+        print("\n");
         bold!();
-        println!("plotting clonotypes\n");
+        print("plotting clonotypes\n\n");
         end_escape!();
         print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
@@ -423,7 +423,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         );
         print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
         bold!();
-        println!("META=filename");
+        print("META=filename\n");
         end_escape!();
         print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \

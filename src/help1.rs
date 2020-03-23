@@ -141,7 +141,7 @@ pub fn help1(args: &Vec<String>) {
         || help_all
     {
         if help_all {
-            println!("");
+            print("\n");
         }
         begin_doc!("");
         print(
@@ -199,12 +199,12 @@ pub fn help1(args: &Vec<String>) {
         begin_doc!("main");
         print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
         print_enclone(plain);
-        print!(".  The mission of ");
+        print(".  The mission of ");
         print_enclone(plain);
-        println!(" is to:\n");
+        print(" is to:\n\n");
         bold!();
-        println!("  Find and display the clonotypes within single cell VDJ datasets:");
-        println!("  groups of cells having the same fully rearranged common ancestor.\n");
+        print("  Find and display the clonotypes within single cell VDJ datasets:\n");
+        print("  groups of cells having the same fully rearranged common ancestor.\n\n");
         end_escape!();
         print(
             "This help page catalogs all the enclone help pages.  We strongly \
@@ -315,9 +315,9 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
         begin_doc!("quick");
-        println!("");
+        print("\n");
         bold!();
-        println!("quick guide to getting started\n");
+        print("quick guide to getting started\n\n");
         end_escape!();
         print(
             "Just type this:\n\n\
@@ -352,9 +352,9 @@ pub fn help1(args: &Vec<String>) {
         // Start.
 
         begin_doc!("how");
-        println!("");
+        print("\n");
         bold!();
-        println!("information about how enclone works\n");
+        print("information about how enclone works\n\n");
         end_escape!();
         print(
             "The goal of enclone is to find and display the clonotypes within single cell \
@@ -490,9 +490,9 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "command") || help_all {
         begin_doc!("command");
-        println!("");
+        print("\n");
         bold!();
-        println!("information about enclone command-line argument processing\n");
+        print("information about enclone command-line argument processing\n\n");
         end_escape!();
         print("\\bold{1. Order of processing}\n\n");
         print(
@@ -547,7 +547,7 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || help_all {
         begin_doc!("glossary");
-        println!("");
+        print("\n");
 
         // intro
 
