@@ -1,0 +1,1477 @@
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help 
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+Welcome to enclone!
+
+The purpose of this first page is to help you make sure that you're set up properly
+to run enclone.  PLEASE READ!
+
+(for the main help page, please type instead: enclone help main)
+
+
+Here we go through several setup tests.  If you have any problem that you can't
+resolve, please email us at enclone@10xgenomics.com.
+
+
+1. Are you using a fixed width font?
+Look at this:
+A FAT BROWN CAT JUMPED OVER THE WALL
+||||||||||||||||||||||||||||||||||||
+Do those two lines end at the same position?  If not, you need to switch your font.
+
+
+2. Is your terminal window wide enough to see the help pages?
+Your terminal needs to be at least 100 columns wide.  Look at this:
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+Does it appear as a single line?  If not, please widen your window.
+
+
+3. Can your terminal display box characters?
+Look at this:
+┌────────┬─────────┐
+│banana  │  peel   │
+├────────┼─────────┤
+│oops    │  slipped│
+└────────┴─────────┘
+Do you see a neat rectangle composed of four rectangles with words inside them?
+If not, something is wrong with your terminal!
+
+4. Can your terminal correctly display ANSI escape sequences?
+The following word should be [01mbold[0m.  The following word should be [38;5;12mblue[0m.
+If that doesn't make sense, or is messed up, something is wrong, and you have two options:
+(a) seek help to fix your terminal window
+(b) turn off escape sequences by adding PLAIN to every enclone command, or set
+the environment variable ENCLONE_PLAIN.
+But that should be only a last resort.
+
+5. Can your terminal correctly display unicode characters?
+Do you see a centered dot here • ?
+If not, your terminal has a problem!
+
+6. Does this entire help page appear at once in your terminal window?
+If not, please increase the number of rows in your window to 56.
+
+
+If you go through all those tests and everything worked, you should be good to go!
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help main
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+This is version 0.1.0 (beta) of [01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m.  The mission of [01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m is to:
+
+[01m  Find and display the clonotypes within single cell VDJ datasets:
+  groups of cells having the same fully rearranged common ancestor.
+
+[0mThis help page catalogs all the enclone help pages.  We strongly recommend studying at least those
+in [01;31mred[0m below.  Pages fit in 100 wide x 56 high windows, except those labeled "long" or "wide".
+
+[01m[38;5;12menclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe,[0m
+[01m[38;5;12mwhich enclone is integrated with.[0m  enclone uses output from Cell Ranger version [01m[01;31m≥ 3.1.[0m
+
+┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
+│[01mcommand[0m                  │  [01mwhat it provides[0m                                                   │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[01;31menclone help[0m             │  [01;31mhelp to test for correct setup[0m                                     │
+│[01;31menclone[0m                  │  [01;31mwhat you see here: guide to all the doc[0m                            │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[01;31menclone help quick[0m       │  [01;31mquick guide to getting started[0m                                     │
+│[01;31menclone help how[0m         │  [01;31mhow enclone works (long)[0m                                           │
+│[01;31menclone help command[0m     │  [01;31minfo about enclone command line argument processing[0m                │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[01;31menclone help glossary[0m    │  [01;31mglossary of terms used by enclone, and conventions[0m                 │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[01;31menclone help example1[0m    │  [01;31mexplanation of an example[0m                                          │
+│[01;31menclone help example2[0m    │  [01;31mexample showing gene expression and feature barcodes (wide)[0m        │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[01;31menclone help support[0m     │  [01;31mhow we can help, enclone@10xgenomics.com[0m                           │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│enclone help input       │  how to provide input to enclone (long)                             │
+│enclone help input_tech  │  how to provide input to enclone (technical notes)                  │
+│enclone help parseable   │  parseable output (long)                                            │
+│enclone help plot        │  generate a honeycomb plot showing clonotypes                       │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│enclone help filter      │  clonotype filtering options, scanning for feature enrichment (long)│
+│enclone help special     │  special filtering options (long)                                   │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│enclone help lvars       │  lead column options (long)                                         │
+│enclone help cvars       │  per chain column options (long)                                    │
+│enclone help amino       │  per chain column options for amino acids                           │
+│enclone help display     │  other clonotype display options                                    │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│enclone help indels      │  insertion and deletion handling                                    │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│enclone help color       │  how enclone uses color, and related things                         │
+│enclone help ideas       │  ideas for features that might be implemented                       │
+│enclone help faq         │  frequently asked questions (long)                                  │
+│enclone help developer   │  a few things for developers                                        │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│[38;5;36menclone help all[0m         │  [38;5;36mconcatenation of all the help pages (long, wide)[0m                   │
+│[38;5;36m[0m                         │  [38;5;36m███ USE THIS TO SEARCH ALL THE HELP PAGES! ███[0m                     │
+└─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+Additional documentation may be found at [01;32mhttps://github.com/10XDev/enclone/blob/master/README.md[0m.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help quick
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mquick guide to getting started
+
+[0mJust type this:
+
+[01menclone BCR=p[0m
+
+where [01mp[0m is the path to your Cell Ranger VDJ directory.
+
+Substitute [01mTCR[0m if that's what you've got.
+
+This will show you all the clonotypes, in descending order by number of cells.
+
+You'll need to make your window wide enough so that lines are not folded.  This depends on the
+dataset.
+
+Only one page of output is shown at a time.  To navigate within the full output, use the space bar
+to go forward and the b key to go backward.
+
+See [01menclone help example1[0m for a detailed guide to how to read the enclone output.  A few key
+things you should know:
+
+1. You'll see numbers near the top.  These are amino acid position numbers, and
+   they read downwards.  Numbering starts at the start codon, numbered zero.
+
+2. Each numbered line represents an exact subclonotype: cells having identical V(D)J transcripts.
+
+3. By default, you'll see data in amino acid space.  Only "interesting" amino acids are shown.
+
+Please read on to learn more!
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help how
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01minformation about how enclone works
+
+[0mThe goal of enclone is to find and display the clonotypes within single cell VDJ datasets: groups
+of cells having the same fully rearranged common ancestor.
+
+enclone provides the foundation for fully understanding each cell's antigen affinity and the
+evolutionary relationship between cells within a sample.  This starts with, for each cell, [01mthe
+full length sequence of all its VDJ receptor chains[0m.  Such data may be obtained using the 10x
+Genomics immune profiling platform.
+
+For this, there are fundamental challenges:
+
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│1. It is extremely easy to get false positives: the incorrect appearance that two cells have a    │
+│common ancestor.                                                                                  │
+│                                                                                                  │
+│2. Because of somatic hypermutation in B cells, it can be difficult to know that two B cells share│
+│a common ancestor.                                                                                │
+│                                                                                                  │
+│3. There is always some background noise, e.g. from ambient mRNA.  When building large clonotypes,│
+│this noise tends to pile up, yielding ectopic chains, i.e. chains within a clonotype that are     │
+│artifacts and do not represent true biology.                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+To address these challenges, the enclone algorithm has several steps, which we outline:
+
+[01m[01;31m1[0m.  Input data.  enclone gets its information from the file all_contig_annotations.json that is
+produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated V and J
+segment.  The V segment alignment may have a single indel whose length is divisible by three, and
+in that case, the V reference sequence is edited either to delete or insert sequence.  In the
+insertion case, the bases are taken from the contig.  These indels are noted in the enclone
+output.
+
+[01m[01;31m2[0m.  Exact subclonotypes.  enclone groups cells into exact subclonotypes, provided that they have
+the same number of chains, identical V..J sequences, identical C segment assignments, and the same
+distance between the J stop and the C start (which is usually zero).
+
+[01m[01;31m3[0m.  Finding the germline sequences.  For samples from a given donor, enclone derives "donor
+reference sequences" for the V chains present in the donor's genome.  This is powerful, even
+though based on imperfect information.  V segments vary in their expression frequency and thus the
+more cells which are present, the more complete the information will be.  It is also not possible
+to accurately determine the last ~15 bases in a V chain from transcript data because these bases
+are mutated during recombination.
+
+[01m[01;31m4[0m.  What joins are tested.  Pairs of exact subclonotypes are considered for joining, as described
+below.  This process only considers exact subclonotypes have two or three chains.  There is some
+separate joining for the case of one chain.  Exact subclonotypes having four chains are not joined
+at present.  These cases are clearly harder because these exact subclonotypes are highly enriched
+for cell doublets, which we discard if we can identify as such.
+
+[01m[01;31m5[0m.  Initial grouping.  For each pair of exact subclonotypes, and for each pair of chains in each
+of the two exact subclonotypes, for which V..J has the same length for the corresponding chains,
+and the CDR3 segments have the same length for the corresponding chains, enclone considers joining
+the exact subclonotypes into the same clonotype.
+
+[01m[01;31m6[0m.  Error bounding.  To proceed, as a minimum requirement, there must be at most 50 total
+mismatches between the two exact subclonotypes, within the given two V..J segments.
+
+[01m[01;31m7[0m.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
+for two exact subclonotypes, common mutations from the reference sequence, using the donor
+reference for the V segments and the universal reference for the J segments.  Shared mutations are
+supposed to be somatic hypermutations, that would be evidence of common ancestry.  By using the
+donor reference sequences, most shared germline mutations are excluded, and this is critical for
+the algorithm's success.
+
+[01m[01;31m8[0m.  Are there enough shared mutations?  We find the probability p that “the shared mutations occur
+by chance”.  More specifically, given d shared mutations, and k total mutations (across the two
+cells), we compute the probability p that an sample with replacement of k items from a set whose
+size is the total number of bases in the V..J segments, yields at most k – d distinct elements. 
+The probability is an approximation, for the method please see
+[01;32mhttps://docs.rs/stirling_numbers/0.1.0/stirling_numbers[0m.
+
+[01m[01;31m9[0m.  Are there too many CDR3 mutations?  Next, let N be "the number of DNA sequences that differ
+from the given CDR3 sequences by at most the number of observed differences".  More specifically,
+if cd is the number of differences between the given CDR3 nucleotide sequences, and n is the total
+length in nucleotides of the CDR3 sequences (for the two chains), we compute the total number N of
+strings of length n that are obtainable by perturbing a given string of length n, which is
+sum( choose(n,m), m = 0..=cd) ).
+
+[01m[01;31m10[0m.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
+few CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, and the
+lower N is, the more likely it is that the shared mutations represent bona fide shared ancestry. 
+Accordingly, the smaller p*N is, the more likely it is that two cells lie in the same true
+clonotype.  To join two cells into the same clonotype, we require that the bound p*n ≤ C is
+satisfied, where C is the constant 1,000,000.  This constant was arrived at by empirically
+balancing sensitivity and specificity across a large collection of datasets.  See discussion of
+performance below.
+
+[01m[01;31m11[0m.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
+special" for a description of the filters.
+
+We are actively working to improve the algorithm.  To test the performance of the current version,
+we combined data from 443 BCR libraries from 30 donors, which yielded [01m[01;31m9573[0m clonotypes having at
+least two cells each, of which [01m[01;31m15 (0.16%)[0m contained data from multiple donors.  These are errors.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help command
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01minformation about enclone command-line argument processing
+
+[0m[01m1. Order of processing[0m
+
+• Before processing its command line, enclone first checks for environment
+variables of the form [01mENCLONE_<x>[0m.  These are converted into command-line arguments.  You can set
+any command-line argument this way.  The reason why you might want to use this feature is if you
+find yourself using the same command-line option over and over, and it is more convenient to set
+it once as an environment variable.
+• For example, setting the environment variable [01mENCLONE_PRE[0m to [01m/Users/me/enclone_data[0m is
+equivalent to providing the command-line argument [01mPRE=/Users/me/enclone_data[0m.
+• After checking environment variables, arguments on the command line are read from left to right;
+if an argument name is repeated, only the rightmost value is used, except as noted specifically in
+the documentation.
+
+[01m2. Color[0m
+
+[01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m uses ANSI escape codes for color and bolding, frivolously, for emphasis, and more
+importantly for amino acids, to represent different codons.  This is done automatically but you
+can turn it off....
+
+[01m[01;31mPLEASE READ THIS:[0m
+
+You can turn off escape codes by adding [01mPLAIN[0m to any command.  Use this if you want to peruse
+output using a text editor which does not grok the escape codes.  However some things will not
+make sense without color.
+
+[01m3. Paging[0m
+
+• enclone automatically pipes its output to [01mless -R -F -X[0m.
+• The effect of this will be that you'll see only the first screen of output.  You can then use
+the spacebar to go forward, b to go backward, and q to quit.  The [01m-R[0m option causes escape
+characters to be correctly displayed, the [01m-F[0m option causes an automatic exit if output fits on a
+single screen, and the [01m-X[0m option prevents output from being sent to the "alternate screen" under
+certain platform/version combinations.
+• Type [01mman less[0m if you need more information.
+• If for whatever reason you need to turn off output paging, add the argument [01mNOPAGER[0m to the
+enclone command.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help glossary
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mglossary of terms used by enclone
+
+[0m┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│V..J                │  the full sequence of a V(D)J transcript, from the beginning of the V       │
+│                    │  segment to the end of the J segment; this sequence begins with a stop codon│
+│                    │  and ends with a partial codon (its first base)                             │
+│CDR3                │  The terms CDR3 and junction are commonly mistaken and often used           │
+│                    │  interchangeably.  In enclone's nomenclature, "CDR3" actually refers to the │
+│                    │  junction (the CDR3 loop plus the canonical C and W/F at the N and C termini│
+│                    │  respectively).                                                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│clonotype           │  all the cells descended from a single fully rearranged T or B cell         │
+│                    │  (approximated computationally)                                             │
+│exact subclonotype  │  all cells having identical transcripts[01m[01;31m ○[0m                                   │
+│                    │  (every clonotype is a union of exact subclonotypes)                        │
+│clone               │  a cell in a clonotype, or in an exact subclonotype                         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│onesie              │  a clonotype or exact subclonotype having exactly one chain                 │
+│twosie              │  a clonotype or exact subclonotype having exactly two chains                │
+│threesie            │  a clonotype or exact subclonotype having exactly three chains;             │
+│                    │  these frequently represent true biological events, arising from expression │
+│                    │  of both alleles                                                            │
+│foursie             │  a clonotype or exact subclonotype having exactly four chains;              │
+│                    │  these very rarely represent true biological events                         │
+│moresie             │  a clonotype having more than four chains;                                  │
+│                    │  these sad clonotypes do not represent true biological events               │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│donor               │  an individual from whom samples are obtained                               │
+│sample              │  a tube of cells from a donor, from a particular tissue at a                │
+│                    │  particular point in time, and possibly enriched for particular cells       │
+│cell group          │  an aliquot from a sample, presumed to be a random draw                     │
+│dataset             │  all sequencing data obtained from a particular library type                │
+│                    │  (e.g. TCR or BCR or GEX or FB), from one cell group, processed by running  │
+│                    │  through the Cell Ranger pipeline                                           │
+└────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+
+[01m[01;31m○[0m The exact requirements for being in the same exact subclonotype are that cells:
+• have the same number of productive contigs identified
+• that these have identical bases within V..J
+• that they are assigned the same constant region reference sequences
+• and that the difference between the V stop and the C start is the same
+  (noting that this difference is nearly always zero).
+Note that we allow mutations within the 5'-UTR and constant regions.
+
+[01mconventions
+
+[0m• When we refer to "V segments", we always include the leader segment.
+• Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with
+chains within a clonotype, however DNA and amino-acid positions are numbered starting at zero.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help example1
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+Suppose you have placed the datasets that enclone comes with in the
+directory /users/jdoe/enclone_data.  Then you can run this command:
+
+% enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW
+
+[01m[38;5;27m[1] GROUP = 1 CLONOTYPES = 13 CELLS[0m
+
+[1.1] CLONOTYPE = 13 CELLS
+┌───────────┬───────────────────────────────────────────────┬──────────────────────────────┐
+│           │  [01mCHAIN 1[0m                                      │  CHAIN 2                     │
+│           │  [01m181.1.1|IGHV4-30-2 ◼ 53|IGHJ3[0m                │  254|IGKV1D-39 ◼ 218|IGKJ5   │
+│           ├───────────────────────────────────────────────┼──────────────────────────────┤
+│           │              1 1111111111111111               │  1 111111111111              │
+│           │  2224556788990 1111122222222223               │  0 011111111112              │
+│           │  0571380317346 5678901234567890               │  6 901234567890              │
+│           │                ══════CDR3══════               │    ════CDR3════              │
+│reference  │  [01m[38;5;25mL[0m[38;5;36mS[0m[01m[38;5;175mS[0m[01m[38;5;75mA[0m[38;5;36mS[0m[38;5;36mR[0m[38;5;178mP[0m[01m[38;5;175mH[0m[01m[38;5;175mP[0m[01m[38;5;75mV[0m[01m[38;5;166mR[0m[38;5;36mS[0m[38;5;178mT[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[01m[38;5;166mW[0m               │  [01m[38;5;175mT[0m [38;5;178mC[0m[01m[38;5;166mQ[0m[01m[38;5;25mQ[0m◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  [01m[38;5;166mV[0m[01m[38;5;75mS[0m[38;5;178mP[0m[01m[38;5;175mT[0m[01m[38;5;175mY[0m[01m[38;5;175mR[0m[38;5;178mH[0m[01m[38;5;175mY[0m[01m[38;5;175mP[0m[38;5;178mV[0m[01m[38;5;25mT[0m[01m[38;5;166mS[0m[01m[38;5;175mT[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[01m[38;5;166mW[0m               │  [01m[38;5;175mT[0m [38;5;178mC[0m[01m[38;5;166mQ[0m[01m[38;5;25mQ[0m◦◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────┼──────────────────────────────┤
+│[01m#   n      [0m│[01m  ........x.... ..............x.     u  const  [0m│[01m  x ......x.....      u  const[0m│
+│1  10      │  [01m[38;5;166mV[0m[01m[38;5;75mS[0m[38;5;178mP[0m[01m[38;5;175mT[0m[01m[38;5;175mY[0m[01m[38;5;175mR[0m[38;5;178mH[0m[01m[38;5;175mY[0m[01m[38;5;175mP[0m[38;5;178mV[0m[01m[38;5;25mT[0m[01m[38;5;166mS[0m[01m[38;5;175mT[0m [38;5;178mC[0m[38;5;36mA[0m[38;5;178mR[0m[01m[38;5;166mR[0m[01m[38;5;175mY[0m[01m[38;5;166mF[0m[01m[38;5;75mG[0m[38;5;36mV[0m[01m[38;5;166mV[0m[01m[38;5;75mA[0m[38;5;36mD[0m[01m[38;5;75mA[0m[01m[38;5;25mF[0m[38;5;36mD[0m[01m[38;5;175mI[0m[01m[38;5;166mW[0m  4285  IGHM   │  [01m[38;5;175mT[0m [38;5;178mC[0m[01m[38;5;166mQ[0m[01m[38;5;25mQ[0m[38;5;178mS[0m[01m[38;5;175mY[0m[38;5;178mS[0m[38;5;178mT[0m[38;5;36mP[0m[01m[38;5;175mP[0m[01m[38;5;175mI[0m[38;5;178mT[0m[01m[38;5;166mF[0m  11793  IGKC │
+│2   2      │  [01m[38;5;166mV[0m[01m[38;5;75mS[0m[38;5;178mP[0m[01m[38;5;175mT[0m[01m[38;5;175mY[0m[01m[38;5;175mR[0m[38;5;178mH[0m[01m[38;5;175mY[0m[01m[38;5;75mS[0m[38;5;178mV[0m[01m[38;5;25mT[0m[01m[38;5;166mS[0m[01m[38;5;175mT[0m [38;5;178mC[0m[38;5;36mA[0m[38;5;178mR[0m[01m[38;5;166mR[0m[01m[38;5;175mY[0m[01m[38;5;166mF[0m[01m[38;5;75mG[0m[38;5;36mV[0m[01m[38;5;166mV[0m[01m[38;5;75mA[0m[38;5;36mD[0m[01m[38;5;75mA[0m[01m[38;5;25mF[0m[38;5;36mD[0m[01m[38;5;75mI[0m[01m[38;5;166mW[0m  4383  IGHM   │  [01m[38;5;75mA[0m [38;5;178mC[0m[01m[38;5;166mQ[0m[01m[38;5;25mQ[0m[38;5;178mS[0m[01m[38;5;175mY[0m[38;5;178mS[0m[01m[38;5;25mP[0m[38;5;36mP[0m[01m[38;5;175mP[0m[01m[38;5;175mI[0m[38;5;178mT[0m[01m[38;5;166mF[0m  13922  IGKC │
+│3   1      │  [01m[38;5;166mV[0m[01m[38;5;75mS[0m[38;5;178mP[0m[01m[38;5;175mT[0m[01m[38;5;175mY[0m[01m[38;5;175mR[0m[38;5;178mH[0m[01m[38;5;175mY[0m[01m[38;5;175mP[0m[38;5;178mV[0m[01m[38;5;25mT[0m[01m[38;5;166mS[0m[01m[38;5;175mT[0m [38;5;178mC[0m[38;5;36mA[0m[38;5;178mR[0m[01m[38;5;166mR[0m[01m[38;5;175mY[0m[01m[38;5;166mF[0m[01m[38;5;75mG[0m[38;5;36mV[0m[01m[38;5;166mV[0m[01m[38;5;75mA[0m[38;5;36mD[0m[01m[38;5;75mA[0m[01m[38;5;25mF[0m[38;5;36mD[0m[01m[38;5;175mI[0m[01m[38;5;166mW[0m     5  IGHM   │                              │
+└───────────┴───────────────────────────────────────────────┴──────────────────────────────┘
+
+This shows an invocation of enclone that takes one dataset as input and exhibits
+all clonotypes for which some chain has the given CDR3 sequence.
+
+What you see here is a compressed view of the entire information encoded in the
+full length transcripts of the 13 cells comprising this clonotype: every base!
+There is a lot to explain about the compression, so please read carefully.
+
+• Clonotypes are grouped.  Here we see just one group having one clonotype in it.
+• This clonotype has three exact subclonotypes in it, the first of which has 10 cells.
+• This clonotype has two chains.  The reference segments for them are shown at the top.
+• The notation 181.1.1 says that this V reference sequence is an alternate allele
+  derived from the universal reference sequence (contig in the reference file)
+  numbered 181, that is from donor 1 ("181.1") and is alternate allele 1 for that donor.
+• Sometimes chains are missing from exact subclonotypes.
+• Amino acids are assigned different colors depending on which codon they represent.
+• Numbered columns show the state of particular amino acids, e.g. the first column is for amino
+  acid 20 in chain 1 (where 0 is the start codon).  The numbers read vertically, downward!
+• Universal ref: state for the contig in the reference file.
+• Donor ref: state for the inferred donor germline sequence.
+• ◦s are "holes" in the recombined region where the reference doesn't make sense.
+• The "dot and x" line has xs where there's a difference *within* the clonotype.
+• Amino acids are shown if they differ from the universal reference or are in the CDR3.
+• u = median UMI count for a chain in the exact subclonotype.
+• const = const region name for a chain in the exact subclonotype.
+
+The view you see here is configurable: see the documentation at [01menclone help lvars[0m and [01menclone
+help cvars[0m.  See also [01menclone help command[0m for how to remove the [01mPRE[0m part of the command.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help example2
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+Suppose you have placed the datasets that enclone comes with in the
+directory /users/jdoe/enclone_data.  Then you can run this command:
+
+% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW
+
+[01m[38;5;27m[1] GROUP = 1 CLONOTYPES = 5 CELLS[0m
+
+[1.1] CLONOTYPE = 5 CELLS
+┌────────────────────────────────────┬───────────────────────────────────────┬─────────────────────────────┐
+│                                    │  [01mCHAIN 1[0m                              │  CHAIN 2                    │
+│                                    │  [01m98|IGHV2-5 ◼ 57|IGHJ5[0m                │  352|IGLV3-1 ◼ 314|IGLJ2    │
+│                                    ├───────────────────────────────────────┼─────────────────────────────┤
+│                                    │    11111111111111111111               │    11111111111              │
+│                                    │  8 11111222222222233333               │  6 00000111111              │
+│                                    │  5 56789012345678901234               │  2 56789012345              │
+│                                    │    ════════CDR3════════               │    ════CDR3═══              │
+│reference                           │  [01m[38;5;25mS[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[01m[38;5;166mW[0m               │  [01m[38;5;166mV[0m [38;5;178mC[0m[01m[38;5;25mQ[0m[38;5;36mA[0m[01m[38;5;166mW[0m[01m[38;5;25mD[0m◦◦◦◦◦◦              │
+│donor ref                           │  [01m[38;5;25mS[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[01m[38;5;166mW[0m               │  [01m[38;5;166mV[0m [38;5;178mC[0m[01m[38;5;25mQ[0m[38;5;36mA[0m[01m[38;5;166mW[0m[01m[38;5;25mD[0m◦◦◦◦◦◦              │
+├────────────────────────────────────┼───────────────────────────────────────┼─────────────────────────────┤
+│[01m#  n    gex  IGHV2-5_g_μ  CD4_ab_μ  [0m│[01m  x ....................     u  const  [0m│[01m  . ...........      u  const[0m│
+│1  3   3001          613        64  │  [01m[38;5;25mS[0m [38;5;178mC[0m[01m[38;5;25mA[0m[38;5;36mL[0m[38;5;36mM[0m[01m[38;5;75mG[0m[38;5;178mT[0m[01m[38;5;75mY[0m[38;5;178mC[0m[38;5;178mS[0m[01m[38;5;166mG[0m[38;5;36mD[0m[01m[38;5;166mN[0m[01m[38;5;75mC[0m[01m[38;5;175mY[0m[38;5;36mS[0m[01m[38;5;166mW[0m[01m[38;5;166mF[0m[01m[38;5;25mD[0m[01m[38;5;25mP[0m[01m[38;5;166mW[0m   592  IGHM   │  [38;5;178mV[0m [38;5;178mC[0m[01m[38;5;25mQ[0m[38;5;36mA[0m[01m[38;5;166mW[0m[01m[38;5;25mD[0m[01m[38;5;25mS[0m[01m[38;5;25mS[0m[38;5;178mV[0m[01m[38;5;166mV[0m[38;5;36mV[0m[01m[38;5;166mF[0m   2995  IGLC2│
+│2  1  10042         2179        29  │  [01m[38;5;25mS[0m [38;5;178mC[0m[01m[38;5;25mA[0m[38;5;36mL[0m[38;5;36mM[0m[01m[38;5;75mG[0m[38;5;178mT[0m[01m[38;5;75mY[0m[38;5;178mC[0m[38;5;178mS[0m[01m[38;5;166mG[0m[38;5;36mD[0m[01m[38;5;166mN[0m[01m[38;5;75mC[0m[01m[38;5;175mY[0m[38;5;36mS[0m[01m[38;5;166mW[0m[01m[38;5;166mF[0m[01m[38;5;25mD[0m[01m[38;5;25mP[0m[01m[38;5;166mW[0m  6112  IGHG1  │  [38;5;178mV[0m [38;5;178mC[0m[01m[38;5;25mQ[0m[38;5;36mA[0m[01m[38;5;166mW[0m[01m[38;5;25mD[0m[01m[38;5;25mS[0m[01m[38;5;25mS[0m[38;5;178mV[0m[01m[38;5;166mV[0m[38;5;36mV[0m[01m[38;5;166mF[0m  15203  IGLC2│
+│3  1   5025         1095        33  │  [38;5;178mT[0m [38;5;178mC[0m[01m[38;5;25mA[0m[38;5;36mL[0m[38;5;36mM[0m[01m[38;5;75mG[0m[38;5;178mT[0m[01m[38;5;75mY[0m[38;5;178mC[0m[38;5;178mS[0m[01m[38;5;166mG[0m[38;5;36mD[0m[01m[38;5;166mN[0m[01m[38;5;75mC[0m[01m[38;5;175mY[0m[38;5;36mS[0m[01m[38;5;166mW[0m[01m[38;5;166mF[0m[01m[38;5;25mD[0m[01m[38;5;25mP[0m[01m[38;5;166mW[0m  4045  IGHG1  │  [38;5;178mV[0m [38;5;178mC[0m[01m[38;5;25mQ[0m[38;5;36mA[0m[01m[38;5;166mW[0m[01m[38;5;25mD[0m[01m[38;5;25mS[0m[01m[38;5;25mS[0m[38;5;178mV[0m[01m[38;5;166mV[0m[38;5;36mV[0m[01m[38;5;166mF[0m   7025  IGLC2│
+└────────────────────────────────────┴───────────────────────────────────────┴─────────────────────────────┘
+
+This shows an invocation of enclone that takes VDJ, gene expression and feature barcode data as
+input, and exhibits all clonotypes for which some chain has the given CDR3 sequence.  As well the
+command requests UMI (molecule) counts for one hand-selected gene and one antibody.  You can use
+any gene(s) you like and any antibodies for which you have feature barcodes.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help support
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01;31menclone (beta) is provided as an open-source tool for use by the community.  Although we cannot
+guarantee full support for the software, please email us at enclone@10xgenomics.com if you have
+problems, questions or comments (see below).  If you prefer you may submit a GitHub issue.[0m
+
+[38;5;12mPlease note that syntax and features in enclone will change over time.  See[0m
+[01;32mhttps://github.com/10XDev/enclone/blob/master/HISTORY.md[0m [38;5;12mfor the history of what was changed[0m
+[38;5;12mand when.  We will try not to break[0m [38;5;12mthings, but when we first introduce a feature, it may[0m
+[38;5;12mnot be just right, and we may have to to perturb it later.[0m
+
+[01mCritical things we want to hear from you[0m
+
+1. If you have trouble understanding the documentation.
+
+2. If enclone crashes.  We always need to see the output you got.  Often we will need data to
+reproduce the problem.  Please also send this version information:
+0.1.0 = dj/14:3bd25a7+, release, linux [x86_64].
+
+3. If you're sure that enclone made a mistake.  Usually an actionable mistake is exhibited via a
+single clonotype or two, along with your explanation as to why it's wrong!  And we may need the
+enclone input files to reproduce the problem.
+
+4. Your ideas about how to make enclone better.
+
+[01mThings where we may have trouble[0m
+
+1. If you can't get your terminal window to work or need help working from the command line. 
+Please tell us, but probably you'll need help from someone who can interact with you on site.
+
+2. If you get different results by two methods or observe suspicious statistics.  Feel free to
+tell us, but we are much more likely to be able to respond if you have specific data as in point 3
+above.
+
+3. Details about the algorithms.  We can answer some questions but may need to point you to the
+source code to read yourself.
+
+4. If for whatever reason, we get stuck.  We may not be able to fix every problem, even if it's
+our fault.  And sometimes the right solution will take time.  We'll do our best!
+
+[01;31mPlease communicate with us by writing to[0m [01m[01;31menclone@10xgenomics.com.[0m
+
+We use only this email address for enclone questions.  Support from 10x Genomics for enclone needs
+to go through this point of access (or the next one).
+
+If you are GitHub-savvy, we also welcome GitHub issues if applicable and you prefer that route. 
+If you can make the enclone code better, go for it!  Make sure the internal tests are successful,
+submit a pull request, and if we can use your code (no guarantees), we'll add you as an author on
+the site.
+
+[38;5;12mBefore writing to us, please check our faq by typing[0m [01m[38;5;12menclone help faq[0m[38;5;12m.[0m
+
+[01;31mHappy encloning![0m
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help plot
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mplotting clonotypes
+
+[0menclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
+You can see an example at [01;32mhttps://github.com/10XDev/enclone/blob/master/README.md#honeycomb[0m.
+
+enclone provides three ways to assign colors in such a plot.  We describe them in order of
+precedence, i.e. color data for the first will be used if provided, etc.
+
+The first way is to use the argument
+[01mPLOT="filename,sample1->color1,...,samplen->colorn"[0m
+which creates an svg file of the given name, and assigns the given colors to the given samples. 
+Unspecified samples will be black.
+
+The second way is to provide simply
+[01mPLOT=filename[0m
+on the command line, and then provide the [01mcolor[0m field in the CSV defined by the [01mMETA[0m option.  This
+assigns a color to each dataset.
+
+The third way is to use the simple [01mPLOT[0m specification, and assign a color to each barcode using
+the [01mbc[0m field for [01mMETA[0m.
+
+The colors should be valid colors for use in an svg file.  They can be named colors like red or
+blue (see [01;32mhttps://www.w3.org/TR/SVG11/types.html#ColorKeywords[0m for a full list) or a hex
+specification like #00FFFF for aqua.  The full color description for svg is at
+[01;32mhttps://www.w3.org/TR/SVGColor12[0m.
+
+enclone also recognizes the color abbreviations @1, ..., @6, which refer to enclone's color blind
+friendly palette (see "enclone help color").
+
+Each cell is shown as a disk having the given color, and each clonotype is shown as a cluster of
+these disks, which are positioned at random.  We suggest using the [01mMIN_CELLS[0m option (see "enclone
+help filter") so that tiny clonotypes do not dominate.  The filename argument may be "stdout". 
+Note that plotting is potentially slow.
+
+To add a legend to the graph, add the argument [01mLEGEND[0m to your command line.  This will give you an
+auto-generated legend.  You can also customize the legend by adding an argument of the form
+[01mLEGEND=color1,"text1",...,colorn,"textn"[0m
+to the command line.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help input
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+enclone has [01m[01;31mtwo[0m mechanisms for specifying input datasets: either directly on the command line or
+via a supplementary metadata file. Only one mechanism may be used at a time.
+
+In both cases, you will need to provide paths to directories where the outputs of the Cell Ranger
+pipeline may be found.  enclone uses only some of the pipeline output files, so it is enough that
+those files are present in given directory, and the particular files that are needed may be found
+by typing [01menclone help input_tech[0m.  If you use the argument [01mPRE=p[0m then [01mp/[0m will be prepended to all
+pipeline paths.  Moreover (see [01menclone help command[0m), you can avoid putting [01mPRE[0m on the command
+line by setting the environment variable [01mENCLONE_PRE[0m to [01mp[0m.
+
+Both input forms involve abbreviated names (discussed below), which should be as short as
+possible, as longer abbreviations will increase the width of the clonotype displays.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.    ┃
+┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not     ┃
+┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which    ┃
+┃speeds up enclone overall by up to [01m[01;31m50%[0m.  To use this, add the argument [01mNH5[0m to the enclone command┃
+┃line.  This will work so long as you have write permission on input directories.  The first time ┃
+┃you run enclone (using given inputs), the alternate file will be written; then subsequent        ┃
+┃invocations will be faster.   Like with other enclone command-line options, if you want it on all┃
+┃the time, you can set the environment variable [01mENCLONE_NH5[0m.                                      ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+[01m[01;31m█ 1 █[0m To point directly at input files on the command line, use e.g.
+[01mTCR=/home/jdoe/runs/sample345[0m
+or likewise for [01mBCR[0m.  A more complicated syntax is allowed in which commas, colons and semicolons
+act as delimiters.  Commas go between datasets from the same sample, colons between datasets from
+the same donor, and semicolons separate donors.  If semicolons are used, the value must be quoted.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃[01mNaming.[0m  Using this input system, each dataset is assigned an abbreviated name, which is        ┃
+┃everything after the final slash in the directory name (e.g. [01msample345[0m in the above example), or┃
+┃the entire name if there is no slash; samples and donors are assigned identifers s1,... and     ┃
+┃d1,..., respectively; numbering of samples restarts with each new donor.  [01mTo specify samples[0m    ┃
+┃[01mand donors, use the second input form, and see in particular[0m [01;32mabbr:path[0m[01m.[0m                         ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Examples:
+[01mTCR=p1,p2[0m   -- input data from two libraries from the same sample
+[01mTCR=p1,p2:q[0m -- input data as above plus another from a different sample from the same donor
+[01mTCR="a;b"[0m   -- input one library from each of two donors.
+
+Matching gene expression and/or feature barcode data may also be supplied using an argument [01mGEX=...[0m,
+whose right side must have the exact same structure as the [01mTCR[0m or [01mBCR[0m argument.  Specification of
+both [01mTCR[0m and [01mBCR[0m is not allowed.
+
+[01m[01;31m█ 2 █[0m To specify a metadata file, use the command line argument
+[01mMETA=filename
+[0mThis file should be a CSV (comma-separated values) file, with one line per cell group.  After the
+first line, lines starting with # are ignored.  There must be a field tcr or bcr, and some other
+fields are allowed:
+┌─────────┬─────────────────┬─────────────────────────────────────────────────────────────────────┐
+│[01mfield[0m    │   [01mdefault[0m       │   [01mmeaning[0m                                                           │
+├─────────┼─────────────────┼─────────────────────────────────────────────────────────────────────┤
+│tcr      │   (required!)   │   path to dataset, or abbr:path, where abbr is an abbreviated       │
+│or bcr   │                 │   name for the dataset; exactly one of tcr or bcr must be used      │
+│gex      │   null          │   path to GEX dataset, which may include or consist entirely        │
+│         │                 │   of FB data                                                        │
+├─────────┼─────────────────┼─────────────────────────────────────────────────────────────────────┤
+│sample   │   s1            │   abbreviated name of sample                                        │
+├─────────┼─────────────────┼─────────────────────────────────────────────────────────────────────┤
+│donor    │   d1            │   abbreviated name of donor                                         │
+├─────────┼─────────────────┼─────────────────────────────────────────────────────────────────────┤
+│color    │   null          │   color to associate to this dataset (for PLOT option)              │
+├─────────┼─────────────────┼─────────────────────────────────────────────────────────────────────┤
+│bc       │   null          │   name of CSV file with header "barcode,sample,donor" that          │
+│         │                 │   assigns a sample and donor name to each barcode; if sample and/or │
+│         │                 │   donor are also specified, then those are treated as default values│
+│         │                 │   to be used in case a particular barcode is not specified by bc;   │
+│         │                 │   a fourth field "tag" is allowed and may be arbitrarily specified  │
+│         │                 │   Use of bc automatically turns on the MIX_DONORS option.  There is │
+│         │                 │   an optional field "color" that assigns a color to a barcode,      │
+│         │                 │   and which is used by the PLOT option.                             │
+└─────────┴─────────────────┴─────────────────────────────────────────────────────────────────────┘
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help input_tech
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01minformation about providing input to enclone (technical notes)
+
+[0menclone only uses certain files, which are all in the outs subdirectory of a Cell Ranger pipeline
+directory:
+
+┌────────────────────────────────────────────┬──────────┐
+│[01mfile[0m                                        │  [01mpipeline[0m│
+├────────────────────────────────────────────┼──────────┤
+│all_contig_annotations.json                 │  VDJ     │
+├────────────────────────────────────────────┼──────────┤
+│metrics_summary_json.json                   │  GEX     │
+├────────────────────────────────────────────┼──────────┤
+│raw_gene_bc_matrices_h5.h5                  │  GEX     │
+├────────────────────────────────────────────┼──────────┤
+│raw_feature_bc_matrix/barcodes.tsv.gz       │  GEX     │
+│raw_feature_bc_matrix/features.tsv.gz       │  GEX     │
+│filtered_feature_bc_matrix/barcodes.tsv.gz  │  GEX     │
+└────────────────────────────────────────────┴──────────┘
+
+The exact files that are used could be changed in the future.
+
+Note that you must use the output of Cell Ranger version [01m[01;31m≥ 3.1[0m.  There is a workaround for earlier
+versions (which you will be informed of if you try), but it is much slower and the results may not
+be as good.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help parseable
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mparseable output
+[0m
+The standard output of enclone is designed to be read by humans, but is not readily parseable by
+computers.  We supplement this with parseable output that can be easily read by computers.
+
+The default behavior for this is to generate a CSV file having "every possible" field (over a
+hundred).  We also provide an option to print only selected fields, and some options which enable
+inspection, short of generating a separate CSV file.
+
+Parseable output is targeted primarily at R and Python users, because of the ease of wrangling CSV
+files with these languages.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃Parseable output is invoked by using the argument                                                ┃
+┃[01mPOUT=filename[0m                                                                                    ┃
+┃specifying the name of the file that is to be written to.                                        ┃
+┃[01;47m [0m The filename "stdout" may be used for a preview; in that case parseable output is generated    ┃
+┃[01;47m [0m separately for each clonotype and the two output types are integrated.  There is also          ┃
+┃[01;47m [0m "stdouth", which is similar, but uses spaces instead of commas, and lines things up in columns.┃
+┃By default, we show four chains for each clonotype, regardless of how many chains it             ┃
+┃has, filling in with null entries.  One may instead specify n chains using the argument          ┃
+┃[01mPCHAINS=n[0m                                                                                        ┃
+┃The parseable output fields may be specified using                                               ┃
+┃[01mPCOLS=x1,...,xn[0m                                                                                  ┃
+┃where each xi is one of the field names shown below.                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Over time additional fields may be added and the order of fields may change.
+
+There is an alternate parseable output mode in which one line is emitted for each cell, rather
+then each exact subclonotype.  This mode is enabled by adding the argument [01mPCELL[0m to the command
+line.  Each exact subclonotype then yields a sequence of output lines that are identical except as
+noted below.
+
+If you want to completely suppress the generation of visual clonotypes, add [01mNOPRINT[0m to the enclone
+command line.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃[01mFASTA output.[0m  This is a separate feature. To generate nucleotide FASTA output for each chain in  ┃
+┃each exact subclonotype, use the argument [01mFASTA=filename[0m.  The special case [01mstdout[0m will cause the ┃
+┃FASTA records to be shown as part of standard output.  The FASTA records that are generated are of┃
+┃the form V(D)JC, where V is the full V segment (including the leader) and C is the full constant  ┃
+┃region, copied verbatim from the reference.  If a particular chain in a particular exact          ┃
+┃subclonotype is not assigned a constant region, then we use the constant region that was assigned ┃
+┃to the clonotype.  If no constant region at all was assigned, then the FASTA record is omitted.   ┃
+┃Similarly, [01mFASTA_AA=filename[0m may be used to generate a matching amino acid FASTA file.            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+[01m[01;31m───────────────────────
+[01m[01;31mparseable output fields
+[01m[01;31m───────────────────────[0m
+
+[01m1. per clonotype group fields
+
+[0m┌──────────────┬──────────────────────────────────────────┐
+│group_id      │  identifier of clonotype group - 0,1, ...│
+├──────────────┼──────────────────────────────────────────┤
+│group_ncells  │  total number of cells in the group      │
+└──────────────┴──────────────────────────────────────────┘
+
+[01m2. per clonotype fields
+
+[0m┌──────────────────┬────────────────────────────────────────────────────────────────┐
+│clonotype_id      │  identifier of clonotype within the clonotype group = 0, 1, ...│
+├──────────────────┼────────────────────────────────────────────────────────────────┤
+│clonotype_ncells  │  total number of cells in the clonotype                        │
+├──────────────────┼────────────────────────────────────────────────────────────────┤
+│nchains           │  total number of chains in the clonotype                       │
+└──────────────────┴────────────────────────────────────────────────────────────────┘
+
+[01m3. per chain fields, where <i> is 1,2,... (see above)
+each of these has the same value for each exact clonotype[0m
+
+┌──────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│v_name<i>             │  name of V segment                                                    │
+│d_name<i>             │  name of D segment (or null)                                          │
+│j_name<i>             │  name of J segment                                                    │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│v_id<i>               │  id of V segment                                                      │
+│d_id<i>               │  id of D segment (or null)                                            │
+│j_id<i>               │  id of J segment                                                      │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│var_indices_dna<i>    │  DNA positions in chain that vary across the clonotype                │
+│var_indices_aa<i>     │  amino acid positions in chain that vary across the clonotype         │
+│share_indices_dna<i>  │  DNA positions in chain that are constant across the clonotype,       │
+│                      │  but differ from the donor ref                                        │
+│share_indices_aa<i>   │  amino acid positions in chain that are constant across the clonotype,│
+│                      │  all of these are comma-separated lists                               │
+│                      │  but differ from the donor ref                                        │
+└──────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+[01m4. per exact subclonotype fields[0m
+
+┌───────────────────────┬─────────────────────────────────────────────────────────────────────────┐
+│exact_subclonotype_id  │  identifer of exact subclonotype = 1, 2, ...                            │
+├───────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│barcodes               │  comma-separated list of barcodes for the exact subclonotype            │
+│<dataset>_barcodes     │  like "barcodes", but restricted to the dataset with the given name     │
+│barcode                │  if PCELL is specified, barcode for one cell                            │
+│<dataset>_barcode      │  if PCELL is specified, barcode for one cell, or null, if the barcode is│
+│                       │  not from the given dataset                                             │
+├───────────────────────┴─────────────────────────────────────────────────────────────────────────┤
+│In addition, every lead variable may be specified as a field.  See "enclone help lvars".         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+[01m5. per chain, per exact subclonotype fields, where <i> is 1,2,... (see above)[0m
+
+[all apply to chain i of a particular exact clonotype]
+
+┌───────────────┬──────────────────────────────────────────────────────────────────────────┐
+│vj_seq<i>      │  DNA sequence of V..J                                                    │
+│seq<i>         │  full DNA sequence                                                       │
+│q<n>_<i>       │  special option to display a comma-separated list of the quality         │
+│               │  scores for chain i, at zero-based position n, numbered starting at the  │
+│               │  beginning of the V segment, for each cell in the exact subclonotype     │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│v_start<i>     │  start of V segment on full DNA sequence                                 │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│const_id<i>    │  numerical identifier of constant region (or null, if not known)         │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│utr_id<i>      │  numerical identifier of 5'-UTR region (or null, if not known)           │
+│utr_name<i>    │  name of 5'-UTR region (or null, if not known)                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│cdr3_start<i>  │  base position start of CDR3 sequence on full contig                     │
+│cdr3_aa<i>     │  amino acid sequence of CDR3                                             │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│var_aa<i>      │  amino acids that vary across the clonotype (synonymous changes included)│
+├───────────────┴──────────────────────────────────────────────────────────────────────────┤
+│In addition, every chain variable, after suffixing by <i>, may be used as a field.        │
+│See "enclone help cvars".                                                                 │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help filter
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mclonotype filtering options
+
+[0mthese options cause only certain clonotypes to be printed
+
+┌─────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│MIN_CELLS=n          │  only show clonotypes having at least n cells                         │
+│MAX_CELLS=n          │  only show clonotypes having at most n cells                          │
+│CELLS=n              │  only show clonotypes having exactly n cells                          │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_UMIS=n           │  only show clonotypes having ≳ n UMIs on some chain on some cell      │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS=n         │  only show clonotypes having at least n chains                        │
+│MAX_CHAINS=n         │  only show clonotypes having at most n chains                         │
+│CHAINS=n             │  only show clonotypes having exactly n chains                         │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│CDR3=<pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches       │
+│                     │  the given pattern (regular expression)*, from beginning to end       │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names  │
+│SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers│
+│                     │  both: looks for V, D, J and C segments; double quote only            │
+│                     │  needed if n > 1                                                      │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes           │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│VJ=seq               │  only show clonotypes using exactly the given V..J sequence           │
+│                     │  (string in alphabet ACGT)                                            │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets       │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│CDIFF                │  only show clonotypes having a difference in constant region with the │
+│                     │  universal reference                                                  │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│DEL                  │  only show clonotypes exhibiting a deletion                           │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes              │
+└─────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+* Examples of how to specify CDR3:
+
+┌────────────────────────────────────────┬────────────────────────────────────────────────┐
+│CDR3=CARPKSDYIIDAFDIW                   │  have exactly this sequence as a CDR3          │
+│CDR3="CARPKSDYIIDAFDIW|CQVWDSSSDHPYVF"  │  have at least one of these sequences as a CDR3│
+│CDR3=".*DYIID.*"                        │  have a CDR3 that contains DYIID inside it     │
+└────────────────────────────────────────┴────────────────────────────────────────────────┘
+
+Note that double quotes should be used if the pattern contains characters other than letters.
+
+A gentle introduction to regular expressions may be found at
+https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise
+specification for the regular expression version used by enclone may be found at
+https://docs.rs/regex.
+
+[01mlinear conditions[0m
+
+enclone understands linear conditions of the form
+[01mc1*v1 ± ... ± cn*vn > d[0m
+where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
+Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or < or <= or ≤.  Each vi is a
+lead variable (see "[01menclone help lvars[0m") that represents a sample/donor/tag count or gene/feature
+barcode UMI count.  In evaluating the condition, each vi is replaced by the [01mmean[0m of its values
+across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
+some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
+this [01m(IGHV3-7_g) >= 1[0m.
+
+[01mfiltering by linear conditions[0m
+
+enclone has the capability to filter by bounding certain lead variables, using the command-line
+argument:
+[01mF="L"[0m
+where L is a linear condition (as defined above).  Currently this is limited to the case where the
+lead variables have been selected using [01mLVARS[0m or [01mLVARSP[0m!  Multiple bounds may be imposed by using
+multiple instances of [01mF=...[0m .
+
+[01mfeature scanning[0m
+
+If gene expression and/or feature barcode data have been generated, enclone can scan all features
+to find those that are enriched in certain clonotypes relative to certain other clonotypes.  This
+feature is turned on using the command line argument
+[01mSCAN="test,control,threshold"[0m
+where each of [01mtest[0m, [01mcontrol[0m and [01mthreshold[0m are linear conditions as defined above.  Blank spaces
+are ignored.  The [01mtest[0m condition defines the "test clonotypes" and the [01mcontrol[0m condition defines
+the "control clonotypes".  Currently, the lead variables in [01mtest[0m and [01mcontrol[0m must be specified by
+[01mLVARS[0m or [01mLVARSP[0m!  The [01mthreshold[0m condition is special: it may use only the variables "t" and "c"
+that represent the normalized UMI count for a particular gene or feature, for the test (t) or
+control (c) clonotypes.  To get a meaningful result, you should specify [01mMIN_CELLS[0m appropriately
+and manually examine the test and control clonotypes to make sure that they make sense.
+
+[01man example[0m
+
+Suppose that your data are comprised of two samples named pre and post, representing time points
+relative to some event.  Then
+[01mSCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"[0m
+would define the test clonotypes to be those satisfying n_post >= 10*n_pre (so having far more
+post cells then pre cells), the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so
+having lots of pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must have a bit
+more than twice as many UMIs in the test than the control.  The 0.1 is there to exclude noise from
+features having very low UMI counts.
+
+Feature scanning is not a proper statistical test.  It is a tool for generating a list of feature
+candidates that may then be examined in more detail by rerunning enclone using some of the
+detected features as lead variables (appropriately suffixed).  Ultimately the power of the scan is
+determined by having "enough" cells in both the test and control sets, and in having those sets
+cleanly defined.
+
+Currently feature scanning requires that each dataset have identical features.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help special
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mspecial filtering options[0m
+
+This page documents some options, most of which allow noise filters to be turned off, and which
+normally should not be invoked.  The last two options can be used to simplify the view of a
+clonotype.
+
+┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NCROSS              │  If you specify that two or more libraries arose from the same sample (i.e. │
+│                    │  from the same tube of cells), then the default behavior of enclone is to   │
+│                    │  "cross filter" so as to remove expanded exact subclonotypes that are       │
+│                    │  present in one library but not another, in a fashion that would be highly  │
+│                    │  improbable, assuming random draws of cells from the tube.  These are       │
+│                    │  believed to arise when a plasma or plasmablast cell breaks up during during│
+│                    │  or after pipetting from the tube, and the resulting fragments seed GEMs,   │
+│                    │  yielding expanded 'fake' clonotypes that are residues of real single plasma│
+│                    │  cells.  The NCROSS options turns off this filter, which could be useful so │
+│                    │  long as you interpret the restored clonotypes as representing what are     │
+│                    │  probably single cells.  There may also be other situations where the filter│
+│                    │  should be turned off, and in particular the filter can do weird things if  │
+│                    │  inputs are somehow mis-specified to enclone.  Note that for purposes of    │
+│                    │  this option, enclone defines a sample by the pair                          │
+│                    │  (sample name, donor name).                                                 │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NGRAPH_FILTER       │  By default, enclone filters to remove exact subclonotypes that by virtue of│
+│                    │  their relationship to other exact subclonotypes, appear to arise from      │
+│                    │  background mRNA or a phenotypically similar phenomenon.  The               │
+│                    │  NGRAPH_FILTER option turns off this filtering.                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NQUAL               │  By default, enclone filters out exact subclonotypes having a base in V..J  │
+│                    │  that looks like it might be wrong.  More specifically, enclone finds bases │
+│                    │  which are not Q60 for a barcode, not Q40 for two barcodes, are not         │
+│                    │  supported by other exact subclonotypes, are variant within the clonotype,  │
+│                    │  and which disagree with the donor reference.  NQUAL turns this off.        │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWEAK_CHAINS        │  By default, enclone filters chains from clonotypes that are                │
+│                    │  weak and appear to be artifacts, perhaps arising from a stray mRNA molecule│
+│                    │  that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWEAK_ONESIES       │  By default, enclone filters out onesie clonotypes having a single exact    │
+│                    │  subclonotype, and that are light chain or TRA, and whose number of cells is│
+│                    │  less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.│
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NFOURSIE_KILL       │  By default, if enclone finds a foursie exact subclonotype that             │
+│                    │  contains a twosie exact subclonotype having at least ten cells, it kills   │
+│                    │  the foursie exact subclonotype, no matter how many cells it has.  The      │
+│                    │  foursies that are killed are believed to be rare oddball artifacts arising │
+│                    │  from repeated cell doublets or GEMs that contain two cells and multiple gel│
+│                    │  beads.  The argument NFOURSIE_KILL turns off this filtering.               │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWHITEF             │  By default, enclone filters out rare artifacts arising from contamination  │
+│                    │  of oligos on gel beads.  The NWHITEF option turns off this filter.         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NBC_DUP             │  By default, enclone filters out duplicated barcodes within an exact.       │
+│                    │  subclonotype.  The NBC_DUP option turns off this filter.                   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│MIX_DONORS          │  By default, enclone will prevent cells from different donors from being    │
+│                    │  placed in the same clonotype.  The MIX_DONORS option turns off this        │
+│                    │  behavior, thus allowing cells from different donors to be placed in the    │
+│                    │  same clonotype.  The main use of this option is for specificity testing, in│
+│                    │  which data from different donors are deliberately combined in an attempt   │
+│                    │  to find errors.  Use of the bc field for META input specification          │
+│                    │  automatically turns on this option.                                        │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│KEEP_IMPROPER       │  An exact subclonotype is improper if it does not have one chain            │
+│                    │  of each type.  This option causes all improper exact subclonotypes to be   │
+│                    │  retained, although they may be removed by other filters.                   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS_EXACT=n  │  Delete any exact subclonotype having less than n chains.  You can use this │
+│                    │  to "purify" a clonotype so as to display only exact subclonotypes having   │
+│                    │  all their chains.                                                          │
+│MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
+│                    │  to use this if you have a very large and complex expanded clonotype,       │
+│                    │  for which you would like to see a simplified view.                         │
+└────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help lvars
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mlead column options
+
+[0mThese options define lead variables, which correspond to columns that appear once in each
+clonotype, on the left side, and have one entry for each exact subclonotype row.
+
+Lead variables are specified using [01mLVARS=x1,...,xn[0m where each xi is one of:
+
+┌───────────────┬───────────────────────────────────────────────────────────────────────────┐
+│datasets       │  dataset identifiers                                                      │
+│samples        │  sample identifiers                                                       │
+│donors         │  donor identifiers                                                        │
+├───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│n              │  number of cells                                                          │
+│n_<name>       │  number of cells associated to the given name, which can be a dataset     │
+│               │  or sample or donor or tag short name; may name only one such category    │
+├───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                │
+│far            │  Hamming distance of V..J DNA sequence to farthest neighbor               │
+│               │  both compare to cells having chains in the same columns of the clonotype,│
+│               │  with - shown if there is no other exact subclonotype to compare to       │
+├───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│g<d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are   │
+│               │  grouped according to the Hamming distance of their V..J sequences.  Those│
+│               │  within distance d are defined to be in the same group, and this is       │
+│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The    │
+│               │  ordering of these identifiers is arbitrary.  This option is best applied │
+│               │  to cases where all exact subclonotypes have a complete set of chains.    │
+├───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│gex            │  [01;31m◉[0m median gene expression UMI count                                       │
+│n_gex          │  [38;5;12m◉[0m number of cells reported by GEX                                        │
+├───────────────┼───────────────────────────────────────────────────────────────────────────┤
+│<gene>_g       │  [01;31m◉[0m all five feature types: look for a declared feature of the given type  │
+│<antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow  │
+│<antigen>_ag   │  the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown  │
+│<crispr>_cr    │                                                                           │
+│<custom>_cu    │                                                                           │
+└───────────────┴───────────────────────────────────────────────────────────────────────────┘
+For gene expression and feature barcode stats, such data must be provided as input to enclone.
+
+[01;47m [0m [01;31m◉[0m These variables have some alternate versions, as shown in the table below:
+[01;47m [0m 
+[01;47m [0m ┌──────────┬─────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+[01;47m [0m │variable  │  semantics          │  visual  │  visual      │  parseable  │  parseable │
+[01;47m [0m │          │                     │          │  (one cell)  │             │  (one cell)│
+[01;47m [0m ├──────────┼─────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+[01;47m [0m │x         │  median over cells  │  yes     │  this cell   │  yes        │  yes       │
+[01;47m [0m │x_mean    │  mean over cells    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_μ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_sum     │  sum over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_Σ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_min     │  min over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_max     │  max over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_cell    │  this cell          │  no      │  no          │  no         │  this cell │
+[01;47m [0m └──────────┴─────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+[01;47m [0m Some explanation is required.  If you use enclone without certain options, you get the "visual"
+[01;47m [0m column.
+[01;47m [0m • Add the option [01mPER_CELL[0m (see "enclone help display") and then you get visual output with extra
+[01;47m [0m lines for each cell within an exact subclonotype, and each of those extra lines is described by
+[01;47m [0m the "visual (one cell)" column.
+[01;47m [0m • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
+[01;47m [0m column for that output, unless you specify [01mPCELL[0m, and then you get the last column.
+[01;47m [0m • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
+[01;47m [0m (to save space), and optionally, in names of fields on the command line.
+[01;47m [0m [01;32m▶[0m If you try out these features, you'll see exactly what happens! [01;32m◀[0m
+
+[38;5;12m◉[0m Similar to the above but simpler: n_gex is just a count of cells, visual (one cell) shows 0 or
+1, n_gex_cell is defined for parseable (one cell), and the x_mean etc. forms do not apply.
+
+The default is [01mdatasets,n[0m, except that datasets is suppressed if there is only one dataset.
+
+[01mLVARSP=x1,...,xn[0m is like [01mLVARS[0m but appends to the list.
+
+Note: gene expression counts are normalized to 20,000 read pairs per cell, and feature barcode
+counts are normalized to 5,000 read pairs per cell.  The normalized counts are rounded to the
+nearest integer.  For this normalization, we simply scale the counts, rather than subsample reads.
+ If you want to turn off the normalization, add the argument [01mFULL_COUNTS[0m to the command line.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help cvars
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mper-chain column options[0m: These options define per-chain variables, which correspond to columns
+that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
+
+Per-column variables are specified using
+[01mCVARS=x1,...,xn[0m
+where each xi is one of:
+
+┌────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│var         │  bases at positions in chain that vary across the clonotype                   │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│u           │  [01;31m◉[0m VDJ UMI count for each exact subclonotype, median across cells             │
+│r           │  [01;31m◉[0m VDJ read count for each exact subclonotype, median across cells            │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│const       │  constant region name                                                         │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│edit        │  a string that partially defines the edit of the reference V(D)J concatenation│
+│            │  that gives rise to the observed CDR3; this uses a coordinate system in which │
+│            │  0 is the first base of the J ref segment (or the first base of the D ref     │
+│            │  segment for IGH and TRB); for example D-4:4 denotes the deletion of the last │
+│            │  4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V   │
+│            │  and I0:2;S5 denotes that plus a substitution at position 5; in computing     │
+│            │  "edit", for IGH and TRB, we always test every possible D segment,            │
+│            │  regardless of whether one is annotated, and pick the best one; for this      │
+│            │  reason, "edit" may be slow                                                   │
+│comp        │  a measure of CDR3 complexity, which is the total number of S, D and I        │
+│            │  symbols in "edit" as defined above                                           │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│cdr3_dna    │  the CDR3_DNA sequence                                                        │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│vjlen       │  number of bases from the start of the V region to the end of the J region    │
+│clen        │  length of observed constant region (usually truncated at primer start)       │
+│ulen        │  length of observed 5'-UTR sequence                                           │
+│cdiff       │  differences with universal reference constant region, shown in the           │
+│            │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10            │
+│            │  (same but contig has 10 additional bases beyond end of ref C region          │
+│            │  At most five differences are shown, and if there are more, ... is appended.  │
+│udiff       │  like cdiff, but for the 5'-UTR                                               │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│notes       │  optional note if there is an insertion or the end of J does not exactly abut │
+│            │  the beginning of C; elided if empty                                          │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ndiff<n>vj  │  number of base differences within V..J between this exact subclonotype and   │
+│            │  exact subclonotype n                                                         │
+│d_univ      │  distance from universal reference, more specifically,                        │
+│            │  number of base differences within V..J between this exact                    │
+│            │  clonotype and universal reference, exclusive of indels, the last 15          │
+│            │  bases of the V and the first 15 bases of the J                               │
+│d_donor     │  distance from donor reference,                                               │
+│            │  as above but computed using donor reference                                  │
+└────────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+[01;47m [0m [01;31m◉[0m These variables have some alternate versions, as shown in the table below:
+[01;47m [0m 
+[01;47m [0m ┌──────────┬─────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+[01;47m [0m │variable  │  semantics          │  visual  │  visual      │  parseable  │  parseable │
+[01;47m [0m │          │                     │          │  (one cell)  │             │  (one cell)│
+[01;47m [0m ├──────────┼─────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+[01;47m [0m │x         │  median over cells  │  yes     │  this cell   │  yes        │  yes       │
+[01;47m [0m │x_mean    │  mean over cells    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_μ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_sum     │  sum over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_Σ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_min     │  min over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_max     │  max over cells     │  yes     │  null        │  yes        │  yes       │
+[01;47m [0m │x_cell    │  this cell          │  no      │  no          │  no         │  this cell │
+[01;47m [0m └──────────┴─────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+[01;47m [0m Some explanation is required.  If you use enclone without certain options, you get the "visual"
+[01;47m [0m column.
+[01;47m [0m • Add the option [01mPER_CELL[0m (see "enclone help display") and then you get visual output with extra
+[01;47m [0m lines for each cell within an exact subclonotype, and each of those extra lines is described by
+[01;47m [0m the "visual (one cell)" column.
+[01;47m [0m • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
+[01;47m [0m column for that output, unless you specify [01mPCELL[0m, and then you get the last column.
+[01;47m [0m • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
+[01;47m [0m (to save space), and optionally, in names of fields on the command line.
+[01;47m [0m [01;32m▶[0m If you try out these features, you'll see exactly what happens! [01;32m◀[0m
+
+At least one variable must be listed.  The default is [01mu,const,notes[0m.  [01mCVARSP[0m: same as [01mCVARS[0m but
+appends.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help amino
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+There is a complex per-chain column to the left of other per-chain columns, defined by
+[01mAMINO=x1,...,xn[0m: display amino acid columns for the given categories, in one combined ordered
+group, where each xi is one of:
+
+┌────────┬───────────────────────────────────────────────────────────────────────────────────┐
+│cdr3    │  CDR3 sequence                                                                    │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│var     │  positions in chain that vary across the clonotype                                │
+│share   │  positions in chain that differ consistently from the donor reference             │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donor   │  positions in chain where the donor reference differs from the universal reference│
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donorn  │  positions in chain where the donor reference differs nonsynonymously             │
+│        │  from the universal reference                                                     │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│a-b     │  amino acids numbered a through b (zero-based, inclusive)                         │
+└────────┴───────────────────────────────────────────────────────────────────────────────────┘
+
+Note that we compute positions in base space, and then divide by three to get positions in amino
+acid space.  Thus it can happen that a position in amino acid space is shown for both [01mvar[0m and [01mshare[0m.
+
+The default value for [01mAMINO[0m is [01mcdr3,var,share,donor[0m.  Note that we only report amino acids that
+are strictly within V..J, thus specifically excluding the codon bridging J and C.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help display
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mother options that control clonotype display[0m
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL   │  expand out each exact clonotype line, showing one line per cell,             │
+│           │  for each such line, displaying the barcode name, the number of UMIs assigned,│
+│           │  and the gene expression UMI count, if applicable, under gex_med              │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│BARCODES   │  print list of all barcodes of the cells in each clonotype, in a              │
+│           │  single line near the top of the printout for a given clonotype               │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SEQC       │  print V..J sequence for each chain in the first exact subclonotype, near     │
+│           │  the top of the printout for a given clonotype                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC  │  print full sequence for each chain in the first exact subclonotype,          │
+│           │  near the top of the printout for a given clonotype                           │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SUM        │  print sum row for each clonotype                                             │
+│MEAN       │  print mean row for each clonotype                                            │
+└───────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+[01moptions that control clonotype grouping[0m
+
+we plan to add grouping capability in a future version of enclone, and for now, as a placeholder,
+we have the following "toy" options:
+
+┌──────────────────┬─────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3  │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
+│GROUP_VJ_REFNAME  │  group by sharing identical V and J reference gene names,           │
+│                  │  but ignores foursies and moresies                                  │
+├──────────────────┼─────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP         │  minimum number of clonotypes in group to print (default = 1)       │
+└──────────────────┴─────────────────────────────────────────────────────────────────────┘
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help indels
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mhandling of insertions and deletions[0m
+
+enclone can recognize and display a single insertion or deletion in a contig relative to the
+reference, so long as its length is divisible by three, is relatively short, and occurs within the
+V segment, not too close to its right end.
+
+These indels could be germline, however most such events are already captured in a reference
+sequence.  Currently the donor reference code in enclone does not recognize indels.
+
+SHM deletions are rare, and SHM insertions are even more rare.
+
+Deletions are displayed using hyphens (-).  If you use the [01mvar[0m option for [01mcvars[0m, the hyphens will
+be displayed in base space, where they are initially observed.  For the [01mAMINO[0m option, the deletion
+is first shifted by up to two bases, so that the deletion starts at a base position that is
+divisible by three.  Then the deleted amino acids are shown as hyphens.
+
+Insertions are shown only in amino acid space, in a special per-chain column called [01mnotes[0m that
+appears if there is an insertion.  Colored amino acids are shown for the insertion, and the
+position of the insertion is shown.  The position is the position of the amino acid after which
+the insertion appears, where the first amino acid (start codon) is numbered 0.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help ideas
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01mfeatures that might be implemented in enclone
+
+[0m┌───────────────────┬──────────────────────────────────────────────────────────────────┐
+│speed              │  make enclone faster                                             │
+├───────────────────┼──────────────────────────────────────────────────────────────────┤
+│CDRn               │  make CDR1 and CDR2 viewable in the same way that CDR3 is now    │
+├───────────────────┼──────────────────────────────────────────────────────────────────┤
+│distance grouping  │  provide an option to group clonotypes by distance               │
+├───────────────────┼──────────────────────────────────────────────────────────────────┤
+│cloning            │  package V..J region into a cloning vector                       │
+├───────────────────┼──────────────────────────────────────────────────────────────────┤
+│phylogeny          │  generate a phylogeny for the exact clonotypes within a clonotype│
+├───────────────────┼──────────────────────────────────────────────────────────────────┤
+│windows            │  make enclone work on windows computers                          │
+└───────────────────┴──────────────────────────────────────────────────────────────────┘
+
+Please let us know if you are interested in these features, or if there are
+other features that you would like us to implement!
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help color
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+Here is the color palette that enclone uses for amino acids:
+
+[01m[38;5;25m▓[0m [01m[38;5;175m▓[0m [38;5;36m▓[0m [01m[38;5;166m▓[0m [01m[38;5;75m▓[0m [38;5;178m▓[0m 
+
+When enclone shows amino acids, it colors each codon differently, via the following scheme:
+
+Alanine        A  [01m[38;5;75mGCT[0m [01m[38;5;175mGCC[0m [01m[38;5;25mGCA[0m [38;5;36mGCG[0m
+Arginine       R  [01m[38;5;75mCGT[0m [01m[38;5;175mCGC[0m [01m[38;5;25mCGA[0m [38;5;36mCGG[0m [38;5;178mAGA[0m [01m[38;5;166mAGG[0m
+Asparagine     N  [01m[38;5;25mAAT[0m [01m[38;5;166mAAC[0m
+Aspartic Acid  D  [38;5;36mGAT[0m [01m[38;5;25mGAC[0m
+Cysteine       C  [38;5;178mTGT[0m [01m[38;5;75mTGC[0m
+Glutamine      Q  [01m[38;5;166mCAA[0m [01m[38;5;25mCAG[0m
+Glutamic Acid  E  [38;5;178mGAA[0m [01m[38;5;175mGAG[0m
+Glycine        G  [01m[38;5;166mGGT[0m [38;5;36mGGC[0m [01m[38;5;175mGGA[0m [01m[38;5;75mGGG[0m
+Histidine      H  [01m[38;5;175mCAT[0m [38;5;178mCAC[0m
+Isoleucine     I  [01m[38;5;75mATT[0m [01m[38;5;175mATC[0m [01m[38;5;25mATA[0m
+Leucine        L  [01m[38;5;75mTTA[0m [38;5;178mTTG[0m [01m[38;5;166mCTT[0m [38;5;36mCTC[0m [01m[38;5;175mCTA[0m [01m[38;5;25mCTG[0m
+Lysine         K  [01m[38;5;75mAAA[0m [38;5;178mAAG[0m
+Methionine     M  [38;5;36mATG[0m
+Phenylalanine  F  [01m[38;5;25mTTT[0m [01m[38;5;166mTTC[0m
+Proline        P  [38;5;36mCCT[0m [01m[38;5;25mCCC[0m [38;5;178mCCA[0m [01m[38;5;175mCCG[0m
+Serine         S  [01m[38;5;166mTCT[0m [38;5;36mTCC[0m [01m[38;5;175mTCA[0m [01m[38;5;75mTCG[0m [38;5;178mAGT[0m [01m[38;5;25mAGC[0m
+Threonine      T  [01m[38;5;175mACT[0m [38;5;178mACC[0m [01m[38;5;166mACA[0m [01m[38;5;25mACG[0m
+Tryptophan     W  [01m[38;5;166mTGG[0m
+Tyrosine       Y  [01m[38;5;75mTAT[0m [01m[38;5;175mTAC[0m
+Valine         V  [38;5;178mGTT[0m [01m[38;5;75mGTC[0m [38;5;36mGTA[0m [01m[38;5;166mGTG[0m
+
+Colored amino acids enable the compact display of all the information in a clonotype.
+
+The coloring is done using special characters, called ANSI escape characters.
+Color is used occasionally elsewhere by enclone, and there is also some
+bolding, accomplished using the same mechanism.
+
+Correct display of colors and bolding depends on having a terminal window
+that is properly set up.  As far as we know, this may always be the case,
+but it is possible that there are exceptions.  In addition, in general, text
+editors do not correctly interpret escape characters.
+
+For both of these reasons, you may wish to turn off the "special effects",
+either some or all of the time.  You can do this by adding the argument
+[01mPLAIN
+[0mto any enclone command.
+
+We know of two methods to get enclone output into another document, along with colors:
+1. Take a screenshot.
+2. Open a new terminal window, type the enclone command, and then convert the terminal window into
+a pdf.  See [01menclone help faq[0m for related instructions.
+
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
+enclone help faq
+[38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
+
+[01m[01;31m[01mFrequently Asked Questions[0m
+
+[0mWe're sorry you're having difficulty!  Please see the answers below, check out
+the other help guides, and if you're still stuck, write to us at enclone@10xgenomics.com.
+
+[01m[38;5;12m1. Why is my enclone output garbled?[0m
+
+We can think of two possibilities:
+
+A. The escape characters that enclone emits for color and bolding are not getting
+translated.  You have some options:
+(a) Turn off escape character generation by adding PLAIN to your enclone commands.
+This will work but you'll lose some information.
+(b) If your terminal window is not translating escape characters, ask someone
+with appropriate expertise to help you.  We have not observed this phenomenon,
+but it should be fixable.
+(c) If you're trying to view enclone output, with escape characters, using an editor,
+that's probably not going to work well.
+
+B. Perhaps enclone is emitting very wide lines.  Here are things you can do about this:
+(a) Make your terminal window wider or reduce the font size.
+(b) Identify the field that is very wide and use the column controls to remove that
+field.  See the help for lvars and cvars.  For example,
+[01mAMINO=cdr3[0m
+may help, or even
+[01mAMINO=[0m
+
+[01m[38;5;12m2. How can I print the entire enclone documentation?[0m
+
+We don't know how in general, but the following works for us from a mac:
+
+A. open a new terminal window
+B. make it 111 characters wide; font should be fixed width and roughly 12pt
+C. type "enclone help all NOPAGER"
+D. type command-A to select all
+E. type option-command-P to print selection
+F. click the PDF button in the lower left (drop down menu)
+G. click "Open in Preview"
+H. then print (or save the pdf, if you prefer).
+
+[01m[38;5;12m3. Why is enclone slow for me?[0m
+
+On a single VDJ dataset, it typically runs for us in a few seconds, on a Mac or Linux server. 
+Runs where we combine several hundred datasets execute in a couple minutes (on a server).  Your
+mileage could vary, and we are interested in cases where it is underperforming.  Let us know.  We
+are aware of several things that could be done to speed up enclone.
+
+[01m[38;5;12m4. How does enclone fit into the 10x Genomics software ecosystem?[0m
+
+There are several parts to the answer:
+• enclone is a standalone executable that by default produces human-readable output.
+• You can also run enclone to produce parseable output (see [01menclone help parseable[0m), and that
+output can be digested using code that you write (for example, in R).
+• When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
+enclone with a special option that yields only an output file for the 10x visualization tool
+Loupe.
+• Clonotypes may then be viewed using Loupe.  The view of a clonotype provided by Loupe is
+different than the view provided by enclone.  Loupe shows a continuous expanse of bases across
+each chain, which you can scroll across, rather than the compressed view of "important" bases or
+amino acids that enclone shows.
+
+[01m[38;5;12m5. What platforms does enclone run on?[0m
+
+1. linux/x86-64 (that's most servers)
+2. mac.
+
+However, we have not and cannot test every possible configuration of these platforms.  Please let
+us know if you encounter problems!
+
+[01m[38;5;12m6. How can I print out all the donor reference sequences?[0m
+
+Add the argument [01mDONOR_REF_FILE=filename[0m to your enclone command, and fasta for the donor
+reference sequences will be dumped there.
+
+[01m[38;5;12m7. How does enclone know what VDJ reference sequences I'm using?[0m
+
+It does not!  It assumes that you have the [01mhuman[0m reference sequences that shipped with the latest
+version of Cell Ranger.  If instead your sequences are mouse, then you can specify that by adding
+the argument [01mMOUSE[0m to your command line.  If you are simply using another reference sequence,
+please specify that by adding [01mREF=f[0m to your command line, where [01mf[0m is the name of your VDJ
+reference fasta file.
+
+[01m[38;5;12m8. Can I provide data from more than one donor?[0m
+
+Yes.  Type [01menclone help input[0m for details.  The default behavior of enclone is to prevent cells
+from different donors from being placed in the same clonotype.  The [01mMIX_DONORS[0m option may be used
+to turn off this behavior.  If you employ this option, then clonotypes containing cells from more
+than one donor will be flagged as errors, unless you use the [01mNWARN[0m option to turn off those
+warnings.  The primary reason for allowing entry of data from multiple donors is to allow
+estimation of enclone's error rate.
+
+[01m[38;5;12m9. What are some command line argument values quoted?[0m
+
+Command line argument values that contain any of these characters ;|* need to be quoted like so
+[01mTCR="a;b"[0m
+to prevent the shell from interpreting them for a purpose completely unrelated to enclone.  This
+is a trap, because forgetting to add the quotes can result in nonsensical and confusing behavior!
+
+[01m[38;5;12m10. If enclone fails, does it return nonzero exit status?[0m
+
+Yes, unless output of enclone is going to a terminal.  In that case, you'll always get zero.
+
+[01m[38;5;12m11. Could a cell be missing from an enclone clonotype?[0m
+
+Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
+described in [01menclone help special[0m, and which you can turn off.  We also delete cells for which
+more than four chains were found.
+
+[01m[38;5;12m12. Can enclone print summary stats?[0m
+
+Yes, if you add the option [01mSUMMARY[0m, then some summary stats will be printed.  If you only want to
+see the summary stats, then also add the option [01mNOPRINT[0m.
+
+[01m[38;5;12m13. What is the notes column?[0m
+
+The notes column appears if one of two relatively rare events occurs:
+
+1. An insertion is detected in a chain sequence, relative to the reference.
+
+2. The end of the J segment on a chain sequence does not exactly coincide with
+   the beginning of the C segment.
+The latter could correspond to one of several phenomena:
+a. A transcript has an insertion between its J and C segments.
+   This can happen.  See e.g. Behlke MA, Loh DY.
+   Alternative splicing of murine T-cell receptor beta-chain transcripts.
+   Nature 322(1986), 379-382.
+b. There is an error in a reference sequence segment.
+   We have tried to eliminate all such errors from the built-in references for
+   human and mouse.
+c. A cell produced a nonstandard transcript and also standard ones, and the
+   Cell Ranger pipeline just happened to pick a nonstandard one.
+d. There was a technical artifact and the sequence does not actually represent
+   an mRNA molecule.
+
+If you supply enclone with output from Cell Ranger 3.1, and J and C segments overlap by exactly
+one, this will not be noted.  The reason for this is that many of the reference sequences supplied
+with Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting in annoying
+overlap notes for a large fraction of clonotypes.
+
+[01m[38;5;12m14. Can I cap the number of threads used by enclone?[0m
+
+You can use the command-line argument [01mMAX_CORES=n[0m to cap the number of cores used in parallel
+loops.  The number of threads used is typically one higher.
+
+[01m[38;5;12m15. Does enclone work under Windows?[0m
+
+No.  There are nontrivial technical problems with getting this to work.  If you're sufficiently
+curious, see the notes in the source code file misc1.rs.  Please let us know if you're interested
+in support for Windows.
+
+[01m[38;5;12m16. Can I use enclone if I have only gene expression data?[0m
+
+Possibly.  In some cases this works very well, but in other cases it does not.  Success depends on
+dataset characteristics that have not been carefully investigated.  To attempt this, you need to
+invoke Cell Ranger on the GEX dataset as if it was a VDJ dataset, and you need to specify to Cell
+Ranger that the run is to be treated as BCR or TCR.  Two separate invocations can be used to get
+both.  Note also that Cell Ranger has been only minimally tested for this configuration and that
+this is not an officially supported Cell Ranger configuration.
+
+[01m[38;5;12m17. How can I cite enclone?[0m
+
+This version of enclone has been provided under a non-disclosure agreement,
+however once enclone has officially launched, you will be able to cite this version as:
+[01;32m10x Genomics, https://github.com/10XGenomics/enclone, version dj/14:3bd25a7+.
+[01;32m[0mAt some point subsequent to that, there will be a white paper to which you can refer, in addition
+to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide the arguments
+that you used when you ran enclone and indicate the version of Cell Ranger that you used to
+generate the input data.
+
+[01m[38;5;12m18. How enclone output html?[0m
+
+Yes, just add the argument [01mHTML[0m to the command line.  Currently this does not work with help.
+

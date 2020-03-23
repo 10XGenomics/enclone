@@ -350,6 +350,33 @@ fn test_enclone_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test that help output hasn't changed.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_help_output() {
+    PrettyTrace::new().on();
+    let out_file = format!("src/help.all");
+    let old = read_to_string(&out_file).unwrap();
+    let mut new = Command::new("target/release/enclone");
+    let mut new = new.arg("help");
+    new = new.arg("all");
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute test_help_output"));
+    let new2 = stringme(&new.stdout);
+    if old != new2 {
+        eprintln!(
+            "\nYou need to update help output by typing \"enclone help all > help.all\" in\n\
+                the src directory, assuming that the change is expected.\n"
+        );
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
 // you also have to change this.
 
