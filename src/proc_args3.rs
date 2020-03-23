@@ -9,8 +9,6 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
-use std::thread;
-use std::time;
 use string_utils::*;
 use vector_utils::*;
 
@@ -132,23 +130,13 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 // The code that's used here should be placed somewhere else.
 
                 if !path_exists(&p) && ctl.gen_opt.internal_run {
-                    let mut m = String::new();
-                    let nreps = 5;
-                    let sleeptime = 10;
-                    for rep in 0..nreps {
-                        let url = format!("https://xena.fuzzplex.com/api/analyses/{}", x);
-                        let o = Command::new("curl")
-                            .arg(url)
-                            .output()
-                            .expect("failed to execute xena http");
-                        m = String::from_utf8(o.stdout).unwrap();
-                        if !m.contains("502 Bad Gateway") {
-                            break;
-                        }
-                        if rep < nreps - 1 {
-                            thread::sleep(time::Duration::from_millis(sleeptime));
-                            continue;
-                        }
+                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", x);
+                    let o = Command::new("curl")
+                        .arg(url)
+                        .output()
+                        .expect("failed to execute xena http");
+                    let m = String::from_utf8(o.stdout).unwrap();
+                    if m.contains("502 Bad Gateway") {
                         panic!("502 Bad Gateway from http://xena/api/analyses/{}", x);
                     }
                     let mut path = String::new();
