@@ -94,189 +94,6 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Check lvars args.
-
-pub fn check_lvars(ctl: &mut EncloneControl, gex_features: &Vec<Vec<String>>) {
-    let mut to_check = Vec::<String>::new();
-    for x in ctl.clono_print_opt.lvars.iter() {
-        let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !(*x == "datasets"
-            || *x == "samples"
-            || *x == "donors"
-            || *x == "ncells"
-            || *x == "gex_med"
-            || *x == "gex_max"
-            || *x == "n_gex"
-            || *x == "entropy"
-            || *x == "near"
-            || *x == "far"
-            || *x == "ext"
-            || gpvar)
-        {
-            if !x.ends_with("_g")
-                && !x.ends_with("_ab")
-                && !x.starts_with("_ag")
-                && !x.starts_with("_cr")
-                && !x.starts_with("_cu")
-                && !x.starts_with("n_")
-            {
-                eprintln!(
-                    "\nUnrecognized variable {} for LVARS.  Please type \
-                     \"enclone help lvars\".\n",
-                    x
-                );
-                std::process::exit(1);
-            } else {
-                to_check.push(x.clone());
-            }
-        }
-    }
-    if !to_check.is_empty() {
-        let mut known_features = Vec::<String>::new();
-        for i in 0..gex_features.len() {
-            for j in 0..gex_features[i].len() {
-                let f = &gex_features[i][j];
-                let ff = f.split('\t').collect::<Vec<&str>>();
-                if ff.len() != 3 {
-                    eprintln!("Unexpected structure of features file, at this line\n{}", f);
-                    eprintln!("Giving up.\n");
-                    std::process::exit(1);
-                }
-                for z in 0..2 {
-                    if ff[2].starts_with("Antibody") {
-                        known_features.push(format!("{}_ab", ff[z]));
-                    } else if ff[2].starts_with("Antigen") {
-                        known_features.push(format!("{}_ag", ff[z]));
-                    } else if ff[2].starts_with("CRISPR") {
-                        known_features.push(format!("{}_cr", ff[z]));
-                    } else if ff[2].starts_with("CUSTOM") {
-                        known_features.push(format!("{}_cu", ff[z]));
-                    } else {
-                        known_features.push(format!("{}_g", ff[z]));
-                    }
-                }
-            }
-        }
-        unique_sort(&mut known_features);
-        for i in 0..to_check.len() {
-            let mut x = to_check[i].clone();
-            if x.contains(':') {
-                x = x.after(":").to_string();
-            }
-            if !bin_member(&known_features, &x) {
-                let mut n_var = false;
-                if x.starts_with("n_") {
-                    n_var = true;
-                    let mut is_dataset_name = false;
-                    let mut is_sample_name = false;
-                    let mut is_donor_name = false;
-                    let mut is_tag_name = false;
-                    let name = x.after("n_").to_string();
-                    let s = ctl.sample_info.n();
-                    for j in 0..s {
-                        if ctl.sample_info.dataset_id[j] == name {
-                            is_dataset_name = true;
-                        }
-                    }
-                    for j in 0..ctl.sample_info.sample_list.len() {
-                        if ctl.sample_info.sample_list[j] == name {
-                            is_sample_name = true;
-                        }
-                    }
-                    for j in 0..ctl.sample_info.donor_list.len() {
-                        if ctl.sample_info.donor_list[j] == name {
-                            is_donor_name = true;
-                        }
-                    }
-                    for j in 0..ctl.sample_info.tag_list.len() {
-                        if ctl.sample_info.tag_list[j] == name {
-                            is_tag_name = true;
-                        }
-                    }
-                    let msg = "Suggested reading: \"enclone help input\" and \
-                               \"enclone help glossary\".\n";
-                    if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
-                        eprintln!(
-                            "\ntags = {}\n\
-                             You've used the lead variable {}, and yet {} \
-                             does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
-                            ctl.sample_info.tag_list.iter().format(","),
-                            x,
-                            name,
-                            msg
-                        );
-                        std::process::exit(1);
-                    }
-                    let mut types = 0;
-                    if is_dataset_name {
-                        types += 1;
-                    }
-                    if is_sample_name {
-                        types += 1;
-                    }
-                    if is_donor_name {
-                        types += 1;
-                    }
-                    if is_tag_name {
-                        types += 1;
-                    }
-                    if is_dataset_name && is_sample_name && is_donor_name {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names a dataset, a sample, and a donor.  That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if is_dataset_name && is_sample_name {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names a dataset and a sample.  That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if is_dataset_name && is_donor_name {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names a dataset and a donor.  That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if is_sample_name && is_donor_name {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names a sample and a donor.  That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                    if types != 1 {
-                        eprintln!(
-                            "\nYou've used the lead variable {}, and yet {} \
-                             names a tag and also a dataset, sample or donor.\n\
-                             That's ambiguous.\n{}",
-                            x, name, msg
-                        );
-                        std::process::exit(1);
-                    }
-                }
-                if !n_var {
-                    eprintln!(
-                        "\nUnrecognized variable {} for LVARS.  Please type \
-                         \"enclone help lvars\".\n",
-                        x
-                    );
-                    std::process::exit(1);
-                }
-            }
-        }
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Provide help if requested.
 
@@ -356,16 +173,18 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else {
             let exit_message: String;
             if !ctl.gen_opt.cellranger {
-                exit_message =
-                    format!( "Something has gone badly wrong.  Please check to make \
+                exit_message = format!(
+                    "Something has gone badly wrong.  Please check to make \
                     sure that none\nof your input files are corrupted.  If they are all OK, then \
                     you have probably\n\
                     encountered an internal error in enclone.\n\
                     Please email us at enclone@10xgenomics.com, including the traceback shown\n\
                     above and also the following version information:\n\
                     {} = {}.\n\n\
-                    Thank you and have a nice day!", 
-                    env!("CARGO_PKG_VERSION"), VERSION_STRING );
+                    Thank you and have a nice day!",
+                    env!("CARGO_PKG_VERSION"),
+                    VERSION_STRING
+                );
             } else {
                 exit_message = format!(
                     "Something has gone badly wrong.  You have probably \

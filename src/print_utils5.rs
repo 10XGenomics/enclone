@@ -10,6 +10,41 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn justification(x: &str) -> u8 {
+    if x == "amino"
+        || x == "var"
+        || x == "const"
+        || x == "cdr3_dna"
+        || x == "cdiff"
+        || x == "notes"
+        || x == "edit"
+        || x == "datasets"
+        || x == "donors"
+        || x == "ext"
+        || x == "barcode"
+        || x == "barcodes"
+        || x.starts_with("v_name")
+        || x.starts_with("d_name")
+        || x.starts_with("j_name")
+        || x.starts_with("utr_name")
+        || x.starts_with("vj_seq")
+        || x.starts_with("seq")
+        || x.starts_with("q")
+        || x.starts_with("cdr3_aa")
+        || x.starts_with("var_aa")
+        || x.starts_with("var_indices")
+        || x.starts_with("share_indices")
+        || x.ends_with("_barcode")
+        || x.ends_with("_barcodes")
+    {
+        return b'l';
+    } else {
+        return b'r';
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Find variant positions.  And some other things.
 
 pub fn vars_and_shares(
@@ -28,16 +63,6 @@ pub fn vars_and_shares(
     // Copied stuff.
 
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
-                let varc = format!("{}{}", $var, $col + 1);
-                if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
-                    out_data[$u].insert(varc, format!("{}", $val));
-                }
-            }
-        };
-    }
     let nexacts = exacts.len();
     let cols = rsi.vids.len();
 
@@ -121,6 +146,16 @@ pub fn vars_and_shares(
         }
         unique_sort(&mut sa);
         for u in 0..nexacts {
+            macro_rules! speakc {
+                ($u:expr, $col:expr, $var:expr, $val:expr) => {
+                    if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+                        let varc = format!("{}{}", $var, $col + 1);
+                        if pass == 2 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc)) {
+                            out_data[$u].insert(varc, $val);
+                        }
+                    }
+                };
+            }
             speakc![
                 u,
                 cx,

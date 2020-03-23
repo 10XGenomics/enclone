@@ -1,31 +1,28 @@
--- used 19.47 seconds processing args
 
 enclone BCR=40043;40086;83817,83819,83821;91673;48620,48634;48622;83812,83813,86227,86228,86237,86238;48618;48614;45987,45977;83808,83809,86229,86230,86233,86234,89644,89645;47680,47674;86225,86226,89642,89643;48612,48630;48616,48632,83815,83816,86239,86240;48626;129973,129980,129979,129974;129517,129520,129519,129518;99634,99645,99644,99643,99642,99641,99640,99639,99638,99637,99636,99635;40947,40948,40955,40939,40940,40956,40964,42817,46032;90100,90103,90104,90105,90106,90107,90108,90109,90110,90111,90112,90113;131036,131015,132882,132889,132888,132883,132906,132913,132912,132907,129975,131066,131065,129976,132901,132900,132895,132910,134592;79619,79621,79620,79622,79627,79629,79628,79630,85328,85333,85348,85332,85347,85331,85346,85361,85330,85345,85360,85365,85329,85344,85349,85364,85362,85363,86231,86232,87252,87258,87256,87254,87253,87259,87257,87255,87483,87302,88348,88349,88350,88357,88356,88355,88354,88353,88352,88351,88358,88364,88363,88362,88361,88360,88359;114517,114524,114521,114519,110603,106236,106237,107574,107577,107576,107575,107525,107533,107541,107542,107545,107544,107556,108167,107546,107547,107548,107557,108168,107549,107551,108162,107560,109772,110592,107520,107529,107537,110581,110583,110582,107518,107527,107534,110568,110571,110570,110569,110552,110555,110554,110553,106240,106242,106241,114510,114515,114512,110572,110575,110574,110573,110560,110563,110562,110561,108165,107555,108161,107550,107524,107532,106243,106244,110564,110567,110566,110565,107522,107531,107539,110556,110559,110558,110557,109767,109770,110588,109768,110601,110607,110602,110608,110610,110576,110577,110578,110580,110579,110597;123085,123086,123090;132884,132891,132890,132885,132896,132903,132902,132897,132908,132915,132914,132909,118053,121352,116164,116170,116169,116168,116167,116166,116165,116156,116159,116158,116157;91295-91302,91312,91314,91316,91318,91320,91322,91324,92751,92758,92763,95455,106060,106062,114844,116087-116112,117703,117704,117707,118175-118192,123137,123138,123141,123142,123176,123178,123179,123182,123183,123186,123187,123190,123191,140331-140364,140366-140369;131240,131256,129483,129480,129481,131270,129486,131235,131268,131237,131275,129476,129477,129478,134532,134538,134537,134536,134535,134534,134533,117458,117459,134351;117417,86202,86216,86215,86214,86213,86212,86211,86210,86208,86207,86206,86205,86204,86203,112741,112740,113526;52177 ANN COMP BC FAIL_ONLY=true PLAIN NSILENT NO_REUSE PRINT_FAILED_JOINS PRE=/mnt/assembly/vdj/current14 MIX_DONORS REQUIRED_FPS=15
 
 There are 443 datasets from 30 donors.
 
--- used 43.12 seconds reading invocation
-used 43.12 seconds in proc_args_tail
-used 0.01 seconds building reference, peak mem = 0.01 GB
-used 62.76 seconds up through building reference
-used 99.7 seconds loading from json
-used 10.85 seconds in proto stuff
-found 368648 exact subclonotypes from 416449 productive pairs
-max exact subclonotype size = 15671
-used 12.0 seconds finding exact subclonotypes, peak mem = 9.08 GB
-used 0.03 seconds filtering foursies
-used 12.43 seconds building info
-used 24.78 seconds used finding alt alleles, peak mem = 11.13 GB
 
-used 0.00 seconds making donor refs
-used 4.88 seconds used substituting alt alleles, peak mem = 11.13 GB
+used 39.29 seconds in proc_args_tail
+used 0.01 seconds building reference, peak mem = 0.01 GB
+used 57.55 seconds up through building reference
+used 70.43 seconds loading from json
+used 6.26 seconds in proto stuff
+found 368648 exact subclonotypes from 416449 productive pairs
+max exact subclonotype size = 15491
+used 2.84 seconds finding exact subclonotypes, peak mem = 7.53 GB
+used 0.04 seconds filtering foursies
+used 6.05 seconds building info
+used 2.48 seconds used finding alt alleles, peak mem = 11.51 GB
+used 0.03 seconds making donor refs
+used 5.04 seconds used substituting alt alleles, peak mem = 11.51 GB
 comparing 394818 simple clonotypes
-0.39 seconds used in join setup
-14.81 seconds used in main part of join
+used 0.36 seconds in join setup
+used 17.57 seconds in main part of join
 15529 joins
 22 errors
-1.24 seconds used in tail of join
-
+used 1.33 seconds in tail of join
 
 [1] GROUP = 1 CLONOTYPES = 26 CELLS
 
@@ -35,44 +32,44 @@ donors = d26,d27
 datasets in which these donors appear:
 donor 1: 116156,116158,116159,116164,116165,116166,116169,116170,118053,132903
 donor 2: 116103,118181,118187,140333,140340,91298
-┌──────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────┐
-│                      │  CHAIN 1                                                                                               │  CHAIN 2                                                                         │
-│                      │  85|IGHV1-69 ◼ 20|IGHD3-22 ◼ 55|IGHJ4                                                                  │  286|IGKV3-20 ◼ 215|IGKJ2                                                        │
-│                      ├────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│                      │                                                      1111111111 111111111111111 11111111               │                                                11111 11111111111 111             │
-│                      │    222333333344444455555666666777777788888888899999990000001111 111111222222222 23333333               │   11111222223333334444555555566677778888899999900000 00111111111 222             │
-│                      │  25357012347903568901389234789012456701234567924567890123670123 456789012345678 90123457               │  116789012781236891478012346906801360135902678901257 89012345678 345             │
-│                      │                                                                 ══════CDR3═════           umed  const  │                                                      ════CDR3═══      umed  const│
-│universal ref         │  WRVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ GQGTLVTS               │  ELDTTGEIVPGSLSEATSASVSSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQ◦◦◦◦◦◦◦◦ KLE             │
-│donor ref             │  WRVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ GQGTLVTS               │  ELDTTGEIVPGSLSEATSASVSSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQ◦◦◦◦◦◦◦◦ KLE             │
-│#   datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .x.xxxxxxxxx.x. xxxxxxxx               │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ..x.xxx.... xxx             │
-│1   118187         1  │  WRVSAKKPGSKSCSGTRSHASAPGLEGGIIPIGSANQKFQGRVTTETSTAHMELRSSEAVYY CARGPDSDNYYYFYW GQGTLLTS    50  IGHM   │  ELDTTGEIVTGSLPEATSASVSRYLAYKPLIGANTDRSSTDTNRLEAEDVY CQQYASSPYTF KLE    66  IGKC │
-│2   116166         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTSTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS    46  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE    76  IGKC │
-│3   91298          1  │  WRVSAKKPGSKSCSGTSSHASAPGLEGGIIPIGAANQKFQGRVTTETSTAYMELRSSEAVYY CARGPDSDNYYYFYW GQGTQVTS    45  IGHM   │  ELDTTGEIVAGSLSEATSASVSRYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYASSPYTF NLE    78  IGKC │
-│4   116164         1  │  WRVSAKKPGSTSCSGTSTYANAPGLEGGITPIGTANQKFQGRVTNKTNTAYMKLSSSEAVYY CARGPDSGGFYFFYW GQGTLVTS    41  IGHM   │  ELDTTGEIVPGSLSEATSATISSYLGYRPLIGASTDRSSTDTSRLKPEDVY CQQYVSSPYTF KLE   104  IGKC │
-│5   116158         1  │  WRVSAKKPGSTSCSGTSTSASAPGLEGGIIPVGTANQKFQGRVTTKTTTAYMALRSSEAVYY CARGPDSSGFYYFYW GQGTLVTS    39  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLMGASTDRSSTDTSRLEPEDVC CQQYASSPYTF KLE    70  IGKC │
-│6   118053         1  │  CRVSAKKPGSKSCSGTSNYASAPGLEGGIIPFGTANQKFQGRVTTKTSTAYMEMSSSEAVYY CARGPDSGGYYYFHW GQGTVVTS    36  IGHM   │  ELDTTGEIVPVSLSEATSATVSSYLAYKPLIAASTHRSSTDTSRLEPEDVY CQQYGSSPYTF KLE    17  IGKC │
-│7   116169         1  │  WRVSTKKPASKSCSGTSNYDSAPGLEGGITPIGTANPKFRGRVTTKTSTAYMELSSFEALYY CVRGPDSGGYYYFYW GQGTLVTS    36  IGHM   │  ELDTTGEIVPGSLSEATSASITSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGSSPYTF KLE    14  IGKC │
-│8   116156         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTNTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS    34  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE    43  IGKC │
-│9   116169         1  │  WRVSAKKPGSTSCSGTSNSASAPGLEGGVTPIGTSNQKFQGRVTTKTNTAYMQLSGSEAVYY CARGPDTISYYYFYW GQGTLVTS    33  IGHM   │  ELDSTGEIVPGSLSEAASATISTYLAYKPLIGASADRSSTATTRLEPEDVY CQQYGSSPYTF KLE   183  IGKC │
-│10  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGPEGGITPIGRANQKFQGRLTTKTSTVYMELNSSEAVYY CARGPDSINYYYFYW GQGTLVTS    31  IGHM   │  ELDTSGQIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGTSPYTF KLE    74  IGKC │
-│11  116159         1  │  WRVSAKNSGSTSCSGTSSNSSAPGLEGGITPIGTANQKFQGRVTSKTSTAYMELRSSEAVYY CARGPDSSVYYYFYW GQGTLVTS    29  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSPPYTF KLE    70  IGKC │
-│12  140340         1  │  WRVSAKKPGSKSCSGTSSHASAPGLEGGITPIGTANQKFQGRVTTETSTAYMDLRSSEAVYY CARGPDSGGYYYFYW GQGTLVTS    28  IGHM   │  ELDITGEIVPGSLSEATSASVSSYLAYKPLIGASTDSSSTDTSRLEPEHVY CQQYGSSPYTF KLE    48  IGKC │
-│13  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTRTSTAYMELSSSEAVYY CARGPDSSTYYYFYW GQGTLVTS    20  IGHM   │  ELDTTGEIVPGSLSEATSASISRFLAYRPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KLE   102  IGKC │
-│14  116170         1  │  WRVSTKKPGSKSCSGTNNYASAPGLEGGIIPIGTANPKFRGRVTTKTSTAYMELTSSDALYY CARGPDSGGYYYFYW GQGTLVTS    19  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KVE    38  IGKC │
-│15  116169         1  │  WRVSAKKPGSTSCSGTSSSASAPGPEGGITPIGRANQKFQGRLTTKTSTVYMELNSSEAVYY CARGPDSINYYYFYW GQGTLVTS    15  IGHM   │  ELDTSGQIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGTSPYTF KLE    42  IGKC │
-│16  118181         1  │  WRMSAKKPGSKSCSGTSSSASASGPEGGIIPIGTANQKFQGRVTTETSTAYMEVRSSEAVYY CARGPGSSSYYYFYW GQGTLVTS    14  IGHM   │  ELDTTGEIVPGSLSEATSASVSAYLAYKPLIAASTDRSGTDSSRVEPEDVF CQQYGSSPYTF RLE    53  IGKC │
-│17  132903         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTSTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS    10  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE    39  IGKC │
-│18  116165         1  │  WTVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAVYY CARGPESSGFYYFYW GQGTLVTS     9  IGHM   │  ELDTTGEIVPGSLSEATSASVSTYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KLE    32  IGKC │
-│19  116165         1  │  CRVSAKKPGSKSCSGTSNYASAPGLEGGITPIATANQKFQGRVTTKTRTAYMELSSSEAVYY CARGPDSGGYYYFYW GQGTVVTS     8  IGHM   │  ELDTTGEIVPGSLSEATSATVSSYLAYKPLIGASTHRSSTDTNRLEPEDVY CQQYGSSPYTF KLE    38  IGKC │
-│20  116103         1  │  WRMSAKKPGSKSCSDTSSSASASGLEGGIIPIGTANQKFQGRVTTETSTAYMEVRSSEAVYY CARGPGSSAYYYFYW GQGTLVTS     8  IGHM   │  ELDTTGEIVPGSLSEATSASVSAYLAYKPLIAASTDRSGTDSSRVEPEDVF CQQYGSSPYTF RLE    94  IGKC │
-│21  116156         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAVYY CARGPDSSGYYYFYW GQGTLVTS     6  IGHM   │  ELDTTGEIVPGSLSEATSASISRYLAYKPLIGASTDRRSTDTSRLEPEDVY CQQYGSSPYTF KLQ    34  IGKC │
-│22  116158         1  │  WRVSAKKPGSTSCSGTSNSASAPGLEGGITPIGTANQKFQGRVTTRTSTAYMELRSSEAVYY CARGPDSSTYYYFYW GQGTLVTS     6  IGHM   │  ELDTTGEIVPGSLSEATSASITRFLAYRPLIGASTGRSSAATSSLEPEDVY CQQYGSSPYTF KLE    21  IGKC │
-│23  140333         1  │  WRMSAKKPGSKSCSGTSSSASASGLEGGIIPFGTANQKFQGRVRTETSTAYLELSSSEAVYY CARGPDISGYYYFYW GQGTLVTS     5  IGHM   │  ELDTTGEIAPGSLSEATSASVSTYLAYKPLIGASTDKSGTDSSRLEPEDVF CQQYGSSPYTF RLE    21  IGKC │
-│24  116158         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGITPIGTANQKFQGRVTTRTSTAYMELRSSEAVYY CARGPDSSTYYYFYW GQGTLVTS     4  IGHM   │  ELDTTGEIVPGSLSEATSASISRFLAYRPLIGSSTGRSSAATSSLEPEDVY CQQYGSSPYTF HLE    37  IGKC │
-│25  140333         1  │  WRVSAKKPGSKSCSGTSSHASVPGLEGGIIPIRTANQKFQGRVTTERSTAYMELRSSEAVYY CARGPDSDNYYYFYW GQGTLVTS     4  IGHM   │  ELDTTGEIVAGCLSEATSTSVSRYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYANSPYTF KLE    78  IGKC │
-│26  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAMYF CARGPDSSAYYYFYW GQGTLVTS     3  IGHM   │  ELDTTGEIVPGSLSEATSASISRYFAYKPLIGATTDRSSTDTSRLEPEDVY CQQYGNSPYTF KLE    69  IGKC │
-└──────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────┐
+│                      │  CHAIN 1                                                                                                │  CHAIN 2                                                                          │
+│                      │  85|IGHV1-69 ◼ 20|IGHD3-22 ◼ 55|IGHJ4                                                                   │  286|IGKV3-20 ◼ 215|IGKJ2                                                         │
+│                      ├─────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│                      │                                                      1111111111 111111111111111 11111111                │                                                11111 11111111111 111              │
+│                      │    222333333344444455555666666777777788888888899999990000001111 111111222222222 23333333                │   11111222223333334444555555566677778888899999900000 00111111111 222              │
+│                      │  25357012347903568901389234789012456701234567924567890123670123 456789012345678 90123457                │  116789012781236891478012346906801360135902678901257 89012345678 345              │
+│                      │                                                                 ══════CDR3═════           u_med  const  │                                                      ════CDR3═══      u_med  const│
+│universal ref         │  WRVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ GQGTLVTS                │  ELDTTGEIVPGSLSEATSASVSSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQ◦◦◦◦◦◦◦◦ KLE              │
+│donor ref             │  WRVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ GQGTLVTS                │  ELDTTGEIVPGSLSEATSASVSSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQ◦◦◦◦◦◦◦◦ KLE              │
+│#   datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .x.xxxxxxxxx.x. xxxxxxxx                │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ..x.xxx.... xxx              │
+│1   118187         1  │  WRVSAKKPGSKSCSGTRSHASAPGLEGGIIPIGSANQKFQGRVTTETSTAHMELRSSEAVYY CARGPDSDNYYYFYW GQGTLLTS     50  IGHM   │  ELDTTGEIVTGSLPEATSASVSRYLAYKPLIGANTDRSSTDTNRLEAEDVY CQQYASSPYTF KLE     66  IGKC │
+│2   116166         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTSTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS     46  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE     76  IGKC │
+│3   91298          1  │  WRVSAKKPGSKSCSGTSSHASAPGLEGGIIPIGAANQKFQGRVTTETSTAYMELRSSEAVYY CARGPDSDNYYYFYW GQGTQVTS     45  IGHM   │  ELDTTGEIVAGSLSEATSASVSRYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYASSPYTF NLE     78  IGKC │
+│4   116164         1  │  WRVSAKKPGSTSCSGTSTYANAPGLEGGITPIGTANQKFQGRVTNKTNTAYMKLSSSEAVYY CARGPDSGGFYFFYW GQGTLVTS     41  IGHM   │  ELDTTGEIVPGSLSEATSATISSYLGYRPLIGASTDRSSTDTSRLKPEDVY CQQYVSSPYTF KLE    104  IGKC │
+│5   116158         1  │  WRVSAKKPGSTSCSGTSTSASAPGLEGGIIPVGTANQKFQGRVTTKTTTAYMALRSSEAVYY CARGPDSSGFYYFYW GQGTLVTS     39  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLMGASTDRSSTDTSRLEPEDVC CQQYASSPYTF KLE     70  IGKC │
+│6   118053         1  │  CRVSAKKPGSKSCSGTSNYASAPGLEGGIIPFGTANQKFQGRVTTKTSTAYMEMSSSEAVYY CARGPDSGGYYYFHW GQGTVVTS     36  IGHM   │  ELDTTGEIVPVSLSEATSATVSSYLAYKPLIAASTHRSSTDTSRLEPEDVY CQQYGSSPYTF KLE     17  IGKC │
+│7   116169         1  │  WRVSTKKPASKSCSGTSNYDSAPGLEGGITPIGTANPKFRGRVTTKTSTAYMELSSFEALYY CVRGPDSGGYYYFYW GQGTLVTS     36  IGHM   │  ELDTTGEIVPGSLSEATSASITSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGSSPYTF KLE     14  IGKC │
+│8   116156         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTNTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS     34  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE     43  IGKC │
+│9   116169         1  │  WRVSAKKPGSTSCSGTSNSASAPGLEGGVTPIGTSNQKFQGRVTTKTNTAYMQLSGSEAVYY CARGPDTISYYYFYW GQGTLVTS     33  IGHM   │  ELDSTGEIVPGSLSEAASATISTYLAYKPLIGASADRSSTATTRLEPEDVY CQQYGSSPYTF KLE    183  IGKC │
+│10  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGPEGGITPIGRANQKFQGRLTTKTSTVYMELNSSEAVYY CARGPDSINYYYFYW GQGTLVTS     31  IGHM   │  ELDTSGQIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGTSPYTF KLE     74  IGKC │
+│11  116159         1  │  WRVSAKNSGSTSCSGTSSNSSAPGLEGGITPIGTANQKFQGRVTSKTSTAYMELRSSEAVYY CARGPDSSVYYYFYW GQGTLVTS     29  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSPPYTF KLE     70  IGKC │
+│12  140340         1  │  WRVSAKKPGSKSCSGTSSHASAPGLEGGITPIGTANQKFQGRVTTETSTAYMDLRSSEAVYY CARGPDSGGYYYFYW GQGTLVTS     28  IGHM   │  ELDITGEIVPGSLSEATSASVSSYLAYKPLIGASTDSSSTDTSRLEPEHVY CQQYGSSPYTF KLE     48  IGKC │
+│13  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTRTSTAYMELSSSEAVYY CARGPDSSTYYYFYW GQGTLVTS     20  IGHM   │  ELDTTGEIVPGSLSEATSASISRFLAYRPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KLE    102  IGKC │
+│14  116170         1  │  WRVSTKKPGSKSCSGTNNYASAPGLEGGIIPIGTANPKFRGRVTTKTSTAYMELTSSDALYY CARGPDSGGYYYFYW GQGTLVTS     19  IGHM   │  ELDTTGEIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KVE     38  IGKC │
+│15  116169         1  │  WRVSAKKPGSTSCSGTSSSASAPGPEGGITPIGRANQKFQGRLTTKTSTVYMELNSSEAVYY CARGPDSINYYYFYW GQGTLVTS     15  IGHM   │  ELDTSGQIVPGSLSEATSASISSYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYGTSPYTF KLE     42  IGKC │
+│16  118181         1  │  WRMSAKKPGSKSCSGTSSSASASGPEGGIIPIGTANQKFQGRVTTETSTAYMEVRSSEAVYY CARGPGSSSYYYFYW GQGTLVTS     14  IGHM   │  ELDTTGEIVPGSLSEATSASVSAYLAYKPLIAASTDRSGTDSSRVEPEDVF CQQYGSSPYTF RLE     53  IGKC │
+│17  132903         1  │  WRVSAKKPGSTSCSGSSSSASAPGLEGGIIPIGSANQKFQGRVTTKTSTAYMELRSSEAIYY CARGPDTSVYYYFYW GQGTLVTS     10  IGHM   │  ELDTTGEVVPGSLSEATSATISSYLAYKPLIGTSTDRSSTDTSRLEPEDVC CQQYGSSPYTF KLE     39  IGKC │
+│18  116165         1  │  WTVSAKKPGSKSCSGTSSYASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAVYY CARGPESSGFYYFYW GQGTLVTS      9  IGHM   │  ELDTTGEIVPGSLSEATSASVSTYLAYKPLIGASTDRSSTDTSRLEPEDVY CQQYGSSPYTF KLE     32  IGKC │
+│19  116165         1  │  CRVSAKKPGSKSCSGTSNYASAPGLEGGITPIATANQKFQGRVTTKTRTAYMELSSSEAVYY CARGPDSGGYYYFYW GQGTVVTS      8  IGHM   │  ELDTTGEIVPGSLSEATSATVSSYLAYKPLIGASTHRSSTDTNRLEPEDVY CQQYGSSPYTF KLE     38  IGKC │
+│20  116103         1  │  WRMSAKKPGSKSCSDTSSSASASGLEGGIIPIGTANQKFQGRVTTETSTAYMEVRSSEAVYY CARGPGSSAYYYFYW GQGTLVTS      8  IGHM   │  ELDTTGEIVPGSLSEATSASVSAYLAYKPLIAASTDRSGTDSSRVEPEDVF CQQYGSSPYTF RLE     94  IGKC │
+│21  116156         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAVYY CARGPDSSGYYYFYW GQGTLVTS      6  IGHM   │  ELDTTGEIVPGSLSEATSASISRYLAYKPLIGASTDRRSTDTSRLEPEDVY CQQYGSSPYTF KLQ     34  IGKC │
+│22  116158         1  │  WRVSAKKPGSTSCSGTSNSASAPGLEGGITPIGTANQKFQGRVTTRTSTAYMELRSSEAVYY CARGPDSSTYYYFYW GQGTLVTS      6  IGHM   │  ELDTTGEIVPGSLSEATSASITRFLAYRPLIGASTGRSSAATSSLEPEDVY CQQYGSSPYTF KLE     21  IGKC │
+│23  140333         1  │  WRMSAKKPGSKSCSGTSSSASASGLEGGIIPFGTANQKFQGRVRTETSTAYLELSSSEAVYY CARGPDISGYYYFYW GQGTLVTS      5  IGHM   │  ELDTTGEIAPGSLSEATSASVSTYLAYKPLIGASTDKSGTDSSRLEPEDVF CQQYGSSPYTF RLE     21  IGKC │
+│24  116158         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGITPIGTANQKFQGRVTTRTSTAYMELRSSEAVYY CARGPDSSTYYYFYW GQGTLVTS      4  IGHM   │  ELDTTGEIVPGSLSEATSASISRFLAYRPLIGSSTGRSSAATSSLEPEDVY CQQYGSSPYTF HLE     37  IGKC │
+│25  140333         1  │  WRVSAKKPGSKSCSGTSSHASVPGLEGGIIPIRTANQKFQGRVTTERSTAYMELRSSEAVYY CARGPDSDNYYYFYW GQGTLVTS      4  IGHM   │  ELDTTGEIVAGCLSEATSTSVSRYLAYKPLIGASTDRSSTDTNRLEPEDVY CQQYANSPYTF KLE     78  IGKC │
+│26  116164         1  │  WRVSAKKPGSTSCSGTSSSASAPGLEGGIIPIGTANQKFQGRVTTKTSTAYMELSSSEAMYF CARGPDSSAYYYFYW GQGTLVTS      3  IGHM   │  ELDTTGEIVPGSLSEATSASISRYFAYKPLIGATTDRSSTDTSRLEPEDVY CQQYGNSPYTF KLE     69  IGKC │
+└──────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -190,7 +187,7 @@ chain 2, tig 2
 429-565 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [2] GROUP = 1 CLONOTYPES = 10 CELLS
 
@@ -200,28 +197,28 @@ donors = d26,d27
 datasets in which these donors appear:
 donor 1: 116165
 donor 2: 116096,116112,123137,123179,123186,123191,140352,140358
-┌──────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────┐
-│                      │  CHAIN 1                                                                             │  CHAIN 2                                          │
-│                      │  159.20.1|IGHV3-7 ◼ 55|IGHJ4                                                         │  334|IGLV1-51 ◼ 314|IGLJ2                         │
-│                      ├──────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
-│                      │                                           1111111111 11111111111111 11               │                      11 1111111111111             │
-│                      │     111222233444444455666777777778888899990000001111 11111122222222 33               │  2444455555556677789900 0001111111111             │
-│                      │  156089568928134678938016034567892357825671236790123 45678901234567 16               │  1234923567891701233906 7890123456789             │
-│                      │                                                      ═════CDR3═════     umed  const  │                         ═════CDR3════  umed  const│
-│universal ref         │  ESWVCESGGLPLASGTFSSSAGKVKGSEKYYVVKRTINNSLMNSAETAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦ TS               │  VGSSNVSYQQLPTINNKGGTGY CGTWD◦◦◦◦◦◦◦◦             │
-│donor ref             │  ESWVCESGGLPLASGTFSSSAGKVKGSEKYYVVKRTINNSLMNSAETAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦ TS               │  VGSSNVSYQQLPTINNKGGTGY CGTWD◦◦◦◦◦◦◦◦             │
-│#   datasets  ncells  │  .xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxx ...xx..x.xx... xx               │  xxxxxxxxxxxxxxxxxxxxxx ....xxx.xxxx.             │
-│1   140358         1  │  ETWVCESGGLPLASGTFSNSPGKVKGSTKYYVVKRTINNSVTNGAETAVYY CARIGYSSSCFDYW IS    77  IGHM   │  VGTSNVFYQQLPTINNQGGTGY CGTWDGSLTAVLF    46  IGLC2│
-│2   140358         1  │  ETWVCESAGLPLASGTFSNSAGKVKGSTKYYLMKRTINSLVMNSADTAVYF CARIGYSSSSFDYW TS    67  IGHM   │  AGTSSVSYQLLPTINSEGGAGY CGTWDGRLTVVLF    92  IGLC2│
-│3   123137         1  │  ETWVCDSGGLWVASGTFSNSAGKVNGSTKYYVLKRTINNSLMNSAETAVYY CARIGYSSSSFDYW TS    53  IGHM   │  VGTSNVSYQQLPTINNKGDTGH CGTWDSSLLVVLF    39  IGLC2│
-│4   123191         1  │  ETWVCESGGLSLASGPFSNSAGKVKGTTKYYAVNRTINNSVINSAETAVYY CARIGYSSSSFDYW TA    53  IGHM   │  VGTSNVSYQQLPTINNKGGTGY CGTWDLSLTAVLF    45  IGLC2│
-│5   140352         1  │  ETWVCESGGLPVASGTFSDSAGKVNGNIIYYVVKRTINKSVVNSAETAVYY CARIGYSSSSFDYW TS    52  IGHM   │  VGTSDVSYQHLPTINNKGGTGY CGTWDSSLTAVLF    35  IGLC2│
-│6   116112         1  │  ETWVCESAGLPLASGTFSNSAGKVKATTKYYLMKRTINNLVMNSADTAVYF CARIGYSSSSFDYW TS    43  IGHM   │  AGTSSVSYQLLPTINSEGGAGY CGTWDGRLTVVLF    67  IGLC2│
-│7   116165         1  │  ESWVCESGDLPLASGTFSNSAGKMKGGQKYYVVKRTINNSLMNSAETAVYY CARIGYSSSSIDYW TS    22  IGHM   │  VGSSNVSYQQLPTINNKGGTGY CGTWDGSLTVVVF    33  IGLC2│
-│8   116096         1  │  ETWVCESGGLPVASGTFSDSAGKVNGSIIYYVVKRTINKSLVNSAETAVYY CARIGYSSSSFDYW TS    22  IGHM   │  VGTSDVSYQHVPTINNKGGTGY CGTWDSILTAVLF    14  IGLC2│
-│9   123179         1  │  ETCVCESGGLPLASGSFNNSAGRVKGSTIYYVLKRAINKSLLNSGETAVYY CARIGYSSSSFDYW TS    16  IGHM   │  VGTSDVSYQHVASINNKGGTGY CGTWDSSLTVVLF    30  IGLC2│
-│10  123186         1  │  ETWACESGGLPLGRGPFSNSAGKVKGTTKYYAVNRIINNSVINSAESAVYF CARIGYSSSSFDYW TA    16  IGHM   │  VGTSNVSYQQLPTINNKGGTGY CGTWDLSLTAVLF    23  IGLC2│
-└──────────────────────┴──────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────┘
+┌──────────────────────┬───────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────┐
+│                      │  CHAIN 1                                                                              │  CHAIN 2                                           │
+│                      │  159.20.1|IGHV3-7 ◼ 55|IGHJ4                                                          │  334|IGLV1-51 ◼ 314|IGLJ2                          │
+│                      ├───────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────┤
+│                      │                                           1111111111 11111111111111 11                │                      11 1111111111111              │
+│                      │     111222233444444455666777777778888899990000001111 11111122222222 33                │  2444455555556677789900 0001111111111              │
+│                      │  156089568928134678938016034567892357825671236790123 45678901234567 16                │  1234923567891701233906 7890123456789              │
+│                      │                                                      ═════CDR3═════     u_med  const  │                         ═════CDR3════  u_med  const│
+│universal ref         │  ESWVCESGGLPLASGTFSSSAGKVKGSEKYYVVKRTINNSLMNSAETAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦ TS                │  VGSSNVSYQQLPTINNKGGTGY CGTWD◦◦◦◦◦◦◦◦              │
+│donor ref             │  ESWVCESGGLPLASGTFSSSAGKVKGSEKYYVVKRTINNSLMNSAETAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦◦ TS                │  VGSSNVSYQQLPTINNKGGTGY CGTWD◦◦◦◦◦◦◦◦              │
+│#   datasets  ncells  │  .xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxx ...xx..x.xx... xx                │  xxxxxxxxxxxxxxxxxxxxxx ....xxx.xxxx.              │
+│1   140358         1  │  ETWVCESGGLPLASGTFSNSPGKVKGSTKYYVVKRTINNSVTNGAETAVYY CARIGYSSSCFDYW IS     77  IGHM   │  VGTSNVFYQQLPTINNQGGTGY CGTWDGSLTAVLF     46  IGLC2│
+│2   140358         1  │  ETWVCESAGLPLASGTFSNSAGKVKGSTKYYLMKRTINSLVMNSADTAVYF CARIGYSSSSFDYW TS     67  IGHM   │  AGTSSVSYQLLPTINSEGGAGY CGTWDGRLTVVLF     92  IGLC2│
+│3   123137         1  │  ETWVCDSGGLWVASGTFSNSAGKVNGSTKYYVLKRTINNSLMNSAETAVYY CARIGYSSSSFDYW TS     53  IGHM   │  VGTSNVSYQQLPTINNKGDTGH CGTWDSSLLVVLF     39  IGLC2│
+│4   123191         1  │  ETWVCESGGLSLASGPFSNSAGKVKGTTKYYAVNRTINNSVINSAETAVYY CARIGYSSSSFDYW TA     53  IGHM   │  VGTSNVSYQQLPTINNKGGTGY CGTWDLSLTAVLF     45  IGLC2│
+│5   140352         1  │  ETWVCESGGLPVASGTFSDSAGKVNGNIIYYVVKRTINKSVVNSAETAVYY CARIGYSSSSFDYW TS     52  IGHM   │  VGTSDVSYQHLPTINNKGGTGY CGTWDSSLTAVLF     35  IGLC2│
+│6   116112         1  │  ETWVCESAGLPLASGTFSNSAGKVKATTKYYLMKRTINNLVMNSADTAVYF CARIGYSSSSFDYW TS     43  IGHM   │  AGTSSVSYQLLPTINSEGGAGY CGTWDGRLTVVLF     67  IGLC2│
+│7   116165         1  │  ESWVCESGDLPLASGTFSNSAGKMKGGQKYYVVKRTINNSLMNSAETAVYY CARIGYSSSSIDYW TS     22  IGHM   │  VGSSNVSYQQLPTINNKGGTGY CGTWDGSLTVVVF     33  IGLC2│
+│8   116096         1  │  ETWVCESGGLPVASGTFSDSAGKVNGSIIYYVVKRTINKSLVNSAETAVYY CARIGYSSSSFDYW TS     22  IGHM   │  VGTSDVSYQHVPTINNKGGTGY CGTWDSILTAVLF     14  IGLC2│
+│9   123179         1  │  ETCVCESGGLPLASGSFNNSAGRVKGSTIYYVLKRAINKSLLNSGETAVYY CARIGYSSSSFDYW TS     16  IGHM   │  VGTSDVSYQHVASINNKGGTGY CGTWDSSLTVVLF     30  IGLC2│
+│10  123186         1  │  ETWACESGGLPLGRGPFSNSAGKVKGTTKYYAVNRIINNSVINSAESAVYF CARIGYSSSSFDYW TA     16  IGHM   │  VGTSNVSYQQLPTINNKGGTGY CGTWDLSLTAVLF     23  IGLC2│
+└──────────────────────┴───────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -278,7 +275,7 @@ chain 2, tig 2
 424-635 ==> 0-211 on |309|IGLC2|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [3] GROUP = 1 CLONOTYPES = 8 CELLS
 
@@ -288,25 +285,25 @@ donors = d20,d26
 datasets in which these donors appear:
 donor 1: 40955,40964
 donor 2: 116158,116164,116166,116167,116168
-┌──────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────┐
-│                          │  CHAIN 1                                                                             │  CHAIN 2                                                              │
-│                          │  159|IGHV3-7 ◼ 55|IGHJ4                                                              │  224|IGKV1-17 ◼ 215|IGKJ2                                             │
-│                          ├──────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│                          │                                                  111111 1111111111 111               │                          111 11111111111 1                            │
-│                          │   11122223333344444445555666667777777788999999999000111 1111112222 223               │  133344555555566677777788000 01111111111 2                            │
-│                          │  157912584567912456890378023890125678937023456789127013 4567890123 780               │  806979123457903601467947248 90123456789 4                            │
-│                          │                                                         ═══CDR3═══      umed  const  │                              ════CDR3═══    umed  const  notes        │
-│universal ref             │  EGQEQLSGGSLRSAAGFTSSYSQAGGLNIKQDEKYYVKTRNAKNSLYLMNEAV◦ ◦◦◦◦◦◦◦◦◦◦ TLT               │  GSVRSGRNDLGYQKKKYASQSVSGEFY CLQ◦◦◦◦◦◦◦◦ K                            │
-│donor ref                 │  EGQEQLSGGSLRSAAGFTSSYSQAGGLNIKQDEKYYVKTRNAKNSLYLMNEAV◦ ◦◦◦◦◦◦◦◦◦◦ TLT               │  GSVRSGRNDLGYQKKKYASQSVSGEFY CLQ◦◦◦◦◦◦◦◦ K                            │
-│#  datasets       ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .xx.xxx.x. xxx               │  xxxxxxxxxxxxxxxxxx.xxxxxxxx ....xxx..x. x                            │
-│1  116168,116167       2  │  EGQEQLSDGSLRSAVGLTSGFTQAGGLNINEGEIHYVKTRNAKNSLYLMSEALY CVSGGHCDFW TPT     8  IGHM   │  GSVRSGRNDLGFQKKKYGTQSVSAEFY CLQHNSYPYTF K    63  IGKC                │
-│2  116166              1  │  EGQEQLSGGSLTSAAGFSSQYTQVGGLNIKGDEIYYVRTRNARNSLYLLTEGLY CASGGHCDFW TLT    16  IGHA1  │  GSVRSDGNNLGFRSKKYATQSVGGESF CLQHRGYPYTF K    13  IGKC                │
-│3  40955               1  │  EAHEQLSGGSLRSAAGFPNTYTQAGGLNMNADEQNYVRTRNAKNSLYLMNEAVH CAKGGHFDYW TLT     9  IGHM   │  GSVSNARTSLGLQKQKYATESVSGEFF CLQHYNYPYTF T    10  IGKC                │
-│4  116164              1  │  EGQEQLSGGSLRSAVGLSSDFTQAGGLNIKADDIHYLRTRNAKNSLYLMTDALY CVSGGHCDFW TRT     8  IGHM   │  DSVRSGGNHLGFQKKKYATQSVSGEFY CLQHDTYPYTF K    31  IGKC                │
-│5  40955               1  │  EGQEQLSGDSLRSVAGFPNTYTRAGGLNIKGDEKNYVKTRNGKNSLFLMNEALH CAKGGHFDYW ILT     6  IGHM   │  GSVRSDRNHLGCQKQKYATESVSGEFF CLQHNSYPYSF K     5  IGKC                │
-│6  116158              1  │  EGQQQLSGGSLRSAAGFPSTYTQAGGLNIKADEIYYVKTRNAKNSLYLMSEALY CSKGGHCDFW TLT     5  IGHM   │  GSVRSDRNHLGFQRKKYATEIPSGEFY CLQHNTYPYTF K    26  IGKC   ins = M at 79│
-│7  40964               1  │  EAQEQLSGGSLRSAAGFSSTYTQAGGLNMNYDYEYYVRTRNAKNSLYLMNEAVH CVKGGHIDYW TQT     3  IGHA1  │  GSVRSGRTDLGFRKQKFATESVSGEFY CLQHNNLPYTF K    14  IGKC                │
-└──────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+│                          │  CHAIN 1                                                                              │  CHAIN 2                                                               │
+│                          │  159|IGHV3-7 ◼ 55|IGHJ4                                                               │  224|IGKV1-17 ◼ 215|IGKJ2                                              │
+│                          ├───────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│                          │                                                  111111 1111111111 111                │                          111 11111111111 1                             │
+│                          │   11122223333344444445555666667777777788999999999000111 1111112222 223                │  133344555555566677777788000 01111111111 2                             │
+│                          │  157912584567912456890378023890125678937023456789127013 4567890123 780                │  806979123457903601467947248 90123456789 4                             │
+│                          │                                                         ═══CDR3═══      u_med  const  │                              ════CDR3═══    u_med  const  notes        │
+│universal ref             │  EGQEQLSGGSLRSAAGFTSSYSQAGGLNIKQDEKYYVKTRNAKNSLYLMNEAV◦ ◦◦◦◦◦◦◦◦◦◦ TLT                │  GSVRSGRNDLGYQKKKYASQSVSGEFY CLQ◦◦◦◦◦◦◦◦ K                             │
+│donor ref                 │  EGQEQLSGGSLRSAAGFTSSYSQAGGLNIKQDEKYYVKTRNAKNSLYLMNEAV◦ ◦◦◦◦◦◦◦◦◦◦ TLT                │  GSVRSGRNDLGYQKKKYASQSVSGEFY CLQ◦◦◦◦◦◦◦◦ K                             │
+│#  datasets       ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .xx.xxx.x. xxx                │  xxxxxxxxxxxxxxxxxx.xxxxxxxx ....xxx..x. x                             │
+│1  116168,116167       2  │  EGQEQLSDGSLRSAVGLTSGFTQAGGLNINEGEIHYVKTRNAKNSLYLMSEALY CVSGGHCDFW TPT      8  IGHM   │  GSVRSGRNDLGFQKKKYGTQSVSAEFY CLQHNSYPYTF K     63  IGKC                │
+│2  116166              1  │  EGQEQLSGGSLTSAAGFSSQYTQVGGLNIKGDEIYYVRTRNARNSLYLLTEGLY CASGGHCDFW TLT     16  IGHA1  │  GSVRSDGNNLGFRSKKYATQSVGGESF CLQHRGYPYTF K     13  IGKC                │
+│3  40955               1  │  EAHEQLSGGSLRSAAGFPNTYTQAGGLNMNADEQNYVRTRNAKNSLYLMNEAVH CAKGGHFDYW TLT      9  IGHM   │  GSVSNARTSLGLQKQKYATESVSGEFF CLQHYNYPYTF T     10  IGKC                │
+│4  116164              1  │  EGQEQLSGGSLRSAVGLSSDFTQAGGLNIKADDIHYLRTRNAKNSLYLMTDALY CVSGGHCDFW TRT      8  IGHM   │  DSVRSGGNHLGFQKKKYATQSVSGEFY CLQHDTYPYTF K     31  IGKC                │
+│5  40955               1  │  EGQEQLSGDSLRSVAGFPNTYTRAGGLNIKGDEKNYVKTRNGKNSLFLMNEALH CAKGGHFDYW ILT      6  IGHM   │  GSVRSDRNHLGCQKQKYATESVSGEFF CLQHNSYPYSF K      5  IGKC                │
+│6  116158              1  │  EGQQQLSGGSLRSAAGFPSTYTQAGGLNIKADEIYYVKTRNAKNSLYLMSEALY CSKGGHCDFW TLT      5  IGHM   │  GSVRSDRNHLGFQRKKYATEIPSGEFY CLQHNTYPYTF K     26  IGKC   ins = M at 79│
+│7  40964               1  │  EAQEQLSGGSLRSAAGFSSTYTQAGGLNMNYDYEYYVRTRNAKNSLYLMNEAVH CVKGGHIDYW TQT      3  IGHA1  │  GSVRSGRTDLGFRKQKFATESVSGEFY CLQHNNLPYTF K     14  IGKC                │
+└──────────────────────────┴───────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -421,7 +418,7 @@ chain 2, tig 2
 415-551 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [4] GROUP = 1 CLONOTYPES = 7 CELLS
 
@@ -431,24 +428,24 @@ donors = d26,d27
 datasets in which these donors appear:
 donor 1: 132902
 donor 2: 116111,118177,118179,140339,140357
-┌─────────────────────┬──────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────┐
-│                     │  CHAIN 1                                                             │  CHAIN 2                                              │
-│                     │  122.20.1|IGHV3-23 ◼ 55|IGHJ4                                        │  299|IGKV4-1 ◼ 217|IGKJ4                              │
-│                     ├──────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
-│                     │                                  111 11111111111111111               │           11 11111111111                              │
-│                     │  11222233444455566677777778999999001 11111122222222223               │  33445677701 11111112222                              │
-│                     │  19235902368912814801345890246789261 45678901234567890               │  13346423460 34567890123                              │
-│                     │                                      ═══════CDR3══════  umed  const  │              ════CDR3═══  umed  const  notes          │
-│universal ref        │  AELVSLVPSTSSAMAKEASGGGSYADNKTLYLNAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  ASKSNKLIYEV CQQ◦◦◦◦◦◦◦◦                              │
-│donor ref            │  AELLSLVPSTSSAMAKEASGGGSYADNKTLYLNAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦               │  ASKSNKLIYEV CQQ◦◦◦◦◦◦◦◦                              │
-│#  datasets  ncells  │  xxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ..x.....x........               │  xxxxxxxxxxx ..x..x.....                              │
-│1  140339         2  │  AGLLSLAPSTSSGMAKEGSGRGGYVDNKTLYLNAV CAKGHIDGEGYYYFDYW  3474  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF  7498  IGKC                  │
-│2  118177         1  │  AELLSLVPSTSNGMAKEASGRGGYLDNKTLYLNAA CAKGHIDGEGYYYFDYW    34  IGHM   │  DPKSNRIIYEV CQQYYSTSLTF   102  IGKC                  │
-│3  140357         1  │  AELLSLVPSTSSGMAKEASGGGGYVDNKTLYLNAV CAKGHIDGNGYYYFDYW    27  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF    64  IGKC                  │
-│4  116111         1  │  AGLLSLVPSTSSGMAKEASGGGGYVDNKTLYLNAV CAKGHIDGNGYYYFDYW    25  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF    83  IGKC                  │
-│5  118179         1  │  AELLSLVPSTSSGMAKEASGGGGYVDSKTLYLNAV CAKGHIDGNGYYYFDYW    21  IGHM   │  ASKSNKILYEV CQQYYSTSLTF    47  IGKC                  │
-│6  132902         1  │  AELLSVVPSISNAVARKSTGGKNYADNRTLNMNVV CAKGHIDGNGYYYFDYW    20  IGHM   │  ASRPNKLISEV CQEYYTTSLTF    14  IGKC   ins = MVL at 16│
-└─────────────────────┴──────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────┘
+┌─────────────────────┬───────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                              │  CHAIN 2                                               │
+│                     │  122.20.1|IGHV3-23 ◼ 55|IGHJ4                                         │  299|IGKV4-1 ◼ 217|IGKJ4                               │
+│                     ├───────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
+│                     │                                  111 11111111111111111                │           11 11111111111                               │
+│                     │  11222233444455566677777778999999001 11111122222222223                │  33445677701 11111112222                               │
+│                     │  19235902368912814801345890246789261 45678901234567890                │  13346423460 34567890123                               │
+│                     │                                      ═══════CDR3══════  u_med  const  │              ════CDR3═══  u_med  const  notes          │
+│universal ref        │  AELVSLVPSTSSAMAKEASGGGSYADNKTLYLNAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                │  ASKSNKLIYEV CQQ◦◦◦◦◦◦◦◦                               │
+│donor ref            │  AELLSLVPSTSSAMAKEASGGGSYADNKTLYLNAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                │  ASKSNKLIYEV CQQ◦◦◦◦◦◦◦◦                               │
+│#  datasets  ncells  │  xxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ..x.....x........                │  xxxxxxxxxxx ..x..x.....                               │
+│1  140339         2  │  AGLLSLAPSTSSGMAKEGSGRGGYVDNKTLYLNAV CAKGHIDGEGYYYFDYW   3474  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF   7498  IGKC                  │
+│2  118177         1  │  AELLSLVPSTSNGMAKEASGRGGYLDNKTLYLNAA CAKGHIDGEGYYYFDYW     34  IGHM   │  DPKSNRIIYEV CQQYYSTSLTF    102  IGKC                  │
+│3  140357         1  │  AELLSLVPSTSSGMAKEASGGGGYVDNKTLYLNAV CAKGHIDGNGYYYFDYW     27  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF     64  IGKC                  │
+│4  116111         1  │  AGLLSLVPSTSSGMAKEASGGGGYVDNKTLYLNAV CAKGHIDGNGYYYFDYW     25  IGHM   │  ASKSNKIIYEV CQQYYSTSLTF     83  IGKC                  │
+│5  118179         1  │  AELLSLVPSTSSGMAKEASGGGGYVDSKTLYLNAV CAKGHIDGNGYYYFDYW     21  IGHM   │  ASKSNKILYEV CQQYYSTSLTF     47  IGKC                  │
+│6  132902         1  │  AELLSVVPSISNAVARKSTGGKNYADNRTLNMNVV CAKGHIDGNGYYYFDYW     20  IGHM   │  ASRPNKLISEV CQEYYTTSLTF     14  IGKC   ins = MVL at 16│
+└─────────────────────┴───────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -562,7 +559,7 @@ chain 2, tig 2
 430-566 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [5] GROUP = 1 CLONOTYPES = 6 CELLS
 
@@ -572,24 +569,24 @@ donors = d19,d26
 datasets in which these donors appear:
 donor 1: 99640,99645
 donor 2: 116156,116164,116169,121352
-┌─────────────────────┬───────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────┐
-│                     │  CHAIN 1                                                                              │  CHAIN 2                                      │
-│                     │  142|IGHV3-48 ◼ 15|IGHD2-21 ◼ 55|IGHJ4                                                │  350|IGLV2-8 ◼ 312|IGLJ1                      │
-│                     ├───────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────┤
-│                     │                                   1111 1111111111111111                               │                 1111111111111 111             │
-│                     │  1111233444445556677777777788889990001 1111222222222233                               │  33445566677789 0011111111112 222             │
-│                     │  0157808167890121801234567801783570251 6789012345678901                               │  27192837923497 8901234567890 159             │
-│                     │                                        ══════CDR3══════  umed  const  notes           │                 ═════CDR3════      umed  const│
-│universal ref        │  VAGQGVLATFSSYEMKYSSSGSTIYYDSTIANLQNRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦GQ                               │  PTTGYQAMYSKRNG CSSYA◦◦◦◦◦◦◦◦ ◦KL             │
-│donor ref            │  VAGQGVLATFSSYEMKYSSSGSTIYYDSTIANLQNRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦GQ                               │  PTTGYQAMYSKRNG CSSYA◦◦◦◦◦◦◦◦ ◦KL             │
-│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ..xxx.....x.....                               │  xxxxxxxxxxxxxx .x....x.x..x. xxx             │
-│1  99645          1  │  VAGQGVLATLSTYEIKYGNRGSNKYFGSTMDNLENRV RETHNCGGDCYDYWGQ    38  IGHM   ins = ME at 72  │  PTTGFHAISSNRNG CSSHGGSNNFYIF GRL    88  IGLC1│
-│2  99640          1  │  VAGQGVLATLSSYEIKYDNRNSHEYFGSTMDNLENRV RETHNCGGDCYDYWGQ    34  IGHM                   │  PTTSFQAISSNRNG CSSHGGSNNFYIF GKL    56  IGLC1│
-│3  121352         1  │  AAGQTVVATFSSYEFKYDNSGSNVYYDSTTANLQNRV RETAFCGGDCFDYWGQ    25  IGHM                   │  PTAAFHTLYSKRSG CSSHGGTNNFYVF GKL    27  IGLC1│
-│4  116156         1  │  AAGQTVLASFSSYEFRYDSSGSNVFYDSTLANLQNTV RETAFCGGDCYDYWGQ    17  IGHM                   │  PSAAYHAMYSKRNG CSSHGGSNNFYVF GKL    30  IGLC1│
-│5  116169         1  │  VAGQAVLVTFSSYEFKYDSSGATVYYDSTTANVQSRL RETAFCGGDCYDYWGQ     8  IGHM                   │  PTTGYQVIYTKRNG CCSHGGINKFYVF GKL    23  IGLC1│
-│6  116164         1  │  VAGQAVLATFSGYEIKYDSSGSTVYYDSTIANVQSRL RETPLCGGDCSDYWGQ     5  IGHG2                  │  PTTRYQAISSKRNG CSSHGGINKFYVF GKL    46  IGLC1│
-└─────────────────────┴───────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                                               │  CHAIN 2                                       │
+│                     │  142|IGHV3-48 ◼ 15|IGHD2-21 ◼ 55|IGHJ4                                                 │  350|IGLV2-8 ◼ 312|IGLJ1                       │
+│                     ├────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────┤
+│                     │                                   1111 1111111111111111                                │                 1111111111111 111              │
+│                     │  1111233444445556677777777788889990001 1111112222222222                                │  33445566677789 0011111111112 222              │
+│                     │  0157808167890121801234567801783570251 4567890123456789                                │  27192837923497 8901234567890 159              │
+│                     │                                        ══════CDR3══════  u_med  const  notes           │                 ═════CDR3════      u_med  const│
+│universal ref        │  VAGQGVLATFSSYEMKYSSSGSTIYYDSTIANLQNRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                                │  PTTGYQAMYSKRNG CSSYA◦◦◦◦◦◦◦◦ ◦KL              │
+│donor ref            │  VAGQGVLATFSSYEMKYSSSGSTIYYDSTIANLQNRV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦                                │  PTTGYQAMYSKRNG CSSYA◦◦◦◦◦◦◦◦ ◦KL              │
+│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ....xxx.....x...                                │  xxxxxxxxxxxxxx .x....x.x..x. xxx              │
+│1  99645          1  │  VAGQGVLATLSTYEIKYGNRGSNKYFGSTMDNLENRV CARETHNCGGDCYDYW     38  IGHM   ins = ME at 72  │  PTTGFHAISSNRNG CSSHGGSNNFYIF GRL     88  IGLC1│
+│2  99640          1  │  VAGQGVLATLSSYEIKYDNRNSHEYFGSTMDNLENRV CARETHNCGGDCYDYW     34  IGHM                   │  PTTSFQAISSNRNG CSSHGGSNNFYIF GKL     56  IGLC1│
+│3  121352         1  │  AAGQTVVATFSSYEFKYDNSGSNVYYDSTTANLQNRV CARETAFCGGDCFDYW     25  IGHM                   │  PTAAFHTLYSKRSG CSSHGGTNNFYVF GKL     27  IGLC1│
+│4  116156         1  │  AAGQTVLASFSSYEFRYDSSGSNVFYDSTLANLQNTV CARETAFCGGDCYDYW     17  IGHM                   │  PSAAYHAMYSKRNG CSSHGGSNNFYVF GKL     30  IGLC1│
+│5  116169         1  │  VAGQAVLVTFSSYEFKYDSSGATVYYDSTTANVQSRL CARETAFCGGDCYDYW      8  IGHM                   │  PTTGYQVIYTKRNG CCSHGGINKFYVF GKL     23  IGLC1│
+│6  116164         1  │  VAGQAVLATFSGYEIKYDSSGSTVYYDSTIANVQSRL CARETPLCGGDCSDYW      5  IGHG2                  │  PTTRYQAISSKRNG CSSHGGINKFYVF GKL     46  IGLC1│
+└─────────────────────┴────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -648,7 +645,7 @@ chain 2, tig 2
 432-643 ==> 0-211 on |308|IGLC1|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [6] GROUP = 1 CLONOTYPES = 6 CELLS
 
@@ -658,24 +655,24 @@ donors = d20,d27
 datasets in which these donors appear:
 donor 1: 40948
 donor 2: 116095,116100,116105,140339
-┌─────────────────────┬───────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────┐
-│                     │  CHAIN 1                                                              │  CHAIN 2                                       │
-│                     │  126|IGHV3-33 ◼ 53|IGHJ3                                              │  350|IGLV2-8 ◼ 316|IGLJ3                       │
-│                     ├───────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────┤
-│                     │                                111111 11111111111111 11               │                 1 111111111111 111             │
-│                     │  123344444566667777778888899999000111 11111122222222 33               │  3345555666667770 001111111111 222             │
-│                     │  714734689936791456790236845678256123 45678901234567 12               │  2881278236790121 890123456789 148             │
-│                     │                                       ═════CDR3═════     umed  const  │                   ════CDR3════      umed  const│
-│universal ref        │  QQRRSGTSSPLVAIYSNKYADVKFIKNTLYNRAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦W TM               │  PIGNYQQKALMYEVSE CSSYA◦◦◦◦◦◦◦ ◦KL             │
-│donor ref            │  QQRRSGTSSPLVAIYSNKYADVKFIKNTLYNRAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦W TM               │  PIGNYQQKALMYEVSE CSSYA◦◦◦◦◦◦◦ ◦KL             │
-│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .xx...x.xx.... xx               │  xxxxxxxxxxxxxxxx .x....x.x.xx xxx             │
-│1  116105         1  │  LQRRSGTSIPLVTIANNKFADVRFIKNTLSNTVVYY CAKERGPFDGFDIW TL    36  IGHM   │  PIGNFQQKALMCEVSE CHSYAGNNNWVF GKL    77  IGLC2│
-│2  140339         1  │  QQRRSGASTPLVTIANNKFAAVRFIKNMLYNGAVYY CVRERGPFNAFDIW TM    33  IGHM   │  LIGNYQQKPVMYEVSE CNSYAGSNNWVF GKL    94  IGLC2│
-│3  116095         1  │  QQRRSGASTPLLTIRINKFAAVRFINNMLYDRAVYY CVRERGPFDAFDIW TM    19  IGHM   │  PMGNFQQKPVLYEVSE CNSYAGSNSWVF GKL    68  IGLC2│
-│4  116100         1  │  QHEGSGSITPLVAIAIHQYSDVKFFKSTLFNRVVYY CVRERGPFDGFDIW TV    19  IGHM   │  PIGNFQQKALMCEVNE CHSYAGDNNWVF GKL    92  IGLC2│
-│5  40948          1  │  QQRTSGTSTPLLAIVNNKYADVKFIKNTLDNRVIYY CAKERGPFDAFDIW TM    11  IGHM   │  LIGKYQQRALMYEITD CHSYAGSNNWVF GQL    22  IGLC2│
-│6  140339         1  │  QHEGSGNITPLVAIAIHQYSDVKFFKSTLFNRVVYY CVRERGPFDGFDIW TV    10  IGHM   │  PIGNFQQKALMCEVNE CHSYAGNNNWVF GKL     7  IGLC2│
-└─────────────────────┴───────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                               │  CHAIN 2                                        │
+│                     │  126|IGHV3-33 ◼ 53|IGHJ3                                               │  350|IGLV2-8 ◼ 316|IGLJ3                        │
+│                     ├────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│                     │                                111111 11111111111111 11                │                 1 111111111111 111              │
+│                     │  123344444566667777778888899999000111 11111122222222 33                │  3345555666667770 001111111111 222              │
+│                     │  714734689936791456790236845678256123 45678901234567 12                │  2881278236790121 890123456789 148              │
+│                     │                                       ═════CDR3═════     u_med  const  │                   ════CDR3════      u_med  const│
+│universal ref        │  QQRRSGTSSPLVAIYSNKYADVKFIKNTLYNRAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦W TM                │  PIGNYQQKALMYEVSE CSSYA◦◦◦◦◦◦◦ ◦KL              │
+│donor ref            │  QQRRSGTSSPLVAIYSNKYADVKFIKNTLYNRAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦W TM                │  PIGNYQQKALMYEVSE CSSYA◦◦◦◦◦◦◦ ◦KL              │
+│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx .xx...x.xx.... xx                │  xxxxxxxxxxxxxxxx .x....x.x.xx xxx              │
+│1  116105         1  │  LQRRSGTSIPLVTIANNKFADVRFIKNTLSNTVVYY CAKERGPFDGFDIW TL     36  IGHM   │  PIGNFQQKALMCEVSE CHSYAGNNNWVF GKL     77  IGLC2│
+│2  140339         1  │  QQRRSGASTPLVTIANNKFAAVRFIKNMLYNGAVYY CVRERGPFNAFDIW TM     33  IGHM   │  LIGNYQQKPVMYEVSE CNSYAGSNNWVF GKL     94  IGLC2│
+│3  116095         1  │  QQRRSGASTPLLTIRINKFAAVRFINNMLYDRAVYY CVRERGPFDAFDIW TM     19  IGHM   │  PMGNFQQKPVLYEVSE CNSYAGSNSWVF GKL     68  IGLC2│
+│4  116100         1  │  QHEGSGSITPLVAIAIHQYSDVKFFKSTLFNRVVYY CVRERGPFDGFDIW TV     19  IGHM   │  PIGNFQQKALMCEVNE CHSYAGDNNWVF GKL     92  IGLC2│
+│5  40948          1  │  QQRTSGTSTPLLAIVNNKYADVKFIKNTLDNRVIYY CAKERGPFDAFDIW TM     11  IGHM   │  LIGKYQQRALMYEITD CHSYAGSNNWVF GQL     22  IGLC2│
+│6  140339         1  │  QHEGSGNITPLVAIAIHQYSDVKFFKSTLFNRVVYY CVRERGPFDGFDIW TV     10  IGHM   │  PIGNFQQKALMCEVNE CHSYAGNNNWVF GKL      7  IGLC2│
+└─────────────────────┴────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -787,7 +784,7 @@ chain 2, tig 2
 429-640 ==> 0-211 on |309|IGLC2|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [7] GROUP = 1 CLONOTYPES = 4 CELLS
 
@@ -797,22 +794,22 @@ donors = d20,d26
 datasets in which these donors appear:
 donor 1: 40947
 donor 2: 116156,116158,116168
-┌─────────────────────┬──────────────────────────────────────────────────────┬────────────────────────────────────────┐
-│                     │  CHAIN 1                                             │  CHAIN 2                               │
-│                     │  159.19.1|IGHV3-7 ◼ 20|IGHD3-22 ◼ 55|IGHJ4           │  334|IGLV1-51 ◼ 316|IGLJ3              │
-│                     ├──────────────────────────────────────────────────────┼────────────────────────────────────────┤
-│                     │                   11 111111111111111 1               │              1111111111111             │
-│                     │   234555677777788911 111111222222222 3               │  33444557788 0001111111111             │
-│                     │  1279039501467938701 456789012345678 4               │  45679071236 7890123456789             │
-│                     │                      ══════CDR3═════    umed  const  │              ═════CDR3════  umed  const│
-│universal ref        │  ELRSYSPWKQSKYVKILAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V               │  QKNINNQNKGS CGTWD◦◦◦◦◦◦◦◦             │
-│donor ref            │  ELRSYSPWKQSKYVKILAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V               │  QKNINNQNKGS CGTWD◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  .xxxxxx.xxxxxxxxx.x ..x..x..x....x. x               │  xxxxxxxxxxx .....x...x...             │
-│1  116156         1  │  ELRTYSARNQGRYVKIVAV CVRDDSTGHYYFDHW V     8  IGHG2  │  QKNVSTQDKAS CGTWDRSLSVWVF    15  IGLC3│
-│2  40947          1  │  ELRTYSPRNQSIYVKILAV CVRDDSTGYYYFDYW V     6  IGHG2  │  QKNINNQNKGS CGTWDSSLSAWVF    35  IGLC2│
-│3  116158         1  │  ELRRYSPRKHSIYAKVLAV CVRDDSTGHYYFDYW V     6  IGHG2  │  RENITNQNKAS CGTWDFSLSVWVF    31  IGLC3│
-│4  116168         1  │  ELRRYSPRKHSRYVEILAV CVRDDSTGYYYFDYW I     3  IGHG2  │  QKNISSQDKAS CGTWDSSLSAWVF    18  IGLC3│
-└─────────────────────┴──────────────────────────────────────────────────────┴────────────────────────────────────────┘
+┌─────────────────────┬───────────────────────────────────────────────────────┬─────────────────────────────────────────┐
+│                     │  CHAIN 1                                              │  CHAIN 2                                │
+│                     │  159.19.1|IGHV3-7 ◼ 20|IGHD3-22 ◼ 55|IGHJ4            │  334|IGLV1-51 ◼ 316|IGLJ3               │
+│                     ├───────────────────────────────────────────────────────┼─────────────────────────────────────────┤
+│                     │                   11 111111111111111 1                │              1111111111111              │
+│                     │   234555677777788911 111111222222222 3                │  33444557788 0001111111111              │
+│                     │  1279039501467938701 456789012345678 4                │  45679071236 7890123456789              │
+│                     │                      ══════CDR3═════    u_med  const  │              ═════CDR3════  u_med  const│
+│universal ref        │  ELRSYSPWKQSKYVKILAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V                │  QKNINNQNKGS CGTWD◦◦◦◦◦◦◦◦              │
+│donor ref            │  ELRSYSPWKQSKYVKILAV ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ V                │  QKNINNQNKGS CGTWD◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  .xxxxxx.xxxxxxxxx.x ..x..x..x....x. x                │  xxxxxxxxxxx .....x...x...              │
+│1  116156         1  │  ELRTYSARNQGRYVKIVAV CVRDDSTGHYYFDHW V      8  IGHG2  │  QKNVSTQDKAS CGTWDRSLSVWVF     15  IGLC3│
+│2  40947          1  │  ELRTYSPRNQSIYVKILAV CVRDDSTGYYYFDYW V      6  IGHG2  │  QKNINNQNKGS CGTWDSSLSAWVF     35  IGLC2│
+│3  116158         1  │  ELRRYSPRKHSIYAKVLAV CVRDDSTGHYYFDYW V      6  IGHG2  │  RENITNQNKAS CGTWDFSLSVWVF     31  IGLC3│
+│4  116168         1  │  ELRRYSPRKHSRYVEILAV CVRDDSTGYYYFDYW I      3  IGHG2  │  QKNISSQDKAS CGTWDSSLSAWVF     18  IGLC3│
+└─────────────────────┴───────────────────────────────────────────────────────┴─────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -871,7 +868,7 @@ chain 2, tig 2
 424-635 ==> 0-211 on |310|IGLC3|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [8] GROUP = 1 CLONOTYPES = 4 CELLS
 
@@ -881,22 +878,22 @@ donors = d26,d27
 datasets in which these donors appear:
 donor 1: 116166,116167,116170
 donor 2: 123142
-┌─────────────────────┬───────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────┐
-│                     │  CHAIN 1                                                                          │  CHAIN 2                                                            │
-│                     │  140.19.1|IGHV3-43 ◼ 743|IGHJ6                                                    │  268|IGKV2-30 ◼ 215|IGKJ2                                           │
-│                     ├───────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│                     │                                               11111 1111111111111 1               │                     11111 11111111111 1                             │
-│                     │      1122223344444455555666667777777778999999900000 1111112222222 3               │  122344455567777999900001 11111111222 2                             │
-│                     │  12570614893413567801689124780123456798234568902369 4567890123456 6               │  703746701511357236867891 23456789012 9                             │
-│                     │                                                     ═════CDR3════    umed  const  │                           ════CDR3═══    umed  const  notes         │
-│universal ref        │  EFSVVVQEVVGGASFTFDYTRAPKGESLSWDGGSTYAINSKNSYLQNSTT ◦◦◦◦◦◦◦◦GMDVW S               │  SDMPSQSYSTQLYVNGTTKDVGVY CMQ◦◦◦◦◦◦◦◦ E                             │
-│donor ref            │  ELSILVQEGLGRASFTFDYARAPKGESGSWNSGSIGAINAKNSYLQNSAT ◦◦◦◦◦◦◦◦GMDVW S               │  SDMPSQSYSTQLYVNGTTKDVGVY CMQ◦◦◦◦◦◦◦◦ E                             │
-│#  datasets  ncells  │  x.x..xxx.x.xxxxxxx...x.x.xxxxxxxxxx.xxx.xxxxxxxxx. ....xxxx.x... x               │  xxxxxxx.xxxxxxxxxxxxxxxx ...x....... x                             │
-│1  123142         1  │  ELSILVQEGLGGVSFPVHHARAPRGESGGWSGGVTGGVNAKNSYLQDSVT CGKDILPGGMDVW S    26  IGHA1  │  SDMPSQSFSTQLYVNGTSKDVGVF CMQGTHWPYTF D    52  IGKC                 │
-│2  116170         1  │  DLSILVQEGLGRASSSLKHARPPKGESAHLNSGLIGAISAKNSYLQNNIT CGKDILAGGLDVW S    15  IGHA1  │  SDMPCQSFSIHLYVNGNTKVVGVY CMQATHWPYTF E    33  IGKC   ins = M at 106│
-│3  116167         1  │  ELSILVQEGLGRVSFTFDHARAPKGESGSWNSGSTGAINAKRSYLENSAT CGKDISAGGMDVW L    11  IGHA1  │  CDMQSQGFGTQLYVDGTTKDVGVY CMQATHWPYTF E    79  IGKC                 │
-│4  116166         1  │  ELSILFHEGLGRASFPYVHARGPKGEAGSWNSANIGAINANNFYLQNSAT CGKDISAGGMDVW S     5  IGHG2  │  SELPSQSFSIQLYINGTTRDLGVF CMQATHWPYTF E    79  IGKC                 │
-└─────────────────────┴───────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                                           │  CHAIN 2                                                             │
+│                     │  140.19.1|IGHV3-43 ◼ 743|IGHJ6                                                     │  268|IGKV2-30 ◼ 215|IGKJ2                                            │
+│                     ├────────────────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────┤
+│                     │                                               11111 1111111111111 1                │                     11111 11111111111 1                              │
+│                     │      1122223344444455555666667777777778999999900000 1111112222222 3                │  122344455567777999900001 11111111222 2                              │
+│                     │  12570614893413567801689124780123456798234568902369 4567890123456 6                │  703746701511357236867891 23456789012 9                              │
+│                     │                                                     ═════CDR3════    u_med  const  │                           ════CDR3═══    u_med  const  notes         │
+│universal ref        │  EFSVVVQEVVGGASFTFDYTRAPKGESLSWDGGSTYAINSKNSYLQNSTT ◦◦◦◦◦◦◦◦GMDVW S                │  SDMPSQSYSTQLYVNGTTKDVGVY CMQ◦◦◦◦◦◦◦◦ E                              │
+│donor ref            │  ELSILVQEGLGRASFTFDYARAPKGESGSWNSGSIGAINAKNSYLQNSAT ◦◦◦◦◦◦◦◦GMDVW S                │  SDMPSQSYSTQLYVNGTTKDVGVY CMQ◦◦◦◦◦◦◦◦ E                              │
+│#  datasets  ncells  │  x.x..xxx.x.xxxxxxx...x.x.xxxxxxxxxx.xxx.xxxxxxxxx. ....xxxx.x... x                │  xxxxxxx.xxxxxxxxxxxxxxxx ...x....... x                              │
+│1  123142         1  │  ELSILVQEGLGGVSFPVHHARAPRGESGGWSGGVTGGVNAKNSYLQDSVT CGKDILPGGMDVW S     26  IGHA1  │  SDMPSQSFSTQLYVNGTSKDVGVF CMQGTHWPYTF D     52  IGKC                 │
+│2  116170         1  │  DLSILVQEGLGRASSSLKHARPPKGESAHLNSGLIGAISAKNSYLQNNIT CGKDILAGGLDVW S     15  IGHA1  │  SDMPCQSFSIHLYVNGNTKVVGVY CMQATHWPYTF E     33  IGKC   ins = M at 106│
+│3  116167         1  │  ELSILVQEGLGRVSFTFDHARAPKGESGSWNSGSTGAINAKRSYLENSAT CGKDISAGGMDVW L     11  IGHA1  │  CDMQSQGFGTQLYVDGTTKDVGVY CMQATHWPYTF E     79  IGKC                 │
+│4  116166         1  │  ELSILFHEGLGRASFPYVHARGPKGEAGSWNSANIGAINANNFYLQNSAT CGKDISAGGMDVW S      5  IGHG2  │  SELPSQSFSIQLYINGTTRDLGVF CMQATHWPYTF E     79  IGKC                 │
+└─────────────────────┴────────────────────────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -951,7 +948,7 @@ chain 2, tig 2
 432-568 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [9] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -961,21 +958,21 @@ donors = d22,d27
 datasets in which these donors appear:
 donor 1: 132901
 donor 2: 118183,123137
-┌─────────────────────┬────────────────────────────────────────────────────────┬─────────────────────────────────────────┐
-│                     │  CHAIN 1                                               │  CHAIN 2                                │
-│                     │  742|IGHV1-8 ◼ 55|IGHJ4                                │  384|IGLV5-45 ◼ 316|IGLJ3               │
-│                     ├────────────────────────────────────────────────────────┼─────────────────────────────────────────┤
-│                     │                      111 1111111111111 1               │            11 11111111111 1             │
-│                     │  12244444555677778999001 1111112222222 2               │  445556777901 11111122222 3             │
-│                     │  31213469259301231157073 4567890123456 8               │  270280068311 45678901234 0             │
-│                     │                          ═════CDR3════    umed  const  │               ════CDR3═══    umed  const│
-│universal ref        │  AQLKSGTSIVTLNPNSKNSAEE◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦ Q               │  LNTRQPYKQSID CMIW◦◦◦◦◦◦◦ L             │
-│donor ref            │  AQLKSGTSIVTLNPNSKNSAEE◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦ Q               │  LNTRQPYKQSID CMIW◦◦◦◦◦◦◦ L             │
-│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxx .x..xxx.xx.x. x               │  xxx.xxxxxxxx .......x... x             │
-│1  123137         1  │  AQLKSGTSFVTFSPNSNDSVEEY CVRGPPDWGFDYW Q    62  IGHM   │  LNTWQAYNQSIN CMIWHSSAWVF L    61  IGLC2│
-│2  118183         1  │  AQLKSEINILALSSNSKDSAEEY CARGPPNWGYDYW Q    54  IGHM   │  LDTWQPYNQSID CMIWHSSAWVF L   117  IGLC2│
-│3  132901         1  │  VQLKSGIDFVTFNPQNKKNAEEF CARGPRNWGFDSW P    20  IGHG2  │  LNSWRPYNRSID CMIWHSSTWVF V    19  IGLC2│
-└─────────────────────┴────────────────────────────────────────────────────────┴─────────────────────────────────────────┘
+┌─────────────────────┬─────────────────────────────────────────────────────────┬──────────────────────────────────────────┐
+│                     │  CHAIN 1                                                │  CHAIN 2                                 │
+│                     │  742|IGHV1-8 ◼ 55|IGHJ4                                 │  384|IGLV5-45 ◼ 316|IGLJ3                │
+│                     ├─────────────────────────────────────────────────────────┼──────────────────────────────────────────┤
+│                     │                      111 1111111111111 1                │            11 11111111111 1              │
+│                     │  12244444555677778999001 1111112222222 2                │  445556777901 11111122222 3              │
+│                     │  31213469259301231157073 4567890123456 8                │  270280068311 45678901234 0              │
+│                     │                          ═════CDR3════    u_med  const  │               ════CDR3═══    u_med  const│
+│universal ref        │  AQLKSGTSIVTLNPNSKNSAEE◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦ Q                │  LNTRQPYKQSID CMIW◦◦◦◦◦◦◦ L              │
+│donor ref            │  AQLKSGTSIVTLNPNSKNSAEE◦ ◦◦◦◦◦◦◦◦◦◦◦◦◦ Q                │  LNTRQPYKQSID CMIW◦◦◦◦◦◦◦ L              │
+│#  datasets  ncells  │  xxxxxxxxxxxxxxxxxxxxxxx .x..xxx.xx.x. x                │  xxx.xxxxxxxx .......x... x              │
+│1  123137         1  │  AQLKSGTSFVTFSPNSNDSVEEY CVRGPPDWGFDYW Q     62  IGHM   │  LNTWQAYNQSIN CMIWHSSAWVF L     61  IGLC2│
+│2  118183         1  │  AQLKSEINILALSSNSKDSAEEY CARGPPNWGYDYW Q     54  IGHM   │  LDTWQPYNQSID CMIWHSSAWVF L    117  IGLC2│
+│3  132901         1  │  VQLKSGIDFVTFNPQNKKNAEEF CARGPRNWGFDSW P     20  IGHG2  │  LNSWRPYNRSID CMIWHSSTWVF V     19  IGLC2│
+└─────────────────────┴─────────────────────────────────────────────────────────┴──────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1033,7 +1030,7 @@ chain 2, tig 2
 431-642 ==> 0-211 on |309|IGLC2|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [10] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -1043,21 +1040,21 @@ donors = d26,d29
 datasets in which these donors appear:
 donor 1: 116165
 donor 2: 86211
-┌─────────────────────┬────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────┐
-│                     │  CHAIN 1                                                                       │  CHAIN 2                                   │
-│                     │  140.19.1|IGHV3-43 ◼ 743|IGHJ6                                                 │  268|IGKV2-30 ◼ 215|IGKJ2                  │
-│                     ├────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
-│                     │                                          111111 1111111111111 11               │                 11 11111111111             │
-│                     │    11112223333444555555666667777777779999000011 1111112222222 23               │  22334455566789900 11111111222             │
-│                     │  2701292890345689016789127890123456792349056913 4567890123456 85               │  12148901547230878 23456789012             │
-│                     │                                                 ═════CDR3════     umed  const  │                    ════CDR3═══  umed  const│
-│universal ref        │  FVVAIELVVVGGSTDDYTRQAPKGSLISWDGGSTYANSKLQRTTL◦ ◦◦◦◦◦◦◦◦GMDVW QS               │  VVPLLVYSTPSIPGKVG CMQ◦◦◦◦◦◦◦◦             │
-│donor ref            │  LILAIELGLVGRSTDDYARQAPKGSGISWNSGSIGANAKLQRATL◦ ◦◦◦◦◦◦◦◦GMDVW QS               │  VVPLLVYSTPSIPGKVG CMQ◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  ...xxxx.xx.xxxxxx..x.xx...xxxxxxxxxxx..xxxx.xx ..x.xxxx..... xx               │  xxxxxxxxxxxxxxxxx ..x........             │
-│1  116165         1  │  LILPMELGLVGRSRDDHARQVPKGSGISWNGANTGVNAKLQRTTLY CTKDVSPGGADVW QS    14  IGHA2  │  AVPLLVFSTPSIPARVG CMQGTHWPYTF    55  IGKC │
-│2  116165         1  │  LILAIELGSVGGSTDEYARQVSRGSGIYLKGGGVGAKAKLQRATLY CTRDILPGGADVW QS     9  IGHA1  │  VTALVVSSIPSVPGKVG CMQGTHWPYTF    12  IGKC │
-│3  86211          1  │  LILAIELGLVGGSTNHYARQVPKGSGIQWNSGATGATAKLQITTLY CTKDLKPGGADVW QF     5  IGHM   │  ALPPLVSSTPSIPGRVA CMQGTHWPYTF     4  IGKC │
-└─────────────────────┴────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────┘
+┌─────────────────────┬─────────────────────────────────────────────────────────────────────────────────┬─────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                                        │  CHAIN 2                                    │
+│                     │  140.19.1|IGHV3-43 ◼ 743|IGHJ6                                                  │  268|IGKV2-30 ◼ 215|IGKJ2                   │
+│                     ├─────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────┤
+│                     │                                          111111 1111111111111 11                │                 11 11111111111              │
+│                     │    11112223333444555555666667777777779999000011 1111112222222 23                │  22334455566789900 11111111222              │
+│                     │  2701292890345689016789127890123456792349056913 4567890123456 85                │  12148901547230878 23456789012              │
+│                     │                                                 ═════CDR3════     u_med  const  │                    ════CDR3═══  u_med  const│
+│universal ref        │  FVVAIELVVVGGSTDDYTRQAPKGSLISWDGGSTYANSKLQRTTL◦ ◦◦◦◦◦◦◦◦GMDVW QS                │  VVPLLVYSTPSIPGKVG CMQ◦◦◦◦◦◦◦◦              │
+│donor ref            │  LILAIELGLVGRSTDDYARQAPKGSGISWNSGSIGANAKLQRATL◦ ◦◦◦◦◦◦◦◦GMDVW QS                │  VVPLLVYSTPSIPGKVG CMQ◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  ...xxxx.xx.xxxxxx..x.xx...xxxxxxxxxxx..xxxx.xx ..x.xxxx..... xx                │  xxxxxxxxxxxxxxxxx ..x........              │
+│1  116165         1  │  LILPMELGLVGRSRDDHARQVPKGSGISWNGANTGVNAKLQRTTLY CTKDVSPGGADVW QS     14  IGHA2  │  AVPLLVFSTPSIPARVG CMQGTHWPYTF     55  IGKC │
+│2  116165         1  │  LILAIELGSVGGSTDEYARQVSRGSGIYLKGGGVGAKAKLQRATLY CTRDILPGGADVW QS      9  IGHA1  │  VTALVVSSIPSVPGKVG CMQGTHWPYTF     12  IGKC │
+│3  86211          1  │  LILAIELGLVGGSTNHYARQVPKGSGIQWNSGATGATAKLQITTLY CTKDLKPGGADVW QF      5  IGHM   │  ALPPLVSSTPSIPGRVA CMQGTHWPYTF      4  IGKC │
+└─────────────────────┴─────────────────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1112,7 +1109,7 @@ chain 2, tig 2
 435-571 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [11] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -1122,21 +1119,21 @@ donors = d23,d27
 datasets in which these donors appear:
 donor 1: 85328
 donor 2: 118177,140355
-┌─────────────────────┬─────────────────────────────────────────┬────────────────────────────────────┐
-│                     │  CHAIN 1                                │  CHAIN 2                           │
-│                     │  65.20.1|IGHV1-18 ◼ 54|IGHJ4            │  324|IGLV1-40 ◼ 316|IGLJ3          │
-│                     ├─────────────────────────────────────────┼────────────────────────────────────┤
-│                     │           1 1111111111111               │          1111111111111             │
-│                     │  1457778891 1111112222222               │  4444578 0011111111112             │
-│                     │  7801461651 4567890123456               │  2679229 8901234567890             │
-│                     │             ═════CDR3════  umed  const  │          ═════CDR3════  umed  const│
-│universal ref        │  HTYAGTKVSV ◦◦◦◦◦◦◦◦◦◦◦◦◦               │  GNIADST CQSYD◦◦◦◦◦◦◦◦             │
-│donor ref            │  HTYAGTKVSV ◦◦◦◦◦◦◦◦◦◦◦◦◦               │  GNIADST CQSYD◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  xx.xxxxxxx ....x....x...               │  xxxxxxx .............             │
-│1  140355         1  │  HTYADTKVSV CARDQVGATGDYW    38  IGHM   │  ENFAHST CQSYDSSLSGWVF    59  IGLC3│
-│2  118177         1  │  HTYAGTKLNM CARDKVGATGDYW    36  IGHM   │  GKIADST CQSYDSSLSGWVF    80  IGLC3│
-│3  85328          1  │  HTYTGRNVSV CARDQVGATGDYW    11  IGHM   │  ENIADNS CQSYDSSLSGWVF    27  IGLC3│
-└─────────────────────┴─────────────────────────────────────────┴────────────────────────────────────┘
+┌─────────────────────┬──────────────────────────────────────────┬─────────────────────────────────────┐
+│                     │  CHAIN 1                                 │  CHAIN 2                            │
+│                     │  65.20.1|IGHV1-18 ◼ 54|IGHJ4             │  324|IGLV1-40 ◼ 316|IGLJ3           │
+│                     ├──────────────────────────────────────────┼─────────────────────────────────────┤
+│                     │           1 1111111111111                │          1111111111111              │
+│                     │  1457778891 1111112222222                │  4444578 0011111111112              │
+│                     │  7801461651 4567890123456                │  2679229 8901234567890              │
+│                     │             ═════CDR3════  u_med  const  │          ═════CDR3════  u_med  const│
+│universal ref        │  HTYAGTKVSV ◦◦◦◦◦◦◦◦◦◦◦◦◦                │  GNIADST CQSYD◦◦◦◦◦◦◦◦              │
+│donor ref            │  HTYAGTKVSV ◦◦◦◦◦◦◦◦◦◦◦◦◦                │  GNIADST CQSYD◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  xx.xxxxxxx ....x....x...                │  xxxxxxx .............              │
+│1  140355         1  │  HTYADTKVSV CARDQVGATGDYW     38  IGHM   │  ENFAHST CQSYDSSLSGWVF     59  IGLC3│
+│2  118177         1  │  HTYAGTKLNM CARDKVGATGDYW     36  IGHM   │  GKIADST CQSYDSSLSGWVF     80  IGLC3│
+│3  85328          1  │  HTYTGRNVSV CARDQVGATGDYW     11  IGHM   │  ENIADNS CQSYDSSLSGWVF     27  IGLC3│
+└─────────────────────┴──────────────────────────────────────────┴─────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1248,7 +1245,7 @@ chain 2, tig 2
 442-653 ==> 0-211 on |310|IGLC3|C-REGION| [len=317] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [12] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -1258,21 +1255,21 @@ donors = d24,d26
 datasets in which these donors appear:
 donor 1: 106241,106243
 donor 2: 116169
-┌─────────────────────┬───────────────────────────────────────────────────────┬─────────────────────────────────────────┐
-│                     │  CHAIN 1                                              │  CHAIN 2                                │
-│                     │  159.17.1|IGHV3-7 ◼ 55|IGHJ4                          │  286|IGKV3-20 ◼ 217|IGKJ4               │
-│                     ├───────────────────────────────────────────────────────┼─────────────────────────────────────────┤
-│                     │                   111111 111111111111 1               │               1 11111111111             │
-│                     │   2334455667779999001111 111111222222 3               │  44556677799990 00111111111             │
-│                     │  18278938895674567260123 456789012345 1               │  89016802323465 89012345678             │
-│                     │                          ════CDR3════    umed  const  │                 ════CDR3═══  umed  const│
-│universal ref        │  EGPRSSSANIEKYKNSLNAAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦ V               │  VSSSLIGSSTLTSV CQQ◦◦◦◦◦◦◦◦             │
-│donor ref            │  EGPRSSSANIEKYKNSLNAAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦ V               │  VSSSLIGSSTLTSV CQQ◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  .xxxxxxx.xxxxxxxxxx.xxx .......x.... x               │  xxx.xxxxxxxxxx ..x..x.x...             │
-│1  106243         1  │  EGPRSGAAIIETLKNSLSAAVFF CAGGSGWLLDSW V    30  IGHM   │  VAKNLMGSTTLISV CQQYASSPLTF    46  IGKC │
-│2  106241         1  │  EGPRSGAAIIETLKNSLSAAVFF CAGGSGWLLDSW V    26  IGHM   │  VAKNLMGSSTLISV CQQYASSPLTF   105  IGKC │
-│3  116169         1  │  EDPRTTAGIIEDFNNSLNVAVYY CAGGSGWLLDSW I     7  IGHM   │  VGRNLIDSSIFTNV CQQYAASPLTF    32  IGKC │
-└─────────────────────┴───────────────────────────────────────────────────────┴─────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┬──────────────────────────────────────────┐
+│                     │  CHAIN 1                                               │  CHAIN 2                                 │
+│                     │  159.17.1|IGHV3-7 ◼ 55|IGHJ4                           │  286|IGKV3-20 ◼ 217|IGKJ4                │
+│                     ├────────────────────────────────────────────────────────┼──────────────────────────────────────────┤
+│                     │                   111111 111111111111 1                │               1 11111111111              │
+│                     │   2334455667779999001111 111111222222 3                │  44556677799990 00111111111              │
+│                     │  18278938895674567260123 456789012345 1                │  89016802323465 89012345678              │
+│                     │                          ════CDR3════    u_med  const  │                 ════CDR3═══  u_med  const│
+│universal ref        │  EGPRSSSANIEKYKNSLNAAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦ V                │  VSSSLIGSSTLTSV CQQ◦◦◦◦◦◦◦◦              │
+│donor ref            │  EGPRSSSANIEKYKNSLNAAV◦◦ ◦◦◦◦◦◦◦◦◦◦◦◦ V                │  VSSSLIGSSTLTSV CQQ◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  .xxxxxxx.xxxxxxxxxx.xxx .......x.... x                │  xxx.xxxxxxxxxx ..x..x.x...              │
+│1  106243         1  │  EGPRSGAAIIETLKNSLSAAVFF CAGGSGWLLDSW V     30  IGHM   │  VAKNLMGSTTLISV CQQYASSPLTF     46  IGKC │
+│2  106241         1  │  EGPRSGAAIIETLKNSLSAAVFF CAGGSGWLLDSW V     26  IGHM   │  VAKNLMGSSTLISV CQQYASSPLTF    105  IGKC │
+│3  116169         1  │  EDPRTTAGIIEDFNNSLNVAVYY CAGGSGWLLDSW I      7  IGHM   │  VGRNLIDSSIFTNV CQQYAASPLTF     32  IGKC │
+└─────────────────────┴────────────────────────────────────────────────────────┴──────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1388,7 +1385,7 @@ chain 2, tig 2
 421-557 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [13] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -1398,21 +1395,21 @@ donors = d20,d26
 datasets in which these donors appear:
 donor 1: 40947,40964
 donor 2: 116158
-┌─────────────────────┬──────────────────────────────────────────────────────────┬───────────────────────────────────────────┐
-│                     │  CHAIN 1                                                 │  CHAIN 2                                  │
-│                     │  171|IGHV3-74 ◼ 55|IGHJ4                                 │  268|IGKV2-30 ◼ 214|IGKJ1                 │
-│                     ├──────────────────────────────────────────────────────────┼───────────────────────────────────────────┤
-│                     │                         111111 11111111111               │                  111111111111             │
-│                     │  12344445566677777889999000111 11111122222               │  112234455557779 111111112222             │
-│                     │  76012693746804567584569359013 45678901234               │  672813901283482 234567890123             │
-│                     │                                ════CDR3═══  umed  const  │                  ════CDR3════  umed  const│
-│universal ref        │  QGVAATSHQVVRNSSTSRIKNTLSRTAV◦ ◦◦◦◦◦◦◦◦◦◦◦               │  GSVLPRVYSDNYKRG CMQ◦◦◦◦◦◦◦◦◦             │
-│donor ref            │  QGVAATSHQVVRNSSTSRIKNTLSRTAV◦ ◦◦◦◦◦◦◦◦◦◦◦               │  GSVLPRVYSDNYKRG CMQ◦◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  xxxxxxxxxxxxxx.xxxxxxxxxxxxxx ...xxxxx...               │  xxxxxxxxxxxxxxx ............             │
-│1  116158         1  │  QGVTVTNFQVVQNTSTTRMKYTLSTAGVY CVRDNYGVDYW     7  IGHA1  │  GSVLSRVSSSTSKRD CMQGTHWPPWTF    52  IGKC │
-│2  40964          1  │  QGIVATSQQVIHDSSSTRIRNTLNRTATF CVRDNHGVDYW     6  IGHA2  │  GSVPTKVHGNQYWRG CMQGTHWPPWTF    17  IGKC │
-│3  40947          1  │  QGVAATNQQVIHNSSTTRIRNTLSRTAAY CVRDNFGVDYW     5  IGHM   │  GCVLPRVHSDQYKRG CMQGTHWPPWTF    10  IGKC │
-└─────────────────────┴──────────────────────────────────────────────────────────┴───────────────────────────────────────────┘
+┌─────────────────────┬───────────────────────────────────────────────────────────┬────────────────────────────────────────────┐
+│                     │  CHAIN 1                                                  │  CHAIN 2                                   │
+│                     │  171|IGHV3-74 ◼ 55|IGHJ4                                  │  268|IGKV2-30 ◼ 214|IGKJ1                  │
+│                     ├───────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+│                     │                         111111 11111111111                │                  111111111111              │
+│                     │  12344445566677777889999000111 11111122222                │  112234455557779 111111112222              │
+│                     │  76012693746804567584569359013 45678901234                │  672813901283482 234567890123              │
+│                     │                                ════CDR3═══  u_med  const  │                  ════CDR3════  u_med  const│
+│universal ref        │  QGVAATSHQVVRNSSTSRIKNTLSRTAV◦ ◦◦◦◦◦◦◦◦◦◦◦                │  GSVLPRVYSDNYKRG CMQ◦◦◦◦◦◦◦◦◦              │
+│donor ref            │  QGVAATSHQVVRNSSTSRIKNTLSRTAV◦ ◦◦◦◦◦◦◦◦◦◦◦                │  GSVLPRVYSDNYKRG CMQ◦◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  xxxxxxxxxxxxxx.xxxxxxxxxxxxxx ...xxxxx...                │  xxxxxxxxxxxxxxx ............              │
+│1  116158         1  │  QGVTVTNFQVVQNTSTTRMKYTLSTAGVY CVRDNYGVDYW      7  IGHA1  │  GSVLSRVSSSTSKRD CMQGTHWPPWTF     52  IGKC │
+│2  40964          1  │  QGIVATSQQVIHDSSSTRIRNTLNRTATF CVRDNHGVDYW      6  IGHA2  │  GSVPTKVHGNQYWRG CMQGTHWPPWTF     17  IGKC │
+│3  40947          1  │  QGVAATNQQVIHNSSTTRIRNTLSRTAAY CVRDNFGVDYW      5  IGHM   │  GCVLPRVHSDQYKRG CMQGTHWPPWTF     10  IGKC │
+└─────────────────────┴───────────────────────────────────────────────────────────┴────────────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1467,7 +1464,7 @@ chain 2, tig 2
 454-590 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [14] GROUP = 1 CLONOTYPES = 3 CELLS
 
@@ -1477,21 +1474,21 @@ donors = d19,d27
 datasets in which these donors appear:
 donor 1: 99635,99638
 donor 2: 123186
-┌─────────────────────┬────────────────────────────────────────────┬─────────────────────────────────────┐
-│                     │  CHAIN 1                                   │  CHAIN 2                            │
-│                     │  204.11.1|IGHV5-51 ◼ 743|IGHJ6             │  264|IGKV2-24 ◼ 215|IGKJ2           │
-│                     ├────────────────────────────────────────────┼─────────────────────────────────────┤
-│                     │                11 1111111111               │             11111111111             │
-│                     │  3344466667799911 1111112222               │  2345555777 11111111222             │
-│                     │  0246901792915903 4567890123               │  8171456478 23456789012             │
-│                     │                   ═══CDR3═══  umed  const  │             ════CDR3═══  umed  const│
-│universal ref        │  KPGSSGKGIGSDSLA◦ ◦◦◦◦◦GMDVW               │  LPSSNTYKNR CMQ◦◦◦◦◦◦◦◦             │
-│donor ref            │  KPGSSGKGIGSDSLA◦ ◦◦◦◦◦GMDVW               │  LPSSNTYKNR CMQ◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  xxx..xx.x.xxxxxx ....x.....               │  xxxxxxxxxx .....xx....             │
-│1  99638          1  │  RPGNTGQAIHSDSLAY CARPYGMDVW    89  IGHM   │  RLGRKSYQNR CMQATHFPHTF    71  IGKC │
-│2  99635          1  │  RPGNTGQAIHSDSLAY CARPYGMDVW    57  IGHM   │  RLGRKSYQNR CMQATHFPHTF    24  IGKC │
-│3  123186         1  │  KPGNTGKAIHSASLAY CARPYGMDVW    16  IGHM   │  LPSSNIYKNR CMQATHFPHTF    10  IGKC │
-└─────────────────────┴────────────────────────────────────────────┴─────────────────────────────────────┘
+┌─────────────────────┬─────────────────────────────────────────────┬──────────────────────────────────────┐
+│                     │  CHAIN 1                                    │  CHAIN 2                             │
+│                     │  204.11.1|IGHV5-51 ◼ 743|IGHJ6              │  264|IGKV2-24 ◼ 215|IGKJ2            │
+│                     ├─────────────────────────────────────────────┼──────────────────────────────────────┤
+│                     │                11 1111111111                │             11111111111              │
+│                     │  3344466667799911 1111112222                │  2345555777 11111111222              │
+│                     │  0246901792915903 4567890123                │  8171456478 23456789012              │
+│                     │                   ═══CDR3═══  u_med  const  │             ════CDR3═══  u_med  const│
+│universal ref        │  KPGSSGKGIGSDSLA◦ ◦◦◦◦◦GMDVW                │  LPSSNTYKNR CMQ◦◦◦◦◦◦◦◦              │
+│donor ref            │  KPGSSGKGIGSDSLA◦ ◦◦◦◦◦GMDVW                │  LPSSNTYKNR CMQ◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  xxx..xx.x.xxxxxx ....x.....                │  xxxxxxxxxx .....xx....              │
+│1  99638          1  │  RPGNTGQAIHSDSLAY CARPYGMDVW     89  IGHM   │  RLGRKSYQNR CMQATHFPHTF     71  IGKC │
+│2  99635          1  │  RPGNTGQAIHSDSLAY CARPYGMDVW     57  IGHM   │  RLGRKSYQNR CMQATHFPHTF     24  IGKC │
+│3  123186         1  │  KPGNTGKAIHSASLAY CARPYGMDVW     16  IGHM   │  LPSSNIYKNR CMQATHFPHTF     10  IGKC │
+└─────────────────────┴─────────────────────────────────────────────┴──────────────────────────────────────┘
 
 ===================================================================================================
 
@@ -1607,7 +1604,7 @@ chain 2, tig 2
 427-563 ==> 0-136 on |213|IGKC|C-REGION| [len=320] (mis=0)
 
 
-╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
 
 [15] GROUP = 1 CLONOTYPES = 2 CELLS
 
@@ -1617,20 +1614,20 @@ donors = d27,d29
 datasets in which these donors appear:
 donor 1: 116111
 donor 2: 117417
-┌─────────────────────┬─────────────────────────────────┬────────────────────────────┐
-│                     │  CHAIN 1                        │  CHAIN 2                   │
-│                     │  187|IGHV4-34 ◼ 58|IGHJ6        │  286|IGKV3-20 ◼ 214|IGKJ1  │
-│                     ├─────────────────────────────────┼────────────────────────────┤
-│                     │  1111111111111111               │    11111111111             │
-│                     │  2222222222333333               │  8 00111111111             │
-│                     │  0123456789012345               │  1 89012345678             │
-│                     │  ══════CDR3══════  umed  const  │    ════CDR3═══  umed  const│
-│universal ref        │  ◦◦◦◦◦◦◦◦◦◦◦YMDVW               │  R CQQ◦◦◦◦◦◦◦◦             │
-│donor ref            │  ◦◦◦◦◦◦◦◦◦◦◦YMDVW               │  R CQQ◦◦◦◦◦◦◦◦             │
-│#  datasets  ncells  │  ................               │  . ...........             │
-│1  116111         1  │  CARGGPAKGRSYMDVW    14  IGHM   │  S CQQYGSSPRTF    36  IGKC │
-│2  117417         1  │  CARGGPAKGRSYMDVW     3  IGHD   │  S CQQYGSSPRTF     4  IGKC │
-└─────────────────────┴─────────────────────────────────┴────────────────────────────┘
+┌─────────────────────┬──────────────────────────────────┬─────────────────────────────┐
+│                     │  CHAIN 1                         │  CHAIN 2                    │
+│                     │  187|IGHV4-34 ◼ 58|IGHJ6         │  286|IGKV3-20 ◼ 214|IGKJ1   │
+│                     ├──────────────────────────────────┼─────────────────────────────┤
+│                     │  1111111111111111                │    11111111111              │
+│                     │  2222222222333333                │  8 00111111111              │
+│                     │  0123456789012345                │  1 89012345678              │
+│                     │  ══════CDR3══════  u_med  const  │    ════CDR3═══  u_med  const│
+│universal ref        │  ◦◦◦◦◦◦◦◦◦◦◦YMDVW                │  R CQQ◦◦◦◦◦◦◦◦              │
+│donor ref            │  ◦◦◦◦◦◦◦◦◦◦◦YMDVW                │  R CQQ◦◦◦◦◦◦◦◦              │
+│#  datasets  ncells  │  ................                │  . ...........              │
+│1  116111         1  │  CARGGPAKGRSYMDVW     14  IGHM   │  S CQQYGSSPRTF     36  IGKC │
+│2  117417         1  │  CARGGPAKGRSYMDVW      3  IGHD   │  S CQQYGSSPRTF      4  IGKC │
+└─────────────────────┴──────────────────────────────────┴─────────────────────────────┘
 
 ===================================================================================================
 
@@ -1686,6 +1683,7 @@ chain 2, tig 2
 
 fraction of cells having gex count < 100 = 0.00%
 
-used 5.86 seconds making orbits
-250.99 seconds total, peak mem = 11.25 GB
+used 6.31 seconds making orbits
+
+used 179.34 seconds total, peak mem = 11.61 GB
 

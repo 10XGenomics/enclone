@@ -9,6 +9,67 @@ use std::collections::HashMap;
 use string_utils::*;
 use vector_utils::*;
 
+// Field (variable) names.
+
+pub const LVARS_ALLOWED: [&str; 16] = [
+    "datasets",
+    "samples",
+    "donors",
+    "n",
+    "gex",
+    "gex_min",
+    "gex_max",
+    "gex_μ",
+    "gex_Σ",
+    "gex_cell",
+    "n_gex_cell",
+    "n_gex",
+    "entropy",
+    "near",
+    "far",
+    "ext",
+];
+
+pub const CVARS_ALLOWED: [&str; 24] = [
+    "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
+    "r_μ", "const", "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes",
+    "d_univ", "d_donor",
+];
+
+pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
+
+pub const PLVARS_ALLOWED: [&str; 7] = [
+    "group_id",
+    "group_ncells",
+    "clonotype_id",
+    "clonotype_ncells",
+    "nchains",
+    "exact_subclonotype_id",
+    "barcodes",
+];
+
+pub const PCVARS_ALLOWED: [&str; 19] = [
+    "v_name",
+    "d_name",
+    "j_name",
+    "v_id",
+    "d_id",
+    "j_id",
+    "var_indices_dna",
+    "var_indices_aa",
+    "share_indices_dna",
+    "share_indices_aa",
+    "v_start",
+    "const_id",
+    "utr_id",
+    "utr_name",
+    "cdr3_start",
+    "cdr3_aa",
+    "seq",
+    "vj_seq",
+    "var_aa",
+];
+
 // Clonotyping algorithm heuristics.
 
 #[derive(Default)]
@@ -158,7 +219,19 @@ impl LinearCondition {
         let lvars = &ctl.clono_print_opt.lvars;
         let mut lvars0 = Vec::<String>::new();
         let exclude = vec![
-            "datasets", "donors", "near", "far", "n_gex", "gex_med", "gex_max", "entropy", "ext",
+            "datasets",
+            "donors",
+            "near",
+            "far",
+            "n_gex_cell",
+            "n_gex",
+            "gex",
+            "gex_min",
+            "gex_max",
+            "gex_mean",
+            "gex_sum",
+            "entropy",
+            "ext",
         ];
         for j in 0..lvars.len() {
             let mut ok = true;
@@ -276,6 +349,8 @@ pub struct GeneralOpt {
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,
     pub force_h5: bool,
+    pub full_counts: bool,
+    pub html: bool,
 }
 
 // Allele finding algorithmic options.
@@ -580,6 +655,8 @@ pub struct GexInfo {
     pub h5_indptr: Vec<Vec<u32>>,
     pub is_gex: Vec<Vec<bool>>,
     pub feature_id: Vec<HashMap<String, usize>>,
+    pub have_gex: bool,
+    pub have_fb: bool,
 }
 
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains

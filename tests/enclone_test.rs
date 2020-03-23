@@ -17,6 +17,7 @@
 
 use ansi_escape::*;
 use enclone::proto_io::read_proto;
+use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
 use failure::Error;
 use io_utils::*;
@@ -24,13 +25,12 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::fs::read_to_string;
+use std::fs::{read_to_string, remove_file};
 use std::io::Write;
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
 
-const TEST_FILES_VERSION: u8 = 14;
 const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -50,107 +50,11 @@ fn test_enclone_fail() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Define a bunch of tests.
-
-const TESTS: [&str; 38] = [
-    // 1. tests variant base after CDR3, parseable output
-    r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
-     PCOLS=exact_subclonotype_id,ncells,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
-    // 2. tests many donor ref differences, test comp and var and donorn
-    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW CVARSP=comp,var AMINO=cdr3,var,share,donorn"###,
-    // 3. tests motif in CDR3, CHAINS, utot, flipped args in CVARS, on tiny dataset
-    r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,utot"###,
-    // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-    r###"BCR=86237 GEX=85679 LVARSP=gex_med,CD19_ab,CD25_ab,IGLV3-1_g,RPS27_g CELLS=3 FULL_SEQC
-     CVARSP=ulen,udiff"###,
-    // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
-    r###"TCR=101287 MIN_CELLS=100"###,
-    // 6. tests AMINO=
-    r###"BCR=86237 CELLS=3 AMINO= CVARS=umed,rmed,cdr3_dna"###,
-    // 7. tests SHM deletion
-    r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. this clonotype included a junk chain before we made a change
-    r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
-    // 9. tests PER_CELL
-    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
-    // 10. tests multiple datasets and also LVARS=ncells,samples,donors,datasets, and share
-    // Note that we have deliberately "faked" two donors.  In reality there is one.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=ncells,samples,donors,datasets AMINO=share
-     MIX_DONORS"###,
-    // 11. tests META
-    r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex_med"###,
-    // 12. this added because it got better when a noise filter was added, also tests umax
-    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=umax"###,
-    // 13. this added because it got better when a noise filter was added; also test FASTA
-    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
-    // 14. this added because it got better when a bug in bads detection was fixed
-    r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
-    // 15. tests insertion and AMINO range
-    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
-    // 16. tests number of cells broken out by dataset
-    r###"BCR=123085,123089 LVARS=ncells,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
-    // 17. tests gex with PER_CELL and tests n_gex
-    // See also enclone_test_prebuild below, that tests nearly the same thing,
-    // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex_med,n_gex,CD19_ab CELLS=3 PER_CELL"###,
-    // 18. makes sure cross filtering is isn't applied to two samples from same donor
-    r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
-    // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
-    r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
-    // 20. example affected by whitelist (gel bead oligo contamination) filtering
-    r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF"###,
-    // 21. test MIN_CHAINS_EXACT
-    r###"BCR=123089 CDR3=CGTWHSNSKPNWVF MIN_CHAINS_EXACT=3"###,
-    // 22. there was a false positive clonotype
-    r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
-    // 23. here we were generating a fake alternate allele
-    r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
-    // 24. an example that uses IGHE
-    r###"BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW"###,
-    // 25. add mouse B6 example that had messed up constant regions
-    r###"TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF"###,
-    // 26. tests multiple datasets and also LVARS=ncells,donors,datasets, and share
-    // Note that we have deliberately "faked" two donors.  In reality there is one.
-    // Here we make sure that non-specification of MIX_DONORS works.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW"###,
-    // 27. tests SUMMARY and NOPRINT
-    r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
-    // 28. tests BARCODE option
-    r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
-    // 29. tests parenthesized variable in F, SUM and MEAN
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g F="(IGHV3-7_g)>=4.5" MIN_CHAINS=2 SUM MEAN"###,
-    // 30. tests d_univ and d_donor
-    r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
-    // 31. tests Cell Ranger 3.1 output
-    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW"###,
-    // 32. tests Cell Ranger 2.0 output and RE
-    r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
-    // 33. tests SCAN
-    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g MIN_CELLS=10
-     SCAN="(IGHV1-69D_g)>=100,(IGHV1-69D_g)<=1,t-10*c>=0.1" NOPRINT"###,
-    // 34. tests honeycomb plot
-    // (This yields a lot of output so will be annoying to debug if something changes.)
-    r###"BCR=123085:123089 MIN_CELLS=10 PLOT="stdout,s1->red,s2->blue" NOPRINT
-     LEGEND=red,"cell from 123085",blue,"cell from 123089""###,
-    // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
-    // Note that the specification of PRE overrides our usual specification.
-    // (This yields a lot of output so will be annoying to debug if something changes.)
-    r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
-     LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
-    // 36. tests PCELL
-    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL PCOLS=barcodes,const1,const2"###,
-    // 37. tests parseable output of barcodes for a given dataset
-    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes
-     CDR3=CAVTIFGVRTALPYYYALDVW"###,
-    // 38. tests parseable output of barcodes for a given dataset, using PCELL
-    r###"BCR=123085,123089 POUT=stdout PCOLS=123085_barcodes,123089_barcodes PCELL
-     CDR3=CAVTIFGVRTALPYYYALDVW"###,
-];
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // The following is a single test, containing many subtests, each of which is a regression test
 // for a given enclone command line.
+//
+// If you ever need to change the output of all tests, use the main program
+// update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
 #[cfg(not(debug_assertions))]
 #[test]
@@ -170,13 +74,18 @@ fn test_enclone() {
             test = test.replace("  ", " ");
         }
         let mut expect_null = false;
+        let mut expect_fail = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
         }
+        if test.contains(" EXPECT_FAIL") {
+            test = test.replace(" EXPECT_FAIL", "");
+            expect_fail = true;
+        }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
-        if !path_exists(&out_file) {
+        if !path_exists(&out_file) && !expect_fail {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
                 log,
@@ -196,7 +105,10 @@ fn test_enclone() {
             fwriteln!(log, "and then adding/committing the new file.");
             res.2 = stringme(&log);
         } else {
-            let old = read_to_string(&out_file).unwrap();
+            let mut old = String::new();
+            if !expect_fail {
+                old = read_to_string(&out_file).unwrap();
+            }
 
             // Get arguments, by parsing command, breaking at blanks, but not if they're in quotes.
             // This is identical to parse_csv, except for the splitting character.
@@ -251,7 +163,42 @@ fn test_enclone() {
                 .expect(&format!("failed to execute enclone for test{}", it + 1));
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
             let new2 = stringme(&new.stdout);
-            if old == new2 {
+
+            // Process tests that were supposed to fail.
+
+            if expect_fail {
+                res.1 = false;
+                if new.status.code().is_none() {
+                    fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                    fwriteln!(
+                        log,
+                        "Something really funky happened, status code unavailable.\n"
+                    );
+                } else {
+                    let status = new.status.code().unwrap();
+                    if status == 0 {
+                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                        fwriteln!(
+                            log,
+                            "That test was supposed to have failed, but instead \
+                             succeeded.\n"
+                        );
+                    } else if status != 1 {
+                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                        fwriteln!(
+                            log,
+                            "That test was supposed to have failed with exit status 1,\n\
+                             but instead failed with exit status {}.\n",
+                            status
+                        );
+                    } else {
+                        res.1 = true;
+                    }
+                }
+                res.2 = stringme(&log);
+
+            // Process tests that yield the expected stdout.
+            } else if old == new2 {
                 res.1 = true;
                 if old.len() <= 1 && !expect_null {
                     fwriteln!(
@@ -268,6 +215,8 @@ fn test_enclone() {
                     res.1 = false;
                 }
                 res.2 = stringme(&log);
+
+            // Process tests that yield unexpected stdout.
             } else {
                 fwriteln!(log, "\nSubtest {}: old and new differ", it + 1);
                 fwriteln!(
@@ -305,9 +254,11 @@ fn test_enclone() {
                 }
                 fwrite!(log, "old:\n{}", old);
                 fwrite!(log, "new:\n{}", new2);
-                fwriteln!(log, "stderr has {} lines:", new_err.len());
-                for i in 0..new_err.len() {
-                    fwriteln!(log, "{}", new_err[i]);
+                if new_err.len() != 1 || new_err[0].len() != 0 {
+                    fwriteln!(log, "stderr has {} lines:", new_err.len());
+                    for i in 0..new_err.len() {
+                        fwriteln!(log, "{}", new_err[i]);
+                    }
                 }
                 // let f = format!(
                 //     "test/inputs/version{}/{}/outs/all_contig_annotations.json.lz4",
@@ -366,32 +317,53 @@ fn test_enclone() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test that examples are what we claim they are.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_enclone_examples() {
+    PrettyTrace::new().on();
+    for t in 0..EXAMPLES.len() {
+        let testn = format!("{}", EXAMPLES[t]);
+        let out_file = format!("src/example{}", t + 1);
+        let old = read_to_string(&out_file).unwrap();
+        let args = testn.split(' ').collect::<Vec<&str>>();
+        let mut new = Command::new("target/release/enclone");
+        let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+        for i in 0..args.len() {
+            new = new.arg(&args[i]);
+        }
+        let new = new
+            .arg("FORCE_EXTERNAL")
+            .output()
+            .expect(&format!("failed to execute test_enclone_examples"));
+        let new2 = stringme(&new.stdout);
+        if old != new2 {
+            eprintln!(
+                "\nenclone_test_examples: the file example{} is not up to date\n",
+                t + 1
+            );
+            std::process::exit(1);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
 // you also have to change this.
-//
-// WARNING: if this test in interrupted, then you could accidentally be left with matrix.bin,
-// and you would need to delete that file.
 
 #[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
-
-    // See if we're in a broken state.
-
     let mb = format!(
         "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
-        panic!(
-            "\nenclone_test_prebuild: the file matrix.bin already exists.\n\
-             Perhaps a previous run of this test failed or was was interrupted.\n\
-             Please delete the file\n\
-             {}\n",
-            mb
-        );
+        remove_file(&mb).unwrap();
     }
 
     // First pass: run with NH5.
@@ -411,14 +383,13 @@ fn test_enclone_prebuild() {
     let new = new
         .arg("FORCE_EXTERNAL")
         .output()
-        .expect(&format!("failed to execute enclone_test_prebuild"));
+        .expect(&format!("failed to execute test_enclone_prebuild"));
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
     let new2 = stringme(&new.stdout);
     if old != new2 {
         eprintln!(
             "\nenclone_test_prebuild: first pass output has changed.\n\
-             You may want to add more info to this failure message.\n\
-             And don't forget to remove matrix.bin.\n"
+             You may want to add more info to this failure message.\n"
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);

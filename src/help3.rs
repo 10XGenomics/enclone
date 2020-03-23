@@ -166,24 +166,30 @@ pub fn help3(args: &Vec<String>) {
         bold!();
         println!("parseable output");
         end_escape!();
-        println!(
-            "\nThe standard output of enclone is designed to be read by humans, but is not\n\
-             readily parseable by computers.  We supplement this with parseable output that can\n\
-             be read by computers, but is highly verbose and not intended to be read by humans.\n\n\
-             This output is in the form of a CSV file having an exhaustive list of around\n\
-             140 fields by default.\n\n\
-             It is also possible to specify any subset of these fields, and there are a few other\n\
-             choices, which we describe.\n\n\
-             Parseable output is targeted primarily at R and Python users, because of the ease of\n\
-             wrangling CSV files with these languages.\n"
+        print(
+            "\nThe standard output of enclone is designed to be read by humans, but is not \
+             readily parseable by computers.  We supplement this with parseable output that can \
+             be easily read by computers.\n\n\
+             \
+             The default behavior for this is to generate a CSV file having \"every possible\" \
+             field (over a hundred).  We also provide an option to print only selected fields, \
+             and some options which enable inspection, short of generating a separate CSV file.\n\n\
+             \
+             Parseable output is targeted primarily at R and Python users, because of the ease of \
+             wrangling CSV files with these languages.\n\n",
         );
         print_with_box(
             "Parseable output is invoked by using the argument\n\
              \\bold{POUT=filename}\n\
              specifying the name of the file that is to be written to.\n\
-             [The filename \"stdout\" may be used for a preview; in that case the parseable \
-             output is\n\
-             generated separately for each clonotype and the two output types are integrated.]\n\
+             \
+             [01;47m [0m The filename \"stdout\" may be used for a preview; in that case \
+             parseable output is generated\n\
+             [01;47m [0m separately for each clonotype and the two output types \
+             are integrated.  There is also\n\
+             [01;47m [0m \"stdouth\", which is similar, but uses spaces instead \
+             of commas, and lines things up in columns.\n\
+             \
              By default, we show four chains for each clonotype, regardless of how many chains it\n\
              has, filling in with null entries.  One may instead specify n chains using the \
              argument\n\
@@ -312,22 +318,17 @@ pub fn help3(args: &Vec<String>) {
             "<dataset>_barcodes",
             "like \"barcodes\", but restricted to the dataset with the given name"
         );
+        doc!("barcode", "if PCELL is specified, barcode for one cell");
         doc!(
-            "",
-            "For barcodes and <dataset>_barcodes, if you specify the PCELL option,"
+            "<dataset>_barcode",
+            "if PCELL is specified, barcode for one cell, or null, if the barcode is"
         );
-        doc!("", "then at most one barcode is shown per line.");
+        doc!("", "not from the given dataset");
         ldoc!(
             "In addition, every lead variable may be specified as a field.  \
              See \"enclone help lvars\".",
             "\\ext"
         );
-        doc!(
-            "However, to use such a field here, the lead variable must be specified using \
-             the LVARS",
-            "\\ext"
-        );
-        doc!("or LVARSP options (or be in the default set).", "\\ext");
         print_tab2(&rows);
         println!("");
 
@@ -377,15 +378,7 @@ pub fn help3(args: &Vec<String>) {
             "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
             "\\ext"
         );
-        doc!(
-            "See \"enclone help cvars\".  However to use such a field here, the chain variable \
-             must be ",
-            "\\ext"
-        );
-        doc!(
-            "specified using the CVARS or CVARSP options (or be in the default set).",
-            "\\ext"
-        );
+        doc!("See \"enclone help cvars\".", "\\ext");
         print_tab2(&rows);
         println!("");
         if !help_all {
@@ -451,14 +444,17 @@ pub fn help3(args: &Vec<String>) {
 
         ldoc!(
             "SEG=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given VDJ segment names"
+            "only show clonotypes using one of the given reference segment names"
         );
-        doc!("", "(double quotes only needed if n > 1)");
         doc!(
             "SEGN=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given VDJ segment numbers"
+            "only show clonotypes using one of the given reference segment numbers"
         );
-        doc!("", "(double quotes only needed if n > 1)");
+        doc!(
+            "",
+            "both: looks for V, D, J and C segments; double quote only"
+        );
+        doc!("", "needed if n > 1");
 
         // doc MIN_EXACTS
 
@@ -606,7 +602,7 @@ pub fn help3(args: &Vec<String>) {
             enclone using some of the detected features as lead variables (appropriately \
             suffixed).  Ultimately the power of the scan is determined by having \"enough\" \
             cells in both the test and control sets, and in having those sets cleanly defined.\n\n\
-            Currently feature scanning requires that each dataset have identical features.\n\n"
+            Currently feature scanning requires that each dataset have identical features.\n\n",
         );
 
         // done
