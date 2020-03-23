@@ -3,8 +3,6 @@
 // Test for help request, under development.
 
 use crate::help_utils::*;
-use ansi_escape::*;
-use string_utils::*;
 use tables::*;
 use vector_utils::*;
 
@@ -81,24 +79,6 @@ pub fn help4(args: &Vec<String>) {
         };
     }
     */
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
     let mut help_all = false;
     unsafe {
         if HELP_ALL {
@@ -479,9 +459,7 @@ pub fn help4(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
         begin_doc!("lvars");
         print("\n");
-        bold!();
-        print("lead column options\n\n");
-        end_escape!();
+        print("\\bold{lead column options}\n\n");
         println!(
             "These options define lead variables, which correspond to columns that \
              appear once in each\nclonotype, on the left side, and have one entry for each \

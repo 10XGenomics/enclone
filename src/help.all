@@ -117,9 +117,9 @@ Additional documentation may be found at [01;32mhttps://github.com/10XDev/enclo
 enclone help quick
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mquick guide to getting started
+[01mquick guide to getting started[0m
 
-[0mJust type this:
+Just type this:
 
 [01menclone BCR=p[0m
 
@@ -494,9 +494,9 @@ the site.
 enclone help plot
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mplotting clonotypes
+[01mplotting clonotypes[0m
 
-[0menclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
+enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
 You can see an example at [01;32mhttps://github.com/10XDev/enclone/blob/master/README.md#honeycomb[0m.
 
 enclone provides three ways to assign colors in such a plot.  We describe them in order of
@@ -617,9 +617,9 @@ fields are allowed:
 enclone help input_tech
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01minformation about providing input to enclone (technical notes)
+[01minformation about providing input to enclone (technical notes)[0m
 
-[0menclone only uses certain files, which are all in the outs subdirectory of a Cell Ranger pipeline
+enclone only uses certain files, which are all in the outs subdirectory of a Cell Ranger pipeline
 directory:
 
 ┌────────────────────────────────────────────┬──────────┐
@@ -646,8 +646,8 @@ be as good.
 enclone help parseable
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mparseable output
-[0m
+[01mparseable output[0m
+
 The standard output of enclone is designed to be read by humans, but is not readily parseable by
 computers.  We supplement this with parseable output that can be easily read by computers.
 
@@ -782,9 +782,9 @@ each of these has the same value for each exact clonotype[0m
 enclone help filter
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mclonotype filtering options
+[01mclonotype filtering options[0m
 
-[0mthese options cause only certain clonotypes to be printed
+these options cause only certain clonotypes to be printed
 
 ┌─────────────────────┬───────────────────────────────────────────────────────────────────────┐
 │MIN_CELLS=n          │  only show clonotypes having at least n cells                         │
@@ -972,9 +972,9 @@ clonotype.
 enclone help lvars
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mlead column options
+[01mlead column options[0m
 
-[0mThese options define lead variables, which correspond to columns that appear once in each
+These options define lead variables, which correspond to columns that appear once in each
 clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using [01mLVARS=x1,...,xn[0m where each xi is one of:

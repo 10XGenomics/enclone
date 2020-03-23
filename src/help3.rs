@@ -111,9 +111,7 @@ pub fn help3(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
         begin_doc!("input_tech");
         print("\n");
-        bold!();
-        print("information about providing input to enclone (technical notes)\n\n");
-        end_escape!();
+        print("\\bold{information about providing input to enclone (technical notes)}\n\n");
         print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
@@ -163,9 +161,7 @@ pub fn help3(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || help_all {
         begin_doc!("parseable");
         print("\n");
-        bold!();
-        print("parseable output\n");
-        end_escape!();
+        print("\\bold{parseable output}\n");
         print(
             "\nThe standard output of enclone is designed to be read by humans, but is not \
              readily parseable by computers.  We supplement this with parseable output that can \
@@ -396,9 +392,7 @@ pub fn help3(args: &Vec<String>) {
 
         // intro
 
-        bold!();
-        print("clonotype filtering options\n\n");
-        end_escape!();
+        print("\\bold{clonotype filtering options}\n\n");
         print("these options cause only certain clonotypes to be printed\n\n");
 
         // doc *CELLS

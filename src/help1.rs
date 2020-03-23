@@ -316,9 +316,7 @@ pub fn help1(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
         begin_doc!("quick");
         print("\n");
-        bold!();
-        print("quick guide to getting started\n\n");
-        end_escape!();
+        print("\\bold{quick guide to getting started}\n\n");
         print(
             "Just type this:\n\n\
              \\bold{enclone BCR=p}\n\n\

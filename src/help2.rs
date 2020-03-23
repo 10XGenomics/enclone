@@ -302,9 +302,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
         begin_doc!("plot");
         print("\n");
-        bold!();
-        print("plotting clonotypes\n\n");
-        end_escape!();
+        print("\\bold{plotting clonotypes}\n\n");
         print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \
