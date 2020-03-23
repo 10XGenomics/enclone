@@ -1,5 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+// This file contains the single function row_fill.
+
 use crate::defs::*;
 use crate::print_utils1::*;
 use crate::types::*;
@@ -52,23 +54,37 @@ pub fn row_fill(
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
+    let cvars = &ctl.clono_print_opt.cvars;
     let lvars = &ctl.clono_print_opt.lvars;
+    let clonotype_id = exacts[u];
+    let ex = &exact_clonotypes[clonotype_id];
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 {
+                let mut v = $var.to_string();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty()
-                    || bin_member(&ctl.parseable_opt.pcols, &$var.to_string())
+                    || bin_member(&ctl.parseable_opt.pcols_sort, &v)
                 {
-                    out_data[$u].insert($var.to_string(), $val);
+                    out_data[$u].insert(v, $val);
                 }
             }
         };
     }
-    let pcols_sort = &ctl.parseable_opt.pcols_sort;
+    let mut pcols_sort = ctl.parseable_opt.pcols_sort.clone();
+    for i in 0..pcols_sort.len() {
+        pcols_sort[i] = pcols_sort[i].replace("_Σ", "_sum");
+        pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
+    }
+    pcols_sort.sort();
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
-                let varc = format!("{}{}", $var, $col + 1);
+                let mut v = $var.clone();
+                v = v.replace("_Σ", "_sum");
+                v = v.replace("_μ", "_mean");
+                let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                     out_data[$u].insert(varc, format!("{}", $val));
                 }
@@ -92,19 +108,20 @@ pub fn row_fill(
     // both human-readable and parseable output for lead variables.
 
     macro_rules! lvar {
-        ($var:expr, $val:expr) => {
-            row.push($val);
+        ($i: expr, $var:expr, $val:expr) => {
+            if $i < lvars.len() {
+                row.push($val)
+            }
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
         };
     }
 
-    // Compute dataset indices, gex_med, gex_max, n_gex, entropy.
+    // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
+    // n_gex_cell, n_gex, entropy.
 
     let mut dataset_indices = Vec::<usize>::new();
-    let clonotype_id = exacts[u];
-    let ex = &exact_clonotypes[clonotype_id];
     for l in 0..ex.clones.len() {
         dataset_indices.push(ex.clones[l][0].dataset_index);
     }
@@ -115,7 +132,9 @@ pub fn row_fill(
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
+    let mut fcounts = Vec::<f64>::new();
     let mut n_gex = 0;
+    let mut n_gexs = Vec::<usize>::new();
     let mut total_counts = Vec::<usize>::new();
     // It might be possible to speed this up a lot by pulling part of the "let d" and
     // "let ind" constructs out of the loop.
@@ -178,8 +197,12 @@ pub fn row_fill(
         if !gex_info.gex_barcodes.is_empty() {
             if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
                 n_gex += 1;
+                n_gexs.push(1);
+            } else {
+                n_gexs.push(0);
             }
             let mut count = 0;
+            let mut fcount = 0.0;
             let mut entropy = 0.0;
             let p = bin_position(&gex_info.gex_barcodes[li], &bc);
             if p >= 0 {
@@ -232,22 +255,33 @@ pub fn row_fill(
                     d_all[l] = d;
                     ind_all[l] = ind;
                 }
-                count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                if !ctl.gen_opt.full_counts {
+                    count = (raw_count as f64 * gex_info.gex_mults[li]).round() as usize;
+                    fcount = raw_count as f64 * gex_info.gex_mults[li];
+                } else {
+                    count = (raw_count as f64).round() as usize;
+                    fcount = raw_count as f64;
+                }
             }
             counts.push(count);
+            fcounts.push(fcount);
             entropies.push(entropy);
         }
     }
+    let count_unsorted = counts.clone();
     counts.sort();
     for n in counts.iter() {
         if *n < 100 {
             *gex_low += 1;
         }
     }
-    let (mut gex_median, mut gex_max) = (0, 0);
+    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0);
     if counts.len() > 0 {
         gex_median = counts[counts.len() / 2];
+        gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
+        gex_sum = fcounts.iter().sum::<f64>().round() as usize;
+        gex_mean = (gex_sum as f64 / fcounts.len() as f64).round() as usize;
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
@@ -259,11 +293,26 @@ pub fn row_fill(
     // WARNING!  If you add lead variables, you may need to add them to the function
     // LinearCondition::require_valid_variables.
 
-    for i in 0..lvars.len() {
-        if lvars[i].starts_with('g') && lvars[i].after("g").parse::<usize>().is_ok() {
-            let d = lvars[i].after("g").force_usize();
-            lvar![lvars[i], format!("{}", groups[&d][u] + 1)];
-        } else if lvars[i] == "samples".to_string() {
+    let mut all_lvars = lvars.clone();
+    if ctl.parseable_opt.pcols.is_empty() {
+        for i in 0..LVARS_ALLOWED.len() {
+            if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
+                all_lvars.push(LVARS_ALLOWED[i].to_string());
+            }
+        }
+    } else {
+        for i in 0..ctl.parseable_opt.pcols.len() {
+            if !lvars.contains(&ctl.parseable_opt.pcols[i].to_string()) {
+                all_lvars.push(ctl.parseable_opt.pcols[i].to_string());
+            }
+        }
+    }
+    for i in 0..all_lvars.len() {
+        let x = &all_lvars[i];
+        if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
+            let d = x.after("g").force_usize();
+            lvar![i, x, format!("{}", groups[&d][u] + 1)];
+        } else if x == "samples" {
             let mut samples = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].sample_index.is_some() {
@@ -275,10 +324,10 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut samples);
-            lvar![lvars[i], format!("{}", samples.iter().format(","))];
-        } else if lvars[i] == "datasets".to_string() {
-            lvar![lvars[i], format!("{}", lenas.iter().format(","))];
-        } else if lvars[i] == "donors".to_string() {
+            lvar![i, x, format!("{}", samples.iter().format(","))];
+        } else if x == "datasets" {
+            lvar![i, x, format!("{}", lenas.iter().format(","))];
+        } else if x == "donors" {
             let mut donors = Vec::<String>::new();
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
@@ -290,13 +339,13 @@ pub fn row_fill(
                 }
             }
             unique_sort(&mut donors);
-            lvar![lvars[i], format!("{}", donors.iter().format(","))];
-        } else if lvars[i] == "ncells".to_string() {
-            lvar![lvars[i], format!("{}", mults[u])];
+            lvar![i, x, format!("{}", donors.iter().format(","))];
+        } else if x == "n" {
+            lvar![i, x, format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
-            stats.push((lvars[i].clone(), counts));
-        } else if lvars[i].starts_with("n_") && lvars[i] != "n_gex".to_string() {
-            let name = lvars[i].after("n_");
+            stats.push((x.to_string(), counts));
+        } else if x.starts_with("n_") && !x.starts_with("n_gex") {
+            let name = x.after("n_");
             let mut count = 0;
             let mut counts = Vec::<f64>::new();
             for j in 0..ex.clones.len() {
@@ -321,9 +370,9 @@ pub fn row_fill(
                     counts.push(1.0);
                 }
             }
-            lvar![lvars[i], format!("{}", count)];
-            stats.push((lvars[i].clone(), counts));
-        } else if lvars[i] == "near".to_string() {
+            lvar![i, x, format!("{}", count)];
+            stats.push((x.to_string(), counts));
+        } else if x == "near" {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
                 if i2 == u || fp[i2] != fp[u] {
@@ -340,11 +389,11 @@ pub fn row_fill(
                 dist = min(dist, d);
             }
             if dist == 1_000_000 {
-                lvar![lvars[i], "-".to_string()];
+                lvar![i, x, "".to_string()];
             } else {
-                lvar![lvars[i], format!("{}", dist)];
+                lvar![i, x, format!("{}", dist)];
             }
-        } else if lvars[i] == "far".to_string() {
+        } else if x == "far" {
             let mut dist = -1 as isize;
             for i2 in 0..varmat.len() {
                 if i2 == u || fp[i2] != fp[u] {
@@ -361,19 +410,40 @@ pub fn row_fill(
                 dist = max(dist, d);
             }
             if dist == -1 as isize {
-                lvar![lvars[i], "-".to_string()];
+                lvar![i, x, "".to_string()];
             } else {
-                lvar![lvars[i], format!("{}", dist)];
+                lvar![i, x, format!("{}", dist)];
             }
-        } else if lvars[i] == "gex_med".to_string() {
-            lvar![lvars[i], format!("{}", gex_median)];
-        } else if lvars[i] == "n_gex".to_string() {
-            lvar![lvars[i], format!("{}", n_gex)];
-        } else if lvars[i] == "entropy".to_string() {
-            lvar![lvars[i], format!("{:.2}", entropy)];
-        } else if lvars[i] == "gex_max".to_string() {
-            lvar![lvars[i], format!("{}", gex_max)];
-        } else if lvars[i] == "ext".to_string() {
+        } else if x == "gex" {
+            lvar![i, x, format!("{}", gex_median)];
+        } else if x == "gex_cell" {
+            if pass == 2 {
+                speak!(u, x, format!("{}", count_unsorted.iter().format(";")));
+            }
+        } else if x == "n_gex" {
+            lvar![i, x, format!("{}", n_gex)];
+        } else if x == "n_gex_cell" {
+            if i < lvars.len() {
+                row.push("".to_string());
+            }
+            if pass == 2 {
+                speak!(
+                    u,
+                    "n_gex_cell".to_string(),
+                    format!("{}", n_gexs.iter().format(";"))
+                );
+            }
+        } else if x == "entropy" {
+            lvar![i, x, format!("{:.2}", entropy)];
+        } else if x == "gex_min" {
+            lvar![i, x, format!("{}", gex_min)];
+        } else if x == "gex_max" {
+            lvar![i, x, format!("{}", gex_max)];
+        } else if x == "gex_μ" {
+            lvar![i, x, format!("{}", gex_mean)];
+        } else if x == "gex_Σ" {
+            lvar![i, x, format!("{}", gex_sum)];
+        } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
                 let li = ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone();
@@ -398,24 +468,32 @@ pub fn row_fill(
                 );
                 j = k;
             }
-            lvar![lvars[i], s.clone()];
+            lvar![i, x, s.clone()];
         } else {
-            let mut count = 0.0;
-            let mut counts = Vec::<f64>::new();
-            let mut x = lvars[i].clone();
-            let mut y = lvars[i].clone();
+            let (mut counts, mut fcounts) = (Vec::<f64>::new(), Vec::<f64>::new());
+            let (mut x, mut y) = (x.to_string(), x.to_string());
             if x.contains(':') {
                 x = x.before(":").to_string();
             }
             if y.contains(':') {
                 y = y.after(":").to_string();
             }
+            let y0 = y.clone();
+            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell"];
+            for s in suffixes.iter() {
+                if y.ends_with(s) {
+                    y = y.rev_before(&s).to_string();
+                    break;
+                }
+            }
+            let mut computed = false;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                if p >= 0 {
-                    if gex_info.feature_id[li].contains_key(&y) {
+                if gex_info.feature_id[li].contains_key(&y) {
+                    computed = true;
+                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                    if p >= 0 {
                         let fid = gex_info.feature_id[li][&y];
                         let mut raw_count = 0 as f64;
                         if !ctl.gen_opt.h5 {
@@ -429,20 +507,55 @@ pub fn row_fill(
                             }
                         }
                         let mult: f64;
-                        if x.ends_with("_g") {
+                        if y.ends_with("_g") {
                             mult = gex_info.gex_mults[li];
                         } else {
                             mult = gex_info.fb_mults[li];
                         }
-                        count += raw_count * mult;
-                        counts.push(raw_count * mult);
+                        if !ctl.gen_opt.full_counts {
+                            counts.push((raw_count as f64 * mult).round() as f64);
+                            fcounts.push(raw_count as f64 * mult);
+                        } else {
+                            counts.push(raw_count.round() as f64);
+                            fcounts.push(raw_count);
+                        }
                     }
                 }
             }
-            stats.push((x.clone(), counts));
-            lvar![x, format!("{}", (count.round() as usize) / ex.ncells())];
+            if computed {
+                stats.push((x.clone(), fcounts.clone()));
+                let mut counts_sorted = counts.clone();
+                counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let sum = fcounts.iter().sum::<f64>();
+                let mean = sum / counts.len() as f64;
+                if y0.ends_with("_min") {
+                    lvar![i, x, format!("{}", counts_sorted[0].round())];
+                } else if y0.ends_with("_max") {
+                    lvar![i, x, format!("{}", counts_sorted[counts.len() - 1].round())];
+                } else if y0.ends_with("_μ") {
+                    lvar![i, x, format!("{}", mean.round())];
+                } else if y0.ends_with("_Σ") {
+                    lvar![i, x, format!("{}", sum.round())];
+                } else if y0.ends_with("_cell") {
+                    if pass == 2 {
+                        let val = format!("{}", counts.iter().format(";"));
+                        speak!(u, x, val);
+                    }
+                } else {
+                    let mut median = 0.0;
+                    if counts_sorted.len() > 0 {
+                        median = counts_sorted[counts_sorted.len() / 2].round();
+                    }
+                    lvar![i, x, format!("{}", median)];
+                }
+            }
         }
     }
+
+    // Sanity check.  It's here because if it fails and that failue was not detected, something
+    // exceptionally cryptic would happen downstream.
+
+    assert_eq!(row.len(), lvars.len() + 1);
 
     // Get the relevant barcodes.
 
@@ -478,8 +591,14 @@ pub fn row_fill(
         numis.sort();
         let median_numis = numis[numis.len() / 2];
         let utot: usize = numis.iter().sum();
-        let umax = *numis.iter().max().unwrap();
+        let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
+        let u_min = *numis.iter().min().unwrap();
+        let u_max = *numis.iter().max().unwrap();
         nreads.sort();
+        let rtot: usize = nreads.iter().sum();
+        let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
+        let r_min = *nreads.iter().min().unwrap();
+        let r_max = *nreads.iter().max().unwrap();
         let median_nreads = nreads[nreads.len() / 2];
 
         // Set up chain variable macro.  This is the mechanism for generating
@@ -487,7 +606,9 @@ pub fn row_fill(
 
         macro_rules! cvar {
             ($i: expr, $var:expr, $val:expr) => {
-                cx[col][$i] = $val.clone();
+                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                    cx[col][$i] = $val.clone();
+                }
                 speakc!(u, col, $var, $val);
             };
         }
@@ -514,22 +635,22 @@ pub fn row_fill(
 
         // Speak some other column entries.
 
-        speakc!(u, col, "vj_seq", stringme(&ex.share[mid].seq));
-        speakc!(u, col, "seq", stringme(&ex.share[mid].full_seq));
-        speakc!(u, col, "v_start", ex.share[mid].v_start);
+        speakc!(u, col, "vj_seq".to_string(), stringme(&ex.share[mid].seq));
+        speakc!(u, col, "seq".to_string(), stringme(&ex.share[mid].full_seq));
+        speakc!(u, col, "v_start".to_string(), ex.share[mid].v_start);
         let cid = ex.share[mid].c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
-            speakc!(u, col, "const_id", refdata.id[cid]);
+            speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
         }
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             let uid = uid.unwrap();
-            speakc!(u, col, "utr_id", refdata.id[uid]);
-            speakc!(u, col, "utr_name", refdata.name[uid]);
+            speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
+            speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
         }
-        speakc!(u, col, "cdr3_start", ex.share[mid].cdr3_start);
-        speakc!(u, col, "cdr3_aa", ex.share[mid].cdr3_aa);
+        speakc!(u, col, "cdr3_start".to_string(), ex.share[mid].cdr3_start);
+        speakc!(u, col, "cdr3_aa".to_string(), ex.share[mid].cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);
@@ -546,12 +667,31 @@ pub fn row_fill(
                 }
             }
         }
-        speakc!(u, col, "var_aa", strme(&varaa));
+        speakc!(u, col, "var_aa".to_string(), strme(&varaa));
 
         // Create column entry.
 
-        for j in 0..rsi.cvars[col].len() {
-            if rsi.cvars[col][j] == "amino".to_string() {
+        let rsi_vars = &rsi.cvars[col];
+        let mut all_vars = rsi_vars.clone();
+        for j in 0..CVARS_ALLOWED.len() {
+            let var = &CVARS_ALLOWED[j];
+            if !rsi_vars.contains(&var.to_string()) {
+                all_vars.push(var.to_string());
+            }
+        }
+        for j in 0..CVARS_ALLOWED_PCELL.len() {
+            let var = &CVARS_ALLOWED_PCELL[j];
+            if !rsi_vars.contains(&var.to_string()) {
+                all_vars.push(var.to_string());
+            }
+        }
+        for j in 0..all_vars.len() {
+            let col_var = j < rsi_vars.len();
+            if !col_var && ctl.parseable_opt.pout.len() == 0 {
+                continue;
+            }
+            let var = &all_vars[j];
+            if *var == "amino".to_string() && col_var {
                 let cs = rsi.cdr3_starts[col] / 3;
                 let n = rsi.cdr3_lens[col];
                 for k in 0..show_aa[col].len() {
@@ -579,58 +719,78 @@ pub fn row_fill(
                         cx[col][j] += " ";
                     }
                 }
-            } else if rsi.cvars[col][j] == "comp".to_string() {
+            } else if *var == "comp".to_string() || *var == "edit".to_string() {
                 let mut comp = 1000000;
+                let mut edit = String::new();
                 let td = &ex.share[mid];
                 let tig = &td.seq;
                 let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
                 let mut aligner = Aligner::new(-6, -1, &score);
+
+                // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
+                // there is just one pass.
+
                 let mut z = 1;
                 if ex.share[mid].left {
-                    z = refdata.refs.len();
+                    z = refdata.ds.len();
                 }
-
-                // Go through every reference record.  Nuts.
-
-                for d in 0..z {
-                    if ex.share[mid].left && !refdata.is_d(d) {
-                        continue;
+                for di in 0..z {
+                    let mut d = 0;
+                    if ex.share[mid].left {
+                        d = refdata.ds[di];
                     }
+
+                    // Start to build reference concatenation.  First append the V segment.
+
                     let mut concat = Vec::<u8>::new();
-                    let mut x = refdata.refs[rsi.vids[col]].to_ascii_vec();
+                    let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
                     if rsi.vpids[col].is_none() {
-                        concat.append(&mut x);
                     } else {
-                        let mut y = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-                        concat.append(&mut y);
+                        vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
                     }
+                    concat.append(&mut vref.clone());
+
+                    // Append the D segment if IGH/TRB.
+
                     if ex.share[mid].left {
                         let mut x = refdata.refs[d].to_ascii_vec();
                         concat.append(&mut x);
                     }
+
+                    // Append the J segment.
+
                     let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
                     concat.append(&mut x);
+
+                    // Align the V..J sequence on the contig to the reference concatenation.
+
                     let al = aligner.semiglobal(&tig, &concat);
                     let mut m = 0;
                     let mut pos = al.xstart;
+                    let mut rpos = (al.ystart as isize) - (vref.len() as isize);
                     let mut count = 0;
                     let start = td.cdr3_start;
                     let stop = td.cdr3_start + 3 * td.cdr3_aa.len();
+                    let mut edits = Vec::<String>::new();
                     while m < al.operations.len() {
                         let n = next_diff(&al.operations, m);
                         match al.operations[m] {
                             Match => {
                                 pos += 1;
+                                rpos += 1;
                             }
                             Subst => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("S{}", rpos));
                                 }
                                 pos += 1;
+                                rpos += 1;
                             }
                             Del => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("D{}:{}", rpos, n - m));
                                 }
                                 pos += n - m;
                                 m = n - 1;
@@ -638,28 +798,43 @@ pub fn row_fill(
                             Ins => {
                                 if pos >= start && pos < stop {
                                     count += 1;
+                                    edits.push(format!("I{}:{}", rpos, n - m));
                                 }
+                                rpos += (n - m) as isize;
                                 m = n - 1;
                             }
                             _ => {}
                         };
                         m += 1;
                     }
-                    comp = min(comp, count);
+                    if count < comp {
+                        comp = count;
+                        edit = format!("{}", edits.iter().format(""));
+                    }
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", comp)];
-            } else if rsi.cvars[col][j] == "cdr3_dna".to_string() {
-                cvar![j, rsi.cvars[col][j], ex.share[mid].cdr3_dna.clone()];
-            } else if rsi.cvars[col][j] == "ulen".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", ex.share[mid].v_start)];
-            } else if rsi.cvars[col][j] == "clen".to_string() {
+                if *var == "comp".to_string() {
+                    cvar![j, var, format!("{}", comp)];
+                } else {
+                    cvar![j, var, format!("{}", edit)];
+                }
+            } else if *var == "cdr3_dna".to_string() {
+                cvar![j, var, ex.share[mid].cdr3_dna.clone()];
+            } else if *var == "ulen".to_string() {
+                cvar![j, *var, format!("{}", ex.share[mid].v_start)];
+            } else if *var == "clen".to_string() {
                 cvar![
                     j,
-                    rsi.cvars[col][j],
+                    var,
                     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
                 ];
-            } else if rsi.cvars[col][j].starts_with("ndiff") {
-                let u0 = rsi.cvars[col][j].after("ndiff").force_usize() - 1;
+            } else if *var == "vjlen".to_string() {
+                cvar![
+                    j,
+                    var,
+                    format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
+                ];
+            } else if var.starts_with("ndiff") {
+                let u0 = var.between("ndiff", "vj").force_usize() - 1;
                 if u0 < exacts.len() && mat[col][u0].is_some() && mat[col][u].is_some() {
                     let m0 = mat[col][u0].unwrap();
                     let m = mat[col][u].unwrap();
@@ -671,11 +846,11 @@ pub fn row_fill(
                             ndiff += 1;
                         }
                     }
-                    cvar![j, rsi.cvars[col][j], format!("{}", ndiff)];
+                    cvar![j, *var, format!("{}", ndiff)];
                 } else {
-                    cvar![j, rsi.cvars[col][j], "_".to_string()];
+                    cvar![j, *var, "_".to_string()];
                 }
-            } else if rsi.cvars[col][j] == "cdiff".to_string() {
+            } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;
                 let cid = ex.share[mid].c_ref_id;
@@ -706,8 +881,8 @@ pub fn row_fill(
                 } else if clen > 0 {
                     cdiff = format!("%{}", clen);
                 }
-                cvar![j, rsi.cvars[col][j], cdiff];
-            } else if rsi.cvars[col][j] == "udiff".to_string() {
+                cvar![j, var, cdiff];
+            } else if *var == "udiff".to_string() {
                 let ulen = ex.share[mid].v_start;
                 let uid = ex.share[mid].u_ref_id;
                 let mut udiff = String::new();
@@ -746,8 +921,8 @@ pub fn row_fill(
                 } else if ulen > 0 {
                     udiff = format!("%{}", ulen);
                 }
-                cvar![j, rsi.cvars[col][j], udiff];
-            } else if rsi.cvars[col][j] == "d_univ".to_string() {
+                cvar![j, var, udiff];
+            } else if *var == "d_univ".to_string() {
                 let vid = ex.share[mid].v_ref_id;
                 let vref = &refdata.refs[vid].to_ascii_vec();
                 let jid = ex.share[mid].j_ref_id;
@@ -767,8 +942,8 @@ pub fn row_fill(
                         diffs += 1;
                     }
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
-            } else if rsi.cvars[col][j] == "d_donor".to_string() {
+                cvar![j, var, format!("{}", diffs)];
+            } else if *var == "d_donor".to_string() {
                 let vid = ex.share[mid].v_ref_id;
                 let mut vref = refdata.refs[vid].to_ascii_vec();
                 if rsi.vpids[col].is_some() {
@@ -791,20 +966,62 @@ pub fn row_fill(
                         diffs += 1;
                     }
                 }
-                cvar![j, rsi.cvars[col][j], format!("{}", diffs)];
-            } else if rsi.cvars[col][j] == "notes".to_string() {
-                cvar![j, rsi.cvars[col][j], ex.share[mid].vs_notesx.clone()];
-            } else if rsi.cvars[col][j] == "var".to_string() {
-                cvar![j, rsi.cvars[col][j], stringme(&varmat[u][col])];
-            } else if rsi.cvars[col][j] == "umed".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", median_numis)];
-            } else if rsi.cvars[col][j] == "umax".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", umax)];
-            } else if rsi.cvars[col][j] == "utot".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", utot)];
-            } else if rsi.cvars[col][j] == "rmed".to_string() {
-                cvar![j, rsi.cvars[col][j], format!("{}", median_nreads)];
-            } else if rsi.cvars[col][j] == "const".to_string() {
+                cvar![j, var, format!("{}", diffs)];
+            } else if *var == "notes".to_string() {
+                cvar![j, var, ex.share[mid].vs_notesx.clone()];
+            } else if *var == "var".to_string() {
+                cvar![j, var, stringme(&varmat[u][col])];
+            } else if *var == "u".to_string() {
+                cvar![j, var, format!("{}", median_numis)];
+            } else if *var == "u_cell".to_string() {
+                let var = var.clone();
+                if col + 1 <= ctl.parseable_opt.pchains {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += ";";
+                            }
+                            vals += &format!("{}", ex.clones[k][mid].umi_count);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
+            } else if *var == "u_min".to_string() {
+                cvar![j, var, format!("{}", u_min)];
+            } else if *var == "u_max".to_string() {
+                cvar![j, var, format!("{}", u_max)];
+            } else if *var == "u_μ".to_string() {
+                cvar![j, var, format!("{}", u_mean)];
+            } else if *var == "u_Σ".to_string() {
+                cvar![j, var, format!("{}", utot)];
+            } else if *var == "r".to_string() {
+                cvar![j, var, format!("{}", median_nreads)];
+            } else if *var == "r_min".to_string() {
+                cvar![j, var, format!("{}", r_min)];
+            } else if *var == "r_max".to_string() {
+                cvar![j, var, format!("{}", r_max)];
+            } else if *var == "r_μ".to_string() {
+                cvar![j, var, format!("{}", r_mean)];
+            } else if *var == "r_Σ".to_string() {
+                cvar![j, var, format!("{}", rtot)];
+            } else if *var == "r_cell".to_string() {
+                let var = var.clone();
+                if col + 1 <= ctl.parseable_opt.pchains {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += ";";
+                            }
+                            vals += &format!("{}", ex.clones[k][mid].read_count);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
+            } else if *var == "const".to_string() {
                 let mut constx = Vec::<String>::new();
                 let cid = ex.share[mid].c_ref_id;
                 if cid.is_some() {
@@ -815,15 +1032,11 @@ pub fn row_fill(
                 unique_sort(&mut constx);
                 // This is overcomplicated because there is now at most one
                 // const entry per exact subclonotype.
-                cvar![
-                    j,
-                    rsi.cvars[col][j],
-                    format!("{}", constx.iter().format(","))
-                ];
+                cvar![j, var, format!("{}", constx.iter().format(","))];
 
             // Compute potential whitelist contamination percent.  And filter.
             // This is an undocumented option.
-            } else if rsi.cvars[col][j] == "white".to_string() || ctl.clono_filt_opt.whitef {
+            } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
                 for l in 0..ex.clones.len() {
                     let li = ex.clones[l][0].dataset_index;
@@ -867,7 +1080,7 @@ pub fn row_fill(
                 }
                 */
                 let junk_rate = percent_ratio(junk, ex.clones.len());
-                if rsi.cvars[col][j] == "white".to_string() {
+                if *var == "white".to_string() && col_var {
                     cx[col][j] = format!("{:.1}", junk_rate);
                 }
                 // WRONG!  THIS IS SUPPOSED TO BE EXECUTED ON PASS 1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -2,6 +2,7 @@
 
 use crate::defs::*;
 use crate::print_utils1::*;
+use crate::print_utils5::*;
 use crate::types::*;
 use amino::*;
 use ansi_escape::*;
@@ -328,7 +329,7 @@ pub fn insert_reference_rows(
         for pass in 1..=2 {
             let mut row = Vec::<String>::new();
             if pass == 1 {
-                row.push("universal ref".to_string());
+                row.push("reference".to_string());
             } else {
                 row.push("donor ref".to_string());
             }
@@ -415,7 +416,11 @@ pub fn build_table_stuff(
     let lvars = &ctl.clono_print_opt.lvars;
     let cols = rsi.vids.len();
     let nexacts = exacts.len();
-    row1.push("#".to_string());
+    if !ctl.clono_print_opt.bu {
+        row1.push("#".to_string());
+    } else {
+        row1.push("#  barcode".to_string());
+    }
     justify.push(b'l');
     for i in 0..lvars.len() {
         let mut x = lvars[i].to_string();
@@ -423,11 +428,7 @@ pub fn build_table_stuff(
             x = x.before(":").to_string();
         }
         row1.push(x.clone());
-        if x == "datasets".to_string() || x == "donors".to_string() || x == "ext".to_string() {
-            justify.push(b'l');
-        } else {
-            justify.push(b'r');
-        }
+        justify.push(justification(&x));
     }
 
     // Insert main chain row.  Then insert chain info row if we're using CHAIN_SPLIT.
@@ -483,7 +484,11 @@ pub fn build_table_stuff(
     for cx in 0..cols {
         for j in 0..rsi.cvars[cx].len() {
             if rsi.cvars[cx][j] != "amino".to_string() {
-                row.push(rsi.cvars[cx][j].to_string());
+                if drows.is_empty() {
+                    row.push(rsi.cvars[cx][j].to_string());
+                } else {
+                    row.push("".to_string());
+                }
             } else {
                 for u in 0..nexacts {
                     let m = rsi.mat[cx][u];

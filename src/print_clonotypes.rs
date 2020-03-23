@@ -303,15 +303,6 @@ pub fn print_clonotypes(
             // Set up for parseable output.
 
             let mut out_data = Vec::<HashMap<String, String>>::new();
-            macro_rules! speak {
-                ($u:expr, $var:expr, $val:expr) => {
-                    if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
-                        if pcols_sort.is_empty() || bin_member(&pcols_sort, &$var.to_string()) {
-                            out_data[$u].insert($var.to_string(), $val);
-                        }
-                    }
-                };
-            }
 
             // Print the orbit.
             // ◼ An assumption of this code is that a productive pair does not have two contigs
@@ -521,12 +512,13 @@ pub fn print_clonotypes(
 
                     let mut subrows = Vec::<Vec<String>>::new();
                     if ctl.clono_print_opt.bu {
-                        for bcl in bli.iter() {
+                        for (kb, bcl) in bli.iter().enumerate() {
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
-                            row.push(format!("$ {}", bc.clone()));
+                            row.push(format!("$  {}", bc.clone()));
                             for k in 0..lvars.len() {
+                                let nr = row.len();
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
                                 } else if lvars[k] == "n_gex".to_string() && have_gex {
@@ -584,7 +576,7 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     row.push(format!("{:.2}", entropy));
-                                } else if lvars[k] == "gex_med".to_string() && have_gex {
+                                } else if lvars[k] == "gex".to_string() && have_gex {
                                     let mut gex_count = 0;
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
@@ -606,19 +598,61 @@ pub fn print_clonotypes(
                                                 }
                                             }
                                         }
-                                        gex_count =
-                                            (raw_count * gex_info.gex_mults[li]).round() as usize;
+                                        if !ctl.gen_opt.full_counts {
+                                            gex_count = (raw_count * gex_info.gex_mults[li]).round()
+                                                as usize;
+                                        } else {
+                                            gex_count = raw_count.round() as usize;
+                                        }
                                     }
                                     row.push(format!("{}", gex_count));
                                 } else {
-                                    row.push("-".to_string());
+                                    let mut y = lvars[k].clone();
+                                    if y.contains(':') {
+                                        y = y.after(":").to_string();
+                                    }
+                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                    if p >= 0 {
+                                        if gex_info.feature_id[li].contains_key(&y) {
+                                            let fid = gex_info.feature_id[li][&y];
+                                            let mut raw_count = 0 as f64;
+                                            if !ctl.gen_opt.h5 {
+                                                raw_count = gex_info.gex_matrices[li]
+                                                    .value(p as usize, fid)
+                                                    as f64;
+                                            } else {
+                                                for j in 0..d_all[kb].len() {
+                                                    if ind_all[kb][j] == fid as u32 {
+                                                        raw_count = d_all[kb][j] as f64;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            let mult: f64;
+                                            if y.ends_with("_g") {
+                                                mult = gex_info.gex_mults[li];
+                                            } else {
+                                                mult = gex_info.fb_mults[li];
+                                            }
+                                            let count;
+                                            if !ctl.gen_opt.full_counts {
+                                                count = (raw_count * mult).round() as f64;
+                                            } else {
+                                                count = raw_count.round() as f64;
+                                            }
+                                            row.push(format!("{}", count));
+                                        }
+                                    }
+                                }
+                                if row.len() == nr {
+                                    row.push("".to_string());
                                 }
                             }
                             let mut ncall = 0;
                             for k in 0..cols {
                                 ncall += rsi.cvars[k].len();
                             }
-                            let mut cx = vec!["-".to_string(); ncall];
+                            let mut cx = vec!["".to_string(); ncall];
                             let ex = &exact_clonotypes[exacts[u]];
                             let mut cp = 0;
                             for col in 0..cols {
@@ -626,9 +660,12 @@ pub fn print_clonotypes(
                                 if m.is_some() {
                                     let m = m.unwrap();
                                     for p in 0..rsi.cvars[col].len() {
-                                        if rsi.cvars[col][p] == "umed".to_string() {
+                                        if rsi.cvars[col][p] == "u".to_string() {
                                             let numi = ex.clones[bcl.2][m].umi_count;
                                             cx[cp + p] = format!("{}", numi);
+                                        } else if rsi.cvars[col][p] == "r".to_string() {
+                                            let r = ex.clones[bcl.2][m].read_count;
+                                            cx[cp + p] = format!("{}", r);
                                         }
                                     }
                                 }
@@ -778,6 +815,17 @@ pub fn print_clonotypes(
 
                 if ctl.parseable_opt.pout.len() > 0 {
                     for u in 0..nexacts {
+                        macro_rules! speak {
+                            ($u:expr, $var:expr, $val:expr) => {
+                                if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
+                                    if pcols_sort.is_empty()
+                                        || bin_member(&pcols_sort, &$var.to_string())
+                                    {
+                                        out_data[$u].insert($var.to_string(), $val);
+                                    }
+                                }
+                            };
+                        }
                         speak![rord[u], "exact_subclonotype_id", format!("{}", u + 1)];
                     }
                     let mut out_data2 = vec![HashMap::<String, String>::new(); nexacts];
@@ -816,11 +864,20 @@ pub fn print_clonotypes(
                     &ctl, &rsi, &show_aa, &refdata, &dref, &row1, &mut drows, &mut rows,
                 );
 
+                // Insert horizontal line.
+
+                if !drows.is_empty() {
+                    let mut width = 1 + lvars.len();
+                    for col in 0..cols {
+                        width += rsi.cvars[col].len();
+                    }
+                    rows.push(vec!["\\hline".to_string(); width]);
+                }
+
                 // Insert placeholder for dots row.
 
-                let cvars = &ctl.clono_print_opt.cvars;
                 let diff_pos = rows.len();
-                if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
+                if !drows.is_empty() {
                     let row = Vec::<String>::new();
                     rows.push(row);
                 }
@@ -916,17 +973,7 @@ pub fn print_clonotypes(
                 for cx in 0..cols {
                     justify.push(b'|');
                     for m in 0..rsi.cvars[cx].len() {
-                        if rsi.cvars[cx][m] == "amino".to_string()
-                            || rsi.cvars[cx][m] == "var".to_string()
-                            || rsi.cvars[cx][m] == "const".to_string()
-                            || rsi.cvars[cx][m] == "cdr3_dna".to_string()
-                            || rsi.cvars[cx][m] == "cdiff".to_string()
-                            || rsi.cvars[cx][m] == "notes".to_string()
-                        {
-                            justify.push(b'l');
-                        } else {
-                            justify.push(b'r');
-                        }
+                        justify.push(justification(&rsi.cvars[cx][m]));
                     }
                 }
                 let mut logz = String::new();
@@ -1185,7 +1232,11 @@ pub fn print_clonotypes(
                                 } else {
                                     mult = gex_info.fb_mults[li];
                                 }
-                                vals.push(raw_count * mult);
+                                if !ctl.gen_opt.full_counts {
+                                    vals.push(raw_count * mult);
+                                } else {
+                                    vals.push(raw_count);
+                                }
                             }
                         }
                     }

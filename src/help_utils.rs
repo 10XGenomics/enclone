@@ -397,3 +397,27 @@ pub fn print_tab2(rows: &Vec<Vec<String>>) {
     print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
     print!("{}", log);
 }
+
+// Given a string, preface every line in in by a gray left bar.
+
+pub fn gray_left_bar(s: &str) -> String {
+    let mut gray = "[01;47m [0m ".to_string();
+    unsafe {
+        if PLAIN {
+            gray = "┃ ".to_string();
+        }
+    }
+    let mut x = Vec::<char>::new();
+    for c in s.chars() {
+        x.push(c);
+    }
+    let mut t = gray.to_string();
+    for i in 0..x.len() - 1 {
+        t.push(x[i]);
+        if x[i] == '\n' {
+            t += &gray;
+        }
+    }
+    t.push(x[x.len() - 1]);
+    t
+}

@@ -98,14 +98,92 @@ pub fn make_table(
 
     // Make some character substitutions.
 
+    let mut barcode = false;
+    let mut header = false;
+    let mut x = Vec::<char>::new();
     for c in log.chars() {
-        if c == '$' {
-            logz.push('•');
-        } else if c == '%' {
+        x.push(c);
+    }
+    let mut j = 0;
+    while j < x.len() {
+        // DEFAULT
+        /*
+        const TEXTCOLOR: usize = 200;
+        const BACKGROUND: usize = 229;
+        */
+
+        // NOT CRAZY
+        /*
+        const TEXTCOLOR: usize = 200;
+        const BACKGROUND: usize = 225;
+        */
+
+        // NEW COLOR SCHEME
+        const TEXTCOLOR: usize = 18;
+        const BACKGROUND: usize = 255;
+
+        let c = x[j];
+
+        // % is a placeholder for +, so make the substitution.
+
+        if c == '%' {
             logz.push('+');
+
+        // $ is a placeholder for •, and $ is only in barcodes line if PER_CELL is specified.
+        // In plain mode, we just make the substitution, whereas in fancy mode, we change the
+        // text and background color for the entire line.
+        // *** bullets now off ***
+        } else if c == '$' {
+            if ctl.pretty {
+                // *logz += &format!("[01;38;5;{}m[01;48;5;{}m•", TEXTCOLOR, BACKGROUND);
+                *logz += &format!("[38;5;{}m[48;5;{}m ", TEXTCOLOR, BACKGROUND);
+                barcode = true;
+            } else {
+                logz.push('•');
+            }
+
+        // In a barcode line, elide end escapes.  Not exactly sure how these get here.
+        } else if barcode && c == '' && x[j + 1] == '[' && x[j + 2] == '0' && x[j + 3] == 'm' {
+            j += 3;
+
+        // In a barcode line, hop around │ symbols, which should not be colorized.
+        } else if barcode && c == '│' && x[j + 1] != '\n' {
+            // *logz += "[0m│";
+            *logz += &format!("[0m[48;5;{}m│", BACKGROUND);
+            // *logz += &format!("[01;38;5;{}m[01;48;5;{}m", TEXTCOLOR, BACKGROUND);
+            *logz += &format!("[38;5;{}m[48;5;{}m", TEXTCOLOR, BACKGROUND);
+        } else if barcode && c == '│' && x[j + 1] == '\n' {
+            *logz += "[0m│";
+            // *logz += &format!("[0m[48;5;{}m│[0m", BACKGROUND);
+            barcode = false;
+
+        // Do similar things for header line, but bold the line instead.
+        } else if c == '#' {
+            if ctl.pretty {
+                *logz += &format!("[01m#");
+                header = true;
+            } else {
+                logz.push('#');
+            }
+
+        // In a header line, elide end escapes.  Not exactly sure how these get here.
+        // (did not check to see if this does anything)
+        } else if header && c == '' && x[j + 1] == '[' && x[j + 2] == '0' && x[j + 3] == 'm' {
+            j += 3;
+
+        // In a header line, hop around │ symbols, which should not be colorized.
+        } else if header && c == '│' && x[j + 1] != '\n' {
+            *logz += "[0m│";
+            *logz += &format!("[01m");
+        } else if header && c == '│' && x[j + 1] == '\n' {
+            *logz += "[0m│";
+            header = false;
+
+        // Otherwise just save the character.
         } else {
             logz.push(c);
         }
+        j += 1;
     }
 }
 
@@ -195,16 +273,28 @@ pub fn make_diff_row(
     row1: &mut Vec<String>,
     rows: &mut Vec<Vec<String>>,
 ) {
+    let mut xrow = vec!["".to_string(); row1.len()];
+    let mut xrow_filled = vec![false; row1.len()];
+    for cx in 0..cols {
+        for j in 0..rsi.cvars[cx].len() {
+            if rsi.cvars[cx][j] != "amino".to_string() {
+                xrow.push(rsi.cvars[cx][j].to_string());
+                xrow_filled.push(true);
+            } else {
+                xrow.push("".to_string());
+                xrow_filled.push(false);
+            }
+        }
+    }
     let nc = row1.len();
-    let cvars = &ctl.clono_print_opt.cvars;
-    if !ctl.clono_print_opt.amino.is_empty() || cvars.contains(&"var".to_string()) {
+    if !drows.is_empty() {
         let mut ncall = 0;
         for j in 0..cols {
             for z in 0..rsi.cvars[j].len() {
                 let mut c = Vec::<Vec<u8>>::new();
                 let mut start = 5 + drows.len();
                 if drows.len() >= 1 {
-                    start += 2;
+                    start += 3;
                 }
                 if ctl.clono_print_opt.sum {
                     start += 1;
@@ -213,7 +303,7 @@ pub fn make_diff_row(
                     start += 1;
                 }
                 for k in start..rows.len() {
-                    if rows[k][0].starts_with("$") {
+                    if rows[k][0].contains("$") {
                         continue;
                     }
                     if rows[k][ncall + z + nc].len() > 0 {
@@ -286,8 +376,22 @@ pub fn make_diff_row(
             }
             ncall += rsi.cvars[j].len();
         }
+        if !drows.is_empty() {
+            for i in 0..row1.len() {
+                if xrow_filled[i] {
+                    row1[i] = xrow[i].clone();
+                }
+            }
+        }
         rows[diff_pos] = row1.to_vec();
     } else {
+        if !drows.is_empty() {
+            for i in 0..row1.len() {
+                if xrow_filled[i] {
+                    row1[i] = xrow[i].clone();
+                }
+            }
+        }
         for i in 0..row1.len() {
             rows[diff_pos - 1][i] = row1[i].clone();
         }
@@ -297,11 +401,12 @@ pub fn make_diff_row(
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Define the set "parseable_fields" of fields that the could occur in parseable output.
+//
+// The overlap with code in proc_args_check.rs is not nice.
 
 pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     // Make some abbreviations.
 
-    let cvars = &ctl.clono_print_opt.cvars;
     let lvars = &ctl.clono_print_opt.lvars;
 
     // Define parseable output columns.  The entire machinery for parseable output is controlled
@@ -323,12 +428,42 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
-    for x in lvars.iter() {
+    let mut have_gex = false;
+    for i in 0..ctl.sample_info.gex_path.len() {
+        if ctl.sample_info.gex_path[i].len() > 0 {
+            have_gex = true;
+        }
+    }
+    let mut all_lvars = lvars.clone();
+    for i in 0..LVARS_ALLOWED.len() {
+        let x = &LVARS_ALLOWED[i];
+        if !have_gex {
+            if *x == "gex".to_string()
+                || x.starts_with("gex_")
+                || x.ends_with("_g")
+                || x.ends_with("_g_μ")
+                || *x == "n_gex_cell".to_string()
+                || *x == "n_gex".to_string()
+                || *x == "entropy".to_string()
+            {
+                continue;
+            }
+        }
+        if !lvars.contains(&x.to_string()) {
+            all_lvars.push(x.to_string());
+        }
+    }
+    for x in all_lvars.iter() {
         speaker!(x);
     }
     for col in 0..ctl.parseable_opt.pchains {
-        for x in cvars.iter() {
+        for x in CVARS_ALLOWED.iter() {
             speakerc!(col, x);
+        }
+        if ctl.parseable_opt.pbarcode {
+            for x in CVARS_ALLOWED_PCELL.iter() {
+                speakerc!(col, x);
+            }
         }
         for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
             speakerc!(col, x);
@@ -373,17 +508,10 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     for x in ctl.sample_info.dataset_list.iter() {
         speaker!(&format!("{}_barcodes", x));
     }
-    let mut pfsort = parseable_fields.clone();
-    unique_sort(&mut pfsort);
-    for x in pcols_sort.iter() {
-        if !bin_member(&pfsort, x) {
-            eprintln!("\nUnknown parseable output field: {}.\n", x);
-            eprintln!(
-                "Note that the allowed fields depend on your specification for the \
-                 LVARS or LVARSP,\nand CVARS or CVARSP options.  Please see \
-                 \"enclone help parseable\".\n"
-            );
-            std::process::exit(1);
+    if ctl.parseable_opt.pbarcode {
+        speaker!("barcode");
+        for x in ctl.sample_info.dataset_list.iter() {
+            speaker!(&format!("{}_barcode", x));
         }
     }
 }
@@ -451,12 +579,34 @@ pub fn start_gen(
                     bc.push(q[0].barcode.clone());
                 }
             }
-            bc.sort();
             speak!(
                 u,
                 &format!("{}_barcodes", d),
                 format!("{}", bc.iter().format(","))
             );
+        }
+        if ctl.parseable_opt.pbarcode {
+            let mut bc = Vec::<String>::new();
+            for x in exact_clonotypes[exacts[u]].clones.iter() {
+                bc.push(x[0].barcode.clone());
+            }
+            speak!(u, "barcode", format!("{}", bc.iter().format(";")));
+            for d in ctl.sample_info.dataset_list.iter() {
+                let mut bc = Vec::<String>::new();
+                for i in 0..exact_clonotypes[exacts[u]].clones.len() {
+                    let q = &exact_clonotypes[exacts[u]].clones[i];
+                    if ctl.sample_info.dataset_id[q[0].dataset_index] == *d {
+                        bc.push(q[0].barcode.clone());
+                    } else {
+                        bc.push("".to_string());
+                    }
+                }
+                speak!(
+                    u,
+                    &format!("{}_barcode", d),
+                    format!("{}", bc.iter().format(";"))
+                );
+            }
         }
         for cx in 0..cols {
             let vid = rsi.vids[cx];

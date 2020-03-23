@@ -18,6 +18,7 @@ use crate::misc2::*;
 use crate::misc3::*;
 use crate::print_clonotypes::*;
 use crate::proc_args2::*;
+use crate::proc_args_check::*;
 use crate::read_json::*;
 use debruijn::dna_string::*;
 use equiv::EquivRel;
@@ -64,20 +65,24 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    // Get gene expression and antibody counts.
+    // Get gene expression and antibody counts.  Sanity check variables in cases where that
+    // has to occur after loading gex data.  Actually, it could occur after loading only
+    // the feature list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
+    check_lvars(&ctl, &gex_info);
+    check_pcols(&ctl, &gex_info);
 
     // Determine the Cell Ranger version that was used.  Really painful.
 
-    let json = format!(
-        "{}/all_contig_annotations.json",
-        ctl.sample_info.dataset_path[0]
-    );
-    let json_lz4 = format!(
-        "{}/all_contig_annotations.json.lz4",
-        ctl.sample_info.dataset_path[0]
-    );
+    let ann;
+    if !ctl.gen_opt.cellranger {
+        ann = "all_contig_annotations.json";
+    } else {
+        ann = "contig_annotations.json";
+    }
+    let json = format!("{}/{}", ctl.sample_info.dataset_path[0], ann);
+    let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[0], ann);
     if !path_exists(&json) && !path_exists(&json_lz4) {
         eprintln!("can't find {} or {}", json, json_lz4);
         std::process::exit(1);

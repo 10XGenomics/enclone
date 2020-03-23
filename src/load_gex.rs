@@ -3,7 +3,6 @@
 // Load gene expression and antibody data.
 
 use crate::defs::*;
-use crate::proc_args2::*;
 use h5::Dataset;
 use io_utils::*;
 use load_feature_bc::*;
@@ -28,6 +27,8 @@ pub fn load_gex(
     gex_mults: &mut Vec<f64>,
     fb_mults: &mut Vec<f64>,
     gex_cell_barcodes: &mut Vec<Vec<String>>,
+    have_gex: &mut bool,
+    have_fb: &mut bool,
 ) {
     let pre = &ctl.gen_opt.pre;
     let comp = ctl.comp;
@@ -55,6 +56,14 @@ pub fn load_gex(
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
+            if !gex_outs[i].contains("/outs") {
+                eprintln!(
+                    "\nProbably something is wrong with the gene expression directory\n{}\n\
+                     It may help to read the help page \"enclone help input_tech\".\n",
+                    gex_outs[i]
+                );
+                std::process::exit(1);
+            }
             let root = gex_outs[i].rev_before("/outs");
             if !path_exists(&root) {
                 eprintln!(
@@ -278,43 +287,14 @@ pub fn load_gex(
         unique_sort(&mut r.6);
     });
 
-    // Check for lvars that don't make sense.
+    // Set have_gex and have_fb.
 
-    let mut have_gex = false;
-    let mut have_fb = false;
     for i in 0..results.len() {
         if results[i].4.is_some() {
-            have_gex = true;
+            *have_gex = true;
         }
         if results[i].5.is_some() {
-            have_fb = true;
-        }
-    }
-    for x in ctl.clono_print_opt.lvars.iter() {
-        if *x == "gex_med".to_string()
-            || *x == "gex_max".to_string()
-            || x.ends_with("_g")
-            || *x == "n_gex".to_string()
-            || *x == "entropy".to_string()
-        {
-            if !have_gex {
-                eprintln!(
-                    "\nYou've supplied the lead column variable {},\nbut it would appear \
-                     that you do not have gene expression data.\n",
-                    *x
-                );
-                std::process::exit(1);
-            }
-        }
-        if x.ends_with("_ab") || x.ends_with("_ag") || x.ends_with("_cr") || x.ends_with("_cu") {
-            if !have_fb {
-                eprintln!(
-                    "\nYou've supplied the lead column variable {},\nbut it would appear \
-                     that you do not have feature barcode data.\n",
-                    *x
-                );
-                std::process::exit(1);
-            }
+            *have_fb = true;
         }
     }
 
@@ -350,6 +330,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_mults = Vec::<f64>::new();
     let mut fb_mults = Vec::<f64>::new();
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
+    let mut have_gex = false;
+    let mut have_fb = false;
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -358,6 +340,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_mults,
         &mut fb_mults,
         &mut gex_cell_barcodes,
+        &mut have_gex,
+        &mut have_fb,
     );
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
@@ -442,10 +426,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         }
     }
 
-    // Check lvars args.
-
-    check_lvars(&mut ctl, &gex_features);
-
     // Answer.
 
     GexInfo {
@@ -460,5 +440,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         h5_indptr: h5_indptr,
         is_gex: is_gex,
         feature_id: feature_id,
+        have_gex: have_gex,
+        have_fb: have_fb,
     }
 }

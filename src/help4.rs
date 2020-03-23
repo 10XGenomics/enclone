@@ -15,15 +15,27 @@ pub fn help4(args: &Vec<String>) {
 
     let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
+
     macro_rules! doc {
         ($n1:expr, $n2:expr) => {
             rows.push(vec![$n1.to_string(), $n2.to_string()]);
+        };
+    }
+    macro_rules! docpr {
+        ($n1:expr, $n2:expr) => {
+            rows.push(vec![print_to($n1), print_to($n2)]);
         };
     }
     macro_rules! ldoc {
         ($n1:expr, $n2:expr) => {
             rows.push(vec!["\\hline".to_string(); 2]);
             rows.push(vec![$n1.to_string(), $n2.to_string()]);
+        };
+    }
+    macro_rules! ldocpr {
+        ($n1:expr, $n2:expr) => {
+            rows.push(vec!["\\hline".to_string(); 2]);
+            rows.push(vec![print_to($n1), print_to($n2)]);
         };
     }
     let mut plain = false;
@@ -332,6 +344,136 @@ pub fn help4(args: &Vec<String>) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Function that provides an explanation used for both enclone help lvars and
+    // enclone help cvars.
+
+    fn explain_alt_versions() {
+        print!(
+            "{}",
+            gray_left_bar(&print_to(
+                "\\red{◉} These variables have some alternate versions, \
+                 as shown in the table below:\n\n"
+            ))
+        );
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+            "variable".to_string(),
+            "semantics".to_string(),
+            "visual".to_string(),
+            "visual".to_string(),
+            "parseable".to_string(),
+            "parseable".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "(one cell)".to_string(),
+            "".to_string(),
+            "(one cell)".to_string(),
+        ];
+        rows.push(row);
+        let row = vec!["\\hline".to_string(); 6];
+        rows.push(row);
+        let row = vec![
+            "x".to_string(),
+            "median over cells".to_string(),
+            "yes".to_string(),
+            "this cell".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_mean".to_string(),
+            "mean over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_μ".to_string(),
+            "(same as above)".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_sum".to_string(),
+            "sum over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_Σ".to_string(),
+            "(same as above)".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_min".to_string(),
+            "min over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_max".to_string(),
+            "max over cells".to_string(),
+            "yes".to_string(),
+            "null".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "x_cell".to_string(),
+            "this cell".to_string(),
+            "no".to_string(),
+            "no".to_string(),
+            "no".to_string(),
+            "this cell".to_string(),
+        ];
+        rows.push(row);
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
+        print!("{}", gray_left_bar(&log));
+        print!(
+            "{}",
+            gray_left_bar(&print_to(
+                "Some explanation is required.  If you use enclone without certain options, you \
+             get the \"visual\" column.\n\
+             • Add the option \\bold{PER_CELL} \
+             (see \"enclone help display\") and then you get visual output with extra lines for \
+             each cell within an exact subclonotype, and each of those extra lines is described by \
+             the \"visual (one cell)\" column.\n\
+             • If you generate parseable output (see \"enclone help parseable\"), then you get \
+             the \"parseable\" column for that output, unless you specify \\bold{PCELL}, \
+             and then you get the last column.\n\
+             • For the forms with μ and Σ, the Greek letters are only used in column headings for \
+             visual output (to save space), and optionally, in names of fields on the command \
+             line.\n\
+             \\green{▶} If you try out these features, you'll see exactly what happens! \
+             \\green{◀}\n"
+            ))
+        );
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Provide lvars help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
@@ -352,29 +494,14 @@ pub fn help4(args: &Vec<String>) {
         doc!("datasets", "dataset identifiers");
         doc!("samples", "sample identifiers");
         doc!("donors", "donor identifiers");
-        ldoc!("ncells", "number of cells");
+        ldoc!("n", "number of cells");
         doc!(
             "n_<name>",
-            "number of cells associated to the given name, which can be a dataset short"
+            "number of cells associated to the given name, which can be a dataset"
         );
         doc!(
             "",
-            "name, or a sample short name, or a donor short name, or a tag short name;"
-        );
-        doc!("", "it may not name more than one such category");
-        ldoc!("gex_med", "median gene expression UMI count");
-        doc!("gex_max", "max gene expression UMI count");
-        // nonpublic for now as we don't know if this is useful
-        /*
-        doc!(
-            "entropy",
-            "Shannon entropy of GEX UMI counts (median across cells)"
-        );
-        */
-        doc!("n_gex", "number of cells reported by GEX");
-        doc!(
-            "",
-            "(requires that gene expression data are provided as input)"
+            "or sample or donor or tag short name; may name only one such category"
         );
         ldoc!(
             "near",
@@ -386,7 +513,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!(
             "",
-            "both only compare to cells having chains in the same columns of the clonotype;"
+            "both compare to cells having chains in the same columns of the clonotype,"
         );
         doc!(
             "",
@@ -394,58 +521,76 @@ pub fn help4(args: &Vec<String>) {
         );
         ldoc!(
             "g<d>",
-            "Here d is a nonnegative integer.  Then all the exact subclonotypes are grouped"
+            "Here d is a nonnegative integer.  Then all the exact subclonotypes are"
         );
         doc!(
             "",
-            "according to the Hamming distance of their V..J sequences.  Those within"
+            "grouped according to the Hamming distance of their V..J sequences.  Those"
         );
         doc!(
             "",
-            "distance d are defined to be in the same group, and this is extended"
+            "within distance d are defined to be in the same group, and this is"
         );
         doc!(
             "",
-            "transitively.  The group identifier 1, 2, ... is shown.  The ordering of"
+            "extended transitively.  The group identifier 1, 2, ... is shown.  The"
         );
         doc!(
             "",
-            "these identifiers is arbitrary.  This option is best applied to cases where"
+            "ordering of these identifiers is arbitrary.  This option is best applied"
         );
-        doc!("", "all exact subclonotypes have a complete set of chains.");
-        ldoc!(
+        doc!(
+            "",
+            "to cases where all exact subclonotypes have a complete set of chains."
+        );
+        ldocpr!("gex", "\\red{◉} median gene expression UMI count");
+        docpr!("n_gex", "\\blue{◉} number of cells reported by GEX");
+        // nonpublic for now as we don't know if this is useful
+        /*
+        doc!(
+            "entropy",
+            "Shannon entropy of GEX UMI counts (median across cells)"
+        );
+        */
+        ldocpr!(
             "<gene>_g",
-            "all five feature types: look for a declared feature of the given type with"
+            "\\red{◉} all five feature types: look for a declared feature of the \
+             given type"
         );
         doc!(
             "<antibody>_ab",
-            "the given id or name, and report the mean UMI count for it; this assumes"
+            "with the given id or name; report the median UMI count for it; we allow"
         );
         doc!(
             "<antigen>_ag",
-            "that gene expression or feature barcodes have been generated; we also"
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown"
         );
-        doc!(
-            "<crispr>_cr",
-            "allow the form e.g. <abbr>:<gene>_g where abbr is an abbreviation"
-        );
-        doc!("<custom>_cu", "to be shown");
+        doc!("<crispr>_cr", "");
+        doc!("<custom>_cu", "");
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
+        print!("{}", log);
         print(
-            "The default is \\bold{datasets,ncells}, except that datasets is suppressed if \
+            "For gene expression and feature barcode stats, such data must be provided \
+             as input to enclone.\n\n",
+        );
+        explain_alt_versions();
+        print(
+            "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
+             visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
+             and the x_mean etc. forms do not apply.\n\n",
+        );
+        print(
+            "The default is \\bold{datasets,n}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
         );
-        print(
-            "\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the default \
-             list.\n\n",
-        );
+        print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
         print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.  Note that for this normalization, \
-             we simply scale the counts, rather than subsample reads.\n\n",
+             counts are rounded to the nearest integer.  For this normalization, \
+             we simply scale the counts, rather than subsample reads.  If you want to turn off \
+             the normalization, add the argument \\bold{FULL_COUNTS} to the command line.\n\n",
         );
         if !help_all {
             std::process::exit(0);
@@ -478,19 +623,61 @@ pub fn help4(args: &Vec<String>) {
             "var",
             "bases at positions in chain that vary across the clonotype"
         );
-        ldoc!("umed", "median VDJ umi count for each exact subclonotype");
-        doc!("umax", "max VDJ umi count for each exact subclonotype");
-        doc!("utot", "total VDJ umi count for each exact subclonotype");
-        ldoc!("rmed", "median VDJ read count for each exact subclonotype");
+        ldocpr!(
+            "u",
+            "\\red{◉} VDJ UMI count for each exact subclonotype, median across cells"
+        );
+        docpr!(
+            "r",
+            "\\red{◉} VDJ read count for each exact subclonotype, median across cells"
+        );
         ldoc!("const", "constant region name");
         ldoc!(
-            "comp",
-            "a measure of CDR3 complexity (currently computed inefficiently)"
+            "edit",
+            "a string that partially defines the edit of the reference V(D)J concatenation"
         );
+        doc!(
+            "",
+            "that gives rise to the observed CDR3; this uses a coordinate system in which"
+        );
+        doc!(
+            "",
+            "0 is the first base of the J ref segment (or the first base of the D ref"
+        );
+        doc!(
+            "",
+            "segment for IGH and TRB); for example D-4:4 denotes the deletion of the last"
+        );
+        doc!(
+            "",
+            "4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V"
+        );
+        doc!(
+            "",
+            "and I0:2;S5 denotes that plus a substitution at position 5; in computing"
+        );
+        doc!(
+            "",
+            "\"edit\", for IGH and TRB, we always test every possible D segment,"
+        );
+        doc!(
+            "",
+            "regardless of whether one is annotated, and pick the best one; for this"
+        );
+        doc!("", "reason, \"edit\" may be slow");
+        doc!(
+            "comp",
+            "a measure of CDR3 complexity, which is the total number of S, D and I"
+        );
+        doc!("", "symbols in \"edit\" as defined above");
         ldoc!("cdr3_dna", "the CDR3_DNA sequence");
         ldoc!(
+            "vjlen",
+            "number of bases from the start of the V region to the end of the J region"
+        );
+        doc!(
             "clen",
-            "length of observed constant sequence (usually truncated at primer start)"
+            "length of observed constant region (usually truncated at primer start)"
         );
         doc!("ulen", "length of observed 5'-UTR sequence");
         doc!(
@@ -516,7 +703,7 @@ pub fn help4(args: &Vec<String>) {
         );
         doc!("", "the beginning of C; elided if empty");
         ldoc!(
-            "ndiff<n>",
+            "ndiff<n>vj",
             "number of base differences within V..J between this exact subclonotype and"
         );
         doc!("", "exact subclonotype n");
@@ -542,8 +729,9 @@ pub fn help4(args: &Vec<String>) {
         // was ... rows.clone()
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
         println!("{}", log);
+        explain_alt_versions();
         print(
-            "At least one variable must be listed.  The default is \\bold{umed,const,notes}.  \
+            "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
         if !help_all {

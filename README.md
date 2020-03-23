@@ -52,12 +52,12 @@ with which `enclone` will be integrated (later).
 ___________________________________________________________________________________________________
 
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
-### How to download and install `enclone`
+### How to download and install `enclone` and get test datasets
 
-<b>1.</b> Open a terminal window on your Linux or Mac computer. Please let us
+<b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please let us
 know if availability on other platforms is important to you.
 
-<b>2.</b> Type the following to download the `enclone` executable:
+<b>2.  Download enclone.</b>  Type the following to download the `enclone` executable:
 ```
 mkdir -p ~/bin; cd ~/bin
 wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
@@ -68,8 +68,8 @@ This gets you the absolute latest version of `enclone`.  You can repeat this ste
 want to update.  At a later date, there will also be separately numbered releases that have passed 
 a more extensive set of tests.
 
-<b>3.</b> Type the following to download the `enclone` test datasets (and the source code, but
-you probably won't need that):
+<b>3.  Download test data.</b>  Type the following to download the `enclone` test datasets 
+(and the source code, but you probably won't need that):
 ```
 cd
 git clone git@github.com:10XDev/enclone.git
@@ -83,7 +83,7 @@ git pull
 This assumes that you have not touched the repo since you first cloned it.  Otherwise you should
 `git checkout master` first.
 
-<b>4.</b> Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
+<b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 ___________________________________________________________________________________________________
 

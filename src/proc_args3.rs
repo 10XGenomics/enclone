@@ -8,6 +8,7 @@ use marsoc::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
 
@@ -122,6 +123,28 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 // Use case 3.  All else.
                 } else {
                     p = format!("{}/outs", p);
+                }
+
+                // For internal runs, try much harder.  This is so that internal users can just
+                // type an internal numerical id for a dataset and have it always work.
+                // The code that's used here should be placed somewhere else.
+
+                if !path_exists(&p) && ctl.gen_opt.internal_run {
+                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", x);
+                    let o = Command::new("curl")
+                        .arg(url)
+                        .output()
+                        .expect("failed to execute xena http");
+                    let m = String::from_utf8(o.stdout).unwrap();
+                    if m.contains("502 Bad Gateway") {
+                        panic!("502 Bad Gateway from http://xena/api/analyses/{}", x);
+                    }
+                    let mut path = String::new();
+                    if m.contains("\"path\":\"") {
+                        path = m.between("\"path\":\"", "\"").to_string();
+                        ctl.gen_opt.current_ref = true;
+                    }
+                    p = format!("{}/outs", path);
                 }
 
                 // Now, possibly, we should remove the /outs suffix.  We do this to allow for the

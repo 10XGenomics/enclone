@@ -3,6 +3,7 @@
 use crate::defs::*;
 use crate::proc_args2::*;
 use crate::proc_args3::*;
+use crate::proc_args_check::*;
 use perf_stats::*;
 use regex::Regex;
 use std::{env, time::Instant};
@@ -85,8 +86,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "share".to_string(),
         "donor".to_string(),
     ];
-    ctl.clono_print_opt.cvars = vec!["umed".to_string(), "const".to_string(), "notes".to_string()];
-    ctl.clono_print_opt.lvars = vec!["datasets".to_string(), "ncells".to_string()];
+    ctl.clono_print_opt.cvars = vec!["u".to_string(), "const".to_string(), "notes".to_string()];
+    ctl.clono_print_opt.lvars = vec!["datasets".to_string(), "n".to_string()];
 
     ctl.clono_group_opt.min_group = 1;
 
@@ -102,11 +103,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.parseable_opt.pchains = 4;
 
     ctl.onesie_mult = 10_000;
-
-    let cvars_allowed = vec![
-        "var", "umed", "umax", "comp", "utot", "rmed", "const", "white", "cdr3_dna", "ulen",
-        "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
-    ];
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
@@ -190,6 +186,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.exp = true;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
+        } else if arg == "HTML" {
+            ctl.gen_opt.html = true;
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));
             if x.len() == 0 || x.len() % 2 != 0 {
@@ -206,6 +204,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&arg, "CURRENT_REF") {
             ctl.gen_opt.current_ref = true;
+        } else if is_simple_arg(&arg, "FULL_COUNTS") {
+            ctl.gen_opt.full_counts = true;
         } else if is_simple_arg(&arg, "SUM") {
             ctl.clono_print_opt.sum = true;
         } else if is_simple_arg(&arg, "MEAN") {
@@ -383,7 +383,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
         } else if arg.starts_with("PCOLS=") {
             ctl.parseable_opt.pcols.clear();
-            for x in arg.after("PCOLS=").split(',').collect::<Vec<&str>>() {
+            let p = arg.after("PCOLS=").split(',').collect::<Vec<&str>>();
+            for i in 0..p.len() {
+                let mut x = p[i].to_string();
+                x = x.replace("_sum", "_Σ");
+                x = x.replace("_mean", "_μ");
                 ctl.parseable_opt.pcols.push(x.to_string());
                 ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
@@ -433,54 +437,39 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     ctl.clono_print_opt.cvars.push(x.to_string());
                 }
             }
-            for x in ctl.clono_print_opt.cvars.iter() {
-                let mut ok = cvars_allowed.contains(&(*x).as_str());
-                if x.starts_with("ndiff")
-                    && x.after("ndiff").parse::<usize>().is_ok()
-                    && x.after("ndiff").force_usize() >= 1
-                {
-                    ok = true;
-                }
-                if !ok {
-                    eprintln!(
-                        "\nUnrecognized variable {} for CVARS.  Please type \
-                         \"enclone help cvars\".\n",
-                        x
-                    );
-                    std::process::exit(1);
-                }
+            for x in ctl.clono_print_opt.cvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
             }
+            check_cvars(&ctl);
         } else if arg.starts_with("CVARSP=") {
-            let cvarsp = arg.after("CVARSP=").split(',').collect::<Vec<&str>>();
-            for x in cvarsp.iter() {
-                let mut ok = cvars_allowed.contains(&x);
-                if x.starts_with("ndiff")
-                    && x.after("ndiff").parse::<usize>().is_ok()
-                    && x.after("ndiff").force_usize() >= 1
-                {
-                    ok = true;
-                }
-                if !ok {
-                    eprintln!(
-                        "\nUnrecognized variable {} for CVARSP.  Please type \
-                         \"enclone help cvars\".\n",
-                        x
-                    );
-                    std::process::exit(1);
+            for x in arg.after("CVARSP=").split(',').collect::<Vec<&str>>() {
+                if x.len() > 0 {
+                    ctl.clono_print_opt.cvars.push(x.to_string());
                 }
             }
-            for x in cvarsp {
-                ctl.clono_print_opt.cvars.push(x.to_string());
+            for x in ctl.clono_print_opt.cvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
             }
+            check_cvars(&ctl);
         } else if arg.starts_with("LVARS=") {
             ctl.clono_print_opt.lvars.clear();
             for x in arg.after("LVARS=").split(',').collect::<Vec<&str>>() {
                 ctl.clono_print_opt.lvars.push(x.to_string());
             }
+            for x in ctl.clono_print_opt.lvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
+            }
         } else if arg.starts_with("LVARSP=") {
             let lvarsp = arg.after("LVARSP=").split(',').collect::<Vec<&str>>();
             for x in lvarsp {
                 ctl.clono_print_opt.lvars.push(x.to_string());
+            }
+            for x in ctl.clono_print_opt.lvars.iter_mut() {
+                *x = x.replace("_sum", "_Σ");
+                *x = x.replace("_mean", "_μ");
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
@@ -578,6 +567,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
         }
+    }
+    if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
+        eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
+        std::process::exit(1);
     }
     if ctl.sample_info.n() == 0 {
         eprintln!("\nNo TCR or BCR data have been specified.\n");

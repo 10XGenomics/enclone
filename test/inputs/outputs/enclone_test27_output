@@ -11,9 +11,9 @@ SUMMARY STATISTICS
    • number of clonotypes having 2 chains = 304
    • number of clonotypes having 3 chains = 12
    • number of clonotypes having 4 chains = 2
-   ┌─────────────────────┐
-   │sample  donor  ncells│
-   ├─────────────────────┤
-   │s1      d1       1402│
-   └─────────────────────┘
+   ┌───────────────────┐
+   │sample  donor     n│
+   ├───────────────────┤
+   │s1      d1     1402│
+   └───────────────────┘
    

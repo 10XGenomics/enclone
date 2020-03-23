@@ -505,16 +505,16 @@ pub fn parse_json_annotations_files(
         ));
     }
     // note: only tracking truncated seq and quals initially
+    let ann;
+    if !ctl.gen_opt.cellranger {
+        ann = "all_contig_annotations.json";
+    } else {
+        ann = "contig_annotations.json";
+    }
     results.par_iter_mut().for_each(|res| {
         let li = res.0;
-        let json = format!(
-            "{}/all_contig_annotations.json",
-            ctl.sample_info.dataset_path[li]
-        );
-        let json_lz4 = format!(
-            "{}/all_contig_annotations.json.lz4",
-            ctl.sample_info.dataset_path[li]
-        );
+        let json = format!("{}/{}", ctl.sample_info.dataset_path[li], ann);
+        let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
             eprintln!("can't find {} or {}", json, json_lz4);
             std::process::exit(1);

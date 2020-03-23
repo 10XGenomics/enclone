@@ -147,6 +147,11 @@ pub fn survives_filter(
                 if refdata.name[rsi.jids[cx]] == ctl.clono_filt_opt.seg[j] {
                     hit = true;
                 }
+                if rsi.cids[cx].is_some() {
+                    if refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.seg[j] {
+                        hit = true;
+                    }
+                }
             }
         }
         if !hit {
@@ -169,6 +174,11 @@ pub fn survives_filter(
                 }
                 if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.segn[j].force_i32() {
                     hit = true;
+                }
+                if rsi.cids[cx].is_some() {
+                    if refdata.id[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.segn[j].force_i32() {
+                        hit = true;
+                    }
                 }
             }
         }
