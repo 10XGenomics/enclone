@@ -98,7 +98,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
                 print_color(s, &mut log);
                 pal += &stringme(&log);
             }
-            pal.push('▓');
+            pal.push('█');
             let mut log = Vec::<u8>::new();
             if !h.plain {
                 emit_end_escape(&mut log);
