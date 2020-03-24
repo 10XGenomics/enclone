@@ -43,6 +43,13 @@ impl HelpDesk {
         self.rows.push(vec!["\\hline".to_string(); 3]);
         self.rows.push(vec![x1.to_string(), x2.to_string(), x3.to_string()]);
     }
+    pub fn docpr(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec![print_to(x1), print_to(x2)]);
+    }
+    pub fn ldocpr(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec!["\\hline".to_string(); 2]);
+        self.rows.push(vec![print_to(x1), print_to(x2)]);
+    }
     pub fn doc_red(&mut self, x1: &str, x2: &str) {
         if !self.plain {
             let r1 = format!("[01;31m{}[0m", x1);
