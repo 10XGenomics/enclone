@@ -36,6 +36,13 @@ impl HelpDesk {
         self.rows.push(vec!["\\hline".to_string(); 2]);
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
     }
+    pub fn doc3(&mut self, x1: &str, x2: &str, x3: &str) {
+        self.rows.push(vec![x1.to_string(), x2.to_string(), x3.to_string()]);
+    }
+    pub fn ldoc3(&mut self, x1: &str, x2: &str, x3: &str) {
+        self.rows.push(vec!["\\hline".to_string(); 3]);
+        self.rows.push(vec![x1.to_string(), x2.to_string(), x3.to_string()]);
+    }
     pub fn doc_red(&mut self, x1: &str, x2: &str) {
         if !self.plain {
             let r1 = format!("[01;31m{}[0m", x1);
@@ -75,7 +82,14 @@ impl HelpDesk {
         }
     }
     pub fn print_tab2(&self) {
-        print_tab2(&self.rows);
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
+        print!("{}", log);
+    }
+    pub fn print_tab3(&self) {
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
+        print!("{}", log);
     }
 }
 

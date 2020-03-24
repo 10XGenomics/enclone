@@ -8,7 +8,6 @@ use crate::testlist::*;
 use ansi_escape::*;
 use std::env;
 use string_utils::*;
-use tables::*;
 use vector_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
@@ -19,7 +18,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Set up.
 
     let mut args = args.clone();
-    let mut rows = Vec::<Vec<String>>::new();
     let mut plain = false;
     for i in 0..args.len() {
         if args[i] == "PLAIN" {
@@ -40,29 +38,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         }
         erase_if(&mut args, &to_delete);
     }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
     macro_rules! bold {
         () => {
             if !plain {
@@ -87,21 +62,14 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
             help_all = true;
         }
     }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide example1 help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || help_all {
-        begin_doc!("example1");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("example1");
         println!(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
              directory /users/jdoe/enclone_data.  Then you can run this command:"
@@ -159,7 +127,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              • u = median UMI count for a chain in the exact subclonotype.\n\
              • const = const region name for a chain in the exact subclonotype.\n"
         );
-        print(
+        h.print(
             "The view you see here is configurable: see the documentation at \
              \\bold{enclone help lvars} and \\bold{enclone help cvars}.  See also \
              \\bold{enclone help command} for how to remove the \\bold{PRE} part of the \
@@ -175,7 +143,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide example2 help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || help_all {
-        begin_doc!("example2");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("example2");
         println!(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
              directory /users/jdoe/enclone_data.  Then you can run this command:"
@@ -201,7 +170,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
             }
             print!("{}", strme(&x));
         }
-        print(
+        h.print(
             "This shows an invocation of enclone that takes VDJ, gene expression and feature \
              barcode data as input, and exhibits all clonotypes for which some chain has the \
              given CDR3 sequence.  As well the command requests UMI (molecule) counts for one \
@@ -218,8 +187,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide support help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
-        begin_doc!("support");
-        print(
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("support");
+        h.print(
             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
@@ -238,9 +208,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         if !ctl.gen_opt.stable_doc {
             println!("{} = {}.\n", env!("CARGO_PKG_VERSION"), VERSION_STRING);
         } else {
-            print("(your enclone version information will be printed here).\n\n");
+            h.print("(your enclone version information will be printed here).\n\n");
         }
-        print(
+        h.print(
             "3. If you're sure that enclone made a mistake.  Usually an actionable mistake is \
              exhibited via a single clonotype or two, along with your explanation as to why it's \
              wrong!  And we may need the enclone input \
@@ -259,24 +229,24 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              even if it's our fault.  And sometimes the right solution will take time.  We'll do \
              our best!\n\n",
         );
-        print(
+        h.print(
             "\\red{Please communicate with us by writing to} \
              \\boldred{enclone@10xgenomics.com.}\n\n\
              We use only this email address for enclone questions.  Support from 10x Genomics \
              for enclone needs to go through this point of access (or the next one).\n\n",
         );
-        print(
+        h.print(
             "If you are GitHub-savvy, we also welcome GitHub issues if applicable and you \
              prefer that route.  If you can make the enclone code better, go for it!  Make sure \
              the internal tests are successful, submit a \
              pull request, and if we can use your code (no guarantees), we'll add you as an \
              author on the site.\n\n",
         );
-        print(
+        h.print(
             "\\blue{Before writing to us, please check our faq by typing} \
              \\boldblue{enclone help faq}\\blue{.}\n\n",
         );
-        print("\\red{Happy encloning!}\n\n");
+        h.print("\\red{Happy encloning!}\n\n");
         if !help_all {
             std::process::exit(0);
         }
@@ -287,9 +257,10 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide plot help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
-        begin_doc!("plot");
-        print("\n\\bold{plotting clonotypes}\n\n");
-        print(
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("plot");
+        h.print("\n\\bold{plotting clonotypes}\n\n");
+        h.print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \
              \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
@@ -341,8 +312,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide input help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input") || help_all {
-        begin_doc!("input");
-        print(
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("input");
+        h.print(
             "\nenclone has \\boldred{two} mechanisms for specifying input datasets: either \
              directly on the command line or via a supplementary metadata file. Only one mechanism \
              may be used at a time.\n\n\
@@ -356,7 +328,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\bold{PRE} on the command line by setting the environment variable \
              \\bold{ENCLONE_PRE} to \\bold{p}.\n\n",
         );
-        print(
+        h.print(
             "Both input forms involve abbreviated names (discussed below), which should be as \
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
@@ -373,7 +345,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.",
             true
         );
-        print(
+        h.print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\
              \\bold{TCR=/home/jdoe/runs/sample345}\n\
              or likewise for \\bold{BCR}.  A more complicated syntax is allowed in which commas, \
@@ -392,24 +364,24 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\green{abbr:path}\\bold{.}",
             true,
         );
-        print(
+        h.print(
             "Examples:\n\
              \\bold{TCR=p1,p2}   -- input data from two libraries from the same sample\n\
              \\bold{TCR=p1,p2:q} -- input data as above plus another from a different sample \
              from the same donor\n\
              \\bold{TCR=\"a;b\"}   -- input one library from each of two donors.\n\n",
         );
-        print(
+        h.print(
             "Matching gene expression and/or feature barcode data may also be supplied using \
              an argument \\bold{GEX=...}, whose right side must have the exact same structure \
              as the \\bold{TCR} or \\bold{BCR} argument.  Specification of both \
              \\bold{TCR} and \\bold{BCR} is not allowed.\n\n",
         );
-        print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
+        h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
         bold!();
         print("META=filename\n");
         end_escape!();
-        print(
+        h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
              group.  After the first line, lines starting with # are ignored.  There must be a \
              field tcr or bcr, and some other fields are allowed:\n",
@@ -442,92 +414,86 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
             emit_end_escape(&mut log3);
         }
         let s3 = stringme(&log3);
-        rows.push(vec![s1, s2, s3]);
-        rows.push(vec!["\\hline".to_string(); 3]);
-        rows.push(vec![
-            "tcr".to_string(),
-            "(required!)".to_string(),
-            "path to dataset, or abbr:path, where abbr is an abbreviated".to_string(),
-        ]);
-        rows.push(vec![
-            "or bcr".to_string(),
-            "".to_string(),
-            "name for the dataset; exactly one of tcr or bcr must be used".to_string(),
-        ]);
-        rows.push(vec![
-            "gex".to_string(),
-            "null".to_string(),
-            "path to GEX dataset, which may include or consist entirely".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "of FB data".to_string(),
-        ]);
-        rows.push(vec!["\\hline".to_string(); 3]);
-        rows.push(vec![
-            "sample".to_string(),
-            "s1".to_string(),
-            "abbreviated name of sample".to_string(),
-        ]);
+        h.doc3(&s1, &s2, &s3);
+        h.ldoc3(
+            "tcr",
+            "(required!)",
+            "path to dataset, or abbr:path, where abbr is an abbreviated"
+        );
+        h.doc3(
+            "or bcr",
+            "",
+            "name for the dataset; exactly one of tcr or bcr must be used"
+        );
+        h.doc3(
+            "gex",
+            "null",
+            "path to GEX dataset, which may include or consist entirely"
+        );
+        h.doc3(
+            "",
+            "",
+            "of FB data"
+        );
+        h.ldoc3(
+            "sample",
+            "s1",
+            "abbreviated name of sample",
+        );
 
-        rows.push(vec!["\\hline".to_string(); 3]);
-        rows.push(vec![
-            "donor".to_string(),
-            "d1".to_string(),
-            "abbreviated name of donor".to_string(),
-        ]);
-        rows.push(vec!["\\hline".to_string(); 3]);
-        rows.push(vec![
-            "color".to_string(),
-            "null".to_string(),
-            "color to associate to this dataset (for PLOT option)".to_string(),
-        ]);
-        rows.push(vec!["\\hline".to_string(); 3]);
-        rows.push(vec![
-            "bc".to_string(),
-            "null".to_string(),
-            "name of CSV file with header \"barcode,sample,donor\" that".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "assigns a sample and donor name to each barcode; if sample and/or".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "donor are also specified, then those are treated as default values".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "to be used in case a particular barcode is not specified by bc;".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "a fourth field \"tag\" is allowed and may be arbitrarily specified".to_string(),
-        ]);
+        h.ldoc3(
+            "donor",
+            "d1",
+            "abbreviated name of donor"
+        );
+        h.ldoc3(
+            "color",
+            "null",
+            "color to associate to this dataset (for PLOT option)"
+        );
+        h.ldoc3(
+            "bc",
+            "null",
+            "name of CSV file with header \"barcode,sample,donor\" that"
+        );
+        h.doc3(
+            "",
+            "",
+            "assigns a sample and donor name to each barcode; if sample and/or"
+        );
+        h.doc3(
+            "",
+            "",
+            "donor are also specified, then those are treated as default values"
+        );
+        h.doc3(
+            "",
+            "",
+            "to be used in case a particular barcode is not specified by bc;"
+        );
+        h.doc3(
+            "",
+            "",
+            "a fourth field \"tag\" is allowed and may be arbitrarily specified"
+        );
 
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "Use of bc automatically turns on the MIX_DONORS option.  There is".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "an optional field \"color\" that assigns a color to a barcode,".to_string(),
-        ]);
-        rows.push(vec![
-            "".to_string(),
-            "".to_string(),
-            "and which is used by the PLOT option.".to_string(),
-        ]);
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 3, &b"l|l|l".to_vec(), false, false);
-        println!("{}", log);
+        h.doc3(
+            "",
+            "",
+            "Use of bc automatically turns on the MIX_DONORS option.  There is"
+        );
+        h.doc3(
+            "",
+            "",
+            "an optional field \"color\" that assigns a color to a barcode,"
+        );
+        h.doc3(
+            "",
+            "",
+            "and which is used by the PLOT option."
+        );
+        h.print_tab3();
+        h.print("\n");
         if !help_all {
             std::process::exit(0);
         }
