@@ -6,7 +6,6 @@ use crate::defs::*;
 use crate::help_utils::*;
 use ansi_escape::*;
 use string_utils::*;
-use tables::*;
 use vector_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
@@ -17,18 +16,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // Set up.
 
     let mut args = args.clone();
-    let mut rows = Vec::<Vec<String>>::new();
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
     let mut plain = false;
     for i in 0..args.len() {
         if args[i] == "PLAIN" {
@@ -55,21 +42,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             help_all = true;
         }
     }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide indels help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || help_all {
-        begin_doc!("indels");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("indels");
         print("\n\\bold{handling of insertions and deletions}\n\n");
         print(
             "enclone can recognize and display a single insertion or deletion in a contig \
@@ -101,27 +81,26 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide ideas help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || help_all {
-        begin_doc!("ideas");
-        print("\n\\bold{features that might be implemented in enclone}\n\n");
-        doc!("speed", "make enclone faster");
-        ldoc!(
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("ideas");
+        h.print("\n\\bold{features that might be implemented in enclone}\n\n");
+        h.doc("speed", "make enclone faster");
+        h.ldoc(
             "CDRn",
             "make CDR1 and CDR2 viewable in the same way that CDR3 is now"
         );
-        ldoc!(
+        h.ldoc(
             "distance grouping",
             "provide an option to group clonotypes by distance"
         );
-        ldoc!("cloning", "package V..J region into a cloning vector");
-        ldoc!(
+        h.ldoc("cloning", "package V..J region into a cloning vector");
+        h.ldoc(
             "phylogeny",
             "generate a phylogeny for the exact clonotypes within a clonotype"
         );
 
-        ldoc!("windows", "make enclone work on windows computers");
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        print!("{}", log);
+        h.ldoc("windows", "make enclone work on windows computers");
+        h.print_tab2();
         println!(
             "\nPlease let us know if you are interested in these features, or if there are\n\
              other features that you would like us to implement!\n"
@@ -140,7 +119,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // three-color palette.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
-        begin_doc!("color");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("color");
         print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
         for i in 0..6 {
@@ -201,7 +181,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide faq help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
-        begin_doc!("faq");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("faq");
         print("\n");
         if !plain {
             let mut log = Vec::<u8>::new();
@@ -437,70 +418,70 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // Provide developer help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
-        begin_doc!("developer");
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("developer");
         print("\n\\bold{a few options for developers}\n\n");
         print(
             "For instructions on how to compile, please see\n\
              \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
         );
-        doc!(
+        h.doc(
             "COMP",
             "report computational performance stats; use this with NOPRINT if you"
         );
-        doc!(
+        h.doc(
             "",
             "only want to see the computational performance stats, and with NOPAGER if you"
         );
-        doc!("", "want output to be unbuffered");
-        doc!(
+        h.doc("", "want output to be unbuffered");
+        h.doc(
             "COMP2",
             "like COMP, but adds more detailed lines that are prefixed with --"
         );
-        ldoc!(
+        h.ldoc(
             "CTRLC",
             "upon CTRL-C, emit a traceback and then exit; can be used as a primitive"
         );
-        doc!(
+        h.doc(
             "",
             "but easy profiling method, to know what the code is doing if it seems to be"
         );
-        doc!("", "very slow");
-        ldoc!(
+        h.doc("", "very slow");
+        h.ldoc(
             "HAPS=n",
             "Interrupt code n times, at one second intervals, get a traceback, and then tally"
         );
-        doc!(
+        h.doc(
             "",
             "the tracebacks.  This only works if the n tracebacks can be obtained before"
         );
-        doc!(
+        h.doc(
             "",
             "enclone terminates.  Interrupts that occur in the allocator are ignored, and"
         );
-        doc!(
+        h.doc(
             "",
             "in some cases, this accounts for most interrupts, resulting in confusing"
         );
-        doc!(
+        h.doc(
             "",
             "output.  In such cases, consider using CTRLC or a more sophisticated tool"
         );
-        doc!(
+        h.doc(
             "",
             "like perf.  Also HAPS only reports on the master thread, so to get useful"
         );
-        doc!(
+        h.doc(
             "",
             "information, you probably need to change an instance in the code of"
         );
-        doc!(
+        h.doc(
             "",
             "par_iter_mut to iter_mut, to turn off parallelization for a strategically"
         );
-        doc!("", "selected section.");
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
+        h.doc("", "selected section.");
+        h.print_tab2();
+        h.print("\n");
         if !help_all {
             std::process::exit(0);
         }
