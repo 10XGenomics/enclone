@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use crate::print_utils1::*;
+use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use io_utils::*;
 use std::io::Write;
@@ -13,15 +14,17 @@ use tables::*;
 pub struct HelpDesk {
     pub plain: bool,
     pub help_all: bool,
+    pub html: bool,
     pub rows: Vec<Vec<String>>,
     pub log: Vec<u8>,
 }
 
 impl HelpDesk {
-    pub fn new(plain: bool, help_all: bool) -> HelpDesk {
+    pub fn new(plain: bool, help_all: bool, html: bool) -> HelpDesk {
         HelpDesk {
             plain: plain,
             help_all: help_all,
+            html: html,
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
         }
@@ -172,7 +175,18 @@ impl HelpDesk {
         fwrite!(self.log, "{}", &x);
     }
     pub fn dump(&self) {
-        print!("{}", strme(&self.log));
+        if !self.html {
+            print!("{}", strme(&self.log));
+        } else {
+            let s = convert_text_with_ansi_escapes_to_html(
+                strme(&self.log),
+                "", // source
+                "", // title
+                "Menlo",
+                12,
+            );
+            print!("{}", s);
+        }
     }
 }
 

@@ -115,6 +115,10 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     nopager = true;
                     to_delete[i] = true;
                 }
+                if args[i] == "HTML" {
+                    ctl.gen_opt.html = true;
+                    to_delete[i] = true;
+                }
             }
             erase_if(&mut args, &to_delete);
             setup_pager(!nopager);
@@ -137,7 +141,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 break;
             }
         }
-        let mut h = HelpDesk::new(plain, help_all);
+        let mut h = HelpDesk::new(plain, help_all, ctl.gen_opt.html);
         help1(&args, &mut h);
         help2(&args, &ctl, &mut h);
         help3(&args, &mut h);
