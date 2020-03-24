@@ -5,6 +5,8 @@ use ansi_escape::*;
 use string_utils::*;
 use tables::*;
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 #[derive(Default)]
 pub struct HelpDesk {
     pub plain: bool,
@@ -19,18 +21,6 @@ impl HelpDesk {
             help_all: help_all,
             rows: Vec::<Vec<String>>::new(),
         }
-    }
-    pub fn begin_doc(&mut self, title: &str) {
-        self.rows.clear();
-        if self.help_all {
-            banner(&title, self.plain);
-        }
-    }
-    pub fn print(&self, x: &str) {
-        print(&x);
-    }
-    pub fn print_plain(&self, x: &str) {
-        print!("{}", &x);
     }
     pub fn doc(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
@@ -93,19 +83,9 @@ impl HelpDesk {
             self.rows.push(vec![x1.to_string(), x2.to_string()]);
         }
     }
-    pub fn print_tab2(&self) {
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
-        print!("{}", log);
-    }
-    pub fn print_tab3(&self) {
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
-        print!("{}", log);
-    }
-    pub fn print_enclone(&self) {
+    pub fn print_enclone(&mut self) {
         if self.plain {
-            print!("enclone");
+            self.print("enclone");
         } else {
             let mut log = Vec::<u8>::new();
             print_color(3, &mut log);
@@ -129,13 +109,67 @@ impl HelpDesk {
             print_color(1, &mut log);
             log.push(b'e');
             emit_end_escape(&mut log);
-            print!("{}", strme(&log));
+            self.print(&format!("{}", strme(&log)));
         }
     }
-    pub fn print_with_box(&self, x: &str, bold_box: bool) {
-        print_with_box(&x, bold_box);
+    pub fn print_tab2(&self) {
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
+        self.print_plain(&format!("{}", log));
+    }
+    pub fn print_tab3(&self) {
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
+        self.print_plain(&format!("{}", log));
+    }
+    pub fn begin_doc(&mut self, title: &str) {
+        self.rows.clear();
+        if self.help_all {
+            let mut log = Vec::<u8>::new();
+            if !self.plain {
+                emit_blue_escape(&mut log);
+            }
+            self.print_plain(&format!("{}", strme(&log)));
+            for _ in 1..100 {
+                self.print_plain("▓");
+            }
+            self.print_plain(&format!("{}", strme(&log)));
+            self.print_plain(&format!("\nenclone help {}\n", title));
+            let mut log = Vec::<u8>::new();
+            if !self.plain {
+                emit_blue_escape(&mut log);
+            }
+            self.print_plain(&format!("{}", strme(&log)));
+            for _ in 1..100 {
+                self.print_plain("▓");
+            }
+            let mut log = Vec::<u8>::new();
+            if !self.plain {
+                emit_end_escape(&mut log);
+            }
+            self.print_plain(&format!("{}\n", strme(&log)));
+        }
+    }
+    pub fn print_with_box(&mut self, x: &str, bold_box: bool) {
+        let y = print_to(x);
+        let mut rows = Vec::<Vec<String>>::new();
+        let lines = y.split('\n').collect::<Vec<&str>>();
+        for z in lines {
+            rows.push(vec![z.to_string()]);
+        }
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
+        self.print_plain(&format!("{}\n", log));
+    }
+    pub fn print(&self, x: &str) {
+        self.print_plain(&format!("{}", print_to(x)));
+    }
+    pub fn print_plain(&self, x: &str) {
+        print!("{}", &x);
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn stringify(rows: Vec<Vec<&str>>) -> Vec<Vec<String>> {
     let mut r = Vec::<Vec<String>>::new();
@@ -452,46 +486,6 @@ pub fn print_to(x: &str) -> String {
         ans.push(y[i]);
     }
     ans
-}
-
-// Print text in a box, expanding \\bold{...} etc..
-
-pub fn print_with_box(x: &str, bold_box: bool) {
-    let y = print_to(x);
-    let mut rows = Vec::<Vec<String>>::new();
-    let lines = y.split('\n').collect::<Vec<&str>>();
-    for z in lines {
-        rows.push(vec![z.to_string()]);
-    }
-    let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
-    println!("{}", log);
-}
-
-pub fn banner(x: &str, plain: bool) {
-    let mut log = Vec::<u8>::new();
-    if !plain {
-        emit_blue_escape(&mut log);
-    }
-    print!("{}", strme(&log));
-    for _ in 1..100 {
-        print!("▓");
-    }
-    print!("{}", strme(&log));
-    println!("\nenclone help {}", x);
-    let mut log = Vec::<u8>::new();
-    if !plain {
-        emit_blue_escape(&mut log);
-    }
-    print!("{}", strme(&log));
-    for _ in 1..100 {
-        print!("▓");
-    }
-    let mut log = Vec::<u8>::new();
-    if !plain {
-        emit_end_escape(&mut log);
-    }
-    println!("{}", strme(&log));
 }
 
 pub fn print_tab2(rows: &Vec<Vec<String>>) {
