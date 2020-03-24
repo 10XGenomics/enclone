@@ -12,38 +12,6 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
-    // Set up.
-
-    /*
-    let mut args = args.clone();
-    let mut plain = false;
-    for i in 0..args.len() {
-        if args[i] == "PLAIN" {
-            args.remove(i);
-            plain = true;
-            unsafe {
-                PLAIN = true;
-            }
-            break;
-        }
-    }
-    if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-        let mut to_delete = vec![false; args.len()];
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                to_delete[i] = true;
-            }
-        }
-        erase_if(&mut args, &to_delete);
-    }
-    let mut h.help_all = false;
-    unsafe {
-        if HELP_ALL {
-            h.help_all = true;
-        }
-    }
-    */
-
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide indels help.

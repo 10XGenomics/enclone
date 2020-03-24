@@ -8,43 +8,6 @@ use std::env;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
-    // Set up.
-
-    /*
-    let mut args = args.clone();
-    if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-        PrettyTrace::new().on();
-        let mut nopager = false;
-        let mut to_delete = vec![false; args.len()];
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                nopager = true;
-                to_delete[i] = true;
-            }
-        }
-        erase_if(&mut args, &to_delete);
-        setup_pager(!nopager);
-    }
-    let mut help_all = false;
-    if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
-        unsafe {
-            HELP_ALL = true;
-        }
-        help_all = true;
-    }
-    let mut plain = false;
-    for i in 0..args.len() {
-        if args[i] == "PLAIN" {
-            args.remove(i);
-            plain = true;
-            unsafe {
-                PLAIN = true;
-            }
-            break;
-        }
-    }
-    */
-
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Setup test.
@@ -109,7 +72,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
     // Provide main help.
 
-    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all {
+    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
+    {
         h.begin_doc("main");
         h.print(&format!(
             "\nThis is version {} (beta) of ",
