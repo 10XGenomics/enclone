@@ -36,18 +36,6 @@ pub fn help1(args: &Vec<String>) {
         }
         help_all = true;
     }
-    let mut rows = Vec::<Vec<String>>::new();
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
     let mut plain = false;
     for i in 0..args.len() {
         if args[i] == "PLAIN" {
@@ -58,52 +46,6 @@ pub fn help1(args: &Vec<String>) {
             }
             break;
         }
-    }
-    macro_rules! doc_greenish {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!("[38;5;36m{}[0m", $n1);
-                let r2 = format!("[38;5;36m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! ldoc_greenish {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            if !plain {
-                let r1 = format!("[38;5;36m{}[0m", $n1);
-                let r2 = format!("[38;5;36m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!("[01;31m{}[0m", $n1);
-                let r2 = format!("[01;31m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            if !plain {
-                let r1 = format!("[01;31m{}[0m", $n1);
-                let r2 = format!("[01;31m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
     }
     macro_rules! bold {
         () => {
@@ -123,14 +65,6 @@ pub fn help1(args: &Vec<String>) {
             }
         };
     }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -143,8 +77,8 @@ pub fn help1(args: &Vec<String>) {
         if help_all {
             print("\n");
         }
-        begin_doc!("");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("");
         h.print(
             "\nWelcome to enclone!\n\n\
              The purpose of this first page is to help you make sure that you're set up properly\n\
@@ -197,8 +131,8 @@ pub fn help1(args: &Vec<String>) {
     // Provide main help.
 
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
-        begin_doc!("main");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("main");
         print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
         print_enclone(plain);
         h.print(".  The mission of ");
@@ -237,72 +171,72 @@ pub fn help1(args: &Vec<String>) {
             emit_end_escape(&mut log2);
         }
         let s2 = stringme(&log2);
-        doc!(&s1, &s2);
-        ldoc_red!("enclone help", "help to test for correct setup");
-        doc_red!("enclone", "what you see here: guide to all the doc");
-        ldoc_red!("enclone help quick", "quick guide to getting started");
-        doc_red!("enclone help how", "how enclone works (long)");
-        doc_red!(
+        h.doc(&s1, &s2);
+        h.ldoc_red("enclone help", "help to test for correct setup");
+        h.doc_red("enclone", "what you see here: guide to all the doc");
+        h.ldoc_red("enclone help quick", "quick guide to getting started");
+        h.doc_red("enclone help how", "how enclone works (long)");
+        h.doc_red(
             "enclone help command",
             "info about enclone command line argument processing"
         );
-        ldoc_red!(
+        h.ldoc_red(
             "enclone help glossary",
             "glossary of terms used by enclone, and conventions"
         );
-        ldoc_red!("enclone help example1", "explanation of an example");
-        doc_red!(
+        h.ldoc_red("enclone help example1", "explanation of an example");
+        h.doc_red(
             "enclone help example2",
             "example showing gene expression \
              and feature barcodes (wide)"
         );
-        ldoc_red!(
+        h.ldoc_red(
             "enclone help support",
             "how we can help, enclone@10xgenomics.com"
         );
-        ldoc!(
+        h.ldoc(
             "enclone help input",
             "how to provide input to enclone (long)"
         );
-        doc!(
+        h.doc(
             "enclone help input_tech",
             "how to provide input to enclone (technical notes)"
         );
-        doc!("enclone help parseable", "parseable output (long)");
-        doc!(
+        h.doc("enclone help parseable", "parseable output (long)");
+        h.doc(
             "enclone help plot",
             "generate a honeycomb plot showing clonotypes"
         );
-        ldoc!(
+        h.ldoc(
             "enclone help filter",
             "clonotype filtering options, scanning for feature enrichment (long)"
         );
-        doc!("enclone help special", "special filtering options (long)");
-        ldoc!("enclone help lvars", "lead column options (long)");
-        doc!("enclone help cvars", "per chain column options (long)");
-        doc!(
+        h.doc("enclone help special", "special filtering options (long)");
+        h.ldoc("enclone help lvars", "lead column options (long)");
+        h.doc("enclone help cvars", "per chain column options (long)");
+        h.doc(
             "enclone help amino",
             "per chain column options for amino acids"
         );
-        doc!("enclone help display", "other clonotype display options");
-        ldoc!("enclone help indels", "insertion and deletion handling");
-        ldoc!(
+        h.doc("enclone help display", "other clonotype display options");
+        h.ldoc("enclone help indels", "insertion and deletion handling");
+        h.ldoc(
             "enclone help color",
             "how enclone uses color, and related things"
         );
-        doc!(
+        h.doc(
             "enclone help ideas",
             "ideas for features that might be implemented"
         );
-        doc!("enclone help faq", "frequently asked questions (long)");
-        doc!("enclone help developer", "a few things for developers");
-        ldoc_greenish!(
+        h.doc("enclone help faq", "frequently asked questions (long)");
+        h.doc("enclone help developer", "a few things for developers");
+        h.ldoc_greenish(
             "enclone help all",
             "concatenation of all the help pages (long, wide)"
         );
-        doc_greenish!("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
-        print_tab2(&rows);
-        print(
+        h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
+        h.print_tab2();
+        h.print(
             "Additional documentation may be found at \
              \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
         );
@@ -316,8 +250,8 @@ pub fn help1(args: &Vec<String>) {
     // Provide quick help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
-        begin_doc!("quick");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("quick");
         h.print("\n");
         h.print("\\bold{quick guide to getting started}\n\n");
         h.print(
@@ -352,8 +286,8 @@ pub fn help1(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "how") || help_all {
         // Start.
 
-        begin_doc!("how");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("how");
         print("\n");
         bold!();
         print("information about how enclone works\n\n");
@@ -491,8 +425,8 @@ pub fn help1(args: &Vec<String>) {
     // Provide command line help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "command") || help_all {
-        begin_doc!("command");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("command");
         h.print("\n");
         bold!();
         print("information about enclone command-line argument processing\n\n");
@@ -549,8 +483,8 @@ pub fn help1(args: &Vec<String>) {
     // Provide glossary help.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || help_all {
-        begin_doc!("glossary");
-        let mut h = HelpDesk::default();
+        let mut h = HelpDesk::new(plain, help_all);
+        h.begin_doc("glossary");
         h.print("\n");
 
         // intro
@@ -561,39 +495,39 @@ pub fn help1(args: &Vec<String>) {
 
         // doc V..J
 
-        doc!(
+        h.doc(
             "V..J",
             "the full sequence of a V(D)J transcript, from the beginning of the V"
         );
-        doc!(
+        h.doc(
             "",
             "segment to the end of the J segment; this sequence begins with a stop codon"
         );
-        doc!("", "and ends with a partial codon (its first base)");
+        h.doc("", "and ends with a partial codon (its first base)");
 
         // doc CDR3
 
-        doc!(
+        h.doc(
             "CDR3",
             "The terms CDR3 and junction are commonly mistaken and often used"
         );
-        doc!(
+        h.doc(
             "",
             "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the"
         );
-        doc!(
+        h.doc(
             "",
             "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini"
         );
-        doc!("", "respectively).");
+        h.doc("", "respectively).");
 
         // doc clonotype
 
-        ldoc!(
+        h.ldoc(
             "clonotype",
             "all the cells descended from a single fully rearranged T or B cell"
         );
-        doc!("", "(approximated computationally)");
+        h.doc("", "(approximated computationally)");
 
         // doc exact subclonotype
 
@@ -604,74 +538,74 @@ pub fn help1(args: &Vec<String>) {
         w2.append(&mut " ○".as_bytes().to_vec());
         emit_end_escape(&mut w2);
         let x2 = stringme(&w2);
-        rows.push(vec![x1, x2]);
-        doc!("", "(every clonotype is a union of exact subclonotypes)");
+        h.rows.push(vec![x1, x2]);
+        h.doc("", "(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
 
-        doc!(
+        h.doc(
             "clone",
             "a cell in a clonotype, or in an exact subclonotype"
         );
 
         // doc onesie etc.
 
-        ldoc!(
+        h.ldoc(
             "onesie",
             "a clonotype or exact subclonotype having exactly one chain"
         );
-        doc!(
+        h.doc(
             "twosie",
             "a clonotype or exact subclonotype having exactly two chains"
         );
-        doc!(
+        h.doc(
             "threesie",
             "a clonotype or exact subclonotype having exactly three chains;"
         );
-        doc!(
+        h.doc(
             "",
             "these frequently represent true biological events, arising from expression"
         );
-        doc!("", "of both alleles");
-        doc!(
+        h.doc("", "of both alleles");
+        h.doc(
             "foursie",
             "a clonotype or exact subclonotype having exactly four chains;"
         );
-        doc!("", "these very rarely represent true biological events");
-        doc!("moresie", "a clonotype having more than four chains;");
-        doc!(
+        h.doc("", "these very rarely represent true biological events");
+        h.doc("moresie", "a clonotype having more than four chains;");
+        h.doc(
             "",
             "these sad clonotypes do not represent true biological events"
         );
 
         // doc donor etc.
 
-        ldoc!("donor", "an individual from whom samples are obtained");
-        doc!(
+        h.ldoc("donor", "an individual from whom samples are obtained");
+        h.doc(
             "sample",
             "a tube of cells from a donor, from a particular tissue at a"
         );
-        doc!(
+        h.doc(
             "",
             "particular point in time, and possibly enriched for particular cells"
         );
-        doc!(
+        h.doc(
             "cell group",
             "an aliquot from a sample, presumed to be a random draw"
         );
-        doc!(
+        h.doc(
             "dataset",
             "all sequencing data obtained from a particular library type"
         );
-        doc!(
+        h.doc(
             "",
             "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running"
         );
-        doc!("", "through the Cell Ranger pipeline");
+        h.doc("", "through the Cell Ranger pipeline");
 
         // print main table
 
-        print_tab2(&rows);
+        h.print_tab2();
         println!("");
 
         // print footnote

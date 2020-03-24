@@ -7,11 +7,75 @@ use tables::*;
 
 #[derive(Default)]
 pub struct HelpDesk {
+    pub plain: bool,
+    pub help_all: bool,
+    pub rows: Vec<Vec<String>>,
 }
 
 impl HelpDesk {
+    pub fn new(plain: bool, help_all: bool) -> HelpDesk {
+        HelpDesk {
+            plain: plain,
+            help_all: help_all,
+            rows: Vec::<Vec<String>>::new(),
+        }
+    }
+    pub fn begin_doc(&mut self, title: &str) {
+        self.rows.clear();
+        if self.help_all {
+            banner(&title, self.plain);
+        }
+    }
     pub fn print(&self, x: &str) {
         print(&x);
+    }
+    pub fn doc(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec![x1.to_string(), x2.to_string()]);
+    }
+    pub fn ldoc(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec!["\\hline".to_string(); 2]);
+        self.rows.push(vec![x1.to_string(), x2.to_string()]);
+    }
+    pub fn doc_red(&mut self, x1: &str, x2: &str) {
+        if !self.plain {
+            let r1 = format!("[01;31m{}[0m", x1);
+            let r2 = format!("[01;31m{}[0m", x2);
+            self.rows.push(vec![r1, r2]);
+        } else {
+            self.rows.push(vec![x1.to_string(), x2.to_string()]);
+        }
+    }
+    pub fn ldoc_red(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec!["\\hline".to_string(); 2]);
+        if !self.plain {
+            let r1 = format!("[01;31m{}[0m", x1);
+            let r2 = format!("[01;31m{}[0m", x2);
+            self.rows.push(vec![r1, r2]);
+        } else {
+            self.rows.push(vec![x1.to_string(), x2.to_string()]);
+        }
+    }
+    pub fn doc_greenish(&mut self, x1: &str, x2: &str) {
+        if !self.plain {
+            let r1 = format!("[38;5;36m{}[0m", x1);
+            let r2 = format!("[38;5;36m{}[0m", x2);
+            self.rows.push(vec![r1, r2]);
+        } else {
+            self.rows.push(vec![x1.to_string(), x2.to_string()]);
+        }
+    }
+    pub fn ldoc_greenish(&mut self, x1: &str, x2: &str) {
+        self.rows.push(vec!["\\hline".to_string(); 2]);
+        if !self.plain {
+            let r1 = format!("[38;5;36m{}[0m", x1);
+            let r2 = format!("[38;5;36m{}[0m", x2);
+            self.rows.push(vec![r1, r2]);
+        } else {
+            self.rows.push(vec![x1.to_string(), x2.to_string()]);
+        }
+    }
+    pub fn print_tab2(&self) {
+        print_tab2(&self.rows);
     }
 }
 
