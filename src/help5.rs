@@ -140,12 +140,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
                 pal.push(' ');
             }
         }
-        println!("{}", pal);
+        h.print_plain(&format!("{}\n", pal));
         h.print(
             "\nWhen enclone shows amino acids, it colors each codon differently, via \
              the following scheme:\n\n"
         );
-        println!("{}\n", colored_codon_table(plain));
+        h.print_plain(&format!("{}\n\n", colored_codon_table(plain)));
         h.print(
             "Colored amino acids enable the compact display of all the information in a \
              clonotype.\n\n"
@@ -183,14 +183,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("faq");
-        h.print("\n");
-        if !plain {
-            let mut log = Vec::<u8>::new();
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-            print!("{}", strme(&log));
-        }
-        h.print("\\bold{Frequently Asked Questions}\n\n");
+        h.print("\n\\boldred{Frequently Asked Questions}\n\n");
         h.print(
             "We're sorry you're having difficulty!  Please see the answers below, check out \
              the other help guides, and if you're still stuck, write to us at \
@@ -378,26 +371,27 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
         h.print("\\boldblue{17. How can I cite enclone?}\n\n");
         h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
-        println!(
+        h.print(
             "however once enclone has officially launched, you will be able to cite this \
-             version as:"
+             version as:\n"
         );
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
-        print!("{}", strme(&log));
+        h.print(&format!("{}", strme(&log)));
         if !ctl.gen_opt.stable_doc {
-            println!(
-                "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
+            h.print(&format!(
+                "10x Genomics, https://github.com/10XGenomics/enclone, version {}.\n",
                 VERSION_STRING.before(",")
-            );
+            ));
         } else {
             h.print(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\n\
                     (your enclone version information will be printed here).\n"
             );
         }
+        let mut log = Vec::<u8>::new();
         emit_end_escape(&mut log);
-        print!("{}", strme(&log));
+        h.print(&format!("{}", strme(&log)));
         h.print(
             "At some point subsequent to that, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
@@ -405,8 +399,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             Cell Ranger that you used to generate the input data.\n\n",
         );
 
-        h.print("\\boldblue{18. How enclone output html?}\n\n");
-
+        h.print("\\boldblue{18. Can enclone output html?}\n\n");
         h.print(
             "Yes, just add the argument \\bold{HTML} to the command line.  Currently this does \
             not work with help.\n\n",

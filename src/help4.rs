@@ -273,13 +273,13 @@ pub fn help4(args: &Vec<String>) {
     // Function that provides an explanation used for both enclone help lvars and
     // enclone help cvars.
 
-    fn explain_alt_versions() {
-        print!(
+    fn explain_alt_versions(h: &mut HelpDesk) {
+        h.print( &format!(
             "{}",
             gray_left_bar(&print_to(
                 "\\red{◉} These variables have some alternate versions, \
                  as shown in the table below:\n\n"
-            ))
+            )))
         );
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
@@ -376,8 +376,8 @@ pub fn help4(args: &Vec<String>) {
         rows.push(row);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
-        print!("{}", gray_left_bar(&log));
-        print!(
+        h.print(&format!("{}", gray_left_bar(&log)));
+        h.print_plain(&format!(
             "{}",
             gray_left_bar(&print_to(
                 "Some explanation is required.  If you use enclone without certain options, you \
@@ -394,7 +394,7 @@ pub fn help4(args: &Vec<String>) {
              line.\n\
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
-            ))
+            )))
         );
     }
 
@@ -496,7 +496,7 @@ pub fn help4(args: &Vec<String>) {
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
         );
-        explain_alt_versions();
+        explain_alt_versions(&mut h);
         h.print(
             "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
@@ -650,7 +650,7 @@ pub fn help4(args: &Vec<String>) {
 
         h.print_tab2();
         h.print("\n");
-        explain_alt_versions();
+        explain_alt_versions(&mut h);
         h.print(
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
