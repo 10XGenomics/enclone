@@ -2,6 +2,8 @@
 
 use crate::print_utils1::*;
 use ansi_escape::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 use tables::*;
 
@@ -12,6 +14,7 @@ pub struct HelpDesk {
     pub plain: bool,
     pub help_all: bool,
     pub rows: Vec<Vec<String>>,
+    pub log: Vec<u8>,
 }
 
 impl HelpDesk {
@@ -20,6 +23,7 @@ impl HelpDesk {
             plain: plain,
             help_all: help_all,
             rows: Vec::<Vec<String>>::new(),
+            log: Vec::<u8>::new(),
         }
     }
     pub fn doc(&mut self, x1: &str, x2: &str) {
@@ -112,12 +116,12 @@ impl HelpDesk {
             self.print(&format!("{}", strme(&log)));
         }
     }
-    pub fn print_tab2(&self) {
+    pub fn print_tab2(&mut self) {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
         self.print_plain(&format!("{}", log));
     }
-    pub fn print_tab3(&self) {
+    pub fn print_tab3(&mut self) {
         let mut log = String::new();
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
         self.print_plain(&format!("{}", log));
@@ -161,11 +165,14 @@ impl HelpDesk {
         print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
         self.print_plain(&format!("{}\n", log));
     }
-    pub fn print(&self, x: &str) {
+    pub fn print(&mut self, x: &str) {
         self.print_plain(&format!("{}", print_to(x)));
     }
-    pub fn print_plain(&self, x: &str) {
-        print!("{}", &x);
+    pub fn print_plain(&mut self, x: &str) {
+        fwrite!(self.log, "{}", &x);
+    }
+    pub fn dump(&self) {
+        print!("{}", strme(&self.log));
     }
 }
 

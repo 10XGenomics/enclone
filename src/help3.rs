@@ -4,13 +4,13 @@
 
 use crate::help_utils::*;
 use tables::*;
-use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help3(args: &Vec<String>) {
+pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
     // Set up.
 
+    /*
     let mut args = args.clone();
     let mut plain = false;
     for i in 0..args.len() {
@@ -32,19 +32,19 @@ pub fn help3(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
     }
-    let mut help_all = false;
+    let mut h.help_all = false;
     unsafe {
         if HELP_ALL {
-            help_all = true;
+            h.help_all = true;
         }
     }
+    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide input_tech help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || h.help_all {
         h.begin_doc("input_tech");
         h.print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
         h.print(
@@ -65,7 +65,8 @@ pub fn help3(args: &Vec<String>) {
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -74,8 +75,7 @@ pub fn help3(args: &Vec<String>) {
 
     // Provide parseable output help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || h.help_all {
         h.begin_doc("parseable");
         h.print("\n");
         h.print("\\bold{parseable output}\n");
@@ -275,7 +275,8 @@ pub fn help3(args: &Vec<String>) {
         h.doc("See \"enclone help cvars\".", "\\ext");
         h.print_tab2();
         h.print("\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -284,8 +285,7 @@ pub fn help3(args: &Vec<String>) {
 
     // Provide filter help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || h.help_all {
         h.begin_doc("filter");
 
         // intro
@@ -498,7 +498,8 @@ pub fn help3(args: &Vec<String>) {
 
         // done
 
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

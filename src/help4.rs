@@ -4,13 +4,13 @@
 
 use crate::help_utils::*;
 use tables::*;
-use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help4(args: &Vec<String>) {
+pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
     // Set up.
 
+    /*
     let mut args = args.clone();
 
     let mut plain = false;
@@ -33,19 +33,19 @@ pub fn help4(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
     }
-    let mut help_all = false;
+    let mut h.help_all = false;
     unsafe {
         if HELP_ALL {
-            help_all = true;
+            h.help_all = true;
         }
     }
+    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide special filtering help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "special") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "special") || h.help_all {
         h.begin_doc("special");
         h.print("\n\\bold{special filtering options}\n\n");
         h.print(
@@ -263,7 +263,8 @@ pub fn help4(args: &Vec<String>) {
         h.doc("", "for which you would like to see a simplified view.");
         h.print_tab2();
         h.print("\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -402,8 +403,7 @@ pub fn help4(args: &Vec<String>) {
 
     // Provide lvars help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || h.help_all {
         h.begin_doc("lvars");
         h.print("\n\\bold{lead column options}\n\n");
         h.print(
@@ -514,7 +514,8 @@ pub fn help4(args: &Vec<String>) {
              we simply scale the counts, rather than subsample reads.  If you want to turn off \
              the normalization, add the argument \\bold{FULL_COUNTS} to the command line.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -523,8 +524,7 @@ pub fn help4(args: &Vec<String>) {
 
     // Provide cvars help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "cvars") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "cvars") || h.help_all {
         h.begin_doc("cvars");
 
         // Header.
@@ -655,7 +655,8 @@ pub fn help4(args: &Vec<String>) {
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -664,8 +665,7 @@ pub fn help4(args: &Vec<String>) {
 
     // Provide amino help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || h.help_all {
         h.begin_doc("amino");
         h.print(
             "\nThere is a complex per-chain column to the left of other \
@@ -705,7 +705,8 @@ pub fn help4(args: &Vec<String>) {
              Note that we only report amino acids that are strictly within V..J, \
              thus specifically excluding the codon bridging J and C.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -714,8 +715,7 @@ pub fn help4(args: &Vec<String>) {
 
     // Provide display help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "display") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "display") || h.help_all {
         h.begin_doc("display");
         h.print("\n\\bold{other options that control clonotype display}\n\n");
         h.doc(
@@ -775,7 +775,8 @@ pub fn help4(args: &Vec<String>) {
         );
         h.print_tab2();
         h.print("\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

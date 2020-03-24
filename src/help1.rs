@@ -3,16 +3,14 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use crate::misc1::*;
-use pretty_trace::*;
 use std::env;
-use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help1(args: &Vec<String>) {
+pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Set up.
 
+    /*
     let mut args = args.clone();
     if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
         PrettyTrace::new().on();
@@ -45,6 +43,7 @@ pub fn help1(args: &Vec<String>) {
             break;
         }
     }
+    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -52,9 +51,8 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 2 && args[1] == "help")
         || (args.len() == 2 && args[1] == "--help")
-        || help_all
+        || h.help_all
     {
-        let mut h = HelpDesk::new(plain, help_all);
         if h.help_all {
             h.print("\n");
         }
@@ -103,15 +101,15 @@ pub fn help1(args: &Vec<String>) {
              If you go through all those tests and everything worked, you should be \
              good to go!\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
 
     // Provide main help.
 
-    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all {
         h.begin_doc("main");
         h.print(&format!(
             "\nThis is version {} (beta) of ",
@@ -203,7 +201,8 @@ pub fn help1(args: &Vec<String>) {
             "Additional documentation may be found at \
              \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -212,8 +211,7 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide quick help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || h.help_all {
         h.begin_doc("quick");
         h.print("\n");
         h.print("\\bold{quick guide to getting started}\n\n");
@@ -237,7 +235,8 @@ pub fn help1(args: &Vec<String>) {
              are shown.\n\n\
              Please read on to learn more!\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -246,10 +245,9 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide how help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "how") || help_all {
+    if (args.len() == 3 && args[1] == "help" && args[2] == "how") || h.help_all {
         // Start.
 
-        let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("how");
         h.print("\n");
         h.print("\\bold{information about how enclone works}\n\n");
@@ -376,7 +374,8 @@ pub fn help1(args: &Vec<String>) {
             \\boldred{9573} clonotypes having at least two cells each, of which \
             \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -385,8 +384,7 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide command line help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "command") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "command") || h.help_all {
         h.begin_doc("command");
         h.print("\n");
         h.print("\\bold{information about enclone command-line argument processing}\n\n");
@@ -432,7 +430,8 @@ pub fn help1(args: &Vec<String>) {
             "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -441,8 +440,7 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide glossary help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || h.help_all {
         h.begin_doc("glossary");
         h.print("\n");
 
@@ -586,7 +584,8 @@ pub fn help1(args: &Vec<String>) {
 
         // done
 
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

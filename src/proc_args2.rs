@@ -6,6 +6,7 @@ use crate::help2::*;
 use crate::help3::*;
 use crate::help4::*;
 use crate::help5::*;
+use crate::help_utils::*;
 use crate::misc1::*;
 use crate::proc_args::*;
 use io_utils::*;
@@ -103,11 +104,46 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Provide help if requested.
 
-    help1(&args);
-    help2(&args, &ctl);
-    help3(&args);
-    help4(&args);
-    help5(&args, &ctl);
+    {
+        let mut args = args.clone();
+        if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
+            PrettyTrace::new().on();
+            let mut nopager = false;
+            let mut to_delete = vec![false; args.len()];
+            for i in 1..args.len() {
+                if args[i] == "NOPAGER" {
+                    nopager = true;
+                    to_delete[i] = true;
+                }
+            }
+            erase_if(&mut args, &to_delete);
+            setup_pager(!nopager);
+        }
+        let mut help_all = false;
+        if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
+            unsafe {
+                HELP_ALL = true;
+            }
+            help_all = true;
+        }
+        let mut plain = false;
+        for i in 0..args.len() {
+            if args[i] == "PLAIN" {
+                args.remove(i);
+                plain = true;
+                unsafe {
+                    PLAIN = true;
+                }
+                break;
+            }
+        }
+        let mut h = HelpDesk::new(plain, help_all);
+        help1(&args, &mut h);
+        help2(&args, &ctl, &mut h);
+        help3(&args, &mut h);
+        help4(&args, &mut h);
+        help5(&args, &ctl, &mut h);
+    }
 
     // Pretest for some options.
 

@@ -7,15 +7,15 @@ use crate::help_utils::*;
 use crate::testlist::*;
 use std::env;
 use string_utils::*;
-use vector_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
+pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
     // Set up.
 
+    /*
     let mut args = args.clone();
     let mut plain = false;
     for i in 0..args.len() {
@@ -37,19 +37,19 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         }
         erase_if(&mut args, &to_delete);
     }
-    let mut help_all = false;
+    let mut h.help_all = false;
     unsafe {
         if HELP_ALL {
-            help_all = true;
+            h.help_all = true;
         }
     }
+    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide example1 help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || h.help_all {
         h.begin_doc("example1");
         h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
@@ -59,7 +59,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
             "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
             EXAMPLES[0]
         ));
-        if !plain {
+        if !h.plain {
             h.print(&format!("{}", include_str!("example1")));
         } else {
             let s = include_str!("example1").as_bytes();
@@ -116,7 +116,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\bold{enclone help command} for how to remove the \\bold{PRE} part of the \
              command.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -125,8 +126,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide example2 help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || h.help_all {
         h.begin_doc("example2");
         h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
@@ -136,7 +136,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
             "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
             EXAMPLES[1]
         ));
-        if !plain {
+        if !h.plain {
             h.print_plain(include_str!("example2"));
         } else {
             let s = include_str!("example2").as_bytes();
@@ -163,7 +163,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              hand-selected gene and one antibody.  You can use any gene(s) you like and any \
              antibodies for which you have feature barcodes.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -172,8 +173,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide support help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "support") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "support") || h.help_all {
         h.begin_doc("support");
         h.print(
             "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
@@ -237,7 +237,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\boldblue{enclone help faq}\\blue{.}\n\n",
         );
         h.print("\\red{Happy encloning!}\n\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -246,8 +247,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide plot help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || h.help_all {
         h.begin_doc("plot");
         h.print("\n\\bold{plotting clonotypes}\n\n");
         h.print(
@@ -292,7 +292,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\bold{LEGEND=color1,\"text1\",...,colorn,\"textn\"}\n\
              to the command line.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -301,8 +302,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide input help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "input") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "input") || h.help_all {
         h.begin_doc("input");
         h.print(
             "\nenclone has \\boldred{two} mechanisms for specifying input datasets: either \
@@ -438,7 +438,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         h.doc3("", "", "and which is used by the PLOT option.");
         h.print_tab3();
         h.print("\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

@@ -6,15 +6,15 @@ use crate::defs::*;
 use crate::help_utils::*;
 use ansi_escape::*;
 use string_utils::*;
-use vector_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
+pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
     // Set up.
 
+    /*
     let mut args = args.clone();
     let mut plain = false;
     for i in 0..args.len() {
@@ -36,19 +36,19 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         }
         erase_if(&mut args, &to_delete);
     }
-    let mut help_all = false;
+    let mut h.help_all = false;
     unsafe {
         if HELP_ALL {
-            help_all = true;
+            h.help_all = true;
         }
     }
+    */
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide indels help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || h.help_all {
         h.begin_doc("indels");
         h.print("\n\\bold{handling of insertions and deletions}\n\n");
         h.print(
@@ -71,7 +71,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              amino acid after which the insertion appears, where the first amino acid (start \
              codon) is numbered 0.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -80,8 +81,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide ideas help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || h.help_all {
         h.begin_doc("ideas");
         h.print("\n\\bold{features that might be implemented in enclone}\n\n");
         h.doc("speed", "make enclone faster");
@@ -105,7 +105,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             "\nPlease let us know if you are interested in these features, or if there are \
              other features that you would like us to implement!\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -118,21 +119,20 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     // last three before the first three.  This is because the last three seem to make a better
     // three-color palette.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "color") || h.help_all {
         h.begin_doc("color");
         h.print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
         for i in 0..6 {
             let s = best_color_order(i);
             let mut log = Vec::<u8>::new();
-            if !plain {
+            if !h.plain {
                 print_color(s, &mut log);
                 pal += &stringme(&log);
             }
             pal.push('▓');
             let mut log = Vec::<u8>::new();
-            if !plain {
+            if !h.plain {
                 emit_end_escape(&mut log);
                 pal += &stringme(&log);
             }
@@ -145,7 +145,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             "\nWhen enclone shows amino acids, it colors each codon differently, via \
              the following scheme:\n\n",
         );
-        h.print_plain(&format!("{}\n\n", colored_codon_table(plain)));
+        h.print_plain(&format!("{}\n\n", colored_codon_table(h.plain)));
         h.print(
             "Colored amino acids enable the compact display of all the information in a \
              clonotype.\n\n",
@@ -171,7 +171,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              terminal window into a pdf.  See \\bold{enclone help faq} for related \
              instructions.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -180,8 +181,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide faq help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || h.help_all {
         h.begin_doc("faq");
         h.print("\n\\boldred{Frequently Asked Questions}\n\n");
         h.print(
@@ -405,6 +405,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             not work with help.\n\n",
         );
 
+        h.dump();
         std::process::exit(0);
     }
 
@@ -412,8 +413,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     // Provide developer help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
-        let mut h = HelpDesk::new(plain, help_all);
+    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || h.help_all {
         h.begin_doc("developer");
         h.print("\n\\bold{a few options for developers}\n\n");
         h.print(
@@ -477,18 +477,26 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         h.doc("", "selected section.");
         h.print_tab2();
         h.print("\n");
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Finish enclone help all.
+
+    if h.help_all {
+        h.dump();
+    }
+
     // Catch unrecognized help requests.
 
     if args.len() >= 2 {
-        args[1].make_ascii_lowercase();
-        if args[1].contains("help") {
+        let mut x = args[1].clone();
+        x.make_ascii_lowercase();
+        if x.contains("help") {
             println!("\nYour help request doesn't match one known to enclone.\n");
             println!("Please type \"enclone\" to see the help options.\n");
             std::process::exit(1);
