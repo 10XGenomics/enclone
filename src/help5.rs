@@ -87,23 +87,23 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         h.doc("speed", "make enclone faster");
         h.ldoc(
             "CDRn",
-            "make CDR1 and CDR2 viewable in the same way that CDR3 is now"
+            "make CDR1 and CDR2 viewable in the same way that CDR3 is now",
         );
         h.ldoc(
             "distance grouping",
-            "provide an option to group clonotypes by distance"
+            "provide an option to group clonotypes by distance",
         );
         h.ldoc("cloning", "package V..J region into a cloning vector");
         h.ldoc(
             "phylogeny",
-            "generate a phylogeny for the exact clonotypes within a clonotype"
+            "generate a phylogeny for the exact clonotypes within a clonotype",
         );
 
         h.ldoc("windows", "make enclone work on windows computers");
         h.print_tab2();
         h.print(
             "\nPlease let us know if you are interested in these features, or if there are \
-             other features that you would like us to implement!\n\n"
+             other features that you would like us to implement!\n\n",
         );
         if !help_all {
             std::process::exit(0);
@@ -143,12 +143,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         h.print_plain(&format!("{}\n", pal));
         h.print(
             "\nWhen enclone shows amino acids, it colors each codon differently, via \
-             the following scheme:\n\n"
+             the following scheme:\n\n",
         );
         h.print_plain(&format!("{}\n\n", colored_codon_table(plain)));
         h.print(
             "Colored amino acids enable the compact display of all the information in a \
-             clonotype.\n\n"
+             clonotype.\n\n",
         );
         h.print(
             "The coloring is done using special characters, called ANSI escape characters.  \
@@ -159,7 +159,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              but it is possible that there are exceptions.  In addition, in general, text \
              editors do not correctly interpret escape characters.\n\n\
              For both of these reasons, you may wish to turn off the \"special effects\", \
-             either some or all of the time.  You can do this by adding the argument\n"
+             either some or all of the time.  You can do this by adding the argument\n",
         );
         h.print("\\bold{PLAIN}\n");
         h.print("to any enclone command.\n\n");
@@ -187,7 +187,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         h.print(
             "We're sorry you're having difficulty!  Please see the answers below, check out \
              the other help guides, and if you're still stuck, write to us at \
-             enclone@10xgenomics.com.\n\n"
+             enclone@10xgenomics.com.\n\n",
         );
 
         h.print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
@@ -206,7 +206,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             this:\n\
             (a) Make your terminal window wider or reduce the font size.\n\
             (b) Identify the field that is very wide and use the column controls to remove that\n\
-            field.  See the help for lvars and cvars.  For example,\n"
+            field.  See the help for lvars and cvars.  For example,\n",
         );
         h.print(
             "\\bold{AMINO=cdr3}\n\
@@ -224,7 +224,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              E. type option-command-P to print selection\n\
              F. click the PDF button in the lower left (drop down menu)\n\
              G. click \"Open in Preview\"\n\
-             H. then print (or save the pdf, if you prefer).\n\n"
+             H. then print (or save the pdf, if you prefer).\n\n",
         );
 
         h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
@@ -237,7 +237,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         );
 
         h.print(
-            "\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n"
+            "\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n",
         );
         h.print(
             "There are several parts to the answer:\n\
@@ -373,7 +373,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
         h.print(
             "however once enclone has officially launched, you will be able to cite this \
-             version as:\n"
+             version as:\n",
         );
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
@@ -386,7 +386,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         } else {
             h.print(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\n\
-                    (your enclone version information will be printed here).\n"
+                    (your enclone version information will be printed here).\n",
             );
         }
         let mut log = Vec::<u8>::new();
@@ -422,57 +422,57 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         );
         h.doc(
             "COMP",
-            "report computational performance stats; use this with NOPRINT if you"
+            "report computational performance stats; use this with NOPRINT if you",
         );
         h.doc(
             "",
-            "only want to see the computational performance stats, and with NOPAGER if you"
+            "only want to see the computational performance stats, and with NOPAGER if you",
         );
         h.doc("", "want output to be unbuffered");
         h.doc(
             "COMP2",
-            "like COMP, but adds more detailed lines that are prefixed with --"
+            "like COMP, but adds more detailed lines that are prefixed with --",
         );
         h.ldoc(
             "CTRLC",
-            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive"
+            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive",
         );
         h.doc(
             "",
-            "but easy profiling method, to know what the code is doing if it seems to be"
+            "but easy profiling method, to know what the code is doing if it seems to be",
         );
         h.doc("", "very slow");
         h.ldoc(
             "HAPS=n",
-            "Interrupt code n times, at one second intervals, get a traceback, and then tally"
+            "Interrupt code n times, at one second intervals, get a traceback, and then tally",
         );
         h.doc(
             "",
-            "the tracebacks.  This only works if the n tracebacks can be obtained before"
+            "the tracebacks.  This only works if the n tracebacks can be obtained before",
         );
         h.doc(
             "",
-            "enclone terminates.  Interrupts that occur in the allocator are ignored, and"
+            "enclone terminates.  Interrupts that occur in the allocator are ignored, and",
         );
         h.doc(
             "",
-            "in some cases, this accounts for most interrupts, resulting in confusing"
+            "in some cases, this accounts for most interrupts, resulting in confusing",
         );
         h.doc(
             "",
-            "output.  In such cases, consider using CTRLC or a more sophisticated tool"
+            "output.  In such cases, consider using CTRLC or a more sophisticated tool",
         );
         h.doc(
             "",
-            "like perf.  Also HAPS only reports on the master thread, so to get useful"
+            "like perf.  Also HAPS only reports on the master thread, so to get useful",
         );
         h.doc(
             "",
-            "information, you probably need to change an instance in the code of"
+            "information, you probably need to change an instance in the code of",
         );
         h.doc(
             "",
-            "par_iter_mut to iter_mut, to turn off parallelization for a strategically"
+            "par_iter_mut to iter_mut, to turn off parallelization for a strategically",
         );
         h.doc("", "selected section.");
         h.print_tab2();

@@ -113,7 +113,10 @@ pub fn help1(args: &Vec<String>) {
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("main");
-        h.print(&format!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION")));
+        h.print(&format!(
+            "\nThis is version {} (beta) of ",
+            env!("CARGO_PKG_VERSION")
+        ));
         h.print_enclone();
         h.print(".  The mission of ");
         h.print_enclone();
@@ -138,61 +141,61 @@ pub fn help1(args: &Vec<String>) {
         h.doc_red("enclone help how", "how enclone works (long)");
         h.doc_red(
             "enclone help command",
-            "info about enclone command line argument processing"
+            "info about enclone command line argument processing",
         );
         h.ldoc_red(
             "enclone help glossary",
-            "glossary of terms used by enclone, and conventions"
+            "glossary of terms used by enclone, and conventions",
         );
         h.ldoc_red("enclone help example1", "explanation of an example");
         h.doc_red(
             "enclone help example2",
             "example showing gene expression \
-             and feature barcodes (wide)"
+             and feature barcodes (wide)",
         );
         h.ldoc_red(
             "enclone help support",
-            "how we can help, enclone@10xgenomics.com"
+            "how we can help, enclone@10xgenomics.com",
         );
         h.ldoc(
             "enclone help input",
-            "how to provide input to enclone (long)"
+            "how to provide input to enclone (long)",
         );
         h.doc(
             "enclone help input_tech",
-            "how to provide input to enclone (technical notes)"
+            "how to provide input to enclone (technical notes)",
         );
         h.doc("enclone help parseable", "parseable output (long)");
         h.doc(
             "enclone help plot",
-            "generate a honeycomb plot showing clonotypes"
+            "generate a honeycomb plot showing clonotypes",
         );
         h.ldoc(
             "enclone help filter",
-            "clonotype filtering options, scanning for feature enrichment (long)"
+            "clonotype filtering options, scanning for feature enrichment (long)",
         );
         h.doc("enclone help special", "special filtering options (long)");
         h.ldoc("enclone help lvars", "lead column options (long)");
         h.doc("enclone help cvars", "per chain column options (long)");
         h.doc(
             "enclone help amino",
-            "per chain column options for amino acids"
+            "per chain column options for amino acids",
         );
         h.doc("enclone help display", "other clonotype display options");
         h.ldoc("enclone help indels", "insertion and deletion handling");
         h.ldoc(
             "enclone help color",
-            "how enclone uses color, and related things"
+            "how enclone uses color, and related things",
         );
         h.doc(
             "enclone help ideas",
-            "ideas for features that might be implemented"
+            "ideas for features that might be implemented",
         );
         h.doc("enclone help faq", "frequently asked questions (long)");
         h.doc("enclone help developer", "a few things for developers");
         h.ldoc_greenish(
             "enclone help all",
-            "concatenation of all the help pages (long, wide)"
+            "concatenation of all the help pages (long, wide)",
         );
         h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
         h.print_tab2();
@@ -451,11 +454,11 @@ pub fn help1(args: &Vec<String>) {
 
         h.doc(
             "V..J",
-            "the full sequence of a V(D)J transcript, from the beginning of the V"
+            "the full sequence of a V(D)J transcript, from the beginning of the V",
         );
         h.doc(
             "",
-            "segment to the end of the J segment; this sequence begins with a stop codon"
+            "segment to the end of the J segment; this sequence begins with a stop codon",
         );
         h.doc("", "and ends with a partial codon (its first base)");
 
@@ -463,15 +466,15 @@ pub fn help1(args: &Vec<String>) {
 
         h.doc(
             "CDR3",
-            "The terms CDR3 and junction are commonly mistaken and often used"
+            "The terms CDR3 and junction are commonly mistaken and often used",
         );
         h.doc(
             "",
-            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the"
+            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the",
         );
         h.doc(
             "",
-            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini"
+            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini",
         );
         h.doc("", "respectively).");
 
@@ -479,7 +482,7 @@ pub fn help1(args: &Vec<String>) {
 
         h.ldoc(
             "clonotype",
-            "all the cells descended from a single fully rearranged T or B cell"
+            "all the cells descended from a single fully rearranged T or B cell",
         );
         h.doc("", "(approximated computationally)");
 
@@ -487,7 +490,7 @@ pub fn help1(args: &Vec<String>) {
 
         h.docpr(
             "exact subclonotype",
-            "all cells having identical transcripts \\boldred{○}"
+            "all cells having identical transcripts \\boldred{○}",
         );
         h.doc("", "(every clonotype is a union of exact subclonotypes)");
 
@@ -495,37 +498,37 @@ pub fn help1(args: &Vec<String>) {
 
         h.doc(
             "clone",
-            "a cell in a clonotype, or in an exact subclonotype"
+            "a cell in a clonotype, or in an exact subclonotype",
         );
 
         // doc onesie etc.
 
         h.ldoc(
             "onesie",
-            "a clonotype or exact subclonotype having exactly one chain"
+            "a clonotype or exact subclonotype having exactly one chain",
         );
         h.doc(
             "twosie",
-            "a clonotype or exact subclonotype having exactly two chains"
+            "a clonotype or exact subclonotype having exactly two chains",
         );
         h.doc(
             "threesie",
-            "a clonotype or exact subclonotype having exactly three chains;"
+            "a clonotype or exact subclonotype having exactly three chains;",
         );
         h.doc(
             "",
-            "these frequently represent true biological events, arising from expression"
+            "these frequently represent true biological events, arising from expression",
         );
         h.doc("", "of both alleles");
         h.doc(
             "foursie",
-            "a clonotype or exact subclonotype having exactly four chains;"
+            "a clonotype or exact subclonotype having exactly four chains;",
         );
         h.doc("", "these very rarely represent true biological events");
         h.doc("moresie", "a clonotype having more than four chains;");
         h.doc(
             "",
-            "these sad clonotypes do not represent true biological events"
+            "these sad clonotypes do not represent true biological events",
         );
 
         // doc donor etc.
@@ -533,23 +536,23 @@ pub fn help1(args: &Vec<String>) {
         h.ldoc("donor", "an individual from whom samples are obtained");
         h.doc(
             "sample",
-            "a tube of cells from a donor, from a particular tissue at a"
+            "a tube of cells from a donor, from a particular tissue at a",
         );
         h.doc(
             "",
-            "particular point in time, and possibly enriched for particular cells"
+            "particular point in time, and possibly enriched for particular cells",
         );
         h.doc(
             "cell group",
-            "an aliquot from a sample, presumed to be a random draw"
+            "an aliquot from a sample, presumed to be a random draw",
         );
         h.doc(
             "dataset",
-            "all sequencing data obtained from a particular library type"
+            "all sequencing data obtained from a particular library type",
         );
         h.doc(
             "",
-            "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running"
+            "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running",
         );
         h.doc("", "through the Cell Ranger pipeline");
 
@@ -578,7 +581,7 @@ pub fn help1(args: &Vec<String>) {
             "• When we refer to \"V segments\", we always include the leader segment.\n\
              • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
              chains within a clonotype, however DNA and amino-acid positions are numbered starting \
-             at zero.\n\n"
+             at zero.\n\n",
         );
 
         // done

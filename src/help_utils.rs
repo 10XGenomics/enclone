@@ -40,11 +40,13 @@ impl HelpDesk {
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
     }
     pub fn doc3(&mut self, x1: &str, x2: &str, x3: &str) {
-        self.rows.push(vec![print_to(x1), print_to(x2), print_to(x3)]);
+        self.rows
+            .push(vec![print_to(x1), print_to(x2), print_to(x3)]);
     }
     pub fn ldoc3(&mut self, x1: &str, x2: &str, x3: &str) {
         self.rows.push(vec!["\\hline".to_string(); 3]);
-        self.rows.push(vec![x1.to_string(), x2.to_string(), x3.to_string()]);
+        self.rows
+            .push(vec![x1.to_string(), x2.to_string(), x3.to_string()]);
     }
     pub fn docpr(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec![print_to(x1), print_to(x2)]);

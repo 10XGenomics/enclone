@@ -55,210 +55,210 @@ pub fn help4(args: &Vec<String>) {
         );
         h.doc(
             "NCROSS",
-            "If you specify that two or more libraries arose from the same sample (i.e."
+            "If you specify that two or more libraries arose from the same sample (i.e.",
         );
         h.doc(
             "",
-            "from the same tube of cells), then the default behavior of enclone is to"
+            "from the same tube of cells), then the default behavior of enclone is to",
         );
         h.doc(
             "",
-            "\"cross filter\" so as to remove expanded exact subclonotypes that are"
+            "\"cross filter\" so as to remove expanded exact subclonotypes that are",
         );
         h.doc(
             "",
-            "present in one library but not another, in a fashion that would be highly"
+            "present in one library but not another, in a fashion that would be highly",
         );
         h.doc(
             "",
-            "improbable, assuming random draws of cells from the tube.  These are"
+            "improbable, assuming random draws of cells from the tube.  These are",
         );
         h.doc(
             "",
-            "believed to arise when a plasma or plasmablast cell breaks up during during"
+            "believed to arise when a plasma or plasmablast cell breaks up during during",
         );
         h.doc(
             "",
-            "or after pipetting from the tube, and the resulting fragments seed GEMs,"
+            "or after pipetting from the tube, and the resulting fragments seed GEMs,",
         );
         h.doc(
             "",
-            "yielding expanded 'fake' clonotypes that are residues of real single plasma"
+            "yielding expanded 'fake' clonotypes that are residues of real single plasma",
         );
         h.doc(
             "",
-            "cells.  The NCROSS options turns off this filter, which could be useful so"
+            "cells.  The NCROSS options turns off this filter, which could be useful so",
         );
         h.doc(
             "",
-            "long as you interpret the restored clonotypes as representing what are"
+            "long as you interpret the restored clonotypes as representing what are",
         );
         h.doc(
             "",
-            "probably single cells.  There may also be other situations where the filter"
+            "probably single cells.  There may also be other situations where the filter",
         );
         h.doc(
             "",
-            "should be turned off, and in particular the filter can do weird things if"
+            "should be turned off, and in particular the filter can do weird things if",
         );
         h.doc(
             "",
-            "inputs are somehow mis-specified to enclone.  Note that for purposes of"
+            "inputs are somehow mis-specified to enclone.  Note that for purposes of",
         );
         h.doc("", "this option, enclone defines a sample by the pair");
         h.doc("", "(sample name, donor name).");
         h.ldoc(
             "NGRAPH_FILTER",
-            "By default, enclone filters to remove exact subclonotypes that by virtue of"
+            "By default, enclone filters to remove exact subclonotypes that by virtue of",
         );
         h.doc(
             "",
-            "their relationship to other exact subclonotypes, appear to arise from"
+            "their relationship to other exact subclonotypes, appear to arise from",
         );
         h.doc(
             "",
-            "background mRNA or a phenotypically similar phenomenon.  The"
+            "background mRNA or a phenotypically similar phenomenon.  The",
         );
         h.doc("", "NGRAPH_FILTER option turns off this filtering.");
         h.ldoc(
             "NQUAL",
-            "By default, enclone filters out exact subclonotypes having a base in V..J"
+            "By default, enclone filters out exact subclonotypes having a base in V..J",
         );
         h.doc(
             "",
-            "that looks like it might be wrong.  More specifically, enclone finds bases"
+            "that looks like it might be wrong.  More specifically, enclone finds bases",
         );
         h.doc(
             "",
-            "which are not Q60 for a barcode, not Q40 for two barcodes, are not"
+            "which are not Q60 for a barcode, not Q40 for two barcodes, are not",
         );
         h.doc(
             "",
-            "supported by other exact subclonotypes, are variant within the clonotype,"
+            "supported by other exact subclonotypes, are variant within the clonotype,",
         );
         h.doc(
             "",
-            "and which disagree with the donor reference.  NQUAL turns this off."
+            "and which disagree with the donor reference.  NQUAL turns this off.",
         );
         h.ldoc(
             "NWEAK_CHAINS",
-            "By default, enclone filters chains from clonotypes that are"
+            "By default, enclone filters chains from clonotypes that are",
         );
         h.doc(
             "",
-            "weak and appear to be artifacts, perhaps arising from a stray mRNA molecule"
+            "weak and appear to be artifacts, perhaps arising from a stray mRNA molecule",
         );
         h.doc(
             "",
-            "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter."
+            "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
         );
         h.ldoc(
             "NWEAK_ONESIES",
-            "By default, enclone filters out onesie clonotypes having a single exact"
+            "By default, enclone filters out onesie clonotypes having a single exact",
         );
         h.doc(
             "",
-            "subclonotype, and that are light chain or TRA, and whose number of cells is"
+            "subclonotype, and that are light chain or TRA, and whose number of cells is",
         );
         h.doc(
             "",
-            "less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off."
+            "less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.",
         );
         h.ldoc(
             "NFOURSIE_KILL",
-            "By default, if enclone finds a foursie exact subclonotype that"
+            "By default, if enclone finds a foursie exact subclonotype that",
         );
         h.doc(
             "",
-            "contains a twosie exact subclonotype having at least ten cells, it kills"
+            "contains a twosie exact subclonotype having at least ten cells, it kills",
         );
         h.doc(
             "",
-            "the foursie exact subclonotype, no matter how many cells it has.  The"
+            "the foursie exact subclonotype, no matter how many cells it has.  The",
         );
         h.doc(
             "",
-            "foursies that are killed are believed to be rare oddball artifacts arising"
+            "foursies that are killed are believed to be rare oddball artifacts arising",
         );
         h.doc(
             "",
-            "from repeated cell doublets or GEMs that contain two cells and multiple gel"
+            "from repeated cell doublets or GEMs that contain two cells and multiple gel",
         );
         h.doc(
             "",
-            "beads.  The argument NFOURSIE_KILL turns off this filtering."
+            "beads.  The argument NFOURSIE_KILL turns off this filtering.",
         );
         h.ldoc(
             "NWHITEF",
             "By default, enclone filters out rare artifacts arising from \
-             contamination"
+             contamination",
         );
         h.doc(
             "",
-            "of oligos on gel beads.  The NWHITEF option turns off this filter."
+            "of oligos on gel beads.  The NWHITEF option turns off this filter.",
         );
         h.ldoc(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact."
+            "By default, enclone filters out duplicated barcodes within an exact.",
         );
         h.doc(
             "",
-            "subclonotype.  The NBC_DUP option turns off this filter."
+            "subclonotype.  The NBC_DUP option turns off this filter.",
         );
         h.ldoc(
             "MIX_DONORS",
-            "By default, enclone will prevent cells from different donors from being"
+            "By default, enclone will prevent cells from different donors from being",
         );
         h.doc(
             "",
-            "placed in the same clonotype.  The MIX_DONORS option turns off this"
+            "placed in the same clonotype.  The MIX_DONORS option turns off this",
         );
         h.doc(
             "",
-            "behavior, thus allowing cells from different donors to be placed in the"
+            "behavior, thus allowing cells from different donors to be placed in the",
         );
         h.doc(
             "",
-            "same clonotype.  The main use of this option is for specificity testing, in"
+            "same clonotype.  The main use of this option is for specificity testing, in",
         );
 
         h.doc(
             "",
-            "which data from different donors are deliberately combined in an attempt"
+            "which data from different donors are deliberately combined in an attempt",
         );
         h.doc(
             "",
-            "to find errors.  Use of the bc field for META input specification"
+            "to find errors.  Use of the bc field for META input specification",
         );
         h.doc("", "automatically turns on this option.");
         h.ldoc(
             "KEEP_IMPROPER",
-            "An exact subclonotype is improper if it does not have one chain"
+            "An exact subclonotype is improper if it does not have one chain",
         );
         h.doc(
             "",
-            "of each type.  This option causes all improper exact subclonotypes to be"
+            "of each type.  This option causes all improper exact subclonotypes to be",
         );
         h.doc(
             "",
-            "retained, although they may be removed by other filters."
+            "retained, although they may be removed by other filters.",
         );
         h.ldoc(
             "MIN_CHAINS_EXACT=n",
-            "Delete any exact subclonotype having less than n chains.  You can use this"
+            "Delete any exact subclonotype having less than n chains.  You can use this",
         );
         h.doc(
             "",
-            "to \"purify\" a clonotype so as to display only exact subclonotypes having"
+            "to \"purify\" a clonotype so as to display only exact subclonotypes having",
         );
         h.doc("", "all their chains.");
         h.doc(
             "MIN_CELLS_EXACT=n",
-            "Delete any exact subclonotype having less than n cells.  You might want"
+            "Delete any exact subclonotype having less than n cells.  You might want",
         );
         h.doc(
             "",
-            "to use this if you have a very large and complex expanded clonotype,"
+            "to use this if you have a very large and complex expanded clonotype,",
         );
         h.doc("", "for which you would like to see a simplified view.");
         h.print_tab2();
@@ -274,13 +274,13 @@ pub fn help4(args: &Vec<String>) {
     // enclone help cvars.
 
     fn explain_alt_versions(h: &mut HelpDesk) {
-        h.print( &format!(
+        h.print(&format!(
             "{}",
             gray_left_bar(&print_to(
                 "\\red{◉} These variables have some alternate versions, \
                  as shown in the table below:\n\n"
-            )))
-        );
+            ))
+        ));
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
             "variable".to_string(),
@@ -394,8 +394,8 @@ pub fn help4(args: &Vec<String>) {
              line.\n\
              \\green{▶} If you try out these features, you'll see exactly what happens! \
              \\green{◀}\n"
-            )))
-        );
+            ))
+        ));
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -409,7 +409,7 @@ pub fn help4(args: &Vec<String>) {
         h.print(
             "These options define lead variables, which correspond to columns that \
              appear once in each clonotype, on the left side, and have one entry for each \
-             exact subclonotype row.\n\n"
+             exact subclonotype row.\n\n",
         );
         h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
@@ -421,51 +421,51 @@ pub fn help4(args: &Vec<String>) {
         h.ldoc("n", "number of cells");
         h.doc(
             "n_<name>",
-            "number of cells associated to the given name, which can be a dataset"
+            "number of cells associated to the given name, which can be a dataset",
         );
         h.doc(
             "",
-            "or sample or donor or tag short name; may name only one such category"
+            "or sample or donor or tag short name; may name only one such category",
         );
         h.ldoc(
             "near",
-            "Hamming distance of V..J DNA sequence to nearest neighbor"
+            "Hamming distance of V..J DNA sequence to nearest neighbor",
         );
         h.doc(
             "far",
-            "Hamming distance of V..J DNA sequence to farthest neighbor"
+            "Hamming distance of V..J DNA sequence to farthest neighbor",
         );
         h.doc(
             "",
-            "both compare to cells having chains in the same columns of the clonotype,"
+            "both compare to cells having chains in the same columns of the clonotype,",
         );
         h.doc(
             "",
-            "with - shown if there is no other exact subclonotype to compare to"
+            "with - shown if there is no other exact subclonotype to compare to",
         );
         h.ldoc(
             "g<d>",
-            "Here d is a nonnegative integer.  Then all the exact subclonotypes are"
+            "Here d is a nonnegative integer.  Then all the exact subclonotypes are",
         );
         h.doc(
             "",
-            "grouped according to the Hamming distance of their V..J sequences.  Those"
+            "grouped according to the Hamming distance of their V..J sequences.  Those",
         );
         h.doc(
             "",
-            "within distance d are defined to be in the same group, and this is"
+            "within distance d are defined to be in the same group, and this is",
         );
         h.doc(
             "",
-            "extended transitively.  The group identifier 1, 2, ... is shown.  The"
+            "extended transitively.  The group identifier 1, 2, ... is shown.  The",
         );
         h.doc(
             "",
-            "ordering of these identifiers is arbitrary.  This option is best applied"
+            "ordering of these identifiers is arbitrary.  This option is best applied",
         );
         h.doc(
             "",
-            "to cases where all exact subclonotypes have a complete set of chains."
+            "to cases where all exact subclonotypes have a complete set of chains.",
         );
         h.ldocpr("gex", "\\red{◉} median gene expression UMI count");
         h.docpr("n_gex", "\\blue{◉} number of cells reported by GEX");
@@ -479,15 +479,15 @@ pub fn help4(args: &Vec<String>) {
         h.ldocpr(
             "<gene>_g",
             "\\red{◉} all five feature types: look for a declared feature of the \
-             given type"
+             given type",
         );
         h.doc(
             "<antibody>_ab",
-            "with the given id or name; report the median UMI count for it; we allow"
+            "with the given id or name; report the median UMI count for it; we allow",
         );
         h.doc(
             "<antigen>_ag",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown"
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown",
         );
         h.doc("<crispr>_cr", "");
         h.doc("<custom>_cu", "");
@@ -544,103 +544,103 @@ pub fn help4(args: &Vec<String>) {
 
         h.doc(
             "var",
-            "bases at positions in chain that vary across the clonotype"
+            "bases at positions in chain that vary across the clonotype",
         );
         h.ldocpr(
             "u",
-            "\\red{◉} VDJ UMI count for each exact subclonotype, median across cells"
+            "\\red{◉} VDJ UMI count for each exact subclonotype, median across cells",
         );
         h.docpr(
             "r",
-            "\\red{◉} VDJ read count for each exact subclonotype, median across cells"
+            "\\red{◉} VDJ read count for each exact subclonotype, median across cells",
         );
         h.ldoc("const", "constant region name");
         h.ldoc(
             "edit",
-            "a string that partially defines the edit of the reference V(D)J concatenation"
+            "a string that partially defines the edit of the reference V(D)J concatenation",
         );
         h.doc(
             "",
-            "that gives rise to the observed CDR3; this uses a coordinate system in which"
+            "that gives rise to the observed CDR3; this uses a coordinate system in which",
         );
         h.doc(
             "",
-            "0 is the first base of the J ref segment (or the first base of the D ref"
+            "0 is the first base of the J ref segment (or the first base of the D ref",
         );
         h.doc(
             "",
-            "segment for IGH and TRB); for example D-4:4 denotes the deletion of the last"
+            "segment for IGH and TRB); for example D-4:4 denotes the deletion of the last",
         );
         h.doc(
             "",
-            "4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V"
+            "4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V",
         );
         h.doc(
             "",
-            "and I0:2;S5 denotes that plus a substitution at position 5; in computing"
+            "and I0:2;S5 denotes that plus a substitution at position 5; in computing",
         );
         h.doc(
             "",
-            "\"edit\", for IGH and TRB, we always test every possible D segment,"
+            "\"edit\", for IGH and TRB, we always test every possible D segment,",
         );
         h.doc(
             "",
-            "regardless of whether one is annotated, and pick the best one; for this"
+            "regardless of whether one is annotated, and pick the best one; for this",
         );
         h.doc("", "reason, \"edit\" may be slow");
         h.doc(
             "comp",
-            "a measure of CDR3 complexity, which is the total number of S, D and I"
+            "a measure of CDR3 complexity, which is the total number of S, D and I",
         );
         h.doc("", "symbols in \"edit\" as defined above");
         h.ldoc("cdr3_dna", "the CDR3_DNA sequence");
         h.ldoc(
             "vjlen",
-            "number of bases from the start of the V region to the end of the J region"
+            "number of bases from the start of the V region to the end of the J region",
         );
         h.doc(
             "clen",
-            "length of observed constant region (usually truncated at primer start)"
+            "length of observed constant region (usually truncated at primer start)",
         );
         h.doc("ulen", "length of observed 5'-UTR sequence");
         h.doc(
             "cdiff",
-            "differences with universal reference constant region, shown in the"
+            "differences with universal reference constant region, shown in the",
         );
         h.doc(
             "",
-            "abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10"
+            "abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10",
         );
         h.doc(
             "",
-            "(same but contig has 10 additional bases beyond end of ref C region"
+            "(same but contig has 10 additional bases beyond end of ref C region",
         );
         h.doc(
             "",
-            "At most five differences are shown, and if there are more, ... is appended."
+            "At most five differences are shown, and if there are more, ... is appended.",
         );
         h.doc("udiff", "like cdiff, but for the 5'-UTR");
         h.ldoc(
             "notes",
-            "optional note if there is an insertion or the end of J does not exactly abut"
+            "optional note if there is an insertion or the end of J does not exactly abut",
         );
         h.doc("", "the beginning of C; elided if empty");
         h.ldoc(
             "ndiff<n>vj",
-            "number of base differences within V..J between this exact subclonotype and"
+            "number of base differences within V..J between this exact subclonotype and",
         );
         h.doc("", "exact subclonotype n");
         h.doc(
             "d_univ",
-            "distance from universal reference, more specifically,"
+            "distance from universal reference, more specifically,",
         );
         h.doc(
             "",
-            "number of base differences within V..J between this exact"
+            "number of base differences within V..J between this exact",
         );
         h.doc(
             "",
-            "clonotype and universal reference, exclusive of indels, the last 15"
+            "clonotype and universal reference, exclusive of indels, the last 15",
         );
         h.doc("", "bases of the V and the first 15 bases of the J");
         h.doc("d_donor", "distance from donor reference,");
@@ -677,21 +677,21 @@ pub fn help4(args: &Vec<String>) {
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
             "share",
-            "positions in chain that differ consistently from the donor reference"
+            "positions in chain that differ consistently from the donor reference",
         );
         h.ldoc(
             "donor",
             "positions in chain where the donor reference differs from the universal \
-             reference"
+             reference",
         );
         h.ldoc(
             "donorn",
-            "positions in chain where the donor reference differs nonsynonymously"
+            "positions in chain where the donor reference differs nonsynonymously",
         );
         h.doc("", "from the universal reference");
         h.ldoc(
             "a-b",
-            "amino acids numbered a through b (zero-based, inclusive)"
+            "amino acids numbered a through b (zero-based, inclusive)",
         );
         h.print_tab2();
         h.print("\n");
@@ -720,32 +720,32 @@ pub fn help4(args: &Vec<String>) {
         h.print("\n\\bold{other options that control clonotype display}\n\n");
         h.doc(
             "PER_CELL",
-            "expand out each exact clonotype line, showing one line per cell,"
+            "expand out each exact clonotype line, showing one line per cell,",
         );
         h.doc(
             "",
-            "for each such line, displaying the barcode name, the number of UMIs assigned,"
+            "for each such line, displaying the barcode name, the number of UMIs assigned,",
         );
         h.doc(
             "",
-            "and the gene expression UMI count, if applicable, under gex_med"
+            "and the gene expression UMI count, if applicable, under gex_med",
         );
         h.ldoc(
             "BARCODES",
-            "print list of all barcodes of the cells in each clonotype, in a"
+            "print list of all barcodes of the cells in each clonotype, in a",
         );
         h.doc(
             "",
-            "single line near the top of the printout for a given clonotype"
+            "single line near the top of the printout for a given clonotype",
         );
         h.ldoc(
             "SEQC",
-            "print V..J sequence for each chain in the first exact subclonotype, near"
+            "print V..J sequence for each chain in the first exact subclonotype, near",
         );
         h.doc("", "the top of the printout for a given clonotype");
         h.ldoc(
             "FULL_SEQC",
-            "print full sequence for each chain in the first exact subclonotype,"
+            "print full sequence for each chain in the first exact subclonotype,",
         );
         h.doc("", "near the top of the printout for a given clonotype");
         h.ldoc("SUM", "print sum row for each clonotype");
@@ -762,16 +762,16 @@ pub fn help4(args: &Vec<String>) {
         h.doc(
             "GROUP_HEAVY_CDR3",
             "group by perfect identity of CDR3 amino acid sequence \
-             of IGH or TRB"
+             of IGH or TRB",
         );
         h.doc(
             "GROUP_VJ_REFNAME",
-            "group by sharing identical V and J reference gene names,"
+            "group by sharing identical V and J reference gene names,",
         );
         h.doc("", "but ignores foursies and moresies");
         h.ldoc(
             "MIN_GROUP",
-            "minimum number of clonotypes in group to print (default = 1)"
+            "minimum number of clonotypes in group to print (default = 1)",
         );
         h.print_tab2();
         h.print("\n");

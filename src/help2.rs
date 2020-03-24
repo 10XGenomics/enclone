@@ -53,9 +53,12 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         h.begin_doc("example1");
         h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:\n"
+             directory /users/jdoe/enclone_data.  Then you can run this command:\n",
         );
-        h.print(&format!("\n% enclone PRE=/users/jdoe/enclone_data {}\n", EXAMPLES[0]));
+        h.print(&format!(
+            "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
+            EXAMPLES[0]
+        ));
         if !plain {
             h.print(&format!("{}", include_str!("example1")));
         } else {
@@ -105,7 +108,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              • Amino acids are shown if they differ from the universal reference or are in \
              the CDR3.\n\
              • u = median UMI count for a chain in the exact subclonotype.\n\
-             • const = const region name for a chain in the exact subclonotype.\n\n"
+             • const = const region name for a chain in the exact subclonotype.\n\n",
         );
         h.print(
             "The view you see here is configurable: see the documentation at \
@@ -127,9 +130,12 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         h.begin_doc("example2");
         h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:\n"
+             directory /users/jdoe/enclone_data.  Then you can run this command:\n",
         );
-        h.print(&format!("\n% enclone PRE=/users/jdoe/enclone_data {}\n", EXAMPLES[1]));
+        h.print(&format!(
+            "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
+            EXAMPLES[1]
+        ));
         if !plain {
             h.print_plain(include_str!("example2"));
         } else {
@@ -186,7 +192,11 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              need data to reproduce the problem.  Please also send this version information:\n",
         );
         if !ctl.gen_opt.stable_doc {
-            h.print(&format!("{} = {}.\n\n", env!("CARGO_PKG_VERSION"), VERSION_STRING));
+            h.print(&format!(
+                "{} = {}.\n\n",
+                env!("CARGO_PKG_VERSION"),
+                VERSION_STRING
+            ));
         } else {
             h.print("(your enclone version information will be printed here).\n\n");
         }
@@ -368,80 +378,64 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         h.ldoc3(
             "tcr",
             "(required!)",
-            "path to dataset, or abbr:path, where abbr is an abbreviated"
+            "path to dataset, or abbr:path, where abbr is an abbreviated",
         );
         h.doc3(
             "or bcr",
             "",
-            "name for the dataset; exactly one of tcr or bcr must be used"
+            "name for the dataset; exactly one of tcr or bcr must be used",
         );
         h.doc3(
             "gex",
             "null",
-            "path to GEX dataset, which may include or consist entirely"
+            "path to GEX dataset, which may include or consist entirely",
         );
-        h.doc3(
-            "",
-            "",
-            "of FB data"
-        );
-        h.ldoc3(
-            "sample",
-            "s1",
-            "abbreviated name of sample",
-        );
+        h.doc3("", "", "of FB data");
+        h.ldoc3("sample", "s1", "abbreviated name of sample");
 
-        h.ldoc3(
-            "donor",
-            "d1",
-            "abbreviated name of donor"
-        );
+        h.ldoc3("donor", "d1", "abbreviated name of donor");
         h.ldoc3(
             "color",
             "null",
-            "color to associate to this dataset (for PLOT option)"
+            "color to associate to this dataset (for PLOT option)",
         );
         h.ldoc3(
             "bc",
             "null",
-            "name of CSV file with header \"barcode,sample,donor\" that"
+            "name of CSV file with header \"barcode,sample,donor\" that",
         );
         h.doc3(
             "",
             "",
-            "assigns a sample and donor name to each barcode; if sample and/or"
+            "assigns a sample and donor name to each barcode; if sample and/or",
         );
         h.doc3(
             "",
             "",
-            "donor are also specified, then those are treated as default values"
+            "donor are also specified, then those are treated as default values",
         );
         h.doc3(
             "",
             "",
-            "to be used in case a particular barcode is not specified by bc;"
+            "to be used in case a particular barcode is not specified by bc;",
         );
         h.doc3(
             "",
             "",
-            "a fourth field \"tag\" is allowed and may be arbitrarily specified"
+            "a fourth field \"tag\" is allowed and may be arbitrarily specified",
         );
 
         h.doc3(
             "",
             "",
-            "Use of bc automatically turns on the MIX_DONORS option.  There is"
+            "Use of bc automatically turns on the MIX_DONORS option.  There is",
         );
         h.doc3(
             "",
             "",
-            "an optional field \"color\" that assigns a color to a barcode,"
+            "an optional field \"color\" that assigns a color to a barcode,",
         );
-        h.doc3(
-            "",
-            "",
-            "and which is used by the PLOT option."
-        );
+        h.doc3("", "", "and which is used by the PLOT option.");
         h.print_tab3();
         h.print("\n");
         if !help_all {

@@ -143,7 +143,7 @@ pub fn help3(args: &Vec<String>) {
         h.print(
             "\\boldred{───────────────────────}\n\
              \\boldred{parseable output fields}\n\
-             \\boldred{───────────────────────}\n\n"
+             \\boldred{───────────────────────}\n\n",
         );
         h.rows.clear();
         h.print("\\bold{1. per clonotype group fields}\n\n");
@@ -156,7 +156,7 @@ pub fn help3(args: &Vec<String>) {
         h.print("\\bold{2. per clonotype fields}\n\n");
         h.doc(
             "clonotype_id",
-            "identifier of clonotype within the clonotype group = 0, 1, ..."
+            "identifier of clonotype within the clonotype group = 0, 1, ...",
         );
         h.ldoc("clonotype_ncells", "total number of cells in the clonotype");
         h.ldoc("nchains", "total number of chains in the clonotype");
@@ -176,22 +176,22 @@ pub fn help3(args: &Vec<String>) {
         h.doc("j_id<i>", "id of J segment");
         h.ldoc(
             "var_indices_dna<i>",
-            "DNA positions in chain that vary across the clonotype"
+            "DNA positions in chain that vary across the clonotype",
         );
         h.doc(
             "var_indices_aa<i>",
-            "amino acid positions in chain that vary across the clonotype"
+            "amino acid positions in chain that vary across the clonotype",
         );
         h.doc(
             "share_indices_dna<i>",
             "DNA positions in chain that are constant across the \
-             clonotype,"
+             clonotype,",
         );
         h.doc("", "but differ from the donor ref");
         h.doc(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
-             clonotype,"
+             clonotype,",
         );
         h.doc("", "all of these are comma-separated lists");
         h.doc("", "but differ from the donor ref");
@@ -202,26 +202,26 @@ pub fn help3(args: &Vec<String>) {
         h.print("\\bold{4. per exact subclonotype fields}\n\n");
         h.doc(
             "exact_subclonotype_id",
-            "identifer of exact subclonotype = 1, 2, ..."
+            "identifer of exact subclonotype = 1, 2, ...",
         );
         h.ldoc(
             "barcodes",
-            "comma-separated list of barcodes for the exact subclonotype"
+            "comma-separated list of barcodes for the exact subclonotype",
         );
         h.doc(
             "<dataset>_barcodes",
-            "like \"barcodes\", but restricted to the dataset with the given name"
+            "like \"barcodes\", but restricted to the dataset with the given name",
         );
         h.doc("barcode", "if PCELL is specified, barcode for one cell");
         h.doc(
             "<dataset>_barcode",
-            "if PCELL is specified, barcode for one cell, or null, if the barcode is"
+            "if PCELL is specified, barcode for one cell, or null, if the barcode is",
         );
         h.doc("", "not from the given dataset");
         h.ldoc(
             "In addition, every lead variable may be specified as a field.  \
              See \"enclone help lvars\".",
-            "\\ext"
+            "\\ext",
         );
         h.print_tab2();
         h.print("\n");
@@ -236,41 +236,41 @@ pub fn help3(args: &Vec<String>) {
         h.doc("seq<i>", "full DNA sequence");
         h.doc(
             "q<n>_<i>",
-            "special option to display a comma-separated list of the quality"
+            "special option to display a comma-separated list of the quality",
         );
         h.doc(
             "",
-            "scores for chain i, at zero-based position n, numbered starting at the"
+            "scores for chain i, at zero-based position n, numbered starting at the",
         );
         h.doc(
             "",
-            "beginning of the V segment, for each cell in the exact subclonotype"
+            "beginning of the V segment, for each cell in the exact subclonotype",
         );
         h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
         h.ldoc(
             "const_id<i>",
-            "numerical identifier of constant region (or null, if not known)"
+            "numerical identifier of constant region (or null, if not known)",
         );
         h.ldoc(
             "utr_id<i>",
-            "numerical identifier of 5'-UTR region (or null, if not known)"
+            "numerical identifier of 5'-UTR region (or null, if not known)",
         );
         h.doc(
             "utr_name<i>",
-            "name of 5'-UTR region (or null, if not known)"
+            "name of 5'-UTR region (or null, if not known)",
         );
         h.ldoc(
             "cdr3_start<i>",
-            "base position start of CDR3 sequence on full contig"
+            "base position start of CDR3 sequence on full contig",
         );
         h.doc("cdr3_aa<i>", "amino acid sequence of CDR3");
         h.ldoc(
             "var_aa<i>",
-            "amino acids that vary across the clonotype (synonymous changes included)"
+            "amino acids that vary across the clonotype (synonymous changes included)",
         );
         h.ldoc(
             "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
-            "\\ext"
+            "\\ext",
         );
         h.doc("See \"enclone help cvars\".", "\\ext");
         h.print_tab2();
@@ -297,7 +297,7 @@ pub fn help3(args: &Vec<String>) {
 
         h.doc(
             "MIN_CELLS=n",
-            "only show clonotypes having at least n cells"
+            "only show clonotypes having at least n cells",
         );
         h.doc("MAX_CELLS=n", "only show clonotypes having at most n cells");
         h.doc("CELLS=n", "only show clonotypes having exactly n cells");
@@ -306,18 +306,18 @@ pub fn help3(args: &Vec<String>) {
 
         h.ldoc(
             "MIN_UMIS=n",
-            "only show clonotypes having ≳ n UMIs on some chain on some cell"
+            "only show clonotypes having ≳ n UMIs on some chain on some cell",
         );
 
         // doc *CHAINS
 
         h.ldoc(
             "MIN_CHAINS=n",
-            "only show clonotypes having at least n chains"
+            "only show clonotypes having at least n chains",
         );
         h.doc(
             "MAX_CHAINS=n",
-            "only show clonotypes having at most n chains"
+            "only show clonotypes having at most n chains",
         );
         h.doc("CHAINS=n", "only show clonotypes having exactly n chains");
 
@@ -325,26 +325,26 @@ pub fn help3(args: &Vec<String>) {
 
         h.ldoc(
             "CDR3=<pattern>",
-            "only show clonotypes having a CDR3 amino acid seq that matches"
+            "only show clonotypes having a CDR3 amino acid seq that matches",
         );
         h.doc(
             "",
-            "the given pattern (regular expression)*, from beginning to end"
+            "the given pattern (regular expression)*, from beginning to end",
         );
 
         // doc SEG and SEGN
 
         h.ldoc(
             "SEG=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given reference segment names"
+            "only show clonotypes using one of the given reference segment names",
         );
         h.doc(
             "SEGN=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given reference segment numbers"
+            "only show clonotypes using one of the given reference segment numbers",
         );
         h.doc(
             "",
-            "both: looks for V, D, J and C segments; double quote only"
+            "both: looks for V, D, J and C segments; double quote only",
         );
         h.doc("", "needed if n > 1");
 
@@ -352,14 +352,14 @@ pub fn help3(args: &Vec<String>) {
 
         h.ldoc(
             "MIN_EXACTS=n",
-            "only show clonotypes having at least n exact subclonotypes"
+            "only show clonotypes having at least n exact subclonotypes",
         );
 
         // doc VJ
 
         h.ldoc(
             "VJ=seq",
-            "only show clonotypes using exactly the given V..J sequence"
+            "only show clonotypes using exactly the given V..J sequence",
         );
         h.doc("", "(string in alphabet ACGT)");
 
@@ -367,14 +367,14 @@ pub fn help3(args: &Vec<String>) {
 
         h.ldoc(
             "MIN_DATASETS=n",
-            "only show clonotypes containing cells from at least n datasets"
+            "only show clonotypes containing cells from at least n datasets",
         );
 
         // doc CDIFF
 
         h.ldoc(
             "CDIFF",
-            "only show clonotypes having a difference in constant region with the"
+            "only show clonotypes having a difference in constant region with the",
         );
         h.doc("", "universal reference");
 
@@ -386,7 +386,7 @@ pub fn help3(args: &Vec<String>) {
 
         h.ldoc(
             "BARCODE=bc1,...,bcn",
-            "only show clonotypes that use one of the given barcodes"
+            "only show clonotypes that use one of the given barcodes",
         );
 
         // print main table
@@ -421,7 +421,7 @@ pub fn help3(args: &Vec<String>) {
             "A gentle introduction to regular expressions may be found at\n\
              https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise\n\
              specification for the regular expression version used by enclone may be found at\n\
-             https://docs.rs/regex.\n\n"
+             https://docs.rs/regex.\n\n",
         );
 
         // linear conditions
