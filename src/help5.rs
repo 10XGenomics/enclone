@@ -50,8 +50,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("indels");
-        print("\n\\bold{handling of insertions and deletions}\n\n");
-        print(
+        h.print("\n\\bold{handling of insertions and deletions}\n\n");
+        h.print(
             "enclone can recognize and display a single insertion or deletion in a contig \
              relative to the reference, so long as its length is divisible by three, is relatively \
              short, and occurs within the V segment, not too close to its right end.\n\n\
@@ -121,7 +121,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("color");
-        print("\nHere is the color palette that enclone uses for amino acids:\n\n");
+        h.print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
         for i in 0..6 {
             let s = best_color_order(i);
@@ -161,9 +161,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              For both of these reasons, you may wish to turn off the \"special effects\",\n\
              either some or all of the time.  You can do this by adding the argument"
         );
-        print("\\bold{PLAIN}\n");
-        print("to any enclone command.\n\n");
-        print(
+        h.print("\\bold{PLAIN}\n");
+        h.print("to any enclone command.\n\n");
+        h.print(
             "We know of two methods to get enclone output into another document, along \
              with colors:\n\
              1. Take a screenshot.\n\
@@ -183,21 +183,21 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("faq");
-        print("\n");
+        h.print("\n");
         if !plain {
             let mut log = Vec::<u8>::new();
             emit_bold_escape(&mut log);
             emit_red_escape(&mut log);
             print!("{}", strme(&log));
         }
-        print("\\bold{Frequently Asked Questions}\n\n");
+        h.print("\\bold{Frequently Asked Questions}\n\n");
         println!(
             "We're sorry you're having difficulty!  Please see the answers below, check out\n\
              the other help guides, and if you're still stuck, write to us at \
              enclone@10xgenomics.com.\n"
         );
 
-        print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
+        h.print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
         println!(
             "We can think of two possibilities:\n\n\
             A. The escape characters that enclone emits for color and bolding are not getting\n\
@@ -215,13 +215,13 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             (b) Identify the field that is very wide and use the column controls to remove that\n\
             field.  See the help for lvars and cvars.  For example,"
         );
-        print(
+        h.print(
             "\\bold{AMINO=cdr3}\n\
              may help, or even\n\
              \\bold{AMINO=}\n\n",
         );
 
-        print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
+        h.print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
         println!(
             "We don't know how in general, but the following works for us from a mac:\n\n\
              A. open a new terminal window\n\
@@ -234,8 +234,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              H. then print (or save the pdf, if you prefer).\n"
         );
 
-        print("\\boldblue{3. Why is enclone slow for me?}\n\n");
-        print(
+        h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
+        h.print(
             "On a single VDJ dataset, it typically runs for us in a few seconds, on a Mac or Linux \
              server.  Runs where we combine several hundred datasets execute in a couple minutes \
              (on a server).  Your mileage could vary, and we are interested in cases where \
@@ -243,8 +243,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              done to speed up enclone.\n\n",
         );
 
-        print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");
-        print(
+        h.print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");
+        h.print(
             "There are several parts to the answer:\n\
              • enclone is a standalone executable that by default produces human-readable output.\n\
              • You can also run enclone to produce parseable output \
@@ -259,22 +259,22 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              compressed view of \"important\" bases or amino acids that enclone shows.\n\n",
         );
 
-        print("\\boldblue{5. What platforms does enclone run on?}\n\n");
-        print(
+        h.print("\\boldblue{5. What platforms does enclone run on?}\n\n");
+        h.print(
             "1. linux/x86-64 (that's most servers)\n\
              2. mac.\n\n\
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
 
-        print("\\boldblue{6. How can I print out all the donor reference sequences?}\n\n");
-        print(
+        h.print("\\boldblue{6. How can I print out all the donor reference sequences?}\n\n");
+        h.print(
             "Add the argument \\bold{DONOR_REF_FILE=filename} to your enclone command, \
              and fasta for the donor reference sequences will be dumped there.\n\n",
         );
 
-        print("\\boldblue{7. How does enclone know what VDJ reference sequences I'm using?}\n\n");
-        print(
+        h.print("\\boldblue{7. How does enclone know what VDJ reference sequences I'm using?}\n\n");
+        h.print(
             "It does not!  It assumes that you have the \\bold{human} reference sequences that \
              shipped with the latest version of Cell Ranger.  If instead your sequences are mouse, \
              then you can specify that by adding the argument \\bold{MOUSE} to your command \
@@ -283,8 +283,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              VDJ reference fasta file.\n\n",
         );
 
-        print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
-        print(
+        h.print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
+        h.print(
             "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
              enclone is to prevent cells from different donors from being placed in the same \
              clonotype.  The \\bold{MIX_DONORS} option may be used to turn off this behavior.  If \
@@ -294,8 +294,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              donors is to allow estimation of enclone's error rate.\n\n",
         );
 
-        print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
-        print(
+        h.print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
+        h.print(
             "Command line argument values that contain any of these characters ;|* need to \
              be quoted like so\n\
              \\bold{TCR=\"a;b\"}\n\
@@ -304,28 +304,28 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              nonsensical and confusing behavior!\n\n",
         );
 
-        print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
-        print(
+        h.print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
+        h.print(
             "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
              get zero.\n\n",
         );
 
-        print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
-        print(
+        h.print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
+        h.print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
              one of the filters described in \\bold{enclone help special}, and which you can \
              turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
 
-        print("\\boldblue{12. Can enclone print summary stats?}\n\n");
-        print(
+        h.print("\\boldblue{12. Can enclone print summary stats?}\n\n");
+        h.print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
              printed.  If you only want to see the summary stats, then also add the option \
              \\bold{NOPRINT}.\n\n",
         );
 
-        print("\\boldblue{13. What is the notes column?}\n\n");
-        print(
+        h.print("\\boldblue{13. What is the notes column?}\n\n");
+        h.print(
             "The notes column appears if one of two relatively rare events occurs:\n\n\
              1. An insertion is detected in a chain sequence, relative to the reference.\n\n\
              2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
@@ -349,22 +349,22 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
-        print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print(
+        h.print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
+        h.print(
             "You can use the command-line argument \\bold{MAX_CORES=n} to cap the number of \
              cores used in parallel loops.  The number of threads used is typically one \
              higher.\n\n",
         );
 
-        print("\\boldblue{15. Does enclone work under Windows?}\n\n");
-        print(
+        h.print("\\boldblue{15. Does enclone work under Windows?}\n\n");
+        h.print(
             "No.  There are nontrivial technical problems with getting this to work.  If you're \
              sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
              know if you're interested in support for Windows.\n\n",
         );
 
-        print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
-        print(
+        h.print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
+        h.print(
             "Possibly.  In some cases this works very well, but in other cases it does not.  \
             Success depends on dataset characteristics that have not been carefully investigated.  \
             To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
@@ -374,8 +374,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             is not an officially supported Cell Ranger configuration.\n\n",
         );
 
-        print("\\boldblue{17. How can I cite enclone?}\n\n");
-        print("This version of enclone has been provided under a non-disclosure agreement,\n");
+        h.print("\\boldblue{17. How can I cite enclone?}\n\n");
+        h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
         println!(
             "however once enclone has officially launched, you will be able to cite this \
              version as:"
@@ -396,16 +396,16 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         }
         emit_end_escape(&mut log);
         print!("{}", strme(&log));
-        print(
+        h.print(
             "At some point subsequent to that, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",
         );
 
-        print("\\boldblue{18. How enclone output html?}\n\n");
+        h.print("\\boldblue{18. How enclone output html?}\n\n");
 
-        print(
+        h.print(
             "Yes, just add the argument \\bold{HTML} to the command line.  Currently this does \
             not work with help.\n\n",
         );
@@ -420,8 +420,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("developer");
-        print("\n\\bold{a few options for developers}\n\n");
-        print(
+        h.print("\n\\bold{a few options for developers}\n\n");
+        h.print(
             "For instructions on how to compile, please see\n\
              \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
         );

@@ -212,7 +212,7 @@ pub fn help3(args: &Vec<String>) {
 
         h.rows.clear();
         bold!();
-        print("2. per clonotype fields\n\n");
+        h.print("2. per clonotype fields\n\n");
         end_escape!();
         h.doc(
             "clonotype_id",

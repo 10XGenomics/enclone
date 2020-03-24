@@ -405,13 +405,13 @@ pub fn help4(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("lvars");
-        print("\n\\bold{lead column options}\n\n");
+        h.print("\n\\bold{lead column options}\n\n");
         println!(
             "These options define lead variables, which correspond to columns that \
              appear once in each\nclonotype, on the left side, and have one entry for each \
              exact subclonotype row.\n"
         );
-        print(
+        h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
@@ -492,22 +492,22 @@ pub fn help4(args: &Vec<String>) {
         h.doc("<crispr>_cr", "");
         h.doc("<custom>_cu", "");
         h.print_tab2();
-        print(
+        h.print(
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
         );
         explain_alt_versions();
-        print(
+        h.print(
             "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
              and the x_mean etc. forms do not apply.\n\n",
         );
-        print(
+        h.print(
             "The default is \\bold{datasets,n}, except that datasets is suppressed if \
              there is only one dataset.\n\n",
         );
-        print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
-        print(
+        h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
+        h.print(
             "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
              feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
              counts are rounded to the nearest integer.  For this normalization, \
@@ -529,12 +529,12 @@ pub fn help4(args: &Vec<String>) {
 
         // Header.
 
-        print(
+        h.print(
             "\n\\bold{per-chain column options}: These options define per-chain variables, \
              which correspond to columns that appear once for each chain in each clonotype, and \
              have one entry for each exact subclonotype.\n\n",
         );
-        print(
+        h.print(
             "Per-column variables are specified using\n\
              \\bold{CVARS=x1,...,xn}\n\
              where each xi is one of:\n\n",
@@ -667,7 +667,7 @@ pub fn help4(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("amino");
-        print(
+        h.print(
             "\nThere is a complex per-chain column to the left of other \
              per-chain columns, defined by\n\
              \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
@@ -695,12 +695,12 @@ pub fn help4(args: &Vec<String>) {
         );
         h.print_tab2();
         h.print("\n");
-        print(
+        h.print(
             "Note that we compute positions in base space, and then divide by three to get \
              positions in amino acid space.  Thus it can happen that a position in amino acid \
              space is shown for both \\bold{var} and \\bold{share}.\n\n",
         );
-        print(
+        h.print(
             "The default value for \\bold{AMINO} is \\bold{cdr3,var,share,donor}.  \
              Note that we only report amino acids that are strictly within V..J, \
              thus specifically excluding the codon bridging J and C.\n\n",
@@ -717,7 +717,7 @@ pub fn help4(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "display") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("display");
-        print("\n\\bold{other options that control clonotype display}\n\n");
+        h.print("\n\\bold{other options that control clonotype display}\n\n");
         h.doc(
             "PER_CELL",
             "expand out each exact clonotype line, showing one line per cell,"

@@ -379,7 +379,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         );
         h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
         bold!();
-        print("META=filename\n");
+        h.print("META=filename\n");
         end_escape!();
         h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
