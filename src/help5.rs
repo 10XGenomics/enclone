@@ -49,47 +49,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         }
         erase_if(&mut args, &to_delete);
     }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
     let mut help_all = false;
     unsafe {
         if HELP_ALL {
@@ -143,10 +102,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || help_all {
         begin_doc!("ideas");
-        println!("");
-        bold!();
-        println!("features that might be implemented in enclone\n");
-        end_escape!();
+        print("\n\\bold{features that might be implemented in enclone}\n\n");
         doc!("speed", "make enclone faster");
         ldoc!(
             "CDRn",
@@ -185,7 +141,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
         begin_doc!("color");
-        println!("\nHere is the color palette that enclone uses for amino acids:\n");
+        print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
         for i in 0..6 {
             let s = best_color_order(i);
@@ -225,10 +181,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              For both of these reasons, you may wish to turn off the \"special effects\",\n\
              either some or all of the time.  You can do this by adding the argument"
         );
-        bold!();
-        println!("PLAIN");
-        end_escape!();
-        println!("to any enclone command.\n");
+        print("\\bold{PLAIN}\n");
+        print("to any enclone command.\n\n");
         print(
             "We know of two methods to get enclone output into another document, along \
              with colors:\n\
@@ -248,7 +202,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
         begin_doc!("faq");
-        println!("");
+        print("\n");
         if !plain {
             let mut log = Vec::<u8>::new();
             emit_bold_escape(&mut log);
@@ -256,7 +210,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             print!("{}", strme(&log));
         }
         print("\\bold{Frequently Asked Questions}\n\n");
-        end_escape!();
         println!(
             "We're sorry you're having difficulty!  Please see the answers below, check out\n\
              the other help guides, and if you're still stuck, write to us at \
@@ -441,7 +394,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         );
 
         print("\\boldblue{17. How can I cite enclone?}\n\n");
-        println!("This version of enclone has been provided under a non-disclosure agreement,");
+        print("This version of enclone has been provided under a non-disclosure agreement,\n");
         println!(
             "however once enclone has officially launched, you will be able to cite this \
              version as:"

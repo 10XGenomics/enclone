@@ -48,29 +48,6 @@ pub fn help3(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
     }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
     macro_rules! bold {
         () => {
             if !plain {
@@ -110,8 +87,7 @@ pub fn help3(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
         begin_doc!("input_tech");
-        print("\n");
-        print("\\bold{information about providing input to enclone (technical notes)}\n\n");
+        print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
         print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
@@ -388,11 +364,10 @@ pub fn help3(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || help_all {
         begin_doc!("filter");
-        print("\n");
 
         // intro
 
-        print("\\bold{clonotype filtering options}\n\n");
+        print("\n\\bold{clonotype filtering options}\n\n");
         print("these options cause only certain clonotypes to be printed\n\n");
 
         // doc *CELLS

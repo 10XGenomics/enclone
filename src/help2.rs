@@ -20,19 +20,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     let mut args = args.clone();
     let mut rows = Vec::<Vec<String>>::new();
-    /*
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-        };
-    }
-    */
     let mut plain = false;
     for i in 0..args.len() {
         if args[i] == "PLAIN" {
@@ -301,8 +288,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "plot") || help_all {
         begin_doc!("plot");
-        print("\n");
-        print("\\bold{plotting clonotypes}\n\n");
+        print("\n\\bold{plotting clonotypes}\n\n");
         print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \

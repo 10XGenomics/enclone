@@ -1227,9 +1227,9 @@ the insertion appears, where the first amino acid (start codon) is numbered 0.
 enclone help ideas
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mfeatures that might be implemented in enclone
+[01mfeatures that might be implemented in enclone[0m
 
-[0m┌───────────────────┬──────────────────────────────────────────────────────────────────┐
+┌───────────────────┬──────────────────────────────────────────────────────────────────┐
 │speed              │  make enclone faster                                             │
 ├───────────────────┼──────────────────────────────────────────────────────────────────┤
 │CDRn               │  make CDR1 and CDR2 viewable in the same way that CDR3 is now    │
@@ -1290,8 +1290,8 @@ editors do not correctly interpret escape characters.
 
 For both of these reasons, you may wish to turn off the "special effects",
 either some or all of the time.  You can do this by adding the argument
-[01mPLAIN
-[0mto any enclone command.
+[01mPLAIN[0m
+to any enclone command.
 
 We know of two methods to get enclone output into another document, along with colors:
 1. Take a screenshot.
@@ -1304,7 +1304,7 @@ enclone help faq
 
 [01m[01;31m[01mFrequently Asked Questions[0m
 
-[0mWe're sorry you're having difficulty!  Please see the answers below, check out
+We're sorry you're having difficulty!  Please see the answers below, check out
 the other help guides, and if you're still stuck, write to us at enclone@10xgenomics.com.
 
 [01m[38;5;12m1. Why is my enclone output garbled?[0m

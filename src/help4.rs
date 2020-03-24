@@ -56,29 +56,6 @@ pub fn help4(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
     }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
     let mut help_all = false;
     unsafe {
         if HELP_ALL {
@@ -458,8 +435,7 @@ pub fn help4(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "lvars") || help_all {
         begin_doc!("lvars");
-        print("\n");
-        print("\\bold{lead column options}\n\n");
+        print("\n\\bold{lead column options}\n\n");
         println!(
             "These options define lead variables, which correspond to columns that \
              appear once in each\nclonotype, on the left side, and have one entry for each \
