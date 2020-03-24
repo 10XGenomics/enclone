@@ -5,7 +5,6 @@
 use crate::defs::*;
 use crate::help_utils::*;
 use crate::testlist::*;
-use ansi_escape::*;
 use std::env;
 use string_utils::*;
 use vector_utils::*;
@@ -52,13 +51,13 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("example1");
-        println!(
+        h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:"
+             directory /users/jdoe/enclone_data.  Then you can run this command:\n"
         );
-        println!("\n% enclone PRE=/users/jdoe/enclone_data {}", EXAMPLES[0]);
+        h.print(&format!("\n% enclone PRE=/users/jdoe/enclone_data {}\n", EXAMPLES[0]));
         if !plain {
-            print!("{}", include_str!("example1"));
+            h.print(&format!("{}", include_str!("example1")));
         } else {
             let s = include_str!("example1").as_bytes();
             let mut x = Vec::<u8>::new();
@@ -75,10 +74,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
                 }
                 x.push(s[l]);
             }
-            print!("{}", strme(&x));
+            h.print(&format!("{}", strme(&x)));
         }
-        println!(
-            "{}",
+        h.print(
             "This shows an invocation of enclone that takes one dataset as input \
              and exhibits\nall clonotypes for which some chain has the given CDR3 sequence.\n\n\
              \
@@ -107,7 +105,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              • Amino acids are shown if they differ from the universal reference or are in \
              the CDR3.\n\
              • u = median UMI count for a chain in the exact subclonotype.\n\
-             • const = const region name for a chain in the exact subclonotype.\n"
+             • const = const region name for a chain in the exact subclonotype.\n\n"
         );
         h.print(
             "The view you see here is configurable: see the documentation at \
@@ -127,13 +125,13 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("example2");
-        println!(
+        h.print(
             "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:"
+             directory /users/jdoe/enclone_data.  Then you can run this command:\n"
         );
-        println!("\n% enclone PRE=/users/jdoe/enclone_data {}", EXAMPLES[1]);
+        h.print(&format!("\n% enclone PRE=/users/jdoe/enclone_data {}\n", EXAMPLES[1]));
         if !plain {
-            print!("{}", include_str!("example2"));
+            h.print_plain(include_str!("example2"));
         } else {
             let s = include_str!("example2").as_bytes();
             let mut x = Vec::<u8>::new();
@@ -150,7 +148,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
                 }
                 x.push(s[l]);
             }
-            print!("{}", strme(&x));
+            h.print(&format!("{}", strme(&x)));
         }
         h.print(
             "This shows an invocation of enclone that takes VDJ, gene expression and feature \
@@ -188,7 +186,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              need data to reproduce the problem.  Please also send this version information:\n",
         );
         if !ctl.gen_opt.stable_doc {
-            println!("{} = {}.\n", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+            h.print(&format!("{} = {}.\n\n", env!("CARGO_PKG_VERSION"), VERSION_STRING));
         } else {
             h.print("(your enclone version information will be printed here).\n\n");
         }
@@ -366,35 +364,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              group.  After the first line, lines starting with # are ignored.  There must be a \
              field tcr or bcr, and some other fields are allowed:\n",
         );
-        let mut log1 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log1);
-        }
-        log1.append(&mut b"field".to_vec());
-        if !plain {
-            emit_end_escape(&mut log1);
-        }
-        let s1 = stringme(&log1);
-        let mut log2 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log2);
-        }
-        log2.append(&mut b"default".to_vec());
-        if !plain {
-            emit_end_escape(&mut log2);
-        }
-        let s2 = stringme(&log2);
-
-        let mut log3 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log3);
-        }
-        log3.append(&mut b"meaning".to_vec());
-        if !plain {
-            emit_end_escape(&mut log3);
-        }
-        let s3 = stringme(&log3);
-        h.doc3(&s1, &s2, &s3);
+        h.doc3("\\bold{field}", "\\bold{default}", "\\bold{meaning}");
         h.ldoc3(
             "tcr",
             "(required!)",

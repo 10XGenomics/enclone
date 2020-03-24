@@ -4,10 +4,8 @@
 
 use crate::help_utils::*;
 use crate::misc1::*;
-use ansi_escape::*;
 use pretty_trace::*;
 use std::env;
-use string_utils::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -115,7 +113,7 @@ pub fn help1(args: &Vec<String>) {
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("main");
-        print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
+        h.print(&format!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION")));
         h.print_enclone();
         h.print(".  The mission of ");
         h.print_enclone();
@@ -133,25 +131,7 @@ pub fn help1(args: &Vec<String>) {
              Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
-        let mut log1 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log1);
-        }
-        log1.append(&mut b"command".to_vec());
-        if !plain {
-            emit_end_escape(&mut log1);
-        }
-        let s1 = stringme(&log1);
-        let mut log2 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log2);
-        }
-        log2.append(&mut b"what it provides".to_vec());
-        if !plain {
-            emit_end_escape(&mut log2);
-        }
-        let s2 = stringme(&log2);
-        h.doc(&s1, &s2);
+        h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc_red("enclone help", "help to test for correct setup");
         h.doc_red("enclone", "what you see here: guide to all the doc");
         h.ldoc_red("enclone help quick", "quick guide to getting started");
@@ -268,8 +248,8 @@ pub fn help1(args: &Vec<String>) {
 
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("how");
-        print("\n");
-        print("\\bold{information about how enclone works}\n\n");
+        h.print("\n");
+        h.print("\\bold{information about how enclone works}\n\n");
         h.print(
             "The goal of enclone is to find and display the clonotypes within single cell \
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
@@ -406,7 +386,7 @@ pub fn help1(args: &Vec<String>) {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("command");
         h.print("\n");
-        print("\\bold{information about enclone command-line argument processing}\n\n");
+        h.print("\\bold{information about enclone command-line argument processing}\n\n");
         h.print("\\bold{1. Order of processing}\n\n");
         h.print(
             "• Before processing its command line, enclone first checks for environment\n\
@@ -465,7 +445,7 @@ pub fn help1(args: &Vec<String>) {
 
         // intro
 
-        print("\\bold{glossary of terms used by enclone}\n\n");
+        h.print("\\bold{glossary of terms used by enclone}\n\n");
 
         // doc V..J
 
@@ -505,14 +485,10 @@ pub fn help1(args: &Vec<String>) {
 
         // doc exact subclonotype
 
-        let x1 = "exact subclonotype".to_string();
-        let mut w2 = b"all cells having identical transcripts".to_vec();
-        emit_bold_escape(&mut w2);
-        emit_red_escape(&mut w2);
-        w2.append(&mut " ○".as_bytes().to_vec());
-        emit_end_escape(&mut w2);
-        let x2 = stringme(&w2);
-        h.rows.push(vec![x1, x2]);
+        h.docpr(
+            "exact subclonotype",
+            "all cells having identical transcripts \\boldred{○}"
+        );
         h.doc("", "(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
@@ -597,12 +573,12 @@ pub fn help1(args: &Vec<String>) {
 
         // conventions
 
-        print("\\bold{conventions}\n\n");
-        println!(
+        h.print("\\bold{conventions}\n\n");
+        h.print(
             "• When we refer to \"V segments\", we always include the leader segment.\n\
              • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
              chains within a clonotype, however DNA and amino-acid positions are numbered starting \
-             at zero.\n"
+             at zero.\n\n"
         );
 
         // done
