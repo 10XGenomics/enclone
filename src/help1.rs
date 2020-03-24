@@ -56,10 +56,10 @@ pub fn help1(args: &Vec<String>) {
         || (args.len() == 2 && args[1] == "--help")
         || help_all
     {
-        if help_all {
-            print("\n");
-        }
         let mut h = HelpDesk::new(plain, help_all);
+        if h.help_all {
+            h.print("\n");
+        }
         h.begin_doc("");
         h.print(
             "\nWelcome to enclone!\n\n\
@@ -116,9 +116,9 @@ pub fn help1(args: &Vec<String>) {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("main");
         print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
-        print_enclone(plain);
+        h.print_enclone();
         h.print(".  The mission of ");
-        print_enclone(plain);
+        h.print_enclone();
         h.print(" is to:\n\n");
         print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
         print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
@@ -285,7 +285,7 @@ pub fn help1(args: &Vec<String>) {
 
         // Print challenges.
 
-        print_with_box(
+        h.print_with_box(
             "1. It is extremely easy to get false positives: the incorrect \
              appearance that two cells have a common ancestor.\n\n\
              \
@@ -424,7 +424,7 @@ pub fn help1(args: &Vec<String>) {
              rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
         h.print("\\bold{2. Color}\n\n");
-        print_enclone(plain);
+        h.print_enclone();
         h.print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
              and more\nimportantly for amino acids, to represent different codons.  This is \

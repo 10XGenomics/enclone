@@ -315,7 +315,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "enclone can use gene expression and feature barcode data, as represented by a feature \
              matrix.  Cell Ranger stores this matrix in an hdf5 file, which while generally very \
              efficient, is not optimized for interactive use.  Therefore enclone provides an \
@@ -335,7 +335,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              same sample, colons between datasets from the same donor, and semicolons separate \
              donors.  If semicolons are used, the value must be quoted.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "\\bold{Naming.}  Using this input system, each dataset is assigned an abbreviated \
              name, which is \
              everything after the final slash in the directory name (e.g. \\bold{sample345} in the \

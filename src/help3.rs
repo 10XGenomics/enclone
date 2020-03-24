@@ -50,8 +50,8 @@ pub fn help3(args: &Vec<String>) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("input_tech");
-        print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
-        print(
+        h.print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
+        h.print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
         );
@@ -113,7 +113,7 @@ pub fn help3(args: &Vec<String>) {
              Parseable output is targeted primarily at R and Python users, because of the ease of \
              wrangling CSV files with these languages.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "Parseable output is invoked by using the argument\n\
              \\bold{POUT=filename}\n\
              specifying the name of the file that is to be written to.\n\
@@ -148,7 +148,7 @@ pub fn help3(args: &Vec<String>) {
             "If you want to completely suppress the generation of visual clonotypes, add \
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "\\bold{FASTA output.}  This is a separate feature. \
              To generate nucleotide FASTA output for each chain in each exact subclonotype, \
              use the argument \\bold{FASTA=filename}.  The special case \\bold{stdout} will \

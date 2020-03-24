@@ -98,6 +98,38 @@ impl HelpDesk {
         print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
         print!("{}", log);
     }
+    pub fn print_enclone(&self) {
+        if self.plain {
+            print!("enclone");
+        } else {
+            let mut log = Vec::<u8>::new();
+            print_color(3, &mut log);
+            log.push(b'e');
+            emit_end_escape(&mut log);
+            print_color(1, &mut log);
+            log.push(b'n');
+            emit_end_escape(&mut log);
+            print_color(2, &mut log);
+            log.push(b'c');
+            emit_end_escape(&mut log);
+            print_color(0, &mut log);
+            log.push(b'l');
+            emit_end_escape(&mut log);
+            print_color(4, &mut log);
+            log.push(b'o');
+            emit_end_escape(&mut log);
+            print_color(5, &mut log);
+            log.push(b'n');
+            emit_end_escape(&mut log);
+            print_color(1, &mut log);
+            log.push(b'e');
+            emit_end_escape(&mut log);
+            print!("{}", strme(&log));
+        }
+    }
+    pub fn print_with_box(&self, x: &str, bold_box: bool) {
+        print_with_box(&x, bold_box);
+    }
 }
 
 pub fn stringify(rows: Vec<Vec<&str>>) -> Vec<Vec<String>> {
@@ -110,36 +142,6 @@ pub fn stringify(rows: Vec<Vec<&str>>) -> Vec<Vec<String>> {
         r.push(x);
     }
     r
-}
-
-pub fn print_enclone(plain: bool) {
-    if plain {
-        print!("enclone");
-    } else {
-        let mut log = Vec::<u8>::new();
-        print_color(3, &mut log);
-        log.push(b'e');
-        emit_end_escape(&mut log);
-        print_color(1, &mut log);
-        log.push(b'n');
-        emit_end_escape(&mut log);
-        print_color(2, &mut log);
-        log.push(b'c');
-        emit_end_escape(&mut log);
-        print_color(0, &mut log);
-        log.push(b'l');
-        emit_end_escape(&mut log);
-        print_color(4, &mut log);
-        log.push(b'o');
-        emit_end_escape(&mut log);
-        print_color(5, &mut log);
-        log.push(b'n');
-        emit_end_escape(&mut log);
-        print_color(1, &mut log);
-        log.push(b'e');
-        emit_end_escape(&mut log);
-        print!("{}", strme(&log));
-    }
 }
 
 // This encodes the color codes for each possible codon of a given amino acid
