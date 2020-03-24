@@ -5,6 +5,16 @@ use ansi_escape::*;
 use string_utils::*;
 use tables::*;
 
+#[derive(Default)]
+pub struct HelpDesk {
+}
+
+impl HelpDesk {
+    pub fn print(&self, x: &str) {
+        print(&x);
+    }
+}
+
 pub fn stringify(rows: Vec<Vec<&str>>) -> Vec<Vec<String>> {
     let mut r = Vec::<Vec<String>>::new();
     for i in 0..rows.len() {

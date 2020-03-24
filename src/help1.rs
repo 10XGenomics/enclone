@@ -144,7 +144,8 @@ pub fn help1(args: &Vec<String>) {
             print("\n");
         }
         begin_doc!("");
-        print(
+        let mut h = HelpDesk::default();
+        h.print(
             "\nWelcome to enclone!\n\n\
              The purpose of this first page is to help you make sure that you're set up properly\n\
              to run enclone.  PLEASE READ!\n\n\
@@ -197,22 +198,23 @@ pub fn help1(args: &Vec<String>) {
 
     if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
         begin_doc!("main");
+        let mut h = HelpDesk::default();
         print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
         print_enclone(plain);
-        print(".  The mission of ");
+        h.print(".  The mission of ");
         print_enclone(plain);
-        print(" is to:\n\n");
+        h.print(" is to:\n\n");
         bold!();
         print("  Find and display the clonotypes within single cell VDJ datasets:\n");
         print("  groups of cells having the same fully rearranged common ancestor.\n\n");
         end_escape!();
-        print(
+        h.print(
             "This help page catalogs all the enclone help pages.  We strongly \
              recommend studying at least those in \\red{red} below.  \
              Pages fit in 100 wide x 56 high \
              windows, except those labeled \"long\" or \"wide\".\n\n",
         );
-        print(
+        h.print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
              Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
@@ -315,9 +317,10 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
         begin_doc!("quick");
-        print("\n");
-        print("\\bold{quick guide to getting started}\n\n");
-        print(
+        let mut h = HelpDesk::default();
+        h.print("\n");
+        h.print("\\bold{quick guide to getting started}\n\n");
+        h.print(
             "Just type this:\n\n\
              \\bold{enclone BCR=p}\n\n\
              where \\bold{p} is the path to your Cell Ranger VDJ directory.\n\n\
@@ -350,11 +353,12 @@ pub fn help1(args: &Vec<String>) {
         // Start.
 
         begin_doc!("how");
+        let mut h = HelpDesk::default();
         print("\n");
         bold!();
         print("information about how enclone works\n\n");
         end_escape!();
-        print(
+        h.print(
             "The goal of enclone is to find and display the clonotypes within single cell \
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
              \
@@ -384,11 +388,11 @@ pub fn help1(args: &Vec<String>) {
 
         // Print boxed algorithm.
 
-        print(
+        h.print(
             "To address these challenges, the enclone algorithm has several steps, which we \
              outline:\n\n",
         );
-        print(
+        h.print(
             "\\boldred{1}.  Input data.  \
              enclone gets its information from the file all_contig_annotations.json that is \
              produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated \
@@ -471,7 +475,7 @@ pub fn help1(args: &Vec<String>) {
 
         // Finish.
 
-        print(
+        h.print(
             "We are actively working to improve the algorithm.  To test the performance of the \
             current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
             \\boldred{9573} clonotypes having at least two cells each, of which \
@@ -488,12 +492,13 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "command") || help_all {
         begin_doc!("command");
-        print("\n");
+        let mut h = HelpDesk::default();
+        h.print("\n");
         bold!();
         print("information about enclone command-line argument processing\n\n");
         end_escape!();
-        print("\\bold{1. Order of processing}\n\n");
-        print(
+        h.print("\\bold{1. Order of processing}\n\n");
+        h.print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
              arguments.  You can set any command-line argument this way.  The reason why you might \
@@ -508,9 +513,9 @@ pub fn help1(args: &Vec<String>) {
              left to right; if an argument name is repeated, only the \
              rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
-        print("\\bold{2. Color}\n\n");
+        h.print("\\bold{2. Color}\n\n");
         print_enclone(plain);
-        print(
+        h.print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
              and more\nimportantly for amino acids, to represent different codons.  This is \
              done automatically but you can turn it off....\n\n\
@@ -519,9 +524,9 @@ pub fn help1(args: &Vec<String>) {
              you want to peruse output using a text editor which does not grok the escape \
              codes.  However some things will not make sense without color.\n\n",
         );
-        print("\\bold{3. Paging}\n\n");
-        print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
-        print(
+        h.print("\\bold{3. Paging}\n\n");
+        h.print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
+        h.print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \
              The \\bold{-R} option causes escape characters to be correctly displayed, the \
@@ -529,8 +534,8 @@ pub fn help1(args: &Vec<String>) {
              the \\bold{-X} option prevents output from being sent to the \"alternate screen\" \
              under certain platform/version combinations.\n",
         );
-        print("• Type \\bold{man less} if you need more information.\n");
-        print(
+        h.print("• Type \\bold{man less} if you need more information.\n");
+        h.print(
             "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
@@ -545,7 +550,8 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || help_all {
         begin_doc!("glossary");
-        print("\n");
+        let mut h = HelpDesk::default();
+        h.print("\n");
 
         // intro
 
