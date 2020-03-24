@@ -36,24 +36,6 @@ pub fn help3(args: &Vec<String>) {
         }
         erase_if(&mut args, &to_delete);
     }
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
     let mut help_all = false;
     unsafe {
         if HELP_ALL {
@@ -100,7 +82,6 @@ pub fn help3(args: &Vec<String>) {
         h.doc("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         h.print_tab2();
         h.print("\nThe exact files that are used could be changed in the future.\n\n");
-        // end_escape!();
         h.print(
             "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
              is a workaround for earlier versions (which you will be informed of if you try), but \
@@ -202,18 +183,14 @@ pub fn help3(args: &Vec<String>) {
         }
         println!("{}\n", strme(&log));
         h.rows.clear();
-        bold!();
-        h.print("1. per clonotype group fields\n\n");
-        end_escape!();
+        h.print("\\bold{1. per clonotype group fields}\n\n");
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");
         h.ldoc("group_ncells", "total number of cells in the group");
         h.print_tab2();
         h.print("\n");
 
         h.rows.clear();
-        bold!();
-        h.print("2. per clonotype fields\n\n");
-        end_escape!();
+        h.print("\\bold{2. per clonotype fields}\n\n");
         h.doc(
             "clonotype_id",
             "identifier of clonotype within the clonotype group = 0, 1, ..."

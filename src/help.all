@@ -62,10 +62,10 @@ enclone help main
 
 This is version 0.1.0 (beta) of [01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m.  The mission of [01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m is to:
 
-[01m  Find and display the clonotypes within single cell VDJ datasets:
-  groups of cells having the same fully rearranged common ancestor.
+[01m  Find and display the clonotypes within single cell VDJ datasets:[0m
+[01m  groups of cells having the same fully rearranged common ancestor.[0m
 
-[0mThis help page catalogs all the enclone help pages.  We strongly recommend studying at least those
+This help page catalogs all the enclone help pages.  We strongly recommend studying at least those
 in [01;31mred[0m below.  Pages fit in 100 wide x 56 high windows, except those labeled "long" or "wide".
 
 [01m[38;5;12menclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe,[0m
@@ -151,9 +151,9 @@ Please read on to learn more!
 enclone help how
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01minformation about how enclone works
+[01minformation about how enclone works[0m
 
-[0mThe goal of enclone is to find and display the clonotypes within single cell VDJ datasets: groups
+The goal of enclone is to find and display the clonotypes within single cell VDJ datasets: groups
 of cells having the same fully rearranged common ancestor.
 
 enclone provides the foundation for fully understanding each cell's antigen affinity and the
@@ -250,9 +250,9 @@ least two cells each, of which [01m[01;31m15 (0.16%)[0m contained data from m
 enclone help command
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01minformation about enclone command-line argument processing
+[01minformation about enclone command-line argument processing[0m
 
-[0m[01m1. Order of processing[0m
+[01m1. Order of processing[0m
 
 • Before processing its command line, enclone first checks for environment
 variables of the form [01mENCLONE_<x>[0m.  These are converted into command-line arguments.  You can set
@@ -293,9 +293,9 @@ enclone command.
 enclone help glossary
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[0m
 
-[01mglossary of terms used by enclone
+[01mglossary of terms used by enclone[0m
 
-[0m┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
 │V..J                │  the full sequence of a V(D)J transcript, from the beginning of the V       │
 │                    │  segment to the end of the J segment; this sequence begins with a stop codon│
 │                    │  and ends with a partial codon (its first base)                             │
@@ -337,9 +337,9 @@ enclone help glossary
   (noting that this difference is nearly always zero).
 Note that we allow mutations within the 5'-UTR and constant regions.
 
-[01mconventions
+[01mconventions[0m
 
-[0m• When we refer to "V segments", we always include the leader segment.
+• When we refer to "V segments", we always include the leader segment.
 • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with
 chains within a clonotype, however DNA and amino-acid positions are numbered starting at zero.
 
@@ -585,8 +585,8 @@ whose right side must have the exact same structure as the [01mTCR[0m or [01m
 both [01mTCR[0m and [01mBCR[0m is not allowed.
 
 [01m[01;31m█ 2 █[0m To specify a metadata file, use the command line argument
-[01mMETA=filename
-[0mThis file should be a CSV (comma-separated values) file, with one line per cell group.  After the
+[01mMETA=filename[0m
+This file should be a CSV (comma-separated values) file, with one line per cell group.  After the
 first line, lines starting with # are ignored.  There must be a field tcr or bcr, and some other
 fields are allowed:
 ┌────────┬───────────────┬────────────────────────────────────────────────────────────────────┐
@@ -698,17 +698,17 @@ command line.
 [01m[01;31mparseable output fields
 [01m[01;31m───────────────────────[0m
 
-[01m1. per clonotype group fields
+[01m1. per clonotype group fields[0m
 
-[0m┌──────────────┬──────────────────────────────────────────┐
+┌──────────────┬──────────────────────────────────────────┐
 │group_id      │  identifier of clonotype group - 0,1, ...│
 ├──────────────┼──────────────────────────────────────────┤
 │group_ncells  │  total number of cells in the group      │
 └──────────────┴──────────────────────────────────────────┘
 
-[01m2. per clonotype fields
+[01m2. per clonotype fields[0m
 
-[0m┌──────────────────┬────────────────────────────────────────────────────────────────┐
+┌──────────────────┬────────────────────────────────────────────────────────────────┐
 │clonotype_id      │  identifier of clonotype within the clonotype group = 0, 1, ...│
 ├──────────────────┼────────────────────────────────────────────────────────────────┤
 │clonotype_ncells  │  total number of cells in the clonotype                        │

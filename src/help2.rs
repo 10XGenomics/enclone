@@ -38,24 +38,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
         }
         erase_if(&mut args, &to_delete);
     }
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
     let mut help_all = false;
     unsafe {
         if HELP_ALL {
@@ -378,9 +360,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl) {
              \\bold{TCR} and \\bold{BCR} is not allowed.\n\n",
         );
         h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
-        bold!();
-        h.print("META=filename\n");
-        end_escape!();
+        h.print("\\bold{META=filename}\n");
         h.print(
             "This file should be a CSV (comma-separated values) file, with one line per cell \
              group.  After the first line, lines starting with # are ignored.  There must be a \

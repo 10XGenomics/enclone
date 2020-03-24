@@ -47,24 +47,6 @@ pub fn help1(args: &Vec<String>) {
             break;
         }
     }
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -138,10 +120,8 @@ pub fn help1(args: &Vec<String>) {
         h.print(".  The mission of ");
         print_enclone(plain);
         h.print(" is to:\n\n");
-        bold!();
-        print("  Find and display the clonotypes within single cell VDJ datasets:\n");
-        print("  groups of cells having the same fully rearranged common ancestor.\n\n");
-        end_escape!();
+        print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
+        print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
         h.print(
             "This help page catalogs all the enclone help pages.  We strongly \
              recommend studying at least those in \\red{red} below.  \
@@ -289,9 +269,7 @@ pub fn help1(args: &Vec<String>) {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("how");
         print("\n");
-        bold!();
-        print("information about how enclone works\n\n");
-        end_escape!();
+        print("\\bold{information about how enclone works}\n\n");
         h.print(
             "The goal of enclone is to find and display the clonotypes within single cell \
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
@@ -428,9 +406,7 @@ pub fn help1(args: &Vec<String>) {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("command");
         h.print("\n");
-        bold!();
-        print("information about enclone command-line argument processing\n\n");
-        end_escape!();
+        print("\\bold{information about enclone command-line argument processing}\n\n");
         h.print("\\bold{1. Order of processing}\n\n");
         h.print(
             "• Before processing its command line, enclone first checks for environment\n\
@@ -489,9 +465,7 @@ pub fn help1(args: &Vec<String>) {
 
         // intro
 
-        bold!();
-        println!("glossary of terms used by enclone\n");
-        end_escape!();
+        print("\\bold{glossary of terms used by enclone}\n\n");
 
         // doc V..J
 
@@ -606,11 +580,11 @@ pub fn help1(args: &Vec<String>) {
         // print main table
 
         h.print_tab2();
-        println!("");
+        h.print("\n");
 
         // print footnote
 
-        print(
+        h.print(
             "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
              that cells:\n\
              • have the same number of productive contigs identified\n\
@@ -623,9 +597,7 @@ pub fn help1(args: &Vec<String>) {
 
         // conventions
 
-        bold!();
-        println!("conventions\n");
-        end_escape!();
+        print("\\bold{conventions}\n\n");
         println!(
             "• When we refer to \"V segments\", we always include the leader segment.\n\
              • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
