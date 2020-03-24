@@ -3,10 +3,6 @@
 // Test for help request, under development.
 
 use crate::help_utils::*;
-use ansi_escape::*;
-use io_utils::*;
-use std::io::Write;
-use string_utils::*;
 use tables::*;
 use vector_utils::*;
 
@@ -55,25 +51,7 @@ pub fn help3(args: &Vec<String>) {
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
         );
-        let mut log1 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log1);
-        }
-        log1.append(&mut b"file".to_vec());
-        if !plain {
-            emit_end_escape(&mut log1);
-        }
-        let s1 = stringme(&log1);
-        let mut log2 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log2);
-        }
-        log2.append(&mut b"pipeline".to_vec());
-        if !plain {
-            emit_end_escape(&mut log2);
-        }
-        let s2 = stringme(&log2);
-        h.doc(&s1, &s2);
+        h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
         h.ldoc("metrics_summary_json.json", "GEX");
         h.ldoc("raw_gene_bc_matrices_h5.h5", "GEX");
@@ -162,26 +140,11 @@ pub fn help3(args: &Vec<String>) {
              FASTA file.",
             true,
         );
-        let mut log = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        fwriteln!(log, "───────────────────────");
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        log.append(&mut b"parseable output fields\n".to_vec());
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        fwrite!(log, "───────────────────────");
-        if !plain {
-            emit_end_escape(&mut log);
-        }
-        println!("{}\n", strme(&log));
+        h.print(
+            "\\boldred{───────────────────────}\n\
+             \\boldred{parseable output fields}\n\
+             \\boldred{───────────────────────}\n\n"
+        );
         h.rows.clear();
         h.print("\\bold{1. per clonotype group fields}\n\n");
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");
@@ -449,16 +412,16 @@ pub fn help3(args: &Vec<String>) {
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
+        h.print(&format!("{}\n", log));
         h.print(
             "Note that double quotes should be used if the pattern \
              contains characters other than letters.\n\n",
         );
-        println!(
+        h.print(
             "A gentle introduction to regular expressions may be found at\n\
              https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise\n\
              specification for the regular expression version used by enclone may be found at\n\
-             https://docs.rs/regex.\n"
+             https://docs.rs/regex.\n\n"
         );
 
         // linear conditions
