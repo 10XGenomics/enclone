@@ -1243,8 +1243,8 @@ enclone help ideas
 │windows            │  make enclone work on windows computers                          │
 └───────────────────┴──────────────────────────────────────────────────────────────────┘
 
-Please let us know if you are interested in these features, or if there are
-other features that you would like us to implement!
+Please let us know if you are interested in these features, or if there are other features that
+you would like us to implement!
 
 [38;5;12m▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[38;5;12m
 enclone help color
@@ -1279,17 +1279,16 @@ Valine         V  [38;5;178mGTT[0m [01m[38;5;75mGTC[0m [38;5;36mGTA[0m [
 
 Colored amino acids enable the compact display of all the information in a clonotype.
 
-The coloring is done using special characters, called ANSI escape characters.
-Color is used occasionally elsewhere by enclone, and there is also some
-bolding, accomplished using the same mechanism.
+The coloring is done using special characters, called ANSI escape characters.  Color is used
+occasionally elsewhere by enclone, and there is also some  bolding, accomplished using the same
+mechanism.
 
-Correct display of colors and bolding depends on having a terminal window
-that is properly set up.  As far as we know, this may always be the case,
-but it is possible that there are exceptions.  In addition, in general, text
-editors do not correctly interpret escape characters.
+Correct display of colors and bolding depends on having a terminal window that is properly set up.
+ As far as we know, this may always be the case, but it is possible that there are exceptions.  In
+addition, in general, text editors do not correctly interpret escape characters.
 
-For both of these reasons, you may wish to turn off the "special effects",
-either some or all of the time.  You can do this by adding the argument
+For both of these reasons, you may wish to turn off the "special effects", either some or all of
+the time.  You can do this by adding the argument
 [01mPLAIN[0m
 to any enclone command.
 
@@ -1304,8 +1303,8 @@ enclone help faq
 
 [01m[01;31m[01mFrequently Asked Questions[0m
 
-We're sorry you're having difficulty!  Please see the answers below, check out
-the other help guides, and if you're still stuck, write to us at enclone@10xgenomics.com.
+We're sorry you're having difficulty!  Please see the answers below, check out the other help
+guides, and if you're still stuck, write to us at enclone@10xgenomics.com.
 
 [01m[38;5;12m1. Why is my enclone output garbled?[0m
 

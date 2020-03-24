@@ -406,10 +406,10 @@ pub fn help4(args: &Vec<String>) {
         let mut h = HelpDesk::new(plain, help_all);
         h.begin_doc("lvars");
         h.print("\n\\bold{lead column options}\n\n");
-        println!(
+        h.print(
             "These options define lead variables, which correspond to columns that \
-             appear once in each\nclonotype, on the left side, and have one entry for each \
-             exact subclonotype row.\n"
+             appear once in each clonotype, on the left side, and have one entry for each \
+             exact subclonotype row.\n\n"
         );
         h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
@@ -651,7 +651,7 @@ pub fn help4(args: &Vec<String>) {
         h.print_tab2();
         h.print("\n");
         explain_alt_versions();
-        print(
+        h.print(
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );

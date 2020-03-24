@@ -101,9 +101,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
 
         h.ldoc("windows", "make enclone work on windows computers");
         h.print_tab2();
-        println!(
-            "\nPlease let us know if you are interested in these features, or if there are\n\
-             other features that you would like us to implement!\n"
+        h.print(
+            "\nPlease let us know if you are interested in these features, or if there are \
+             other features that you would like us to implement!\n\n"
         );
         if !help_all {
             std::process::exit(0);
@@ -141,25 +141,25 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             }
         }
         println!("{}", pal);
-        println!(
+        h.print(
             "\nWhen enclone shows amino acids, it colors each codon differently, via \
-             the following scheme:\n"
+             the following scheme:\n\n"
         );
         println!("{}\n", colored_codon_table(plain));
-        println!(
+        h.print(
             "Colored amino acids enable the compact display of all the information in a \
-             clonotype.\n"
+             clonotype.\n\n"
         );
-        println!(
-            "The coloring is done using special characters, called ANSI escape characters.\n\
-             Color is used occasionally elsewhere by enclone, and there is also some\n\
+        h.print(
+            "The coloring is done using special characters, called ANSI escape characters.  \
+             Color is used occasionally elsewhere by enclone, and there is also some  \
              bolding, accomplished using the same mechanism.\n\n\
-             Correct display of colors and bolding depends on having a terminal window\n\
-             that is properly set up.  As far as we know, this may always be the case,\n\
-             but it is possible that there are exceptions.  In addition, in general, text\n\
+             Correct display of colors and bolding depends on having a terminal window \
+             that is properly set up.  As far as we know, this may always be the case, \
+             but it is possible that there are exceptions.  In addition, in general, text \
              editors do not correctly interpret escape characters.\n\n\
-             For both of these reasons, you may wish to turn off the \"special effects\",\n\
-             either some or all of the time.  You can do this by adding the argument"
+             For both of these reasons, you may wish to turn off the \"special effects\", \
+             either some or all of the time.  You can do this by adding the argument\n"
         );
         h.print("\\bold{PLAIN}\n");
         h.print("to any enclone command.\n\n");
@@ -191,14 +191,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             print!("{}", strme(&log));
         }
         h.print("\\bold{Frequently Asked Questions}\n\n");
-        println!(
-            "We're sorry you're having difficulty!  Please see the answers below, check out\n\
+        h.print(
+            "We're sorry you're having difficulty!  Please see the answers below, check out \
              the other help guides, and if you're still stuck, write to us at \
-             enclone@10xgenomics.com.\n"
+             enclone@10xgenomics.com.\n\n"
         );
 
         h.print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
-        println!(
+        h.print(
             "We can think of two possibilities:\n\n\
             A. The escape characters that enclone emits for color and bolding are not getting\n\
             translated.  You have some options:\n\
@@ -213,7 +213,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
             this:\n\
             (a) Make your terminal window wider or reduce the font size.\n\
             (b) Identify the field that is very wide and use the column controls to remove that\n\
-            field.  See the help for lvars and cvars.  For example,"
+            field.  See the help for lvars and cvars.  For example,\n"
         );
         h.print(
             "\\bold{AMINO=cdr3}\n\
@@ -222,7 +222,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
         );
 
         h.print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
-        println!(
+        h.print(
             "We don't know how in general, but the following works for us from a mac:\n\n\
              A. open a new terminal window\n\
              B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
@@ -231,7 +231,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              E. type option-command-P to print selection\n\
              F. click the PDF button in the lower left (drop down menu)\n\
              G. click \"Open in Preview\"\n\
-             H. then print (or save the pdf, if you prefer).\n"
+             H. then print (or save the pdf, if you prefer).\n\n"
         );
 
         h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
@@ -243,7 +243,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
              done to speed up enclone.\n\n",
         );
 
-        h.print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");
+        h.print(
+            "\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n"
+        );
         h.print(
             "There are several parts to the answer:\n\
              • enclone is a standalone executable that by default produces human-readable output.\n\
@@ -389,9 +391,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl) {
                 VERSION_STRING.before(",")
             );
         } else {
-            println!(
+            h.print(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\n\
-                    (your enclone version information will be printed here)."
+                    (your enclone version information will be printed here).\n"
             );
         }
         emit_end_escape(&mut log);

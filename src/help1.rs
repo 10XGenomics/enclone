@@ -120,8 +120,8 @@ pub fn help1(args: &Vec<String>) {
         h.print(".  The mission of ");
         h.print_enclone();
         h.print(" is to:\n\n");
-        print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
-        print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
+        h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
+        h.print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
         h.print(
             "This help page catalogs all the enclone help pages.  We strongly \
              recommend studying at least those in \\red{red} below.  \
