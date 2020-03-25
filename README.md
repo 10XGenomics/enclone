@@ -7,7 +7,11 @@
 <br>
 
 This site is under construction.  Please do not enter unless you have been directed here, and
-are wearing proper safety equipment.  (photo credit: NIOSH/wikipedia)
+are wearing proper safety equipment.  
+
+<br>
+
+(photo credit: NIOSH/wikipedia)
 
 <br>
 <br>
