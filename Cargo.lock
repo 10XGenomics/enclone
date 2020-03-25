@@ -35,7 +35,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#2f7d5d69388b3692ec66b7f0c4b78aab15baa6d7"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#f43c2ef49aa480df26b48d6653f74770a7554051"
 dependencies = [
  "string_utils 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

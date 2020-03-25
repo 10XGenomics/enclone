@@ -1339,18 +1339,23 @@ field.  See the help for lvars and cvars.  For example,
 may help, or even
 <span style="font-weight:bold;">AMINO=</span></span>
 
-<span style="color:#5833ff;font-weight:bold;">2. How can I print the entire enclone documentation?</span></span>
+<span style="color:#5833ff;font-weight:bold;">2. Can I convert the enclone visual output into other forms?</span></span>
 
-We don't know how in general, but the following works for us from a mac:
-
-A. open a new terminal window
-B. make it 111 characters wide; font should be fixed width and roughly 12pt
-C. type "enclone help all NOPAGER"
-D. type command-A to select all
-E. type option-command-P to print selection
-F. click the PDF button in the lower left (drop down menu)
-G. click "Open in Preview"
-H. then print (or save the pdf, if you prefer).
+Yes.  Here are things you can do:
+1. If you add the argument <span style="font-weight:bold;">HTML</span></span> to the enclone command line, then the output will be presented as
+html.
+2. You can then convert the html to pdf.  The best way on a Mac is to open Safari, select a file
+where you've saved the html, and then export as pdf.  Do not convert to pdf via printing, which
+produces a less readable file, and also distorts colors.  (We do not know why the colors are
+distorted.)
+3. You can always cut and paste directly from a terminal window into another document using screen
+capture.  To capture as text, see the next item.
+4. If you open the html file in a browser, you can then select text (including clonotype box text)
+and paste into a Google Doc.  That will capture color and correctly render the box structure,
+provided that you use an appropriate fixed-width font for that part of the Doc.  We found that
+Courier New works, with line spacing set to 0.88.  You may have to reduce the font size.  But the
+rendering will be imperfect.
+5. You can find the output of "enclone help all HTML" on the enclone site <span style="color:#25bc24;">enclone.10xgenomics.com</span></span>.
 
 <span style="color:#5833ff;font-weight:bold;">3. Why is enclone slow for me?</span></span>
 
@@ -1481,10 +1486,6 @@ however once enclone has officially launched, you will be able to cite this vers
 to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide the arguments
 that you used when you ran enclone and indicate the version of Cell Ranger that you used to
 generate the input data.
-
-<span style="color:#5833ff;font-weight:bold;">18. Can enclone output html?</span></span>
-
-Yes, just add the argument <span style="font-weight:bold;">HTML</span></span> to the command line.  Currently this does not work with help.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help developer
