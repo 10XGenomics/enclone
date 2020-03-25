@@ -5,76 +5,15 @@
 use crate::help_utils::*;
 use std::env;
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // Provide main help.
 
-    // Setup test.
-
-    if (args.len() == 2 && args[1] == "help")
-        || (args.len() == 2 && args[1] == "--help")
-        || h.help_all
+    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
     {
         if h.help_all {
             h.print("\n");
         }
         h.begin_doc("");
-        h.print(
-            "\nWelcome to enclone!\n\n\
-             The purpose of this first page is to help you make sure that you're set up properly\n\
-             to run enclone.  PLEASE READ!\n\n\
-             (for the main help page, please type instead: enclone help main)\n\n\n\
-             Here we go through several setup tests.  If you have any problem that you can't\n\
-             resolve, please email us at enclone@10xgenomics.com.\n\n\n\
-             1. Are you using a fixed width font?\n\
-             Look at this:\n\
-             A FAT BROWN CAT JUMPED OVER THE WALL\n\
-             ||||||||||||||||||||||||||||||||||||\n\
-             Do those two lines end at the same position?  If not, you need to switch your \
-             font.\n\n\n\
-             2. Is your terminal window wide enough to see the help pages?\n\
-             Your terminal needs to be at least 100 columns wide.  Look at this:\n\
-             01234567890123456789012345678901234567890123456789\
-             01234567890123456789012345678901234567890123456789\n\
-             Does it appear as a single line?  If not, please widen your window.\n\n\n\
-             3. Can your terminal display box characters?\n\
-             Look at this:\n\
-             ┌────────┬─────────┐\n\
-             │banana  │  peel   │\n\
-             ├────────┼─────────┤\n\
-             │oops    │  slipped│\n\
-             └────────┴─────────┘\n\
-             Do you see a neat rectangle composed of four rectangles with words inside them?\n\
-             If not, something is wrong with your terminal!\n\n\
-             4. Can your terminal correctly display ANSI escape sequences?\n\
-             The following word should be \\bold{bold}.  \
-             The following word should be \\blue{blue}.\n\
-             If that doesn't make sense, or is messed up, something is wrong, and you have \
-             two options:\n\
-             (a) seek help to fix your terminal window\n\
-             (b) turn off escape sequences by adding PLAIN to every enclone command, or set\n\
-             the environment variable ENCLONE_PLAIN.\n\
-             But that should be only a last resort.\n\n\
-             5. Can your terminal correctly display unicode characters?\n\
-             Do you see a centered dot here • ?\n\
-             If not, your terminal has a problem!\n\n\
-             6. Does this entire help page appear at once in your terminal window?\n\
-             If not, please increase the number of rows in your window to 56.\n\n\n\
-             If you go through all those tests and everything worked, you should be \
-             good to go!\n\n",
-        );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
-    }
-
-    // Provide main help.
-
-    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
-    {
-        h.begin_doc("main");
         h.print(&format!(
             "\nThis is version {} (beta) of ",
             env!("CARGO_PKG_VERSION")
@@ -164,6 +103,65 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         h.print(
             "Additional documentation may be found at \
              \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+        );
+        if !h.help_all {
+            h.dump();
+            std::process::exit(0);
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Setup test.
+
+    if (args.len() == 2 && args[1] == "help")
+        || (args.len() == 2 && args[1] == "--help")
+        || h.help_all
+    {
+        h.begin_doc("setup");
+        h.print(
+            "\nWelcome to enclone!\n\n\
+             The purpose of this first page is to help you make sure that you're set up properly\n\
+             to run enclone.  PLEASE READ!\n\n\
+             (for the main help page, please type instead: enclone)\n\n\n\
+             Here we go through several setup tests.  If you have any problem that you can't\n\
+             resolve, please email us at enclone@10xgenomics.com.\n\n\n\
+             1. Are you using a fixed width font?\n\
+             Look at this:\n\
+             A FAT BROWN CAT JUMPED OVER THE WALL\n\
+             ||||||||||||||||||||||||||||||||||||\n\
+             Do those two lines end at the same position?  If not, you need to switch your \
+             font.\n\n\n\
+             2. Is your terminal window wide enough to see the help pages?\n\
+             Your terminal needs to be at least 100 columns wide.  Look at this:\n\
+             01234567890123456789012345678901234567890123456789\
+             01234567890123456789012345678901234567890123456789\n\
+             Does it appear as a single line?  If not, please widen your window.\n\n\n\
+             3. Can your terminal display box characters?\n\
+             Look at this:\n\
+             ┌────────┬─────────┐\n\
+             │banana  │  peel   │\n\
+             ├────────┼─────────┤\n\
+             │oops    │  slipped│\n\
+             └────────┴─────────┘\n\
+             Do you see a neat rectangle composed of four rectangles with words inside them?\n\
+             If not, something is wrong with your terminal!\n\n\
+             4. Can your terminal correctly display ANSI escape sequences?\n\
+             The following word should be \\bold{bold}.  \
+             The following word should be \\blue{blue}.\n\
+             If that doesn't make sense, or is messed up, something is wrong, and you have \
+             two options:\n\
+             (a) seek help to fix your terminal window\n\
+             (b) turn off escape sequences by adding PLAIN to every enclone command, or set\n\
+             the environment variable ENCLONE_PLAIN.\n\
+             But that should be only a last resort.\n\n\
+             5. Can your terminal correctly display unicode characters?\n\
+             Do you see a centered dot here • ?\n\
+             If not, your terminal has a problem!\n\n\
+             6. Does this entire help page appear at once in your terminal window?\n\
+             If not, please increase the number of rows in your window to 56.\n\n\n\
+             If you go through all those tests and everything worked, you should be \
+             good to go!\n\n",
         );
         if !h.help_all {
             h.dump();

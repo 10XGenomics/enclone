@@ -141,7 +141,19 @@ impl HelpDesk {
                 self.print_plain("▓");
             }
             self.print_plain(&format!("{}", strme(&log)));
-            self.print_plain(&format!("\nenclone help {}\n", title));
+            if title == "" {
+                self.print_plain(&format!(
+                    "\nenclone main help page (what you get by typing \
+                    \"enclone\")\n"
+                ));
+            } else if title == "setup" {
+                self.print_plain(&format!(
+                    "\nenclone setup page (for one time use, what you get by typing \
+                    \"enclone help\")\n"
+                ));
+            } else {
+                self.print_plain(&format!("\nenclone help {}\n", title));
+            }
             let mut log = Vec::<u8>::new();
             if !self.plain {
                 emit_blue_escape(&mut log);
