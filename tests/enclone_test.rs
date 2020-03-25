@@ -356,11 +356,12 @@ fn test_enclone_examples() {
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
-    let out_file = format!("src/help.all");
+    let out_file = format!("src/help.all.html");
     let old = read_to_string(&out_file).unwrap();
     let mut new = Command::new("target/release/enclone");
     let mut new = new.arg("help");
     new = new.arg("all");
+    new = new.arg("HTML");
     new = new.arg("STABLE_DOC");
     let new = new
         .arg("FORCE_EXTERNAL")
@@ -369,7 +370,8 @@ fn test_help_output() {
     let new2 = stringme(&new.stdout);
     if old != new2 {
         eprintln!(
-            "\nYou need to update help output by typing \"enclone help all STABLE_DOC > help.all\" \
+            "\nYou need to update help output by typing \
+                \"enclone help all HTML STABLE_DOC > help.all\" \
                 in\nthe src directory, assuming that the change is expected.\n"
         );
         std::process::exit(1);
