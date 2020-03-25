@@ -113,15 +113,16 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if args[i] == "NOPAGER" {
                 nopager = true;
                 to_delete[i] = true;
-            }
-            if args[i] == "HTML" {
+            } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 to_delete[i] = true;
-            }
-            if args[i] == "FORCE_EXTERNAL" {
+            } else if args[i] == "FORCE_EXTERNAL" {
                 to_delete[i] = true;
-            }
-            if args[i] == "PLAIN" {
+            } else if args[i].starts_with("MAX_CORES=") {
+                to_delete[i] = true;
+            } else if args[i].starts_with("PRE=") {
+                to_delete[i] = true;
+            } else if args[i] == "PLAIN" {
                 to_delete[i] = true;
                 plain = true;
                 unsafe {
