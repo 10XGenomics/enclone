@@ -245,7 +245,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print(&format!(
             "{}",
             gray_left_bar(&print_to(
-                "\\red{◉} These variables have some alternate versions, \
+                "\\red{●} These variables have some alternate versions, \
                  as shown in the table below:\n\n"
             ))
         ));
@@ -434,8 +434,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "to cases where all exact subclonotypes have a complete set of chains.",
         );
-        h.ldocpr("gex", "\\red{◉} median gene expression UMI count");
-        h.docpr("n_gex", "\\blue{◉} number of cells reported by GEX");
+        h.ldocpr("gex", "\\red{●} median gene expression UMI count");
+        h.docpr("n_gex", "\\blue{●} number of cells reported by GEX");
         // nonpublic for now as we don't know if this is useful
         /*
         h.doc(
@@ -445,7 +445,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         */
         h.ldocpr(
             "<gene>_g",
-            "\\red{◉} all five feature types: look for a declared feature of the \
+            "\\red{●} all five feature types: look for a declared feature of the \
              given type",
         );
         h.doc(
@@ -465,7 +465,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         explain_alt_versions(&mut h);
         h.print(
-            "\n\\blue{◉} Similar to the above but simpler: n_gex is just a count of cells, \
+            "\n\\blue{●} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \
              and the x_mean etc. forms do not apply.\n\n",
         );
@@ -515,11 +515,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.ldocpr(
             "u",
-            "\\red{◉} VDJ UMI count for each exact subclonotype, median across cells",
+            "\\red{●} VDJ UMI count for each exact subclonotype, median across cells",
         );
         h.docpr(
             "r",
-            "\\red{◉} VDJ read count for each exact subclonotype, median across cells",
+            "\\red{●} VDJ read count for each exact subclonotype, median across cells",
         );
         h.ldoc("const", "constant region name");
         h.ldoc(
