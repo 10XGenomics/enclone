@@ -20,7 +20,7 @@ fn main() {
     PrettyTrace::new().on();
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {
-        if !TESTS[i].contains("EXPECT_FAIL") {
+        if !TESTS[i].contains("EXPECT_FAIL") && !TESTS[i].contains("EXPECT_OK") {
             results.push((i, false, String::new()));
         }
     }
