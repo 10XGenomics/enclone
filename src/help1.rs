@@ -197,7 +197,18 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              V(D)J transcripts.\n\n\
              3. By default, you'll see data in amino acid space.  Only \"interesting\" amino acids \
              are shown.\n\n\
-             Please read on to learn more!\n\n",
+             Please read on to learn more!\n\n\
+             \\bold{navigation in enclone}\n\n\
+             enclone automatically sends its output through the program \"less\".  This allows you \
+             to navigate within the output, using the following keys \
+             (and many more, not shown, and which you don't need to know):\n\
+             • space: causes output to page forward\n\
+             • b: causes output to page backward\n\
+             • /string: finds instances of \"string\" in the output\n\
+             • n: having done the previous, jump to the next instance\n\
+             • q: quit, to return to the command line.\n\n\
+             When enclone uses less, it passes the argument -R, which causes certain characters \
+             to be hidden, namely escape codes that color or bold text.\n\n",
         );
         if !h.help_all {
             h.dump();
