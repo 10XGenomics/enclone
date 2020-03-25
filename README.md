@@ -3,6 +3,8 @@
 <img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
 
 <br>
+<br>
+<br>
 
 This site is under construction.  Please do not enter unless you have been directed here, and
 are wearing proper safety equipment.  (photo credit: NIOSH/wikipedia)
