@@ -118,6 +118,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.gen_opt.html = true;
                 to_delete[i] = true;
             }
+            if args[i] == "FORCE_EXTERNAL" {
+                to_delete[i] = true;
+            }
             if args[i] == "PLAIN" {
                 to_delete[i] = true;
                 plain = true;
