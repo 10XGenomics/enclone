@@ -135,6 +135,13 @@ to the `enclone` command line.  That caused `enclone` to generate the image as t
 <br><br><br><br><br><br>
 ___________________________________________________________________________________________________
 
+### The `enclone` manual
+
+`enclone` has about 25 online help pages.  The concatenation of all these help pages is
+[here](src/help.all.html).  We may expand this out in the future to show the separate pages.
+
+___________________________________________________________________________________________________
+
 ### How to compile the `enclone` software
 
 It is not difficult but you should not need to do this unless you want to contribute
