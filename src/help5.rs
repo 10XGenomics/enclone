@@ -182,17 +182,25 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{AMINO=}\n\n",
         );
 
-        h.print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
+        h.print("\\boldblue{2. Can I convert the enclone visual output into other forms?}\n\n");
         h.print(
-            "We don't know how in general, but the following works for us from a mac:\n\n\
-             A. open a new terminal window\n\
-             B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
-             C. type \"enclone help all NOPAGER\"\n\
-             D. type command-A to select all\n\
-             E. type option-command-P to print selection\n\
-             F. click the PDF button in the lower left (drop down menu)\n\
-             G. click \"Open in Preview\"\n\
-             H. then print (or save the pdf, if you prefer).\n\n",
+            "Yes.  Here are things you can do:\n\
+             1. If you add the argument \\bold{HTML} to the enclone command line, then the \
+             output will be presented as html.\n\
+             2. You can then convert the html to pdf.  The best way on a Mac is to open Safari, \
+             select a file where you've saved the html, and then export as pdf.  Do not convert \
+             to pdf via printing, which produces a less readable file, and also distorts colors.  \
+             (We do not know why the colors are distorted.)\n\
+             3. You can always cut and paste directly from a terminal window into another document \
+             using screen capture.  To capture as text, see the next item.\n\
+             4. If you open the html file in a browser, you can then select text (including \
+             clonotype box text) and paste into a Google Doc.  That will capture color and \
+             correctly render the box structure, provided that you use an appropriate fixed-width \
+             font for that part of the Doc.  We found that Courier New works, with \
+             line spacing set to 0.88.  You may have to reduce the font size.  But the rendering \
+             will be imperfect.\n\
+             5. You can find the output of \"enclone help all HTML\" on the enclone site \
+             \\green{enclone.10xgenomics.com}.\n\n",
         );
 
         h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
@@ -365,12 +373,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",
-        );
-
-        h.print("\\boldblue{18. Can enclone output html?}\n\n");
-        h.print(
-            "Yes, just add the argument \\bold{HTML} to the command line.  Currently this does \
-            not work with help.\n\n",
         );
 
         if !h.help_all {
