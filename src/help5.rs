@@ -459,11 +459,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     if h.help_all {
         h.dump();
-    }
+        std::process::exit(0);
 
     // Catch unrecognized help requests.
-
-    if args.len() >= 2 {
+    } else if args.len() >= 2 {
         let mut x = args[1].clone();
         x.make_ascii_lowercase();
         if x.contains("help") {
