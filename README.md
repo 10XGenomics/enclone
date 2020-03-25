@@ -138,7 +138,9 @@ ________________________________________________________________________________
 ### The `enclone` manual
 
 `enclone` has about 25 online help pages.  The concatenation of all these help pages is
-[here](src/help.all.html).  We may expand this out in the future to show the separate pages.
+[here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
+<b>[BROKEN LINK]</b>.  
+We may expand this out in the future to show the separate pages.
 
 ___________________________________________________________________________________________________
 
