@@ -54,8 +54,8 @@ impl HelpDesk {
     }
     pub fn doc_red(&mut self, x1: &str, x2: &str) {
         if !self.plain {
-            let r1 = format!("[01;31m{}[0m", x1);
-            let r2 = format!("[01;31m{}[0m", x2);
+            let r1 = format!("[31m{}[0m", x1);
+            let r2 = format!("[31m{}[0m", x2);
             self.rows.push(vec![r1, r2]);
         } else {
             self.rows.push(vec![x1.to_string(), x2.to_string()]);
@@ -64,8 +64,8 @@ impl HelpDesk {
     pub fn ldoc_red(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec!["\\hline".to_string(); 2]);
         if !self.plain {
-            let r1 = format!("[01;31m{}[0m", x1);
-            let r2 = format!("[01;31m{}[0m", x2);
+            let r1 = format!("[31m{}[0m", x1);
+            let r2 = format!("[31m{}[0m", x2);
             self.rows.push(vec![r1, r2]);
         } else {
             self.rows.push(vec![x1.to_string(), x2.to_string()]);
@@ -518,7 +518,7 @@ pub fn print_tab2(rows: &Vec<Vec<String>>) {
 // Given a string, preface every line in in by a gray left bar.
 
 pub fn gray_left_bar(s: &str) -> String {
-    let mut gray = "[01;47m [0m ".to_string();
+    let mut gray = "[47m [0m ".to_string();
     unsafe {
         if PLAIN {
             gray = "┃ ".to_string();
