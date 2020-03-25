@@ -106,21 +106,29 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     {
         let mut args = args.clone();
-        if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-            PrettyTrace::new().on();
-            let mut nopager = false;
-            let mut to_delete = vec![false; args.len()];
-            for i in 1..args.len() {
-                if args[i] == "NOPAGER" {
-                    nopager = true;
-                    to_delete[i] = true;
-                }
-                if args[i] == "HTML" {
-                    ctl.gen_opt.html = true;
-                    to_delete[i] = true;
+        let mut to_delete = vec![false; args.len()];
+        let mut nopager = false;
+        let mut plain = false;
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                nopager = true;
+                to_delete[i] = true;
+            }
+            if args[i] == "HTML" {
+                ctl.gen_opt.html = true;
+                to_delete[i] = true;
+            }
+            if args[i] == "PLAIN" {
+                to_delete[i] = true;
+                plain = true;
+                unsafe {
+                    PLAIN = true;
                 }
             }
-            erase_if(&mut args, &to_delete);
+        }
+        erase_if(&mut args, &to_delete);
+        if args.len() == 1 || args.contains(&"help".to_string()) {
+            PrettyTrace::new().on();
             setup_pager(!nopager);
         }
         let mut help_all = false;
@@ -129,17 +137,6 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 HELP_ALL = true;
             }
             help_all = true;
-        }
-        let mut plain = false;
-        for i in 0..args.len() {
-            if args[i] == "PLAIN" {
-                args.remove(i);
-                plain = true;
-                unsafe {
-                    PLAIN = true;
-                }
-                break;
-            }
         }
         let mut h = HelpDesk::new(plain, help_all, ctl.gen_opt.html);
         help1(&args, &mut h);
