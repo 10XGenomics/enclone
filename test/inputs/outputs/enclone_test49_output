@@ -9,7 +9,7 @@
 <body>
 <pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-<span style="color:#005fff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span></span>
+<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span></span>
 
 [1.1] CLONOTYPE = 1 CELLS
 ┌───────────┬──────────────────────────┐
@@ -20,11 +20,11 @@
 │           │  0001111111111           │
 │           │  7890123456789           │
 │           │  ═════CDR3════           │
-│reference  │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span></span>◦◦◦◦◦◦◦◦           │
-│donor ref  │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span></span>◦◦◦◦◦◦◦◦           │
+│reference  │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">AA</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#31c39a;">D</span></span>◦◦◦◦◦◦◦◦           │
+│donor ref  │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">AA</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#31c39a;">D</span></span>◦◦◦◦◦◦◦◦           │
 ├───────────┼──────────────────────────┤
 │<span style="font-weight:bold;">#  n       </span></span>│<span style="font-weight:bold;">  .............  u  const </span></span>│
-│1  1       │  <span style="color:#d7af00;">C</span><span style="color:#005faf;font-weight:bold;">AA</span><span style="color:#d75f00;font-weight:bold;">W</span><span style="color:#00af87;">D</span><span style="color:#005faf;font-weight:bold;">DSLN</span><span style="color:#d75f00;font-weight:bold;">GWVF</span></span>  6  IGLC3 │
+│1  1       │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">AA</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">DSLN</span><span style="color:#f37721;font-weight:bold;">GWVF</span></span>  6  IGLC3 │
 └───────────┴──────────────────────────┘
 >group1.clonotype1.exact1.chain1
 ATGGCCTGGTCCCCTCTCTTCCTCACCCTCATCACTCACTGTGCAGGGTCCTGGGCCCAGTCTGTGCTGACTCAGCCACCCTCGGTGTCTGAAGCCCCCAGGCAGAGGGTCACCATCTCCTGTTCTGGAAGCAGCTCCAACATCGGAAATAATGCTGTAAACTGGTACCAGCAGCTCCCAGGAAAGGCTCCCAAACTCCTCATCTATTATGATGATCTGCTGCCCTCAGGGGTCTCTGACCGATTCTCTGGCTCCAAGTCTGGCACCTCAGCCTCCCTGGCCATCAGTGGGCTCCAGTCTGAGGATGAGGCTGATTATTACTGTGCAGCATGGGATGACAGCCTGAATGGTTGGGTGTTCGGCGGAGGGACCAAGCTGACCGTCCTAGGTCAGCCCAAGGCTGCCCCCTCGGTCACTCTGTTCCCACCCTCCTCTGAGGAGCTTCAAGCCAACAAGGCCACACTGGTGTGTCTCATAAGTGACTTCTACCCGGGAGCCGTGACAGTGGCCTGGAAGGCAGATAGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCACACCCTCCAAACAAAGCAACAACAAGTACGCGGCCAGCAGCTACCTGAGCCTGACGCCTGAGCAGTGGAAGTCCCACAAAAGCTACAGCTGCCAGGTCACGCATGAAGGGAGCACCGTGGAGAAGACAGTGGCCCCTACAGAATGTTCA
