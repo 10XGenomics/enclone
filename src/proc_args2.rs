@@ -6,6 +6,7 @@ use crate::help2::*;
 use crate::help3::*;
 use crate::help4::*;
 use crate::help5::*;
+use crate::help_utils::*;
 use crate::misc1::*;
 use crate::proc_args::*;
 use io_utils::*;
@@ -95,13 +96,59 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+    for i in 1..args.len() {
+        if is_simple_arg(&args[i], "STABLE_DOC") {
+            ctl.gen_opt.stable_doc = true;
+        }
+    }
+
     // Provide help if requested.
 
-    help1(&args);
-    help2(&args);
-    help3(&args);
-    help4(&args);
-    help5(&args);
+    {
+        let mut args = args.clone();
+        let mut to_delete = vec![false; args.len()];
+        let mut nopager = false;
+        let mut plain = false;
+        for i in 1..args.len() {
+            if args[i] == "NOPAGER" {
+                nopager = true;
+                to_delete[i] = true;
+            } else if args[i] == "HTML" {
+                ctl.gen_opt.html = true;
+                to_delete[i] = true;
+            } else if args[i] == "FORCE_EXTERNAL" {
+                to_delete[i] = true;
+            } else if args[i].starts_with("MAX_CORES=") {
+                to_delete[i] = true;
+            } else if args[i].starts_with("PRE=") {
+                to_delete[i] = true;
+            } else if args[i] == "PLAIN" {
+                to_delete[i] = true;
+                plain = true;
+                unsafe {
+                    PLAIN = true;
+                }
+            }
+        }
+        erase_if(&mut args, &to_delete);
+        if args.len() == 1 || args.contains(&"help".to_string()) {
+            PrettyTrace::new().on();
+            setup_pager(!nopager);
+        }
+        let mut help_all = false;
+        if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
+            unsafe {
+                HELP_ALL = true;
+            }
+            help_all = true;
+        }
+        let mut h = HelpDesk::new(plain, help_all, ctl.gen_opt.html);
+        help1(&args, &mut h);
+        help2(&args, &ctl, &mut h);
+        help3(&args, &mut h);
+        help4(&args, &mut h);
+        help5(&args, &ctl, &mut h);
+    }
 
     // Pretest for some options.
 

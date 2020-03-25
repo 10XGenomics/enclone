@@ -3,133 +3,111 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use crate::misc1::*;
-use ansi_escape::*;
-use pretty_trace::*;
 use std::env;
-use string_utils::*;
-use vector_utils::*;
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
+    // Provide main help.
 
-pub fn help1(args: &Vec<String>) {
-    // Set up.
-
-    let mut args = args.clone();
-    if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-        PrettyTrace::new().on();
-        let mut nopager = false;
-        let mut to_delete = vec![false; args.len()];
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                nopager = true;
-                to_delete[i] = true;
-            }
+    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || h.help_all
+    {
+        if h.help_all {
+            h.print("\n");
         }
-        erase_if(&mut args, &to_delete);
-        setup_pager(!nopager);
-    }
-    let mut help_all = false;
-    if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
-        unsafe {
-            HELP_ALL = true;
+        h.begin_doc("");
+        h.print(&format!(
+            "\nThis is version {} (beta) of ",
+            env!("CARGO_PKG_VERSION")
+        ));
+        h.print_enclone();
+        h.print(".  The mission of ");
+        h.print_enclone();
+        h.print(" is to:\n\n");
+        h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
+        h.print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
+        h.print(
+            "This help page catalogs all the enclone help pages.  We strongly \
+             recommend studying at least those in \\red{red} below.  \
+             Pages fit in 100 wide x 56 high \
+             windows, except those labeled \"long\" or \"wide\".\n\n",
+        );
+        h.print(
+            "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
+             Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
+             uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
+        );
+        h.docpr("\\bold{command}", "\\bold{what it provides}");
+        h.ldoc_red("enclone help", "help to test for correct setup");
+        h.doc_red("enclone", "what you see here: guide to all the doc");
+        h.ldoc_red("enclone help quick", "quick guide to getting started");
+        h.doc_red("enclone help how", "how enclone works (long)");
+        h.doc_red(
+            "enclone help command",
+            "info about enclone command line argument processing",
+        );
+        h.ldoc_red(
+            "enclone help glossary",
+            "glossary of terms used by enclone, and conventions",
+        );
+        h.ldoc_red("enclone help example1", "explanation of an example");
+        h.doc_red(
+            "enclone help example2",
+            "example showing gene expression \
+             and feature barcodes (wide)",
+        );
+        h.ldoc_red(
+            "enclone help support",
+            "how we can help, enclone@10xgenomics.com",
+        );
+        h.ldoc(
+            "enclone help input",
+            "how to provide input to enclone (long)",
+        );
+        h.doc(
+            "enclone help input_tech",
+            "how to provide input to enclone (technical notes)",
+        );
+        h.doc("enclone help parseable", "parseable output (long)");
+        h.doc(
+            "enclone help plot",
+            "generate a honeycomb plot showing clonotypes",
+        );
+        h.ldoc(
+            "enclone help filter",
+            "clonotype filtering options, scanning for feature enrichment (long)",
+        );
+        h.doc("enclone help special", "special filtering options (long)");
+        h.ldoc("enclone help lvars", "lead column options (long)");
+        h.doc("enclone help cvars", "per chain column options (long)");
+        h.doc(
+            "enclone help amino",
+            "per chain column options for amino acids",
+        );
+        h.doc("enclone help display", "other clonotype display options");
+        h.ldoc("enclone help indels", "insertion and deletion handling");
+        h.ldoc(
+            "enclone help color",
+            "how enclone uses color, and related things",
+        );
+        h.doc(
+            "enclone help ideas",
+            "ideas for features that might be implemented",
+        );
+        h.doc("enclone help faq", "frequently asked questions (long)");
+        h.doc("enclone help developer", "a few things for developers");
+        h.ldoc_greenish(
+            "enclone help all",
+            "concatenation of all the help pages (long, wide)",
+        );
+        h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
+        h.print_tab2();
+        h.print(
+            "Additional documentation may be found at \
+             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+        );
+        if !h.help_all {
+            h.dump();
+            std::process::exit(0);
         }
-        help_all = true;
-    }
-    let mut rows = Vec::<Vec<String>>::new();
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    let mut plain = false;
-    for i in 0..args.len() {
-        if args[i] == "PLAIN" {
-            args.remove(i);
-            plain = true;
-            unsafe {
-                PLAIN = true;
-            }
-            break;
-        }
-    }
-    macro_rules! doc_greenish {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!("[38;5;36m{}[0m", $n1);
-                let r2 = format!("[38;5;36m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! ldoc_greenish {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            if !plain {
-                let r1 = format!("[38;5;36m{}[0m", $n1);
-                let r2 = format!("[38;5;36m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!("[01;31m{}[0m", $n1);
-                let r2 = format!("[01;31m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            if !plain {
-                let r1 = format!("[01;31m{}[0m", $n1);
-                let r2 = format!("[01;31m{}[0m", $n2);
-                rows.push(vec![r1, r2]);
-            } else {
-                rows.push(vec![$n1.to_string(), $n2.to_string()]);
-            }
-        };
-    }
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -138,17 +116,14 @@ pub fn help1(args: &Vec<String>) {
 
     if (args.len() == 2 && args[1] == "help")
         || (args.len() == 2 && args[1] == "--help")
-        || help_all
+        || h.help_all
     {
-        if help_all {
-            println!("");
-        }
-        begin_doc!("");
-        print(
-            "\nWelcome to enclone!\n\n\
+        h.begin_doc("setup");
+        h.print(
+            "\n\nWelcome to enclone!\n\n\
              The purpose of this first page is to help you make sure that you're set up properly\n\
              to run enclone.  PLEASE READ!\n\n\
-             (for the main help page, please type instead: enclone help main)\n\n\n\
+             (for the main help page, please type instead: enclone)\n\n\
              Here we go through several setup tests.  If you have any problem that you can't\n\
              resolve, please email us at enclone@10xgenomics.com.\n\n\n\
              1. Are you using a fixed width font?\n\
@@ -156,12 +131,12 @@ pub fn help1(args: &Vec<String>) {
              A FAT BROWN CAT JUMPED OVER THE WALL\n\
              ||||||||||||||||||||||||||||||||||||\n\
              Do those two lines end at the same position?  If not, you need to switch your \
-             font.\n\n\n\
+             font.\n\n\
              2. Is your terminal window wide enough to see the help pages?\n\
              Your terminal needs to be at least 100 columns wide.  Look at this:\n\
              01234567890123456789012345678901234567890123456789\
              01234567890123456789012345678901234567890123456789\n\
-             Does it appear as a single line?  If not, please widen your window.\n\n\n\
+             Does it appear as a single line?  If not, please widen your window.\n\n\
              3. Can your terminal display box characters?\n\
              Look at this:\n\
              ┌────────┬─────────┐\n\
@@ -169,8 +144,10 @@ pub fn help1(args: &Vec<String>) {
              ├────────┼─────────┤\n\
              │oops    │  slipped│\n\
              └────────┴─────────┘\n\
-             Do you see a neat rectangle composed of four rectangles with words inside them?\n\
-             If not, something is wrong with your terminal!\n\n\
+             Do you see a neat rectangle composed of four rectangles with words inside them?  \
+             Are the vertical lines contiguous?  \
+             If not, something is wrong with your terminal!  You may need to change the terminal \
+             font.  For example, Menlo works, but Courier does not.\n\n\
              4. Can your terminal correctly display ANSI escape sequences?\n\
              The following word should be \\bold{bold}.  \
              The following word should be \\blue{blue}.\n\
@@ -186,125 +163,10 @@ pub fn help1(args: &Vec<String>) {
              6. Does this entire help page appear at once in your terminal window?\n\
              If not, please increase the number of rows in your window to 56.\n\n\n\
              If you go through all those tests and everything worked, you should be \
-             good to go!\n\n",
+             good to go!\n\n\n",
         );
-        if !help_all {
-            std::process::exit(0);
-        }
-    }
-
-    // Provide main help.
-
-    if args.len() == 1 || (args.len() == 3 && args[1] == "help" && args[2] == "main") || help_all {
-        begin_doc!("main");
-        print!("\nThis is version {} (beta) of ", env!("CARGO_PKG_VERSION"));
-        print_enclone(plain);
-        print!(".  The mission of ");
-        print_enclone(plain);
-        println!(" is to:\n");
-        bold!();
-        println!("  Find and display the clonotypes within single cell VDJ datasets:");
-        println!("  groups of cells having the same fully rearranged common ancestor.\n");
-        end_escape!();
-        print(
-            "This help page catalogs all the enclone help pages.  We strongly \
-             recommend studying at least those in \\red{red} below.  \
-             Pages fit in 100 wide x 56 high \
-             windows, except those labeled \"long\" or \"wide\".\n\n",
-        );
-        print(
-            "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
-             Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
-             uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
-        );
-        let mut log1 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log1);
-        }
-        log1.append(&mut b"command".to_vec());
-        if !plain {
-            emit_end_escape(&mut log1);
-        }
-        let s1 = stringme(&log1);
-        let mut log2 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log2);
-        }
-        log2.append(&mut b"what it provides".to_vec());
-        if !plain {
-            emit_end_escape(&mut log2);
-        }
-        let s2 = stringme(&log2);
-        doc!(&s1, &s2);
-        ldoc_red!("enclone help", "help to test for correct setup");
-        doc_red!("enclone", "what you see here: guide to all the doc");
-        ldoc_red!("enclone help quick", "quick guide to getting started");
-        doc_red!("enclone help how", "how enclone works (long)");
-        doc_red!(
-            "enclone help command",
-            "info about enclone command line argument processing"
-        );
-        ldoc_red!(
-            "enclone help glossary",
-            "glossary of terms used by enclone, and conventions"
-        );
-        ldoc_red!("enclone help example1", "explanation of an example");
-        doc_red!(
-            "enclone help example2",
-            "example showing gene expression \
-             and feature barcodes (wide)"
-        );
-        ldoc_red!(
-            "enclone help support",
-            "how we can help, enclone@10xgenomics.com"
-        );
-        ldoc!(
-            "enclone help input",
-            "how to provide input to enclone (long)"
-        );
-        doc!(
-            "enclone help input_tech",
-            "how to provide input to enclone (technical notes)"
-        );
-        doc!("enclone help parseable", "parseable output (long)");
-        doc!(
-            "enclone help plot",
-            "generate a honeycomb plot showing clonotypes"
-        );
-        ldoc!(
-            "enclone help filter",
-            "clonotype filtering options, scanning for feature enrichment (long)"
-        );
-        doc!("enclone help special", "special filtering options (long)");
-        ldoc!("enclone help lvars", "lead column options (long)");
-        doc!("enclone help cvars", "per chain column options (long)");
-        doc!(
-            "enclone help amino",
-            "per chain column options for amino acids"
-        );
-        doc!("enclone help display", "other clonotype display options");
-        ldoc!("enclone help indels", "insertion and deletion handling");
-        ldoc!(
-            "enclone help color",
-            "how enclone uses color, and related things"
-        );
-        doc!(
-            "enclone help ideas",
-            "ideas for features that might be implemented"
-        );
-        doc!("enclone help faq", "frequently asked questions (long)");
-        doc!("enclone help developer", "a few things for developers");
-        ldoc_greenish!(
-            "enclone help all",
-            "concatenation of all the help pages (long, wide)"
-        );
-        doc_greenish!("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
-        print_tab2(&rows);
-        print(
-            "Additional documentation may be found at \
-             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
-        );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -313,13 +175,11 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide quick help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || help_all {
-        begin_doc!("quick");
-        println!("");
-        bold!();
-        println!("quick guide to getting started\n");
-        end_escape!();
-        print(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "quick") || h.help_all {
+        h.begin_doc("quick");
+        h.print("\n");
+        h.print("\\bold{quick guide to getting started}\n\n");
+        h.print(
             "Just type this:\n\n\
              \\bold{enclone BCR=p}\n\n\
              where \\bold{p} is the path to your Cell Ranger VDJ directory.\n\n\
@@ -337,9 +197,21 @@ pub fn help1(args: &Vec<String>) {
              V(D)J transcripts.\n\n\
              3. By default, you'll see data in amino acid space.  Only \"interesting\" amino acids \
              are shown.\n\n\
-             Please read on to learn more!\n\n",
+             Please read on to learn more!\n\n\
+             \\bold{navigation in enclone}\n\n\
+             enclone automatically sends its output through the program \"less\".  This allows you \
+             to navigate within the output, using the following keys \
+             (and many more, not shown, and which you don't need to know):\n\
+             • space: causes output to page forward\n\
+             • b: causes output to page backward\n\
+             • /string: finds instances of \"string\" in the output\n\
+             • n: having done the previous, jump to the next instance\n\
+             • q: quit, to return to the command line.\n\n\
+             When enclone uses less, it passes the argument -R, which causes certain characters \
+             to be hidden, namely escape codes that color or bold text.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -348,15 +220,13 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide how help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "how") || help_all {
+    if (args.len() == 3 && args[1] == "help" && args[2] == "how") || h.help_all {
         // Start.
 
-        begin_doc!("how");
-        println!("");
-        bold!();
-        println!("information about how enclone works\n");
-        end_escape!();
-        print(
+        h.begin_doc("how");
+        h.print("\n");
+        h.print("\\bold{information about how enclone works}\n\n");
+        h.print(
             "The goal of enclone is to find and display the clonotypes within single cell \
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
              \
@@ -371,7 +241,7 @@ pub fn help1(args: &Vec<String>) {
 
         // Print challenges.
 
-        print_with_box(
+        h.print_with_box(
             "1. It is extremely easy to get false positives: the incorrect \
              appearance that two cells have a common ancestor.\n\n\
              \
@@ -386,11 +256,11 @@ pub fn help1(args: &Vec<String>) {
 
         // Print boxed algorithm.
 
-        print(
+        h.print(
             "To address these challenges, the enclone algorithm has several steps, which we \
              outline:\n\n",
         );
-        print(
+        h.print(
             "\\boldred{1}.  Input data.  \
              enclone gets its information from the file all_contig_annotations.json that is \
              produced by Cell Ranger.  Only productive contigs are used.  Each has an annotated \
@@ -473,13 +343,14 @@ pub fn help1(args: &Vec<String>) {
 
         // Finish.
 
-        print(
+        h.print(
             "We are actively working to improve the algorithm.  To test the performance of the \
             current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
             \\boldred{9573} clonotypes having at least two cells each, of which \
             \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -488,14 +359,12 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide command line help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "command") || help_all {
-        begin_doc!("command");
-        println!("");
-        bold!();
-        println!("information about enclone command-line argument processing\n");
-        end_escape!();
-        print("\\bold{1. Order of processing}\n\n");
-        print(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "command") || h.help_all {
+        h.begin_doc("command");
+        h.print("\n");
+        h.print("\\bold{information about enclone command-line argument processing}\n\n");
+        h.print("\\bold{1. Order of processing}\n\n");
+        h.print(
             "• Before processing its command line, enclone first checks for environment\n\
              variables of the form \\bold{ENCLONE_<x>}.  These are converted into command-line \
              arguments.  You can set any command-line argument this way.  The reason why you might \
@@ -510,9 +379,9 @@ pub fn help1(args: &Vec<String>) {
              left to right; if an argument name is repeated, only the \
              rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
-        print("\\bold{2. Color}\n\n");
-        print_enclone(plain);
-        print(
+        h.print("\\bold{2. Color}\n\n");
+        h.print_enclone();
+        h.print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
              and more\nimportantly for amino acids, to represent different codons.  This is \
              done automatically but you can turn it off....\n\n\
@@ -521,9 +390,9 @@ pub fn help1(args: &Vec<String>) {
              you want to peruse output using a text editor which does not grok the escape \
              codes.  However some things will not make sense without color.\n\n",
         );
-        print("\\bold{3. Paging}\n\n");
-        print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
-        print(
+        h.print("\\bold{3. Paging}\n\n");
+        h.print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
+        h.print(
             "• The effect of this will be that you'll see only the first screen of output.  \
              You can then use the spacebar to go forward, b to go backward, and q to quit.  \
              The \\bold{-R} option causes escape characters to be correctly displayed, the \
@@ -531,12 +400,13 @@ pub fn help1(args: &Vec<String>) {
              the \\bold{-X} option prevents output from being sent to the \"alternate screen\" \
              under certain platform/version combinations.\n",
         );
-        print("• Type \\bold{man less} if you need more information.\n");
-        print(
+        h.print("• Type \\bold{man less} if you need more information.\n");
+        h.print(
             "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -545,134 +415,128 @@ pub fn help1(args: &Vec<String>) {
 
     // Provide glossary help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || help_all {
-        begin_doc!("glossary");
-        println!("");
+    if (args.len() == 3 && args[1] == "help" && args[2] == "glossary") || h.help_all {
+        h.begin_doc("glossary");
+        h.print("\n");
 
         // intro
 
-        bold!();
-        println!("glossary of terms used by enclone\n");
-        end_escape!();
+        h.print("\\bold{glossary of terms used by enclone}\n\n");
 
         // doc V..J
 
-        doc!(
+        h.doc(
             "V..J",
-            "the full sequence of a V(D)J transcript, from the beginning of the V"
+            "the full sequence of a V(D)J transcript, from the beginning of the V",
         );
-        doc!(
+        h.doc(
             "",
-            "segment to the end of the J segment; this sequence begins with a stop codon"
+            "segment to the end of the J segment; this sequence begins with a stop codon",
         );
-        doc!("", "and ends with a partial codon (its first base)");
+        h.doc("", "and ends with a partial codon (its first base)");
 
         // doc CDR3
 
-        doc!(
+        h.doc(
             "CDR3",
-            "The terms CDR3 and junction are commonly mistaken and often used"
+            "The terms CDR3 and junction are commonly mistaken and often used",
         );
-        doc!(
+        h.doc(
             "",
-            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the"
+            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the",
         );
-        doc!(
+        h.doc(
             "",
-            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini"
+            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini",
         );
-        doc!("", "respectively).");
+        h.doc("", "respectively).");
 
         // doc clonotype
 
-        ldoc!(
+        h.ldoc(
             "clonotype",
-            "all the cells descended from a single fully rearranged T or B cell"
+            "all the cells descended from a single fully rearranged T or B cell",
         );
-        doc!("", "(approximated computationally)");
+        h.doc("", "(approximated computationally)");
 
         // doc exact subclonotype
 
-        let x1 = "exact subclonotype".to_string();
-        let mut w2 = b"all cells having identical transcripts".to_vec();
-        emit_bold_escape(&mut w2);
-        emit_red_escape(&mut w2);
-        w2.append(&mut " ○".as_bytes().to_vec());
-        emit_end_escape(&mut w2);
-        let x2 = stringme(&w2);
-        rows.push(vec![x1, x2]);
-        doc!("", "(every clonotype is a union of exact subclonotypes)");
+        h.docpr(
+            "exact subclonotype",
+            "all cells having identical transcripts \\boldred{○}",
+        );
+        h.doc("", "(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
 
-        doc!(
+        h.doc(
             "clone",
-            "a cell in a clonotype, or in an exact subclonotype"
+            "a cell in a clonotype, or in an exact subclonotype",
         );
 
         // doc onesie etc.
 
-        ldoc!(
+        h.ldoc(
             "onesie",
-            "a clonotype or exact subclonotype having exactly one chain"
+            "a clonotype or exact subclonotype having exactly one chain",
         );
-        doc!(
+        h.doc(
             "twosie",
-            "a clonotype or exact subclonotype having exactly two chains"
+            "a clonotype or exact subclonotype having exactly two chains",
         );
-        doc!(
+        h.doc(
             "threesie",
-            "a clonotype or exact subclonotype having exactly three chains;"
+            "a clonotype or exact subclonotype having exactly three chains;",
         );
-        doc!(
+        h.doc(
             "",
-            "these frequently represent true biological events, arising from expression"
+            "these frequently represent true biological events, arising from expression",
         );
-        doc!("", "of both alleles");
-        doc!(
+        h.doc("", "of both alleles");
+        h.doc(
             "foursie",
-            "a clonotype or exact subclonotype having exactly four chains;"
+            "a clonotype or exact subclonotype having exactly four chains;",
         );
-        doc!("", "these very rarely represent true biological events");
-        doc!("moresie", "a clonotype having more than four chains;");
-        doc!(
+        h.doc("", "these very rarely represent true biological events");
+        h.doc("moresie", "a clonotype having more than four chains;");
+        h.doc(
             "",
-            "these sad clonotypes do not represent true biological events"
+            "these sad clonotypes do not represent true biological events",
         );
 
         // doc donor etc.
 
-        ldoc!("donor", "an individual from whom samples are obtained");
-        doc!(
+        h.ldoc("donor", "an individual from whom samples are obtained");
+        h.doc(
             "sample",
-            "a tube of cells from a donor, from a particular tissue at a"
+            "a tube of cells from a donor, from a particular tissue at a",
         );
-        doc!(
+        h.doc(
             "",
-            "particular point in time, and possibly enriched for particular cells"
+            "particular point in time, and possibly enriched for particular cells",
         );
-        doc!(
+        h.doc(
             "cell group",
-            "an aliquot from a sample, presumed to be a random draw"
+            "an aliquot from a sample, presumed to be a random draw",
         );
-        doc!(
+        h.doc(
             "dataset",
-            "all sequencing data obtained from a particular library type"
+            "all sequencing data obtained from a particular library type",
         );
-        doc!(
+        h.doc(
             "",
-            "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running"
+            "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running",
         );
-        doc!("", "through the Cell Ranger pipeline");
+        h.doc("", "through the Cell Ranger pipeline");
 
         // print main table
 
-        print_tab2(&rows);
-        println!("");
+        h.print_tab2();
+        h.print("\n");
 
         // print footnote
 
-        print(
+        h.print(
             "\\boldred{○} The exact requirements for being in the same exact subclonotype are \
              that cells:\n\
              • have the same number of productive contigs identified\n\
@@ -685,19 +549,18 @@ pub fn help1(args: &Vec<String>) {
 
         // conventions
 
-        bold!();
-        println!("conventions\n");
-        end_escape!();
-        println!(
+        h.print("\\bold{conventions}\n\n");
+        h.print(
             "• When we refer to \"V segments\", we always include the leader segment.\n\
              • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with\n\
              chains within a clonotype, however DNA and amino-acid positions are numbered starting \
-             at zero.\n"
+             at zero.\n\n",
         );
 
         // done
 
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

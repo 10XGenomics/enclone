@@ -351,6 +351,7 @@ pub struct GeneralOpt {
     pub force_h5: bool,
     pub full_counts: bool,
     pub html: bool,
+    pub stable_doc: bool,
 }
 
 // Allele finding algorithmic options.

@@ -75,6 +75,7 @@ fn test_enclone() {
         }
         let mut expect_null = false;
         let mut expect_fail = false;
+        let mut expect_ok = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
@@ -83,9 +84,13 @@ fn test_enclone() {
             test = test.replace(" EXPECT_FAIL", "");
             expect_fail = true;
         }
+        if test.contains(" EXPECT_OK") {
+            test = test.replace(" EXPECT_OK", "");
+            expect_ok = true;
+        }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
-        if !path_exists(&out_file) && !expect_fail {
+        if !path_exists(&out_file) && !expect_fail && !expect_ok {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
                 log,
@@ -106,7 +111,7 @@ fn test_enclone() {
             res.2 = stringme(&log);
         } else {
             let mut old = String::new();
-            if !expect_fail {
+            if !expect_fail && !expect_ok {
                 old = read_to_string(&out_file).unwrap();
             }
 
@@ -164,9 +169,9 @@ fn test_enclone() {
             let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
             let new2 = stringme(&new.stdout);
 
-            // Process tests that were supposed to fail.
+            // Process tests that were supposed to fail or supposed to succeed.
 
-            if expect_fail {
+            if expect_fail || expect_ok {
                 res.1 = false;
                 if new.status.code().is_none() {
                     fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
@@ -176,23 +181,36 @@ fn test_enclone() {
                     );
                 } else {
                     let status = new.status.code().unwrap();
-                    if status == 0 {
-                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
-                        fwriteln!(
-                            log,
-                            "That test was supposed to have failed, but instead \
-                             succeeded.\n"
-                        );
-                    } else if status != 1 {
-                        fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
-                        fwriteln!(
-                            log,
-                            "That test was supposed to have failed with exit status 1,\n\
-                             but instead failed with exit status {}.\n",
-                            status
-                        );
+                    if expect_fail {
+                        if status == 0 {
+                            fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                            fwriteln!(
+                                log,
+                                "That test was supposed to have failed, but instead \
+                                 succeeded.\n"
+                            );
+                        } else if status != 1 {
+                            fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                            fwriteln!(
+                                log,
+                                "That test was supposed to have failed with exit status 1,\n\
+                                 but instead failed with exit status {}.\n",
+                                status
+                            );
+                        } else {
+                            res.1 = true;
+                        }
                     } else {
-                        res.1 = true;
+                        if status != 0 {
+                            fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
+                            fwriteln!(
+                                log,
+                                "That test was supposed to have succeeded, but instead \
+                                 failed.\n"
+                            );
+                        } else {
+                            res.1 = true;
+                        }
                     }
                 }
                 res.2 = stringme(&log);
@@ -345,6 +363,36 @@ fn test_enclone_examples() {
             );
             std::process::exit(1);
         }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test that help output hasn't changed.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_help_output() {
+    PrettyTrace::new().on();
+    let out_file = format!("src/help.all.html");
+    let old = read_to_string(&out_file).unwrap();
+    let mut new = Command::new("target/release/enclone");
+    let mut new = new.arg("help");
+    new = new.arg("all");
+    new = new.arg("HTML");
+    new = new.arg("STABLE_DOC");
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute test_help_output"));
+    let new2 = stringme(&new.stdout);
+    if old != new2 {
+        eprintln!(
+            "\nYou need to update help output by typing \
+                \"enclone help all HTML STABLE_DOC > help.all.html\" \
+                in\nthe src directory, assuming that the change is expected.\n"
+        );
+        std::process::exit(1);
     }
 }
 
