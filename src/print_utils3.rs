@@ -202,7 +202,8 @@ pub fn define_column_info(
         seqss_amino.push(seqs_amino.clone());
     }
 
-    // Show segment names.
+    // Show segment names.  We used ◼ as a separator character, but that does not render well
+    // as a fixed-width character in Google Docs.  So we changed it to ◆.
 
     let mut chain_descrip = vec![String::new(); cols];
     for cx in 0..cols {
@@ -220,10 +221,10 @@ pub fn define_column_info(
         let did = dids[cx];
         if did.is_some() {
             let did = did.unwrap();
-            chain_descrip[cx] += &format!(" ◼ {}|{}", refdata.id[did], refdata.name[did]);
+            chain_descrip[cx] += &format!(" ◆ {}|{}", refdata.id[did], refdata.name[did]);
         }
         let jid = jids[cx];
-        chain_descrip[cx] += &format!(" ◼ {}|{}", refdata.id[jid], refdata.name[jid]);
+        chain_descrip[cx] += &format!(" ◆ {}|{}", refdata.id[jid], refdata.name[jid]);
     }
 
     // Return.

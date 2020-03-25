@@ -4,7 +4,7 @@ pub const TEST_FILES_VERSION: u8 = 14;
 
 // Main list of tests for enclone.
 
-pub const TESTS: [&str; 49] = [
+pub const TESTS: [&str; 50] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -125,6 +125,8 @@ pub const TESTS: [&str; 49] = [
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
         FASTA_AA=stdout HTML"###,
+    // 50. make sure this doesn't fail
+    r###"NOPAGER EXPECT_OK"###,
 ];
 
 // List of examples in documentation.

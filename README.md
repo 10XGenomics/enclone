@@ -1,5 +1,21 @@
 # enclone
 
+<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
+
+<br>
+<br>
+<br>
+
+This site is under construction.  Please do not enter unless you have been directed here, and
+are wearing proper safety equipment.  
+
+(photo credit: NIOSH/wikipedia)
+
+<br>
+<br>
+<br>
+<br>
+
 `enclone` is a computational tool for studying the adaptive immune system in humans and
 other vertebrate species.  
 
@@ -53,6 +69,8 @@ ________________________________________________________________________________
 
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
 ### How to download and install `enclone` and get test datasets
+
+<b>(these instructions are not yet functional)</b>
 
 <b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please let us
 know if availability on other platforms is important to you.
@@ -133,6 +151,15 @@ LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell"
 to the `enclone` command line.  That caused `enclone` to generate the image as the file `clono.svg`.
 
 <br><br><br><br><br><br>
+___________________________________________________________________________________________________
+
+### The `enclone` manual
+
+`enclone` has about 25 online help pages.  The concatenation of all these help pages is
+[here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
+<b>[BROKEN LINK]</b>.  
+We may expand this out in the future to show the separate pages.
+
 ___________________________________________________________________________________________________
 
 ### How to compile the `enclone` software

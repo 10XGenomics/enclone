@@ -3,155 +3,38 @@
 // Test for help request, under development.
 
 use crate::help_utils::*;
-use ansi_escape::*;
-use io_utils::*;
-use std::io::Write;
-use string_utils::*;
 use tables::*;
-use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help3(args: &Vec<String>) {
-    // Set up.
-
-    let mut args = args.clone();
-    let mut rows = Vec::<Vec<String>>::new();
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    let mut plain = false;
-    for i in 0..args.len() {
-        if args[i] == "PLAIN" {
-            args.remove(i);
-            plain = true;
-            unsafe {
-                PLAIN = true;
-            }
-            break;
-        }
-    }
-    if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-        let mut to_delete = vec![false; args.len()];
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                to_delete[i] = true;
-            }
-        }
-        erase_if(&mut args, &to_delete);
-    }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    let mut help_all = false;
-    unsafe {
-        if HELP_ALL {
-            help_all = true;
-        }
-    }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
-    }
-
+pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide input_tech help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || help_all {
-        begin_doc!("input_tech");
-        println!("");
-        bold!();
-        println!("information about providing input to enclone (technical notes)\n");
-        end_escape!();
-        print(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "input_tech") || h.help_all {
+        h.begin_doc("input_tech");
+        h.print("\n\\bold{information about providing input to enclone (technical notes)}\n\n");
+        h.print(
             "enclone only uses certain files, which are all in the outs subdirectory of \
              a Cell Ranger pipeline directory:\n\n",
         );
-        let mut log1 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log1);
-        }
-        log1.append(&mut b"file".to_vec());
-        if !plain {
-            emit_end_escape(&mut log1);
-        }
-        let s1 = stringme(&log1);
-        let mut log2 = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log2);
-        }
-        log2.append(&mut b"pipeline".to_vec());
-        if !plain {
-            emit_end_escape(&mut log2);
-        }
-        let s2 = stringme(&log2);
-        doc!(&s1, &s2);
-        ldoc!("all_contig_annotations.json", "VDJ");
-        ldoc!("metrics_summary_json.json", "GEX");
-        ldoc!("raw_gene_bc_matrices_h5.h5", "GEX");
-        ldoc!("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
-        doc!("raw_feature_bc_matrix/features.tsv.gz", "GEX");
-        doc!("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
-        print_tab2(&rows);
-        println!("\nThe exact files that are used could be changed in the future.\n");
-        // end_escape!();
-        print(
+        h.docpr("\\bold{file}", "\\bold{pipeline}");
+        h.ldoc("all_contig_annotations.json", "VDJ");
+        h.ldoc("metrics_summary_json.json", "GEX");
+        h.ldoc("raw_gene_bc_matrices_h5.h5", "GEX");
+        h.ldoc("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
+        h.doc("raw_feature_bc_matrix/features.tsv.gz", "GEX");
+        h.doc("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
+        h.print_tab2();
+        h.print("\nThe exact files that are used could be changed in the future.\n\n");
+        h.print(
             "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -160,13 +43,11 @@ pub fn help3(args: &Vec<String>) {
 
     // Provide parseable output help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || help_all {
-        begin_doc!("parseable");
-        println!("");
-        bold!();
-        println!("parseable output");
-        end_escape!();
-        print(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "parseable") || h.help_all {
+        h.begin_doc("parseable");
+        h.print("\n");
+        h.print("\\bold{parseable output}\n");
+        h.print(
             "\nThe standard output of enclone is designed to be read by humans, but is not \
              readily parseable by computers.  We supplement this with parseable output that can \
              be easily read by computers.\n\n\
@@ -178,16 +59,16 @@ pub fn help3(args: &Vec<String>) {
              Parseable output is targeted primarily at R and Python users, because of the ease of \
              wrangling CSV files with these languages.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "Parseable output is invoked by using the argument\n\
              \\bold{POUT=filename}\n\
              specifying the name of the file that is to be written to.\n\
              \
-             [01;47m [0m The filename \"stdout\" may be used for a preview; in that case \
+             [47m [0m The filename \"stdout\" may be used for a preview; in that case \
              parseable output is generated\n\
-             [01;47m [0m separately for each clonotype and the two output types \
+             [47m [0m separately for each clonotype and the two output types \
              are integrated.  There is also\n\
-             [01;47m [0m \"stdouth\", which is similar, but uses spaces instead \
+             [47m [0m \"stdouth\", which is similar, but uses spaces instead \
              of commas, and lines things up in columns.\n\
              \
              By default, we show four chains for each clonotype, regardless of how many chains it\n\
@@ -199,21 +80,21 @@ pub fn help3(args: &Vec<String>) {
              where each xi is one of the field names shown below.",
             true,
         );
-        print(
+        h.print(
             "Over time additional fields may be added and the order of fields may \
              change.\n\n",
         );
-        print(
+        h.print(
             "There is an alternate parseable output mode in which one line is emitted for each \
              cell, rather then each exact subclonotype.  This mode is enabled by adding the \
              argument \\bold{PCELL} to the command line.  Each exact subclonotype then yields a \
              sequence of output lines that are identical except as noted below.\n\n",
         );
-        print(
+        h.print(
             "If you want to completely suppress the generation of visual clonotypes, add \
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
-        print_with_box(
+        h.print_with_box(
             "\\bold{FASTA output.}  This is a separate feature. \
              To generate nucleotide FASTA output for each chain in each exact subclonotype, \
              use the argument \\bold{FASTA=filename}.  The special case \\bold{stdout} will \
@@ -227,161 +108,143 @@ pub fn help3(args: &Vec<String>) {
              FASTA file.",
             true,
         );
-        let mut log = Vec::<u8>::new();
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        fwriteln!(log, "───────────────────────");
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        log.append(&mut b"parseable output fields\n".to_vec());
-        if !plain {
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-        }
-        fwrite!(log, "───────────────────────");
-        if !plain {
-            emit_end_escape(&mut log);
-        }
-        println!("{}\n", strme(&log));
-        rows.clear();
-        bold!();
-        println!("1. per clonotype group fields\n");
-        end_escape!();
-        doc!("group_id", "identifier of clonotype group - 0,1, ...");
-        ldoc!("group_ncells", "total number of cells in the group");
-        print_tab2(&rows);
-        println!("");
-
-        rows.clear();
-        bold!();
-        println!("2. per clonotype fields\n");
-        end_escape!();
-        doc!(
-            "clonotype_id",
-            "identifier of clonotype within the clonotype group = 0, 1, ..."
+        h.print(
+            "\\boldred{───────────────────────}\n\
+             \\boldred{parseable output fields}\n\
+             \\boldred{───────────────────────}\n\n",
         );
-        ldoc!("clonotype_ncells", "total number of cells in the clonotype");
-        ldoc!("nchains", "total number of chains in the clonotype");
-        print_tab2(&rows);
-        println!("");
+        h.rows.clear();
+        h.print("\\bold{1. per clonotype group fields}\n\n");
+        h.doc("group_id", "identifier of clonotype group - 0,1, ...");
+        h.ldoc("group_ncells", "total number of cells in the group");
+        h.print_tab2();
+        h.print("\n");
 
-        rows.clear();
-        print(
+        h.rows.clear();
+        h.print("\\bold{2. per clonotype fields}\n\n");
+        h.doc(
+            "clonotype_id",
+            "identifier of clonotype within the clonotype group = 0, 1, ...",
+        );
+        h.ldoc("clonotype_ncells", "total number of cells in the clonotype");
+        h.ldoc("nchains", "total number of chains in the clonotype");
+        h.print_tab2();
+        h.print("\n");
+
+        h.rows.clear();
+        h.print(
             "\\bold{3. per chain fields, where <i> is 1,2,... (see above)\n\
              each of these has the same value for each exact clonotype}\n\n",
         );
-        doc!("v_name<i>", "name of V segment");
-        doc!("d_name<i>", "name of D segment (or null)");
-        doc!("j_name<i>", "name of J segment");
-        ldoc!("v_id<i>", "id of V segment");
-        doc!("d_id<i>", "id of D segment (or null)");
-        doc!("j_id<i>", "id of J segment");
-        ldoc!(
+        h.doc("v_name<i>", "name of V segment");
+        h.doc("d_name<i>", "name of D segment (or null)");
+        h.doc("j_name<i>", "name of J segment");
+        h.ldoc("v_id<i>", "id of V segment");
+        h.doc("d_id<i>", "id of D segment (or null)");
+        h.doc("j_id<i>", "id of J segment");
+        h.ldoc(
             "var_indices_dna<i>",
-            "DNA positions in chain that vary across the clonotype"
+            "DNA positions in chain that vary across the clonotype",
         );
-        doc!(
+        h.doc(
             "var_indices_aa<i>",
-            "amino acid positions in chain that vary across the clonotype"
+            "amino acid positions in chain that vary across the clonotype",
         );
-        doc!(
+        h.doc(
             "share_indices_dna<i>",
             "DNA positions in chain that are constant across the \
-             clonotype,"
+             clonotype,",
         );
-        doc!("", "but differ from the donor ref");
-        doc!(
+        h.doc("", "but differ from the donor ref");
+        h.doc(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
-             clonotype,"
+             clonotype,",
         );
-        doc!("", "all of these are comma-separated lists");
-        doc!("", "but differ from the donor ref");
-        print_tab2(&rows);
-        println!("");
+        h.doc("", "all of these are comma-separated lists");
+        h.doc("", "but differ from the donor ref");
+        h.print_tab2();
+        h.print("\n");
 
-        rows.clear();
-        print("\\bold{4. per exact subclonotype fields}\n\n");
-        doc!(
+        h.rows.clear();
+        h.print("\\bold{4. per exact subclonotype fields}\n\n");
+        h.doc(
             "exact_subclonotype_id",
-            "identifer of exact subclonotype = 1, 2, ..."
+            "identifer of exact subclonotype = 1, 2, ...",
         );
-        ldoc!(
+        h.ldoc(
             "barcodes",
-            "comma-separated list of barcodes for the exact subclonotype"
+            "comma-separated list of barcodes for the exact subclonotype",
         );
-        doc!(
+        h.doc(
             "<dataset>_barcodes",
-            "like \"barcodes\", but restricted to the dataset with the given name"
+            "like \"barcodes\", but restricted to the dataset with the given name",
         );
-        doc!("barcode", "if PCELL is specified, barcode for one cell");
-        doc!(
+        h.doc("barcode", "if PCELL is specified, barcode for one cell");
+        h.doc(
             "<dataset>_barcode",
-            "if PCELL is specified, barcode for one cell, or null, if the barcode is"
+            "if PCELL is specified, barcode for one cell, or null, if the barcode is",
         );
-        doc!("", "not from the given dataset");
-        ldoc!(
+        h.doc("", "not from the given dataset");
+        h.ldoc(
             "In addition, every lead variable may be specified as a field.  \
              See \"enclone help lvars\".",
-            "\\ext"
+            "\\ext",
         );
-        print_tab2(&rows);
-        println!("");
+        h.print_tab2();
+        h.print("\n");
 
-        rows.clear();
-        print(
+        h.rows.clear();
+        h.print(
             "\\bold{5. per chain, per exact subclonotype fields, where <i> is 1,2,... \
              (see above)}\n\n",
         );
-        println!("[all apply to chain i of a particular exact clonotype]\n");
-        doc!("vj_seq<i>", "DNA sequence of V..J");
-        doc!("seq<i>", "full DNA sequence");
-        doc!(
+        h.print("[all apply to chain i of a particular exact clonotype]\n\n");
+        h.doc("vj_seq<i>", "DNA sequence of V..J");
+        h.doc("seq<i>", "full DNA sequence");
+        h.doc(
             "q<n>_<i>",
-            "special option to display a comma-separated list of the quality"
+            "special option to display a comma-separated list of the quality",
         );
-        doc!(
+        h.doc(
             "",
-            "scores for chain i, at zero-based position n, numbered starting at the"
+            "scores for chain i, at zero-based position n, numbered starting at the",
         );
-        doc!(
+        h.doc(
             "",
-            "beginning of the V segment, for each cell in the exact subclonotype"
+            "beginning of the V segment, for each cell in the exact subclonotype",
         );
-        ldoc!("v_start<i>", "start of V segment on full DNA sequence");
-        ldoc!(
+        h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
+        h.ldoc(
             "const_id<i>",
-            "numerical identifier of constant region (or null, if not known)"
+            "numerical identifier of constant region (or null, if not known)",
         );
-        ldoc!(
+        h.ldoc(
             "utr_id<i>",
-            "numerical identifier of 5'-UTR region (or null, if not known)"
+            "numerical identifier of 5'-UTR region (or null, if not known)",
         );
-        doc!(
+        h.doc(
             "utr_name<i>",
-            "name of 5'-UTR region (or null, if not known)"
+            "name of 5'-UTR region (or null, if not known)",
         );
-        ldoc!(
+        h.ldoc(
             "cdr3_start<i>",
-            "base position start of CDR3 sequence on full contig"
+            "base position start of CDR3 sequence on full contig",
         );
-        doc!("cdr3_aa<i>", "amino acid sequence of CDR3");
-        ldoc!(
+        h.doc("cdr3_aa<i>", "amino acid sequence of CDR3");
+        h.ldoc(
             "var_aa<i>",
-            "amino acids that vary across the clonotype (synonymous changes included)"
+            "amino acids that vary across the clonotype (synonymous changes included)",
         );
-        ldoc!(
+        h.ldoc(
             "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
-            "\\ext"
+            "\\ext",
         );
-        doc!("See \"enclone help cvars\".", "\\ext");
-        print_tab2(&rows);
-        println!("");
-        if !help_all {
+        h.doc("See \"enclone help cvars\".", "\\ext");
+        h.print_tab2();
+        h.print("\n");
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -390,122 +253,118 @@ pub fn help3(args: &Vec<String>) {
 
     // Provide filter help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || help_all {
-        begin_doc!("filter");
-        println!("");
+    if (args.len() == 3 && args[1] == "help" && args[2] == "filter") || h.help_all {
+        h.begin_doc("filter");
 
         // intro
 
-        bold!();
-        println!("clonotype filtering options\n");
-        end_escape!();
-        println!("these options cause only certain clonotypes to be printed\n");
+        h.print("\n\\bold{clonotype filtering options}\n\n");
+        h.print("these options cause only certain clonotypes to be printed\n\n");
 
         // doc *CELLS
 
-        doc!(
+        h.doc(
             "MIN_CELLS=n",
-            "only show clonotypes having at least n cells"
+            "only show clonotypes having at least n cells",
         );
-        doc!("MAX_CELLS=n", "only show clonotypes having at most n cells");
-        doc!("CELLS=n", "only show clonotypes having exactly n cells");
+        h.doc("MAX_CELLS=n", "only show clonotypes having at most n cells");
+        h.doc("CELLS=n", "only show clonotypes having exactly n cells");
 
         // doc MIN_UMIS
 
-        ldoc!(
+        h.ldoc(
             "MIN_UMIS=n",
-            "only show clonotypes having ≳ n UMIs on some chain on some cell"
+            "only show clonotypes having ≳ n UMIs on some chain on some cell",
         );
 
         // doc *CHAINS
 
-        ldoc!(
+        h.ldoc(
             "MIN_CHAINS=n",
-            "only show clonotypes having at least n chains"
+            "only show clonotypes having at least n chains",
         );
-        doc!(
+        h.doc(
             "MAX_CHAINS=n",
-            "only show clonotypes having at most n chains"
+            "only show clonotypes having at most n chains",
         );
-        doc!("CHAINS=n", "only show clonotypes having exactly n chains");
+        h.doc("CHAINS=n", "only show clonotypes having exactly n chains");
 
         // doc CDR3
 
-        ldoc!(
+        h.ldoc(
             "CDR3=<pattern>",
-            "only show clonotypes having a CDR3 amino acid seq that matches"
+            "only show clonotypes having a CDR3 amino acid seq that matches",
         );
-        doc!(
+        h.doc(
             "",
-            "the given pattern (regular expression)*, from beginning to end"
+            "the given pattern (regular expression)*, from beginning to end",
         );
 
         // doc SEG and SEGN
 
-        ldoc!(
+        h.ldoc(
             "SEG=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given reference segment names"
+            "only show clonotypes using one of the given reference segment names",
         );
-        doc!(
+        h.doc(
             "SEGN=\"s_1|...|s_n\"",
-            "only show clonotypes using one of the given reference segment numbers"
+            "only show clonotypes using one of the given reference segment numbers",
         );
-        doc!(
+        h.doc(
             "",
-            "both: looks for V, D, J and C segments; double quote only"
+            "both: looks for V, D, J and C segments; double quote only",
         );
-        doc!("", "needed if n > 1");
+        h.doc("", "needed if n > 1");
 
         // doc MIN_EXACTS
 
-        ldoc!(
+        h.ldoc(
             "MIN_EXACTS=n",
-            "only show clonotypes having at least n exact subclonotypes"
+            "only show clonotypes having at least n exact subclonotypes",
         );
 
         // doc VJ
 
-        ldoc!(
+        h.ldoc(
             "VJ=seq",
-            "only show clonotypes using exactly the given V..J sequence"
+            "only show clonotypes using exactly the given V..J sequence",
         );
-        doc!("", "(string in alphabet ACGT)");
+        h.doc("", "(string in alphabet ACGT)");
 
         // doc MIN_DATASETS
 
-        ldoc!(
+        h.ldoc(
             "MIN_DATASETS=n",
-            "only show clonotypes containing cells from at least n datasets"
+            "only show clonotypes containing cells from at least n datasets",
         );
 
         // doc CDIFF
 
-        ldoc!(
+        h.ldoc(
             "CDIFF",
-            "only show clonotypes having a difference in constant region with the"
+            "only show clonotypes having a difference in constant region with the",
         );
-        doc!("", "universal reference");
+        h.doc("", "universal reference");
 
         // doc DEL
 
-        ldoc!("DEL", "only show clonotypes exhibiting a deletion");
+        h.ldoc("DEL", "only show clonotypes exhibiting a deletion");
 
         // doc BARCODE
 
-        ldoc!(
+        h.ldoc(
             "BARCODE=bc1,...,bcn",
-            "only show clonotypes that use one of the given barcodes"
+            "only show clonotypes that use one of the given barcodes",
         );
 
         // print main table
 
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
+        h.print_tab2();
+        h.print("\n");
 
         // footnote for CDR3
 
-        println!("* Examples of how to specify CDR3:\n");
+        h.print("* Examples of how to specify CDR3:\n\n");
         let mut rows = Vec::<Vec<String>>::new();
         rows.push(vec![
             "CDR3=CARPKSDYIIDAFDIW".to_string(),
@@ -519,23 +378,23 @@ pub fn help3(args: &Vec<String>) {
             "CDR3=\".*DYIID.*\"".to_string(),
             "have a CDR3 that contains DYIID inside it".to_string(),
         ]);
-        log.clear();
+        let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
-        println!(
+        h.print(&format!("{}\n", log));
+        h.print(
             "Note that double quotes should be used if the pattern \
-             contains characters other than letters.\n"
+             contains characters other than letters.\n\n",
         );
-        println!(
+        h.print(
             "A gentle introduction to regular expressions may be found at\n\
              https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise\n\
              specification for the regular expression version used by enclone may be found at\n\
-             https://docs.rs/regex.\n"
+             https://docs.rs/regex.\n\n",
         );
 
         // linear conditions
 
-        print(
+        h.print(
             "\\bold{linear conditions}\n\n\
              enclone understands linear conditions of the form\n\
              \\bold{c1*v1 ± ... ± cn*vn > d}\n\
@@ -554,7 +413,7 @@ pub fn help3(args: &Vec<String>) {
 
         // bounds
 
-        print(
+        h.print(
             "\\bold{filtering by linear conditions}\n\n\
              enclone has the capability to filter by bounding certain lead variables, using \
              the command-line argument:\n\
@@ -567,7 +426,7 @@ pub fn help3(args: &Vec<String>) {
 
         // feature scanning
 
-        print(
+        h.print(
             "\\bold{feature scanning}\n\n\
             If gene expression and/or feature barcode data have been generated, \
             enclone can scan all features to find those that are enriched \
@@ -607,7 +466,8 @@ pub fn help3(args: &Vec<String>) {
 
         // done
 
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }

@@ -135,7 +135,6 @@ pub fn make_table(
         // *** bullets now off ***
         } else if c == '$' {
             if ctl.pretty {
-                // *logz += &format!("[01;38;5;{}m[01;48;5;{}m•", TEXTCOLOR, BACKGROUND);
                 *logz += &format!("[38;5;{}m[48;5;{}m ", TEXTCOLOR, BACKGROUND);
                 barcode = true;
             } else {
@@ -150,7 +149,6 @@ pub fn make_table(
         } else if barcode && c == '│' && x[j + 1] != '\n' {
             // *logz += "[0m│";
             *logz += &format!("[0m[48;5;{}m│", BACKGROUND);
-            // *logz += &format!("[01;38;5;{}m[01;48;5;{}m", TEXTCOLOR, BACKGROUND);
             *logz += &format!("[38;5;{}m[48;5;{}m", TEXTCOLOR, BACKGROUND);
         } else if barcode && c == '│' && x[j + 1] == '\n' {
             *logz += "[0m│";

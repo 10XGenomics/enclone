@@ -2,116 +2,24 @@
 //
 // Test for help request, under development.
 
+use crate::defs::*;
 use crate::help_utils::*;
 use ansi_escape::*;
 use string_utils::*;
-use tables::*;
-use vector_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help5(args: &Vec<String>) {
-    // Set up.
-
-    let mut args = args.clone();
-    let mut rows = Vec::<Vec<String>>::new();
-    macro_rules! doc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    macro_rules! ldoc {
-        ($n1:expr, $n2:expr) => {
-            rows.push(vec!["\\hline".to_string(); 2]);
-            rows.push(vec![$n1.to_string(), $n2.to_string()]);
-        };
-    }
-    let mut plain = false;
-    for i in 0..args.len() {
-        if args[i] == "PLAIN" {
-            args.remove(i);
-            plain = true;
-            unsafe {
-                PLAIN = true;
-            }
-            break;
-        }
-    }
-    if args.len() == 1 || (args.len() >= 2 && args[1] == "help") {
-        let mut to_delete = vec![false; args.len()];
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                to_delete[i] = true;
-            }
-        }
-        erase_if(&mut args, &to_delete);
-    }
-    /*
-    macro_rules! doc_red {
-        ($n1:expr, $n2:expr) => {
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-        };
-    }
-    macro_rules! ldoc_red {
-        ($n1:expr, $n2:expr) => {
-            rows.push( vec![ "\\hline".to_string(); 2 ] );
-            if !plain {
-                let r1 = format!( "[01;31m{}[0m", $n1 );
-                let r2 = format!( "[01;31m{}[0m", $n2 );
-                rows.push( vec![ r1, r2 ] );
-            } else {
-                rows.push( vec![ $n1.to_string(), $n2.to_string() ] );
-            }
-        };
-    }
-    */
-    macro_rules! bold {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    macro_rules! end_escape {
-        () => {
-            if !plain {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                print!("{}", strme(&log));
-            }
-        };
-    }
-    let mut help_all = false;
-    unsafe {
-        if HELP_ALL {
-            help_all = true;
-        }
-    }
-    macro_rules! begin_doc {
-        ($x:expr) => {
-            rows.clear();
-            if help_all {
-                banner($x, plain);
-            }
-        };
-    }
-
+pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide indels help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || help_all {
-        begin_doc!("indels");
-        print("\n\\bold{handling of insertions and deletions}\n\n");
-        print(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "indels") || h.help_all {
+        h.begin_doc("indels");
+        h.print("\n\\bold{handling of insertions and deletions}\n\n");
+        h.print(
             "enclone can recognize and display a single insertion or deletion in a contig \
              relative to the reference, so long as its length is divisible by three, is relatively \
              short, and occurs within the V segment, not too close to its right end.\n\n\
@@ -131,7 +39,8 @@ pub fn help5(args: &Vec<String>) {
              amino acid after which the insertion appears, where the first amino acid (start \
              codon) is numbered 0.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -140,36 +49,32 @@ pub fn help5(args: &Vec<String>) {
 
     // Provide ideas help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || help_all {
-        begin_doc!("ideas");
-        println!("");
-        bold!();
-        println!("features that might be implemented in enclone\n");
-        end_escape!();
-        doc!("speed", "make enclone faster");
-        ldoc!(
+    if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || h.help_all {
+        h.begin_doc("ideas");
+        h.print("\n\\bold{features that might be implemented in enclone}\n\n");
+        h.doc("speed", "make enclone faster");
+        h.ldoc(
             "CDRn",
-            "make CDR1 and CDR2 viewable in the same way that CDR3 is now"
+            "make CDR1 and CDR2 viewable in the same way that CDR3 is now",
         );
-        ldoc!(
+        h.ldoc(
             "distance grouping",
-            "provide an option to group clonotypes by distance"
+            "provide an option to group clonotypes by distance",
         );
-        ldoc!("cloning", "package V..J region into a cloning vector");
-        ldoc!(
+        h.ldoc("cloning", "package V..J region into a cloning vector");
+        h.ldoc(
             "phylogeny",
-            "generate a phylogeny for the exact clonotypes within a clonotype"
+            "generate a phylogeny for the exact clonotypes within a clonotype",
         );
 
-        ldoc!("windows", "make enclone work on windows computers");
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        print!("{}", log);
-        println!(
-            "\nPlease let us know if you are interested in these features, or if there are\n\
-             other features that you would like us to implement!\n"
+        h.ldoc("windows", "make enclone work on windows computers");
+        h.print_tab2();
+        h.print(
+            "\nPlease let us know if you are interested in these features, or if there are \
+             other features that you would like us to implement!\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -182,20 +87,20 @@ pub fn help5(args: &Vec<String>) {
     // last three before the first three.  This is because the last three seem to make a better
     // three-color palette.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "color") || help_all {
-        begin_doc!("color");
-        println!("\nHere is the color palette that enclone uses for amino acids:\n");
+    if (args.len() == 3 && args[1] == "help" && args[2] == "color") || h.help_all {
+        h.begin_doc("color");
+        h.print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
         for i in 0..6 {
             let s = best_color_order(i);
             let mut log = Vec::<u8>::new();
-            if !plain {
+            if !h.plain {
                 print_color(s, &mut log);
                 pal += &stringme(&log);
             }
-            pal.push('▓');
+            pal.push('█');
             let mut log = Vec::<u8>::new();
-            if !plain {
+            if !h.plain {
                 emit_end_escape(&mut log);
                 pal += &stringme(&log);
             }
@@ -203,32 +108,30 @@ pub fn help5(args: &Vec<String>) {
                 pal.push(' ');
             }
         }
-        println!("{}", pal);
-        println!(
+        h.print_plain(&format!("{}\n", pal));
+        h.print(
             "\nWhen enclone shows amino acids, it colors each codon differently, via \
-             the following scheme:\n"
+             the following scheme:\n\n",
         );
-        println!("{}\n", colored_codon_table(plain));
-        println!(
+        h.print_plain(&format!("{}\n\n", colored_codon_table(h.plain)));
+        h.print(
             "Colored amino acids enable the compact display of all the information in a \
-             clonotype.\n"
+             clonotype.\n\n",
         );
-        println!(
-            "The coloring is done using special characters, called ANSI escape characters.\n\
-             Color is used occasionally elsewhere by enclone, and there is also some\n\
+        h.print(
+            "The coloring is done using special characters, called ANSI escape characters.  \
+             Color is used occasionally elsewhere by enclone, and there is also some  \
              bolding, accomplished using the same mechanism.\n\n\
-             Correct display of colors and bolding depends on having a terminal window\n\
-             that is properly set up.  As far as we know, this may always be the case,\n\
-             but it is possible that there are exceptions.  In addition, in general, text\n\
+             Correct display of colors and bolding depends on having a terminal window \
+             that is properly set up.  As far as we know, this may always be the case, \
+             but it is possible that there are exceptions.  In addition, in general, text \
              editors do not correctly interpret escape characters.\n\n\
-             For both of these reasons, you may wish to turn off the \"special effects\",\n\
-             either some or all of the time.  You can do this by adding the argument"
+             For both of these reasons, you may wish to turn off the \"special effects\", \
+             either some or all of the time.  You can do this by adding the argument\n",
         );
-        bold!();
-        println!("PLAIN");
-        end_escape!();
-        println!("to any enclone command.\n");
-        print(
+        h.print("\\bold{PLAIN}\n");
+        h.print("to any enclone command.\n\n");
+        h.print(
             "We know of two methods to get enclone output into another document, along \
              with colors:\n\
              1. Take a screenshot.\n\
@@ -236,7 +139,8 @@ pub fn help5(args: &Vec<String>) {
              terminal window into a pdf.  See \\bold{enclone help faq} for related \
              instructions.\n\n",
         );
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
@@ -245,25 +149,17 @@ pub fn help5(args: &Vec<String>) {
 
     // Provide faq help.
 
-    if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || help_all {
-        begin_doc!("faq");
-        println!("");
-        if !plain {
-            let mut log = Vec::<u8>::new();
-            emit_bold_escape(&mut log);
-            emit_red_escape(&mut log);
-            print!("{}", strme(&log));
-        }
-        print("\\bold{Frequently Asked Questions}\n\n");
-        end_escape!();
-        println!(
-            "We're sorry you're having difficulty!  Please see the answers below, check out\n\
+    if (args.len() == 3 && args[1] == "help" && args[2] == "faq") || h.help_all {
+        h.begin_doc("faq");
+        h.print("\n\\boldred{Frequently Asked Questions}\n\n");
+        h.print(
+            "We're sorry you're having difficulty!  Please see the answers below, check out \
              the other help guides, and if you're still stuck, write to us at \
-             enclone@10xgenomics.com.\n"
+             enclone@10xgenomics.com.\n\n",
         );
 
-        print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
-        println!(
+        h.print("\\boldblue{1. Why is my enclone output garbled?}\n\n");
+        h.print(
             "We can think of two possibilities:\n\n\
             A. The escape characters that enclone emits for color and bolding are not getting\n\
             translated.  You have some options:\n\
@@ -278,29 +174,37 @@ pub fn help5(args: &Vec<String>) {
             this:\n\
             (a) Make your terminal window wider or reduce the font size.\n\
             (b) Identify the field that is very wide and use the column controls to remove that\n\
-            field.  See the help for lvars and cvars.  For example,"
+            field.  See the help for lvars and cvars.  For example,\n",
         );
-        print(
+        h.print(
             "\\bold{AMINO=cdr3}\n\
              may help, or even\n\
              \\bold{AMINO=}\n\n",
         );
 
-        print("\\boldblue{2. How can I print the entire enclone documentation?}\n\n");
-        println!(
-            "We don't know how in general, but the following works for us from a mac:\n\n\
-             A. open a new terminal window\n\
-             B. make it 111 characters wide; font should be fixed width and roughly 12pt\n\
-             C. type \"enclone help all NOPAGER\"\n\
-             D. type command-A to select all\n\
-             E. type option-command-P to print selection\n\
-             F. click the PDF button in the lower left (drop down menu)\n\
-             G. click \"Open in Preview\"\n\
-             H. then print (or save the pdf, if you prefer).\n"
+        h.print("\\boldblue{2. Can I convert the enclone visual output into other forms?}\n\n");
+        h.print(
+            "Yes.  Here are things you can do:\n\
+             1. If you add the argument \\bold{HTML} to the enclone command line, then the \
+             output will be presented as html.\n\
+             2. You can then convert the html to pdf.  The best way on a Mac is to open Safari, \
+             select a file where you've saved the html, and then export as pdf.  Do not convert \
+             to pdf via printing, which produces a less readable file, and also distorts colors.  \
+             (We do not know why the colors are distorted.)\n\
+             3. You can always cut and paste directly from a terminal window into another document \
+             using screen capture.  To capture as text, see the next item.\n\
+             4. If you open the html file in a browser, you can then select text (including \
+             clonotype box text) and paste into a Google Doc.  That will capture color and \
+             correctly render the box structure, provided that you use an appropriate fixed-width \
+             font for that part of the Doc.  We found that Courier New works, with \
+             line spacing set to 0.88.  You may have to reduce the font size.  But the rendering \
+             will be imperfect.\n\
+             5. You can find the output of \"enclone help all HTML\" on the enclone site \
+             \\green{enclone.10xgenomics.com}.\n\n",
         );
 
-        print("\\boldblue{3. Why is enclone slow for me?}\n\n");
-        print(
+        h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
+        h.print(
             "On a single VDJ dataset, it typically runs for us in a few seconds, on a Mac or Linux \
              server.  Runs where we combine several hundred datasets execute in a couple minutes \
              (on a server).  Your mileage could vary, and we are interested in cases where \
@@ -308,8 +212,10 @@ pub fn help5(args: &Vec<String>) {
              done to speed up enclone.\n\n",
         );
 
-        print("\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n");
-        print(
+        h.print(
+            "\\boldblue{4. How does enclone fit into the 10x Genomics software ecosystem?}\n\n",
+        );
+        h.print(
             "There are several parts to the answer:\n\
              • enclone is a standalone executable that by default produces human-readable output.\n\
              • You can also run enclone to produce parseable output \
@@ -324,22 +230,22 @@ pub fn help5(args: &Vec<String>) {
              compressed view of \"important\" bases or amino acids that enclone shows.\n\n",
         );
 
-        print("\\boldblue{5. What platforms does enclone run on?}\n\n");
-        print(
+        h.print("\\boldblue{5. What platforms does enclone run on?}\n\n");
+        h.print(
             "1. linux/x86-64 (that's most servers)\n\
              2. mac.\n\n\
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
 
-        print("\\boldblue{6. How can I print out all the donor reference sequences?}\n\n");
-        print(
+        h.print("\\boldblue{6. How can I print out all the donor reference sequences?}\n\n");
+        h.print(
             "Add the argument \\bold{DONOR_REF_FILE=filename} to your enclone command, \
              and fasta for the donor reference sequences will be dumped there.\n\n",
         );
 
-        print("\\boldblue{7. How does enclone know what VDJ reference sequences I'm using?}\n\n");
-        print(
+        h.print("\\boldblue{7. How does enclone know what VDJ reference sequences I'm using?}\n\n");
+        h.print(
             "It does not!  It assumes that you have the \\bold{human} reference sequences that \
              shipped with the latest version of Cell Ranger.  If instead your sequences are mouse, \
              then you can specify that by adding the argument \\bold{MOUSE} to your command \
@@ -348,8 +254,8 @@ pub fn help5(args: &Vec<String>) {
              VDJ reference fasta file.\n\n",
         );
 
-        print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
-        print(
+        h.print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");
+        h.print(
             "Yes.  Type \\bold{enclone help input} for details.  The default behavior of \
              enclone is to prevent cells from different donors from being placed in the same \
              clonotype.  The \\bold{MIX_DONORS} option may be used to turn off this behavior.  If \
@@ -359,8 +265,8 @@ pub fn help5(args: &Vec<String>) {
              donors is to allow estimation of enclone's error rate.\n\n",
         );
 
-        print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
-        print(
+        h.print("\\boldblue{9. What are some command line argument values quoted?}\n\n");
+        h.print(
             "Command line argument values that contain any of these characters ;|* need to \
              be quoted like so\n\
              \\bold{TCR=\"a;b\"}\n\
@@ -369,28 +275,28 @@ pub fn help5(args: &Vec<String>) {
              nonsensical and confusing behavior!\n\n",
         );
 
-        print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
-        print(
+        h.print("\\boldblue{10. If enclone fails, does it return nonzero exit status?}\n\n");
+        h.print(
             "Yes, unless output of enclone is going to a terminal.  In that case, you'll always \
              get zero.\n\n",
         );
 
-        print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
-        print(
+        h.print("\\boldblue{11. Could a cell be missing from an enclone clonotype?}\n\n");
+        h.print(
             "Yes, some cells are deliberately deleted.  The cell might have been deleted by \
              one of the filters described in \\bold{enclone help special}, and which you can \
              turn off.  We also delete cells for which more than four chains were found.\n\n",
         );
 
-        print("\\boldblue{12. Can enclone print summary stats?}\n\n");
-        print(
+        h.print("\\boldblue{12. Can enclone print summary stats?}\n\n");
+        h.print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
              printed.  If you only want to see the summary stats, then also add the option \
              \\bold{NOPRINT}.\n\n",
         );
 
-        print("\\boldblue{13. What is the notes column?}\n\n");
-        print(
+        h.print("\\boldblue{13. What is the notes column?}\n\n");
+        h.print(
             "The notes column appears if one of two relatively rare events occurs:\n\n\
              1. An insertion is detected in a chain sequence, relative to the reference.\n\n\
              2. The end of the J segment on a chain sequence does not exactly coincide with\n   \
@@ -414,22 +320,22 @@ pub fn help5(args: &Vec<String>) {
              in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
-        print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
-        print(
+        h.print("\\boldblue{14. Can I cap the number of threads used by enclone?}\n\n");
+        h.print(
             "You can use the command-line argument \\bold{MAX_CORES=n} to cap the number of \
              cores used in parallel loops.  The number of threads used is typically one \
              higher.\n\n",
         );
 
-        print("\\boldblue{15. Does enclone work under Windows?}\n\n");
-        print(
+        h.print("\\boldblue{15. Does enclone work under Windows?}\n\n");
+        h.print(
             "No.  There are nontrivial technical problems with getting this to work.  If you're \
              sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
              know if you're interested in support for Windows.\n\n",
         );
 
-        print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
-        print(
+        h.print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
+        h.print(
             "Possibly.  In some cases this works very well, but in other cases it does not.  \
             Success depends on dataset characteristics that have not been carefully investigated.  \
             To attempt this, you need to invoke Cell Ranger on the GEX dataset as if \
@@ -439,119 +345,129 @@ pub fn help5(args: &Vec<String>) {
             is not an officially supported Cell Ranger configuration.\n\n",
         );
 
-        print("\\boldblue{17. How can I cite enclone?}\n\n");
-        println!("This version of enclone has been provided under a non-disclosure agreement,");
-        println!(
+        h.print("\\boldblue{17. How can I cite enclone?}\n\n");
+        h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
+        h.print(
             "however once enclone has officially launched, you will be able to cite this \
-             version as:"
+             version as:\n",
         );
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
-        print!("{}", strme(&log));
-        println!(
-            "10x Genomics, https://github.com/10XGenomics/enclone, version {}.",
-            VERSION_STRING.before(",")
-        );
+        h.print(&format!("{}", strme(&log)));
+        if !ctl.gen_opt.stable_doc {
+            h.print(&format!(
+                "10x Genomics, https://github.com/10XGenomics/enclone, version {}.\n",
+                VERSION_STRING.before(",")
+            ));
+        } else {
+            h.print(
+                "10x Genomics, https://github.com/10XGenomics/enclone,\n\
+                    (your enclone version information will be printed here).\n",
+            );
+        }
+        let mut log = Vec::<u8>::new();
         emit_end_escape(&mut log);
-        print!("{}", strme(&log));
-        print(
+        h.print(&format!("{}", strme(&log)));
+        h.print(
             "At some point subsequent to that, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",
         );
 
-        print("\\boldblue{18. How enclone output html?}\n\n");
-
-        print(
-            "Yes, just add the argument \\bold{HTML} to the command line.  Currently this does \
-            not work with help.\n\n",
-        );
-
-        std::process::exit(0);
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Provide developer help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || help_all {
-        begin_doc!("developer");
-        print("\n\\bold{a few options for developers}\n\n");
-        print(
-            "For instructions on how to compile, please see\n\
-             \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
-        );
-        doc!(
-            "COMP",
-            "report computational performance stats; use this with NOPRINT if you"
-        );
-        doc!(
-            "",
-            "only want to see the computational performance stats, and with NOPAGER if you"
-        );
-        doc!("", "want output to be unbuffered");
-        doc!(
-            "COMP2",
-            "like COMP, but adds more detailed lines that are prefixed with --"
-        );
-        ldoc!(
-            "CTRLC",
-            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive"
-        );
-        doc!(
-            "",
-            "but easy profiling method, to know what the code is doing if it seems to be"
-        );
-        doc!("", "very slow");
-        ldoc!(
-            "HAPS=n",
-            "Interrupt code n times, at one second intervals, get a traceback, and then tally"
-        );
-        doc!(
-            "",
-            "the tracebacks.  This only works if the n tracebacks can be obtained before"
-        );
-        doc!(
-            "",
-            "enclone terminates.  Interrupts that occur in the allocator are ignored, and"
-        );
-        doc!(
-            "",
-            "in some cases, this accounts for most interrupts, resulting in confusing"
-        );
-        doc!(
-            "",
-            "output.  In such cases, consider using CTRLC or a more sophisticated tool"
-        );
-        doc!(
-            "",
-            "like perf.  Also HAPS only reports on the master thread, so to get useful"
-        );
-        doc!(
-            "",
-            "information, you probably need to change an instance in the code of"
-        );
-        doc!(
-            "",
-            "par_iter_mut to iter_mut, to turn off parallelization for a strategically"
-        );
-        doc!("", "selected section.");
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
-        println!("{}", log);
-        if !help_all {
+        if !h.help_all {
+            h.dump();
             std::process::exit(0);
         }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Catch unrecognized help requests.
+    // Provide developer help.
 
-    if args.len() >= 2 {
-        args[1].make_ascii_lowercase();
-        if args[1].contains("help") {
+    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || h.help_all {
+        h.begin_doc("developer");
+        h.print("\n\\bold{a few options for developers}\n\n");
+        h.print(
+            "For instructions on how to compile, please see\n\
+             \\green{https://github.com/10XDev/enclone/blob/master/COMPILE.md}.\n\n",
+        );
+        h.doc(
+            "COMP",
+            "report computational performance stats; use this with NOPRINT if you",
+        );
+        h.doc(
+            "",
+            "only want to see the computational performance stats, and with NOPAGER if you",
+        );
+        h.doc("", "want output to be unbuffered");
+        h.doc(
+            "COMP2",
+            "like COMP, but adds more detailed lines that are prefixed with --",
+        );
+        h.ldoc(
+            "CTRLC",
+            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive",
+        );
+        h.doc(
+            "",
+            "but easy profiling method, to know what the code is doing if it seems to be",
+        );
+        h.doc("", "very slow");
+        h.ldoc(
+            "HAPS=n",
+            "Interrupt code n times, at one second intervals, get a traceback, and then tally",
+        );
+        h.doc(
+            "",
+            "the tracebacks.  This only works if the n tracebacks can be obtained before",
+        );
+        h.doc(
+            "",
+            "enclone terminates.  Interrupts that occur in the allocator are ignored, and",
+        );
+        h.doc(
+            "",
+            "in some cases, this accounts for most interrupts, resulting in confusing",
+        );
+        h.doc(
+            "",
+            "output.  In such cases, consider using CTRLC or a more sophisticated tool",
+        );
+        h.doc(
+            "",
+            "like perf.  Also HAPS only reports on the master thread, so to get useful",
+        );
+        h.doc(
+            "",
+            "information, you probably need to change an instance in the code of",
+        );
+        h.doc(
+            "",
+            "par_iter_mut to iter_mut, to turn off parallelization for a strategically",
+        );
+        h.doc("", "selected section.");
+        h.print_tab2();
+        h.print("\n");
+        if !h.help_all {
+            h.dump();
+            std::process::exit(0);
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Finish enclone help all.
+
+    if h.help_all {
+        h.dump();
+        std::process::exit(0);
+
+    // Catch unrecognized help requests.
+    } else if args.len() >= 2 {
+        let mut x = args[1].clone();
+        x.make_ascii_lowercase();
+        if x.contains("help") {
             println!("\nYour help request doesn't match one known to enclone.\n");
             println!("Please type \"enclone\" to see the help options.\n");
             std::process::exit(1);
