@@ -120,10 +120,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     {
         h.begin_doc("setup");
         h.print(
-            "\nWelcome to enclone!\n\n\
+            "\n\nWelcome to enclone!\n\n\
              The purpose of this first page is to help you make sure that you're set up properly\n\
              to run enclone.  PLEASE READ!\n\n\
-             (for the main help page, please type instead: enclone)\n\n\n\
+             (for the main help page, please type instead: enclone)\n\n\
              Here we go through several setup tests.  If you have any problem that you can't\n\
              resolve, please email us at enclone@10xgenomics.com.\n\n\n\
              1. Are you using a fixed width font?\n\
@@ -131,12 +131,12 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              A FAT BROWN CAT JUMPED OVER THE WALL\n\
              ||||||||||||||||||||||||||||||||||||\n\
              Do those two lines end at the same position?  If not, you need to switch your \
-             font.\n\n\n\
+             font.\n\n\
              2. Is your terminal window wide enough to see the help pages?\n\
              Your terminal needs to be at least 100 columns wide.  Look at this:\n\
              01234567890123456789012345678901234567890123456789\
              01234567890123456789012345678901234567890123456789\n\
-             Does it appear as a single line?  If not, please widen your window.\n\n\n\
+             Does it appear as a single line?  If not, please widen your window.\n\n\
              3. Can your terminal display box characters?\n\
              Look at this:\n\
              ┌────────┬─────────┐\n\
@@ -144,8 +144,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              ├────────┼─────────┤\n\
              │oops    │  slipped│\n\
              └────────┴─────────┘\n\
-             Do you see a neat rectangle composed of four rectangles with words inside them?\n\
-             If not, something is wrong with your terminal!\n\n\
+             Do you see a neat rectangle composed of four rectangles with words inside them?  \
+             Are the vertical lines contiguous?  \
+             If not, something is wrong with your terminal!  You may need to change the terminal \
+             font.  For example, Menlo works, but Courier does not.\n\n\
              4. Can your terminal correctly display ANSI escape sequences?\n\
              The following word should be \\bold{bold}.  \
              The following word should be \\blue{blue}.\n\
@@ -161,7 +163,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              6. Does this entire help page appear at once in your terminal window?\n\
              If not, please increase the number of rows in your window to 56.\n\n\n\
              If you go through all those tests and everything worked, you should be \
-             good to go!\n\n",
+             good to go!\n\n\n",
         );
         if !h.help_all {
             h.dump();
