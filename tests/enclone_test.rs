@@ -20,13 +20,14 @@ use enclone::proto_io::read_proto;
 use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
 use failure::Error;
+use flate2::read::GzDecoder;
 use io_utils::*;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::fs::{read_to_string, remove_file};
-use std::io::Write;
+use std::fs::{read_to_string, remove_file, File};
+use std::io::{Read, Write};
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
@@ -488,9 +489,12 @@ fn test_enclone_prebuild() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This test runs enclone for a few test inputs, with LOUPE output
+// This test runs enclone for two test inputs, with LOUPE output
 // turned on. It will then read both the bincode and proto file created
 // and asserts that we get the same data structure either way.
+//
+// It also tests to make sure that the LOUPE output is unchanged.  If it changed for a good
+// reason, update the output file.  Otherwise perhaps something has gone wrong!
 
 #[cfg(not(debug_assertions))]
 #[test]
@@ -505,6 +509,31 @@ fn test_proto_write() -> Result<(), Error> {
             .args(&[&pre_arg, *t, &binary_arg, &proto_arg])
             .output()
             .expect(&format!("failed to execute enclone for test_proto_write"));
+
+        // Test to make sure output is unchanged.
+
+        let oldx = format!("test/inputs/{}.binary.gz", t.after("="));
+        let newx = format!("{}.bin", LOUPE_OUT_FILENAME);
+        let mut f = File::open(&oldx)?;
+        let mut oldbufgz = Vec::<u8>::new();
+        f.read_to_end(&mut oldbufgz)?;
+        let mut gz = GzDecoder::new(&oldbufgz[..]);
+        let mut oldbuf = Vec::<u8>::new();
+        gz.read_to_end(&mut oldbuf)?;
+        let mut f = File::open(&newx)?;
+        let mut newbuf = Vec::<u8>::new();
+        f.read_to_end(&mut newbuf)?;
+        if oldbuf != newbuf {
+            eprintln!(
+                "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
+                please regenerate the file {}\n",
+                t, oldx
+            );
+            std::process::exit(1);
+        }
+
+        // Test to make sure proto and bin are consistent.
+
         let outputs_proto = read_proto(format!("{}.proto", LOUPE_OUT_FILENAME))?;
         let outputs_bin: EncloneOutputs = io_utils::read_obj(format!("{}.bin", LOUPE_OUT_FILENAME));
         std::fs::remove_file(format!("{}.proto", LOUPE_OUT_FILENAME))?;

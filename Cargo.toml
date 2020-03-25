@@ -16,6 +16,7 @@ byteorder = "1.3.2"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 failure = "0.1.5"
+flate2 = "1.0.12"
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "0.2.4"
 itertools = "^0.7"
