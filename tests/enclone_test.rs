@@ -111,7 +111,7 @@ fn test_enclone() {
             res.2 = stringme(&log);
         } else {
             let mut old = String::new();
-            if !expect_fail {
+            if !expect_fail && !expect_ok {
                 old = read_to_string(&out_file).unwrap();
             }
 
