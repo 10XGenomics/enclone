@@ -1,5 +1,17 @@
 # enclone
 
+<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
+
+<br>
+
+This site is under construction.  Please do not enter unless you have been directed here, and
+are wearing proper safety equipment.  (photo credit: NIOSH/wikipedia)
+
+<br>
+<br>
+<br>
+<br>
+
 `enclone` is a computational tool for studying the adaptive immune system in humans and
 other vertebrate species.  
 
