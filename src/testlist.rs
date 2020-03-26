@@ -52,7 +52,7 @@ pub const TESTS: [&str; 50] = [
     r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
-    // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
+    // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
     r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
     // 20. example affected by whitelist (gel bead oligo contamination) filtering, and test u_Σ
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
