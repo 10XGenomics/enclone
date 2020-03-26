@@ -26,8 +26,8 @@ pub const TESTS: [&str; 50] = [
     r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. this clonotype included a junk chain before we made a change
-    r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
+    // 8. this clonotype included a junk chain before we made a change, and test "/outs"
+    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_CELL
     r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
