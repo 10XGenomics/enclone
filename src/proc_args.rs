@@ -4,6 +4,7 @@ use crate::defs::*;
 use crate::proc_args2::*;
 use crate::proc_args3::*;
 use crate::proc_args_check::*;
+use crate::testlist::*;
 use perf_stats::*;
 use regex::Regex;
 use std::{env, time::Instant};
@@ -52,7 +53,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.pre = "/mnt/assembly/vdj/current14".to_string();
+        ctl.gen_opt.pre = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
     }
 
     // Set up general options.
