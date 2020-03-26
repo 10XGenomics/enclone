@@ -616,8 +616,7 @@ pub fn group_and_print_clonotypes(
     // Print to stdout.
 
     if !ctl.gen_opt.html {
-        print!("{}", &strme(&logx));
-    // print!("{}", compress_ansi_escapes(&strme(&logx)));
+        print!("{}", compress_ansi_escapes(&strme(&logx)));
     } else {
         let s = convert_text_with_ansi_escapes_to_html(
             strme(&logx),

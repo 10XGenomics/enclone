@@ -35,7 +35,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=dj/merge_escapes#b28f8c8bcdae44917d12176a58121bd0d8b499dd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#529a237995ffb007f260b8f2cf55e9c72d076b1e"
 dependencies = [
  "string_utils 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "vector_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -483,7 +483,7 @@ name = "enclone"
 version = "0.1.0"
 dependencies = [
  "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
- "ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=dj/merge_escapes)",
+ "ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "assert_cmd 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bio 0.29.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2132,7 +2132,7 @@ dependencies = [
 "checksum aho-corasick 0.7.9 (registry+https://github.com/rust-lang/crates.io-index)" = "d5e63fd144e18ba274ae7095c0197a870a7b9468abc801dd62f190d80817d2ec"
 "checksum align_tools 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)" = "<none>"
 "checksum amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)" = "<none>"
-"checksum ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=dj/merge_escapes)" = "<none>"
+"checksum ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)" = "<none>"
 "checksum approx 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "f0e60b75072ecd4168020818c0107f2857bb6c4e64252d8d3983f6263b40a5c3"
 "checksum ascii 0.9.3 (registry+https://github.com/rust-lang/crates.io-index)" = "eab1c04a571841102f5345a8fc0f6bb3d31c315dec879b5c6e42e40ce7ffa34e"
 "checksum assert_cmd 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6283bac8dd7226470d491bc4737816fea4ca1fba7a2847f2e9097fd6bfb4624c"
