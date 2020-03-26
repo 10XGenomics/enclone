@@ -2,8 +2,8 @@
 
 // Information about enclone tests.
 
-pub fn enclone_testdata() -> &'static str {
-    include_str!["enclone.testdata"]
+pub fn enclone_testdata() -> String {
+    include_str!["enclone.testdata"].to_string()
 }
 
 pub const TEST_FILES_VERSION: u8 = 14;
