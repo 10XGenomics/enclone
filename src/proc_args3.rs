@@ -131,8 +131,11 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
 
                 // For an internal run, see if removing PRE works.
 
-                if ctl.gen_opt.internal_run && ctl.gen_opt.pre.len() > 0 
-                    && !path_exists(&p) && path_exists(x) {
+                if ctl.gen_opt.internal_run
+                    && ctl.gen_opt.pre.len() > 0
+                    && !path_exists(&p)
+                    && path_exists(x)
+                {
                     p = x.clone();
                     if path_exists(&format!("{}/outs", x)) {
                         p = format!("{}/outs", x);
