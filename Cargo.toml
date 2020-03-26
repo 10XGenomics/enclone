@@ -49,6 +49,9 @@ features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
 branch= "pmarks/linking"
 
+[dev-dependencies]
+flate2 = "1.0.12"
+
 [build-dependencies]
 prost-build = "0.5.0"
 
