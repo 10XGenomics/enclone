@@ -129,6 +129,16 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                     p = format!("{}/outs", p);
                 }
 
+                // For an internal run, see if removing PRE works.
+
+                if ctl.gen_opt.internal_run && ctl.gen_opt.pre.len() > 0 
+                    && !path_exists(&p) && path_exists(x) {
+                    p = x.clone();
+                    if path_exists(&format!("{}/outs", x)) {
+                        p = format!("{}/outs", x);
+                    }
+                }
+
                 // For internal runs, try much harder.  This is so that internal users can just
                 // type an internal numerical id for a dataset and have it always work.
                 // The code that's used here should be placed somewhere else.
