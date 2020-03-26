@@ -1,8 +1,12 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-pub const TEST_FILES_VERSION: u8 = 14;
+// Information about enclone tests.
 
-// Main list of tests for enclone.
+pub fn enclone_testdata() -> &'static str {
+    include_str!["enclone.testdata"]
+}
+
+pub const TEST_FILES_VERSION: u8 = 14;
 
 pub const TESTS: [&str; 50] = [
     // 1. tests variant base after CDR3, parseable output
