@@ -133,7 +133,7 @@ enclone PRE=~/enclone/datasets BCR=123085
 ```
 provided that you put test data in the location indicated under download instructions.  Otherwise
 you would need to change the value of `PRE`.  The directory `123085` is in the directory
-`~/enclone/datasets` and consists of some files from a Cell Ranger run, obtained from a human 
+`~/enclone/datasets` and contains some files from a Cell Ranger run, obtained from a human 
 ovarian cancer sample.
 
 By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
