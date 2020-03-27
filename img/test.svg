@@ -5,15 +5,21 @@ xmlns="http://www.w3.org/2000/svg">
 
 <text x="0" y="15" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
 
-443 BCR libraries from 30 donors, which yielded <tspan style="fill: red;">9573</tspan> clonotypes
-having at least two cells each, of which
-<tspan style="fill: red;">15 (0.16%)</tspan> contained data 
+To test the performance of the current version, we combined data from
 
 </text>
 
-<text x="0" y="30" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
+<text x="0" y="35" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
 
-from multiple donors.  These are errors.
+443 BCR libraries from 30 donors, which yielded <tspan style="fill: red;">9573</tspan> clonotypes
+having at least two cells each, of which
+<tspan style="fill: red;">15 (0.16%)</tspan> contained
+
+</text>
+
+<text x="0" y="55" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
+
+data from multiple donors.  These are errors.
 
 </text>
 
