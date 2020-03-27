@@ -2,6 +2,6 @@
 baseProfile="full"
 width="400" height="20"
 xmlns="http://www.w3.org/2000/svg">
-<text x="0" y="10" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">which yielded <tspan style="fill: red;>9573</tspan> clonotypes
+<text x="0" y="10" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">which yielded <tspan style="fill: red;">9573</tspan> clonotypes
 </text>
 </svg>
