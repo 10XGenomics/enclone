@@ -33,9 +33,6 @@ characterization of individual immune cells.
 `enclone` and this page are designed for immunologists, but if
 you're simply curious, there's nothing to stop you from downloading and playing with it.
 
-experiment, please ignore:
-<img src="img/test.svg" alt="experiment" title="experiment" /> 
-
 The mission of `enclone` is to:
 
 **Find and display the clonotypes within single cell VDJ datasets:
