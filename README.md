@@ -187,7 +187,6 @@ and that we may not be able to answer your question.
 
 please ignore, experiment in progress:
 
-<img src="img/test.svg" alt="experiment" title="experiment" /> 
-next line
+<img src="img/test.svg" alt="experiment" title="experiment" />next line
 
 end experiment
