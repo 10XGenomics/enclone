@@ -53,7 +53,7 @@ the online documentation for `enclone`, and will be described separately in more
 ___________________________________________________________________________________________________
 
 <a name="software" style="display:block; position:relative; top:-150px;"></a>
-### The `enclone` software
+## The `enclone` software
 
 `enclone` is open-source, beta software.  Binary executables for Linux and Mac can be 
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
@@ -72,7 +72,7 @@ with which `enclone` will be integrated (later).
 ___________________________________________________________________________________________________
 
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
-### How to download and install `enclone` and get test datasets
+## How to download and install `enclone` and get test datasets
 
 <b>(these instructions are not yet functional)</b>
 
@@ -109,7 +109,7 @@ This assumes that you have not touched the repo since you first cloned it.  Othe
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 ___________________________________________________________________________________________________
 
-### How to run `enclone`
+## How to run `enclone`
 
 Running `enclone` can be as simple as typing e.g. `enclone BCR=/home/my_name/experiment_123`
 where the path is where your Cell Ranger outputs live, but there are many options to learn
@@ -122,7 +122,7 @@ documentation within its online menus.  To get started you should:
 2. Type `enclone` to get to the main `enclone` help menu.
 ___________________________________________________________________________________________________
 
-### How to understand `enclone` output
+## How to understand `enclone` output
 
 The example below shows how `enclone` prints out clonotypes.  This is something you'll need
 to study in order to use `enclone` successfully.  `enclone` comes with extensive online 
@@ -149,7 +149,7 @@ as possible.  You can write to us at enclone@10xgenomics.com.
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
-### How to display clonotypes produced by `enclone`
+## How to display clonotypes produced by `enclone`
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
@@ -168,7 +168,7 @@ to the `enclone` command line.  That caused `enclone` to generate the image as t
 <br><br><br><br><br><br>
 ___________________________________________________________________________________________________
 
-### The `enclone` manual
+## The `enclone` manual
 
 `enclone` has about 25 online help pages.  The concatenation of all these help pages is
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
@@ -177,14 +177,14 @@ We may expand this out in the future to show the separate pages.
 
 ___________________________________________________________________________________________________
 
-### How to compile the `enclone` software
+## How to compile the `enclone` software
 
 It is not difficult but you should not need to do this unless you want to contribute
 to the `enclone` codebase.  Please see [compilation](COMPILE.md).
 
 ___________________________________________________________________________________________________
 
-### Questions
+## Questions
 
 Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
 and that we may not be able to answer your question.
