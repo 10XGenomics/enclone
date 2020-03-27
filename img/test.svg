@@ -1,6 +1,6 @@
 <svg version="1.1"
 baseProfile="full"
-width="400" height="467.68"
+width="400" height="50"
 xmlns="http://www.w3.org/2000/svg">
-<text x="30" y="455.68" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">(experiment in progress)</text>
+<text x="0" y="0" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">(experiment in progress)</text>
 </svg>
