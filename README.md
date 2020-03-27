@@ -185,4 +185,10 @@ ________________________________________________________________________________
 Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
 and that we may not be able to answer your question.
 
-please ignore, experiment in progress:<br><img src="img/test.svg" alt="experiment" title="experiment" /><br>next line<br>end experiment
+please ignore, experiment in progress:
+
+<img src="img/test.svg" alt="experiment" title="experiment" />
+
+next line
+
+end experiment
