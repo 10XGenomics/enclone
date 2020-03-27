@@ -2,6 +2,5 @@
 baseProfile="full"
 width="400" height="467.68"
 xmlns="http://www.w3.org/2000/svg">
-<text x="30" y="455.68" font-family="Arial" font-size="20">(experiment in progress)</text>
-<circle cx="20" cy="450.68" r="4" fill="red" />
+<text x="30" y="455.68" font-size="15">(experiment in progress)</text>
 </svg>
