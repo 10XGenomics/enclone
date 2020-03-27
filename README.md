@@ -49,6 +49,7 @@ approximated, with high accuracy (see below).  The method we use for this is des
 the online documentation for `enclone`, and will be described separately in more detail.
 
 <img src="img/performance.svg" alt="performance" title="performance" />
+
 ___________________________________________________________________________________________________
 
 <a name="software" style="display:block; position:relative; top:-150px;"></a>
