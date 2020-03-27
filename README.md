@@ -125,7 +125,18 @@ to study in order to use `enclone` successfully.  `enclone` comes with extensive
 documentation, and because you can easily play with the sample datasets, you can gradually
 figure out how it all works.
 
-<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
+<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> 
+
+This exact output would be obtained by typing
+```
+enclone PRE=~/enclone/datasets BCR=123085
+```
+provided that you put test data in the location indicated under download instructions.  Otherwise
+you would need to change the value of `PRE`.  The directory `123085` is in the directory
+`~/enclone/datasets` and consists of some files from a Cell Ranger run, obtained from a human 
+ovarian cancer sample.
+
+By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
 `enclone` to print clonotypes in machine-readable forms that are suitable for input to other
 programs.
 
