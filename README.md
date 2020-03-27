@@ -51,6 +51,7 @@ the online documentation for `enclone`, and will be described separately in more
 <img src="img/performance.svg" alt="performance" title="performance" />
 ___________________________________________________________________________________________________
 
+<a name="software" style="display:block; position:relative; top:-150px;"></a>
 ### The `enclone` software
 
 `enclone` is open-source, beta software.  Binary executables for Linux and Mac can be 
