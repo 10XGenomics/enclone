@@ -37,8 +37,8 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 The mission of `enclone` is to:
 
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
-First, to fully access the biology of both chains in ...
-The <i>finding</i> part is algorithmically challenging: it is very easy to mistakenly connect
+To do this, you have to start from single-cell data.
+Then the <i>finding</i> part is algorithmically challenging: it is very easy to mistakenly connect
 together unrelated cells and put them in the same clonotype, and to "pollute" a clonotype with
 spurious chains that do not belong there.  The <i>displaying</i> part is also challenging, and
 indeed we are not aware of other tools to do it.
