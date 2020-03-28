@@ -99,6 +99,9 @@ This gets you the absolute latest version of `enclone`.  You can repeat this ste
 want to update.  At a later date, there will also be separately numbered releases that have passed 
 a more extensive set of tests.
 
+It is not necessary to compile enclone, unless you want to contribute
+to the `enclone` codebase.  Please see [compilation](COMPILE.md).
+
 <b>3.  Download test data.</b>  Type the following to download the `enclone` test datasets 
 (and the source code, but you probably won't need that):
 ```
@@ -133,9 +136,6 @@ documentation within its online menus.  To get started you should:
 The concatenated help pages are also
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
-
-It is not necessary to compile enclone, unless you want to contribute
-to the `enclone` codebase.  Please see [compilation](COMPILE.md).
 ___________________________________________________________________________________________________
 
 ## How to understand `enclone` output
