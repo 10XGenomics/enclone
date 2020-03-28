@@ -36,12 +36,14 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 
 ## The mission of `enclone`
 
-If you have a sample and have generated VDJ data from the B or T cells within it, you should be 
+If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
+have the power to fully understand the nature of the receptors for those cells, because you have
+in hand the sequences for each of their chains.  You should be 
 able to directly see their biology, without aid from a computational expert.  To that end, we 
 start with this simple goal:
 
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
-To do this, you have to start from single-cell data.  Then the <i>finding</i> part is 
+The <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
 clonotype, and to "pollute" a clonotype with "ectopic" chains.  
 The <i>displaying</i> part is also challenging: we are unaware of other tools to do it.
