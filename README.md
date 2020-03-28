@@ -46,7 +46,7 @@ that end, we start with this simple goal:
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 The <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
-clonotype, and to "pollute" a clonotype with "ectopic" chains.  
+clonotype, and to "pollute" a clonotype with chains that do not belong there.
 The <i>displaying</i> part is also challenging: we are unaware of other tools to do it.
 
 <br>
