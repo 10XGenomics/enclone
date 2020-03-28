@@ -177,7 +177,7 @@ LEGEND=blue,"pre-vaccination cell",
 ```
 to the enclone command line, yielding the image shown here as the file `clono.svg`.
 
-<br><br><br><br><br>
+<br><br><br>
 ___________________________________________________________________________________________________
 
 ## Questions
