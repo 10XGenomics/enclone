@@ -81,7 +81,7 @@ with which enclone will be integrated (later).
 ___________________________________________________________________________________________________
 
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
-## How to install enclone
+## Install enclone
 
 <b>(these instructions are not yet functional)</b>
 
@@ -121,7 +121,7 @@ This assumes that you have not touched the repo since you first cloned it.  Othe
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 ___________________________________________________________________________________________________
 
-## How to run enclone
+## Run enclone
 
 Running enclone can be as simple as typing e.g. `enclone BCR=/home/my_name/experiment_123`
 where the path is where your Cell Ranger outputs live, but there are many options to learn
@@ -138,7 +138,7 @@ The concatenated help pages are also
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
 ___________________________________________________________________________________________________
 
-## How to understand enclone output
+## Understand enclone output
 
 The example below shows how enclone prints out clonotypes.  This is something you'll need
 to study in order to use enclone successfully.  enclone comes with extensive online 
@@ -161,7 +161,7 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
-## How to display clonotypes produced by enclone
+## Display clonotypes produced by enclone
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
