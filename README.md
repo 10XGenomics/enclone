@@ -45,7 +45,6 @@ indeed we are not aware of other tools to do it.
 
 <br>
 <br>
-<br>
 
 The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
 but things are simpler because T cells do not have somatic hypermutation.
