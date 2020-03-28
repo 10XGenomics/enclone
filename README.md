@@ -7,8 +7,8 @@
 <br>
 <br>
 
-This site is under construction and undergoing initial testing.  Please do not enter unless 
-you've been directed here.
+Watch your step!  This site is under construction and undergoing initial testing.  Please do not 
+enter unless you've been directed here.
 
 (photo credit: NIOSH/wikipedia)
 
