@@ -23,8 +23,7 @@ other vertebrate species.
 It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
 characterization of individual immune cells.
 
-<img src="img/general_audience.svg" alt="general audience" title="general audience" width="600"/>
-
+<img src="img/general_audience.svg" alt="general audience" title="general audience" width="500"/>
 ## The mission of enclone
 
 If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
