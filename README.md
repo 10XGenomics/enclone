@@ -43,6 +43,8 @@ together unrelated cells and put them in the same clonotype, and to "pollute" a 
 spurious chains that do not belong there.  The <i>displaying</i> part is also challenging, and
 indeed we are not aware of other tools to do it.
 
+<br>
+
 The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
 but things are simpler because T cells do not have somatic hypermutation.
 
