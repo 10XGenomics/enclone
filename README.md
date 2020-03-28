@@ -36,9 +36,9 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 
 ## The mission of `enclone`
 
-If you have a sample of cells and have generated VDJ data from them, you should be able
-to directly see the biology of your sample, without aid from a computational expert.
-To that end, we have started with this simple goal:
+If you have a sample and have generated VDJ data from the B or T cells within it, you should be 
+able to directly see their biology, without aid from a computational expert.  To that end, we 
+start with this simple goal:
 
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 To do this, you have to start from single-cell data.  Then the <i>finding</i> part is 
