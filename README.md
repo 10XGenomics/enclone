@@ -133,6 +133,9 @@ documentation within its online menus.  To get started you should:
 The concatenated help pages are also
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
+
+It is not necessary to compile enclone, unless you want to contribute
+to the `enclone` codebase.  Please see [compilation](COMPILE.md).
 ___________________________________________________________________________________________________
 
 ## How to understand `enclone` output
@@ -179,13 +182,6 @@ LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell"
 to the `enclone` command line.  That caused `enclone` to generate the image as the file `clono.svg`.
 
 <br><br><br><br><br><br>
-___________________________________________________________________________________________________
-
-## How to compile the `enclone` software
-
-It is not difficult but you should not need to do this unless you want to contribute
-to the `enclone` codebase.  Please see [compilation](COMPILE.md).
-
 ___________________________________________________________________________________________________
 
 ## Questions
