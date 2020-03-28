@@ -23,16 +23,7 @@ other vertebrate species.
 It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
 characterization of individual immune cells.
 
-> For the general audience: every time you get sick, your body mounts an immune response involving
-> selective amplification of immune cells and mutations within them.
-> enclone allows you to see the history of individual immune cells within a 
-> biological sample (such as a blood draw or biopsy): how they evolved in response to antigens, 
-> including those in viruses, bacteria and tumors.  Understanding this is a highly active 
-> research area with many mysteries that will take years if not decades to fully sort out, with 
-> profound implications for biology and medicine.  Welcome to the frontier!
-
-enclone and this page are designed for immunologists, but if
-you're simply curious, there's nothing to stop you from downloading and playing with it.
+<img src="img/general_audience.svg" alt="general audience" title="general audience" />
 
 ## The mission of enclone
 
