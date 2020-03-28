@@ -1,9 +1,6 @@
 <svg version="1.1"
-baseProfile="full"
 width="970" height="125"
 xmlns="http://www.w3.org/2000/svg">
-
-<g>
 
 <rect x="5" y="5" width="880" height="115"
   style="fill:white;stroke:black;stroke-width:2;fill-opacity:0.1;stroke-opacity:0.9" />
@@ -36,7 +33,5 @@ unrelated cells in the same clonotype is low.  This is a consequence of both the
  data and the algorithm.
 
 </text>
-
-</g>
 
 </svg>
