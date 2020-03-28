@@ -36,8 +36,7 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 
 The mission of `enclone` is to:
 
-**Find and display the clonotypes within single cell VDJ datasets:
-groups of T and B cells having the same fully rearranged common ancestor.**
+<img src="img/mission.svg" alt="mission" title="mission" />
 
 The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
 but things are simpler because T cells do not have somatic hypermutation.
