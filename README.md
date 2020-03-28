@@ -48,7 +48,7 @@ only be obtained from _single cell_ data!  From such data, clonotypes can be com
 approximated, with high accuracy (see below).  The method we use for this is described briefly in 
 the online documentation for `enclone`, and will be described separately in more detail.
 
-<img src="img/performance.svg" alt="performance" title="performance" width="100%" height="100%" />
+<img src="img/performance.svg" alt="performance" title="performance" viewBox="0 0 880 115" />
 
 ___________________________________________________________________________________________________
 
