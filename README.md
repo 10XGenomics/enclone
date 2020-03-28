@@ -183,6 +183,7 @@ ________________________________________________________________________________
 
 ## Questions
 
-We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
-as possible.  You can write to us at enclone@10xgenomics.com.
-Please note that `enclone` is beta software and that we may not be able to answer your question.
+Please ask us questions!  We are greatly interested in your feedback and ideas you may have to 
+make `enclone` as useful as possible.  You can write to us at enclone@10xgenomics.com.
+Please note that `enclone` is beta software and is thus a work in progress.  We are actively
+making many changes and may be unable to respond promptly to your particular request.
