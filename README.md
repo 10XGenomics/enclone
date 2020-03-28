@@ -130,10 +130,9 @@ documentation within its online menus.  To get started you should:
 
 2. Type `enclone` to get to the main `enclone` help menu.
 
-You can see the concatenated help pages
+The concatenated help pages are also
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
-<b>[BROKEN LINK]</b>.  
-We may expand this out in the future to show the separate pages.
+<b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
 ___________________________________________________________________________________________________
 
 ## How to understand `enclone` output
