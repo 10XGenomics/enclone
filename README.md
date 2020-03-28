@@ -129,6 +129,11 @@ documentation within its online menus.  To get started you should:
 1. Type `enclone help`, to make sure your terminal window works for `enclone`.
 
 2. Type `enclone` to get to the main `enclone` help menu.
+
+You can see the concatenated help pages
+[here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
+<b>[BROKEN LINK]</b>.  
+We may expand this out in the future to show the separate pages.
 ___________________________________________________________________________________________________
 
 ## How to understand `enclone` output
@@ -175,15 +180,6 @@ LEGEND=blue,"pre-vaccination cell",red,"post-vaccination cell"
 to the `enclone` command line.  That caused `enclone` to generate the image as the file `clono.svg`.
 
 <br><br><br><br><br><br>
-___________________________________________________________________________________________________
-
-## The `enclone` manual
-
-`enclone` has about 25 online help pages.  The concatenation of all these help pages is
-[here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
-<b>[BROKEN LINK]</b>.  
-We may expand this out in the future to show the separate pages.
-
 ___________________________________________________________________________________________________
 
 ## How to compile the `enclone` software
