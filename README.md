@@ -46,8 +46,9 @@ The <i>displaying</i> part is also challenging: we are unaware of other tools to
 <br>
 <br>
 
-The following diagram shows what a _clonotype_ is for B cells.  The same applies for T cells,
-but things are simpler because T cells do not have somatic hypermutation.
+To make sure we are using terminology in the same way, the following diagram shows what a 
+_clonotype_ is for B cells.  The same applies for T cells, but things are simpler because T cells 
+do not have somatic hypermutation.
 
 <img src="img/what_is_a_clonotype.png" alt="what is a clonotype" title="what is a clonotype" />
 
