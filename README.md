@@ -37,7 +37,6 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 The mission of `enclone` is to:
 
 <img src="img/mission.svg" alt="mission" title="mission" />
-
 The <i>finding</i> part is algorithmically challenging: it is very easy to mistakenly connect
 together unrelated cells and put them in the same clonotype, and to "pollute" a clonotype with
 spurious chains that do not belong there.  The <i>displaying</i> part is also challenging, and
