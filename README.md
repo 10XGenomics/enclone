@@ -24,6 +24,7 @@ It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the 
 characterization of individual immune cells.
 
 <img src="img/general_audience.svg" alt="general audience" title="general audience" width="500"/>
+
 ___________________________________________________________________________________________________
 
 ## The mission of enclone
