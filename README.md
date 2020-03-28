@@ -38,9 +38,10 @@ you're simply curious, there's nothing to stop you from downloading and playing 
 
 If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
 have the power to fully understand the nature of the receptors for those cells, because you have
-in hand the sequences for each of their chains.  You should be 
-able to directly see their biology, without aid from a computational expert.  To that end, we 
-start with this simple goal:
+in hand the sequences for each of their chains.  
+
+You should be able to directly see their biology, without aid from a computational expert.  To 
+that end, we start with this simple goal:
 
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 The <i>finding</i> part is 
