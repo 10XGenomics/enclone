@@ -39,8 +39,8 @@ The mission of `enclone` is to:
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 To do this, you have to start from single-cell data.  Then the <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
-clonotype, and to "pollute" a clonotype with spurious chains that do not belong there.  
-The <i>displaying</i> part is also challenging, and indeed we are not aware of other tools to do it.
+clonotype, and to "pollute" a clonotype with "ectopic" chains.  
+The <i>displaying</i> part is also challenging, and indeed we are unaware of other tools to do it.
 
 <br>
 <br>
