@@ -159,9 +159,6 @@ ovarian cancer sample.
 By default, `enclone` prints clonotypes in this human-readable form.  You can also instruct
 `enclone` to print clonotypes in machine-readable forms that are suitable for input to other
 programs.
-
-We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
-as possible.  You can write to us at enclone@10xgenomics.com.
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
@@ -186,5 +183,6 @@ ________________________________________________________________________________
 
 ## Questions
 
-Please write to us at enclone@10xgenomics.com.  Please note that `enclone` is beta software
-and that we may not be able to answer your question.
+We are greatly interested in your feedback and ideas you may have to make `enclone` as useful
+as possible.  You can write to us at enclone@10xgenomics.com.
+Please note that `enclone` is beta software and that we may not be able to answer your question.
