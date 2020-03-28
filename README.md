@@ -81,7 +81,7 @@ with which enclone will be integrated (later).
 ___________________________________________________________________________________________________
 
 <a name="download" style="display:block; position:relative; top:-150px;"></a>
-## How to download and install enclone and get test datasets
+## How to install enclone
 
 <b>(these instructions are not yet functional)</b>
 
