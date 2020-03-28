@@ -20,7 +20,7 @@ are wearing proper safety equipment.
 <b>enclone</b> is a computational tool for studying the adaptive immune system in humans and
 other vertebrate species.  
 
-It uses data from [10x Genomics](https://www.10xgenomics.com/) which permit the precise
+It uses data from <b>[10x Genomics](https://www.10xgenomics.com/)</b> which permit the precise
 characterization of individual immune cells.
 
 <img src="img/general_audience.svg" alt="general audience" title="general audience" width="500"/>
