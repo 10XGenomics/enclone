@@ -40,7 +40,7 @@ The mission of `enclone` is to:
 To do this, you have to start from single-cell data.  Then the <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
 clonotype, and to "pollute" a clonotype with "ectopic" chains.  
-The <i>displaying</i> part is also challenging, and indeed we are unaware of other tools to do it.
+The <i>displaying</i> part is also challenging: we are unaware of other tools to do it.
 
 <br>
 <br>
