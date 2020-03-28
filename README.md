@@ -34,7 +34,7 @@ characterization of individual immune cells.
 `enclone` and this page are designed for immunologists, but if
 you're simply curious, there's nothing to stop you from downloading and playing with it.
 
-## The mission of `enclone`
+## The mission of <b>enclone</b>
 
 If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
 have the power to fully understand the nature of the receptors for those cells, because you have
