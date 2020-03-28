@@ -7,8 +7,8 @@
 <br>
 <br>
 
-This site is under construction.  Please do not enter unless you have been directed here, and
-are wearing proper safety equipment.  
+This site is under construction and undergoing initial testing.  Please do not enter unless you 
+have been directed here, and are wearing proper safety equipment.  
 
 (photo credit: NIOSH/wikipedia)
 
