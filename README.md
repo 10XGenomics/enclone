@@ -165,8 +165,6 @@ ________________________________________________________________________________
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
-<br>
-
 You can select clonotypes in enclone and then display them using a "honeycomb" plot.
 
 In this instance, pre- and post-vaccination samples were collected from four individuals,
@@ -179,7 +177,7 @@ LEGEND=blue,"pre-vaccination cell",
 ```
 to the enclone command line, yielding the image shown here as the file `clono.svg`.
 
-<br><br><br><br><br><br>
+<br><br><br><br><br>
 ___________________________________________________________________________________________________
 
 ## Questions
