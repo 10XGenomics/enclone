@@ -12,7 +12,7 @@ xmlns="http://www.w3.org/2000/svg">
 
 </text>
 
-<text x="15" y="55" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
+<text x="15" y="55" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="80%">
 
 which yielded <tspan style="fill: red;">9573</tspan> clonotypes
  having at least two cells each, of which
@@ -20,14 +20,14 @@ which yielded <tspan style="fill: red;">9573</tspan> clonotypes
 
 </text>
 
-<text x="15" y="80" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
+<text x="15" y="80" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="80%">
 
 These multi-donor clonotypes are errors.  The fact that there are few of them suggests
  that the rate at which enclone places 
 
 </text>
 
-<text x="15" y="105" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="15">
+<text x="15" y="105" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="80%">
 
 unrelated cells in the same clonotype is low.  This is a consequence of both the paired chain
  data and the algorithm.
