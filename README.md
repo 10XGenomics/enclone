@@ -166,7 +166,7 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
-## Displaying clonotypes
+## Visualizing many clonotypes at once
 
 <img align="left" src="img/clono.svg" alt="honeycomb plot" title="honeycomb plot" />
 
