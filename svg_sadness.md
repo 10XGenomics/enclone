@@ -11,7 +11,7 @@ Watch the position of the right text end relative to the end of the surrounding 
 
 For Firefox, the text always stays in the same relative position.
 
-For Chrome, the text gets larger and larger relative to the rectangle.
+For Chrome, after a certain point, the text gets larger and larger relative to the rectangle.
 
 For Safari, the relationship bounces around.
 
