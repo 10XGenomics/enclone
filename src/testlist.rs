@@ -83,7 +83,7 @@ pub const TESTS: [&str; 50] = [
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
-    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
+    r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
      SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
@@ -125,7 +125,7 @@ pub const TESTS: [&str; 50] = [
     // 47. this should fail
     r###"BCR=85333 CDR3=CAREEYYYDSSGDAFDIW LVARSP=gex_mean EXPECT_FAIL"###,
     // 48. test gex_mean and gex_Σ
-    r###"BCR=123085 GEX=123201 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW"###,
+    r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
         FASTA_AA=stdout HTML"###,
