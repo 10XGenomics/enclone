@@ -149,12 +149,17 @@ figure out how it all works.
 
 This exact output would be obtained by typing
 ```
-enclone PRE=~/enclone/datasets BCR=123085
+enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
 ```
 provided that you put test data in the location indicated under download instructions.  Otherwise
 you would need to change the value of `PRE`.  The directory `123085` is in the directory
 `~/enclone/datasets` and contains some files from a Cell Ranger run, obtained from a human 
 ovarian cancer sample.
+
+The argument `CDR3=CQQRSNWPPSITF` causes enclone to display only clonotypes in which the given
+CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all clonotypes
+are shown.  Clonotypes are shown from largest to smallest, and the output is automatically paged,
+so you can scroll through it.
 
 By default, enclone prints clonotypes in this human-readable form.  You can also instruct enclone 
 to print clonotypes in machine-readable forms that are suitable for input to other programs.
