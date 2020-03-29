@@ -21,5 +21,5 @@ a fixed relationship.  But this is not always the case.
 This experiment was carried out on a Mac running High Sierra and might not apply to other platforms.
 
 The same phenomenon can be seen if one directly opens the svg file in a browser, however not by
-narrowing the window.  Instead, downsize it (on a Mac thats ⌘-).  So this has nothing to do 
-with markdown or html.
+narrowing the window.  Instead, downsize it repeatedly (on a Mac thats ⌘-).  So this has nothing 
+to do with markdown or html.
