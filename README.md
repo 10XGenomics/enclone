@@ -39,12 +39,10 @@ that end, we start with this simple goal:
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 The <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
-clonotype, and to "pollute" a clonotype with chains that do not belong there.
+clonotype, or to "pollute" a clonotype with chains that do not belong there.
 The <i>displaying</i> part is also challenging: we are unaware of other tools to do it.
 
-<br>
-<br>
-<br>
+<br><br><br>
 
 To make sure we are using terminology in the same way, the following diagram shows what a 
 _clonotype_ is for B cells.  The same applies for T cells, but things are simpler because T cells 
