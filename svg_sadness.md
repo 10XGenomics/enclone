@@ -6,8 +6,8 @@ Consider the following:
 
 <img src="img/sadness.svg" alt="sadness" title="sadness" />
 
-Gradually resize your window by making it narrower and narrower, and watch the position
-of the right text end relative to the end of the surrounding rectangle.
+Gradually resize your window by making it narrower and narrower, making it as narrow as you can.
+Watch the position of the right text end relative to the end of the surrounding rectangle.
 
 For Firefox, the text always stays in the same relative position.
 
