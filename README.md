@@ -165,6 +165,20 @@ By default, enclone prints clonotypes in this human-readable form.  You can also
 to print clonotypes in machine-readable forms that are suitable for input to other programs.
 ___________________________________________________________________________________________________
 
+## Combining multiomic data
+
+Gene expression and feature barcode data can be displayed simultaneously with VDJ data.  For
+example, here we see add columms for the same clonotype, showing the median number of UMIs detected
+for, all genes, a particular gene, and a particular antibody:
+
+<img src="img/clonotype_with_gex.svg" alt="clonotype with gex" title="clonotype with gex" /> 
+
+To obtain this, we added the extra arguments
+```GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab```
+to the previous command.  The `GEX` part points to the directory containing gene expression and
+feature barcode data.  The `LVARSP` part defines the additional columns to be displayed.
+___________________________________________________________________________________________________
+
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
 ## Visualizing many clonotypes at once
 
