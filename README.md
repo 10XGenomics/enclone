@@ -168,7 +168,7 @@ ________________________________________________________________________________
 ## Combining multiomic data
 
 Gene expression and feature barcode data can be displayed simultaneously with VDJ data.  For
-example, here we see add columms for the same clonotype, showing the median number of UMIs detected
+example, here we add columms for the same clonotype, showing the median number of UMIs detected
 for, all genes, a particular gene, and a particular antibody:
 
 <img src="img/clonotype_with_gex.png" alt="clonotype with gex" title="clonotype with gex" /> 
