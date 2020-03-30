@@ -156,7 +156,7 @@ showing all transcript positions, we only show "interesting" positions.  This is
 concept, and what we show by default are all positions exhibiting a difference from the reference
 and all positions in the CDR3.
 
-This exact output would be obtained by typing
+The same exact output would be obtained by typing
 ```
 enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
 ```
