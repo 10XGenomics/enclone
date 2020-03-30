@@ -71,7 +71,7 @@ can be learned easily, particularly if you have a friend or colleague who can he
 get started.  You do not need to be able to program, or anything of that sort.
 
 enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended 
-as an experimental tool.  You can dynamically change your command line to select specific 
+as an exploratory tool.  You can dynamically change your command line to select specific 
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.
 
 enclone is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
