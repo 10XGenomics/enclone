@@ -150,6 +150,12 @@ figure out how it all works.
 
 <img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> 
 
+Notice the compression in two directions.  Vertically, rather than showing one line for every cell,
+we group cells into a single line if they have identical VDJ transcripts.  Horizontally, rather than
+showing all transcript positions, we only show "interesting" positions.  This is a flexible 
+concept, and what we show by default are all positions exhibiting a difference from the reference
+and all positions in the CDR3.
+
 This exact output would be obtained by typing
 ```
 enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
