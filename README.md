@@ -10,7 +10,7 @@
 Watch your step!  This site is under construction and undergoing initial testing.  Please do not 
 enter unless you've been directed here.
 
-(photo credit: NIOSH/wikipedia)
+(Photo credit: NIOSH/Wikipedia)
 
 <br>
 <br>
@@ -23,7 +23,7 @@ other vertebrate species.
 It uses data from <b>[10x Genomics](https://www.10xgenomics.com/)</b> which permit the precise
 characterization of individual immune cells.
 
-<img src="img/general_audience.svg" alt="general audience" title="general audience" width="700"/>
+<img src="img/general_audience.svg" alt="general audience" title="general audience" width="750"/>
 
 ___________________________________________________________________________________________________
 
