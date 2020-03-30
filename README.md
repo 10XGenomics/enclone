@@ -33,14 +33,14 @@ If you have a sample and have generated single-cell VDJ data from the B or T cel
 have the power to fully understand the nature of the receptors for those cells, because you have
 in hand the sequences for each of their chains.  
 
-You should be able to directly see their biology, without aid from a computational expert.  To 
+You should be able to directly see this biology, without aid from a computational expert.  To 
 that end, we start with this simple goal:
 
 <img align="left" src="img/mission.svg" alt="mission" title="mission" />
 The <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
-clonotype, or to "pollute" a clonotype with chains that do not belong there.
-The <i>displaying</i> part is also challenging: we are unaware of other tools to do it.
+clonotype, or to "pollute" a clonotype with chains that do not belong in it.
+The <i>displaying</i> part is also challenging: we are unaware of other tools that do so.
 
 <br>
 <br>
