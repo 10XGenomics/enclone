@@ -144,7 +144,7 @@ pub fn build_info(
             if x.annv.len() == 2 {
                 if x.annv[0].1 as usize > rt.len() {
                     printme!(x.annv[0].1, rt.len());
-                    json_error(None);
+                    json_error(None, &ctl);
                 }
                 let mut r = rt.slice(0, x.annv[0].1 as usize).to_owned();
                 // deletion

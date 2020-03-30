@@ -110,7 +110,11 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 // Use case 1.  PRE is specified.
 
                 if ctl.gen_opt.pre != "" {
-                    p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
+                    if !p.ends_with("/outs") {
+                        p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
+                    } else {
+                        p = format!("{}/{}", ctl.gen_opt.pre, p);
+                    }
 
                 // Use case 2.  It's an internal run, an id has been provided, and PRE
                 // was not specified.  Then we look internally.
@@ -121,8 +125,21 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                     p = format!("{}", get_outs(&p));
 
                 // Use case 3.  All else.
-                } else {
+                } else if !p.ends_with("/outs") {
                     p = format!("{}/outs", p);
+                }
+
+                // For an internal run, see if removing PRE works.
+
+                if ctl.gen_opt.internal_run
+                    && ctl.gen_opt.pre.len() > 0
+                    && !path_exists(&p)
+                    && path_exists(x)
+                {
+                    p = x.clone();
+                    if path_exists(&format!("{}/outs", x)) {
+                        p = format!("{}/outs", x);
+                    }
                 }
 
                 // For internal runs, try much harder.  This is so that internal users can just
