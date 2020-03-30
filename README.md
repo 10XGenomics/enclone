@@ -123,7 +123,10 @@ ________________________________________________________________________________
 
 ## Running enclone
 
-Running enclone can be as simple as typing e.g. `enclone BCR=/home/my_name/experiment_123`
+Running enclone can be as simple as typing e.g. 
+```
+enclone BCR=/home/my_name/experiment_123
+```
 where the path is where your Cell Ranger outputs live, but there are many options to learn
 about.  For example, if you want to combine many datasets, you can do that, but you probably
 need to provide a metadata file that describes the datasets.  You can find most of the enclone
