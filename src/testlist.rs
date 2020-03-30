@@ -8,7 +8,7 @@ pub fn enclone_testdata() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 50] = [
+pub const TESTS: [&str; 51] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -131,6 +131,8 @@ pub const TESTS: [&str; 50] = [
         FASTA_AA=stdout HTML"###,
     // 50. make sure this doesn't fail
     r###"NOPAGER EXPECT_OK"###,
+    // 51. make sure this fails gracefully
+    r###"BCR=123085 PLOT=/nonexistent/broken.svg NOPRINT MIN_CELLS=50 EXPECT_FAIL"###,
 ];
 
 // List of examples in documentation.
