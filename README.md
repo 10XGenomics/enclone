@@ -92,7 +92,7 @@ know if availability on other platforms is important to you.
 ```
 mkdir -p ~/bin; cd ~/bin
 wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
-or on a mac
+or on a Mac
 wget https://github.com/10XDev/enclone/releases/download/latest/mac/enclone
 ```
 This gets you the absolute latest version of enclone.  You can repeat this step if you ever
