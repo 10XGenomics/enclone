@@ -1,8 +1,12 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-pub const TEST_FILES_VERSION: u8 = 14;
+// Information about enclone tests.
 
-// Main list of tests for enclone.
+pub fn enclone_testdata() -> String {
+    include_str!["enclone.testdata"].to_string()
+}
+
+pub const TEST_FILES_VERSION: u8 = 14;
 
 pub const TESTS: [&str; 50] = [
     // 1. tests variant base after CDR3, parseable output
@@ -22,8 +26,8 @@ pub const TESTS: [&str; 50] = [
     r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. this clonotype included a junk chain before we made a change
-    r###"TCR=163911 CDR3=CAPSAGDKIIF AMINO=donor"###,
+    // 8. this clonotype included a junk chain before we made a change, and test "/outs"
+    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_CELL
     r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
@@ -48,7 +52,7 @@ pub const TESTS: [&str; 50] = [
     r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
-    // 19. there was a bug that caused twosie to be deleted, and there was foursie junk
+    // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
     r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
     // 20. example affected by whitelist (gel bead oligo contamination) filtering, and test u_Σ
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,
@@ -79,7 +83,7 @@ pub const TESTS: [&str; 50] = [
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
-    r###"BCR=123085 GEX=123201 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
+    r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
      SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
@@ -121,7 +125,7 @@ pub const TESTS: [&str; 50] = [
     // 47. this should fail
     r###"BCR=85333 CDR3=CAREEYYYDSSGDAFDIW LVARSP=gex_mean EXPECT_FAIL"###,
     // 48. test gex_mean and gex_Σ
-    r###"BCR=123085 GEX=123201 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW"###,
+    r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
         FASTA_AA=stdout HTML"###,

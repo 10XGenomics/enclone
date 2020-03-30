@@ -19,7 +19,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn json_error(json: Option<&str>) {
+pub fn json_error(json: Option<&str>, ctl: &EncloneControl) {
     eprint!(
         "\nThere is something wrong with the contig annotations in the Cell Ranger output \
          file"
@@ -28,6 +28,14 @@ pub fn json_error(json: Option<&str>) {
         eprint!("\n{}.", json.unwrap());
     } else {
         eprint!(".");
+    }
+    if ctl.gen_opt.internal_run {
+        eprint!(
+            "\n\nATTENTION INTERNAL 10X USERS!\n\
+            Quite possibly you are using data from a Cell Ranger run carried out using a version\n\
+            between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
+            argument CURRENT_REF to your command line.  If that doesn't work, please see below."
+        );
     }
     eprintln!(
         "\n\nHere are possible sources of this problem:\n\n\
@@ -80,6 +88,7 @@ pub fn read_json(
     to_ref_index: &HashMap<usize, usize>,
     reannotate: bool,
     cr_version: &mut String,
+    ctl: &EncloneControl,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -335,7 +344,7 @@ pub fn read_json(
 
                 if tig_start < 0 || tig_stop < 0 {
                     eprintme!(tig_start, tig_stop);
-                    json_error(Some(&json));
+                    json_error(Some(&json), &ctl);
                 }
                 let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
                 let quals0 = v["quals"].to_string();
@@ -528,6 +537,7 @@ pub fn parse_json_annotations_files(
             &to_ref_index,
             ctl.gen_opt.reannotate,
             &mut res.4,
+            &ctl,
         );
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
