@@ -56,15 +56,10 @@ pub fn load_gex(
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
-            if !gex_outs[i].contains("/outs") {
-                eprintln!(
-                    "\nProbably something is wrong with the gene expression directory\n{}.\n\
-                     It may help to read the help page \"enclone help input_tech\".\n",
-                    gex_outs[i]
-                );
-                std::process::exit(1);
+            let mut root = gex_outs[i].clone();
+            if root.ends_with("/outs") {
+                root = root.rev_before("/outs").to_string();
             }
-            let root = gex_outs[i].rev_before("/outs");
             if !path_exists(&root) {
                 eprintln!(
                     "\nProbably something is wrong with the GEX argument:\nthe path{} \
