@@ -151,7 +151,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
              \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             \\green{https://github.com/10XDev/enclone/blob/master/HISTORY.md} \
+             \\green{https://github.com/10XGenomics/enclone/blob/master/HISTORY.md} \
              \\blue{for the history of what was changed}\n\
              \\blue{and when.  We will try not to break} \
              \\blue{things, but when we first introduce a feature, it may}\n\
@@ -223,7 +223,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \
-             \\green{https://github.com/10XDev/enclone/blob/master/README.md#honeycomb}.\n\n\
+             \\green{https://github.com/10XGenomics/enclone/blob/master/README.md#honeycomb}.\n\n\
              \
              enclone provides three ways to assign colors in such a plot.  We describe them in \
              order of precedence, i.e. color data for the first will be used if provided, etc.\n\n\

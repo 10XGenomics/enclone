@@ -91,9 +91,9 @@ know if availability on other platforms is important to you.
 <b>2.  Download enclone.</b>  Type the following to download the enclone executable:
 ```
 mkdir -p ~/bin; cd ~/bin
-wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
+wget https://github.com/10XGenomics/enclone/releases/download/latest/linux/enclone
 or on a Mac
-wget https://github.com/10XDev/enclone/releases/download/latest/mac/enclone
+wget https://github.com/10XGenomics/enclone/releases/download/latest/mac/enclone
 ```
 This gets you the absolute latest version of enclone.  You can repeat this step if you ever
 want to update.  At a later date, there will also be separately numbered releases that have passed 
@@ -106,7 +106,7 @@ to the enclone codebase.  Please see [compilation](COMPILE.md).
 (and the source code, but you probably won't need that):
 ```
 cd
-git clone git@github.com:10XDev/enclone.git
+git clone https://github.com/10XGenomics/enclone.git
 ```
 At this point `~/enclone/datasets` will contain the datasets
 that are prepackaged with enclone.  If you subsequently want to update this, do

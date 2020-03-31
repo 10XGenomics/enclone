@@ -37,7 +37,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.print(
             "Please also read the documentation at \
-             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
+             \\green{https://github.com/10XGenomics/enclone/blob/master/README.md}.\n\n",
         );
         h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc_red("enclone help", "help to test for correct setup");
