@@ -21,7 +21,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
-        h.ldoc("metrics_summary_json.json", "GEX");
+        h.ldoc("metrics_summary.csv", "GEX");
         h.ldoc("raw_gene_bc_matrices_h5.h5", "GEX");
         h.ldoc("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         h.doc("raw_feature_bc_matrix/features.tsv.gz", "GEX");
