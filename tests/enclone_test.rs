@@ -362,6 +362,7 @@ fn test_enclone_examples() {
                 "\nenclone_test_examples: the file example{} is not up to date\n",
                 t + 1
             );
+            eprintln!("current output:\n{}\n", old);
             std::process::exit(1);
         }
     }
