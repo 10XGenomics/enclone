@@ -1,0 +1,34 @@
+name: Run unit tests on enclone MacOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: unit-tests-macOS
+    # This job runs on MacOS
+    runs-on: macos-latest
+    steps:
+    # Install Rust
+      - name: Install Rust
+        run: |
+          case $(rustc --version) in
+            "rustc 1.40.0"*) ;;
+            *) rustup default 1.40.0 ;;
+          esac
+          rustc --version
+          rustfmt --version 
+      - name: Checkout enclone master
+      # This step uses GitHub's javascript-action: https://github.com/actions/checkout
+        uses: actions/checkout@master
+      - name: Check Rust formatting
+      # Check formatting
+        run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release --bin enclone && export PATH=target/release:$PATH
+      - name: unit tests
+        run: cargo test --release -- --nocapture
