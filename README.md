@@ -216,16 +216,21 @@ ________________________________________________________________________________
 
 ## So what is enclone good for?
 
-A highly active application for 10x data is <b>finding patient B cell clonotypes that expanded in
-response to infectious disease</b>.  These might then be used to design vaccines, e.g. for COVID-19.
-enclone makes it easy to examine the expanded clonotypes.  One very powerful tool is to
-add data that map specificity for the antigens in the disease organism 
-(Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to 
+There are many ways to use 10x data to study immune biology.  Thus in the previous section, the 
+red clonotypes may represent responses to antigens in the vaccine.  But for a given disease 
+<i>e.g.</i>COVID-19, one might not yet have a vaccine, and thus one needs a different approach.  
+One such approach is to <b> identify patient and survivor B cell
+clonotypes that expand(ed) in response to infectious disease</b>. These antibodies can then be 
+used to design passive or active vaccines. One tool enables the mapping of
+antigen specificity to multiple antigens directly via feature barcoding: LIBRA-seq 
+(Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to
 Antigen Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.)
-These data can also be displayed in enclone, so simply picking large
-clonotypes having high antigen counts immediately yields candidates for vaccine design.
-A major goal for us is to add further functionality that will make this process even more 
-effective.
+
+These data are easy to display in enclone!  Using enclone, you can easily select candidates for 
+vaccine or therapeutic development by picking large clonotypes with high antigen counts and single 
+or multiple antigen specifities.
+
+We are actively working on further functionality that will make this process even more effective.
 ___________________________________________________________________________________________________
 
 ## Questions
