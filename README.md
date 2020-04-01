@@ -221,7 +221,7 @@ response to infectious disease</b>.  These might then be used to design vaccines
 enclone makes it easy to examine the expanded clonotypes.  One very powerful tool is to
 add data that map specificity for the antigens in the disease organism 
 (Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to 
-Antigen Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.
+Antigen Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.)
 These data can also be displayed in enclone, so simply picking large
 clonotypes having high antigen counts immediately yields candidates for vaccine design.
 A major goal for us is to add further functionality that will make this process even more 
