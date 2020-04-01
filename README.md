@@ -218,7 +218,8 @@ ________________________________________________________________________________
 
 There are many ways to use 10x data to study immune biology.  Thus in the previous section, the 
 red clonotypes may represent responses to antigens in the vaccine.  But for a given 
-disease <i>e.g.</i> COVID-19, one may not yet have a vaccine, so a different approach is needed.
+disease <i>e.g.</i> COVID-19, one may not yet have a vaccine, and indeed the vaccine may be
+the goal!  A different approach is needed.
 
 One such approach is to <b> identify patient and survivor B cell
 clonotypes that expand in response to infectious disease</b>. These define antibodies that can be 
