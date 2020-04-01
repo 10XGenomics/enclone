@@ -217,11 +217,11 @@ ________________________________________________________________________________
 ## So what is enclone good for?
 
 There are many ways to use 10x data to study immune biology.  Thus in the previous section, the 
-red clonotypes may represent responses to antigens in the vaccine.  But for a given disease 
-<i>e.g.</i>COVID-19, one might not yet have a vaccine, and thus one needs a different approach.  
+red clonotypes may represent responses to antigens in the vaccine.  But for a given 
+disease <i>e.g.</i>COVID-19, one might not yet have a vaccine, and a different approach is needed.
 
 One such approach is to <b> identify patient and survivor B cell
-clonotypes that expand in response to infectious disease</b>. These antibodies can then be 
+clonotypes that expand in response to infectious disease</b>. These define antibodies that can be 
 used to design passive or active vaccines.  One tool enables the mapping of
 antigen specificity to multiple antigens directly via feature barcoding: LIBRA-seq 
 (Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to
