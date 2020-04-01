@@ -447,7 +447,15 @@ pub fn plot_clonotypes(
     // Output the svg file.
 
     if ctl.gen_opt.plot_file != "stdout".to_string() {
-        let mut f = open_for_write_new![ctl.gen_opt.plot_file];
+        let f = File::create(&ctl.gen_opt.plot_file);
+        if f.is_err() {
+            eprintln!(
+                "\nThe file {} in your PLOT argument could not be created.\n",
+                ctl.gen_opt.plot_file
+            );
+            std::process::exit(1);
+        }
+        let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
     } else {
         println!("{}", svg);

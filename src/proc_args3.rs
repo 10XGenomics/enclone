@@ -146,7 +146,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 // type an internal numerical id for a dataset and have it always work.
                 // The code that's used here should be placed somewhere else.
 
-                if !path_exists(&p) && ctl.gen_opt.internal_run {
+                if !path_exists(&p) && ctl.gen_opt.internal_run && x.parse::<usize>().is_ok() {
                     let url = format!("https://xena.fuzzplex.com/api/analyses/{}", x);
                     let o = Command::new("curl")
                         .arg(url)
@@ -156,12 +156,11 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                     if m.contains("502 Bad Gateway") {
                         panic!("502 Bad Gateway from http://xena/api/analyses/{}", x);
                     }
-                    let mut path = String::new();
                     if m.contains("\"path\":\"") {
-                        path = m.between("\"path\":\"", "\"").to_string();
+                        let path = m.between("\"path\":\"", "\"").to_string();
                         ctl.gen_opt.current_ref = true;
+                        p = format!("{}/outs", path);
                     }
-                    p = format!("{}/outs", path);
                 }
 
                 // Now, possibly, we should remove the /outs suffix.  We do this to allow for the
