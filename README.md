@@ -83,7 +83,7 @@ clonotypes and fields you wish to see.  You can run enclone on a laptop or a des
 
 enclone is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
 profiling toolkit, including
-[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), 
+[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj), 
 with which enclone will be integrated (later).
 ___________________________________________________________________________________________________
 
