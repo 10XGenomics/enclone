@@ -14,7 +14,7 @@ xmlns="http://www.w3.org/2000/svg">
 
 <text x="15" y="55" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
 
-This yielded <tspan style="fill: red;">381506</tspan> clonotypes.  Of these
+This yielded <tspan style="fill: red;">381506</tspan> clonotypes.  Of these,
  <tspan style="fill: red;">9573</tspan> contained at least two cells each, 
  and in total <tspan style="fill: red;">15 (0.16%)</tspan> contained data
 
