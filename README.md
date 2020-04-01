@@ -17,11 +17,12 @@ enter unless you've been directed here.
 <br>
 <br>
 
-<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and
-other vertebrate species.  
-
-It uses data from <b>[10x Genomics](https://www.10xgenomics.com/)</b> which permit the precise
-characterization of individual immune cells.
+<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
+other vertebrate species.  It takes as input data from 
+<b>[10x Genomics](https://www.10xgenomics.com/), providing captured RNA 
+sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
+(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
+with its salient features, including mutated amino acids.
 
 <img src="img/general_audience.svg" alt="general audience" title="general audience" width="770"/>
 
