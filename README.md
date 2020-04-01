@@ -192,6 +192,10 @@ To obtain this, we added the extra arguments
 ```GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab```
 to the previous command.  The `GEX` part points to the directory containing gene expression and
 feature barcode data.  The `LVARSP` part defines the additional columns to be displayed.
+
+Other types of data can be brought in via featuring barcoding.  For example, response to 
+multiple antigens can be measured using [LIBRA-seq](https://www.ncbi.nlm.nih.gov/pubmed/31787378)
+and these data displayed as additional columns.
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
@@ -223,10 +227,9 @@ the goal!  A different approach is needed.
 
 One such approach is to <b> identify patient and survivor B cell
 clonotypes that expand in response to infectious disease</b>. These define antibodies that can be 
-used to design passive or active vaccines.  One tool enables the mapping of
-antigen specificity to multiple antigens directly via feature barcoding: LIBRA-seq 
-(Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to
-Antigen Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.)
+used to design passive or active vaccines.  Additional power is added by mapping 
+antigen specificity to multiple antigens directly via feature barcoding
+([LIBRA-seq](https://www.ncbi.nlm.nih.gov/pubmed/31787378)).
 
 These data are easy to display in enclone!  You can directly select candidates for 
 vaccine or therapeutic development by picking large clonotypes with high antigen counts and single 
