@@ -24,8 +24,14 @@ sequences for B and T cell receptors in single cells.  It organizes these cells 
 (clonotypes) arising from the same progenitor and compactly displays each clonotype along 
 with its salient features, including mutated amino acids.
 
-<img src="img/general_audience.svg" alt="general audience" title="general audience" width="770"/>
+enclone and this page are designed for immunologists, but anyone can download and experiment 
+with it.
 
+<b>Background:</b> when you get sick, your body mounts an immune response by selectively amplifying 
+immune cells and mutations within these selected cells.  enclone allows you to see the history of 
+single immune cells within a biological sample (such as a blood draw or biopsy).  This history 
+reflects how the cognate receptors of these cells evolved in response to antigens, including 
+viruses, bacteria, and tumors.
 ___________________________________________________________________________________________________
 
 ## The mission of enclone
