@@ -219,14 +219,15 @@ ________________________________________________________________________________
 There are many ways to use 10x data to study immune biology.  Thus in the previous section, the 
 red clonotypes may represent responses to antigens in the vaccine.  But for a given disease 
 <i>e.g.</i>COVID-19, one might not yet have a vaccine, and thus one needs a different approach.  
+
 One such approach is to <b> identify patient and survivor B cell
-clonotypes that expand(ed) in response to infectious disease</b>. These antibodies can then be 
-used to design passive or active vaccines. One tool enables the mapping of
+clonotypes that expand in response to infectious disease</b>. These antibodies can then be 
+used to design passive or active vaccines.  One tool enables the mapping of
 antigen specificity to multiple antigens directly via feature barcoding: LIBRA-seq 
 (Setliff, I <i>et al.</i>  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to
 Antigen Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.)
 
-These data are easy to display in enclone!  Using enclone, you can easily select candidates for 
+These data are easy to display in enclone!  You can directly select candidates for 
 vaccine or therapeutic development by picking large clonotypes with high antigen counts and single 
 or multiple antigen specifities.
 
