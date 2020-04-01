@@ -214,6 +214,20 @@ to the enclone command line, yielding the image shown here as the file `clono.sv
 <br><br><br><br>
 ___________________________________________________________________________________________________
 
+## So what is enclone good for?
+
+A highly active application for 10x data is <b>finding patient B cell clonotypes that expanded in
+response to infectious disease</b>.  These can then be used to design vaccines.  enclone makes
+it easy to examine the expanded clonotypes.  One very powerful tool is to
+add data that map specificity for the antigens in the disease organism 
+(Setliff, I et. al.  2019.  [<b>High-Throughput Mapping of B Cell Receptor Sequences to Antigen
+Specificity.</b>](https://www.ncbi.nlm.nih.gov/pubmed/31787378) <i>Cell</i> <b>179</b>, 1636-1646.
+These data can also be displayed in enclone, so simply picking large
+clonotypes having high antigen counts immediately yields candidates for vaccine design.
+A major goal for us is to add further functionality that will make this process even more 
+effective.
+___________________________________________________________________________________________________
+
 ## Questions
 
 Please ask us questions!  We are greatly interested in your feedback and ideas you may have to 
