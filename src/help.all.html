@@ -24,8 +24,6 @@ in <span style="color:#c23621;">red</span> below.  Pages fit in 100 wide x 56 hi
 <span style="color:#5833ff;font-weight:bold;">enclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe,</span>
 <span style="color:#5833ff;font-weight:bold;">which enclone is integrated with.</span>  enclone uses output from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1.</span>
 
-Please also read the documentation at <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/README.md</span>.
-
 ┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
 │<span style="font-weight:bold;">command</span>                  │  <span style="font-weight:bold;">what it provides</span>                                                   │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
@@ -66,6 +64,8 @@ Please also read the documentation at <span style="color:#25bc24;">https://githu
 │<span style="color:#31c39a;">enclone help all</span>         │  <span style="color:#31c39a;">concatenation of all the help pages (long, wide)</span>                   │
 │                         │  <span style="color:#31c39a;">███ USE THIS TO SEARCH ALL THE HELP PAGES! ███</span>                     │
 └─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+Additional documentation may be found at <span style="color:#25bc24;">https://github.com/10XDev/enclone/blob/master/README.md</span>.
+
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone setup page (for one time use, what you get by typing "enclone help")
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
@@ -431,7 +431,7 @@ enclone help example2
 Suppose you have placed the datasets that enclone comes with in the
 directory /users/jdoe/enclone_data.  Then you can run this command:
 
-% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ
+% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=126106 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ
 CDR3=CALMGTYCSGDNCYSWFDPW
 
 <span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 5 CELLS</span>
@@ -449,9 +449,9 @@ CDR3=CALMGTYCSGDNCYSWFDPW
 │donor ref                           │  <span style="color:#3e7dd1;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">D</span>◦◦◦◦◦◦              │
 ├────────────────────────────────────┼───────────────────────────────────────┼─────────────────────────────┤
 │<span style="font-weight:bold;">#  n    gex  IGHV2-5_g_μ  CD4_ab_μ  </span>│<span style="font-weight:bold;">  x ....................     u  const  </span>│<span style="font-weight:bold;">  . ...........      u  const</span>│
-│1  3   3563          744        63  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>   592  IGHM   │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   2995  IGLC2│
-│2  1  11936         2622        28  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  6112  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  15203  IGLC2│
-│3  1   5991         1339        33  │  <span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  4045  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   7025  IGLC2│
+│1  3   3001          613        64  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>   592  IGHM   │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   2995  IGLC2│
+│2  1  10042         2179        29  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  6112  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  15203  IGLC2│
+│3  1   5025         1095        33  │  <span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;">C</span><span style="color:#eb99c2;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;">DP</span><span style="color:#f37721;">W</span>  4045  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   7025  IGLC2│
 └────────────────────────────────────┴───────────────────────────────────────┴─────────────────────────────┘
 
 This shows an invocation of enclone that takes VDJ, gene expression and feature barcode data as
@@ -468,7 +468,7 @@ guarantee full support for the software, please email us at enclone@10xgenomics.
 problems, questions or comments (see below).  If you prefer you may submit a GitHub issue.</span>
 
 <span style="color:#5833ff;">Please note that syntax and features in enclone will change over time.  See</span>
-<span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/HISTORY.md</span> <span style="color:#5833ff;">for the history of what was changed</span>
+<span style="color:#25bc24;">https://github.com/10XDev/enclone/blob/master/HISTORY.md</span> <span style="color:#5833ff;">for the history of what was changed</span>
 <span style="color:#5833ff;">and when.  We will try not to break</span> <span style="color:#5833ff;">things, but when we first introduce a feature, it may</span>
 <span style="color:#5833ff;">not be just right, and we may have to to perturb it later.</span>
 
@@ -522,7 +522,7 @@ enclone help plot
 <span style="font-weight:bold;">plotting clonotypes</span>
 
 enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
-You can see an example at <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/README.md#honeycomb</span>.
+You can see an example at <span style="color:#25bc24;">https://github.com/10XDev/enclone/blob/master/README.md#honeycomb</span>.
 
 enclone provides three ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.
@@ -652,7 +652,7 @@ directory:
 ├────────────────────────────────────────────┼──────────┤
 │all_contig_annotations.json                 │  VDJ     │
 ├────────────────────────────────────────────┼──────────┤
-│metrics_summary.csv                         │  GEX     │
+│metrics_summary_json.json                   │  GEX     │
 ├────────────────────────────────────────────┼──────────┤
 │raw_gene_bc_matrices_h5.h5                  │  GEX     │
 ├────────────────────────────────────────────┼──────────┤
@@ -661,7 +661,7 @@ directory:
 │filtered_feature_bc_matrix/barcodes.tsv.gz  │  GEX     │
 └────────────────────────────────────────────┴──────────┘
 
-All of these files are required.  The exact files that are used could be changed in the future.
+The exact files that are used could be changed in the future.
 
 Note that you must use the output of Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1</span>.  There is a workaround for earlier
 versions (which you will be informed of if you try), but it is much slower and the results may not
@@ -1508,7 +1508,7 @@ enclone help developer
 <span style="font-weight:bold;">a few options for developers</span>
 
 For instructions on how to compile, please see
-<span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/COMPILE.md</span>.
+<span style="color:#25bc24;">https://github.com/10XDev/enclone/blob/master/COMPILE.md</span>.
 
 ┌────────┬──────────────────────────────────────────────────────────────────────────────────┐
 │COMP    │  report computational performance stats; use this with NOPRINT if you            │
