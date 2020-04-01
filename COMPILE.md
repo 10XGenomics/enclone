@@ -10,7 +10,7 @@ have successfully installed the Rust compiler by running `rustc --version`.
 
 3. Clone the `enclone` repository and build `enclone` using Cargo (which comes with Rust) by running:
 ```
-git clone git@github.com:10XDev/enclone.git
+git clone git@github.com:10XGenomics/enclone.git
 cargo build --release --bin enclone
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and then put `target/release/enclone` in your path. This can be done in multiple ways, including running

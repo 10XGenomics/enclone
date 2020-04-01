@@ -11,7 +11,8 @@ use perf_stats::*;
 use rayon::prelude::*;
 use std::{
     collections::HashMap,
-    fs::{copy, create_dir_all, remove_file},
+    fs::{copy, create_dir_all, remove_file, File},
+    io::{BufRead, BufReader},
     time::Instant,
 };
 use string_utils::*;
@@ -56,15 +57,10 @@ pub fn load_gex(
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
-            if !gex_outs[i].contains("/outs") {
-                eprintln!(
-                    "\nProbably something is wrong with the gene expression directory\n{}\n\
-                     It may help to read the help page \"enclone help input_tech\".\n",
-                    gex_outs[i]
-                );
-                std::process::exit(1);
+            let mut root = gex_outs[i].clone();
+            if root.ends_with("/outs") {
+                root = root.rev_before("/outs").to_string();
             }
-            let root = gex_outs[i].rev_before("/outs");
             if !path_exists(&root) {
                 eprintln!(
                     "\nProbably something is wrong with the GEX argument:\nthe path{} \
@@ -99,56 +95,101 @@ pub fn load_gex(
                 }
             }
             read_maybe_unzipped(&cb, &mut r.6);
-            let json = format!("{}/metrics_summary_json.json", gex_outs[i]);
-            if !path_exists(&json) {
+            let csv1 = format!("{}/metrics_summary.csv", gex_outs[i]);
+            let csv2 = format!("{}/metrics_summary_csv.csv", gex_outs[i]);
+            if !path_exists(&csv1) && !path_exists(&csv2) {
                 eprintln!(
-                    "\nSomething wrong with GEX argument:\nthe path {} does not exist.\n",
-                    json
+                    "\nSomething wrong with GEX or META argument:\ncan't find the file \
+                        metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
+                        {}",
+                    gex_outs[i]
                 );
                 std::process::exit(1);
             }
             let tm = Instant::now();
             let mut gene_mult = None;
-            let rpc = get_metric_value(&json, &"reads_per_cell".to_string());
+
+            let mut csv = csv1.clone();
+            if !path_exists(&csv1) {
+                csv = csv2.clone();
+            }
+            let f = open_for_read![&csv];
+            let mut line_no = 0;
+            let mut rpc_field = None;
+            let mut rpc = None;
+            let mut fbrpc_field = None;
+            let mut fbrpc = None;
+            for line in f.lines() {
+                let s = line.unwrap();
+                let fields = parse_csv(&s);
+                line_no += 1;
+                if line_no == 1 {
+                    for i in 0..fields.len() {
+                        if fields[i] == "Mean Reads per Cell" {
+                            rpc_field = Some(i);
+                        } else if fields[i] == "Antibody: Mean Reads per Cell" {
+                            fbrpc_field = Some(i);
+                        }
+                    }
+                } else if line_no == 2 {
+                    if rpc_field.is_some() && rpc_field.unwrap() >= fields.len() {
+                        eprintln!(
+                            "\nSomething appears to be wrong with the file\n{}:\n\
+                            the second line doesn't have enough fields.\n",
+                            csv
+                        );
+                        std::process::exit(1);
+                    } else if rpc_field.is_some() {
+                        let mut rpcx = fields[rpc_field.unwrap()].to_string();
+                        rpcx = rpcx.replace(",", "");
+                        rpcx = rpcx.replace("\"", "");
+                        if !rpcx.parse::<usize>().is_ok() {
+                            eprintln!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the Mean Reads per Cell field isn't an integer.\n",
+                                csv
+                            );
+                            std::process::exit(1);
+                        }
+                        rpc = Some(rpcx.force_usize() as isize);
+                    }
+                    if fbrpc_field.is_some() && fbrpc_field.unwrap() >= fields.len() {
+                        eprintln!(
+                            "\nSomething appears to be wrong with the file\n{}:\n\
+                            the second line doesn't have enough fields.\n",
+                            csv
+                        );
+                        std::process::exit(1);
+                    } else if fbrpc_field.is_some() {
+                        let mut fbrpcx = fields[fbrpc_field.unwrap()].to_string();
+                        fbrpcx = fbrpcx.replace(",", "");
+                        fbrpcx = fbrpcx.replace("\"", "");
+                        if !fbrpcx.parse::<usize>().is_ok() {
+                            eprintln!(
+                                "\nSomething appears to be wrong with the file\n{}:\n\
+                                the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                csv
+                            );
+                            std::process::exit(1);
+                        }
+                        fbrpc = Some(fbrpcx.force_usize() as isize);
+                    }
+                }
+            }
             if comp {
                 println!(
                     "-- used {:.2} seconds getting reads per cell metric",
                     elapsed(&tm)
                 );
             }
-            if rpc.len() > 0 {
-                if rpc.parse::<f64>().is_err() {
-                    eprintln!(
-                        "\nIn load_gex, failed to parse metric reads_per_cell from {}.\n",
-                        json
-                    );
-                    eprintln!(
-                        "This is unexpected behavior, if you can't figure out what \
-                         happened, please let us know.\n"
-                    );
-                    std::process::exit(1);
-                }
-                let rpc = rpc.parse::<f64>().unwrap();
+            if rpc.is_some() {
                 const RPC_EXPECTED: f64 = 20_000.0;
-                gene_mult = Some(RPC_EXPECTED / rpc);
+                gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
             }
             let mut fb_mult = None;
-            let fbrpc = get_metric_value(&json, &"ANTIBODY_reads_per_cell".to_string());
-            if fbrpc.len() > 0 {
-                if fbrpc.parse::<f64>().is_err() {
-                    eprintln!(
-                        "\nIn load_gex, failed to parse metric ANTIBODY_reads_per_cell from {}.\n",
-                        json
-                    );
-                    eprintln!(
-                        "This is unexpected behavior, if you can't figure out what \
-                         happened, please let us know.\n"
-                    );
-                    std::process::exit(1);
-                }
-                let fbrpc = fbrpc.parse::<f64>().unwrap();
+            if fbrpc.is_some() {
                 const FB_RPC_EXPECTED: f64 = 5_000.0;
-                fb_mult = Some(FB_RPC_EXPECTED / fbrpc);
+                fb_mult = Some(FB_RPC_EXPECTED / fbrpc.unwrap() as f64);
             }
             r.4 = gene_mult;
             r.5 = fb_mult;

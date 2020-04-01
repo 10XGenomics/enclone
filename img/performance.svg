@@ -1,36 +1,42 @@
 <svg version="1.1"
-viewBox="0 0 900 125"
+viewBox="0 0 900 150"
 xmlns="http://www.w3.org/2000/svg">
 
-<rect x="5" y="5" width="880" height="115"
+<rect x="5" y="5" width="880" height="140"
   style="fill:white;stroke:black;stroke-width:2;fill-opacity:0.1;stroke-opacity:0.9" />
 
 <text x="15" y="30" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
 
 <tspan style="font-weight: bold;">Clonotyping performance.</tspan>  To test the performance of 
- enclone, we combined data from 443 BCR libraries from 30 donors,
+ enclone, we combined data from 443 BCR libraries from 30 donors.
 
 </text>
 
 <text x="15" y="55" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
 
-which yielded <tspan style="fill: red;">9573</tspan> clonotypes
- having at least two cells each, of which
- <tspan style="fill: red;">15 (0.16%)</tspan> contained data from multiple donors.
+This yielded <tspan style="fill: red;">381506</tspan> clonotypes, of which
+ <tspan style="fill: red;">9573</tspan> contained at least two cells each.  Of these, 
+ <tspan style="fill: red;">15 (0.16%)</tspan> contained data
 
 </text>
 
 <text x="15" y="80" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
 
-These multi-donor clonotypes are errors.  The fact that there are few of them suggests
- that the rate at which enclone places 
+from multiple donors.  These multi-donor clonotypes are errors.  The fact that there are few of 
+ them suggests that the rate at 
 
 </text>
 
 <text x="15" y="105" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
 
-unrelated cells in the same clonotype is low.  This is a consequence of both the paired chain
- data and the algorithm.
+which enclone places unrelated cells in the same clonotype is low.  This is a consequence of both 
+ the paired chain data 
+
+</text>
+
+<text x="15" y="130" font-family="apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI" font-size="90%">
+
+and the algorithm.
 
 </text>
 

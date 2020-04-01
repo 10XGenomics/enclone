@@ -35,6 +35,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
+        h.print(
+            "Please also read the documentation at \
+             \\green{https://github.com/10XGenomics/enclone/blob/master/README.md}.\n\n",
+        );
         h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc_red("enclone help", "help to test for correct setup");
         h.doc_red("enclone", "what you see here: guide to all the doc");
@@ -100,10 +104,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
         h.print_tab2();
-        h.print(
-            "Additional documentation may be found at \
-             \\green{https://github.com/10XDev/enclone/blob/master/README.md}.\n\n",
-        );
         if !h.help_all {
             h.dump();
             std::process::exit(0);

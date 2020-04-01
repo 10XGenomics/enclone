@@ -17,14 +17,21 @@ enter unless you've been directed here.
 <br>
 <br>
 
-<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and
-other vertebrate species.  
+<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
+other vertebrate species.  It takes as input data from 
+<b>[10x Genomics](https://www.10xgenomics.com/)</b>, providing captured RNA 
+sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
+(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
+with its salient features, including mutated amino acids.
 
-It uses data from <b>[10x Genomics](https://www.10xgenomics.com/)</b> which permit the precise
-characterization of individual immune cells.
+enclone and this page are designed for immunologists, but anyone can download and experiment 
+with it.
 
-<img src="img/general_audience.svg" alt="general audience" title="general audience" width="770"/>
-
+<b>Background:</b> when you get sick, your body mounts an immune response by selectively amplifying 
+immune cells and mutations within these selected cells.  enclone allows you to see the history of 
+single immune cells within a biological sample (such as a blood draw or biopsy).  This history 
+reflects how the cognate receptors of these cells evolved in response to antigens, including 
+viruses, bacteria, and tumors.
 ___________________________________________________________________________________________________
 
 ## The mission of enclone
@@ -49,8 +56,7 @@ The <i>displaying</i> part is also challenging: we are unaware of other tools th
 To make sure we are using terminology in the same way, the following diagram shows what a 
 _clonotype_ is for B cells.  The same applies for T cells, but things are simpler because T cells 
 do not have somatic hypermutation.
-
-<img src="img/what_is_a_clonotype.png" alt="what is a clonotype" title="what is a clonotype" />
+<img src="img/what_is_a_clonotype.svg" alt="what is a clonotype" title="what is a clonotype" />
 
 Each cell in a clonotype is typically represented by two or three chains.  Such information can
 only be obtained from _single cell_ data!  From such data, clonotypes can be computationally
@@ -71,12 +77,12 @@ can be learned easily, particularly if you have a friend or colleague who can he
 get started.  You do not need to be able to program, or anything of that sort.
 
 enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended 
-as an experimental tool.  You can dynamically change your command line to select specific 
+as an exploratory tool.  You can dynamically change your command line to select specific 
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.
 
 enclone is part of the [10x Genomics](https://www.10xgenomics.com/) immune 
 profiling toolkit, including
-[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-gene-expression/software/overview/welcome), 
+[Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj), 
 with which enclone will be integrated (later).
 ___________________________________________________________________________________________________
 
@@ -91,9 +97,9 @@ know if availability on other platforms is important to you.
 <b>2.  Download enclone.</b>  Type the following to download the enclone executable:
 ```
 mkdir -p ~/bin; cd ~/bin
-wget https://github.com/10XDev/enclone/releases/download/latest/linux/enclone
-or on a mac
-wget https://github.com/10XDev/enclone/releases/download/latest/mac/enclone
+wget https://github.com/10XGenomics/enclone/releases/download/latest/linux/enclone
+or on a Mac
+wget https://github.com/10XGenomics/enclone/releases/download/latest/mac/enclone
 ```
 This gets you the absolute latest version of enclone.  You can repeat this step if you ever
 want to update.  At a later date, there will also be separately numbered releases that have passed 
@@ -106,7 +112,7 @@ to the enclone codebase.  Please see [compilation](COMPILE.md).
 (and the source code, but you probably won't need that):
 ```
 cd
-git clone git@github.com:10XDev/enclone.git
+git clone https://github.com/10XGenomics/enclone.git
 ```
 At this point `~/enclone/datasets` will contain the datasets
 that are prepackaged with enclone.  If you subsequently want to update this, do
@@ -123,7 +129,10 @@ ________________________________________________________________________________
 
 ## Running enclone
 
-Running enclone can be as simple as typing e.g. `enclone BCR=/home/my_name/experiment_123`
+Running enclone can be as simple as typing e.g. 
+```
+enclone BCR=/home/my_name/experiment_123
+```
 where the path is where your Cell Ranger outputs live, but there are many options to learn
 about.  For example, if you want to combine many datasets, you can do that, but you probably
 need to provide a metadata file that describes the datasets.  You can find most of the enclone
@@ -147,7 +156,13 @@ figure out how it all works.
 
 <img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" /> 
 
-This exact output would be obtained by typing
+Notice the compression in two directions.  Vertically, rather than showing one line for every cell,
+we group cells into a single line if they have identical VDJ transcripts.  Horizontally, rather than
+showing all transcript positions, we only show "interesting" positions.  This is a flexible 
+concept, and what we show by default are all positions exhibiting a difference from the reference
+and all positions in the CDR3.
+
+The same exact output would be obtained by typing
 ```
 enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
 ```
@@ -177,6 +192,10 @@ To obtain this, we added the extra arguments
 ```GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab```
 to the previous command.  The `GEX` part points to the directory containing gene expression and
 feature barcode data.  The `LVARSP` part defines the additional columns to be displayed.
+
+Other types of data can be brought in via featuring barcoding.  For example, response to 
+multiple antigens can be measured using [LIBRA-seq](https://www.ncbi.nlm.nih.gov/pubmed/31787378)
+and these data displayed as additional columns.
 ___________________________________________________________________________________________________
 
 <a name="honeycomb" style="display:block; position:relative; top:-150px;"></a>
@@ -197,6 +216,26 @@ LEGEND=blue,"pre-vaccination cell",
 to the enclone command line, yielding the image shown here as the file `clono.svg`.
 
 <br><br><br><br>
+___________________________________________________________________________________________________
+
+## So what is enclone good for?
+
+There are many ways to use 10x data to study immune biology.  Thus in the previous section, the 
+red clonotypes may represent responses to antigens in the vaccine.  But for a given 
+disease <i>e.g.</i> COVID-19, one may not yet have a vaccine, and indeed the vaccine may be
+the goal!  A different approach is needed.
+
+One such approach is to <b> identify patient and survivor B cell
+clonotypes that expand in response to infectious disease</b>. These define antibodies that can be 
+used to design passive or active vaccines.  Additional power is added by mapping 
+antigen specificity to multiple antigens directly via feature barcoding
+([LIBRA-seq](https://www.ncbi.nlm.nih.gov/pubmed/31787378)).
+
+These data are easy to display in enclone!  You can directly select candidates for 
+vaccine or therapeutic development by picking large clonotypes with high antigen counts and single 
+or multiple antigen specifities.
+
+We are actively working on further functionality that will make this process even more effective.
 ___________________________________________________________________________________________________
 
 ## Questions

@@ -21,13 +21,16 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
-        h.ldoc("metrics_summary_json.json", "GEX");
+        h.ldoc("metrics_summary.csv", "GEX");
         h.ldoc("raw_gene_bc_matrices_h5.h5", "GEX");
         h.ldoc("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         h.doc("raw_feature_bc_matrix/features.tsv.gz", "GEX");
         h.doc("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
         h.print_tab2();
-        h.print("\nThe exact files that are used could be changed in the future.\n\n");
+        h.print(
+            "\nAll of these files are required.  The exact files that are used could \
+            be changed in the future.\n\n",
+        );
         h.print(
             "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
              is a workaround for earlier versions (which you will be informed of if you try), but \
