@@ -12,6 +12,6 @@ home directory.  Then do <b>one</b> of the following:
 If, perchance, neither `svn` nor `curl` nor `wget` are installed on your computer, you will need 
 to install one of them.  We will add installation instructions for this later.
 
-Or maybe this will help:
+Or maybe these instructions from xkcd will help:
 
 <img align="left" src="https://imgs.xkcd.com/comics/universal_install_script.png" alt="universal install script" title="universal install script" />
