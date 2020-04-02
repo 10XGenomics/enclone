@@ -114,7 +114,7 @@ to the enclone codebase.  Please see [compilation](COMPILE.md).
 cd
 svn export https://github.com/10XGenomics/enclone/trunk enclone
 ```
-(See [here](fetching_test_datasets.md) if this doesn't work for you.)  At this point 
+(See [here](fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
 `~/enclone/datasets` will contain the datasets that are prepackaged with enclone.  If you 
 subsequently want to update this, delete the directory and repeat the command.
 
