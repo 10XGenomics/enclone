@@ -118,7 +118,7 @@ svn export https://github.com/10XGenomics/enclone/trunk enclone
 `~/enclone/datasets` will contain the datasets that are prepackaged with enclone.  If you 
 subsequently want to update this, delete the directory and repeat the command.
 
-If you have a very slow internet connection, you may prefer to download 
+🐢 If you have a very slow internet connection, you may prefer to download 
 just one dataset (`123085`), like this:
 ```
 cd; mkdir -p enclone/datasets; cd enclone/datasets
