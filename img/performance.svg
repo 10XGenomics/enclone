@@ -1,8 +1,8 @@
 <svg version="1.1"
-viewBox="0 0 880 150"
+viewBox="0 0 850 150"
 xmlns="http://www.w3.org/2000/svg">
 
-<rect x="5" y="5" width="860" height="140"
+<rect x="5" y="5" width="830" height="140"
   style="fill:white;stroke:black;stroke-width:2;fill-opacity:0.1;stroke-opacity:0.9" />
 
 <text x="15" y="30" font-family="Arial" font-size="90%">
