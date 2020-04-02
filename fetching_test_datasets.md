@@ -1,7 +1,7 @@
 # Fetching test datasets for enclone
 
 Here are three methods that should do the same thing.  First `cd` so that you're in your
-home directory.
+home directory.  Then do <b>one</b> of the following:
 
 1.  `svn export https://github.com/10XGenomics/enclone/trunk enclone`
 
