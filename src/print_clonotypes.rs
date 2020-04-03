@@ -913,7 +913,11 @@ pub fn print_clonotypes(
                         if !found {
                             row.push(String::new());
                         } else {
-                            row.push(format!("{}", total.round() as usize));
+                            if !lvars[i].ends_with("_%") {
+                                row.push(format!("{}", total.round() as usize));
+                            } else {
+                                row.push(format!("{:.2}", total));
+                            }
                         }
                     }
                     // This is necessary but should not be:
@@ -946,7 +950,11 @@ pub fn print_clonotypes(
                         if !found {
                             row.push(String::new());
                         } else {
-                            row.push(format!("{:.1}", mean));
+                            if !lvars[i].ends_with("_%") {
+                                row.push(format!("{:.1}", mean));
+                            } else {
+                                row.push(format!("{:.2}", mean));
+                            }
                         }
                     }
                     // This is necessary but should not be:
