@@ -275,13 +275,13 @@ pub fn row_fill(
             *gex_low += 1;
         }
     }
-    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0.0);
+    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
     if counts.len() > 0 {
         gex_median = counts[counts.len() / 2];
         gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
         gex_sum = fcounts.iter().sum::<f64>();
-        gex_mean = (gex_sum / fcounts.len() as f64).round() as usize;
+        gex_mean = gex_sum / fcounts.len() as f64;
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
@@ -440,7 +440,7 @@ pub fn row_fill(
         } else if x == "gex_max" {
             lvar![i, x, format!("{}", gex_max)];
         } else if x == "gex_μ" {
-            lvar![i, x, format!("{}", gex_mean)];
+            lvar![i, x, format!("{}", gex_mean.round() as usize)];
         } else if x == "gex_Σ" {
             lvar![i, x, format!("{}", gex_sum.round() as usize)];
         } else if x == "ext" {
@@ -523,7 +523,15 @@ pub fn row_fill(
                 }
             }
             if computed {
-                stats.push((x.clone(), fcounts.clone()));
+                if !y0.ends_with("_%") {
+                    stats.push((x.clone(), fcounts.clone()));
+                } else {
+                    let mut f = Vec::<f64>::new();
+                    for i in 0..fcounts.len() {
+                        f.push(100.0 * fcounts[i] / gex_mean);
+                    }
+                    stats.push((x.clone(), f));
+                }
                 let mut counts_sorted = counts.clone();
                 counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
                 let sum = fcounts.iter().sum::<f64>();
