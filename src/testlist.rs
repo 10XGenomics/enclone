@@ -18,7 +18,7 @@ pub const TESTS: [&str; 51] = [
     r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum,ulen"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
     r###"BCR=86237 GEX=85679 LVARSP=gex,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,IGLV3-1_g_%,RPS27_g_μ
-     CELLS=3 FULL_SEQC
+     CELLS=3 FULL_SEQC SUM MEAN
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
