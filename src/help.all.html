@@ -1038,34 +1038,20 @@ For gene expression and feature barcode stats, such data must be provided as inp
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
-<span style="background-color:#cbcccd;"> </span>
-┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable
-│
-<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one
-cell)│
-<span style="background-color:#cbcccd;"> </span>
-├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell
-│
-<span style="background-color:#cbcccd;"> </span>
-└──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
@@ -1146,34 +1132,20 @@ where each xi is one of:
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
-<span style="background-color:#cbcccd;"> </span>
-┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable
-│
-<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one
-cell)│
-<span style="background-color:#cbcccd;"> </span>
-├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes      
-│
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell
-│
-<span style="background-color:#cbcccd;"> </span>
-└──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
