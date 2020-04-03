@@ -115,3 +115,5 @@ If you're using another flavor of Unix, these may be helpful:
 If all else fails, maybe these instructions from xkcd will help:
 
 <img align="left" src="https://imgs.xkcd.com/comics/universal_install_script.png" alt="universal install script" title="universal install script" />
+
+Well seriously, if you're really stuck, please write to us at enclone@10xgenomics.com.
