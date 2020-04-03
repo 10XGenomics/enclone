@@ -412,8 +412,8 @@ fn test_help_output() {
     if old != new2 {
         eprintln!(
             "\nYou need to update help output by typing \
-                \"enclone help all HTML STABLE_DOC > help.all.html\" \
-                in\nthe src directory, assuming that the change is expected.\n"
+                \"enclone help all HTML STABLE_DOC > src/help.all.html\", \
+                assuming that the change is expected.\n"
         );
         std::process::exit(1);
     }

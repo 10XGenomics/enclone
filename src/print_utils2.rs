@@ -275,13 +275,13 @@ pub fn row_fill(
             *gex_low += 1;
         }
     }
-    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0);
+    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0.0);
     if counts.len() > 0 {
         gex_median = counts[counts.len() / 2];
         gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
-        gex_sum = fcounts.iter().sum::<f64>().round() as usize;
-        gex_mean = (gex_sum as f64 / fcounts.len() as f64).round() as usize;
+        gex_sum = fcounts.iter().sum::<f64>();
+        gex_mean = (gex_sum / fcounts.len() as f64).round() as usize;
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
@@ -442,7 +442,7 @@ pub fn row_fill(
         } else if x == "gex_μ" {
             lvar![i, x, format!("{}", gex_mean)];
         } else if x == "gex_Σ" {
-            lvar![i, x, format!("{}", gex_sum)];
+            lvar![i, x, format!("{}", gex_sum.round() as usize)];
         } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
@@ -479,7 +479,7 @@ pub fn row_fill(
                 y = y.after(":").to_string();
             }
             let y0 = y.clone();
-            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell"];
+            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
             for s in suffixes.iter() {
                 if y.ends_with(s) {
                     y = y.rev_before(&s).to_string();
@@ -536,6 +536,8 @@ pub fn row_fill(
                     lvar![i, x, format!("{}", mean.round())];
                 } else if y0.ends_with("_Σ") {
                     lvar![i, x, format!("{}", sum.round())];
+                } else if y0.ends_with("_%") {
+                    lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
                 } else if y0.ends_with("_cell") {
                     if pass == 2 {
                         let val = format!("{}", counts.iter().format(";"));
@@ -876,10 +878,10 @@ pub fn row_fill(
                         cdiff += "...";
                     }
                     if extra > 0 {
-                        cdiff += &format!("%{}", extra);
+                        cdiff += &format!("+{}", extra);
                     }
                 } else if clen > 0 {
-                    cdiff = format!("%{}", clen);
+                    cdiff = format!("+{}", clen);
                 }
                 cvar![j, var, cdiff];
             } else if *var == "udiff".to_string() {
@@ -916,10 +918,10 @@ pub fn row_fill(
                         udiff += "...";
                     }
                     if extra > 0 {
-                        udiff += &format!("%{}", extra);
+                        udiff += &format!("+{}", extra);
                     }
                 } else if ulen > 0 {
-                    udiff = format!("%{}", ulen);
+                    udiff = format!("+{}", ulen);
                 }
                 cvar![j, var, udiff];
             } else if *var == "d_univ".to_string() {

@@ -334,6 +334,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         ];
         rows.push(row);
         let row = vec![
+            "x_%".to_string(),
+            "percent of total GEX (genes only)".to_string(),
+            "yes".to_string(),
+            "this cell".to_string(),
+            "yes".to_string(),
+            "yes".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
             "x_cell".to_string(),
             "this cell".to_string(),
             "no".to_string(),

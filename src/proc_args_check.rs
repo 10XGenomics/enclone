@@ -12,9 +12,10 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
     let g_ends0 = ["_g"];
     let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let suffixes_g = ["", "_min", "_max", "_μ", "_Σ", "_%"];
     let (mut g_ends, mut fb_ends) = (Vec::<String>::new(), Vec::<String>::new());
     for x in g_ends0.iter() {
-        for y in suffixes.iter() {
+        for y in suffixes_g.iter() {
             g_ends.push(format!("{}{}", x, y));
         }
     }
@@ -103,7 +104,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                         known_features.push(format!("{}_cu{}", ff[z], s));
                     }
                 } else {
-                    for s in suffixes.iter() {
+                    for s in suffixes_g.iter() {
                         known_features.push(format!("{}_g{}", ff[z], s));
                     }
                 }
@@ -218,7 +219,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             if !n_var {
                 if category == "lead" {
                     eprintln!(
-                        "\nUnrecognized variable {} for LVARS.  Please type \
+                        "\nThe variable {} for LVARS is unrecognized.  Please type \
                          \"enclone help lvars\".\n",
                         x
                     );
@@ -343,7 +344,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut to_check = Vec::<String>::new();
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
