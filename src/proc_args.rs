@@ -179,6 +179,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_print_opt.bu = true;
         } else if is_simple_arg(&arg, "COMP") {
         } else if is_simple_arg(&arg, "COMP2") {
+        } else if is_simple_arg(&arg, "LONG_HELP") {
         } else if is_simple_arg(&arg, "CON") {
             ctl.allele_print_opt.con = true;
         } else if is_simple_arg(&arg, "CON_TRACE") {

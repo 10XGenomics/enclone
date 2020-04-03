@@ -406,6 +406,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "like COMP, but adds more detailed lines that are prefixed with --",
         );
         h.ldoc(
+            "LONG_HELP",
+            "allow long lines in help pages, which will otherwise trigger an assert",
+        );
+        h.ldoc(
             "CTRLC",
             "upon CTRL-C, emit a traceback and then exit; can be used as a primitive",
         );

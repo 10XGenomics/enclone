@@ -1039,33 +1039,33 @@ For gene expression and feature barcode stats, such data must be provided as inp
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
 <span style="background-color:#cbcccd;"> </span>
-┌──────────┬─────────────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                          │  visual  │  visual      │  parseable  │ 
-parseable │
-<span style="background-color:#cbcccd;"> </span> │          │                                     │          │  (one cell)  │             │  (one
+┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable
+│
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one
 cell)│
 <span style="background-color:#cbcccd;"> </span>
-├──────────┼─────────────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells                  │  yes     │  this cell   │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_%       │  percent of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                          │  no      │  no          │  no         │  this
-cell │
+├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell
+│
 <span style="background-color:#cbcccd;"> </span>
-└──────────┴─────────────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+└──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
@@ -1147,33 +1147,33 @@ where each xi is one of:
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
 <span style="background-color:#cbcccd;"> </span>
-┌──────────┬─────────────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                          │  visual  │  visual      │  parseable  │ 
-parseable │
-<span style="background-color:#cbcccd;"> </span> │          │                                     │          │  (one cell)  │             │  (one
+┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable
+│
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one
 cell)│
 <span style="background-color:#cbcccd;"> </span>
-├──────────┼─────────────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells                  │  yes     │  this cell   │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)                    │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells                     │  yes     │  null        │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_%       │  percent of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes 
-     │
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                          │  no      │  no          │  no         │  this
-cell │
+├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes      
+│
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell
+│
 <span style="background-color:#cbcccd;"> </span>
-└──────────┴─────────────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+└──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
@@ -1540,26 +1540,28 @@ enclone help developer
 For instructions on how to compile, please see
 <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/COMPILE.md</span>.
 
-┌────────┬──────────────────────────────────────────────────────────────────────────────────┐
-│COMP    │  report computational performance stats; use this with NOPRINT if you            │
-│        │  only want to see the computational performance stats, and with NOPAGER if you   │
-│        │  want output to be unbuffered                                                    │
-│COMP2   │  like COMP, but adds more detailed lines that are prefixed with --               │
-├────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│CTRLC   │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
-│        │  but easy profiling method, to know what the code is doing if it seems to be     │
-│        │  very slow                                                                       │
-├────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│HAPS=n  │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
-│        │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
-│        │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
-│        │  in some cases, this accounts for most interrupts, resulting in confusing        │
-│        │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
-│        │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
-│        │  information, you probably need to change an instance in the code of             │
-│        │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
-│        │  selected section.                                                               │
-└────────┴──────────────────────────────────────────────────────────────────────────────────┘
+┌───────────┬──────────────────────────────────────────────────────────────────────────────────┐
+│COMP       │  report computational performance stats; use this with NOPRINT if you            │
+│           │  only want to see the computational performance stats, and with NOPAGER if you   │
+│           │  want output to be unbuffered                                                    │
+│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert          │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
+│           │  but easy profiling method, to know what the code is doing if it seems to be     │
+│           │  very slow                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│HAPS=n     │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
+│           │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
+│           │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
+│           │  in some cases, this accounts for most interrupts, resulting in confusing        │
+│           │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
+│           │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
+│           │  information, you probably need to change an instance in the code of             │
+│           │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
+│           │  selected section.                                                               │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────┘
 
 </pre>
 </body>
