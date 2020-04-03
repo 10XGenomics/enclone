@@ -370,6 +370,27 @@ fn test_enclone_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test that references to the dataset version in README.md are current.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_version_number_in_readme() {
+    PrettyTrace::new().on();
+    let readme = read_to_string("README.md").unwrap();
+    let fields = readme.split('/').collect::<Vec<&str>>();
+    for x in fields {
+        if x.starts_with("version") {
+            let y = x.after("version");
+            if y.parse::<usize>().is_ok() {
+                let v = y.force_usize();
+                assert_eq!(v, TEST_FILES_VERSION as usize);
+            }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that help output hasn't changed.
 
 #[cfg(not(debug_assertions))]
