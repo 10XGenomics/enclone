@@ -125,6 +125,10 @@ cd; mkdir -p enclone/datasets; cd enclone/datasets
 svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
 ```
 
+The test datasets were selected because they happened to be useful as part of algorithmic regression
+tests (included in the codebase).  It is thus a somewhat oddball set.  We will make a much larger
+collected of test datasets available later.
+
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 ___________________________________________________________________________________________________
