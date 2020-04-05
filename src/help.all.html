@@ -1004,37 +1004,41 @@ clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌───────────────┬───────────────────────────────────────────────────────────────────────────┐
-│datasets       │  dataset identifiers                                                      │
-│samples        │  sample identifiers                                                       │
-│donors         │  donor identifiers                                                        │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│n              │  number of cells                                                          │
-│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset     │
-│               │  or sample or donor or tag short name; may name only one such category    │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                │
-│far            │  Hamming distance of V..J DNA sequence to farthest neighbor               │
-│               │  both compare to cells having chains in the same columns of the clonotype,│
-│               │  with - shown if there is no other exact subclonotype to compare to       │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are   │
-│               │  grouped according to the Hamming distance of their V..J sequences.  Those│
-│               │  within distance d are defined to be in the same group, and this is       │
-│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The    │
-│               │  ordering of these identifiers is arbitrary.  This option is best applied │
-│               │  to cases where all exact subclonotypes have a complete set of chains.    │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                       │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                        │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type  │
-│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow  │
-│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown  │
-│&lt;crispr>_cr    │                                                                           │
-│&lt;custom>_cu    │                                                                           │
-└───────────────┴───────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬────────────────────────────────────────────────────────────────────────────┐
+│datasets       │  dataset identifiers                                                       │
+│samples        │  sample identifiers                                                        │
+│donors         │  donor identifiers                                                         │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│n              │  number of cells                                                           │
+│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset      │
+│               │  or sample or donor or tag short name; may name only one such category     │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                 │
+│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                │
+│               │  both compare to cells having chains in the same columns of the clonotype, │
+│               │  with - shown if there is no other exact subclonotype to compare to        │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are    │
+│               │  grouped according to the Hamming distance of their V..J sequences.  Those │
+│               │  within distance d are defined to be in the same group, and this is        │
+│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The     │
+│               │  ordering of these identifiers is arbitrary.  This option is best applied  │
+│               │  to cases where all exact subclonotypes have a complete set of chains.     │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                        │
+│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                         │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type   │
+│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow   │
+│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;  │
+│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr│
+│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●│
+└───────────────┴────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
+
+● Example: IG.*_g matches all genes that begin with IG.  The regular expression must be in the
+alphabet A-Za-z0-9+_-.[]()* and is only intepreted as a regular expression if it contains a
+character in []()*.  See "enclone help filter" for more information about regular expressions.
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 

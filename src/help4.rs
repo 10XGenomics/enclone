@@ -463,14 +463,26 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "<antigen>_ag",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown",
+            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown;",
         );
-        h.doc("<crispr>_cr", "");
-        h.doc("<custom>_cu", "");
+        h.doc(
+            "<crispr>_cr",
+            "we also allow <regular expression>_g where g can be replaced by ab, ag, cr",
+        );
+        h.doc(
+            "<custom>_cu",
+            "or cu; this represents a sum of UMI counts across the matching features. ●",
+        );
         h.print_tab2();
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \
              as input to enclone.\n\n",
+        );
+        h.print(
+            "● Example: IG.*_g matches all genes that begin with IG.  The regular expression must \
+             be in the alphabet A-Za-z0-9+_-.[]()* and is only intepreted as a regular expression \
+             if it contains a character in []()*.  See \"enclone help filter\" \
+             for more information about regular expressions.\n\n",
         );
         explain_alt_versions(&mut h);
         h.print(

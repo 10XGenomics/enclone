@@ -3,6 +3,7 @@
 // Check lvars, cvars, and pcols.
 
 use crate::defs::*;
+use regex::Regex;
 use string_utils::*;
 use vector_utils::*;
 
@@ -354,6 +355,38 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
+        // Check for patterns.
+
+        let mut pat = false;
+        for y in ends.iter() {
+            if x.ends_with(y) {
+                let p = x.rev_before(y);
+                if !p.is_empty() && Regex::new(&p).is_ok() {
+                    let mut ok = true;
+                    let p = p.as_bytes();
+                    for i in 0..p.len() {
+                        if !((p[i] >= b'A' && p[i] <= b'Z')
+                            || (p[i] >= b'a' && p[i] <= b'z')
+                            || (p[i] >= b'0' && p[i] <= b'9')
+                            || b".-_[]()*".contains(&p[i]))
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+                    if ok {
+                        pat = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if pat {
+            continue;
+        }
+
+        // The rest.
+
         if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex")) {
             eprintln!(
                 "\nCan't use LVARS or LVARSP variable {} without having gene \
