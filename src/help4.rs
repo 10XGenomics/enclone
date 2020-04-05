@@ -480,8 +480,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.print(
             "● Example: IG.*_g matches all genes that begin with IG.  The regular expression must \
-             be in the alphabet A-Za-z0-9+_-.[]()* and is only intepreted as a regular expression \
-             if it contains a character in []()*.  See \"enclone help filter\" \
+             be in the alphabet A-Za-z0-9+_-.[]()|* and is only intepreted as a regular expression \
+             if it contains a character in []()|*.  See \"enclone help filter\" \
              for more information about regular expressions.\n\n",
         );
         explain_alt_versions(&mut h);

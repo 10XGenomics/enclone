@@ -100,12 +100,12 @@ pub fn main_enclone(args: &Vec<String>) {
                         if !((b[i] >= b'A' && b[i] <= b'Z')
                             || (b[i] >= b'a' && b[i] <= b'z')
                             || (b[i] >= b'0' && b[i] <= b'9')
-                            || b".-_[]()*".contains(&b[i]))
+                            || b".-_[]()|*".contains(&b[i]))
                         {
                             ok = false;
                             break;
                         }
-                        if b"[]()*".contains(&b[i]) {
+                        if b"[]()|*".contains(&b[i]) {
                             px = true;
                         }
                     }
@@ -145,7 +145,7 @@ pub fn main_enclone(args: &Vec<String>) {
                         }
                         let mut matches = false;
                         for li in 0..ctl.sample_info.n() {
-                            if !ctl.clono_print_opt.lvars_match[i][li].is_empty() {
+                            if !ctl.clono_print_opt.lvars_match[li][i].is_empty() {
                                 matches = true;
                             }
                         }

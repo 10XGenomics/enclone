@@ -368,7 +368,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                         if !((p[i] >= b'A' && p[i] <= b'Z')
                             || (p[i] >= b'a' && p[i] <= b'z')
                             || (p[i] >= b'0' && p[i] <= b'9')
-                            || b".-_[]()*".contains(&p[i]))
+                            || b".-_[]()|*".contains(&p[i]))
                         {
                             ok = false;
                             break;

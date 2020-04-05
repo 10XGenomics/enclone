@@ -488,7 +488,7 @@ pub fn row_fill(
             }
             let mut computed = false;
 
-            fn _get_gex_matrix_entry(
+            fn get_gex_matrix_entry(
                 ctl: &EncloneControl,
                 gex_info: &GexInfo,
                 fid: usize,
@@ -525,32 +525,29 @@ pub fn row_fill(
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                if gex_info.feature_id[li].contains_key(&y) {
-                    computed = true;
+                if i < lvars.len() && ctl.clono_print_opt.lvars_match[li][i].len() > 0 {
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                     if p >= 0 {
-                        let fid = gex_info.feature_id[li][&y];
-                        let mut raw_count = 0 as f64;
-                        if !ctl.gen_opt.h5 {
-                            raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                        } else {
-                            for j in 0..d_all[l].len() {
-                                if ind_all[l][j] == fid as u32 {
-                                    raw_count = d_all[l][j] as f64;
-                                    break;
-                                }
-                            }
+                        computed = true;
+                        let mut raw_count = 0.0;
+                        for fid in ctl.clono_print_opt.lvars_match[li][i].iter() {
+                            let raw_counti = get_gex_matrix_entry(
+                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize, &y,
+                            );
+                            raw_count += raw_counti;
                         }
-                        let mult: f64;
-                        if y.ends_with("_g") {
-                            mult = gex_info.gex_mults[li];
-                        } else {
-                            mult = gex_info.fb_mults[li];
-                        }
-                        if !ctl.gen_opt.full_counts {
-                            counts.push((raw_count as f64 * mult).round() as f64);
-                            fcounts.push(raw_count as f64 * mult);
-                        } else {
+                        counts.push(raw_count.round() as f64);
+                        fcounts.push(raw_count);
+                    }
+                } else {
+                    if gex_info.feature_id[li].contains_key(&y) {
+                        computed = true;
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            let fid = gex_info.feature_id[li][&y];
+                            let raw_count = get_gex_matrix_entry(
+                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
+                            );
                             counts.push(raw_count.round() as f64);
                             fcounts.push(raw_count);
                         }
