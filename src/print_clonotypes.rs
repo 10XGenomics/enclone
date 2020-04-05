@@ -638,7 +638,6 @@ pub fn print_clonotypes(
                                                     );
                                                     count += counti;
                                                 }
-                                                row.push(format!("{}", count.round()));
                                             } else if gex_info.feature_id[li].contains_key(&y) {
                                                 computed = true;
                                                 let fid = gex_info.feature_id[li][&y];
@@ -652,23 +651,17 @@ pub fn print_clonotypes(
                                             // note unneeded calculation above in certain cases
                                             // ELIMINATE!
                                             if y0.ends_with("_min") {
-                                                row.push("".to_string());
                                             } else if y0.ends_with("_max") {
-                                                row.push("".to_string());
                                             } else if y0.ends_with("_μ") {
-                                                row.push("".to_string());
                                             } else if y0.ends_with("_Σ") {
-                                                row.push("".to_string());
                                             } else if y0.ends_with("_%") {
                                                 row.push(format!(
-                                                    "{}",
+                                                    "{:.2}",
                                                     (100.0 * count) / gex_count
                                                 ));
                                             } else {
                                                 row.push(format!("{}", count.round()));
                                             }
-                                        } else {
-                                            row.push("".to_string());
                                         }
                                     }
                                 }
