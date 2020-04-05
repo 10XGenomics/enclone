@@ -576,8 +576,10 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     row.push(format!("{:.2}", entropy));
-                                } else if lvars[k] == "gex".to_string() && have_gex {
-                                    let mut gex_count = 0;
+                                } else if have_gex {
+                                    // this calc isn't needed except in _% case below
+                                    // ELIMINATE UNNEEDED CALC
+                                    let mut gex_count = 0.0;
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
@@ -599,40 +601,74 @@ pub fn print_clonotypes(
                                             }
                                         }
                                         if !ctl.gen_opt.full_counts {
-                                            gex_count = (raw_count * gex_info.gex_mults[li]).round()
-                                                as usize;
+                                            gex_count = raw_count * gex_info.gex_mults[li];
                                         } else {
-                                            gex_count = raw_count.round() as usize;
+                                            gex_count = raw_count;
                                         }
                                     }
-                                    row.push(format!("{}", gex_count));
-                                } else {
-                                    let mut y = lvars[k].clone();
-                                    if y.contains(':') {
-                                        y = y.after(":").to_string();
-                                    }
-                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                                    if p >= 0 {
-                                        if k < lvars.len()
-                                            && ctl.clono_print_opt.lvars_match[li][k].len() > 0
-                                        {
-                                            let mut count = 0.0;
-                                            for fid in ctl.clono_print_opt.lvars_match[li][k].iter()
-                                            {
-                                                let counti = get_gex_matrix_entry(
-                                                    &ctl, &gex_info, *fid, &d_all, &ind_all, li,
-                                                    kb, p as usize, &y,
-                                                );
-                                                count += counti;
+                                    if lvars[k] == "gex".to_string() {
+                                        row.push(format!("{}", gex_count.round()));
+                                    } else {
+                                        let mut y = lvars[k].clone();
+                                        if y.contains(':') {
+                                            y = y.after(":").to_string();
+                                        }
+                                        let y0 = y.clone();
+                                        let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
+                                        for s in suffixes.iter() {
+                                            if y.ends_with(s) {
+                                                y = y.rev_before(&s).to_string();
+                                                break;
                                             }
-                                            row.push(format!("{}", count.round()));
-                                        } else if gex_info.feature_id[li].contains_key(&y) {
-                                            let fid = gex_info.feature_id[li][&y];
-                                            let count = get_gex_matrix_entry(
-                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, kb,
-                                                p as usize, &y,
-                                            );
-                                            row.push(format!("{}", count.round()));
+                                        }
+                                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                        let mut computed = false;
+                                        let mut count = 0.0;
+                                        if p >= 0 {
+                                            if k < lvars.len()
+                                                && ctl.clono_print_opt.lvars_match[li][k].len() > 0
+                                            {
+                                                computed = true;
+                                                for fid in
+                                                    ctl.clono_print_opt.lvars_match[li][k].iter()
+                                                {
+                                                    let counti = get_gex_matrix_entry(
+                                                        &ctl, &gex_info, *fid, &d_all, &ind_all,
+                                                        li, kb, p as usize, &y,
+                                                    );
+                                                    count += counti;
+                                                }
+                                                row.push(format!("{}", count.round()));
+                                            } else if gex_info.feature_id[li].contains_key(&y) {
+                                                computed = true;
+                                                let fid = gex_info.feature_id[li][&y];
+                                                count = get_gex_matrix_entry(
+                                                    &ctl, &gex_info, fid, &d_all, &ind_all, li, kb,
+                                                    p as usize, &y,
+                                                );
+                                            }
+                                        }
+                                        if computed {
+                                            // note unneeded calculation above in certain cases
+                                            // ELIMINATE!
+                                            if y0.ends_with("_min") {
+                                                row.push("".to_string());
+                                            } else if y0.ends_with("_max") {
+                                                row.push("".to_string());
+                                            } else if y0.ends_with("_μ") {
+                                                row.push("".to_string());
+                                            } else if y0.ends_with("_Σ") {
+                                                row.push("".to_string());
+                                            } else if y0.ends_with("_%") {
+                                                row.push(format!(
+                                                    "{}",
+                                                    (100.0 * count) / gex_count
+                                                ));
+                                            } else {
+                                                row.push(format!("{}", count.round()));
+                                            }
+                                        } else {
+                                            row.push("".to_string());
                                         }
                                     }
                                 }
