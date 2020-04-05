@@ -8,7 +8,7 @@ pub fn enclone_testdata() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 52] = [
+pub const TESTS: [&str; 53] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -136,6 +136,9 @@ pub const TESTS: [&str; 52] = [
     // 52. add test for some gene patterns
     r###"BCR=123085 GEX=123749 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
         LVARSP="(IGHV5-51|IGLV1-47)_g_%,IGH.*_g_%,IG(K|L).*_g_%""###,
+    // 53. add test for _% with PER_CELL
+    r###"BCR=123085 GEX=123749 LVARSP="gex,n_gex,JCHAIN_g_%,IG.*_g_%" CVARS=u_μ,const
+        MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL"###,
 ];
 
 // List of examples in documentation.
