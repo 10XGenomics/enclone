@@ -512,7 +512,7 @@ pub fn print_clonotypes(
 
                     let mut subrows = Vec::<Vec<String>>::new();
                     if ctl.clono_print_opt.bu {
-                        for (kb, bcl) in bli.iter().enumerate() {
+                        for bcl in bli.iter() {
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
@@ -624,6 +624,7 @@ pub fn print_clonotypes(
                                         let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                         let mut computed = false;
                                         let mut count = 0.0;
+                                        let l = bcl.2;
                                         if p >= 0 {
                                             if k < lvars.len()
                                                 && ctl.clono_print_opt.lvars_match[li][k].len() > 0
@@ -634,7 +635,7 @@ pub fn print_clonotypes(
                                                 {
                                                     let counti = get_gex_matrix_entry(
                                                         &ctl, &gex_info, *fid, &d_all, &ind_all,
-                                                        li, kb, p as usize, &y,
+                                                        li, l, p as usize, &y,
                                                     );
                                                     count += counti;
                                                 }
@@ -642,7 +643,7 @@ pub fn print_clonotypes(
                                                 computed = true;
                                                 let fid = gex_info.feature_id[li][&y];
                                                 count = get_gex_matrix_entry(
-                                                    &ctl, &gex_info, fid, &d_all, &ind_all, li, kb,
+                                                    &ctl, &gex_info, fid, &d_all, &ind_all, li, l,
                                                     p as usize, &y,
                                                 );
                                             }
