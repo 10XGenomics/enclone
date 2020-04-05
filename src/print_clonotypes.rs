@@ -615,32 +615,11 @@ pub fn print_clonotypes(
                                     if p >= 0 {
                                         if gex_info.feature_id[li].contains_key(&y) {
                                             let fid = gex_info.feature_id[li][&y];
-                                            let mut raw_count = 0 as f64;
-                                            if !ctl.gen_opt.h5 {
-                                                raw_count = gex_info.gex_matrices[li]
-                                                    .value(p as usize, fid)
-                                                    as f64;
-                                            } else {
-                                                for j in 0..d_all[kb].len() {
-                                                    if ind_all[kb][j] == fid as u32 {
-                                                        raw_count = d_all[kb][j] as f64;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            let mult: f64;
-                                            if y.ends_with("_g") {
-                                                mult = gex_info.gex_mults[li];
-                                            } else {
-                                                mult = gex_info.fb_mults[li];
-                                            }
-                                            let count;
-                                            if !ctl.gen_opt.full_counts {
-                                                count = (raw_count * mult).round() as f64;
-                                            } else {
-                                                count = raw_count.round() as f64;
-                                            }
-                                            row.push(format!("{}", count));
+                                            let count = get_gex_matrix_entry(
+                                                &ctl, &gex_info, fid, &d_all, &ind_all, li, kb,
+                                                p as usize, &y,
+                                            );
+                                            row.push(format!("{}", count.round()));
                                         }
                                     }
                                 }

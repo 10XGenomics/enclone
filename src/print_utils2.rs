@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// This file contains the single function row_fill.
+// This file contains the single function row_fill,
+// plus a small helper function get_gex_matrix_entry.
 
 use crate::defs::*;
 use crate::print_utils1::*;
@@ -17,6 +18,40 @@ use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
+
+pub fn get_gex_matrix_entry(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    fid: usize,
+    d_all: &Vec<Vec<u32>>,
+    ind_all: &Vec<Vec<u32>>,
+    li: usize,
+    l: usize,
+    p: usize,
+    y: &str,
+) -> f64 {
+    let mut raw_count = 0 as f64;
+    if !ctl.gen_opt.h5 {
+        raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+    } else {
+        for j in 0..d_all[l].len() {
+            if ind_all[l][j] == fid as u32 {
+                raw_count = d_all[l][j] as f64;
+                break;
+            }
+        }
+    }
+    let mult: f64;
+    if y.ends_with("_g") {
+        mult = gex_info.gex_mults[li];
+    } else {
+        mult = gex_info.fb_mults[li];
+    }
+    if !ctl.gen_opt.full_counts {
+        raw_count *= mult;
+    }
+    raw_count
+}
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described
@@ -487,41 +522,6 @@ pub fn row_fill(
                 }
             }
             let mut computed = false;
-
-            fn get_gex_matrix_entry(
-                ctl: &EncloneControl,
-                gex_info: &GexInfo,
-                fid: usize,
-                d_all: &Vec<Vec<u32>>,
-                ind_all: &Vec<Vec<u32>>,
-                li: usize,
-                l: usize,
-                p: usize,
-                y: &str,
-            ) -> f64 {
-                let mut raw_count = 0 as f64;
-                if !ctl.gen_opt.h5 {
-                    raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                } else {
-                    for j in 0..d_all[l].len() {
-                        if ind_all[l][j] == fid as u32 {
-                            raw_count = d_all[l][j] as f64;
-                            break;
-                        }
-                    }
-                }
-                let mult: f64;
-                if y.ends_with("_g") {
-                    mult = gex_info.gex_mults[li];
-                } else {
-                    mult = gex_info.fb_mults[li];
-                }
-                if !ctl.gen_opt.full_counts {
-                    raw_count *= mult;
-                }
-                raw_count
-            }
-
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
