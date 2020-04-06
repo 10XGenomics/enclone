@@ -108,3 +108,6 @@ H5: force use of H5, even if matrix.bin has been built
 FORCE_EXTERNAL: do not test for internal run
 
 STABLE_DOC: print documentation in a way that it won't change when the git version changes
+
+LVARS entry clust = cluster id, from analysis_csv/clustering/graphclust/clusters.tsv
+(for now, has to be in that exact place; only implemented for PER_CELL)

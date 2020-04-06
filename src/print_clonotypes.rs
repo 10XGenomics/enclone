@@ -521,6 +521,12 @@ pub fn print_clonotypes(
                                 let nr = row.len();
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
+                                } else if lvars[k] == "clust".to_string() && have_gex {
+                                    let mut cid = 0;
+                                    if gex_info.cluster[li].contains_key(&bc.clone()) {
+                                        cid = gex_info.cluster[li][&bc.clone()];
+                                    }
+                                    row.push(format!("{}", cid));
                                 } else if lvars[k] == "n_gex".to_string() && have_gex {
                                     let mut n_gex = 0;
                                     if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {

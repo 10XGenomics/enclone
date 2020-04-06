@@ -379,6 +379,8 @@ pub fn row_fill(
             lvar![i, x, format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
             stats.push((x.to_string(), counts));
+        } else if x == "clust" {
+            lvar![i, x, format!("")];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
             let mut count = 0;
