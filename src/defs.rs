@@ -402,6 +402,7 @@ pub struct ClonoFiltOpt {
     pub ncells_high: usize,  // only show clonotypes with at most this many cells
     pub min_umi: usize,      // only show clonotypes with at least this many UMIs in some contig
     pub min_datasets: usize, // only show clonotypes involving at least this many datasets
+    pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub ncross: bool,        // turn off cross filtering,
