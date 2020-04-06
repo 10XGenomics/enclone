@@ -363,6 +363,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                 let p = x.rev_before(y);
                 if !p.is_empty() && Regex::new(&p).is_ok() {
                     let mut ok = true;
+                    let mut special = false;
                     let p = p.as_bytes();
                     for i in 0..p.len() {
                         if !((p[i] >= b'A' && p[i] <= b'Z')
@@ -373,8 +374,11 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                             ok = false;
                             break;
                         }
+                        if b"[]()|*".contains(&p[i]) {
+                            special = true;
+                        }
                     }
-                    if ok {
+                    if ok && special {
                         pat = true;
                         break;
                     }
