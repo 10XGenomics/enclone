@@ -380,7 +380,18 @@ pub fn row_fill(
             let counts = vec![1.0; mults[u]];
             stats.push((x.to_string(), counts));
         } else if x == "clust" {
-            lvar![i, x, format!("")];
+            let mut clust = Vec::<usize>::new();
+            for j in 0..ex.clones.len() {
+                let mut cid = 0;
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if gex_info.cluster[li].contains_key(&bc.clone()) {
+                    cid = gex_info.cluster[li][&bc.clone()];
+                }
+                clust.push(cid);
+            }
+            clust.sort();
+            lvar![i, x, format!("{}", abbrev_list(&clust))];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
             let mut count = 0;
