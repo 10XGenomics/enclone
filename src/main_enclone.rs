@@ -91,7 +91,10 @@ pub fn main_enclone(args: &Vec<String>) {
     for (i, x) in ctl.clono_print_opt.lvars.iter().enumerate() {
         for y in ends.iter() {
             if x.ends_with(y) {
-                let p = x.rev_before(y);
+                let mut p = x.rev_before(y);
+                if p.contains(':') {
+                    p = p.after(":");
+                }
                 if !p.is_empty() && Regex::new(&p).is_ok() {
                     let mut ok = true;
                     let mut px = false;

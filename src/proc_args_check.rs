@@ -358,6 +358,10 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     for x in ctl.clono_print_opt.lvars.iter() {
         // Check for patterns.
 
+        let mut x = x.clone();
+        if x.contains(':') {
+            x = x.rev_after(":").to_string();
+        }
         let mut pat = false;
         for y in ends.iter() {
             if x.ends_with(y) {
