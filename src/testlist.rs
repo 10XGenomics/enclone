@@ -137,7 +137,7 @@ pub const TESTS: [&str; 54] = [
     r###"BCR=123085 GEX=123749 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
         LVARSP="(IGHV5-51|IGLV1-47)_g_%,IGH.*_g_%,IG(K|L).*_g_%""###,
     // 53. add test for _% with PER_CELL
-    r###"BCR=123085 GEX=123749 LVARSP="gex,n_gex,JCHAIN_g_%,IG.*_g_%" CVARS=u_μ,const
+    r###"BCR=123085 GEX=123749 LVARSP="gex,n_gex,JCHAIN_g_%,IG%:IG.*_g_%" CVARS=u_μ,const
         MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL"###,
     // 54. make sure this fails gracefully
     r###"BCR=86237 GEX=85679 LVARSP=GERBULXXX123_g_% EXPECT_FAIL"###,
