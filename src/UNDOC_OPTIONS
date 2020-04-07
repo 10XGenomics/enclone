@@ -112,3 +112,4 @@ LVARS entries
 * clust = cluster id, from analysis_csv/clustering/graphclust/clusters.csv
   (for now, has to be in that exact place; not implemented for PCELL)
 * type = cell type, from analysis_csv/celltypes/celltypes.csv
+  Note that it's not clear how doublets are handled.
