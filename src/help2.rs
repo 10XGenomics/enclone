@@ -163,7 +163,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
-                "{} = {}.\n\n",
+                "{} : {}.\n\n",
                 env!("CARGO_PKG_VERSION"),
                 VERSION_STRING
             ));

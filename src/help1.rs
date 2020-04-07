@@ -3,7 +3,6 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use std::env;
 
 pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide main help.
@@ -14,12 +13,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             h.print("\n");
         }
         h.begin_doc("");
-        h.print(&format!(
-            "\nThis is version {} (beta) of ",
-            env!("CARGO_PKG_VERSION")
-        ));
-        h.print_enclone();
-        h.print(".  The mission of ");
+        h.print("\nThe mission of ");
         h.print_enclone();
         h.print(" is to:\n\n");
         h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");

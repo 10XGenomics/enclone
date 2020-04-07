@@ -105,6 +105,10 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Provide help if requested.
 
     {
+        if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
+            println!("{} : {}", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+            std::process::exit(0);
+        }
         let mut args = args.clone();
         let mut to_delete = vec![false; args.len()];
         let mut nopager = false;

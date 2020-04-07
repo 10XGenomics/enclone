@@ -357,6 +357,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             Cell Ranger that you used to generate the input data.\n\n",
         );
 
+        h.print("\\boldblue{17. Can I print the enclone version?}\n\n");
+        h.print("Yes, type \"enclone version\".\n\n");
+
         if !h.help_all {
             h.dump();
             std::process::exit(0);
