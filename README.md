@@ -80,8 +80,7 @@ enclone is fast, typically responding in seconds (if run on a single dataset).  
 as an exploratory tool.  You can dynamically change your command line to select specific 
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.
 
-enclone, in addition to [Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj) (and
-in which the core algorithm of enclone will be integrated at a later point in time), 
+enclone, in addition to [Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj),
 supports the analysis of VDJ and other data from the [Chromium Single Cell Immune Profiling 
 solution](https://www.10xgenomics.com/solutions/vdj/).
 ___________________________________________________________________________________________________
