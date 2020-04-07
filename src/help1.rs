@@ -32,7 +32,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
-             Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
+             Cell Ranger and Loupe,}\nenclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
         h.print(
