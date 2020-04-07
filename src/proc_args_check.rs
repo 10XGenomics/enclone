@@ -39,6 +39,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
                 || *x == "clust".to_string()
+                || *x == "type".to_string()
                 || *x == "entropy".to_string()
             {
                 if category == "parseable" {
@@ -268,7 +269,9 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust") {
+        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust")
+            || x == "type"
+        {
             eprintln!(
                 "\nCan't use parseable variable {} without having gene \
                  expression data.\n",
@@ -396,7 +399,9 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
 
         // The rest.
 
-        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust") {
+        if !gex_info.have_gex
+            && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust" || x == "type")
+        {
             eprintln!(
                 "\nCan't use LVARS or LVARSP variable {} without having gene \
                  expression data.\n",

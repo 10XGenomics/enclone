@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 17] = [
+pub const LVARS_ALLOWED: [&str; 18] = [
     "datasets",
     "samples",
     "donors",
@@ -25,6 +25,7 @@ pub const LVARS_ALLOWED: [&str; 17] = [
     "n_gex_cell",
     "n_gex",
     "clust",
+    "type",
     "entropy",
     "near",
     "far",
@@ -227,6 +228,7 @@ impl LinearCondition {
             "n_gex_cell",
             "n_gex",
             "clust",
+            "type",
             "gex",
             "gex_min",
             "gex_max",
@@ -654,6 +656,7 @@ pub struct GexInfo {
     pub gex_matrices: Vec<MirrorSparseMatrix>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
+    pub cell_type: Vec<HashMap<String, String>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,
     pub h5_data: Vec<Option<Dataset>>,

@@ -392,6 +392,21 @@ pub fn row_fill(
             }
             clust.sort();
             lvar![i, x, format!("{}", abbrev_list(&clust))];
+        } else if x == "type" {
+            let mut cell_types = Vec::<String>::new();
+            /*
+            for j in 0..ex.clones.len() {
+                let mut cell_type = "".to_string();
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                    cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+                }
+                cell_types.push(cell_type);
+            }
+            */
+            cell_types.sort();
+            lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
             let mut count = 0;
