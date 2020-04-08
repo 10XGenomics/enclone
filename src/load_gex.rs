@@ -3,7 +3,7 @@
 // Load gene expression and antibody data.
 
 use crate::defs::*;
-use h5::Dataset;
+use hdf5::Dataset;
 use io_utils::*;
 use load_feature_bc::*;
 use mirror_sparse_matrix::*;
@@ -422,7 +422,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
                     eprintln!("\nThere's a missing input file:\n{}.\n", f);
                     std::process::exit(1);
                 }
-                let h = h5::File::open(&f, "r").unwrap();
+                let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));
                 let indptr = h.dataset("matrix/indptr").unwrap();

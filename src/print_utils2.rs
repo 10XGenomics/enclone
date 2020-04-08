@@ -46,8 +46,8 @@ pub fn row_fill(
     rsi: &ColInfo,
     dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
-    d_readers: &Vec<Option<h5::Reader>>,
-    ind_readers: &Vec<Option<h5::Reader>>,
+    d_readers: &Vec<Option<hdf5::Reader>>,
+    ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<f64>)>,
 ) {
@@ -167,13 +167,13 @@ pub fn row_fill(
                             d = d_readers[li]
                                 .as_ref()
                                 .unwrap()
-                                .read_slice(&s![z1..z2])
+                                .read_slice(s![z1..z2])
                                 .unwrap()
                                 .to_vec();
                             ind = ind_readers[li]
                                 .as_ref()
                                 .unwrap()
-                                .read_slice(&s![z1..z2])
+                                .read_slice(s![z1..z2])
                                 .unwrap()
                                 .to_vec();
                         }
@@ -232,13 +232,13 @@ pub fn row_fill(
                         d = d_readers[li]
                             .as_ref()
                             .unwrap()
-                            .read_slice(&s![z1..z2])
+                            .read_slice(s![z1..z2])
                             .unwrap()
                             .to_vec();
                         ind = ind_readers[li]
                             .as_ref()
                             .unwrap()
-                            .read_slice(&s![z1..z2])
+                            .read_slice(s![z1..z2])
                             .unwrap()
                             .to_vec();
                     }
