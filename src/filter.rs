@@ -206,6 +206,9 @@ pub fn survives_filter(
     if lis.len() < ctl.clono_filt_opt.min_datasets {
         return false;
     }
+    if lis.len() > ctl.clono_filt_opt.max_datasets {
+        return false;
+    }
     if cols < ctl.clono_filt_opt.min_chains || cols > ctl.clono_filt_opt.max_chains {
         return false;
     }

@@ -13,7 +13,7 @@
 enclone main help page (what you get by typing "enclone")
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
-This is version 0.1.0 (beta) of <span style="color:#3e7dd1;font-weight:bold;">e</span><span style="color:#f37721;font-weight:bold;">n</span><span style="color:#e7bd20;">c</span><span style="color:#72c0ff;font-weight:bold;">l</span><span style="color:#eb99c2;font-weight:bold;">o</span><span style="color:#31c39a;">n</span><span style="color:#f37721;font-weight:bold;">e</span>.  The mission of <span style="color:#3e7dd1;font-weight:bold;">e</span><span style="color:#f37721;font-weight:bold;">n</span><span style="color:#e7bd20;">c</span><span style="color:#72c0ff;font-weight:bold;">l</span><span style="color:#eb99c2;font-weight:bold;">o</span><span style="color:#31c39a;">n</span><span style="color:#f37721;font-weight:bold;">e</span> is to:
+The mission of <span style="color:#3e7dd1;font-weight:bold;">e</span><span style="color:#f37721;font-weight:bold;">n</span><span style="color:#e7bd20;">c</span><span style="color:#72c0ff;font-weight:bold;">l</span><span style="color:#eb99c2;font-weight:bold;">o</span><span style="color:#31c39a;">n</span><span style="color:#f37721;font-weight:bold;">e</span> is to:
 
 <span style="font-weight:bold;">  Find and display the clonotypes within single cell VDJ datasets:</span>
 <span style="font-weight:bold;">  groups of cells having the same fully rearranged common ancestor.</span>
@@ -22,7 +22,7 @@ This help page catalogs all the enclone help pages.  We strongly recommend study
 in <span style="color:#c23621;">red</span> below.  Pages fit in 100 wide x 56 high windows, except those labeled "long" or "wide".
 
 <span style="color:#5833ff;font-weight:bold;">enclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe,</span>
-<span style="color:#5833ff;font-weight:bold;">which enclone is integrated with.</span>  enclone uses output from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1.</span>
+enclone uses output from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1.</span>
 
 Please also read the documentation at <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/README.md</span>.
 
@@ -836,6 +836,7 @@ these options cause only certain clonotypes to be printed
 │                     │  (string in alphabet ACGT)                                            │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets       │
+│MAX_DATASETS=n       │  only show clonotypes containing cells from at most n datasets        │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │CDIFF                │  only show clonotypes having a difference in constant region with the │
 │                     │  universal reference                                                  │
@@ -1004,53 +1005,58 @@ clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌───────────────┬───────────────────────────────────────────────────────────────────────────┐
-│datasets       │  dataset identifiers                                                      │
-│samples        │  sample identifiers                                                       │
-│donors         │  donor identifiers                                                        │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│n              │  number of cells                                                          │
-│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset     │
-│               │  or sample or donor or tag short name; may name only one such category    │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                │
-│far            │  Hamming distance of V..J DNA sequence to farthest neighbor               │
-│               │  both compare to cells having chains in the same columns of the clonotype,│
-│               │  with - shown if there is no other exact subclonotype to compare to       │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are   │
-│               │  grouped according to the Hamming distance of their V..J sequences.  Those│
-│               │  within distance d are defined to be in the same group, and this is       │
-│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The    │
-│               │  ordering of these identifiers is arbitrary.  This option is best applied │
-│               │  to cases where all exact subclonotypes have a complete set of chains.    │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                       │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                        │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type  │
-│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow  │
-│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown  │
-│&lt;crispr>_cr    │                                                                           │
-│&lt;custom>_cu    │                                                                           │
-└───────────────┴───────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬────────────────────────────────────────────────────────────────────────────┐
+│datasets       │  dataset identifiers                                                       │
+│samples        │  sample identifiers                                                        │
+│donors         │  donor identifiers                                                         │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│n              │  number of cells                                                           │
+│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset      │
+│               │  or sample or donor or tag short name; may name only one such category     │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                 │
+│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                │
+│               │  both compare to cells having chains in the same columns of the clonotype, │
+│               │  with - shown if there is no other exact subclonotype to compare to        │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are    │
+│               │  grouped according to the Hamming distance of their V..J sequences.  Those │
+│               │  within distance d are defined to be in the same group, and this is        │
+│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The     │
+│               │  ordering of these identifiers is arbitrary.  This option is best applied  │
+│               │  to cases where all exact subclonotypes have a complete set of chains.     │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                        │
+│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                         │
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type   │
+│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow   │
+│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;  │
+│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr│
+│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●│
+└───────────────┴────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
+
+● Example: IG.*_g matches all genes that begin with IG.  The regular expression must be in the
+alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it contains a
+character in []()|*.  See "enclone help filter" for more information about regular expressions.
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
-<span style="background-color:#cbcccd;"> </span> ┌──────────┬─────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics          │  visual  │  visual      │  parseable  │  parseable │
-<span style="background-color:#cbcccd;"> </span> │          │                     │          │  (one cell)  │             │  (one cell)│
-<span style="background-color:#cbcccd;"> </span> ├──────────┼─────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells  │  yes     │  this cell   │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell          │  no      │  no          │  no         │  this cell │
-<span style="background-color:#cbcccd;"> </span> └──────────┴─────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
@@ -1131,19 +1137,20 @@ where each xi is one of:
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
-<span style="background-color:#cbcccd;"> </span> ┌──────────┬─────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics          │  visual  │  visual      │  parseable  │  parseable │
-<span style="background-color:#cbcccd;"> </span> │          │                     │          │  (one cell)  │             │  (one cell)│
-<span style="background-color:#cbcccd;"> </span> ├──────────┼─────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells  │  yes     │  this cell   │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)    │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells     │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell          │  no      │  no          │  no         │  this cell │
-<span style="background-color:#cbcccd;"> </span> └──────────┴─────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
 <span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
@@ -1378,34 +1385,20 @@ Runs where we combine several hundred datasets execute in a couple minutes (on a
 mileage could vary, and we are interested in cases where it is underperforming.  Let us know.  We
 are aware of several things that could be done to speed up enclone.
 
-<span style="color:#5833ff;font-weight:bold;">4. How does enclone fit into the 10x Genomics software ecosystem?</span>
+<span style="color:#5833ff;font-weight:bold;">4. What platforms does enclone run on?</span>
 
-There are several parts to the answer:
-• enclone is a standalone executable that by default produces human-readable output.
-• You can also run enclone to produce parseable output (see <span style="font-weight:bold;">enclone help parseable</span>), and that
-output can be digested using code that you write (for example, in R).
-• When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
-enclone with a special option that yields only an output file for the 10x visualization tool
-Loupe.
-• Clonotypes may then be viewed using Loupe.  The view of a clonotype provided by Loupe is
-different than the view provided by enclone.  Loupe shows a continuous expanse of bases across
-each chain, which you can scroll across, rather than the compressed view of "important" bases or
-amino acids that enclone shows.
-
-<span style="color:#5833ff;font-weight:bold;">5. What platforms does enclone run on?</span>
-
-1. linux/x86-64 (that's most servers)
-2. mac.
+1. Linux/x86-64 (that's most servers)
+2. Mac.
 
 However, we have not and cannot test every possible configuration of these platforms.  Please let
 us know if you encounter problems!
 
-<span style="color:#5833ff;font-weight:bold;">6. How can I print out all the donor reference sequences?</span>
+<span style="color:#5833ff;font-weight:bold;">5. How can I print out all the donor reference sequences?</span>
 
 Add the argument <span style="font-weight:bold;">DONOR_REF_FILE=filename</span> to your enclone command, and fasta for the donor
 reference sequences will be dumped there.
 
-<span style="color:#5833ff;font-weight:bold;">7. How does enclone know what VDJ reference sequences I'm using?</span>
+<span style="color:#5833ff;font-weight:bold;">6. How does enclone know what VDJ reference sequences I'm using?</span>
 
 It does not!  It assumes that you have the <span style="font-weight:bold;">human</span> reference sequences that shipped with the latest
 version of Cell Ranger.  If instead your sequences are mouse, then you can specify that by adding
@@ -1413,7 +1406,7 @@ the argument <span style="font-weight:bold;">MOUSE</span> to your command line. 
 please specify that by adding <span style="font-weight:bold;">REF=f</span> to your command line, where <span style="font-weight:bold;">f</span> is the name of your VDJ
 reference fasta file.
 
-<span style="color:#5833ff;font-weight:bold;">8. Can I provide data from more than one donor?</span>
+<span style="color:#5833ff;font-weight:bold;">7. Can I provide data from more than one donor?</span>
 
 Yes.  Type <span style="font-weight:bold;">enclone help input</span> for details.  The default behavior of enclone is to prevent cells
 from different donors from being placed in the same clonotype.  The <span style="font-weight:bold;">MIX_DONORS</span> option may be used
@@ -1422,29 +1415,29 @@ than one donor will be flagged as errors, unless you use the <span style="font-w
 warnings.  The primary reason for allowing entry of data from multiple donors is to allow
 estimation of enclone's error rate.
 
-<span style="color:#5833ff;font-weight:bold;">9. What are some command line argument values quoted?</span>
+<span style="color:#5833ff;font-weight:bold;">8. What are some command line argument values quoted?</span>
 
 Command line argument values that contain any of these characters ;|* need to be quoted like so
 <span style="font-weight:bold;">TCR="a;b"</span>
 to prevent the shell from interpreting them for a purpose completely unrelated to enclone.  This
 is a trap, because forgetting to add the quotes can result in nonsensical and confusing behavior!
 
-<span style="color:#5833ff;font-weight:bold;">10. If enclone fails, does it return nonzero exit status?</span>
+<span style="color:#5833ff;font-weight:bold;">9. If enclone fails, does it return nonzero exit status?</span>
 
 Yes, unless output of enclone is going to a terminal.  In that case, you'll always get zero.
 
-<span style="color:#5833ff;font-weight:bold;">11. Could a cell be missing from an enclone clonotype?</span>
+<span style="color:#5833ff;font-weight:bold;">10. Could a cell be missing from an enclone clonotype?</span>
 
 Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
 described in <span style="font-weight:bold;">enclone help special</span>, and which you can turn off.  We also delete cells for which
 more than four chains were found.
 
-<span style="color:#5833ff;font-weight:bold;">12. Can enclone print summary stats?</span>
+<span style="color:#5833ff;font-weight:bold;">11. Can enclone print summary stats?</span>
 
 Yes, if you add the option <span style="font-weight:bold;">SUMMARY</span>, then some summary stats will be printed.  If you only want to
 see the summary stats, then also add the option <span style="font-weight:bold;">NOPRINT</span>.
 
-<span style="color:#5833ff;font-weight:bold;">13. What is the notes column?</span>
+<span style="color:#5833ff;font-weight:bold;">12. What is the notes column?</span>
 
 The notes column appears if one of two relatively rare events occurs:
 
@@ -1470,18 +1463,18 @@ one, this will not be noted.  The reason for this is that many of the reference 
 with Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting in annoying
 overlap notes for a large fraction of clonotypes.
 
-<span style="color:#5833ff;font-weight:bold;">14. Can I cap the number of threads used by enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">13. Can I cap the number of threads used by enclone?</span>
 
 You can use the command-line argument <span style="font-weight:bold;">MAX_CORES=n</span> to cap the number of cores used in parallel
 loops.  The number of threads used is typically one higher.
 
-<span style="color:#5833ff;font-weight:bold;">15. Does enclone work under Windows?</span>
+<span style="color:#5833ff;font-weight:bold;">14. Does enclone work under Windows?</span>
 
 No.  There are nontrivial technical problems with getting this to work.  If you're sufficiently
 curious, see the notes in the source code file misc1.rs.  Please let us know if you're interested
 in support for Windows.
 
-<span style="color:#5833ff;font-weight:bold;">16. Can I use enclone if I have only gene expression data?</span>
+<span style="color:#5833ff;font-weight:bold;">15. Can I use enclone if I have only gene expression data?</span>
 
 Possibly.  In some cases this works very well, but in other cases it does not.  Success depends on
 dataset characteristics that have not been carefully investigated.  To attempt this, you need to
@@ -1490,7 +1483,7 @@ Ranger that the run is to be treated as BCR or TCR.  Two separate invocations ca
 both.  Note also that Cell Ranger has been only minimally tested for this configuration and that
 this is not an officially supported Cell Ranger configuration.
 
-<span style="color:#5833ff;font-weight:bold;">17. How can I cite enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">16. How can I cite enclone?</span>
 
 This version of enclone has been provided under a non-disclosure agreement,
 however once enclone has officially launched, you will be able to cite this version as:
@@ -1501,6 +1494,10 @@ to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide
 that you used when you ran enclone and indicate the version of Cell Ranger that you used to
 generate the input data.
 
+<span style="color:#5833ff;font-weight:bold;">17. Can I print the enclone version?</span>
+
+Yes, type "enclone version".
+
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help developer
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
@@ -1510,26 +1507,28 @@ enclone help developer
 For instructions on how to compile, please see
 <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/COMPILE.md</span>.
 
-┌────────┬──────────────────────────────────────────────────────────────────────────────────┐
-│COMP    │  report computational performance stats; use this with NOPRINT if you            │
-│        │  only want to see the computational performance stats, and with NOPAGER if you   │
-│        │  want output to be unbuffered                                                    │
-│COMP2   │  like COMP, but adds more detailed lines that are prefixed with --               │
-├────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│CTRLC   │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
-│        │  but easy profiling method, to know what the code is doing if it seems to be     │
-│        │  very slow                                                                       │
-├────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│HAPS=n  │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
-│        │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
-│        │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
-│        │  in some cases, this accounts for most interrupts, resulting in confusing        │
-│        │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
-│        │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
-│        │  information, you probably need to change an instance in the code of             │
-│        │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
-│        │  selected section.                                                               │
-└────────┴──────────────────────────────────────────────────────────────────────────────────┘
+┌───────────┬──────────────────────────────────────────────────────────────────────────────────┐
+│COMP       │  report computational performance stats; use this with NOPRINT if you            │
+│           │  only want to see the computational performance stats, and with NOPAGER if you   │
+│           │  want output to be unbuffered                                                    │
+│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert          │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
+│           │  but easy profiling method, to know what the code is doing if it seems to be     │
+│           │  very slow                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│HAPS=n     │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
+│           │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
+│           │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
+│           │  in some cases, this accounts for most interrupts, resulting in confusing        │
+│           │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
+│           │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
+│           │  information, you probably need to change an instance in the code of             │
+│           │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
+│           │  selected section.                                                               │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────┘
 
 </pre>
 </body>

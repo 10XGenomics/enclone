@@ -105,10 +105,15 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Provide help if requested.
 
     {
+        if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
+            println!("{} : {}", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+            std::process::exit(0);
+        }
         let mut args = args.clone();
         let mut to_delete = vec![false; args.len()];
         let mut nopager = false;
         let mut plain = false;
+        let mut long_help = false;
         for i in 1..args.len() {
             if args[i] == "NOPAGER" {
                 nopager = true;
@@ -117,6 +122,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.gen_opt.html = true;
                 to_delete[i] = true;
             } else if args[i] == "FORCE_EXTERNAL" {
+                to_delete[i] = true;
+            } else if args[i] == "LONG_HELP" {
+                long_help = true;
                 to_delete[i] = true;
             } else if args[i].starts_with("MAX_CORES=") {
                 to_delete[i] = true;
@@ -142,7 +150,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             help_all = true;
         }
-        let mut h = HelpDesk::new(plain, help_all, ctl.gen_opt.html);
+        let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
         help1(&args, &mut h);
         help2(&args, &ctl, &mut h);
         help3(&args, &mut h);
