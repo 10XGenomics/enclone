@@ -14,16 +14,18 @@ use tables::*;
 pub struct HelpDesk {
     pub plain: bool,
     pub help_all: bool,
+    pub long_help: bool,
     pub html: bool,
     pub rows: Vec<Vec<String>>,
     pub log: Vec<u8>,
 }
 
 impl HelpDesk {
-    pub fn new(plain: bool, help_all: bool, html: bool) -> HelpDesk {
+    pub fn new(plain: bool, help_all: bool, long_help: bool, html: bool) -> HelpDesk {
         HelpDesk {
             plain: plain,
             help_all: help_all,
+            long_help: long_help,
             html: html,
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
@@ -183,7 +185,35 @@ impl HelpDesk {
     pub fn print(&mut self, x: &str) {
         self.print_plain(&format!("{}", print_to(x)));
     }
+    pub fn print_plain_unchecked(&mut self, x: &str) {
+        fwrite!(self.log, "{}", &x);
+    }
     pub fn print_plain(&mut self, x: &str) {
+        if !self.long_help {
+            let mut count = 0;
+            let mut escaped = false;
+            let mut line = String::new();
+            for c in x.chars() {
+                line.push(c);
+                if c == '\n' {
+                    count = 0;
+                    line.clear();
+                } else if escaped {
+                    if c == 'm' {
+                        escaped = false;
+                    }
+                } else if c == '' {
+                    escaped = true;
+                } else {
+                    count += 1;
+                    if count > 100 {
+                        eprintln!("\nHelp line is too long:\n{}", line);
+                        eprintln!("Try running with LONG_HELP to locate the problem.");
+                    }
+                    assert!(count <= 100);
+                }
+            }
+        }
         fwrite!(self.log, "{}", &x);
     }
     pub fn dump(&self) {

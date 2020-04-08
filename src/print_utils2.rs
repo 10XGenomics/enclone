@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// This file contains the single function row_fill.
+// This file contains the single function row_fill,
+// plus a small helper function get_gex_matrix_entry.
 
 use crate::defs::*;
 use crate::print_utils1::*;
@@ -17,6 +18,40 @@ use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
+
+pub fn get_gex_matrix_entry(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    fid: usize,
+    d_all: &Vec<Vec<u32>>,
+    ind_all: &Vec<Vec<u32>>,
+    li: usize,
+    l: usize,
+    p: usize,
+    y: &str,
+) -> f64 {
+    let mut raw_count = 0 as f64;
+    if !ctl.gen_opt.h5 {
+        raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+    } else {
+        for j in 0..d_all[l].len() {
+            if ind_all[l][j] == fid as u32 {
+                raw_count = d_all[l][j] as f64;
+                break;
+            }
+        }
+    }
+    let mult: f64;
+    if y.ends_with("_g") {
+        mult = gex_info.gex_mults[li];
+    } else {
+        mult = gex_info.fb_mults[li];
+    }
+    if !ctl.gen_opt.full_counts {
+        raw_count *= mult;
+    }
+    raw_count
+}
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described
@@ -275,13 +310,13 @@ pub fn row_fill(
             *gex_low += 1;
         }
     }
-    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0, 0);
+    let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
     if counts.len() > 0 {
         gex_median = counts[counts.len() / 2];
         gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
-        gex_sum = fcounts.iter().sum::<f64>().round() as usize;
-        gex_mean = (gex_sum as f64 / fcounts.len() as f64).round() as usize;
+        gex_sum = fcounts.iter().sum::<f64>();
+        gex_mean = gex_sum / fcounts.len() as f64;
     }
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
@@ -344,6 +379,34 @@ pub fn row_fill(
             lvar![i, x, format!("{}", mults[u])];
             let counts = vec![1.0; mults[u]];
             stats.push((x.to_string(), counts));
+        } else if x == "clust" {
+            let mut clust = Vec::<usize>::new();
+            for j in 0..ex.clones.len() {
+                let mut cid = 0;
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if gex_info.cluster[li].contains_key(&bc.clone()) {
+                    cid = gex_info.cluster[li][&bc.clone()];
+                }
+                clust.push(cid);
+            }
+            clust.sort();
+            lvar![i, x, format!("{}", abbrev_list(&clust))];
+        } else if x == "type" {
+            let mut cell_types = Vec::<String>::new();
+            /*
+            for j in 0..ex.clones.len() {
+                let mut cell_type = "".to_string();
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                    cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+                }
+                cell_types.push(cell_type);
+            }
+            */
+            cell_types.sort();
+            lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
             let mut count = 0;
@@ -440,9 +503,9 @@ pub fn row_fill(
         } else if x == "gex_max" {
             lvar![i, x, format!("{}", gex_max)];
         } else if x == "gex_μ" {
-            lvar![i, x, format!("{}", gex_mean)];
+            lvar![i, x, format!("{}", gex_mean.round() as usize)];
         } else if x == "gex_Σ" {
-            lvar![i, x, format!("{}", gex_sum)];
+            lvar![i, x, format!("{}", gex_sum.round() as usize)];
         } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
@@ -479,7 +542,7 @@ pub fn row_fill(
                 y = y.after(":").to_string();
             }
             let y0 = y.clone();
-            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell"];
+            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
             for s in suffixes.iter() {
                 if y.ends_with(s) {
                     y = y.rev_before(&s).to_string();
@@ -490,32 +553,29 @@ pub fn row_fill(
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                if gex_info.feature_id[li].contains_key(&y) {
-                    computed = true;
+                if i < lvars.len() && ctl.clono_print_opt.lvars_match[li][i].len() > 0 {
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                     if p >= 0 {
-                        let fid = gex_info.feature_id[li][&y];
-                        let mut raw_count = 0 as f64;
-                        if !ctl.gen_opt.h5 {
-                            raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
-                        } else {
-                            for j in 0..d_all[l].len() {
-                                if ind_all[l][j] == fid as u32 {
-                                    raw_count = d_all[l][j] as f64;
-                                    break;
-                                }
-                            }
+                        computed = true;
+                        let mut raw_count = 0.0;
+                        for fid in ctl.clono_print_opt.lvars_match[li][i].iter() {
+                            let raw_counti = get_gex_matrix_entry(
+                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize, &y,
+                            );
+                            raw_count += raw_counti;
                         }
-                        let mult: f64;
-                        if y.ends_with("_g") {
-                            mult = gex_info.gex_mults[li];
-                        } else {
-                            mult = gex_info.fb_mults[li];
-                        }
-                        if !ctl.gen_opt.full_counts {
-                            counts.push((raw_count as f64 * mult).round() as f64);
-                            fcounts.push(raw_count as f64 * mult);
-                        } else {
+                        counts.push(raw_count.round() as f64);
+                        fcounts.push(raw_count);
+                    }
+                } else {
+                    if gex_info.feature_id[li].contains_key(&y) {
+                        computed = true;
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            let fid = gex_info.feature_id[li][&y];
+                            let raw_count = get_gex_matrix_entry(
+                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
+                            );
                             counts.push(raw_count.round() as f64);
                             fcounts.push(raw_count);
                         }
@@ -523,7 +583,15 @@ pub fn row_fill(
                 }
             }
             if computed {
-                stats.push((x.clone(), fcounts.clone()));
+                if !y0.ends_with("_%") {
+                    stats.push((x.clone(), fcounts.clone()));
+                } else {
+                    let mut f = Vec::<f64>::new();
+                    for i in 0..fcounts.len() {
+                        f.push(100.0 * fcounts[i] / gex_mean);
+                    }
+                    stats.push((x.clone(), f));
+                }
                 let mut counts_sorted = counts.clone();
                 counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
                 let sum = fcounts.iter().sum::<f64>();
@@ -536,6 +604,8 @@ pub fn row_fill(
                     lvar![i, x, format!("{}", mean.round())];
                 } else if y0.ends_with("_Σ") {
                     lvar![i, x, format!("{}", sum.round())];
+                } else if y0.ends_with("_%") {
+                    lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
                 } else if y0.ends_with("_cell") {
                     if pass == 2 {
                         let val = format!("{}", counts.iter().format(";"));
@@ -876,10 +946,10 @@ pub fn row_fill(
                         cdiff += "...";
                     }
                     if extra > 0 {
-                        cdiff += &format!("%{}", extra);
+                        cdiff += &format!("+{}", extra);
                     }
                 } else if clen > 0 {
-                    cdiff = format!("%{}", clen);
+                    cdiff = format!("+{}", clen);
                 }
                 cvar![j, var, cdiff];
             } else if *var == "udiff".to_string() {
@@ -916,10 +986,10 @@ pub fn row_fill(
                         udiff += "...";
                     }
                     if extra > 0 {
-                        udiff += &format!("%{}", extra);
+                        udiff += &format!("+{}", extra);
                     }
                 } else if ulen > 0 {
-                    udiff = format!("%{}", ulen);
+                    udiff = format!("+{}", ulen);
                 }
                 cvar![j, var, udiff];
             } else if *var == "d_univ".to_string() {

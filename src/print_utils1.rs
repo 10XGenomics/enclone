@@ -124,16 +124,11 @@ pub fn make_table(
 
         let c = x[j];
 
-        // % is a placeholder for +, so make the substitution.
-
-        if c == '%' {
-            logz.push('+');
-
         // $ is a placeholder for •, and $ is only in barcodes line if PER_CELL is specified.
         // In plain mode, we just make the substitution, whereas in fancy mode, we change the
         // text and background color for the entire line.
         // *** bullets now off ***
-        } else if c == '$' {
+        if c == '$' {
             if ctl.pretty {
                 *logz += &format!("[38;5;{}m[48;5;{}m ", TEXTCOLOR, BACKGROUND);
                 barcode = true;
@@ -442,6 +437,8 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
                 || x.ends_with("_g_μ")
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
+                || *x == "clust".to_string()
+                || *x == "type".to_string()
                 || *x == "entropy".to_string()
             {
                 continue;

@@ -3,6 +3,7 @@
 // Check lvars, cvars, and pcols.
 
 use crate::defs::*;
+use regex::Regex;
 use string_utils::*;
 use vector_utils::*;
 
@@ -12,9 +13,10 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
     let g_ends0 = ["_g"];
     let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let suffixes_g = ["", "_min", "_max", "_μ", "_Σ", "_%"];
     let (mut g_ends, mut fb_ends) = (Vec::<String>::new(), Vec::<String>::new());
     for x in g_ends0.iter() {
-        for y in suffixes.iter() {
+        for y in suffixes_g.iter() {
             g_ends.push(format!("{}{}", x, y));
         }
     }
@@ -36,6 +38,8 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 || x.starts_with("gex_")
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
+                || *x == "clust".to_string()
+                || *x == "type".to_string()
                 || *x == "entropy".to_string()
             {
                 if category == "parseable" {
@@ -103,7 +107,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                         known_features.push(format!("{}_cu{}", ff[z], s));
                     }
                 } else {
-                    for s in suffixes.iter() {
+                    for s in suffixes_g.iter() {
                         known_features.push(format!("{}_g{}", ff[z], s));
                     }
                 }
@@ -218,7 +222,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             if !n_var {
                 if category == "lead" {
                     eprintln!(
-                        "\nUnrecognized variable {} for LVARS.  Please type \
+                        "\nThe variable {} for LVARS is unrecognized.  Please type \
                          \"enclone help lvars\".\n",
                         x
                     );
@@ -265,7 +269,9 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex")) {
+        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust")
+            || x == "type"
+        {
             eprintln!(
                 "\nCan't use parseable variable {} without having gene \
                  expression data.\n",
@@ -343,7 +349,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut to_check = Vec::<String>::new();
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ",
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
@@ -353,7 +359,49 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
-        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex")) {
+        // Check for patterns.
+
+        let mut x = x.clone();
+        if x.contains(':') {
+            x = x.rev_after(":").to_string();
+        }
+        let mut pat = false;
+        for y in ends.iter() {
+            if x.ends_with(y) {
+                let p = x.rev_before(y);
+                if !p.is_empty() && Regex::new(&p).is_ok() {
+                    let mut ok = true;
+                    let mut special = false;
+                    let p = p.as_bytes();
+                    for i in 0..p.len() {
+                        if !((p[i] >= b'A' && p[i] <= b'Z')
+                            || (p[i] >= b'a' && p[i] <= b'z')
+                            || (p[i] >= b'0' && p[i] <= b'9')
+                            || b".-_[]()|*".contains(&p[i]))
+                        {
+                            ok = false;
+                            break;
+                        }
+                        if b"[]()|*".contains(&p[i]) {
+                            special = true;
+                        }
+                    }
+                    if ok && special {
+                        pat = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if pat {
+            continue;
+        }
+
+        // The rest.
+
+        if !gex_info.have_gex
+            && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust" || x == "type")
+        {
             eprintln!(
                 "\nCan't use LVARS or LVARSP variable {} without having gene \
                  expression data.\n",

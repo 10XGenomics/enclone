@@ -30,7 +30,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             EXAMPLES[0]
         ));
         if !h.plain {
-            h.print(&format!("{}", include_str!("example1")));
+            h.print_plain(&format!("{}", include_str!("example1")));
         } else {
             let s = include_str!("example1").as_bytes();
             let mut x = Vec::<u8>::new();
@@ -47,7 +47,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
                 }
                 x.push(s[l]);
             }
-            h.print(&format!("{}", strme(&x)));
+            h.print_plain(&format!("{}", strme(&x)));
         }
         h.print(
             "This shows an invocation of enclone that takes one dataset as input \
@@ -107,7 +107,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             EXAMPLES[1]
         ));
         if !h.plain {
-            h.print_plain(include_str!("example2"));
+            h.print_plain_unchecked(include_str!("example2"));
         } else {
             let s = include_str!("example2").as_bytes();
             let mut x = Vec::<u8>::new();
@@ -124,7 +124,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
                 }
                 x.push(s[l]);
             }
-            h.print(&format!("{}", strme(&x)));
+            h.print_plain_unchecked(&format!("{}", strme(&x)));
         }
         h.print(
             "This shows an invocation of enclone that takes VDJ, gene expression and feature \
@@ -163,7 +163,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
-                "{} = {}.\n\n",
+                "{} : {}.\n\n",
                 env!("CARGO_PKG_VERSION"),
                 VERSION_STRING
             ));
