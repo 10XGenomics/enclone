@@ -123,6 +123,16 @@ pub fn print_clonotypes(
         });
     }
 
+    // Gather alt_bcs_fields.
+
+    let mut alt_bcs = Vec::<String>::new();
+    for li in 0..ctl.sample_info.alt_bc_fields.len() {
+        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[i][i].0.clone());
+        }
+    }
+    unique_sort(&mut alt_bcs);
+
     // Traverse the orbits.
 
     // 0: index in reps
@@ -578,7 +588,18 @@ pub fn print_clonotypes(
                             row.push(format!("$  {}", bc.clone()));
                             for k in 0..lvars.len() {
                                 let nr = row.len();
-                                if lvars[k] == "datasets".to_string() {
+                                if bin_member(&alt_bcs, &lvars[k]) {
+                                    let mut val = String::new();
+                                    let alt = &ctl.sample_info.alt_bc_fields[li];
+                                    for j in 0..alt.len() {
+                                        if alt[j].0 == lvars[k] {
+                                            if alt[j].1.contains_key(&lvars[k]) {
+                                                val = alt[j].1[&lvars[k]].clone();
+                                            }
+                                        }
+                                    }
+                                    row.push(val);
+                                } else if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
                                 } else if lvars[k] == "clust".to_string() && have_gex {
                                     let mut cid = 0;

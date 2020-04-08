@@ -358,7 +358,17 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             ends.push(format!("{}{}", x, y));
         }
     }
-    for x in ctl.clono_print_opt.lvars.iter() {
+    'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
+        // Check alt_bc_fields.
+
+        for li in 0..ctl.sample_info.alt_bc_fields.len() {
+            for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+                if ctl.sample_info.alt_bc_fields[li][i].0 == *x {
+                    continue 'main_loop;
+                }
+            }
+        }
+
         // Check for pe<n>.
 
         if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {

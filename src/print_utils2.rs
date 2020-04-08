@@ -342,6 +342,13 @@ pub fn row_fill(
             }
         }
     }
+    let mut alt_bcs = Vec::<String>::new();
+    for li in 0..ctl.sample_info.alt_bc_fields.len() {
+        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[i][i].0.clone());
+        }
+    }
+    unique_sort(&mut alt_bcs);
     for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
         if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
@@ -408,6 +415,8 @@ pub fn row_fill(
             cell_types.sort();
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("pe") {
+            lvar![i, x, format!("")];
+        } else if bin_member(&alt_bcs, x) {
             lvar![i, x, format!("")];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");

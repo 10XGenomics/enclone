@@ -289,6 +289,7 @@ pub struct SampleInfo {
     pub tag: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to color:
     pub barcode_color: Vec<HashMap<String, String>>,
+    pub alt_bc_fields: Vec<Vec<(String, HashMap<String, String>)>>,
 }
 
 impl SampleInfo {
