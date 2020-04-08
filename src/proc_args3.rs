@@ -459,11 +459,12 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 let mut donor_pos = 0;
                 let mut tag_pos = None;
                 let mut color_pos = None;
+                let mut to_alt = Vec::<isize>::new();
                 for line in f.lines() {
                     let s = line.unwrap();
-                    let mut to_alt = vec![-1 as isize; fields.len()];
                     if first {
                         let fields = s.split(',').collect::<Vec<&str>>();
+                        to_alt = vec![-1 as isize; fields.len()];
                         let required = vec!["barcode", "sample", "donor"];
                         for f in required.iter() {
                             if !fields.contains(f) {
@@ -492,7 +493,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                             } else if fields[i] == "color" {
                                 color_pos = Some(i);
                             } else {
-                                to_alt[i] = ctl.sample_info.alt_bc_fields.len() as isize;
+                                to_alt[i] = alt_bc_fields.len() as isize;
                                 alt_bc_fields.push((
                                     fields[i].to_string(),
                                     HashMap::<String, String>::new(),
@@ -517,7 +518,8 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                         }
                         for i in 0..fields.len() {
                             if to_alt[i] >= 0 {
-                                alt_bc_fields[to_alt[i] as usize].1
+                                alt_bc_fields[to_alt[i] as usize]
+                                    .1
                                     .insert(fields[barcode_pos].to_string(), fields[i].to_string());
                             }
                         }

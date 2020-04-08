@@ -593,8 +593,8 @@ pub fn print_clonotypes(
                                     let alt = &ctl.sample_info.alt_bc_fields[li];
                                     for j in 0..alt.len() {
                                         if alt[j].0 == lvars[k] {
-                                            if alt[j].1.contains_key(&lvars[k]) {
-                                                val = alt[j].1[&lvars[k]].clone();
+                                            if alt[j].1.contains_key(&bc.clone()) {
+                                                val = alt[j].1[&bc.clone()].clone();
                                             }
                                         }
                                     }

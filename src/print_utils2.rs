@@ -374,7 +374,7 @@ pub fn row_fill(
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
                     donors.push(
-                        ctl.sample_info.donor_id[ex.clones[j][0].donor_index.unwrap()].clone(),
+                        ctl.sample_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone(),
                     );
                 } else {
                     donors.push("?".to_string());
