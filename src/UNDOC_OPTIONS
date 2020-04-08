@@ -113,8 +113,8 @@ LVARS entries
   (for now, has to be in that exact place; not implemented for PCELL)
 * type = cell type, from analysis_csv/celltypes/celltypes.csv
   Note that it's not clear how doublets are handled.
-* pe<n> = PCA equivalence class at distance <= n, where n is an integer: it shows the equivalence
+* pe<n> = PCA equivalence class at distance ≤ n, where n is an integer: it shows the equivalence
   class on all cells in a single clonotype when two cells are called equivalent if their distance
-  in PCA space is <= n.  This is only implemented for PER_CELL.
+  in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
   WARNING: this only makes sense if you have one dataset and this condition is not checked.
