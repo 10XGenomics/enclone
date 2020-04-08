@@ -446,8 +446,67 @@ pub fn print_clonotypes(
 
                 let mut stats = Vec::<(String, Vec<f64>)>::new();
 
+                // Compute PCA equivalence classes.
+
+                let mut pe = vec![Vec::<String>::new(); lvars.len()];
+                for k in 0..lvars.len() {
+                    if lvars[k].starts_with("pe") {
+                        let n = lvars[k].after("pe").force_usize();
+                        let mut bcs = Vec::<String>::new();
+                        let mut count = 0;
+                        let mut to_index = Vec::<usize>::new();
+                        for u in 0..nexacts {
+                            let clonotype_id = exacts[u];
+                            let ex = &exact_clonotypes[clonotype_id];
+                            for l in 0..ex.clones.len() {
+                                let bc = &ex.clones[l][0].barcode;
+                                let li = ex.clones[l][0].dataset_index;
+                                if gex_info.pca[li].contains_key(&bc.clone()) {
+                                    bcs.push(bc.to_string());
+                                    to_index.push(count);
+                                }
+                                count += 1;
+                            }
+                        }
+                        let mut e: EquivRel = EquivRel::new(bcs.len() as i32);
+                        let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        let mut mat = vec![Vec::<f64>::new(); bcs.len()];
+                        for i in 0..bcs.len() {
+                            mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+                        }
+                        for i1 in 0..bcs.len() {
+                            for i2 in i1 + 1..bcs.len() {
+                                if e.class_id(i1 as i32) != e.class_id(i2 as i32) {
+                                    let mut d = 0.0;
+                                    for j in 0..mat[i1].len() {
+                                        d += (mat[i1][j] - mat[i2][j]) * (mat[i1][j] - mat[i2][j]);
+                                    }
+                                    d = d.sqrt();
+                                    if d <= n as f64 {
+                                        e.join(i1 as i32, i2 as i32);
+                                    }
+                                }
+                            }
+                        }
+                        pe[k] = vec![String::new(); count];
+                        let mut ids = Vec::<i32>::new();
+                        for i in 0..bcs.len() {
+                            ids.push(e.class_id(i as i32));
+                        }
+                        unique_sort(&mut ids);
+                        let mut reps = Vec::<i32>::new();
+                        e.orbit_reps(&mut reps);
+                        reps.sort();
+                        for i in 0..bcs.len() {
+                            pe[k][to_index[i]] =
+                                format!("{}", bin_position(&ids, &e.class_id(i as i32)));
+                        }
+                    }
+                }
+
                 // Build rows.
 
+                let mut cell_count = 0;
                 for u in 0..nexacts {
                     let mut typex = vec![false; cols];
                     let mut row = Vec::<String>::new();
@@ -527,6 +586,8 @@ pub fn print_clonotypes(
                                         cid = gex_info.cluster[li][&bc.clone()];
                                     }
                                     row.push(format!("{}", cid));
+                                } else if lvars[k].starts_with("pe") && have_gex {
+                                    row.push(format!("{}", pe[k][cell_count + bcl.2]));
                                 } else if lvars[k] == "type".to_string() && have_gex {
                                     let mut cell_type = "".to_string();
                                     if gex_info.cell_type[li].contains_key(&bc.clone()) {
@@ -710,6 +771,7 @@ pub fn print_clonotypes(
                         }
                     }
                     sr.push((row, subrows, varmat[u].clone(), u));
+                    cell_count += ex.clones.len();
                 }
                 let mut rord = Vec::<usize>::new(); // note that this is now superfluous
                 for j in 0..sr.len() {

@@ -407,6 +407,8 @@ pub fn row_fill(
             */
             cell_types.sort();
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
+        } else if x.starts_with("pe") {
+            lvar![i, x, format!("")];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
             let mut count = 0;

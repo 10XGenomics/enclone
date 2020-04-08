@@ -359,6 +359,12 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     for x in ctl.clono_print_opt.lvars.iter() {
+        // Check for pe<n>.
+
+        if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {
+            continue;
+        }
+
         // Check for patterns.
 
         let mut x = x.clone();
