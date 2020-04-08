@@ -553,9 +553,11 @@ pub fn parse_json_annotations_files(
         }
     }
     unique_sort(&mut versions);
-    if versions.len() > 1 {
+    if versions.len() > 1
+        && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
+    {
         eprintln!(
-            "\nYou're using output from multiple Cell Ranger versons = {},\n\
+            "\nYou're using output from multiple Cell Ranger versions = {},\n\
              which is not allowed.\n",
             versions.iter().format(", ")
         );

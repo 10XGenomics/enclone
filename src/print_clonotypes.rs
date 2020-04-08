@@ -512,7 +512,7 @@ pub fn print_clonotypes(
 
                     let mut subrows = Vec::<Vec<String>>::new();
                     if ctl.clono_print_opt.bu {
-                        for (kb, bcl) in bli.iter().enumerate() {
+                        for bcl in bli.iter() {
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
@@ -521,6 +521,18 @@ pub fn print_clonotypes(
                                 let nr = row.len();
                                 if lvars[k] == "datasets".to_string() {
                                     row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
+                                } else if lvars[k] == "clust".to_string() && have_gex {
+                                    let mut cid = 0;
+                                    if gex_info.cluster[li].contains_key(&bc.clone()) {
+                                        cid = gex_info.cluster[li][&bc.clone()];
+                                    }
+                                    row.push(format!("{}", cid));
+                                } else if lvars[k] == "type".to_string() && have_gex {
+                                    let mut cell_type = "".to_string();
+                                    if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                        cell_type = gex_info.cell_type[li][&bc.clone()].clone();
+                                    }
+                                    row.push(cell_type);
                                 } else if lvars[k] == "n_gex".to_string() && have_gex {
                                     let mut n_gex = 0;
                                     if bin_member(&gex_info.gex_cell_barcodes[li], &bc) {
@@ -576,8 +588,10 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     row.push(format!("{:.2}", entropy));
-                                } else if lvars[k] == "gex".to_string() && have_gex {
-                                    let mut gex_count = 0;
+                                } else if have_gex {
+                                    // this calc isn't needed except in _% case below
+                                    // ELIMINATE UNNEEDED CALC
+                                    let mut gex_count = 0.0;
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
@@ -599,48 +613,68 @@ pub fn print_clonotypes(
                                             }
                                         }
                                         if !ctl.gen_opt.full_counts {
-                                            gex_count = (raw_count * gex_info.gex_mults[li]).round()
-                                                as usize;
+                                            gex_count = raw_count * gex_info.gex_mults[li];
                                         } else {
-                                            gex_count = raw_count.round() as usize;
+                                            gex_count = raw_count;
                                         }
                                     }
-                                    row.push(format!("{}", gex_count));
-                                } else {
-                                    let mut y = lvars[k].clone();
-                                    if y.contains(':') {
-                                        y = y.after(":").to_string();
-                                    }
-                                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                                    if p >= 0 {
-                                        if gex_info.feature_id[li].contains_key(&y) {
-                                            let fid = gex_info.feature_id[li][&y];
-                                            let mut raw_count = 0 as f64;
-                                            if !ctl.gen_opt.h5 {
-                                                raw_count = gex_info.gex_matrices[li]
-                                                    .value(p as usize, fid)
-                                                    as f64;
-                                            } else {
-                                                for j in 0..d_all[kb].len() {
-                                                    if ind_all[kb][j] == fid as u32 {
-                                                        raw_count = d_all[kb][j] as f64;
-                                                        break;
-                                                    }
+                                    if lvars[k] == "gex".to_string() {
+                                        row.push(format!("{}", gex_count.round()));
+                                    } else {
+                                        let mut y = lvars[k].clone();
+                                        if y.contains(':') {
+                                            y = y.after(":").to_string();
+                                        }
+                                        let y0 = y.clone();
+                                        let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
+                                        for s in suffixes.iter() {
+                                            if y.ends_with(s) {
+                                                y = y.rev_before(&s).to_string();
+                                                break;
+                                            }
+                                        }
+                                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                        let mut computed = false;
+                                        let mut count = 0.0;
+                                        let l = bcl.2;
+                                        if p >= 0 {
+                                            if k < lvars.len()
+                                                && ctl.clono_print_opt.lvars_match[li][k].len() > 0
+                                            {
+                                                computed = true;
+                                                for fid in
+                                                    ctl.clono_print_opt.lvars_match[li][k].iter()
+                                                {
+                                                    let counti = get_gex_matrix_entry(
+                                                        &ctl, &gex_info, *fid, &d_all, &ind_all,
+                                                        li, l, p as usize, &y,
+                                                    );
+                                                    count += counti;
                                                 }
+                                            } else if gex_info.feature_id[li].contains_key(&y) {
+                                                computed = true;
+                                                let fid = gex_info.feature_id[li][&y];
+                                                count = get_gex_matrix_entry(
+                                                    &ctl, &gex_info, fid, &d_all, &ind_all, li, l,
+                                                    p as usize, &y,
+                                                );
                                             }
-                                            let mult: f64;
-                                            if y.ends_with("_g") {
-                                                mult = gex_info.gex_mults[li];
+                                        }
+                                        if computed {
+                                            // note unneeded calculation above in certain cases
+                                            // ELIMINATE!
+                                            if y0.ends_with("_min") {
+                                            } else if y0.ends_with("_max") {
+                                            } else if y0.ends_with("_μ") {
+                                            } else if y0.ends_with("_Σ") {
+                                            } else if y0.ends_with("_%") {
+                                                row.push(format!(
+                                                    "{:.2}",
+                                                    (100.0 * count) / gex_count
+                                                ));
                                             } else {
-                                                mult = gex_info.fb_mults[li];
+                                                row.push(format!("{}", count.round()));
                                             }
-                                            let count;
-                                            if !ctl.gen_opt.full_counts {
-                                                count = (raw_count * mult).round() as f64;
-                                            } else {
-                                                count = raw_count.round() as f64;
-                                            }
-                                            row.push(format!("{}", count));
                                         }
                                     }
                                 }
@@ -913,7 +947,11 @@ pub fn print_clonotypes(
                         if !found {
                             row.push(String::new());
                         } else {
-                            row.push(format!("{}", total.round() as usize));
+                            if !lvars[i].ends_with("_%") {
+                                row.push(format!("{}", total.round() as usize));
+                            } else {
+                                row.push(format!("{:.2}", total));
+                            }
                         }
                     }
                     // This is necessary but should not be:
@@ -946,7 +984,11 @@ pub fn print_clonotypes(
                         if !found {
                             row.push(String::new());
                         } else {
-                            row.push(format!("{:.1}", mean));
+                            if !lvars[i].ends_with("_%") {
+                                row.push(format!("{:.1}", mean));
+                            } else {
+                                row.push(format!("{:.2}", mean));
+                            }
                         }
                     }
                     // This is necessary but should not be:

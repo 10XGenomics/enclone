@@ -54,6 +54,7 @@ flate2 = "1.0.12"
 
 [build-dependencies]
 prost-build = "0.5.0"
+string_utils = "0.1.1"
 
 [profile.release]
 debug = 1

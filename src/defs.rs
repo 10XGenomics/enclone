@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 16] = [
+pub const LVARS_ALLOWED: [&str; 18] = [
     "datasets",
     "samples",
     "donors",
@@ -24,6 +24,8 @@ pub const LVARS_ALLOWED: [&str; 16] = [
     "gex_cell",
     "n_gex_cell",
     "n_gex",
+    "clust",
+    "type",
     "entropy",
     "near",
     "far",
@@ -225,6 +227,8 @@ impl LinearCondition {
             "far",
             "n_gex_cell",
             "n_gex",
+            "clust",
+            "type",
             "gex",
             "gex_min",
             "gex_max",
@@ -400,6 +404,7 @@ pub struct ClonoFiltOpt {
     pub ncells_high: usize,  // only show clonotypes with at most this many cells
     pub min_umi: usize,      // only show clonotypes with at least this many UMIs in some contig
     pub min_datasets: usize, // only show clonotypes involving at least this many datasets
+    pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub ncross: bool,        // turn off cross filtering,
@@ -429,17 +434,18 @@ pub struct ClonoFiltOpt {
 
 #[derive(Default)]
 pub struct ClonoPrintOpt {
-    pub bu: bool,           // print barcodes and UMI counts
-    pub seqc: bool,         // print V..J sequence for each chain if constant across clonotype
-    pub full_seqc: bool,    // print contig sequence for each chain if constant across clonotype
-    pub barcodes: bool,     // print the list of barcodes
-    pub note_simple: bool,  // note if V..J is simple
+    pub bu: bool,                          // print barcodes and UMI counts
+    pub seqc: bool, // print V..J sequence for each chain if constant across clonotype
+    pub full_seqc: bool, // print contig sequence for each chain if constant across clonotype
+    pub barcodes: bool, // print the list of barcodes
+    pub note_simple: bool, // note if V..J is simple
     pub amino: Vec<String>, // categories for amino acid columns (per-chain per-exact subclonotype)
     pub cvars: Vec<String>, // per-chain per-exact-clonotype columns
     pub lvars: Vec<String>, // per-exact-clonotype ('lead') columns
-    pub chain_brief: bool,  // show abbreviated chain headers
-    pub sum: bool,          // print sum row
-    pub mean: bool,         // print mean row
+    pub lvars_match: Vec<Vec<Vec<usize>>>, // matching features for <regular expression>_g etc.
+    pub chain_brief: bool, // show abbreviated chain headers
+    pub sum: bool,  // print sum row
+    pub mean: bool, // print mean row
 }
 
 // Clonotype grouping options.
@@ -649,6 +655,8 @@ pub struct GexInfo {
     pub gex_barcodes: Vec<Vec<String>>,
     pub gex_matrices: Vec<MirrorSparseMatrix>,
     pub gex_cell_barcodes: Vec<Vec<String>>,
+    pub cluster: Vec<HashMap<String, usize>>,
+    pub cell_type: Vec<HashMap<String, String>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,
     pub h5_data: Vec<Option<Dataset>>,

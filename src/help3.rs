@@ -334,11 +334,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc("", "(string in alphabet ACGT)");
 
-        // doc MIN_DATASETS
+        // doc MIN_DATASETS and MAX_DATASETS
 
         h.ldoc(
             "MIN_DATASETS=n",
             "only show clonotypes containing cells from at least n datasets",
+        );
+        h.doc(
+            "MAX_DATASETS=n",
+            "only show clonotypes containing cells from at most n datasets",
         );
 
         // doc CDIFF
