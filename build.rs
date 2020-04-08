@@ -35,7 +35,6 @@ fn main() {
 }
 
 fn get_commit_hash() -> String {
-    
     match std::env::var("GITHUB_SHA") {
         Ok(v) => return v,
         _ => (),
@@ -53,7 +52,6 @@ fn get_commit_hash() -> String {
 }
 
 fn get_commit_date() -> String {
-
     match std::env::var("GITHUB_SHA") {
         Ok(v) => return "DATE".into(),
         _ => (),
@@ -72,7 +70,6 @@ fn get_commit_date() -> String {
 }
 
 fn get_branch_name() -> String {
-
     match std::env::var("GITHUB_REF") {
         Ok(v) => return v,
         _ => (),
@@ -92,7 +89,6 @@ fn get_branch_name() -> String {
 }
 
 fn is_working_tree_clean() -> bool {
-
     match std::env::var("GITHUB_SHA") {
         Ok(v) => return true,
         _ => (),
