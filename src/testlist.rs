@@ -8,7 +8,7 @@ pub fn enclone_testdata() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 51] = [
+pub const TESTS: [&str; 54] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -17,8 +17,8 @@ pub const TESTS: [&str; 51] = [
     // 3. tests motif in CDR3, CHAINS, u_sum, ulen, flipped args in CVARS, on tiny dataset
     r###"BCR=85333 CDR3="CAA.*" CHAINS=2 CVARS=const,u_sum,ulen"###,
     // 4. tests gex and antibody, FULL_SEQC, ulen, udiff, on tiny dataset
-    r###"BCR=86237 GEX=85679 LVARSP=gex,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,RPS27_g_μ
-     CELLS=3 FULL_SEQC
+    r###"BCR=86237 GEX=85679 LVARSP=gex,CD19_ab_μ,CD25_ab_μ,IGLV3-1_g_μ,IGLV3-1_g_%,RPS27_g_μ
+     CELLS=3 FULL_SEQC SUM MEAN
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
@@ -49,7 +49,7 @@ pub const TESTS: [&str; 51] = [
     // 17. tests gex with PER_CELL and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL"###,
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,type,CD19_ab_μ CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
@@ -133,6 +133,14 @@ pub const TESTS: [&str; 51] = [
     r###"NOPAGER EXPECT_OK"###,
     // 51. make sure this fails gracefully
     r###"BCR=123085 PLOT=/nonexistent/broken.svg NOPRINT MIN_CELLS=50 EXPECT_FAIL"###,
+    // 52. add test for some gene patterns
+    r###"BCR=123085 GEX=123749 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
+        LVARSP="(IGHV5-51|IGLV1-47)_g_%,IGH.*_g_%,IG(K|L).*_g_%""###,
+    // 53. add test for _% with PER_CELL
+    r###"BCR=123085 GEX=123749 LVARSP="gex,n_gex,JCHAIN_g_%,IG%:IG.*_g_%" CVARS=u_μ,const
+        MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL"###,
+    // 54. make sure this fails gracefully
+    r###"BCR=86237 GEX=85679 LVARSP=GERBULXXX123_g_% EXPECT_FAIL"###,
 ];
 
 // List of examples in documentation.

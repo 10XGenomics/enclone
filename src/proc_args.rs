@@ -80,6 +80,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.weak_onesies = true;
     ctl.clono_filt_opt.weak_foursies = true;
     ctl.clono_filt_opt.bc_dup = true;
+    ctl.clono_filt_opt.max_datasets = 1000000000;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -179,6 +180,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_print_opt.bu = true;
         } else if is_simple_arg(&arg, "COMP") {
         } else if is_simple_arg(&arg, "COMP2") {
+        } else if is_simple_arg(&arg, "LONG_HELP") {
         } else if is_simple_arg(&arg, "CON") {
             ctl.allele_print_opt.con = true;
         } else if is_simple_arg(&arg, "CON_TRACE") {
@@ -482,6 +484,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.del = true;
         } else if is_usize_arg(&arg, "MIN_DATASETS") {
             ctl.clono_filt_opt.min_datasets = arg.after("MIN_DATASETS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_DATASETS") {
+            ctl.clono_filt_opt.max_datasets = arg.after("MAX_DATASETS=").force_usize();
         } else if is_usize_arg(&arg, "MIN_GROUP") {
             ctl.clono_group_opt.min_group = arg.after("MIN_GROUP=").force_usize();
         } else if is_simple_arg(&arg, "BCJOIN") {

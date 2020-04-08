@@ -3,7 +3,6 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use std::env;
 
 pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
     // Provide main help.
@@ -14,12 +13,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             h.print("\n");
         }
         h.begin_doc("");
-        h.print(&format!(
-            "\nThis is version {} (beta) of ",
-            env!("CARGO_PKG_VERSION")
-        ));
-        h.print_enclone();
-        h.print(".  The mission of ");
+        h.print("\nThe mission of ");
         h.print_enclone();
         h.print(" is to:\n\n");
         h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
@@ -32,7 +26,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
-             Cell Ranger and Loupe,}\n\\boldblue{which enclone is integrated with.}  enclone \
+             Cell Ranger and Loupe,}\nenclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
         h.print(

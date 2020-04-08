@@ -80,8 +80,6 @@ without setting one of them.  Nonnegative integers are recognized as 10x dataset
 ("lena ids") and their internal location is automatically found.  Inclusive ranges l1-l2 are 
 expanded out.
 
-LVARS entry entropy
-
 CELLRANGER: for use if called from cellranger -- changes failure message and prevents exit
             upon normal completion
 
@@ -108,3 +106,10 @@ H5: force use of H5, even if matrix.bin has been built
 FORCE_EXTERNAL: do not test for internal run
 
 STABLE_DOC: print documentation in a way that it won't change when the git version changes
+
+LVARS entries
+* entropy
+* clust = cluster id, from analysis_csv/clustering/graphclust/clusters.csv
+  (for now, has to be in that exact place; not implemented for PCELL)
+* type = cell type, from analysis_csv/celltypes/celltypes.csv
+  Note that it's not clear how doublets are handled.

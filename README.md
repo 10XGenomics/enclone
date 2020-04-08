@@ -80,8 +80,7 @@ enclone is fast, typically responding in seconds (if run on a single dataset).  
 as an exploratory tool.  You can dynamically change your command line to select specific 
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.
 
-enclone, in addition to [Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj) (and
-in which the core algorithm of enclone will be integrated at a later point in time), 
+enclone, in addition to [Cell Ranger and Loupe](https://support.10xgenomics.com/single-cell-vdj),
 supports the analysis of VDJ and other data from the [Chromium Single Cell Immune Profiling 
 solution](https://www.10xgenomics.com/solutions/vdj/).
 ___________________________________________________________________________________________________
@@ -109,19 +108,25 @@ It is not necessary to compile enclone, unless you want to contribute
 to the enclone codebase.  Please see [compilation](COMPILE.md).
 
 <b>3.  Download test data.</b>  Type the following to download the enclone test datasets 
-(and the source code, but you probably won't need that):
+(plus source code, because it's easier to fetch everything):
 ```
 cd
-git clone https://github.com/10XGenomics/enclone.git
+svn export https://github.com/10XGenomics/enclone/trunk enclone
 ```
-At this point `~/enclone/datasets` will contain the datasets
-that are prepackaged with enclone.  If you subsequently want to update this, do
+(See [here](fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
+`~/enclone/datasets` will contain the datasets that are prepackaged with enclone.  If you 
+subsequently want to update this, delete the directory and repeat the command.
+
+🐌 If you have a very slow internet connection, you may prefer to download 
+just one dataset (`123085`), like this:
 ```
-cd ~/enclone
-git pull
+cd; mkdir -p enclone/datasets; cd enclone/datasets
+svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
 ```
-This assumes that you have not touched the repo since you first cloned it.  Otherwise you should
-`git checkout master` first.
+
+The test datasets were selected because they happened to be useful as part of algorithmic regression
+tests (included in the codebase).  It is thus a somewhat oddball set.  We will make a much larger
+collection of test datasets available later.
 
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!

@@ -5,10 +5,12 @@
 // of https://vallentin.dev/2019/06/06/versioning.
 
 extern crate prost_build;
+extern crate string_utils;
 
 use prost_build::Config;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;
+use string_utils::*;
 
 #[cfg(debug_assertions)]
 const BUILD_TYPE: &'static str = "debug";
@@ -17,10 +19,11 @@ const BUILD_TYPE: &'static str = "release";
 
 fn main() {
     let version_string = format!(
-        "{}:{}{}, {}, {} [{}]",
+        "{} : {}{} : {} : {} : {} : {}",
         get_branch_name(),
         get_commit_hash(),
         if is_working_tree_clean() { "" } else { "+" },
+        get_commit_date(),
         BUILD_TYPE,
         OS,
         ARCH
@@ -41,6 +44,19 @@ fn get_commit_hash() -> String {
         .unwrap();
     assert!(output.status.success());
     String::from_utf8_lossy(&output.stdout).to_string()
+}
+
+fn get_commit_date() -> String {
+    let output = Command::new("git")
+        .arg("log")
+        .arg("-1")
+        .arg("--pretty=format:%ci") // Committer data, ISO 8601-like format
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let s = String::from_utf8_lossy(&output.stdout).to_string();
+    s.before(" ").to_string()
 }
 
 fn get_branch_name() -> String {

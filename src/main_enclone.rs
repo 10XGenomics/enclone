@@ -24,6 +24,7 @@ use debruijn::dna_string::*;
 use equiv::EquivRel;
 use io_utils::*;
 use perf_stats::*;
+use regex::Regex;
 use serde_json::Value;
 use std::{
     collections::HashMap,
@@ -72,6 +73,99 @@ pub fn main_enclone(args: &Vec<String>) {
     let gex_info = get_gex_info(&mut ctl);
     check_lvars(&ctl, &gex_info);
     check_pcols(&ctl, &gex_info);
+
+    // Find matching features for <regular expression>_g etc.
+
+    ctl.clono_print_opt.lvars_match =
+        vec![vec![Vec::<usize>::new(); ctl.clono_print_opt.lvars.len()]; ctl.sample_info.n()];
+    let ends0 = [
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+    ];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let mut ends = Vec::<String>::new();
+    for x in ends0.iter() {
+        for y in suffixes.iter() {
+            ends.push(format!("{}{}", x, y));
+        }
+    }
+    for (i, x) in ctl.clono_print_opt.lvars.iter().enumerate() {
+        for y in ends.iter() {
+            if x.ends_with(y) {
+                let mut p = x.rev_before(y);
+                if p.contains(':') {
+                    p = p.after(":");
+                }
+                if !p.is_empty() && Regex::new(&p).is_ok() {
+                    let mut ok = true;
+                    let mut px = false;
+                    let b = p.as_bytes();
+                    for i in 0..p.len() {
+                        if !((b[i] >= b'A' && b[i] <= b'Z')
+                            || (b[i] >= b'a' && b[i] <= b'z')
+                            || (b[i] >= b'0' && b[i] <= b'9')
+                            || b".-_[]()|*".contains(&b[i]))
+                        {
+                            ok = false;
+                            break;
+                        }
+                        if b"[]()|*".contains(&b[i]) {
+                            px = true;
+                        }
+                    }
+                    if ok && px {
+                        let reg = Regex::new(&format!("^{}$", p));
+                        for li in 0..ctl.sample_info.n() {
+                            for j in 0..gex_info.gex_features[li].len() {
+                                let f = &gex_info.gex_features[li][j];
+                                let ff = f.split('\t').collect::<Vec<&str>>();
+                                let mut ok = false;
+                                if ff[2].starts_with("Antibody") {
+                                    if y.contains("_ab") {
+                                        ok = true;
+                                    }
+                                } else if ff[2].starts_with("Antigen") {
+                                    if y.contains("_ag") {
+                                        ok = true;
+                                    }
+                                } else if ff[2].starts_with("CRISPR") {
+                                    if y.contains("_cr") {
+                                        ok = true;
+                                    }
+                                } else if ff[2].starts_with("Custom") {
+                                    if y.contains("_cu") {
+                                        ok = true;
+                                    }
+                                } else if y.contains("_g") {
+                                    ok = true;
+                                }
+                                if ok
+                                    && (reg.as_ref().unwrap().is_match(&ff[0])
+                                        || reg.as_ref().unwrap().is_match(&ff[1]))
+                                {
+                                    ctl.clono_print_opt.lvars_match[li][i].push(j);
+                                }
+                            }
+                        }
+                        let mut matches = false;
+                        for li in 0..ctl.sample_info.n() {
+                            if !ctl.clono_print_opt.lvars_match[li][i].is_empty() {
+                                matches = true;
+                            }
+                        }
+                        if !matches {
+                            eprintln!(
+                                "\nLead variable {} contains a pattern that matches \
+                                no features.\n",
+                                x
+                            );
+                            std::process::exit(1);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     // Determine the Cell Ranger version that was used.  Really painful.
 
