@@ -235,7 +235,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     encountered an internal error in enclone.\n\
                     Please email us at enclone@10xgenomics.com, including the traceback shown\n\
                     above and also the following version information:\n\
-                    {} = {}.\n\n\
+                    {} : {}.\n\n\
                     Thank you and have a nice day!",
                     env!("CARGO_PKG_VERSION"),
                     VERSION_STRING
