@@ -1,6 +1,6 @@
 [package]
 name = "enclone"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["David Jaffe <david.jaffe@10xgenomics.com, Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>, Meryl Lewis <meryl.lewis@10xgenomics.com>, Patrick Marks <patrick.marks@10xgenomics.com>, Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"]
 edition = "2018"
 build = "build.rs"
@@ -22,7 +22,7 @@ itertools = "^0.7"
 load_feature_bc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 marsoc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-ndarray = "0.12.1"
+ndarray = "0.13"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 permutation = "0.2.5"
 petgraph = "0.4.13"
@@ -44,10 +44,10 @@ vector_utils = "0.1.0"
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.15.0"
 
-[dependencies.hdf5-rs]
+[dependencies.hdf5]
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
-branch= "pmarks/linking"
+rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 
 [dev-dependencies]
 flate2 = "1.0.12"

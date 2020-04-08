@@ -1,7 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use debruijn::dna_string::*;
-use h5::Dataset;
+use hdf5::Dataset;
 use mirror_sparse_matrix::*;
 use regex::Regex;
 use std::cmp::max;
