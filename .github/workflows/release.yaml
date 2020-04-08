@@ -25,15 +25,15 @@ jobs:
           /bin/bash -lec '
           apt-get update && apt-get install -y --no-install-recommends ca-certificates;
           cargo build --release;
-          target/release/vartrix --help | grep -q USAGE;
-          readelf -V target/release/vartrix;
+          target/release/enclone --help | grep -q USAGE;
+          readelf -V target/release/enclone;
           ';
           mkdir ${{runner.temp}}/artifacts;
-          cp -a target/release/vartrix ${{runner.temp}}/artifacts/vartrix-linux
+          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-linux
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
-          name: vartrix
+          name: enclone
           path: ${{runner.temp}}/artifacts
   macos:
     runs-on: macos-latest
@@ -45,13 +45,13 @@ jobs:
       - name: Make release build
         run: |
           cargo build --release
-          target/release/vartrix --help | grep -q USAGE
+          target/release/enclone --help | grep -q USAGE
           mkdir ${{runner.temp}}/artifacts
-          cp -a target/release/vartrix ${{runner.temp}}/artifacts/vartrix-macos
+          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-macos
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
-          name: vartrix
+          name: enclone
           path: ${{runner.temp}}/artifacts
 
   setup-release:
@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v1
         with:
-          name: vartrix
+          name: enclone
           path: ${{runner.temp}}/artifacts
 
       - run: ls ${{runner.temp}}/artifacts
@@ -83,8 +83,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{runner.temp}}/artifacts/vartrix-linux
-          asset_name: vartrix_linux
+          asset_path: ${{runner.temp}}/artifacts/enclone-linux
+          asset_name: enclone_linux
           asset_content_type: application/octet-stream
 
       - name: Upload Mac
@@ -94,6 +94,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{runner.temp}}/artifacts/vartrix-macos
-          asset_name: vartrix_macos
+          asset_path: ${{runner.temp}}/artifacts/enclone-macos
+          asset_name: enclone_macos
           asset_content_type: application/octet-stream
