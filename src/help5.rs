@@ -214,8 +214,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
         h.print("\\boldblue{4. What platforms does enclone run on?}\n\n");
         h.print(
-            "1. linux/x86-64 (that's most servers)\n\
-             2. mac.\n\n\
+            "1. Linux/x86-64 (that's most servers)\n\
+               2. Mac.\n\n\
              However, we have not and cannot test every possible configuration of these \
              platforms.  Please let us know if you encounter problems!\n\n",
         );
