@@ -2,7 +2,7 @@
 # they are not unambiguously consented for public release, or because they contain data from
 # experimental conditions (typically titrations of reagents) and would be confusing.
 #
-# Each non-comment line in this file is a list of lena ids, putatively from the same donor.
+# Each non-comment line in this file is a list of sample IDs, putatively from the same donor.
 
 40043 
 
