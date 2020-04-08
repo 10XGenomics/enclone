@@ -232,7 +232,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     "Something has gone badly wrong.  Please check to make \
                     sure that none\nof your input files are corrupted.  If they are all OK, then \
                     you have probably\n\
-                    encountered an internal error in enclone.\n\
+                    encountered an internal error in enclone.\n\n\
                     Please email us at enclone@10xgenomics.com, including the traceback shown\n\
                     above and also the following version information:\n\
                     {} : {}.\n\n\
