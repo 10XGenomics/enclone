@@ -303,6 +303,9 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 ctl.sample_info
                     .barcode_color
                     .push(HashMap::<String, String>::new());
+                ctl.sample_info
+                    .alt_bc_fields
+                    .push(Vec::<(String, HashMap<String, String>)>::new());
             }
         }
     }
@@ -432,6 +435,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             let mut sample_donor = HashMap::<String, (String, String)>::new();
             let mut tag = HashMap::<String, String>::new();
             let mut barcode_color = HashMap::<String, String>::new();
+            let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
             if bc != "".to_string() {
                 if ctl.gen_opt.pre != "".to_string() {
                     bc = format!("{}/{}", ctl.gen_opt.pre, bc);
@@ -455,29 +459,12 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 let mut donor_pos = 0;
                 let mut tag_pos = None;
                 let mut color_pos = None;
+                let mut to_alt = Vec::<isize>::new();
                 for line in f.lines() {
                     let s = line.unwrap();
                     if first {
-                        let allowed_fields = vec![
-                            "barcode".to_string(),
-                            "sample".to_string(),
-                            "donor".to_string(),
-                            "tag".to_string(),
-                            "color".to_string(),
-                        ];
                         let fields = s.split(',').collect::<Vec<&str>>();
-                        for x in fields.iter() {
-                            if !allowed_fields.contains(&x.to_string()) {
-                                eprintln!(
-                                    "\nThe file\n\
-                                     {}\n\
-                                     from the bc field used in META\n\
-                                     has an illegal field name ({}) in its first line.\n",
-                                    bc, x
-                                );
-                                std::process::exit(1);
-                            }
-                        }
+                        to_alt = vec![-1 as isize; fields.len()];
                         let required = vec!["barcode", "sample", "donor"];
                         for f in required.iter() {
                             if !fields.contains(f) {
@@ -505,6 +492,12 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                                 tag_pos = Some(i);
                             } else if fields[i] == "color" {
                                 color_pos = Some(i);
+                            } else {
+                                to_alt[i] = alt_bc_fields.len() as isize;
+                                alt_bc_fields.push((
+                                    fields[i].to_string(),
+                                    HashMap::<String, String>::new(),
+                                ));
                             }
                         }
                         first = false;
@@ -522,6 +515,13 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                                 bc
                             );
                             std::process::exit(1);
+                        }
+                        for i in 0..fields.len() {
+                            if to_alt[i] >= 0 {
+                                alt_bc_fields[to_alt[i] as usize]
+                                    .1
+                                    .insert(fields[barcode_pos].to_string(), fields[i].to_string());
+                            }
                         }
                         if !fields[barcode_pos].contains('-') {
                             eprintln!(
@@ -590,6 +590,7 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.sample_donor.push(sample_donor);
             ctl.sample_info.tag.push(tag);
             ctl.sample_info.barcode_color.push(barcode_color);
+            ctl.sample_info.alt_bc_fields.push(alt_bc_fields);
         }
     }
 }
