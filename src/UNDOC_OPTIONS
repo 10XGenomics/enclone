@@ -117,4 +117,4 @@ LVARS entries
   class on all cells in a single clonotype when two cells are called equivalent if their distance
   in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
-  WARNING: this only makes sense if you have one dataset and this condition is not checked.
+WARNING: this only makes sense if you have one dataset--this condition is not checked.
