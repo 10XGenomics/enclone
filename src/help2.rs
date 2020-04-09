@@ -405,7 +405,21 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "",
             "an optional field \"color\" that assigns a color to a barcode,",
         );
-        h.doc3("", "", "and which is used by the PLOT option.");
+        h.doc3(
+            "",
+            "",
+            "and which is used by the PLOT option.  Finally, any other field",
+        );
+        h.doc3(
+            "",
+            "",
+            "name may be specified and then used as a lead variable in PER CELL",
+        );
+        h.doc3(
+            "",
+            "",
+            "mode, so long as it is not already a lead variable name.",
+        );
         h.print_tab3();
         h.print("\n");
         if !h.help_all {
