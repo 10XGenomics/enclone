@@ -575,16 +575,16 @@ line by setting the environment variable <span style="font-weight:bold;">ENCLONE
 Both input forms involve abbreviated names (discussed below), which should be as short as
 possible, as longer abbreviations will increase the width of the clonotype displays.
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.    ┃
-┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not     ┃
-┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which    ┃
-┃speeds up enclone overall by up to <span style="color:#c23621;font-weight:bold;">50%</span>.  To use this, add the argument <span style="font-weight:bold;">NH5</span> to the enclone command┃
-┃line.  This will work so long as you have write permission on input directories.  The first time ┃
-┃you run enclone (using given inputs), the alternate file will be written; then subsequent        ┃
-┃invocations will be faster.   Like with other enclone command-line options, if you want it on all┃
-┃the time, you can set the environment variable <span style="font-weight:bold;">ENCLONE_NH5</span>.                                      ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.     ┃
+┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not      ┃
+┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which     ┃
+┃speeds up enclone overall by up to <span style="color:#c23621;font-weight:bold;">50%</span>.  To use this, add the argument <span style="font-weight:bold;">NH5</span> to the enclone command ┃
+┃line.  This will work so long as you have write permission on input directories.  The first time  ┃
+┃you run enclone (using given inputs), an alternate file matrix.bin will be written; then          ┃
+┃subsequent invocations will be faster.   Like with other enclone command-line options, if you want┃
+┃it on all the time, you can set the environment variable <span style="font-weight:bold;">ENCLONE_NH5</span>.                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">█ 1 █</span> To point directly at input files on the command line, use e.g.
 <span style="font-weight:bold;">TCR=/home/jdoe/runs/sample345</span>
@@ -649,25 +649,26 @@ enclone help input_tech
 enclone only uses certain files, which are all in the outs subdirectory of a Cell Ranger pipeline
 directory:
 
-┌────────────────────────────────────────────┬──────────┐
-│<span style="font-weight:bold;">file</span>                                        │  <span style="font-weight:bold;">pipeline</span>│
-├────────────────────────────────────────────┼──────────┤
-│all_contig_annotations.json                 │  VDJ     │
-├────────────────────────────────────────────┼──────────┤
-│metrics_summary.csv                         │  GEX     │
-├────────────────────────────────────────────┼──────────┤
-│raw_gene_bc_matrices_h5.h5                  │  GEX     │
-├────────────────────────────────────────────┼──────────┤
-│raw_feature_bc_matrix/barcodes.tsv.gz       │  GEX     │
-│raw_feature_bc_matrix/features.tsv.gz       │  GEX     │
-│filtered_feature_bc_matrix/barcodes.tsv.gz  │  GEX     │
-└────────────────────────────────────────────┴──────────┘
+┌─────────────────────────────────────────────┬──────────┐
+│<span style="font-weight:bold;">file</span>                                         │  <span style="font-weight:bold;">pipeline</span>│
+├─────────────────────────────────────────────┼──────────┤
+│all_contig_annotations.json                  │  VDJ     │
+├─────────────────────────────────────────────┼──────────┤
+│metrics_summary.csv                          │  GEX     │
+├─────────────────────────────────────────────┼──────────┤
+│raw_feature_bc_matrix.h5                     │  GEX     │
+├─────────────────────────────────────────────┼──────────┤
+│analysis/clustering/graphclust/clusters.csv  │  GEX     │
+├─────────────────────────────────────────────┼──────────┤
+│analysis/pca/10_components/projection.csv    │  GEX     │
+└─────────────────────────────────────────────┴──────────┘
 
-All of these files are required.  The exact files that are used could be changed in the future.
+All of these files are required, and in the indicated structure.  The exact files that are used
+could be changed in the future.
 
-Note that you must use the output of Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1</span>.  There is a workaround for earlier
-versions (which you will be informed of if you try), but it is much slower and the results may not
-be as good.
+Note that the VDJ outs directories must be from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1</span>.  There is a workaround
+for earlier versions (which you will be informed of if you try), but it is much slower and the
+results may not be as good.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help parseable
