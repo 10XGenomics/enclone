@@ -289,6 +289,7 @@ pub struct SampleInfo {
     pub tag: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to color:
     pub barcode_color: Vec<HashMap<String, String>>,
+    pub alt_bc_fields: Vec<Vec<(String, HashMap<String, String>)>>,
 }
 
 impl SampleInfo {
@@ -657,6 +658,7 @@ pub struct GexInfo {
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
+    pub pca: Vec<HashMap<String, Vec<f64>>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,
     pub h5_data: Vec<Option<Dataset>>,
