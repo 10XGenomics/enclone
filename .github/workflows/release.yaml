@@ -21,11 +21,9 @@ jobs:
       - name: Make release build
         run: >
           docker run -v ${{github.workspace}}:/root
+          -e GITHUB_SHA -e GITHUB_REF
           docker.pkg.github.com/10xdev/toolchain-scripts/toolchain:latest
           /bin/bash -lec '
-          export GITHUB_SHA=$GITHUB_SHA
-          export GITHUB_REF=$GITHUB_REF
-          apt-get update && apt-get install -y --no-install-recommends ca-certificates;
           cargo build --release;
           target/release/enclone --help | grep -q enclone;
           readelf -V target/release/enclone;

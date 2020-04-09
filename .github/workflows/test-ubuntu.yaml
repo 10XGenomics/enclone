@@ -1,9 +1,10 @@
-name: Build enclone linux
+name: Test enclone linux
 
 on:
-  create:
-    tags:
-    - 'auto_*'
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -11,63 +12,12 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
-    # Install Rust
-      - name: Install Rust
-        run: |
-          case $(rustc --version) in
-            "rustc 1.40.0"*) ;;
-            *) rustup default 1.40.0 ;;
-          esac
-          rustc --version
-          rustfmt --version 
       - name: Checkout enclone master
-      # This step uses GitHub's javascript-action: https://github.com/actions/checkout
         uses: actions/checkout@master
       - name: Check Rust formatting
       # Check formatting
         run: cargo fmt -- --check
       - name: build-enclone
-        run: cargo build --release --bin enclone && export PATH=target/release:$PATH
+        run: cargo build --release
       - name: unit tests
         run: cargo test --release -- --nocapture
-      - name: post release assets
-      # This step finds the latest tagged version of enclone and upload the enclone linux build to Github.
-        run: |
-          # Get latest tag from https://github.com/10XDev/enclone
-          tag_num=$(git ls-remote --refs --sort=-v:refname https://github.com/10XDev/enclone | head -n 1 | cut -d $'\t' -f 2 | cut -d "/" -f 3)
-          echo "tag_num: " $tag_num
-          test_url=https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num}
-          mkdir -p linux
-          cp target/release/enclone linux/.
-          chmod 755 linux/enclone
-          # store release data in variable
-          # Making release from latest tag 
-          curl --request POST \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --url https://api.github.com/repos/${{ github.repository }}/releases \
-          --data '{
-            "tag_name": '\"''${tag_num}''\"',
-            "target_commitish": "master",
-            "name": '\"''${tag_num}''\"',
-            "body": "Description of the release",
-            "draft": false,
-            "prerelease": false
-            }' > create_release_response.json
-          echo "GET latest release"
-          curl --request GET \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --url https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_num} > tagged_release_response.json
-          # Find the upload URL for release assets.
-          cat tagged_release_response.json
-          upload_url_key=$(grep "upload_url" tagged_release_response.json | sed 's/,*$//g')
-          upload_url=$(echo ${upload_url_key/\"upload_url\": /} | tr -d '"')
-          # Substitute release asset in the upload URL
-          new_asset_url=${upload_url/\{?name,label\}/?name=linux/enclone}
-          echo "POST binary to latest release"
-          echo $new_asset_url
-          # Post binary
-          curl --request POST \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'Content-Type: application/octet-stream' \
-          --data-binary @linux/enclone \
-          --url $new_asset_url
