@@ -16,5 +16,8 @@ analysis/pca/10_components/projection.csv     analysis_csv/pca/10_components/pro
 Given a GEX path p, enclone will look for these files in p, if p ends with outs, and p/outs, if p does
 not end with /outs.
 
+For internal runs, if the GEX path p does not exist, and (after removing PRE), p is an integer, then
+we assume it is an internal identifier and look for it in the internal pipeline outputs.
+
 If the NH5 option is specified to enclone, it will write out a file matrix.bin to this same directory
 (p or p/outs, as above), provided that matrix.bin does not already exist.
