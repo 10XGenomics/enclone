@@ -1,0 +1,17 @@
+Here we spec the GEX file requirements.  This is complicated by differences between the customer (CS) 
+and internal (PD) pipeline outs file structures and by the need for backward compatibility.
+
+These requirements may change over time.
+
+CS                                            PD
+metrics_summary.csv                           metrics_summary_csv.csv
+raw_feature_bc_matrix.h5                      raw_feature_bc_matrix.h5 *
+analysis/clustering/graphclust/clusters.csv   analysis_csv/clustering/graphclust/clusters.csv
+analysis/pca/10_components/projection.csv     analysis_csv/pca/10_components/projection.csv
+(not present)                                 analysis_csv/clustering/graphclust/celltypes/celltypes.csv **
+
+*:  named raw_gene_bc_matrices_h5.h5 in older pipeline versions
+**: not present in older pipeline versions
+
+Given a GEX path p, enclone will look for these files in p, if p ends with outs, and p/outs, if p does
+not end with /outs.
