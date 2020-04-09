@@ -27,6 +27,7 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
+    pca: &mut Vec<HashMap<String, Vec<f64>>>,
     gex_mults: &mut Vec<f64>,
     fb_mults: &mut Vec<f64>,
     gex_cell_barcodes: &mut Vec<Vec<String>>,
@@ -45,6 +46,7 @@ pub fn load_gex(
         Vec<String>,
         HashMap<String, usize>,
         HashMap<String, String>,
+        HashMap<String, Vec<f64>>,
     )>::new();
     for i in 0..ctl.sample_info.gex_path.len() {
         results.push((
@@ -57,6 +59,7 @@ pub fn load_gex(
             Vec::<String>::new(),
             HashMap::<String, usize>::new(),
             HashMap::<String, String>::new(),
+            HashMap::<String, Vec<f64>>::new(),
         ));
     }
     let gex_outs = &ctl.sample_info.gex_path;
@@ -130,6 +133,29 @@ pub fn load_gex(
                     let barcode = s.before(",");
                     let cell_type = s.after(",");
                     r.8.insert(barcode.to_string(), cell_type.to_string());
+                }
+            }
+            let pca_file = format!(
+                "{}/analysis_csv/pca/10_components/projection.csv",
+                gex_outs[i]
+            );
+            if path_exists(&pca_file) {
+                let f = open_for_read![&pca_file];
+                let mut count = 0;
+                for line in f.lines() {
+                    count += 1;
+                    if count == 1 {
+                        continue;
+                    }
+                    let s = line.unwrap();
+                    let barcode = s.before(",");
+                    let x = s.after(",").split(',').collect::<Vec<&str>>();
+                    assert_eq!(x.len(), 10);
+                    let mut y = Vec::<f64>::new();
+                    for i in 0..x.len() {
+                        y.push(x[i].force_f64());
+                    }
+                    r.9.insert(barcode.to_string(), y);
                 }
             }
             let csv1 = format!("{}/metrics_summary.csv", gex_outs[i]);
@@ -396,6 +422,7 @@ pub fn load_gex(
         gex_cell_barcodes.push(results[i].6.clone());
         cluster.push(results[i].7.clone());
         cell_type.push(results[i].8.clone());
+        pca.push(results[i].9.clone());
     }
 }
 
@@ -409,6 +436,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
+    let mut pca = Vec::<HashMap<String, Vec<f64>>>::new();
     let mut gex_mults = Vec::<f64>::new();
     let mut fb_mults = Vec::<f64>::new();
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
@@ -421,6 +449,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_matrices,
         &mut cluster,
         &mut cell_type,
+        &mut pca,
         &mut gex_mults,
         &mut fb_mults,
         &mut gex_cell_barcodes,
@@ -518,6 +547,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         gex_matrices: gex_matrices,
         cluster: cluster,
         cell_type: cell_type,
+        pca: pca,
         gex_cell_barcodes: gex_cell_barcodes,
         gex_mults: gex_mults,
         fb_mults: fb_mults,

@@ -7,8 +7,8 @@
 <br>
 <br>
 
-Watch your step!  This site is under construction and undergoing initial testing.  Please do not 
-enter unless you've been directed here.
+Watch your step!  This site is under construction and undergoing initial testing.  A number of
+things are broken.  Please do not enter unless you've been directed here.
 
 (Photo credit: NIOSH/Wikipedia)
 
@@ -130,6 +130,9 @@ collection of test datasets available later.
 
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
+
+<b>5. Periodically update or check the [history](HISTORY.md#readme) to see if anything has changed
+that might affect you.</b>
 ___________________________________________________________________________________________________
 
 ## Running enclone
