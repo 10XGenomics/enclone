@@ -51,6 +51,13 @@ fn get_commit_hash() -> String {
     String::from_utf8_lossy(&output.stdout).to_string()
 }
 
+fn is_github() -> bool {
+    match std::env::var("GITHUB_SHA") {
+        Ok(_) => true,
+        _ => false,
+    }
+}
+
 fn get_commit_date() -> String {
     match std::env::var("GITHUB_SHA") {
         Ok(_) => return "DATE".into(),
@@ -70,9 +77,11 @@ fn get_commit_date() -> String {
 }
 
 fn get_branch_name() -> String {
-    match std::env::var("GITHUB_REF") {
-        Ok(v) => return v,
-        _ => (),
+    if is_github() {
+        match std::env::var("GITHUB_REF") {
+            Ok(v) => return v,
+            _ => return "master".to_string(),
+        }
     }
 
     let output = Command::new("git")
