@@ -68,8 +68,8 @@ pub fn load_gex(
             // First define the path where the GEX files should live, and make sure that the path
             // exists.
 
-            let mut outs = String::new();
             let root = gex_outs[i].clone();
+            let mut outs = root.clone();
             if root.ends_with("/outs") && path_exists(&root) {
                 outs = root.clone();
             } else if root.ends_with("/outs") {
@@ -101,13 +101,14 @@ pub fn load_gex(
                 h5_path = h5_path_alt;
             }
             let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
-            let mut pca_file = format!("{}/analysis/pca/10_components/projection.csv", outs);
+            let mut pca_file = format!("{}/analysis_csv/pca/10_components/projection.csv", outs);
             if !path_exists(&pca_file) {
-                pca_file = format!("{}/analysis_csv/pca/10_components/projection.csv", outs);
+                pca_file = format!("{}/analysis/pca/10_components/projection.csv", outs);
             }
-            let mut cluster_file = format!("{}/analysis/clustering/graphclust/clusters.csv", outs);
+            let mut cluster_file =
+                format!("{}/analysis_csv/clustering/graphclust/clusters.csv", outs);
             if !path_exists(&cluster_file) {
-                cluster_file = format!("{}/analysis_csv/clustering/graphclust/clusters.csv", outs);
+                cluster_file = format!("{}/analysis/clustering/graphclust/clusters.csv", outs);
             }
             let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
             for f in [pca_file.clone(), cluster_file.clone()].iter() {
@@ -117,6 +118,7 @@ pub fn load_gex(
                         Perhaps one of your directories is missing some stuff.\n",
                         f
                     );
+                    std::process::exit(1);
                 }
             }
             let csv1 = format!("{}/metrics_summary.csv", outs);
