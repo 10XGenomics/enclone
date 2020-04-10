@@ -19,7 +19,6 @@ failure = "0.1.5"
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "0.2.4"
 itertools = "^0.7"
-load_feature_bc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 marsoc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ndarray = "0.13"

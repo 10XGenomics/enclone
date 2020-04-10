@@ -7,12 +7,12 @@ FEATURE SCAN
 enriched features
 
 id               name       library_type        test  control  enrichment
-ENSG00000243466  IGKV1-5    Gene Expression    98.09     0.09     1055.44
-ENSG00000239951  IGKV3-20   Gene Expression   247.14     0.17     1469.20
+ENSG00000243466  IGKV1-5    Gene Expression    98.37     0.09     1055.44
+ENSG00000239951  IGKV3-20   Gene Expression   247.84     0.17     1469.20
 ENSG00000243264  IGKV2D-29  Gene Expression     0.42     0.00      108.60
 ENSG00000102055  PPP1R2C    Gene Expression     0.29     0.00       63.39
-ENSG00000280411  IGHV1-69D  Gene Expression   231.60     0.10     2374.19
+ENSG00000280411  IGHV1-69D  Gene Expression   232.26     0.10     2374.19
 ENSG00000274576  IGHV2-70   Gene Expression     0.50     0.01       80.82
-ENSG00000211662  IGLV3-21   Gene Expression  1257.72     0.26     4760.06
-ENSG00000211669  IGLV3-10   Gene Expression  1575.68     0.26     6069.30
+ENSG00000211662  IGLV3-21   Gene Expression  1261.30     0.26     4760.06
+ENSG00000211669  IGLV3-10   Gene Expression  1580.16     0.26     6069.30
 
