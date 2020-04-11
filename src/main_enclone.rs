@@ -343,6 +343,22 @@ pub fn main_enclone(args: &Vec<String>) {
 
     cross_filter(&ctl, &mut tig_bc);
 
+    // Remove cells that are not called cells by gex or feature barcodes.
+
+    if !ctl.clono_filt_opt.ngex {
+        let mut to_delete = vec![false; tig_bc.len()];
+        for m in 0..tig_bc.len() {
+            let li = tig_bc[m][0].dataset_index;
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                let gbc = &gex_info.gex_cell_barcodes[li];
+                if !bin_member(&gbc, &tig_bc[m][0].barcode) {
+                    to_delete[m] = true;
+                }
+            }
+        }
+        erase_if(&mut tig_bc, &to_delete);
+    }
+
     // Look for barcode reuse.
 
     check_for_barcode_reuse(&ctl, &tig_bc);

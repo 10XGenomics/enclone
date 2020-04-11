@@ -21,6 +21,23 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              two options can be used to simplify the view of a clonotype.\n\n",
         );
         h.doc(
+            "NGEX",
+            "If gene expression and/or feature barcode data are provided, if a barcode",
+        );
+        h.doc(
+            "",
+            "is called a cell by the VDJ part of the Cell Ranger pipeline, but not",
+        );
+        h.doc(
+            "",
+            "called a cell by the gene expression and/or feature barcode part, then the",
+        );
+        h.doc(
+            "",
+            "default behavior of enclone is to remove such cells from clonotypes.  This",
+        );
+        h.doc("", "option disables that behavior.");
+        h.ldoc(
             "NCROSS",
             "If you specify that two or more libraries arose from the same sample (i.e.",
         );

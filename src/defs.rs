@@ -408,6 +408,7 @@ pub struct ClonoFiltOpt {
     pub max_datasets: usize, // only show clonotypes involving at most this many datasets
     pub min_chains: usize,   // only show clonotypes with at least this many chains
     pub max_chains: usize,   // only show clonotypes with at most this many chains
+    pub ngex: bool,          // turn off gex filtering,
     pub ncross: bool,        // turn off cross filtering,
     pub cdr3: Option<Regex>, // only show clonotypes having one of these CDR3_AA sequences
     pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination

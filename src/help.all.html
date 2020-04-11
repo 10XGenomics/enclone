@@ -929,6 +929,12 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NGEX                │  If gene expression and/or feature barcode data are provided, if a barcode  │
+│                    │  is called a cell by the VDJ part of the Cell Ranger pipeline, but not      │
+│                    │  called a cell by the gene expression and/or feature barcode part, then the │
+│                    │  default behavior of enclone is to remove such cells from clonotypes.  This │
+│                    │  option disables that behavior.                                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NCROSS              │  If you specify that two or more libraries arose from the same sample (i.e. │
 │                    │  from the same tube of cells), then the default behavior of enclone is to   │
 │                    │  "cross filter" so as to remove expanded exact subclonotypes that are       │
