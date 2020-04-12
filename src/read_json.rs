@@ -89,6 +89,7 @@ pub fn read_json(
     reannotate: bool,
     cr_version: &mut String,
     ctl: &EncloneControl,
+    vdj_cells: &mut Vec<String>,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -125,16 +126,17 @@ pub fn read_json(
             None => break,
             Some(x) => {
                 let v: Value = serde_json::from_str(strme(&x)).unwrap();
+                let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
+                if !v["is_cell"].as_bool().unwrap_or(false) {
+                    continue;
+                }
+                vdj_cells.push(barcode.clone());
                 if !v["productive"].as_bool().unwrap_or(false) {
                     continue;
                 }
                 if !v["high_confidence"].as_bool().unwrap_or(false) {
                     continue;
                 }
-                if !v["is_cell"].as_bool().unwrap_or(false) {
-                    continue;
-                }
-                let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
                 let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
                 let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
                 let mut left = false;
@@ -494,6 +496,7 @@ pub fn parse_json_annotations_files(
     tig_bc: &mut Vec<Vec<TigData>>,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
+    vdj_cells: &mut Vec<Vec<String>>,
 ) {
     let tl = Instant::now();
     // (lena index, contig name, V..J length): (?)
@@ -503,6 +506,7 @@ pub fn parse_json_annotations_files(
         Vec<Vec<TigData>>,
         Vec<Vec<u8>>, // logs
         String,
+        Vec<String>,
     )>::new();
     for i in 0..ctl.sample_info.dataset_path.len() {
         results.push((
@@ -511,6 +515,7 @@ pub fn parse_json_annotations_files(
             Vec::<Vec<TigData>>::new(),
             Vec::<Vec<u8>>::new(),
             String::new(),
+            Vec::<String>::new(),
         ));
     }
     // note: only tracking truncated seq and quals initially
@@ -538,7 +543,9 @@ pub fn parse_json_annotations_files(
             ctl.gen_opt.reannotate,
             &mut res.4,
             &ctl,
+            &mut res.5,
         );
+        res.5.sort();
         explore(li, &tig_bc, &ctl);
         res.2 = tig_bc;
     });
@@ -551,6 +558,7 @@ pub fn parse_json_annotations_files(
         } else {
             versions.push(results[i].4.clone());
         }
+        vdj_cells.push(results[i].5.clone());
     }
     unique_sort(&mut versions);
     if versions.len() > 1

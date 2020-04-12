@@ -322,7 +322,14 @@ pub fn main_enclone(args: &Vec<String>) {
     // Parse the json annotations file.
 
     let mut tig_bc = Vec::<Vec<TigData>>::new();
-    parse_json_annotations_files(&mut ctl, &mut tig_bc, &refdata, &to_ref_index);
+    let mut vdj_cells = Vec::<Vec<String>>::new();
+    parse_json_annotations_files(
+        &mut ctl,
+        &mut tig_bc,
+        &refdata,
+        &to_ref_index,
+        &mut vdj_cells,
+    );
 
     // Search for SHM indels.  Exploratory.
 
@@ -496,6 +503,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &eq,
         &gex_info,
         &join_info,
+        &vdj_cells,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {

@@ -61,6 +61,7 @@ pub fn print_clonotypes(
     eq: &EquivRel,
     gex_info: &GexInfo,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
+    vdj_cells: &Vec<Vec<String>>,
 ) {
     // Make an abbreviation.
 
@@ -132,6 +133,19 @@ pub fn print_clonotypes(
         }
     }
     unique_sort(&mut alt_bcs);
+
+    // Compute number of vdj cells that are gex.
+
+    let mut n_vdj_gex = Vec::<usize>::new();
+    for li in 0..ctl.sample_info.n() {
+        let mut n = 0;
+        for y in gex_info.pca[li].iter() {
+            if bin_member(&vdj_cells[li], &y.0) {
+                n += 1;
+            }
+        }
+        n_vdj_gex.push(n);
+    }
 
     // Traverse the orbits.
 
@@ -456,6 +470,45 @@ pub fn print_clonotypes(
 
                 let mut stats = Vec::<(String, Vec<f64>)>::new();
 
+                // Compute "right" stats.
+
+                let mut right = vec![Vec::<String>::new(); lvars.len()];
+                for k in 0..lvars.len() {
+                    if lvars[k] == "right".to_string() {
+                        for u in 0..nexacts {
+                            let clonotype_id = exacts[u];
+                            let ex = &exact_clonotypes[clonotype_id];
+                            for l in 0..ex.clones.len() {
+                                let bc = &ex.clones[l][0].barcode;
+                                let li = ex.clones[l][0].dataset_index;
+                                if gex_info.pca[li].contains_key(&bc.clone()) {
+                                    let mut rights = 0;
+                                    let mut z = Vec::<(f64, String)>::new();
+                                    let x = &gex_info.pca[li][&bc.clone()];
+                                    for y in gex_info.pca[li].iter() {
+                                        let mut dist2 = 0.0;
+                                        for m in 0..x.len() {
+                                            dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                                        }
+                                        z.push((dist2, y.0.clone()));
+                                    }
+                                    z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                                    let top = n_vdj_gex[li];
+                                    for i in 0..top {
+                                        if bin_member(&vdj_cells[li], &z[i].1) {
+                                            rights += 1;
+                                        }
+                                    }
+                                    let pc = 100.0 * rights as f64 / top as f64;
+                                    right[k].push(format!("{:.1}", pc));
+                                } else {
+                                    right[k].push("".to_string());
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Compute PCA equivalence classes.
 
                 let mut pe = vec![Vec::<String>::new(); lvars.len()];
@@ -555,6 +608,8 @@ pub fn print_clonotypes(
                         &ind_readers,
                         &h5_data,
                         &mut stats,
+                        &vdj_cells,
+                        &n_vdj_gex,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -609,6 +664,8 @@ pub fn print_clonotypes(
                                     row.push(format!("{}", cid));
                                 } else if lvars[k].starts_with("pe") && have_gex {
                                     row.push(format!("{}", pe[k][cell_count + bcl.2]));
+                                } else if lvars[k] == "right".to_string() && have_gex {
+                                    row.push(format!("{}", right[k][cell_count + bcl.2]));
                                 } else if lvars[k] == "type".to_string() && have_gex {
                                     let mut cell_type = "".to_string();
                                     if gex_info.cell_type[li].contains_key(&bc.clone()) {
