@@ -65,3 +65,8 @@
 # part of preexisting
 
 86231
+
+# CR0365 (and these have matching gex = 127798,127801)
+# not checked for overlap with any of the lists
+
+128037,128040
