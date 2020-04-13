@@ -362,7 +362,8 @@ fn test_enclone_examples() {
                 "\nenclone_test_examples: the file example{} is not up to date\n",
                 t + 1
             );
-            eprintln!("current output:\n{}\n", old);
+            eprintln!("old output =\n{}", old);
+            eprintln!("new output =\n{}\n", new2);
             std::process::exit(1);
         }
     }
@@ -391,6 +392,29 @@ fn test_version_number_in_readme() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test that enclone help all HTML works (without STABLE_DOC).
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_help_no_stable() {
+    PrettyTrace::new().on();
+    let mut new = Command::new("target/release/enclone");
+    let mut new = new.arg("help");
+    new = new.arg("all");
+    new = new.arg("HTML");
+    new = new.arg("NOPAGER");
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute test_help_output"));
+    if new.status.code() != Some(0) {
+        eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that help output hasn't changed.
 
 #[cfg(not(debug_assertions))]
@@ -404,10 +428,15 @@ fn test_help_output() {
     new = new.arg("all");
     new = new.arg("HTML");
     new = new.arg("STABLE_DOC");
+    new = new.arg("NOPAGER");
     let new = new
         .arg("FORCE_EXTERNAL")
         .output()
         .expect(&format!("failed to execute test_help_output"));
+    if new.status.code() != Some(0) {
+        eprintln!("Attempt to run enclone help all failed.\n");
+        std::process::exit(1);
+    }
     let new2 = stringme(&new.stdout);
     if old != new2 {
         eprintln!(
@@ -430,7 +459,7 @@ fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
-        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
@@ -467,13 +496,14 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
     if !path_exists(&format!(
-        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        "test/inputs/version{}/85679/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     )) {
-        panic!("\nenclone_test_prebuild: did not create matrix.bin.");
+        panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
     }
 
-    // Second pass: run without PREBUILD but using the matrix.bin that the first pass created.
+    // Second pass: run without PREBUILD but using the feature_barcode_matrix.bin that the first
+    // pass created.
 
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
@@ -493,16 +523,16 @@ fn test_enclone_prebuild() {
         eprintln!(
             "\nenclone_test_prebuild: second pass output has changed.\n\
              You may want to add more info to this failure message.\n\
-             And don't forget to remove matrix.bin.\n"
+             And don't forget to remove feature_barcode_matrix.bin.\n"
         );
         eprintln!("new output =\n{}\n", new2);
         std::process::exit(1);
     }
 
-    // Clean up: delete matrix.bin.
+    // Clean up: delete feature_barcode_matrix.bin.
 
     std::fs::remove_file(&format!(
-        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/matrix.bin",
+        "test/inputs/version{}/85679/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     ))
     .unwrap();

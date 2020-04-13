@@ -47,7 +47,8 @@ that end, we start with this simple goal:
 The <i>finding</i> part is 
 algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same 
 clonotype, or to "pollute" a clonotype with chains that do not belong in it.
-The <i>displaying</i> part is also challenging: we are unaware of other tools that do so.
+The <i>displaying</i> part is also challenging, in part because it is hard to compactly represent 
+the wealth of available information.
 
 <br>
 <br>

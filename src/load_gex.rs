@@ -3,15 +3,15 @@
 // Load gene expression and antibody data.
 
 use crate::defs::*;
+use hdf5::types::FixedAscii;
 use hdf5::Dataset;
 use io_utils::*;
-use load_feature_bc::*;
 use mirror_sparse_matrix::*;
 use perf_stats::*;
 use rayon::prelude::*;
 use std::{
     collections::HashMap,
-    fs::{copy, create_dir_all, remove_file, File},
+    fs::{remove_file, File},
     io::{BufRead, BufReader},
     time::Instant,
 };
@@ -34,7 +34,6 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
 ) {
-    let pre = &ctl.gen_opt.pre;
     let comp = ctl.comp;
     let mut results = Vec::<(
         usize,
@@ -66,61 +65,123 @@ pub fn load_gex(
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
-            let mut root = gex_outs[i].clone();
-            if root.ends_with("/outs") {
-                root = root.rev_before("/outs").to_string();
-            }
-            if !path_exists(&root) {
-                eprintln!(
-                    "\nProbably something is wrong with the GEX argument:\nthe path{} \
-                     does not exist.\n",
-                    root
-                );
-                std::process::exit(1);
-            }
-            if !path_exists(&gex_outs[i]) {
-                eprintln!(
-                    "\nProbably something is wrong with the GEX argument:\nthe path{} \
-                     does not exist.\n",
-                    gex_outs[i]
-                );
-                std::process::exit(1);
-            }
-            let cb1 = format!("{}/filtered_feature_bc_matrix/barcodes.tsv.gz", gex_outs[i]);
-            let cb2 = format!(
-                "{}/filtered_gene_bc_matrices_mex/barcodes.tsv.gz",
-                gex_outs[i]
-            );
-            let mut cb = cb1.clone();
-            if !path_exists(&cb) {
-                cb = cb2.clone();
-                if !path_exists(&cb) {
+            // First define the path where the GEX files should live, and make sure that the path
+            // exists.
+
+            let root = gex_outs[i].clone();
+            let mut outs = root.clone();
+            if root.ends_with("/outs") && path_exists(&root) {
+                outs = root.clone();
+            } else if root.ends_with("/outs") {
+                outs = root.before("/outs").to_string();
+                if !path_exists(&outs) {
                     eprintln!(
-                        "\nSomething wrong with GEX argument:\nneither the path {}\nnor \
-                         the path {} exists.\n",
-                        cb1, cb2
+                        "\nThe directory\n{}\ndoes not exist.  Something must be amiss with \
+                        the arguments to PRE and/or GEX and/or META.\n",
+                        outs
                     );
                     std::process::exit(1);
                 }
             }
-            read_maybe_unzipped(&cb, &mut r.6);
-            let cluster_file = format!(
-                "{}/analysis_csv/clustering/graphclust/clusters.csv",
-                gex_outs[i],
-            );
-            if path_exists(&cluster_file) {
-                let f = open_for_read![&cluster_file];
-                for line in f.lines() {
-                    let s = line.unwrap();
-                    if s == "Barcode,Cluster" {
-                        continue;
-                    }
-                    let barcode = s.before(",");
-                    let cluster = s.after(",").force_usize();
-                    r.7.insert(barcode.to_string(), cluster);
+
+            // Define the file paths and test for their existence.
+
+            let mut h5_path = format!("{}/raw_feature_bc_matrix.h5", outs);
+            let h5_path_alt = format!("{}/raw_gene_bc_matrices_h5.h5", outs);
+            if !path_exists(&h5_path) && !path_exists(&h5_path_alt) {
+                eprintln!(
+                    "\nThe file raw_feature_bc_matrix.h5 is not in the directory\n{}\n\
+                    and neither is the older-named version raw_gene_bc_matrices_h5.h5.  Perhaps \
+                    something\nis amiss with the arguments to PRE and/or GEX and/or META.\n",
+                    outs
+                );
+                std::process::exit(1);
+            }
+            if !path_exists(&h5_path) {
+                h5_path = h5_path_alt;
+            }
+            let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
+            let mut pca_file = format!("{}/analysis_csv/pca/10_components/projection.csv", outs);
+            if !path_exists(&pca_file) {
+                pca_file = format!("{}/analysis/pca/10_components/projection.csv", outs);
+            }
+            let mut cluster_file =
+                format!("{}/analysis_csv/clustering/graphclust/clusters.csv", outs);
+            if !path_exists(&cluster_file) {
+                cluster_file = format!("{}/analysis/clustering/graphclust/clusters.csv", outs);
+            }
+            let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
+            for f in [pca_file.clone(), cluster_file.clone()].iter() {
+                if !path_exists(&f) {
+                    eprintln!(
+                        "\nThe file\n{}\ndoes not exist.  \
+                        Perhaps one of your directories is missing some stuff.\n",
+                        f
+                    );
+                    std::process::exit(1);
                 }
             }
-            let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", gex_outs[i],);
+            let csv1 = format!("{}/metrics_summary.csv", outs);
+            let csv2 = format!("{}/metrics_summary_csv.csv", outs);
+            if !path_exists(&csv1) && !path_exists(&csv2) {
+                eprintln!(
+                    "\nSomething wrong with GEX or META argument:\ncan't find the file \
+                        metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
+                        {}",
+                    outs
+                );
+                std::process::exit(1);
+            }
+            let mut csv = csv1.clone();
+            if !path_exists(&csv1) {
+                csv = csv2.clone();
+            }
+
+            // If we need to write feature_barcode_matrix.bin, make sure that's possible, before
+            // spending a lot of time reading other stuff.
+
+            if (!path_exists(&bin_file) || ctl.gen_opt.force_h5) && !ctl.gen_opt.h5 {
+                let f = File::create(&bin_file);
+                if !f.is_ok() {
+                    eprintln!(
+                        "\nYou've specified NH5 on the command line, but this path\n{}\n\
+                        cannot be created.  Your options are\n\
+                        1. Make that location writable (or fix the path, if it's wrong).\n\
+                        2. Find a new location where you can write.\n\
+                        3. Don't specify NH5.\n",
+                        bin_file
+                    );
+                    std::process::exit(1);
+                }
+                remove_file(&bin_file).unwrap();
+            }
+
+            // Read barcodes and features from the h5 file.
+
+            let h = hdf5::File::open(&h5_path).unwrap();
+            let barcode_loc = h.dataset("matrix/barcodes").unwrap();
+            let barcodes: Vec<FixedAscii<[u8; 18]>> = barcode_loc.as_reader().read_raw().unwrap();
+            for i in 0..barcodes.len() {
+                r.2.push(barcodes[i].to_string());
+            }
+            let feature_id_loc = h.dataset("matrix/features/id").unwrap();
+            let feature_ids: Vec<FixedAscii<[u8; 256]>> =
+                feature_id_loc.as_reader().read_raw().unwrap();
+            let feature_name_loc = h.dataset("matrix/features/name").unwrap();
+            let feature_names: Vec<FixedAscii<[u8; 256]>> =
+                feature_name_loc.as_reader().read_raw().unwrap();
+            let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
+            let feature_types: Vec<FixedAscii<[u8; 256]>> =
+                feature_type_loc.as_reader().read_raw().unwrap();
+            for i in 0..feature_ids.len() {
+                r.1.push(format!(
+                    "{}\t{}\t{}",
+                    feature_ids[i], feature_names[i], feature_types[i]
+                ));
+            }
+
+            // Read cell types.
+
             if path_exists(&types_file) {
                 let f = open_for_read![&types_file];
                 let mut count = 0;
@@ -135,47 +196,45 @@ pub fn load_gex(
                     r.8.insert(barcode.to_string(), cell_type.to_string());
                 }
             }
-            let pca_file = format!(
-                "{}/analysis_csv/pca/10_components/projection.csv",
-                gex_outs[i]
-            );
-            if path_exists(&pca_file) {
-                let f = open_for_read![&pca_file];
-                let mut count = 0;
-                for line in f.lines() {
-                    count += 1;
-                    if count == 1 {
-                        continue;
-                    }
-                    let s = line.unwrap();
-                    let barcode = s.before(",");
-                    let x = s.after(",").split(',').collect::<Vec<&str>>();
-                    assert_eq!(x.len(), 10);
-                    let mut y = Vec::<f64>::new();
-                    for i in 0..x.len() {
-                        y.push(x[i].force_f64());
-                    }
-                    r.9.insert(barcode.to_string(), y);
-                }
-            }
-            let csv1 = format!("{}/metrics_summary.csv", gex_outs[i]);
-            let csv2 = format!("{}/metrics_summary_csv.csv", gex_outs[i]);
-            if !path_exists(&csv1) && !path_exists(&csv2) {
-                eprintln!(
-                    "\nSomething wrong with GEX or META argument:\ncan't find the file \
-                        metrics_summary.csv or metrics_summary_csv.csv in the directory\n\
-                        {}",
-                    gex_outs[i]
-                );
-                std::process::exit(1);
-            }
-            let tm = Instant::now();
-            let mut gene_mult = None;
 
-            let mut csv = csv1.clone();
-            if !path_exists(&csv1) {
-                csv = csv2.clone();
+            // Read PCA file.
+
+            let f = open_for_read![&pca_file];
+            let mut count = 0;
+            for line in f.lines() {
+                count += 1;
+                if count == 1 {
+                    continue;
+                }
+                let s = line.unwrap();
+                let barcode = s.before(",");
+                let x = s.after(",").split(',').collect::<Vec<&str>>();
+                assert_eq!(x.len(), 10);
+                let mut y = Vec::<f64>::new();
+                for i in 0..x.len() {
+                    y.push(x[i].force_f64());
+                }
+                r.9.insert(barcode.to_string(), y);
             }
+
+            // Read graph clusters, and also get the cell barcodes from that.
+
+            let f = open_for_read![&cluster_file];
+            let mut count = 0;
+            for line in f.lines() {
+                count += 1;
+                if count == 1 {
+                    continue;
+                }
+                let s = line.unwrap();
+                let (barcode, cluster) = (s.before(","), s.after(",").force_usize());
+                r.7.insert(barcode.to_string(), cluster);
+                r.6.push(barcode.to_string());
+            }
+
+            // Get the multipliers gene and feature barcode counts.
+
+            let mut gene_mult = None;
             let f = open_for_read![&csv];
             let mut line_no = 0;
             let mut rpc_field = None;
@@ -239,12 +298,6 @@ pub fn load_gex(
                     }
                 }
             }
-            if comp {
-                println!(
-                    "-- used {:.2} seconds getting reads per cell metric",
-                    elapsed(&tm)
-                );
-            }
             if rpc.is_some() {
                 const RPC_EXPECTED: f64 = 20_000.0;
                 gene_mult = Some(RPC_EXPECTED / rpc.unwrap() as f64);
@@ -256,136 +309,35 @@ pub fn load_gex(
             }
             r.4 = gene_mult;
             r.5 = fb_mult;
-            let (mut features, mut barcodes) = (Vec::<String>::new(), Vec::<String>::new());
-            let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", gex_outs[i]);
-            let mut dir = format!("{}/raw_feature_bc_matrix", gex_outs[i]);
-            if !path_exists(&dir) {
-                dir = format!("{}/raw_gene_bc_matrices_mex", gex_outs[i]);
-            }
-            let tfb = Instant::now();
-            if path_exists(&format!("{}/GRCh38", dir)) {
-                read_maybe_unzipped(&format!("{}/GRCh38/barcodes.tsv.gz", dir), &mut barcodes);
-            } else {
-                read_maybe_unzipped(&format!("{}/barcodes.tsv.gz", dir), &mut barcodes);
-            }
-            if comp {
-                println!(
-                    "-- used {:.2} seconds reading features and barcodes",
-                    elapsed(&tfb)
-                );
-            }
-            let tfb = Instant::now();
-            if path_exists(&format!("{}/GRCh38", dir)) {
-                read_maybe_unzipped(&format!("{}/GRCh38/genes.tsv.gz", dir), &mut r.1);
-            } else {
-                read_maybe_unzipped(&format!("{}/features.tsv.gz", dir), &mut r.1);
-            }
-            if path_exists(&format!("{}/GRCh38", dir)) {
-                read_maybe_unzipped(&format!("{}/GRCh38/barcodes.tsv.gz", dir), &mut r.2);
-            } else {
-                read_maybe_unzipped(&format!("{}/barcodes.tsv.gz", dir), &mut r.2);
-            }
-            if comp {
-                println!(
-                    "-- used {:.2} seconds reading features and barcodes",
-                    elapsed(&tfb)
-                );
-            }
+
+            // Read the binary matrix file if appropriate.
+
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
                 let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
                 if comp {
-                    println!("-- used {:.2} seconds reading matrix.bin", elapsed(&t));
-                }
-            } else if !ctl.gen_opt.h5 {
-                let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-                let mut dir = format!("{}/raw_feature_bc_matrix", gex_outs[i]);
-                if !path_exists(&dir) {
-                    dir = format!("{}/raw_gene_bc_matrices_mex", gex_outs[i]);
-                }
-                let mut matrix_file = format!("{}/matrix.mtx.gz", dir);
-                if path_exists(&format!("{}/GRCh38", dir)) {
-                    matrix_file = format!("{}/GRCh38/matrix.mtx.gz", dir);
-                }
-                if !path_exists(&matrix_file) {
-                    eprintln!(
-                        "\nYou've used the NH5 option, but a gene expression directory \
-                         is incomplete for this purpose,\nbecause this file\n\
-                         {}\ndoes not exist.\n",
-                        matrix_file
+                    println!(
+                        "-- used {:.2} seconds reading feature_barcode_matrix.bin",
+                        elapsed(&t)
                     );
-                    std::process::exit(1);
                 }
-                load_feature_bc_matrix(&gex_outs[i], &mut features, &mut barcodes, &mut matrix);
+
+            // Or else construct it from the h5 if appropriate.
+            } else if !ctl.gen_opt.h5 {
+                let data_loc = h.dataset("matrix/data").unwrap();
+                let data: Vec<u32> = data_loc.as_reader().read_raw().unwrap();
+                let ind_loc = h.dataset("matrix/indices").unwrap();
+                let ind: Vec<u32> = ind_loc.as_reader().read_raw().unwrap();
+                let ind_ptr_loc = h.dataset("matrix/indptr").unwrap();
+                let ind_ptr: Vec<u32> = ind_ptr_loc.as_reader().read_raw().unwrap();
+                let mut matrix = vec![Vec::<(i32, i32)>::new(); r.2.len()];
+                for i in 0..matrix.len() {
+                    for j in ind_ptr[i]..ind_ptr[i + 1] {
+                        matrix[i].push((ind[j as usize] as i32, data[j as usize] as i32));
+                    }
+                }
                 r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
-                if *pre != "".to_string() || !ctl.gen_opt.internal_run {
-                    let mut go = ctl.sample_info.gex_path[i].clone();
-                    if go.ends_with("/HEAD/outs") {
-                        let id = go.rev_before("/HEAD/outs").rev_after("/");
-                        go = format!("{}/{}/outs", pre, id);
-                    }
-                    let dir_new = format!("{}/raw_feature_bc_matrix", go);
-                    let bin_file = format!("{}/raw_feature_bc_matrix/matrix.bin", go);
-                    if !path_exists(&dir_new) {
-                        create_dir_all(&dir_new).unwrap();
-                    }
-                    if path_exists(&bin_file) {
-                        remove_file(&bin_file).unwrap();
-                    }
-                    write_to_file(&r.3, &bin_file);
-                    if go != gex_outs[i] {
-                        let old_json = format!("{}/metrics_summary_json.json", gex_outs[i]);
-                        let new_json = format!("{}/metrics_summary_json.json", go);
-                        copy(&old_json, &new_json).unwrap();
-                        if path_exists(&format!("{}/GRCh38", dir)) {
-                            copy(
-                                &format!("{}/GRCh38/genes.tsv.gz", dir),
-                                &format!("{}/GRCh38/genes.tsv.gz", dir_new),
-                            )
-                            .unwrap();
-                        } else {
-                            copy(
-                                &format!("{}/features.tsv.gz", dir),
-                                &format!("{}/features.tsv.gz", dir_new),
-                            )
-                            .unwrap();
-                        }
-                        if path_exists(&format!("{}/GRCh38", dir)) {
-                            copy(
-                                &format!("{}/GRCh38/barcodes.tsv.gz", dir),
-                                &format!("{}/GRCh38/barcodes.tsv.gz", dir_new),
-                            )
-                            .unwrap();
-                        } else {
-                            copy(
-                                &format!("{}/barcodes.tsv.gz", dir),
-                                &format!("{}/barcodes.tsv.gz", dir_new),
-                            )
-                            .unwrap();
-                        }
-                        let mut fdir = format!("{}/filtered_feature_bc_matrix", gex_outs[i]);
-                        if !path_exists(&fdir) {
-                            fdir = format!("{}/filtered_gene_bc_matrices_mex", gex_outs[i]);
-                        }
-                        let fdir_new = format!("{}/filtered_feature_bc_matrix", go);
-                        if !path_exists(&fdir_new) {
-                            create_dir_all(&fdir_new).unwrap();
-                        }
-                        if path_exists(&format!("{}/GRCh38", fdir)) {
-                            copy(
-                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir),
-                                &format!("{}/GRCh38/barcodes.tsv.gz", fdir_new),
-                            )
-                            .unwrap();
-                        } else {
-                            copy(
-                                &format!("{}/barcodes.tsv.gz", fdir),
-                                &format!("{}/barcodes.tsv.gz", fdir_new),
-                            )
-                            .unwrap();
-                        }
-                    }
-                }
+                write_to_file(&r.3, &bin_file);
             }
         }
         unique_sort(&mut r.6);

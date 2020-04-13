@@ -1,0 +1,24 @@
+#!/bin/csh
+
+# For internal 10x use, copy appropriate files from ONE gex directory on /mnt/assembly/vdj/current*
+# to the directory here.
+#
+# Run with one argument: the dataset id.
+#
+# After doing this you may need to git add and/or git delete files.
+
+set id = $1
+
+set version = `grep TEST_FILES_VERSION ../../src/testlist.rs | awk '{print $6}' | tr -d ';'`
+
+set cnew = /mnt/assembly/vdj/current{$version}/$id/outs
+set vnew = version{$version}/$id/outs
+
+rm -rf $vnew
+mkdir $vnew
+cp $cnew/metrics_summary_csv.csv $vnew
+cp $cnew/raw_feature_bc_matrix.h5 $vnew
+mkdir -p $vnew/analysis/clustering/graphclust
+cp $cnew/analysis_csv/clustering/graphclust/clusters.csv $vnew/analysis/clustering/graphclust
+mkdir -p $vnew/analysis/pca/10_components
+cp $cnew/analysis_csv/pca/10_components/projection.csv $vnew/analysis/pca/10_components

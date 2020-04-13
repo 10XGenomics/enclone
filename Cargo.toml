@@ -1,7 +1,7 @@
 [package]
 name = "enclone"
-version = "0.1.10"
-authors = ["David Jaffe <david.jaffe@10xgenomics.com, Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>, Meryl Lewis <meryl.lewis@10xgenomics.com>, Patrick Marks <patrick.marks@10xgenomics.com>, Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"]
+version = "0.1.3"
+authors = ["David Jaffe <david.jaffe@10xgenomics.com>, Shaun Jackman <shaun.jackman@10xgenomics.com>, Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>, Meryl Lewis <meryl.lewis@10xgenomics.com>, Patrick Marks <patrick.marks@10xgenomics.com>, Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"]
 edition = "2018"
 build = "build.rs"
 publish = false
@@ -19,7 +19,6 @@ failure = "0.1.5"
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "0.2.4"
 itertools = "^0.7"
-load_feature_bc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 marsoc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ndarray = "0.13"
