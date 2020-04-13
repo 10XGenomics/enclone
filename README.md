@@ -245,6 +245,8 @@ vaccine or therapeutic development by picking large clonotypes with high antigen
 or multiple antigen specifities.
 
 We are actively working on further functionality that will make this process even more effective.
+
+Another example use of enclone shows how to [detect illusory clonotypes](expanded.md).
 ___________________________________________________________________________________________________
 
 ## Questions
