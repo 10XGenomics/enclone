@@ -262,6 +262,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&arg, "ACCEPT_INCONSISTENT") {
             ctl.gen_opt.accept_inconsistent = true;
+        } else if is_simple_arg(&arg, "NGEX") {
+            ctl.clono_filt_opt.ngex = true;
         } else if is_simple_arg(&arg, "NCROSS") {
             ctl.clono_filt_opt.ncross = true;
         } else if is_simple_arg(&arg, "NWEAK_CHAINS") {

@@ -101,7 +101,7 @@ ACCEPT_INCONSISTENT: temporary option to accept inconsistent reference/annotatio
 CURRENT_REF: temp option to force CR 4.0 reference
 
 H5_SLICE: read GEX data slice by slice rather than preloading
-H5: force use of H5, even if matrix.bin has been built
+H5: force use of H5, even if feature_barcode_matrix.bin has been built
 
 FORCE_EXTERNAL: do not test for internal run
 
@@ -117,4 +117,11 @@ LVARS entries
   class on all cells in a single clonotype when two cells are called equivalent if their distance
   in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
-WARNING: this only makes sense if you have one dataset--this condition is not checked.
+  WARNING: this only makes sense if you have one dataset--this condition is not checked.
+* right: Let n be the number of VDJ cells that are also GEX cells.  For a given cell, find the n 
+  GEX cells that are closest to it in PCA space, and report the percent of those that are also VDJ 
+  cells.
+  - only implemented for PER_CELL and exact subclonotypes
+  - O(n^2) in number of cells
+  - without aggr, only makes sense for one dataset
+  - probably not meaningful if sample is pure B or T.

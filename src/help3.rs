@@ -22,17 +22,17 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
         h.ldoc("metrics_summary.csv", "GEX");
-        h.ldoc("raw_gene_bc_matrices_h5.h5", "GEX");
-        h.ldoc("raw_feature_bc_matrix/barcodes.tsv.gz", "GEX");
-        h.doc("raw_feature_bc_matrix/features.tsv.gz", "GEX");
-        h.doc("filtered_feature_bc_matrix/barcodes.tsv.gz", "GEX");
+        h.ldoc("raw_feature_bc_matrix.h5", "GEX");
+        h.ldoc("analysis/clustering/graphclust/clusters.csv", "GEX");
+        h.ldoc("analysis/pca/10_components/projection.csv", "GEX");
         h.print_tab2();
         h.print(
-            "\nAll of these files are required.  The exact files that are used could \
-            be changed in the future.\n\n",
+            "\nAll of these files are required, and in the indicated structure.  The exact files \
+            that are used could be changed in the future.\n\n",
         );
         h.print(
-            "Note that you must use the output of Cell Ranger version \\boldred{≥ 3.1}.  There \
+            "Note that the VDJ outs directories must be from Cell Ranger version \
+             \\boldred{≥ 3.1}.  There \
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
         );

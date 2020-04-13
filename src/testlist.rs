@@ -49,7 +49,7 @@ pub const TESTS: [&str; 54] = [
     // 17. tests gex with PER_CELL and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,type,CD19_ab_μ CELLS=3 PER_CELL"###,
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL NH5"###,
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
@@ -75,7 +75,8 @@ pub const TESTS: [&str; 54] = [
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
     // 29. tests parenthesized variable in F, SUM and MEAN
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN"###,
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
+     NH5"###,
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
@@ -83,7 +84,7 @@ pub const TESTS: [&str; 54] = [
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
-    r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10
+    r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10 NGEX
      SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
@@ -109,14 +110,14 @@ pub const TESTS: [&str; 54] = [
     // 40. test case where digit rows are just barely present
     r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor"###,
     // 41. test case for gex_cell
-    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL"###,
+    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
     // 42. test case that should fail because gex_cell doesn't make sense without gex data
     r###"BCR=85333 CDR3=CQQRSNWPLYTF POUT=stdouth PCOLS=gex_cell PCELL PER_CELL EXPECT_FAIL"###,
     // 43. test case that should fail because _cell variables can't be used in LVARS
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW LVARS=gex_cell EXPECT_FAIL"###,
     // 44. test _cell
     r###"BCR=86237 GEX=85679 LVARSP=gex,RPS27_g_μ CELLS=3 POUT=stdouth
-        PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell PCELL"###,
+        PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell NH5 PCELL"###,
     // 45. test ndiff...
     r###"BCR=123085 CVARSP=ndiff1vj,ndiff2vj CDR3=CARDQNFDESSGYDAFDIW"###,
     // 46. test u_μ, u_min, r_μ, r_min and r_max
@@ -124,8 +125,8 @@ pub const TESTS: [&str; 54] = [
         POUT=stdouth PCOLS=u_μ1,u_min1,u_max1,r2,r_μ2,r_min2,r_max2"###,
     // 47. this should fail
     r###"BCR=85333 CDR3=CAREEYYYDSSGDAFDIW LVARSP=gex_mean EXPECT_FAIL"###,
-    // 48. test gex_mean and gex_Σ
-    r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW"###,
+    // 48. test gex_mean and gex_Σ and NGEX
+    r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
         FASTA_AA=stdout HTML"###,

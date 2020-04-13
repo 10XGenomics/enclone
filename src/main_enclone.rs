@@ -322,7 +322,14 @@ pub fn main_enclone(args: &Vec<String>) {
     // Parse the json annotations file.
 
     let mut tig_bc = Vec::<Vec<TigData>>::new();
-    parse_json_annotations_files(&mut ctl, &mut tig_bc, &refdata, &to_ref_index);
+    let mut vdj_cells = Vec::<Vec<String>>::new();
+    parse_json_annotations_files(
+        &mut ctl,
+        &mut tig_bc,
+        &refdata,
+        &to_ref_index,
+        &mut vdj_cells,
+    );
 
     // Search for SHM indels.  Exploratory.
 
@@ -342,6 +349,22 @@ pub fn main_enclone(args: &Vec<String>) {
     // Cross filter.
 
     cross_filter(&ctl, &mut tig_bc);
+
+    // Remove cells that are not called cells by gex or feature barcodes.
+
+    if !ctl.clono_filt_opt.ngex {
+        let mut to_delete = vec![false; tig_bc.len()];
+        for m in 0..tig_bc.len() {
+            let li = tig_bc[m][0].dataset_index;
+            if ctl.sample_info.gex_path[li].len() > 0 {
+                let gbc = &gex_info.gex_cell_barcodes[li];
+                if !bin_member(&gbc, &tig_bc[m][0].barcode) {
+                    to_delete[m] = true;
+                }
+            }
+        }
+        erase_if(&mut tig_bc, &to_delete);
+    }
 
     // Look for barcode reuse.
 
@@ -480,6 +503,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &eq,
         &gex_info,
         &join_info,
+        &vdj_cells,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {

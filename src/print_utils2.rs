@@ -85,6 +85,8 @@ pub fn row_fill(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<f64>)>,
+    vdj_cells: &Vec<Vec<String>>,
+    n_vdj_gex: &Vec<usize>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -416,6 +418,39 @@ pub fn row_fill(
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
+        } else if x == "right" {
+            let mut rightsx = Vec::<f64>::new();
+            for l in 0..ex.clones.len() {
+                let bc = &ex.clones[l][0].barcode;
+                let li = ex.clones[l][0].dataset_index;
+                if gex_info.pca[li].contains_key(&bc.clone()) {
+                    let mut rights = 0;
+                    let mut z = Vec::<(f64, String)>::new();
+                    let x = &gex_info.pca[li][&bc.clone()];
+                    for y in gex_info.pca[li].iter() {
+                        let mut dist2 = 0.0;
+                        for m in 0..x.len() {
+                            dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                        }
+                        z.push((dist2, y.0.clone()));
+                    }
+                    z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                    let top = n_vdj_gex[li];
+                    for i in 0..top {
+                        if bin_member(&vdj_cells[li], &z[i].1) {
+                            rights += 1;
+                        }
+                    }
+                    let pc = 100.0 * rights as f64 / top as f64;
+                    rightsx.push(pc);
+                }
+            }
+            rightsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            if rightsx.is_empty() {
+                lvar![i, x, format!("")];
+            } else {
+                lvar![i, x, format!("{:.1}", rightsx[rightsx.len() / 2])];
+            }
         } else if bin_member(&alt_bcs, x) {
             lvar![i, x, format!("")];
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {

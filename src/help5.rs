@@ -338,8 +338,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(&format!("{}", strme(&log)));
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
-                "10x Genomics, https://github.com/10XGenomics/enclone, version {}.\n",
-                VERSION_STRING.before(",")
+                "10x Genomics, https://github.com/10XGenomics/enclone,\nversion {}.\n",
+                VERSION_STRING
             ));
         } else {
             h.print(
