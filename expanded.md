@@ -31,7 +31,7 @@ The `NCROSS` option instructs enclone to <i>not</i> filter out expanded clonotyp
 in only one dataset arising from the same sample.  Normally one would want this filtering, but
 these clonotypes are exactly what we are trying to see here!  Here is the top clonotype:
 
-<img src="img/illusory1.png" alt="illusory1" title="illusory1" />
+<img src="img/illusory1.png" alt="illusory1" title="illusory1" width=50% />
 
 If we do not use the `NCROSS` option, but search for the clonotype using the heavy chain
 CDR3 sequence, we see just one cell:
@@ -46,7 +46,6 @@ Now suppose that both a VDJ and a GEX library have been made.
 
 ```
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
-
 ```
 
 <img src="img/illusory3.png" alt="illusory3" title="illusory3" />
@@ -81,3 +80,7 @@ The values of `right` vary considerably from dataset to dataset.  We show the di
 | 40-60  |  2.1         |
 | 60-80  |  4.7         |
 | 80-100 | 84.9         |
+
+Thus the values of the ten cells in the reported clonotype are very low indeed, and highly
+suspect.  Probably the clonotype originated from a single cell, which broke up into a major
+piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.
