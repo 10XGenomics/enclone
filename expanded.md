@@ -80,10 +80,10 @@ interpretation.  We show the distribution for <i>this</i> one:
 | 60-80  |  4.7          |
 | 80-100 | 84.9          |
 
-Thus the values of the ten cells in the reported clonotype are very low indeed, and highly
-suspect.  Probably the clonotype originated from a single cell, which broke up into one major
-piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller pieces
-reside in GEMs that may or may not contain an actual intact cell.
+Thus the values of the ten cells in the reported clonotype are very low indeed, and nine of them 
+are highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
+major piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller 
+pieces reside in GEMs that may or may not contain an actual intact cell.
 
 We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
 one sees examples where there appear to be a few true cells, along with others that are not.
