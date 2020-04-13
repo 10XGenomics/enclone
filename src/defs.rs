@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 19] = [
+pub const LVARS_ALLOWED: [&str; 20] = [
     "datasets",
     "samples",
     "donors",
@@ -26,6 +26,7 @@ pub const LVARS_ALLOWED: [&str; 19] = [
     "n_gex",
     "clust",
     "right",
+    "right_cell",
     "type",
     "entropy",
     "near",
