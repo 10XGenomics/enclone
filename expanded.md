@@ -76,16 +76,17 @@ interpretation.  We show the distribution for this one dataset:
 
 | right  | % of B cells  |
 | -------| -------------:|
-|  0-20  |  5.4          |
-| 20-40  |  2.9          |
-| 40-60  |  2.1          |
-| 60-80  |  4.7          |
-| 80-100 | 84.9          |
+|  0-20  |  9.2          |
+| 20-40  |  3.1          |
+| 40-60  |  2.4          |
+| 60-80  |  5.0          |
+| 80-100 | 80.3          |
 
-Thus the values of the ten cells in the reported clonotype are very low indeed, and nine of them 
-are highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
+Thus the values of the cells in the reported clonotype are very low indeed, and almost all
+highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
 major piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller 
-pieces reside in GEMs that may or may not contain an actual intact cell.
+pieces reside in GEMs that may or may not contain an actual intact cell.  In fact, 27 of the 
+cells are detected as T cells (using TCR data).
 
 We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
 one sees examples where there appear to be a few true cells, along with others that are not.
