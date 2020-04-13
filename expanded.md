@@ -29,7 +29,7 @@ enclone BCR=128037,128040 NCROSS
 
 The `NCROSS` option instructs enclone to <i>not</i> filter out expanded clonotypes that appear
 in only one dataset arising from the same sample.  Normally one would want this filtering, but
-these clonotypes are exactly what we are trying to see here!  Here is the top clonotype:
+these clonotypes are exactly what we are trying to see now!  Here is the top clonotype:
 
 <img src="img/illusory1.png" alt="illusory1" title="illusory1" width=75% />
 
@@ -61,7 +61,7 @@ and the other is a field `right`, that is more complicated.
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right
 ```
 
-<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=75% />
+<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=80% />
 
 To understand `right`, first let n be the number of VDJ cells that are also GEX cells.  Now for
 a given cell, we find the n GEX cells that are closest to it in PCA space, and report the percent 
@@ -69,18 +69,17 @@ of those that are also VDJ cells.  This is `right`.  The closer this number is t
 the given cell looks like a typical B cell (or T cell, for TCR).  Conversely, a very low number
 makes the given cell appears suspect, although it is not <i>proof</i> of such.
 
-The values of `right` vary considerably from dataset to dataset.  We show the distribution for
-<i>this</i> one:
+The values of `right` vary considerably from dataset to dataset, requiring somewhat different
+interpretation.  We show the distribution for <i>this</i> one:
 
-
-| right  | % of B cells |
-| -------| -------------|
-|  0-20  |  5.4         |
-| 20-40  |  2.9         |
-| 40-60  |  2.1         |
-| 60-80  |  4.7         |
-| 80-100 | 84.9         |
+| right  | % of B cells  |
+| -------| -------------:|
+|  0-20  |  5.4          |
+| 20-40  |  2.9          |
+| 40-60  |  2.1          |
+| 60-80  |  4.7          |
+| 80-100 | 84.9          |
 
 Thus the values of the ten cells in the reported clonotype are very low indeed, and highly
-suspect.  Probably the clonotype originated from a single cell, which broke up into a major
+suspect.  Probably the clonotype originated from a single cell, which broke up into one major
 piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.
