@@ -1,11 +1,11 @@
-# Illusory clonotype expansions
+# Detecting illusory clonotype expansions
 
-The purpose of this page is to explain the origin of certain illusory clonotype expansions, and
+The purpose of this page is to explain the origin of certain illusory clonotype expansions,
 which might result in incorrect scientific conclusions, and show how to detect them.
 
-This illusory expansions are known to occur on occasion (see below for demonstration), and we
+These illusory expansions are known to occur on occasion (see below for a demonstration), and we
 hypothesize that they arise when an individual cell disintegrates or leaks, leaving fragments that 
-seed multiple GEM partitions in the 10x system, and thence yielding a clonotype which appears 
+seed multiple GEM partitions in the 10x system, thence yielding a clonotype which appears 
 larger than its true size.
 
 Events of this type are most likely with plasma or plasmablast B cells.
@@ -82,4 +82,9 @@ interpretation.  We show the distribution for <i>this</i> one:
 
 Thus the values of the ten cells in the reported clonotype are very low indeed, and highly
 suspect.  Probably the clonotype originated from a single cell, which broke up into one major
-piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.
+piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller pieces
+reside in GEMs that may or may not contain an actual intact cell.
+
+We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
+one sees examples where there appear to be a few true cells, along with others that are not.
+And sometimes one only sees small fragments.
