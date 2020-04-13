@@ -51,15 +51,16 @@ enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
 
 <img src="img/illusory3.png" alt="illusory3" title="illusory3" width=75% />
 
-Now we see only ten cells.  This is because the default behavior of enclone is to filter out
+Now we see less cells.  This is because the default behavior of enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.
 
 Now we add the option `PER_CELL`, causing data for each cell to be displayed, and we also add two
 fields to the display.  One is `gex`, the normalized count of gene expression UMIs,
-and the other is a field `right`, that is more complicated.
+and the other is a field `right`, that is more complicated.  We will also hide the onesie
+(single chain) cells.
 
 ```
-enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right
+enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right MIN_CHAINS_EXACT=2
 ```
 
 <img src="img/illusory4.png" alt="illusory4" title="illusory4" width=80% />
