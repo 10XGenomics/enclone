@@ -8,9 +8,9 @@ hypothesize that they arise when an individual cell disintegrates or leaks, leav
 seed multiple GEM partitions in the 10x system, thence yielding a clonotype which appears 
 larger than its true size.
 
-Events of this type are most likely with plasma or plasmablast B cells.
+We believe that events of this type usually originate from plasma or plasmablast B cells.
 
-Disintegration might in principle occur during or after preparation of the sample.  One
+Disintegration might occur during or after preparation of the sample.  One
 way to document such an event would be to create two libraries from a single tube of cells.  If 
 the clonotype is large and appears in only one of two libraries, one could be reasonably certain 
 that a disintegration event occurred during or after cells were drawn from the tube.  This method 
@@ -29,13 +29,13 @@ enclone BCR=128037,128040 NCROSS
 
 The `NCROSS` option instructs enclone to <i>not</i> filter out expanded clonotypes that appear
 in only one dataset arising from the same sample (and which based on their sizes are highly
-improbable).  Normally one would want this filtering, but these clonotypes are exactly what we are 
-trying to see now!  Here is the top clonotype:
+improbable).  Normally one would want this filtering, but these clonotypes are exactly what we
+wish to see now!  Here is the top clonotype:
 
 <img src="img/illusory1.png" alt="illusory1" title="illusory1" width=75% />
 
 If we do not use the `NCROSS` option, but search for the clonotype using the heavy chain
-CDR3 sequence, we see just one cell:
+CDR3 sequence, we see just one cell (the otherw having been filtered out)
 
 ```
 enclone BCR=128037,128040 CDR3=CARGGTTTYFISW
@@ -43,7 +43,7 @@ enclone BCR=128037,128040 CDR3=CARGGTTTYFISW
 
 <img src="img/illusory2.png" alt="illusory2" title="illusory2" width=75% />
 
-Now suppose that both a VDJ and a GEX library have been made.
+Now suppose that both a VDJ and a GEX library have been made, as they have in this case.
 
 ```
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
@@ -54,7 +54,7 @@ enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
 Now we see only ten cells.  This is because the default behavior of enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.
 
-Now we add the option `PER_CELL`, so we can see data for each cell, and we also add two
+Now we add the option `PER_CELL`, causing data for each cell to be displayed, and we also add two
 fields to the display.  One is `gex`, the normalized count of gene expression UMIs,
 and the other is a field `right`, that is more complicated.
 
@@ -68,10 +68,10 @@ To understand `right`, first let n be the number of VDJ cells that are also GEX 
 a given cell, we find the n GEX cells that are closest to it in PCA space, and report the percent 
 of those that are also VDJ cells.  This is `right`.  The closer this number is to 100, the more
 the given cell looks like a typical B cell (or T cell, for TCR).  Conversely, a very low number
-makes the given cell appears suspect, although it is not <i>proof</i> of such.
+makes the given cell appear suspect, although it is not <i>proof</i> of such.
 
 The values of `right` vary considerably from dataset to dataset, requiring somewhat different
-interpretation.  We show the distribution for <i>this</i> one:
+interpretation.  We show the distribution for this one dataset:
 
 | right  | % of B cells  |
 | -------| -------------:|
@@ -88,4 +88,4 @@ pieces reside in GEMs that may or may not contain an actual intact cell.
 
 We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
 one sees examples where there appear to be a few true cells, along with others that are not.
-And sometimes one only sees small fragments.
+And sometimes one only sees only low UMI counts, likely corresponding to small fragments.
