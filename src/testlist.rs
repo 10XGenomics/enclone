@@ -6,6 +6,14 @@ pub fn enclone_testdata() -> String {
     include_str!["enclone.testdata"].to_string()
 }
 
+pub fn enclone_testdata2() -> String {
+    include_str!["enclone.testdata2"].to_string()
+}
+
+pub fn enclone_testdata2_gex() -> String {
+    include_str!["enclone.testdata2.gex"].to_string()
+}
+
 pub const TEST_FILES_VERSION: u8 = 14;
 
 pub const TESTS: [&str; 54] = [
