@@ -246,7 +246,7 @@ or multiple antigen specifities.
 
 We are actively working on further functionality that will make this process even more effective.
 
-Another example use of enclone shows how to [detect illusory clonotypes](expanded.md).
+Another example use of enclone shows how to [detect illusory clonotypes](expanded.md#readme).
 ___________________________________________________________________________________________________
 
 ## Questions
