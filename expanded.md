@@ -28,8 +28,9 @@ enclone BCR=128037,128040 NCROSS
 ```
 
 The `NCROSS` option instructs enclone to <i>not</i> filter out expanded clonotypes that appear
-in only one dataset arising from the same sample.  Normally one would want this filtering, but
-these clonotypes are exactly what we are trying to see now!  Here is the top clonotype:
+in only one dataset arising from the same sample (and which based on their sizes are highly
+improbable).  Normally one would want this filtering, but these clonotypes are exactly what we are 
+trying to see now!  Here is the top clonotype:
 
 <img src="img/illusory1.png" alt="illusory1" title="illusory1" width=75% />
 
