@@ -40,7 +40,7 @@ CDR3 sequence, we see just one cell:
 enclone BCR=128037,128040 CDR3=CARGGTTTYFISW
 ```
 
-<img src="img/illusory2.png" alt="illusory2" title="illusory2" />
+<img src="img/illusory2.png" alt="illusory2" title="illusory2" width=75% />
 
 Now suppose that both a VDJ and a GEX library have been made.
 
@@ -48,7 +48,7 @@ Now suppose that both a VDJ and a GEX library have been made.
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
 ```
 
-<img src="img/illusory3.png" alt="illusory3" title="illusory3" />
+<img src="img/illusory3.png" alt="illusory3" title="illusory3" width=75% />
 
 Now we see only ten cells.  This is because the default behavior of enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.
@@ -61,7 +61,7 @@ and the other is a field `right`, that is more complicated.
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right
 ```
 
-<img src="img/illusory4.png" alt="illusory4" title="illusory4" />
+<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=75% />
 
 To understand `right`, first let n be the number of VDJ cells that are also GEX cells.  Now for
 a given cell, we find the n GEX cells that are closest to it in PCA space, and report the percent 
