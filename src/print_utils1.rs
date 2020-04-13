@@ -440,6 +440,8 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()
+                || *x == "right".to_string()
+                || *x == "right_cell".to_string()
             {
                 continue;
             }

@@ -121,7 +121,6 @@ LVARS entries
 * right: Let n be the number of VDJ cells that are also GEX cells.  For a given cell, find the n 
   GEX cells that are closest to it in PCA space, and report the percent of those that are also VDJ 
   cells.
-  - only implemented for PER_CELL and exact subclonotypes
   - O(n^2) in number of cells
   - without aggr, only makes sense for one dataset
   - probably not meaningful if sample is pure B or T.

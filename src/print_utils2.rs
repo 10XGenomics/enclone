@@ -418,7 +418,7 @@ pub fn row_fill(
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
-        } else if x == "right" {
+        } else if x == "right" || x == "right_cell" {
             let mut rightsx = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
                 let bc = &ex.clones[l][0].barcode;
@@ -446,10 +446,20 @@ pub fn row_fill(
                 }
             }
             rightsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            if rightsx.is_empty() {
-                lvar![i, x, format!("")];
+            if x == "right" {
+                if rightsx.is_empty() {
+                    lvar![i, x, format!("")];
+                } else {
+                    lvar![i, x, format!("{:.1}", rightsx[rightsx.len() / 2])];
+                }
             } else {
-                lvar![i, x, format!("{:.1}", rightsx[rightsx.len() / 2])];
+                if pass == 2 {
+                    let mut r = Vec::<String>::new();
+                    for j in 0..rightsx.len() {
+                        r.push(format!("{:.1}", rightsx[j]));
+                    }
+                    speak!(u, x, format!("{}", r.iter().format(";")));
+                }
             }
         } else if bin_member(&alt_bcs, x) {
             lvar![i, x, format!("")];
