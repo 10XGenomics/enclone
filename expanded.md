@@ -65,7 +65,8 @@ enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right MIN_C
 
 <img src="img/illusory4.png" alt="illusory4" title="illusory4" width=85% />
 
-The field `right` is a measure of the extent to which cells near a given putative B cell are 
+The field `right` is a measure of the extent to which cells having similar gene expression to a
+ given putative B cell are 
 themselves B cells (for BCR, or similarly for TCR).  In more detail, first let n be the number of 
 VDJ cells that are also GEX cells.  Now for a given cell, we find the n GEX cells that are closest 
 to it in PCA space, and report the percent of those that are also VDJ cells.  This is `right`.  
