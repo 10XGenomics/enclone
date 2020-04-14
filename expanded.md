@@ -26,7 +26,8 @@ a normal level of gene expression, and no evidence of mixing from the VDJ assay 
 therefore focus on the case of samples that contain a mixture of cell types.
 <img src="img/cell_bits.svg" alt="cell bits" title="cell bits" />
 To that end, we show an example, using two libraries obtained from a single tube of PBMC cells, 
-obtained from a healthy human donor.  All the data shown here are part of the large dataset
+obtained from a healthy human donor.  The two libraries contain 7287 and 9559 cells, respectively,
+of which ~30% are B cells.  All the data shown here are part of the large dataset
 package described in the [download section of the main enclone page](README.md#download).
 
 ```
