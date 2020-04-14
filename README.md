@@ -126,8 +126,8 @@ svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/12
 ```
 
 The test datasets were selected because they happened to be useful as part of algorithmic regression
-tests (included in the codebase).  A much larger collection of datasets is also provided, and
-may be downloaded by <b>[add instructions here]</b>.
+tests (included in the codebase).  A much larger collection of datasets is also provided, which 
+includes the above ones, and which may be downloaded by <b>[add instructions here]</b>.
 
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
