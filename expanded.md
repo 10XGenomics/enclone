@@ -18,14 +18,15 @@ could not be used to detect disintegration events occurring prior to that point.
 
 Here we show that with the aid of gene expression data, illusory clonotype expansions can
 generally be detected, even if only a single library was made.  The easier case would be a sample
-consisting of pure B cells (for BCR).  The case where one has a mix of cell types (e.g. PBMCs) is 
+consisting of pure B cells (for BCR).  The case where one has a mix of cell types is 
 more challenging because a GEM can contain both a B cell fragment (for BCR), plus a cell of a 
 different type, and thus appear to have a normal level of gene expression, and no evidence of
-mixing from the VDJ assay either.  We therefore focus on the case of samples that are mixed
+mixing from the VDJ assay either.  We therefore focus on the case of samples that contain a mix of
 cell types.
 
 To that end, we show an example, using two libraries obtained from a single tube of PBMC cells, 
-obtained from a healthy human donor.
+obtained from a healthy human donor.  All the data shown here are part of the large dataset
+package described in the [download section of the main enclone page](README.md#download).
 
 ```
 enclone BCR=128037,128040 NCROSS
