@@ -118,9 +118,3 @@ LVARS entries
   in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
   WARNING: this only makes sense if you have one dataset--this condition is not checked.
-* cred: Let n be the number of VDJ cells that are also GEX cells.  For a given cell, find the n 
-  GEX cells that are closest to it in PCA space, and report the percent of those that are also VDJ 
-  cells.
-  - O(n^2) in number of cells
-  - without aggr, only makes sense for one dataset
-  - probably not meaningful if sample is pure B or T.

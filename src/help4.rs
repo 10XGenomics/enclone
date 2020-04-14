@@ -490,6 +490,46 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "<custom>_cu",
             "or cu; this represents a sum of UMI counts across the matching features. ●",
         );
+        h.ldoc(
+            "cred",
+            "Short for credibility.  It is a measure of the extent to which cells",
+        );
+        h.doc(
+            "",
+            "having gene expression similar to a given putative B cell are themselves",
+        );
+        h.doc(
+            "",
+            "B cells.  (Or similarly for T cells.)  For the actual definition, let n",
+        );
+        h.doc(
+            "",
+            "be the number of VDJ cells that are also GEX cells.  For a given cell,",
+        );
+        h.doc(
+            "",
+            "find the n GEX cells that are closest to it in PCA space, and report the",
+        );
+        h.doc(
+            "",
+            "percent of those that are also VDJ cells.  For multiple datasets, it would",
+        );
+        h.doc(
+            "",
+            "be better to \"aggr\" the data, however that is not currently supported",
+        );
+        h.doc(
+            "",
+            "The computation is also inefficient, so let us know if it's causing",
+        );
+        h.doc(
+            "",
+            "problems for you.  And cred makes much better sense for samples that",
+        );
+        h.doc(
+            "",
+            "consist of mixed cell types, rather than consisting of pure B or T cells.",
+        );
         h.print_tab2();
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \
