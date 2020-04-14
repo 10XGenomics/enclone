@@ -1,7 +1,7 @@
 # Detecting illusory clonotype expansions
 
-The purpose of this page is to explain the origin of certain illusory clonotype expansions,
-which might result in incorrect scientific conclusions, and show how to detect them.
+This page explains the origin of certain illusory clonotype expansions,
+which might result in incorrect scientific conclusions, and shows how to detect them.
 
 These illusory expansions are known to occur on occasion (see below for a demonstration), and we
 hypothesize that they arise when an individual cell disintegrates or leaks, leaving fragments that 
@@ -17,11 +17,15 @@ that a disintegration event occurred during or after cells were drawn from the t
 could not be used to detect disintegration events occurring prior to that point.
 
 Here we show that with the aid of gene expression data, illusory clonotype expansions can
-generally be detected, even if only a single library was made, provided that the targetted
-(B or T) cells are part of a mix of cell types (e.g. PBMCs).
+generally be detected, even if only a single library was made.  The easier case would be a sample
+consisting of pure B cells (for BCR).  The case where one has a mix of cell types (e.g. PBMCs) is 
+more challenging because a GEM can contain both a B cell fragment (for BCR), plus a cell of a 
+different type, and thus appear to have a normal level of gene expression, and no evidence of
+mixing from the VDJ assay either.  We therefore focus on the case of samples that are mixed
+cell types.
 
-We show an example, using two libraries obtained from a single tube of PBMC cells, obtained
-from a healthy human donor.
+To that end, we show an example, using two libraries obtained from a single tube of PBMC cells, 
+obtained from a healthy human donor.
 
 ```
 enclone BCR=128037,128040 NCROSS
