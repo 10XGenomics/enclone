@@ -106,7 +106,7 @@ want to update.  At a later date, there will also be separately numbered release
 a more extensive set of tests.
 
 It is not necessary to compile enclone, unless you want to contribute
-to the enclone codebase.  Please see [compilation](COMPILE.md).
+to the enclone codebase.  Please see [compilation](pages/COMPILE.md).
 
 <b>3.  Download test data.</b>  Type the following to download the enclone test datasets 
 (plus source code, because it's easier to fetch everything):
@@ -114,7 +114,7 @@ to the enclone codebase.  Please see [compilation](COMPILE.md).
 cd
 svn export https://github.com/10XGenomics/enclone/trunk enclone
 ```
-(See [here](fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
+(See [here](pages/fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
 `~/enclone/datasets` will contain the datasets that are prepackaged with enclone.  If you 
 subsequently want to update this, delete the directory and repeat the command.
 
@@ -132,8 +132,8 @@ those above) is also provided and can be downloaded by <b>[add instructions here
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 
-<b>5. Periodically update or check the [history](HISTORY.md#readme) to see if anything has changed
-that might affect you.</b>
+<b>5. Periodically update or check the [history](pages/HISTORY.md#readme) to see if anything has 
+changed that might affect you.</b>
 ___________________________________________________________________________________________________
 
 ## Running enclone
@@ -246,7 +246,7 @@ or multiple antigen specifities.
 
 We are actively working on further functionality that will make this process even more effective.
 
-Another example use of enclone shows how to [detect illusory clonotypes](expanded.md#readme).
+Another example use of enclone shows how to [detect illusory clonotypes](pages/expanded.md#readme).
 ___________________________________________________________________________________________________
 
 ## Questions
