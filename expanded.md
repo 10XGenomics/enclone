@@ -69,8 +69,7 @@ The field `right` is a measure of the extent to which cells having similar gene 
  given putative B cell are 
 themselves B cells (for BCR, or similarly for TCR).  In more detail, first let n be the number of 
 VDJ cells that are also GEX cells.  Now for a given cell, we find the n GEX cells that are closest 
-to it in PCA space, and report the percent of those that are also VDJ cells.  This is `right`.  
-The closer this number is to 100, the more the given cell looks like a typical B cell (or T cell, 
+to it in PCA space, and report the percent of those that are also VDJ cells.  This is `right`.  The closer this number is to 100, the more the given cell looks like a typical B cell (or T cell, 
 for TCR).  Conversely, a very low number makes the given cell appear suspect, although it is 
 not <i>proof</i> of such.
 
