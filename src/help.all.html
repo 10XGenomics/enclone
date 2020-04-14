@@ -1044,6 +1044,17 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;  │
 │&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr│
 │&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●│
+├───────────────┼────────────────────────────────────────────────────────────────────────────┤
+│cred           │  Short for credibility.  It is a measure of the extent to which cells      │
+│               │  having gene expression similar to a given putative B cell are themselves  │
+│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n   │
+│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,    │
+│               │  find the n GEX cells that are closest to it in PCA space, and report the  │
+│               │  percent of those that are also VDJ cells.  For multiple datasets, it would│
+│               │  be better to "aggr" the data, however that is not currently supported     │
+│               │  The computation is also inefficient, so let us know if it's causing       │
+│               │  problems for you.  And cred makes much better sense for samples that      │
+│               │  consist of mixed cell types, rather than consisting of pure B or T cells. │
 └───────────────┴────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
