@@ -41,8 +41,8 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()
-                || *x == "right".to_string()
-                || *x == "right_cell".to_string()
+                || *x == "cred".to_string()
+                || *x == "cred_cell".to_string()
             {
                 if category == "parseable" {
                     eprintln!(

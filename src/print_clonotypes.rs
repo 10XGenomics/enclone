@@ -470,11 +470,11 @@ pub fn print_clonotypes(
 
                 let mut stats = Vec::<(String, Vec<f64>)>::new();
 
-                // Compute "right" stats.
+                // Compute "cred" stats.
 
-                let mut right = vec![Vec::<String>::new(); lvars.len()];
+                let mut cred = vec![Vec::<String>::new(); lvars.len()];
                 for k in 0..lvars.len() {
-                    if lvars[k] == "right".to_string() {
+                    if lvars[k] == "cred".to_string() {
                         for u in 0..nexacts {
                             let clonotype_id = exacts[u];
                             let ex = &exact_clonotypes[clonotype_id];
@@ -482,7 +482,7 @@ pub fn print_clonotypes(
                                 let bc = &ex.clones[l][0].barcode;
                                 let li = ex.clones[l][0].dataset_index;
                                 if gex_info.pca[li].contains_key(&bc.clone()) {
-                                    let mut rights = 0;
+                                    let mut creds = 0;
                                     let mut z = Vec::<(f64, String)>::new();
                                     let x = &gex_info.pca[li][&bc.clone()];
                                     for y in gex_info.pca[li].iter() {
@@ -496,13 +496,13 @@ pub fn print_clonotypes(
                                     let top = n_vdj_gex[li];
                                     for i in 0..top {
                                         if bin_member(&vdj_cells[li], &z[i].1) {
-                                            rights += 1;
+                                            creds += 1;
                                         }
                                     }
-                                    let pc = 100.0 * rights as f64 / top as f64;
-                                    right[k].push(format!("{:.1}", pc));
+                                    let pc = 100.0 * creds as f64 / top as f64;
+                                    cred[k].push(format!("{:.1}", pc));
                                 } else {
-                                    right[k].push("".to_string());
+                                    cred[k].push("".to_string());
                                 }
                             }
                         }
@@ -664,8 +664,8 @@ pub fn print_clonotypes(
                                     row.push(format!("{}", cid));
                                 } else if lvars[k].starts_with("pe") && have_gex {
                                     row.push(format!("{}", pe[k][cell_count + bcl.2]));
-                                } else if lvars[k] == "right".to_string() && have_gex {
-                                    row.push(format!("{}", right[k][cell_count + bcl.2]));
+                                } else if lvars[k] == "cred".to_string() && have_gex {
+                                    row.push(format!("{}", cred[k][cell_count + bcl.2]));
                                 } else if lvars[k] == "type".to_string() && have_gex {
                                     let mut cell_type = "".to_string();
                                     if gex_info.cell_type[li].contains_key(&bc.clone()) {

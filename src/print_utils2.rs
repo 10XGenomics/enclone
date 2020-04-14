@@ -418,13 +418,13 @@ pub fn row_fill(
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
-        } else if x == "right" || x == "right_cell" {
-            let mut rightsx = Vec::<f64>::new();
+        } else if x == "cred" || x == "cred_cell" {
+            let mut credsx = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
                 let bc = &ex.clones[l][0].barcode;
                 let li = ex.clones[l][0].dataset_index;
                 if gex_info.pca[li].contains_key(&bc.clone()) {
-                    let mut rights = 0;
+                    let mut creds = 0;
                     let mut z = Vec::<(f64, String)>::new();
                     let x = &gex_info.pca[li][&bc.clone()];
                     for y in gex_info.pca[li].iter() {
@@ -438,25 +438,25 @@ pub fn row_fill(
                     let top = n_vdj_gex[li];
                     for i in 0..top {
                         if bin_member(&vdj_cells[li], &z[i].1) {
-                            rights += 1;
+                            creds += 1;
                         }
                     }
-                    let pc = 100.0 * rights as f64 / top as f64;
-                    rightsx.push(pc);
+                    let pc = 100.0 * creds as f64 / top as f64;
+                    credsx.push(pc);
                 }
             }
-            rightsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            if x == "right" {
-                if rightsx.is_empty() {
+            credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            if x == "cred" {
+                if credsx.is_empty() {
                     lvar![i, x, format!("")];
                 } else {
-                    lvar![i, x, format!("{:.1}", rightsx[rightsx.len() / 2])];
+                    lvar![i, x, format!("{:.1}", credsx[credsx.len() / 2])];
                 }
             } else {
                 if pass == 2 {
                     let mut r = Vec::<String>::new();
-                    for j in 0..rightsx.len() {
-                        r.push(format!("{:.1}", rightsx[j]));
+                    for j in 0..credsx.len() {
+                        r.push(format!("{:.1}", credsx[j]));
                     }
                     speak!(u, x, format!("{}", r.iter().format(";")));
                 }
