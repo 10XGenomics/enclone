@@ -102,5 +102,5 @@ We thus conclude in this case that the true clonotype probably consists of one c
 one sees examples where there appear to be a few true cells, along with others that are not.
 And sometimes one only sees only low VDJ UMI counts, likely corresponding to small fragments.
 
-Overall conclusion: illusory clonotypes are rare, and can generally be detected, either with the
-aid of a second library made from the same lot of cells, or with gene expression data.
+<b> Overall conclusion: illusory clonotypes are rare, and can generally be detected, either with 
+the aid of a second library made from the same lot of cells, or with gene expression data. </b>
