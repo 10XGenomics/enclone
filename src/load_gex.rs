@@ -140,7 +140,7 @@ pub fn load_gex(
             // If we need to write feature_barcode_matrix.bin, make sure that's possible, before
             // spending a lot of time reading other stuff.
 
-            if (!path_exists(&bin_file) || ctl.gen_opt.force_h5) && !ctl.gen_opt.h5 {
+            if !path_exists(&bin_file) && !ctl.gen_opt.h5 {
                 let f = File::create(&bin_file);
                 if !f.is_ok() {
                     eprintln!(
