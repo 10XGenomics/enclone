@@ -63,7 +63,7 @@ and the other is a field `right`, that is more complicated.  We will also hide t
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right MIN_CHAINS_EXACT=2
 ```
 
-<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=85% />
+<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=90% />
 
 The field `right` is a measure of the extent to which cells having similar gene expression to a
  given putative B cell are 
