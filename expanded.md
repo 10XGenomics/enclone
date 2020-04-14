@@ -63,7 +63,7 @@ and the other is a field `right`, that is more complicated.  We will also hide t
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,right MIN_CHAINS_EXACT=2
 ```
 
-<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=80% />
+<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=85% />
 
 To understand `right`, first let n be the number of VDJ cells that are also GEX cells.  Now for
 a given cell, we find the n GEX cells that are closest to it in PCA space, and report the percent 
