@@ -6,12 +6,20 @@ pub fn enclone_testdata() -> String {
     include_str!["enclone.testdata"].to_string()
 }
 
-pub fn enclone_testdata2() -> String {
-    include_str!["enclone.testdata2"].to_string()
+pub fn enclone_testdata_public_bcr_human() -> String {
+    include_str!["testdata.public.bcr.human"].to_string()
 }
 
-pub fn enclone_testdata2_gex() -> String {
-    include_str!["enclone.testdata2.gex"].to_string()
+pub fn enclone_testdata_public_tcr_human() -> String {
+    include_str!["testdata.public.tcr.human"].to_string()
+}
+
+pub fn enclone_testdata_public_tcr_mouse() -> String {
+    include_str!["testdata.public.tcr.mouse"].to_string()
+}
+
+pub fn enclone_testdata_public_gex_human() -> String {
+    include_str!["testdata.public.gex.human"].to_string()
 }
 
 pub const TEST_FILES_VERSION: u8 = 14;
