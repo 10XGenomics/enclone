@@ -104,7 +104,7 @@ enclone, we can mark these cells in the same display:
 
 We thus conclude in this case that the clonotype is likely contaminated with many cells that
 are not B cells, and in fact that the entire clonotype probably arose from a single true B cell.
-In other examples we have looked at, we have seen cases where there appear to be a few true B 
+In other examples we have looked at, there appear to be a few true B 
 cells, along with many that are not, either corresponding to other cell types or nearly empty GEMs.
 
 <b> Overall conclusion: illusory clonotypes are rare, and can generally be detected, either with 
