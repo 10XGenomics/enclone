@@ -82,9 +82,6 @@ that are closest to it in PCA space, and report the percent of those that are al
 This is `cred`.  The closer this number is to 100, the more the given cell looks like a typical 
 B cell.  Conversely, a very low number makes the given cell appear suspect.
 
-we believe this
-because in addition many of these call
-
 The values of `cred` vary considerably from dataset to dataset, requiring somewhat different
 interpretation.  We show the distribution for this one dataset:
 
