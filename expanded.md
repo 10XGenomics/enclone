@@ -9,7 +9,7 @@ fragments that seed multiple GEM partitions, producing a clonotype that appears 
 its true size.
 
 We believe that events of this type usually originate from plasma or plasmablast B cells.  We thus
-focus on B cells on this page.  However with obvious changes, the same methods also apply to 
+focus on B cells in this vignette.  However with obvious changes, the same methods also apply to
 T cells.
 
 Disintegration might occur during or after preparation of the sample.  One
