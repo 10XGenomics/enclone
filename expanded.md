@@ -85,7 +85,7 @@ interpretation.  We show the distribution for this one dataset:
 Thus the values of the cells in the reported clonotype are very low indeed, and almost all
 highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
 major piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller 
-pieces reside in GEMs that may or may not contain an actual intact cell.  In fact, 27 of the 
+pieces reside in GEMs that may or may not contain an actual intact cell.  In fact, 23 of the 
 cells are detected as T cells (using TCR data).
 
 We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
