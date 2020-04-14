@@ -24,11 +24,11 @@ consisting of pure B cells.  The case where one has a mix of cell types is more 
 a GEM can contain both a B cell fragment, plus a cell of a different type, and thus appear to have 
 a normal level of gene expression, and no evidence of mixing from the VDJ assay either.  We 
 therefore focus on the case of samples that contain a mixture of cell types.
-<img src="img/cell_bits.svg" alt="cell bits" title="cell bits" />
+<img src="../img/cell_bits.svg" alt="cell bits" title="cell bits" />
 To that end, we show an example, using two libraries obtained from a single tube of PBMC cells, 
 obtained from a healthy human donor.  The two libraries contain 7287 and 9559 cells, respectively,
 of which ~12% are B cells.  All the data shown here are part of the large dataset
-package described in the [download section of the main enclone page](README.md#download).
+package described in the [download section of the main enclone page](../README.md#download).
 
 ```
 enclone BCR=128037,128040 NCROSS
@@ -39,7 +39,7 @@ in only one dataset arising from the same sample (and which based on their sizes
 improbable).  Normally one would want this filtering, but these clonotypes are exactly what we
 wish to see now!  Here is the top clonotype:
 
-<img src="img/illusory1.png" alt="illusory1" title="illusory1" width=75% />
+<img src="../img/illusory1.png" alt="illusory1" title="illusory1" width=75% />
 
 If we do not use the `NCROSS` option, and search for the clonotype using the heavy chain
 CDR3 sequence, we see just one cell (the others having been filtered out)
@@ -48,7 +48,7 @@ CDR3 sequence, we see just one cell (the others having been filtered out)
 enclone BCR=128037,128040 CDR3=CARGGTTTYFISW
 ```
 
-<img src="img/illusory2.png" alt="illusory2" title="illusory2" width=75% />
+<img src="../img/illusory2.png" alt="illusory2" title="illusory2" width=75% />
 
 This is a good answer, but only works if libraries were made from two separate draws of cells.
 Now suppose that both a VDJ and a GEX library have been made, from a single draw of cells.  (And
@@ -58,7 +58,7 @@ we henceforth ignore the data made from the other draw of cells, useful though i
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW
 ```
 
-<img src="img/illusory3.png" alt="illusory3" title="illusory3" width=75% />
+<img src="../img/illusory3.png" alt="illusory3" title="illusory3" width=75% />
 
 Now we see less cells.  This is because the default behavior of enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.  Most of these
@@ -73,7 +73,7 @@ hide the onesie (single chain) cells.
 enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2
 ```
 
-<img src="img/illusory4.png" alt="illusory4" title="illusory4" width=90% />
+<img src="../img/illusory4.png" alt="illusory4" title="illusory4" width=90% />
 
 The field `cred` is a measure of the extent to which cells having gene expression similar to a
 given putative B cell are themselves B cells.  In more detail, first for any datasets, let n be 
@@ -100,7 +100,7 @@ pieces reside in GEMs that may or may not contain an actual intact cell.  In fac
 cells are detected as T cells (using TCR data from the same cell draw).  Using the `META` option 
 for providing input to enclone, we can mark these cells in the same display:
 
-<img src="img/illusory5.png" alt="illusory5" title="illusory5" width=90% />
+<img src="../img/illusory5.png" alt="illusory5" title="illusory5" width=90% />
 
 We thus conclude in this case that the clonotype is likely contaminated with many cells that
 are not B cells, and in fact that the entire clonotype probably arose from a single true B cell.
