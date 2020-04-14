@@ -99,30 +99,29 @@ pub fn print_clonotypes(
 
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
-    if ctl.gen_opt.h5 {
-        for li in 0..ctl.sample_info.n() {
-            if ctl.sample_info.gex_path[li].len() > 0 {
-                d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
-                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
-            } else {
-                d_readers.push(None);
-                ind_readers.push(None);
-            }
+    for li in 0..ctl.sample_info.n() {
+        if ctl.sample_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+            d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+        } else {
+            d_readers.push(None);
+            ind_readers.push(None);
         }
     }
     let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
-    if ctl.gen_opt.h5 && ctl.gen_opt.h5_pre {
-        for li in 0..ctl.sample_info.n() {
-            h5_data.push((li, Vec::new(), Vec::new()));
-        }
-        h5_data.par_iter_mut().for_each(|res| {
-            let li = res.0;
-            if ctl.sample_info.gex_path[li].len() > 0 {
-                res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
-                res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
-            }
-        });
+    for li in 0..ctl.sample_info.n() {
+        h5_data.push((li, Vec::new(), Vec::new()));
     }
+    h5_data.par_iter_mut().for_each(|res| {
+        let li = res.0;
+        if ctl.sample_info.gex_path[li].len() > 0
+            && !gex_info.gex_matrices[li].initialized()
+            && ctl.gen_opt.h5_pre
+        {
+            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
+        }
+    });
 
     // Gather alt_bcs_fields.
 
@@ -684,7 +683,7 @@ pub fn print_clonotypes(
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0;
-                                        if !ctl.gen_opt.h5 {
+                                        if gex_info.gex_matrices[li].initialized() {
                                             let row = gex_info.gex_matrices[li].row(p as usize);
                                             for j in 0..row.len() {
                                                 let f = row[j].0;
@@ -705,7 +704,7 @@ pub fn print_clonotypes(
                                     }
                                     let mut entropy = 0.0;
                                     if p >= 0 {
-                                        if !ctl.gen_opt.h5 {
+                                        if gex_info.gex_matrices[li].initialized() {
                                             let row = gex_info.gex_matrices[li].row(p as usize);
                                             for j in 0..row.len() {
                                                 let f = row[j].0;
@@ -734,7 +733,7 @@ pub fn print_clonotypes(
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
                                         let mut raw_count = 0 as f64;
-                                        if !ctl.gen_opt.h5 {
+                                        if gex_info.gex_matrices[li].initialized() {
                                             let row = gex_info.gex_matrices[li].row(p as usize);
                                             for j in 0..row.len() {
                                                 let f = row[j].0;
@@ -1375,7 +1374,7 @@ pub fn print_clonotypes(
                             let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                             if p >= 0 {
                                 let mut raw_count = 0 as f64;
-                                if !ctl.gen_opt.h5 {
+                                if gex_info.gex_matrices[li].initialized() {
                                     raw_count =
                                         gex_info.gex_matrices[li].value(p as usize, fid) as f64;
                                 } else {

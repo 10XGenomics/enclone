@@ -31,7 +31,7 @@ pub fn get_gex_matrix_entry(
     y: &str,
 ) -> f64 {
     let mut raw_count = 0 as f64;
-    if !ctl.gen_opt.h5 {
+    if gex_info.gex_matrices[li].initialized() {
         raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
     } else {
         for j in 0..d_all[l].len() {
@@ -183,7 +183,7 @@ pub fn row_fill(
                 let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                 if p >= 0 {
                     let mut raw_count = 0;
-                    if !ctl.gen_opt.h5 {
+                    if gex_info.gex_matrices[li].initialized() {
                         let row = gex_info.gex_matrices[li].row(p as usize);
                         for j in 0..row.len() {
                             let f = row[j].0;
@@ -244,7 +244,7 @@ pub fn row_fill(
             let p = bin_position(&gex_info.gex_barcodes[li], &bc);
             if p >= 0 {
                 let mut raw_count = 0;
-                if !ctl.gen_opt.h5 {
+                if gex_info.gex_matrices[li].initialized() {
                     let row = gex_info.gex_matrices[li].row(p as usize);
                     for j in 0..row.len() {
                         let f = row[j].0;
