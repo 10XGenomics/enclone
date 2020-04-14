@@ -89,7 +89,7 @@ pub fn read_json(
     reannotate: bool,
     cr_version: &mut String,
     ctl: &EncloneControl,
-    vdj_cells: &mut Vec<String>,
+    mut vdj_cells: &mut Vec<String>,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -484,6 +484,7 @@ pub fn read_json(
         }
         r = s;
     }
+    unique_sort(&mut vdj_cells);
     tig_bc
 }
 
