@@ -97,8 +97,8 @@ Thus the values of the cells in the reported clonotype are very low indeed, and 
 highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
 major piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller 
 pieces reside in GEMs that may or may not contain an actual intact cell.  In fact, many of the 
-cells are detected as T cells (using TCR data).  Using the `META` option for providing input to 
-enclone, we can mark these cells in the same display:
+cells are detected as T cells (using TCR data from the same cell draw).  Using the `META` option 
+for providing input to enclone, we can mark these cells in the same display:
 
 <img src="img/illusory5.png" alt="illusory5" title="illusory5" width=90% />
 
