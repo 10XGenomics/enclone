@@ -97,14 +97,15 @@ Thus the values of the cells in the reported clonotype are very low indeed, and 
 highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
 major piece (the one for barcode `CTGGTCTAGCTGCCCA-1`), and many smaller pieces.  These smaller 
 pieces reside in GEMs that may or may not contain an actual intact cell.  In fact, many of the 
-cells are detected as T cells (using TCR data).  Using the META option for providing input to 
+cells are detected as T cells (using TCR data).  Using the `META` option for providing input to 
 enclone, we can mark these cells in the same display:
 
 <img src="img/illusory5.png" alt="illusory5" title="illusory5" width=90% />
 
-We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
-one sees examples where there appear to be a few true cells, along with others that are not.
-And sometimes one only sees only low VDJ UMI counts, likely corresponding to small fragments.
+We thus conclude in this case that the clonotype is likely contaminated with many cells that
+are not B cells, and in fact that the entire clonotype probably arose from a single true B cell.
+Sometimes one sees examples where there appear to be a few true cells, along with others that are 
+not.  And sometimes one only sees only low VDJ UMI counts, likely corresponding to small fragments.
 
 <b> Overall conclusion: illusory clonotypes are rare, and can generally be detected, either with 
 the aid of a second library made from the same lot of cells, or with gene expression data. </b>
