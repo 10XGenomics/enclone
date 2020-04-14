@@ -9,8 +9,8 @@ seed multiple GEM partitions in the 10x system, thence yielding a clonotype whic
 larger than its true size.
 
 We believe that events of this type usually originate from plasma or plasmablast B cells.  We thus
-focus on B cells on this page.  However with obvious changes, the same methods apply to T cells
-as well.
+focus on B cells on this page.  However with obvious changes, the same methods also apply to 
+T cells.
 
 Disintegration might occur during or after preparation of the sample.  One
 way to document such an event would be to create two libraries from a single tube of cells.  If 
@@ -100,4 +100,4 @@ cells are detected as T cells (using TCR data).
 
 We thus conclude in this case that the true clonotype probably consists of one cell.  Sometimes
 one sees examples where there appear to be a few true cells, along with others that are not.
-And sometimes one only sees only low UMI counts, likely corresponding to small fragments.
+And sometimes one only sees only low VDJ UMI counts, likely corresponding to small fragments.
