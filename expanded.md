@@ -23,7 +23,7 @@ generally be detected, even if only a single library was made.  The easier case 
 consisting of pure B cells.  The case where one has a mix of cell types is more challenging because 
 a GEM can contain both a B cell fragment, plus a cell of a different type, and thus appear to have 
 a normal level of gene expression, and no evidence of mixing from the VDJ assay either.  We 
-therefore focus on the case of samples that contain a mix of cell types.
+therefore focus on the case of samples that contain a mixture of cell types.
 <img src="img/cell_bits.svg" alt="cell bits" title="cell bits" />
 To that end, we show an example, using two libraries obtained from a single tube of PBMC cells, 
 obtained from a healthy human donor.  All the data shown here are part of the large dataset
