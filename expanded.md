@@ -80,8 +80,10 @@ given putative B cell are themselves B cells.  In more detail, first for any dat
 the number of VDJ cells that are also GEX cells.  Now for a given cell, we find the n GEX cells 
 that are closest to it in PCA space, and report the percent of those that are also VDJ cells.  
 This is `cred`.  The closer this number is to 100, the more the given cell looks like a typical 
-B cell.  Conversely, a very low number makes the given cell appear suspect, although it is 
-not <i>proof</i> of such.
+B cell.  Conversely, a very low number makes the given cell appear suspect.
+
+we believe this
+because in addition many of these call
 
 The values of `cred` vary considerably from dataset to dataset, requiring somewhat different
 interpretation.  We show the distribution for this one dataset:
