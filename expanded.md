@@ -1,7 +1,7 @@
 # Detecting illusory clonotype expansions
 
-This page explains the origin of certain illusory clonotype expansions, and shows how to
-detect them.
+This page explains the origin of certain illusory clonotype expansions, and exhibits one example 
+of how to detect them.
 
 These illusory expansions are known to occur on occasion (see below for a demonstration), and we
 hypothesize that they arise when an individual cell disintegrates or leaks, leaving fragments that 
