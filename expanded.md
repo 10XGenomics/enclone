@@ -3,10 +3,10 @@
 This page explains the origin of certain illusory clonotype expansions, and exhibits one example 
 of how to detect them.
 
-These illusory expansions are known to occur on occasion (see below for a demonstration), and we
-hypothesize that they arise when an individual cell disintegrates or leaks, leaving fragments that 
-seed multiple GEM partitions in the 10x system, thence yielding a clonotype which appears 
-larger than its true size.
+These expansions are known to occur occasionally (see below for one possible mechanism), and 
+we hypothesize that they arise when an individual cell disintegrates or leaks. This leaves 
+fragments that seed multiple GEM partitions, producing a clonotype that appears larger than 
+its true size.
 
 We believe that events of this type usually originate from plasma or plasmablast B cells.  We thus
 focus on B cells on this page.  However with obvious changes, the same methods also apply to 
