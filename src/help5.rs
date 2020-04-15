@@ -200,7 +200,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              line spacing set to 0.88.  You may have to reduce the font size.  But the rendering \
              will be imperfect.\n\
              5. You can find the output of \"enclone help all HTML\" on the enclone site \
-             \\green{enclone.10xgenomics.com}.\n\n",
+             \\green{enclone.10xgenomics.com}.\n\
+             6. If you add the argument \\bold{SVG} to the enclone command line, then output \
+             for each clonotype will be presented as a separate svg object.\n\n",
         );
 
         h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
