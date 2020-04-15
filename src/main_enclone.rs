@@ -287,7 +287,8 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     } else {
         if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
-            let imgt = "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_20170916-2.1.0/fasta/regions.fa";
+            // let imgt = "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_20170916-2.1.0/fasta/regions.fa";
+            let imgt = "/mnt/home/david.jaffe/new_imgt/vdj_IMGT_human_20200415/fasta/regions.fa";
             let f = open_for_read![imgt];
             for line in f.lines() {
                 let s = line.unwrap();

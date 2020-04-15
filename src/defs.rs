@@ -359,6 +359,7 @@ pub struct GeneralOpt {
     pub force_h5: bool,
     pub full_counts: bool,
     pub html: bool,
+    pub svg: bool,
     pub stable_doc: bool,
     pub imgt: bool,
 }
