@@ -218,34 +218,37 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 }
                 if pg != "".to_string() {
                     let pg0 = pg.clone();
-                    if ctl.gen_opt.internal_run
-                        && ctl.gen_opt.h5
-                        && ctl.gen_opt.pre != ""
-                        && !path_exists(&format!(
-                            "{}/{}/outs/raw_gene_bc_matrices_h5.h5",
-                            ctl.gen_opt.pre, pg
-                        ))
-                        && !path_exists(&format!(
-                            "{}/{}/outs/raw_feature_bc_matrix.h5",
-                            ctl.gen_opt.pre, pg
-                        ))
-                        && pg.parse::<u32>().is_ok()
-                    {
-                        pg = format!("{}", get_outs(&pg));
-                    } else if ctl.gen_opt.internal_run
-                        && ctl.gen_opt.pre != ""
-                        && !path_exists(&format!("{}/{}/outs", ctl.gen_opt.pre, pg))
-                        && pg.parse::<u32>().is_ok()
-                    {
-                        pg = format!("{}", get_outs(&pg));
-                    } else if ctl.gen_opt.pre != "" {
-                        pg = format!("{}/{}/outs", ctl.gen_opt.pre, pg);
+                    let pg_outs = if ctl.gen_opt.pre == "" {
+                        format!("{}/outs", pg)
                     } else {
-                        if pg.parse::<i32>().is_ok() && ctl.gen_opt.internal_run {
-                            pg = format!("{}", get_outs(&pg));
-                        } else {
-                            pg = format!("{}/outs", pg);
+                        format!("{}/{}/outs", ctl.gen_opt.pre, pg)
+                    };
+                    if ctl.gen_opt.internal_run
+                        && pg.parse::<u32>().is_ok()
+                        && !path_exists(&format!("{}/raw_gene_bc_matrices_h5.h5", pg_outs))
+                        && !path_exists(&format!("{}/raw_feature_bc_matrix.h5", pg_outs))
+                    {
+                        let url = format!("https://xena.fuzzplex.com/api/analyses/{}", pg);
+                        let o = Command::new("curl")
+                            .arg(url)
+                            .output()
+                            .expect("failed to execute xena http");
+                        let m = String::from_utf8(o.stdout).unwrap();
+                        if m.contains("502 Bad Gateway") {
+                            panic!("502 Bad Gateway from http://xena/api/analyses/{}", pg);
                         }
+                        if m.contains("\"path\":\"") {
+                            let path = m.between("\"path\":\"", "\"").to_string();
+                            pg = format!("{}/outs", path);
+                        } else {
+                            eprintln!(
+                                "\nSomething went wrong finding the gex data \
+                                for {}.\n",
+                                pg
+                            );
+                        }
+                    } else {
+                        pg = pg_outs;
                     }
 
                     // Now, possibly, we should remove the /outs suffix, see discussion above.
