@@ -360,6 +360,7 @@ pub struct GeneralOpt {
     pub full_counts: bool,
     pub html: bool,
     pub stable_doc: bool,
+    pub imgt: bool,
 }
 
 // Allele finding algorithmic options.

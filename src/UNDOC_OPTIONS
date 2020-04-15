@@ -118,3 +118,6 @@ LVARS entries
   in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
   WARNING: this only makes sense if you have one dataset--this condition is not checked.
+
+IMGT: specify the IMGT reference, only implemented for human, forces RE so slow
+  Note that the version of the IMGT reference that we're using is very old.

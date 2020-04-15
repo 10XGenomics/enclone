@@ -286,7 +286,16 @@ pub fn main_enclone(args: &Vec<String>) {
             refx = mouse_ref();
         }
     } else {
-        if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+        if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
+            let imgt = "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_20170916-2.1.0/fasta/regions.fa";
+            let f = open_for_read![imgt];
+            for line in f.lines() {
+                let s = line.unwrap();
+                refx += &s;
+                refx += &"\n";
+            }
+            ctl.gen_opt.reannotate = true;
+        } else if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
             refx = human_ref_old();
         } else {
             refx = human_ref();
