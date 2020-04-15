@@ -121,3 +121,5 @@ LVARS entries
 
 IMGT: specify the IMGT reference, only implemented for human, forces RE so slow
   Note that the version of the IMGT reference that we're using is very old.
+
+NGROUP: don't print the GROUP stuff

@@ -362,6 +362,7 @@ pub struct GeneralOpt {
     pub svg: bool,
     pub stable_doc: bool,
     pub imgt: bool,
+    pub ngroup: bool,
 }
 
 // Allele finding algorithmic options.

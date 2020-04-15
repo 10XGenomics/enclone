@@ -202,13 +202,15 @@ pub fn group_and_print_clonotypes(
                 emit_eight_bit_color_escape(&mut log, 27);
                 fwrite!(logx, "{}", strme(&log));
             }
-            fwrite!(
-                logx,
-                "[{}] GROUP = {} CLONOTYPES = {} CELLS",
-                groups,
-                o.len(),
-                n
-            );
+            if !ctl.gen_opt.ngroup {
+                fwrite!(
+                    logx,
+                    "[{}] GROUP = {} CLONOTYPES = {} CELLS",
+                    groups,
+                    o.len(),
+                    n
+                );
+            }
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_end_escape(&mut log);
