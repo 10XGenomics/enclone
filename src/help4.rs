@@ -552,13 +552,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              there is only one dataset.\n\n",
         );
         h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
-        h.print(
-            "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
-             feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.  For this normalization, \
-             we simply scale the counts, rather than subsample reads.  If you want to turn off \
-             the normalization, add the argument \\bold{FULL_COUNTS} to the command line.\n\n",
-        );
         if !h.help_all {
             h.dump();
             std::process::exit(0);
