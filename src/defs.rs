@@ -662,6 +662,7 @@ pub struct GexInfo {
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
+    pub cell_type_specified: Vec<bool>,
     pub pca: Vec<HashMap<String, Vec<f64>>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,

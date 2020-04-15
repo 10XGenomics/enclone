@@ -27,6 +27,7 @@ pub fn load_gex(
     gex_matrices: &mut Vec<MirrorSparseMatrix>,
     cluster: &mut Vec<HashMap<String, usize>>,
     cell_type: &mut Vec<HashMap<String, String>>,
+    cell_type_specified: &mut Vec<bool>,
     pca: &mut Vec<HashMap<String, Vec<f64>>>,
     gex_mults: &mut Vec<f64>,
     fb_mults: &mut Vec<f64>,
@@ -46,6 +47,7 @@ pub fn load_gex(
         HashMap<String, usize>,
         HashMap<String, String>,
         HashMap<String, Vec<f64>>,
+        bool,
     )>::new();
     for i in 0..ctl.sample_info.gex_path.len() {
         results.push((
@@ -59,6 +61,7 @@ pub fn load_gex(
             HashMap::<String, usize>::new(),
             HashMap::<String, String>::new(),
             HashMap::<String, Vec<f64>>::new(),
+            false,
         ));
     }
     let gex_outs = &ctl.sample_info.gex_path;
@@ -194,6 +197,7 @@ pub fn load_gex(
                     let barcode = s.before(",");
                     let cell_type = s.after(",");
                     r.8.insert(barcode.to_string(), cell_type.to_string());
+                    r.10 = true;
                 }
             }
 
@@ -375,6 +379,7 @@ pub fn load_gex(
         cluster.push(results[i].7.clone());
         cell_type.push(results[i].8.clone());
         pca.push(results[i].9.clone());
+        cell_type_specified.push(results[i].10);
     }
 }
 
@@ -388,6 +393,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_matrices = Vec::<MirrorSparseMatrix>::new();
     let mut cluster = Vec::<HashMap<String, usize>>::new();
     let mut cell_type = Vec::<HashMap<String, String>>::new();
+    let mut cell_type_specified = Vec::<bool>::new();
     let mut pca = Vec::<HashMap<String, Vec<f64>>>::new();
     let mut gex_mults = Vec::<f64>::new();
     let mut fb_mults = Vec::<f64>::new();
@@ -401,6 +407,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut gex_matrices,
         &mut cluster,
         &mut cell_type,
+        &mut cell_type_specified,
         &mut pca,
         &mut gex_mults,
         &mut fb_mults,
@@ -499,6 +506,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         gex_matrices: gex_matrices,
         cluster: cluster,
         cell_type: cell_type,
+        cell_type_specified: cell_type_specified,
         pca: pca,
         gex_cell_barcodes: gex_cell_barcodes,
         gex_mults: gex_mults,
