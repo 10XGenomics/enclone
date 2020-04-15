@@ -195,7 +195,7 @@ Gene expression and feature barcode data can be displayed simultaneously with VD
 example, here we add columms for the same clonotype, showing the median number of UMIs detected
 for, all genes, a particular gene, and a particular antibody:
 
-<img src="img/clonotype_with_gex.png" alt="clonotype with gex" title="clonotype with gex" /> 
+<img src="img/clonotype_with_gex.svg" alt="clonotype with gex" title="clonotype with gex" /> 
 
 To obtain this, we added the extra arguments
 ```GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab```
