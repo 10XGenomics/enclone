@@ -186,9 +186,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "Yes, there are choices:\n\
              \\bold{A}. On a Mac, you can screenshot from a terminal window.\n\
-             \\bold{B}. Similar, better defined, but arduous: select the text in a terminal \
-             window, choose Shell ⇒ Print Selection ⇒ PDF ⇒ Open in Preview ⇒ File ⇒ Export ⇒ \
-             Format: png, Resolution: 300.\n\
+             \\bold{B}. Similar, better defined, but arduous, and doesn't always work: select the \
+             text in a terminal window, choose Shell ⇒ Print Selection ⇒ PDF ⇒ Open in \
+             Preview ⇒ File ⇒ Export ⇒ Format: png, Resolution: 300.\n\
              \\bold{C}. Add the argument \\bold{HTML} to the enclone command line.  Then the \
              output will be presented as html.\n\
              \\bold{D}. You can then convert the html to pdf.  The best way on a Mac is to open \
