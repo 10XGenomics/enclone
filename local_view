@@ -1,0 +1,16 @@
+#!/bin/csh
+
+# Copy website files to ~/public_html.  This is a placeholder, as for now there is only
+# a demo html page.
+#
+# This wipes out a directory, so please read before using!
+
+rm -rf ~/public_html/enclone
+
+mkdir ~/public_html/enclone
+
+cp -p demo.html ~/public_html/enclone
+cp -p README.md ~/public_html/enclone
+cp -pr pages ~/public_html/enclone
+cp -pr fonts ~/public_html/enclone
+cp -pr img ~/public_html/enclone
