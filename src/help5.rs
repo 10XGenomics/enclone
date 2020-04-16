@@ -186,18 +186,15 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "Yes, there are choices:\n\
              \\bold{A}. On a Mac, you can screenshot from a terminal window.\n\
-             \\bold{B}. Similar, better defined, but arduous, and doesn't always work: select the \
-             text in a terminal window, choose Shell ⇒ Print Selection ⇒ PDF ⇒ Open in \
-             Preview ⇒ File ⇒ Export ⇒ Format: png, Resolution: 300.\n\
-             \\bold{C}. Add the argument \\bold{HTML} to the enclone command line.  Then the \
+             \\bold{B}. Add the argument \\bold{HTML} to the enclone command line.  Then the \
              output will be presented as html.\n\
-             \\bold{D}. You can then convert the html to pdf.  The best way on a Mac is to open \
+             \\bold{C}. You can then convert the html to pdf.  The best way on a Mac is to open \
              Safari, which is the best browser for this particular purpose, \
              select the file where you've saved the html, and then export as pdf.  Do not convert \
              to pdf via printing, which produces a less readable file, and also distorts colors.  \
              (We do not know why the colors are distorted.)\n\
-             \\bold{E}. If you want to put enclone output in a Google Doc, you can do it via \
-             approaches \\bold{A} or \\bold{B}, although then you won't be able to select text \
+             \\bold{D}. If you want to put enclone output in a Google Doc, you can do it via \
+             approache \\bold{A}, although then you won't be able to select text \
              within the copied region.  \
              Alternatively, if you open the html file in a browser, you can then select \
              text (including clonotype box text) and paste into a Google Doc.  It will be pretty \
