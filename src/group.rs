@@ -216,7 +216,9 @@ pub fn group_and_print_clonotypes(
                 emit_end_escape(&mut log);
                 fwrite!(logx, "{}", strme(&log));
             }
-            fwriteln!(logx, "");
+            if !ctl.gen_opt.ngroup {
+                fwriteln!(logx, "");
+            }
         }
         let mut group_ncells = 0;
         for j in 0..o.len() {
