@@ -311,7 +311,10 @@ pub fn main_enclone(args: &Vec<String>) {
         is_tcr = false;
     }
 
+    /*
+
     // Remove V sequences that don't begin with a start codon.  And do some tidying.
+    // Commented out until proven useful.
 
     let lines = refx.split('\n').collect::<Vec<&str>>();
     let mut refx2 = String::new();
@@ -343,6 +346,9 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         i = j;
     }
+
+    */
+    let refx2 = &refx;
 
     // Build reference data.
 
