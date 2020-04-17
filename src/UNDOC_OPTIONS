@@ -131,3 +131,5 @@ SVG: render output as svg, clonotype by clonotype.  There are problems with this
 1. Safari does not correctly render these svg files.
 2. The svg files use the Menlo font, which works on a Mac but is not universally available.
 3. We don't render background, so this is broken for PER_CELL.
+
+TRACE_BARCODE: print some additional information for this particular barcode

@@ -385,6 +385,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
         } else if arg.starts_with("EXT=") {
             ctl.gen_opt.ext = arg.after("EXT=").to_string();
+        } else if arg.starts_with("TRACE_BARCODE=") {
+            ctl.gen_opt.trace_barcode = arg.after("TRACE_BARCODE=").to_string();
         } else if is_usize_arg(&arg, "PCHAINS") {
             ctl.parseable_opt.pchains = arg.after("PCHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CORES") {
