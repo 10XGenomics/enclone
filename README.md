@@ -2,6 +2,7 @@
 ___________________________________________________________________________________________________
 
 <img src="img/enclone_banner.jpg" alt="enclone banner" title="enclone banner" />
+
 ___________________________________________________________________________________________________
 
 <b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
