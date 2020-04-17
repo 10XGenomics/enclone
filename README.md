@@ -25,7 +25,6 @@ things are broken.  Please do not enter unless you've been directed here.
 
 <br>
 <br>
-<br>
 
 enclone and this page are designed for immunologists, but anyone can download and experiment 
 with it.
