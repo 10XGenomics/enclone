@@ -896,7 +896,7 @@ where each of <span style="font-weight:bold;">test</span>, <span style="font-wei
 are ignored.  The <span style="font-weight:bold;">test</span> condition defines the "test clonotypes" and the <span style="font-weight:bold;">control</span> condition defines
 the "control clonotypes".  Currently, the lead variables in <span style="font-weight:bold;">test</span> and <span style="font-weight:bold;">control</span> must be specified by
 <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t" and "c"
-that represent the UMI count for a particular gene or feature, for the test (t) or control (c)
+that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
 clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately and manually
 examine the test and control clonotypes to make sure that they make sense.
 
@@ -1476,8 +1476,8 @@ d. There was a technical artifact and the sequence does not actually represent
 
 Overlaps of length exactly one between J and C segments are not shown unless you specify the
 option <span style="font-weight:bold;">JC1</span>.  The reason for this is that certain reference sequences (notably those from IMGT and
-those supplied with Cell Ranger 3.1) often have an extra base at the beginning of ther C segments,
-resulting in annoying overlap notes for a large fraction of clonotypes.
+those supplied with Cell Ranger 3.1) often have an extra base at the beginning of their C
+segments, resulting in annoying overlap notes for a large fraction of clonotypes.
 
 <span style="color:#5833ff;font-weight:bold;">13. Can I cap the number of threads used by enclone?</span>
 
