@@ -299,7 +299,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              Overlaps of length exactly one between J and C segments are not shown unless you \
              specify the option \\bold{JC1}.  The reason for this is that certain reference \
              sequences (notably those from IMGT and those supplied with Cell Ranger 3.1) often \
-             have an extra base at the beginning of ther C segments, resulting \
+             have an extra base at the beginning of their C segments, resulting \
              in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
