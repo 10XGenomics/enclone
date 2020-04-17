@@ -1,6 +1,6 @@
 <a name="readme" style="display:block; position:relative; top:-150px;"></a>
 
-<img src="img/enclone_banner.jpg" alt="enclone banner" title="enclone banner" />
+<img align="left" src="img/enclone_banner.jpg" alt="enclone banner" title="enclone banner" />
 
 <b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
 other vertebrate species.  It takes as input data from 
