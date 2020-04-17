@@ -12,7 +12,7 @@ sequences for B and T cell receptors in single cells.  It organizes these cells 
 (clonotypes) arising from the same progenitor and compactly displays each clonotype along 
 with its salient features, including mutated amino acids.
 
-<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
+<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" width="80%" />
 
 <br>
 <br>
