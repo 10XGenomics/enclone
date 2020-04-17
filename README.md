@@ -1,7 +1,15 @@
-<a name="readme" style="display:block; position:relative; top:-150px;"></a>
-# enclone
+<a name="top" style="display:block; position:relative; top:-150px;"></a>
 
-<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
+<img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" />
+
+<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
+other vertebrate species.  It takes as input data from 
+<b>[10x Genomics](https://www.10xgenomics.com/)</b>, providing captured RNA 
+sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
+(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
+with its salient features, including mutated amino acids.
+
+<img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" width="30%" />
 
 <br>
 <br>
@@ -14,15 +22,6 @@ things are broken.  Please do not enter unless you've been directed here.
 
 <br>
 <br>
-<br>
-<br>
-
-<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
-other vertebrate species.  It takes as input data from 
-<b>[10x Genomics](https://www.10xgenomics.com/)</b>, providing captured RNA 
-sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
-(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
-with its salient features, including mutated amino acids.
 
 enclone and this page are designed for immunologists, but anyone can download and experiment 
 with it.
@@ -106,7 +105,7 @@ want to update.  At a later date, there will also be separately numbered release
 a more extensive set of tests.
 
 It is not necessary to compile enclone, unless you want to contribute
-to the enclone codebase.  Please see [compilation](COMPILE.md).
+to the enclone codebase.  Please see [compilation](pages/COMPILE.md).
 
 <b>3.  Download test data.</b>  Type the following to download the enclone test datasets 
 (plus source code, because it's easier to fetch everything):
@@ -114,7 +113,7 @@ to the enclone codebase.  Please see [compilation](COMPILE.md).
 cd
 svn export https://github.com/10XGenomics/enclone/trunk enclone
 ```
-(See [here](fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
+(See [here](pages/fetching_test_datasets.md#readme) if this doesn't work for you.)  At this point 
 `~/enclone/datasets` will contain the datasets that are prepackaged with enclone.  If you 
 subsequently want to update this, delete the directory and repeat the command.
 
@@ -126,14 +125,14 @@ svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/12
 ```
 
 The test datasets were selected because they happened to be useful as part of algorithmic regression
-tests (included in the codebase).  It is thus a somewhat oddball set.  We will make a much larger
-collection of test datasets available later.
+tests (included in the codebase).  A much larger collection of datasets (including 
+those above) is also provided and can be downloaded by <b>[add instructions here]</b>.
 
 <b>4.  Update your path.</b>  Edit your shell initialization file to add `:~/bin` to `PATH`.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!
 
-<b>5. Periodically update or check the [history](HISTORY.md#readme) to see if anything has changed
-that might affect you.</b>
+<b>5. Periodically update or check the [history](pages/HISTORY.md#readme) to see if anything has 
+changed that might affect you.</b>
 ___________________________________________________________________________________________________
 
 ## Running enclone
@@ -245,6 +244,8 @@ vaccine or therapeutic development by picking large clonotypes with high antigen
 or multiple antigen specifities.
 
 We are actively working on further functionality that will make this process even more effective.
+
+Another example use of enclone shows how to [detect illusory clonotypes](pages/expanded.md#readme).
 ___________________________________________________________________________________________________
 
 ## Questions

@@ -220,7 +220,7 @@ pub fn build_info(
                     if delta > 0 {
                         vsnx += &mut format!("gap from J stop to C start = {}", delta);
                     } else {
-                        if delta != -1 || ctl.gen_opt.cr_version.len() > 0 {
+                        if delta != -1 || ctl.gen_opt.jc1 {
                             vsnx += &mut format!("J and C segs overlap by {}", -delta);
                         }
                     }

@@ -22,4 +22,4 @@ then we assume it is an internal identifier and look for it in the internal pipe
 
 If the NH5 option is specified to enclone, it will write out a file feature_barcode_matrix.bin to 
 this same directory (p or p/outs, as above), provided that feature_barcode_matrix.bin does not 
-already exist.
+already exist.  Subsequently, this file will be used for input whether or not NH5 is specified.

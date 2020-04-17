@@ -490,6 +490,46 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "<custom>_cu",
             "or cu; this represents a sum of UMI counts across the matching features. ●",
         );
+        h.ldoc(
+            "cred",
+            "Short for credibility.  It is a measure of the extent to which cells",
+        );
+        h.doc(
+            "",
+            "having gene expression similar to a given putative B cell are themselves",
+        );
+        h.doc(
+            "",
+            "B cells.  (Or similarly for T cells.)  For the actual definition, let n",
+        );
+        h.doc(
+            "",
+            "be the number of VDJ cells that are also GEX cells.  For a given cell,",
+        );
+        h.doc(
+            "",
+            "find the n GEX cells that are closest to it in PCA space, and report the",
+        );
+        h.doc(
+            "",
+            "percent of those that are also VDJ cells.  For multiple datasets, it would",
+        );
+        h.doc(
+            "",
+            "be better to \"aggr\" the data, however that is not currently supported",
+        );
+        h.doc(
+            "",
+            "The computation is also inefficient, so let us know if it's causing",
+        );
+        h.doc(
+            "",
+            "problems for you.  And cred makes much better sense for samples that",
+        );
+        h.doc(
+            "",
+            "consist of mixed cell types, rather than consisting of pure B or T cells.",
+        );
         h.print_tab2();
         h.print(
             "For gene expression and feature barcode stats, such data must be provided \
@@ -512,13 +552,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              there is only one dataset.\n\n",
         );
         h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
-        h.print(
-            "Note: gene expression counts are normalized to 20,000 read pairs per cell, and \
-             feature barcode counts are normalized to 5,000 read pairs per cell.  The normalized \
-             counts are rounded to the nearest integer.  For this normalization, \
-             we simply scale the counts, rather than subsample reads.  If you want to turn off \
-             the normalization, add the argument \\bold{FULL_COUNTS} to the command line.\n\n",
-        );
         if !h.help_all {
             h.dump();
             std::process::exit(0);
@@ -629,7 +662,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut",
         );
-        h.doc("", "the beginning of C; elided if empty");
+        h.doc(
+            "",
+            "the beginning of C; elided if empty; also single base overlaps between",
+        );
+        h.docpr(
+            "",
+            "J and C are not shown unless you use the special option \\bold{JC1}; we do this",
+        );
+        h.doc(
+            "",
+            "because with some VDJ references, one nearly always has such an overlap",
+        );
         h.ldoc(
             "ndiff<n>vj",
             "number of base differences within V..J between this exact subclonotype and",

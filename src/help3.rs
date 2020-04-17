@@ -447,7 +447,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             \\bold{control} must be specified by\n\
             \\bold{LVARS} or \\bold{LVARSP}!  \
             The \\bold{threshold} condition is special: it may use \
-            only the variables \"t\" and \"c\" that represent the normalized UMI count for \
+            only the variables \"t\" and \"c\" that represent the raw UMI count for \
             a particular gene or feature, for the test (t) or control (c) clonotypes.  \
             To get a meaningful result, you should specify \\bold{MIN_CELLS} appropriately \
             and manually examine the test and control clonotypes to make sure that they make \

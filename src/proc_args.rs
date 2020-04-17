@@ -67,6 +67,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.pre = args[i].after("PRE=").to_string();
         }
     }
+    ctl.gen_opt.full_counts = true;
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -187,12 +188,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_print_opt.con_trace = true;
         } else if is_simple_arg(&arg, "EXP") {
             ctl.gen_opt.exp = true;
+        } else if is_simple_arg(&arg, "JC1") {
+            ctl.gen_opt.jc1 = true;
+        } else if is_simple_arg(&arg, "NGROUP") {
+            ctl.gen_opt.ngroup = true;
         } else if is_simple_arg(&arg, "STABLE_DOC") {
             ctl.gen_opt.stable_doc = true;
+        } else if is_simple_arg(&arg, "IMGT") {
+            ctl.gen_opt.imgt = true;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
         } else if arg == "HTML" {
-            ctl.gen_opt.html = true;
+        } else if arg == "SVG" {
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));
             if x.len() == 0 || x.len() % 2 != 0 {
@@ -209,13 +216,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&arg, "CURRENT_REF") {
             ctl.gen_opt.current_ref = true;
-        } else if is_simple_arg(&arg, "FULL_COUNTS") {
-            ctl.gen_opt.full_counts = true;
         } else if is_simple_arg(&arg, "SUM") {
             ctl.clono_print_opt.sum = true;
         } else if is_simple_arg(&arg, "MEAN") {
             ctl.clono_print_opt.mean = true;
         } else if is_simple_arg(&arg, "NH5") {
+            ctl.gen_opt.force_h5 = false;
         } else if is_simple_arg(&arg, "H5_SLICE") {
             ctl.gen_opt.h5_pre = false;
         } else if is_simple_arg(&arg, "DESCRIP") {
@@ -379,6 +385,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
         } else if arg.starts_with("EXT=") {
             ctl.gen_opt.ext = arg.after("EXT=").to_string();
+        } else if arg.starts_with("TRACE_BARCODE=") {
+            ctl.gen_opt.trace_barcode = arg.after("TRACE_BARCODE=").to_string();
         } else if is_usize_arg(&arg, "PCHAINS") {
             ctl.parseable_opt.pchains = arg.after("PCHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CORES") {

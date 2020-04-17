@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 19] = [
+pub const LVARS_ALLOWED: [&str; 20] = [
     "datasets",
     "samples",
     "donors",
@@ -25,7 +25,8 @@ pub const LVARS_ALLOWED: [&str; 19] = [
     "n_gex_cell",
     "n_gex",
     "clust",
-    "right",
+    "cred",
+    "cred_cell",
     "type",
     "entropy",
     "near",
@@ -229,7 +230,7 @@ impl LinearCondition {
             "n_gex_cell",
             "n_gex",
             "clust",
-            "right",
+            "cred",
             "type",
             "gex",
             "gex_min",
@@ -358,7 +359,12 @@ pub struct GeneralOpt {
     pub force_h5: bool,
     pub full_counts: bool,
     pub html: bool,
+    pub svg: bool,
     pub stable_doc: bool,
+    pub imgt: bool,
+    pub ngroup: bool,
+    pub jc1: bool,
+    pub trace_barcode: String,
 }
 
 // Allele finding algorithmic options.
@@ -661,6 +667,7 @@ pub struct GexInfo {
     pub gex_cell_barcodes: Vec<Vec<String>>,
     pub cluster: Vec<HashMap<String, usize>>,
     pub cell_type: Vec<HashMap<String, String>>,
+    pub cell_type_specified: Vec<bool>,
     pub pca: Vec<HashMap<String, Vec<f64>>>,
     pub gex_mults: Vec<f64>,
     pub fb_mults: Vec<f64>,

@@ -41,6 +41,8 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()
+                || *x == "cred".to_string()
+                || *x == "cred_cell".to_string()
             {
                 if category == "parseable" {
                     eprintln!(
@@ -359,6 +361,37 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
     }
     'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
+        // See if type is ok.
+
+        if *x == "type" {
+            let mut specified = false;
+            for i in 0..gex_info.cell_type_specified.len() {
+                if gex_info.cell_type_specified[i] {
+                    specified = true;
+                }
+            }
+            if !ctl.gen_opt.internal_run {
+                eprintln!(
+                    "\nUnrecognized variable {} for LVARS.  Please type \
+                     \"enclone help lvars\".\n",
+                    x
+                );
+                std::process::exit(1);
+            }
+            if !specified {
+                eprintln!(
+                    "\nYou've used the lead variable \"type\", but the file \
+                    cell_types.csv was not found.\n\
+                    This could be because you're using a GEX pipestance that was \
+                    run using too old a version of Cell Ranger.\n\
+                    Or it might have been generated using the CS pipeline.\n\
+                    Or you might have copied the pipestance outs but not included \
+                    that file.\n"
+                );
+                std::process::exit(1);
+            }
+        }
+
         // Check alt_bc_fields.
 
         for li in 0..ctl.sample_info.alt_bc_fields.len() {
