@@ -86,12 +86,6 @@ The values of `cred` vary considerably from dataset to dataset, requiring somewh
 interpretation.  We show the distribution for this one dataset:
 
 <img src="../img/cred_gex_dist.png" alt="cred_gex_dist" title="cred_gex_dist" width =90% />
-| -------| -------------:|
-|  0-20  |  9.2          |
-| 20-40  |  3.1          |
-| 40-60  |  2.4          |
-| 60-80  |  5.0          |
-| 80-100 | 80.3          |
 
 Thus the values of the cells in the reported clonotype are very low indeed, and almost all
 highly suspect.  Probably the clonotype originated from a single cell, which broke up into one 
