@@ -593,6 +593,15 @@ or likewise for <span style="font-weight:bold;">BCR</span>.  A more complicated 
 act as delimiters.  Commas go between datasets from the same sample, colons between datasets from
 the same donor, and semicolons separate donors.  If semicolons are used, the value must be quoted.
 
+enclone uses the distinction between datasets, samples and donors in the following ways:
+1. If two datasets come from the same sample, then enclone can filter to remove certain artifacts,
+unless you specify the option <span style="font-weight:bold;">NCROSS</span>.
+See also <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/pages/expanded.md#readme</span>.
+2. If two cells came from different donors, then enclone will not put them in the same clonotype,
+unless you specify the option <span style="font-weight:bold;">MIX_DONORS</span>.
+More information may be found at `enclone help special`.  In addition, this is enclone's way of
+keeping datasets organized and affects the output of fields like sample, etc.
+
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is        ┃
 ┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">sample345</span> in the above example), or┃
