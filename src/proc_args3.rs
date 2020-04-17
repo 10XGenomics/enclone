@@ -242,7 +242,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                             pg = format!("{}/outs", path);
                         } else {
                             eprintln!(
-                                "\nSomething went wrong finding the gex data \
+                                "\nSomething went wrong finding the GEX data \
                                 for {}.\n",
                                 pg
                             );
