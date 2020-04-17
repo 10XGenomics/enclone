@@ -85,7 +85,7 @@ B cell.  Conversely, a very low number makes the given cell appear suspect.
 The values of `cred` vary considerably from dataset to dataset, requiring somewhat different
 interpretation.  We show the distribution for this one dataset:
 
-| cred   | % of B cells  |
+<img src="../img/cred_gex_dist.png" alt="cred_gex_dist" title="cred_gex_dist" width =90% />
 | -------| -------------:|
 |  0-20  |  9.2          |
 | 20-40  |  3.1          |
