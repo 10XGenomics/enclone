@@ -296,10 +296,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              Cell Ranger pipeline just happened to pick a nonstandard one.\n\
              d. There was a technical artifact and the sequence does not actually represent\n   \
              an mRNA molecule.\n\n\
-             If you supply enclone with output from Cell Ranger 3.1, \
-             and J and C segments overlap by exactly one, this will not be noted.  \
-             The reason for this is that many of the reference sequences supplied with \
-             Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting \
+             Overlaps of length exactly one between J and C segments are not shown unless you \
+             specify the option \\bold{JC1}.  The reason for this is that certain reference \
+             sequences (notably those from IMGT and those supplied with Cell Ranger 3.1) often \
+             have an extra base at the beginning of ther C segments, resulting \
              in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
