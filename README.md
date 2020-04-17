@@ -1,6 +1,13 @@
 <a name="readme" style="display:block; position:relative; top:-150px;"></a>
 <img src="img/enclone_banner.jpg" alt="enclone banner" title="enclone banner" />
 
+<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
+other vertebrate species.  It takes as input data from 
+<b>[10x Genomics](https://www.10xgenomics.com/)</b>, providing captured RNA 
+sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
+(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
+with its salient features, including mutated amino acids.
+
 <img align="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg" alt="dangerous constuction zone" title="dangerous construction zone" />
 
 <br>
@@ -16,13 +23,6 @@ things are broken.  Please do not enter unless you've been directed here.
 <br>
 <br>
 <br>
-
-<b>enclone</b> is a computational tool for studying the adaptive immune system in humans and 
-other vertebrate species.  It takes as input data from 
-<b>[10x Genomics](https://www.10xgenomics.com/)</b>, providing captured RNA 
-sequences for B and T cell receptors in single cells.  It organizes these cells into groups 
-(clonotypes) arising from the same progenitor and compactly displays each clonotype along 
-with its salient features, including mutated amino acids.
 
 enclone and this page are designed for immunologists, but anyone can download and experiment 
 with it.
