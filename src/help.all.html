@@ -1139,7 +1139,9 @@ where each xi is one of:
 │udiff       │  like cdiff, but for the 5'-UTR                                               │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │notes       │  optional note if there is an insertion or the end of J does not exactly abut │
-│            │  the beginning of C; elided if empty                                          │
+│            │  the beginning of C; elided if empty; also single base overlaps between       │
+│            │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this      │
+│            │  because with some VDJ references, one nearly always has such an overlap      │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │ndiff&lt;n>vj  │  number of base differences within V..J between this exact subclonotype and   │
 │            │  exact subclonotype n                                                         │
@@ -1472,10 +1474,10 @@ c. A cell produced a nonstandard transcript and also standard ones, and the
 d. There was a technical artifact and the sequence does not actually represent
    an mRNA molecule.
 
-If you supply enclone with output from Cell Ranger 3.1, and J and C segments overlap by exactly
-one, this will not be noted.  The reason for this is that many of the reference sequences supplied
-with Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting in annoying
-overlap notes for a large fraction of clonotypes.
+Overlaps of length exactly one between J and C segments are not shown unless you specify the
+option <span style="font-weight:bold;">JC1</span>.  The reason for this is that certain reference sequences (notably those from IMGT and
+those supplied with Cell Ranger 3.1) often have an extra base at the beginning of ther C segments,
+resulting in annoying overlap notes for a large fraction of clonotypes.
 
 <span style="color:#5833ff;font-weight:bold;">13. Can I cap the number of threads used by enclone?</span>
 

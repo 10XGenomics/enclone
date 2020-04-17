@@ -662,7 +662,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut",
         );
-        h.doc("", "the beginning of C; elided if empty");
+        h.doc(
+            "",
+            "the beginning of C; elided if empty; also single base overlaps between",
+        );
+        h.docpr(
+            "",
+            "J and C are not shown unless you use the special option \\bold{JC1}; we do this",
+        );
+        h.doc(
+            "",
+            "because with some VDJ references, one nearly always has such an overlap",
+        );
         h.ldoc(
             "ndiff<n>vj",
             "number of base differences within V..J between this exact subclonotype and",
