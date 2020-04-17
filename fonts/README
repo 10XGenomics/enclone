@@ -1,0 +1,13 @@
+These monospace fonts were downloaded from https://dejavu-fonts.github.io/Download.html 
+on 4/16/2020.  The actual link was
+
+http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-lgc-fonts-ttf-2.37.tar.bz2.
+
+They are freely licensed, see
+https://github.com/dejavu-fonts/dejavu-fonts/blob/master/LICENSE.
+
+Originally we were going to use Menlo, which is on public sites, but the licensing of it 
+is unclear and there's no explanation where the files came from.
+
+The reason we're supplying monospace fonts at all is that the only universally available
+monospace font is Courier New, and that looks pretty bad for the enclone clonotypes.

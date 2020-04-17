@@ -202,19 +202,23 @@ pub fn group_and_print_clonotypes(
                 emit_eight_bit_color_escape(&mut log, 27);
                 fwrite!(logx, "{}", strme(&log));
             }
-            fwrite!(
-                logx,
-                "[{}] GROUP = {} CLONOTYPES = {} CELLS",
-                groups,
-                o.len(),
-                n
-            );
+            if !ctl.gen_opt.ngroup {
+                fwrite!(
+                    logx,
+                    "[{}] GROUP = {} CLONOTYPES = {} CELLS",
+                    groups,
+                    o.len(),
+                    n
+                );
+            }
             if ctl.pretty {
                 let mut log = Vec::<u8>::new();
                 emit_end_escape(&mut log);
                 fwrite!(logx, "{}", strme(&log));
             }
-            fwriteln!(logx, "");
+            if !ctl.gen_opt.ngroup {
+                fwriteln!(logx, "");
+            }
         }
         let mut group_ncells = 0;
         for j in 0..o.len() {
@@ -226,7 +230,26 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                fwrite!(logx, "\n[{}.{}] {}", groups, j + 1, pics[oo]);
+                fwrite!(logx, "\n");
+                if ctl.gen_opt.svg {
+                    const FONT_SIZE: usize = 15;
+                    let s = format!("[{}.{}] {}", groups, j + 1, pics[oo]);
+
+                    // Generate svg.  This does not generate the shortest possible string.  One
+                    // thing that could be done is to use only one text tag and instead use
+                    // relative positions in the tspan tags to avoid repeating the font family,
+                    // etc.  But there are probably other economizations.
+                    //
+                    // The other thing is that the aspect ratio is just a little bit off.
+
+                    fwrite!(
+                        logx,
+                        "{}",
+                        convert_text_with_ansi_escapes_to_svg(&s, "Menlo", FONT_SIZE)
+                    );
+                } else {
+                    fwrite!(logx, "[{}.{}] {}", groups, j + 1, pics[oo]);
+                }
             }
             let x = &pics[oo];
             let mut y = Vec::<char>::new();

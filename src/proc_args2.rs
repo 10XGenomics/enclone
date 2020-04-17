@@ -121,6 +121,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
                 to_delete[i] = true;
+            } else if args[i] == "SVG" {
+                ctl.gen_opt.svg = true;
+                to_delete[i] = true;
             } else if args[i] == "FORCE_EXTERNAL" {
                 to_delete[i] = true;
             } else if args[i] == "LONG_HELP" {
@@ -137,6 +140,10 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     PLAIN = true;
                 }
             }
+        }
+        if ctl.gen_opt.html && ctl.gen_opt.svg {
+            eprintln!("\nBoth HTML and SVG cannot be used at the same time.\n");
+            std::process::exit(1);
         }
         erase_if(&mut args, &to_delete);
         if args.len() == 1 || args.contains(&"help".to_string()) {

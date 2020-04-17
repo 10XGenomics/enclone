@@ -89,7 +89,7 @@ pub fn read_json(
     reannotate: bool,
     cr_version: &mut String,
     ctl: &EncloneControl,
-    vdj_cells: &mut Vec<String>,
+    mut vdj_cells: &mut Vec<String>,
 ) -> Vec<Vec<TigData>> {
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
@@ -165,8 +165,19 @@ pub fn read_json(
                     let x = DnaString::from_dna_string(&full_seq);
                     let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
                     annotate_seq(&x, &refdata, &mut ann, true, false, true);
+                    if ctl.gen_opt.trace_barcode == barcode.to_string() {
+                        let mut log = Vec::<u8>::new();
+                        print_some_annotations(&refdata, &ann, &mut log, false);
+                        print!("\n{}", strme(&log));
+                    }
                     let mut log = Vec::<u8>::new();
-                    if !is_valid(&x, &refdata, &ann, false, &mut log) {
+                    if ctl.gen_opt.trace_barcode == barcode.to_string() {
+                        if !is_valid(&x, &refdata, &ann, true, &mut log) {
+                            print!("{}", strme(&log));
+                            println!("invalid");
+                            continue;
+                        }
+                    } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
                         continue;
                     }
                     let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
@@ -484,6 +495,7 @@ pub fn read_json(
         }
         r = s;
     }
+    unique_sort(&mut vdj_cells);
     tig_bc
 }
 

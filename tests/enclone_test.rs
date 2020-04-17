@@ -450,8 +450,7 @@ fn test_help_output() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that PREBUILD works.  This reuses the output of test 17 above, so if you change that,
-// you also have to change this.
+// Test that PREBUILD works.
 
 #[cfg(not(debug_assertions))]
 #[test]
@@ -459,7 +458,7 @@ fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
-        "test/inputs/version{}/85679/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
+        "test/inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
@@ -468,7 +467,7 @@ fn test_enclone_prebuild() {
 
     // First pass: run with NH5.
 
-    let test_id = 17;
+    let test_id = 48;
     let it = test_id - 1;
     let testn = format!("{} NH5", TESTS[it]);
     let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
@@ -496,7 +495,7 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
     if !path_exists(&format!(
-        "test/inputs/version{}/85679/outs/feature_barcode_matrix.bin",
+        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     )) {
         panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
@@ -532,7 +531,7 @@ fn test_enclone_prebuild() {
     // Clean up: delete feature_barcode_matrix.bin.
 
     std::fs::remove_file(&format!(
-        "test/inputs/version{}/85679/outs/feature_barcode_matrix.bin",
+        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     ))
     .unwrap();

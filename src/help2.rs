@@ -301,9 +301,10 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              To use this, add the argument \\bold{NH5} to the enclone command line.  This will \
              work so long as you have write permission on input directories.  The first time you \
              run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will \
-             be written; then \
-             subsequent invocations will be faster.   Like with other enclone command-line options, if you \
-             want it on all the time, you can set the environment variable \\bold{ENCLONE_NH5}.",
+             be written; then subsequent invocations will be faster.  Once the file has been \
+             created, it will always be used, regardless of whether \\bold{NH5} is used.  \
+             Like with other enclone command-line options, if you want \\bold{NH5} on all the \
+             time, you can set the environment variable \\bold{ENCLONE_NH5}.",
             true
         );
         h.print(

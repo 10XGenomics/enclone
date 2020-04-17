@@ -224,7 +224,7 @@ pub fn main_enclone(args: &Vec<String>) {
         ctl.gen_opt.cr_version = "4.0".to_string();
     }
 
-    // Build reference data.
+    // Find the reference.
 
     let tr = Instant::now();
     let mut refdata = RefData::new();
@@ -286,7 +286,17 @@ pub fn main_enclone(args: &Vec<String>) {
             refx = mouse_ref();
         }
     } else {
-        if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+        if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
+            let imgt =
+                "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
+            let f = open_for_read![imgt];
+            for line in f.lines() {
+                let s = line.unwrap();
+                refx += &s;
+                refx += &"\n";
+            }
+            ctl.gen_opt.reannotate = true;
+        } else if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
             refx = human_ref_old();
         } else {
             refx = human_ref();
@@ -300,7 +310,49 @@ pub fn main_enclone(args: &Vec<String>) {
     if ctl.gen_opt.bcr {
         is_tcr = false;
     }
-    make_vdj_ref_data_core(&mut refdata, &refx, &ext_refx, is_tcr, is_bcr, None);
+
+    /*
+
+    // Remove V sequences that don't begin with a start codon.  And do some tidying.
+    // Commented out until proven useful.
+
+    let lines = refx.split('\n').collect::<Vec<&str>>();
+    let mut refx2 = String::new();
+    let mut i = 0;
+    while i < lines.len() {
+        let mut j = i + 1;
+        while j < lines.len() {
+            if lines[j].starts_with(">") {
+                break;
+            }
+            j += 1;
+        }
+        let mut seq = String::new();
+        for k in i + 1..j {
+            seq += &lines[k];
+        }
+        seq = seq.replace('a', "A");
+        seq = seq.replace('c', "C");
+        seq = seq.replace('g', "G");
+        seq = seq.replace('t', "T");
+        let mut ok = true;
+        if lines[i].contains("V-REGION") {
+            if !seq.starts_with("ATG") {
+                ok = false;
+            }
+        }
+        if ok {
+            refx2 += &format!("{}\n{}\n", lines[i], seq);
+        }
+        i = j;
+    }
+
+    */
+    let refx2 = &refx;
+
+    // Build reference data.
+
+    make_vdj_ref_data_core(&mut refdata, &refx2, &ext_refx, is_tcr, is_bcr, None);
     let mut to_ref_index = HashMap::<usize, usize>::new();
     for i in 0..refdata.refs.len() {
         to_ref_index.insert(refdata.id[i] as usize, i);

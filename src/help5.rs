@@ -184,23 +184,24 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
         h.print("\\boldblue{2. Can I convert the enclone visual output into other forms?}\n\n");
         h.print(
-            "Yes.  Here are things you can do:\n\
-             1. If you add the argument \\bold{HTML} to the enclone command line, then the \
+            "Yes, there are choices:\n\
+             \\bold{A}. On a Mac, you can screenshot from a terminal window.\n\
+             \\bold{B}. Add the argument \\bold{HTML} to the enclone command line.  Then the \
              output will be presented as html.\n\
-             2. You can then convert the html to pdf.  The best way on a Mac is to open Safari, \
-             select a file where you've saved the html, and then export as pdf.  Do not convert \
+             \\bold{C}. You can then convert the html to pdf.  The best way on a Mac is to open \
+             Safari, which is the best browser for this particular purpose, \
+             select the file where you've saved the html, and then export as pdf.  Do not convert \
              to pdf via printing, which produces a less readable file, and also distorts colors.  \
              (We do not know why the colors are distorted.)\n\
-             3. You can always cut and paste directly from a terminal window into another document \
-             using screen capture.  To capture as text, see the next item.\n\
-             4. If you open the html file in a browser, you can then select text (including \
-             clonotype box text) and paste into a Google Doc.  That will capture color and \
-             correctly render the box structure, provided that you use an appropriate fixed-width \
-             font for that part of the Doc.  We found that Courier New works, with \
-             line spacing set to 0.88.  You may have to reduce the font size.  But the rendering \
-             will be imperfect.\n\
-             5. You can find the output of \"enclone help all HTML\" on the enclone site \
-             \\green{enclone.10xgenomics.com}.\n\n",
+             \\bold{D}. If you want to put enclone output in a Google Doc, you can do it via \
+             approache \\bold{A}, although then you won't be able to select text \
+             within the copied region.  \
+             Alternatively, if you open the html file in a browser, you can then select \
+             text (including clonotype box text) and paste into a Google Doc.  It will be pretty \
+             ugly, but will capture color and correctly render the box structure, provided that \
+             you use an appropriate fixed-width font for that part of the Doc.  We found that \
+             Courier New works, with line spacing set to 0.88.  You may have to reduce the font \
+             size.\n\n",
         );
 
         h.print("\\boldblue{3. Why is enclone slow for me?}\n\n");
@@ -295,10 +296,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              Cell Ranger pipeline just happened to pick a nonstandard one.\n\
              d. There was a technical artifact and the sequence does not actually represent\n   \
              an mRNA molecule.\n\n\
-             If you supply enclone with output from Cell Ranger 3.1, \
-             and J and C segments overlap by exactly one, this will not be noted.  \
-             The reason for this is that many of the reference sequences supplied with \
-             Cell Ranger 3.1 had an extra base at the beginning of their C segments, resulting \
+             Overlaps of length exactly one between J and C segments are not shown unless you \
+             specify the option \\bold{JC1}.  The reason for this is that certain reference \
+             sequences (notably those from IMGT and those supplied with Cell Ranger 3.1) often \
+             have an extra base at the beginning of their C segments, resulting \
              in annoying overlap notes for a large fraction of clonotypes.\n\n",
         );
 
