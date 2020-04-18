@@ -55,6 +55,353 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn parse_vector_entry_from_json(
+    x: &Vec<u8>,
+    json: &String,
+    accept_inconsistent: bool,
+    sample_info: &SampleInfo,
+    li: usize,
+    refdata: &RefData,
+    to_ref_index: &HashMap<usize, usize>,
+    reannotate: bool,
+    ctl: &EncloneControl,
+    vdj_cells: &mut Vec<String>,
+    cr_version: &mut String,
+    tigs: &mut Vec<TigData>,
+) {
+    let v: Value = serde_json::from_str(strme(&x)).unwrap();
+    let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
+    if !v["is_cell"].as_bool().unwrap_or(false) {
+        return;
+    }
+    vdj_cells.push(barcode.clone());
+    if !v["productive"].as_bool().unwrap_or(false) {
+        return;
+    }
+    if !v["high_confidence"].as_bool().unwrap_or(false) {
+        return;
+    }
+    let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
+    let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
+    let mut left = false;
+    let (mut v_ref_id, mut j_ref_id) = (1000000, 0);
+    let mut d_ref_id: Option<usize> = None;
+    let mut c_ref_id = None;
+    let mut chain_type = String::new();
+    let mut u_ref_id = None;
+    let (mut tig_start, mut tig_stop) = (-1 as isize, -1 as isize);
+    let mut v_stop = 0;
+    let mut v_stop_ref = 0;
+    let mut j_start = 0;
+    let mut j_start_ref = 0;
+    let mut c_start = None;
+    let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
+    let cdr3_aa: String;
+    let cdr3_dna: String;
+    let mut cdr3_start: usize;
+    if v.get("version").is_some() {
+        *cr_version = v["version"].to_string().between("\"", "\"").to_string();
+    }
+
+    // Reannotate.
+
+    if reannotate {
+        let x = DnaString::from_dna_string(&full_seq);
+        let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
+        annotate_seq(&x, &refdata, &mut ann, true, false, true);
+        if ctl.gen_opt.trace_barcode == barcode.to_string() {
+            let mut log = Vec::<u8>::new();
+            print_some_annotations(&refdata, &ann, &mut log, false);
+            print!("\n{}", strme(&log));
+        }
+        let mut log = Vec::<u8>::new();
+        if ctl.gen_opt.trace_barcode == barcode.to_string() {
+            if !is_valid(&x, &refdata, &ann, true, &mut log) {
+                print!("{}", strme(&log));
+                println!("invalid");
+                return;
+            }
+        } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
+            return;
+        }
+        let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
+        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
+        cdr3_aa = stringme(&cdr3[0].1);
+        cdr3_start = cdr3[0].0;
+        cdr3_dna = x
+            .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
+            .to_string();
+        let mut seen_j = false;
+        for i in 0..ann.len() {
+            let t = ann[i].2 as usize;
+            if refdata.is_u(t) {
+                u_ref_id = Some(t);
+            } else if refdata.is_v(t) && !seen_j {
+                v_ref_id = t;
+                annv.push(ann[i].clone());
+                chain_type = refdata.name[t][0..3].to_string();
+                if chain_type == "IGH".to_string() || chain_type == "TRB".to_string() {
+                    left = true;
+                }
+                if ann[i].3 == 0 {
+                    tig_start = ann[i].0 as isize;
+                    cdr3_start -= tig_start as usize;
+                }
+                v_stop = (ann[i].0 + ann[i].1) as usize;
+                v_stop_ref = (ann[i].3 + ann[i].1) as usize;
+            } else if refdata.is_d(t) {
+                d_ref_id = Some(t);
+            } else if refdata.is_j(t) {
+                j_ref_id = t;
+                tig_stop = (ann[i].0 + ann[i].1) as isize;
+                j_start = ann[i].0 as usize;
+                j_start_ref = ann[i].3 as usize;
+                seen_j = true;
+            } else if refdata.is_c(t) {
+                c_ref_id = Some(t);
+                c_start = Some(ann[i].0 as usize);
+            }
+        }
+        for i in (0..annv.len()).rev() {
+            annv[i].0 -= annv[0].0;
+        }
+    } else {
+        // Use annotations from json file.
+
+        cdr3_aa = v["cdr3"].to_string().between("\"", "\"").to_string();
+        cdr3_dna = v["cdr3_seq"].to_string().between("\"", "\"").to_string();
+        cdr3_start = v["cdr3_start"].as_u64().unwrap() as usize;
+        let ann = v["annotations"].as_array().unwrap();
+        let mut cigarv = String::new(); // cigar for V segment
+        for i in 0..ann.len() {
+            let a = &ann[i];
+            let region_type = &a["feature"]["region_type"];
+            let feature_id = a["feature"]["feature_id"].as_u64().unwrap() as usize;
+            if !to_ref_index.contains_key(&feature_id) {
+                continue;
+            }
+            let feature_idx = to_ref_index[&feature_id];
+            let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
+            if region_type == "L-REGION+V-REGION" {
+                v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
+                v_stop_ref = a["annotation_match_end"].as_i64().unwrap() as usize;
+            }
+            let gene_name = a["feature"]["gene_name"]
+                .to_string()
+                .between("\"", "\"")
+                .to_string();
+            if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
+                eprintln!(
+                    "\nThere is an inconsistency between the reference \
+                     file used to create the Cell Ranger output files in\n{}\nand the \
+                     reference that enclone is using.  For example, the feature \
+                     numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
+                     You should be able to remedy this by supplying\n\
+                     REF=vdj_reference_fasta_filename as an argument to enclone.\n",
+                    json.rev_before("/"),
+                    feature_id,
+                    gene_name,
+                    refdata.name[feature_idx]
+                );
+                std::process::exit(1);
+            }
+            if region_type == "L-REGION+V-REGION" && ref_start == 0 {
+                let chain = a["feature"]["chain"]
+                    .to_string()
+                    .between("\"", "\"")
+                    .to_string();
+                // if !chain.starts_with("IG") { continue; } // *******************
+                tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
+                cdr3_start -= tig_start as usize;
+                chain_type = chain.clone();
+                if chain == "IGH".to_string() || chain == "TRB".to_string() {
+                    left = true;
+                }
+                v_ref_id = feature_idx;
+                cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
+            } else {
+                // also check for IG chain?????????????????????????????????????????
+                let ref_stop = a["annotation_match_end"].as_u64().unwrap() as usize;
+                let ref_len = a["annotation_length"].as_u64().unwrap() as usize;
+                if region_type == "J-REGION" && ref_stop == ref_len {
+                    tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
+                    j_ref_id = feature_idx;
+                    j_start = a["contig_match_start"].as_i64().unwrap() as usize;
+                    j_start_ref = a["annotation_match_start"].as_i64().unwrap() as usize;
+                }
+                if region_type == "5'UTR" {
+                    u_ref_id = Some(feature_idx);
+                }
+                if region_type == "D-REGION" {
+                    d_ref_id = Some(feature_idx);
+                }
+                if region_type == "C-REGION" {
+                    c_ref_id = Some(feature_idx);
+                    c_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
+                }
+            }
+        }
+        if v_ref_id == 1000000 {
+            return;
+        }
+
+        // Compute annv from cigarv.  We don't compute the mismatch entry.
+
+        let mut cg = Vec::<Vec<u8>>::new(); // pieces of cigar string
+        let mut piece = Vec::<u8>::new();
+        for c in cigarv.chars() {
+            piece.push(c as u8);
+            if c.is_ascii_alphabetic() {
+                cg.push(piece.clone());
+                piece.clear();
+            }
+        }
+        let t = v_ref_id as i32;
+        let (mut len1, mut len2) = (0, 0);
+        let (mut ins, mut del) = (0, 0);
+        for i in 0..cg.len() {
+            let x = strme(&cg[i][0..cg[i].len() - 1]).force_i32();
+            if cg[i][cg[i].len() - 1] == b'M' {
+                if len1 == 0 {
+                    len1 = x;
+                } else if len2 == 0 {
+                    len2 = x;
+                } else {
+                    // probably can't happen
+                    len1 = 0;
+                    len2 = 0;
+                    break;
+                }
+            }
+            if cg[i][cg[i].len() - 1] == b'I' {
+                ins = x;
+            }
+            if cg[i][cg[i].len() - 1] == b'D' {
+                del = x;
+            }
+        }
+        annv.push((0 as i32, len1, t, 0, 0));
+        if ins > 0 && ins % 3 == 0 && del == 0 && len2 > 0 {
+            let start = (len1 + ins) as i32;
+            annv.push((start, len2, t, len1, 0));
+        } else if del > 0 && del % 3 == 0 && ins == 0 && len2 > 0 {
+            annv.push((len1, len2, t, len1 + del, 0));
+        }
+    }
+
+    // Correct CDR3 start for insertion.
+
+    if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
+        let ins = annv[1].0 - annv[0].0 - annv[0].1;
+        cdr3_start -= ins as usize;
+    }
+
+    // Keep going.
+
+    if tig_start < 0 || tig_stop < 0 {
+        eprintme!(tig_start, tig_stop);
+        json_error(Some(&json), &ctl);
+    }
+    let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
+    let quals0 = v["quals"].to_string();
+    let quals0 = quals0.after("\"").as_bytes();
+    let mut quals = Vec::<u8>::new();
+    let mut slashed = false;
+    for i in 0..quals0.len() - 1 {
+        if !slashed && quals0[i] == b'\\'
+        /* && ( i == 0 || quals0[i-1] != b'\\' ) */
+        {
+            slashed = true;
+            continue;
+        }
+        slashed = false;
+        quals.push(quals0[i]);
+    }
+    assert_eq!(full_seq.len(), quals.len());
+    let seq = full_seq[tig_start..tig_stop].to_string();
+    for i in 0..quals.len() {
+        quals[i] -= 33 as u8;
+    }
+    let full_quals = quals.clone();
+    let quals = quals[tig_start..tig_stop].to_vec();
+    // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
+    let umi_count = v["umi_count"].as_i64().unwrap() as usize;
+    let read_count = v["read_count"].as_i64().unwrap() as usize;
+    let mut sample = None;
+    let mut donor = None;
+    let mut tag = None;
+    if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
+        sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
+        donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+    } else {
+        // the way we use s1 and d1 here is flaky
+        if sample_info.sample_id[li].len() > 0
+            && (sample_info.sample_id[li] != "s1".to_string()
+                || sample_info.sample_donor[li].len() == 0)
+        {
+            sample = Some(sample_info.sample_id[li].clone());
+        }
+        if sample_info.donor_id[li].len() > 0
+            && (sample_info.donor_id[li] != "d1".to_string()
+                || sample_info.sample_donor[li].len() == 0)
+        {
+            donor = Some(sample_info.donor_id[li].clone());
+        }
+    }
+    if sample_info.tag[li].contains_key(&barcode.clone()) {
+        tag = Some(sample_info.tag[li][&barcode.clone()].clone());
+    }
+    let mut sample_index = None;
+    let mut donor_index = None;
+    let mut tag_index = None;
+    if sample.is_some() {
+        if sample.is_some() {
+            sample_index = Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+        }
+        if donor.is_some() {
+            donor_index = Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+        }
+    }
+    if tag.is_some() {
+        tag_index = Some(bin_position(&sample_info.tag_list, &tag.unwrap()) as usize);
+    }
+    tigs.push(TigData {
+        cdr3_dna: cdr3_dna.to_string(),
+        len: seq.len(),
+        seq: seq.as_bytes().to_vec(),
+        v_start: tig_start,
+        v_stop: v_stop,
+        v_stop_ref: v_stop_ref,
+        j_start: j_start,
+        j_start_ref: j_start_ref,
+        j_stop: tig_stop,
+        c_start: c_start,
+        full_seq: full_seq.as_bytes().to_vec(),
+        v_ref_id: v_ref_id,
+        d_ref_id: d_ref_id,
+        j_ref_id: j_ref_id,
+        c_ref_id: c_ref_id,
+        u_ref_id: u_ref_id,
+        cdr3_aa: cdr3_aa.to_string(),
+        cdr3_start: cdr3_start,
+        quals: quals,
+        full_quals: full_quals,
+        barcode: barcode.to_string(),
+        tigname: tigname.to_string(),
+        left: left,
+        dataset_index: li,
+        sample_index: sample_index,
+        donor_index: donor_index,
+        tag_index: tag_index,
+        umi_count: umi_count,
+        read_count: read_count,
+        chain_type: chain_type.clone(),
+        annv: annv.clone(),
+    });
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Parse the json annotations file.
 //
 // Should try using:
@@ -87,7 +434,7 @@ pub fn read_json(
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
     reannotate: bool,
-    cr_version: &mut String,
+    mut cr_version: &mut String,
     ctl: &EncloneControl,
     mut vdj_cells: &mut Vec<String>,
 ) -> Vec<Vec<TigData>> {
@@ -125,338 +472,20 @@ pub fn read_json(
         match read_vector_entry_from_json(&mut f) {
             None => break,
             Some(x) => {
-                let v: Value = serde_json::from_str(strme(&x)).unwrap();
-                let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-                if !v["is_cell"].as_bool().unwrap_or(false) {
-                    continue;
-                }
-                vdj_cells.push(barcode.clone());
-                if !v["productive"].as_bool().unwrap_or(false) {
-                    continue;
-                }
-                if !v["high_confidence"].as_bool().unwrap_or(false) {
-                    continue;
-                }
-                let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
-                let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
-                let mut left = false;
-                let (mut v_ref_id, mut j_ref_id) = (1000000, 0);
-                let mut d_ref_id: Option<usize> = None;
-                let mut c_ref_id = None;
-                let mut chain_type = String::new();
-                let mut u_ref_id = None;
-                let (mut tig_start, mut tig_stop) = (-1 as isize, -1 as isize);
-                let mut v_stop = 0;
-                let mut v_stop_ref = 0;
-                let mut j_start = 0;
-                let mut j_start_ref = 0;
-                let mut c_start = None;
-                let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
-                let cdr3_aa: String;
-                let cdr3_dna: String;
-                let mut cdr3_start: usize;
-                if v.get("version").is_some() {
-                    *cr_version = v["version"].to_string().between("\"", "\"").to_string();
-                }
-
-                // Reannotate.
-
-                if reannotate {
-                    let x = DnaString::from_dna_string(&full_seq);
-                    let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
-                    annotate_seq(&x, &refdata, &mut ann, true, false, true);
-                    if ctl.gen_opt.trace_barcode == barcode.to_string() {
-                        let mut log = Vec::<u8>::new();
-                        print_some_annotations(&refdata, &ann, &mut log, false);
-                        print!("\n{}", strme(&log));
-                    }
-                    let mut log = Vec::<u8>::new();
-                    if ctl.gen_opt.trace_barcode == barcode.to_string() {
-                        if !is_valid(&x, &refdata, &ann, true, &mut log) {
-                            print!("{}", strme(&log));
-                            println!("invalid");
-                            continue;
-                        }
-                    } else if !is_valid(&x, &refdata, &ann, false, &mut log) {
-                        continue;
-                    }
-                    let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-                    get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
-                    cdr3_aa = stringme(&cdr3[0].1);
-                    cdr3_start = cdr3[0].0;
-                    cdr3_dna = x
-                        .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
-                        .to_string();
-                    let mut seen_j = false;
-                    for i in 0..ann.len() {
-                        let t = ann[i].2 as usize;
-                        if refdata.is_u(t) {
-                            u_ref_id = Some(t);
-                        } else if refdata.is_v(t) && !seen_j {
-                            v_ref_id = t;
-                            annv.push(ann[i].clone());
-                            chain_type = refdata.name[t][0..3].to_string();
-                            if chain_type == "IGH".to_string() || chain_type == "TRB".to_string() {
-                                left = true;
-                            }
-                            if ann[i].3 == 0 {
-                                tig_start = ann[i].0 as isize;
-                                cdr3_start -= tig_start as usize;
-                            }
-                            v_stop = (ann[i].0 + ann[i].1) as usize;
-                            v_stop_ref = (ann[i].3 + ann[i].1) as usize;
-                        } else if refdata.is_d(t) {
-                            d_ref_id = Some(t);
-                        } else if refdata.is_j(t) {
-                            j_ref_id = t;
-                            tig_stop = (ann[i].0 + ann[i].1) as isize;
-                            j_start = ann[i].0 as usize;
-                            j_start_ref = ann[i].3 as usize;
-                            seen_j = true;
-                        } else if refdata.is_c(t) {
-                            c_ref_id = Some(t);
-                            c_start = Some(ann[i].0 as usize);
-                        }
-                    }
-                    for i in (0..annv.len()).rev() {
-                        annv[i].0 -= annv[0].0;
-                    }
-                } else {
-                    // Use annotations from json file.
-
-                    cdr3_aa = v["cdr3"].to_string().between("\"", "\"").to_string();
-                    cdr3_dna = v["cdr3_seq"].to_string().between("\"", "\"").to_string();
-                    cdr3_start = v["cdr3_start"].as_u64().unwrap() as usize;
-                    let ann = v["annotations"].as_array().unwrap();
-                    let mut cigarv = String::new(); // cigar for V segment
-                    for i in 0..ann.len() {
-                        let a = &ann[i];
-                        let region_type = &a["feature"]["region_type"];
-                        let feature_id = a["feature"]["feature_id"].as_u64().unwrap() as usize;
-                        if !to_ref_index.contains_key(&feature_id) {
-                            continue;
-                        }
-                        let feature_idx = to_ref_index[&feature_id];
-                        let ref_start = a["annotation_match_start"].as_u64().unwrap() as usize;
-                        if region_type == "L-REGION+V-REGION" {
-                            v_stop = a["contig_match_end"].as_i64().unwrap() as usize;
-                            v_stop_ref = a["annotation_match_end"].as_i64().unwrap() as usize;
-                        }
-                        let gene_name = a["feature"]["gene_name"]
-                            .to_string()
-                            .between("\"", "\"")
-                            .to_string();
-                        if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
-                            eprintln!(
-                                "\nThere is an inconsistency between the reference \
-                                 file used to create the Cell Ranger output files in\n{}\nand the \
-                                 reference that enclone is using.  For example, the feature \
-                                 numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
-                                 You should be able to remedy this by supplying\n\
-                                 REF=vdj_reference_fasta_filename as an argument to enclone.\n",
-                                json.rev_before("/"),
-                                feature_id,
-                                gene_name,
-                                refdata.name[feature_idx]
-                            );
-                            std::process::exit(1);
-                        }
-                        if region_type == "L-REGION+V-REGION" && ref_start == 0 {
-                            let chain = a["feature"]["chain"]
-                                .to_string()
-                                .between("\"", "\"")
-                                .to_string();
-                            // if !chain.starts_with("IG") { continue; } // *******************
-                            tig_start = a["contig_match_start"].as_i64().unwrap() as isize;
-                            cdr3_start -= tig_start as usize;
-                            chain_type = chain.clone();
-                            if chain == "IGH".to_string() || chain == "TRB".to_string() {
-                                left = true;
-                            }
-                            v_ref_id = feature_idx;
-                            cigarv = a["cigar"].to_string().between("\"", "\"").to_string();
-                        } else {
-                            // also check for IG chain?????????????????????????????????????????
-                            let ref_stop = a["annotation_match_end"].as_u64().unwrap() as usize;
-                            let ref_len = a["annotation_length"].as_u64().unwrap() as usize;
-                            if region_type == "J-REGION" && ref_stop == ref_len {
-                                tig_stop = a["contig_match_end"].as_i64().unwrap() as isize;
-                                j_ref_id = feature_idx;
-                                j_start = a["contig_match_start"].as_i64().unwrap() as usize;
-                                j_start_ref =
-                                    a["annotation_match_start"].as_i64().unwrap() as usize;
-                            }
-                            if region_type == "5'UTR" {
-                                u_ref_id = Some(feature_idx);
-                            }
-                            if region_type == "D-REGION" {
-                                d_ref_id = Some(feature_idx);
-                            }
-                            if region_type == "C-REGION" {
-                                c_ref_id = Some(feature_idx);
-                                c_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
-                            }
-                        }
-                    }
-                    if v_ref_id == 1000000 {
-                        continue;
-                    }
-
-                    // Compute annv from cigarv.  We don't compute the mismatch entry.
-
-                    let mut cg = Vec::<Vec<u8>>::new(); // pieces of cigar string
-                    let mut piece = Vec::<u8>::new();
-                    for c in cigarv.chars() {
-                        piece.push(c as u8);
-                        if c.is_ascii_alphabetic() {
-                            cg.push(piece.clone());
-                            piece.clear();
-                        }
-                    }
-                    let t = v_ref_id as i32;
-                    let (mut len1, mut len2) = (0, 0);
-                    let (mut ins, mut del) = (0, 0);
-                    for i in 0..cg.len() {
-                        let x = strme(&cg[i][0..cg[i].len() - 1]).force_i32();
-                        if cg[i][cg[i].len() - 1] == b'M' {
-                            if len1 == 0 {
-                                len1 = x;
-                            } else if len2 == 0 {
-                                len2 = x;
-                            } else {
-                                // probably can't happen
-                                len1 = 0;
-                                len2 = 0;
-                                break;
-                            }
-                        }
-                        if cg[i][cg[i].len() - 1] == b'I' {
-                            ins = x;
-                        }
-                        if cg[i][cg[i].len() - 1] == b'D' {
-                            del = x;
-                        }
-                    }
-                    annv.push((0 as i32, len1, t, 0, 0));
-                    if ins > 0 && ins % 3 == 0 && del == 0 && len2 > 0 {
-                        let start = (len1 + ins) as i32;
-                        annv.push((start, len2, t, len1, 0));
-                    } else if del > 0 && del % 3 == 0 && ins == 0 && len2 > 0 {
-                        annv.push((len1, len2, t, len1 + del, 0));
-                    }
-                }
-
-                // Correct CDR3 start for insertion.
-
-                if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
-                    let ins = annv[1].0 - annv[0].0 - annv[0].1;
-                    cdr3_start -= ins as usize;
-                }
-
-                // Keep going.
-
-                if tig_start < 0 || tig_stop < 0 {
-                    eprintme!(tig_start, tig_stop);
-                    json_error(Some(&json), &ctl);
-                }
-                let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
-                let quals0 = v["quals"].to_string();
-                let quals0 = quals0.after("\"").as_bytes();
-                let mut quals = Vec::<u8>::new();
-                let mut slashed = false;
-                for i in 0..quals0.len() - 1 {
-                    if !slashed && quals0[i] == b'\\'
-                    /* && ( i == 0 || quals0[i-1] != b'\\' ) */
-                    {
-                        slashed = true;
-                        continue;
-                    }
-                    slashed = false;
-                    quals.push(quals0[i]);
-                }
-                assert_eq!(full_seq.len(), quals.len());
-                let seq = full_seq[tig_start..tig_stop].to_string();
-                for i in 0..quals.len() {
-                    quals[i] -= 33 as u8;
-                }
-                let full_quals = quals.clone();
-                let quals = quals[tig_start..tig_stop].to_vec();
-                // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
-                let umi_count = v["umi_count"].as_i64().unwrap() as usize;
-                let read_count = v["read_count"].as_i64().unwrap() as usize;
-                let mut sample = None;
-                let mut donor = None;
-                let mut tag = None;
-                if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
-                    sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
-                    donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
-                } else {
-                    // the way we use s1 and d1 here is flaky
-                    if sample_info.sample_id[li].len() > 0
-                        && (sample_info.sample_id[li] != "s1".to_string()
-                            || sample_info.sample_donor[li].len() == 0)
-                    {
-                        sample = Some(sample_info.sample_id[li].clone());
-                    }
-                    if sample_info.donor_id[li].len() > 0
-                        && (sample_info.donor_id[li] != "d1".to_string()
-                            || sample_info.sample_donor[li].len() == 0)
-                    {
-                        donor = Some(sample_info.donor_id[li].clone());
-                    }
-                }
-                if sample_info.tag[li].contains_key(&barcode.clone()) {
-                    tag = Some(sample_info.tag[li][&barcode.clone()].clone());
-                }
-                let mut sample_index = None;
-                let mut donor_index = None;
-                let mut tag_index = None;
-                if sample.is_some() {
-                    if sample.is_some() {
-                        sample_index =
-                            Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
-                    }
-                    if donor.is_some() {
-                        donor_index =
-                            Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
-                    }
-                }
-                if tag.is_some() {
-                    tag_index = Some(bin_position(&sample_info.tag_list, &tag.unwrap()) as usize);
-                }
-                tigs.push(TigData {
-                    cdr3_dna: cdr3_dna.to_string(),
-                    len: seq.len(),
-                    seq: seq.as_bytes().to_vec(),
-                    v_start: tig_start,
-                    v_stop: v_stop,
-                    v_stop_ref: v_stop_ref,
-                    j_start: j_start,
-                    j_start_ref: j_start_ref,
-                    j_stop: tig_stop,
-                    c_start: c_start,
-                    full_seq: full_seq.as_bytes().to_vec(),
-                    v_ref_id: v_ref_id,
-                    d_ref_id: d_ref_id,
-                    j_ref_id: j_ref_id,
-                    c_ref_id: c_ref_id,
-                    u_ref_id: u_ref_id,
-                    cdr3_aa: cdr3_aa.to_string(),
-                    cdr3_start: cdr3_start,
-                    quals: quals,
-                    full_quals: full_quals,
-                    barcode: barcode.to_string(),
-                    tigname: tigname.to_string(),
-                    left: left,
-                    dataset_index: li,
-                    sample_index: sample_index,
-                    donor_index: donor_index,
-                    tag_index: tag_index,
-                    umi_count: umi_count,
-                    read_count: read_count,
-                    chain_type: chain_type.clone(),
-                    annv: annv.clone(),
-                });
+                parse_vector_entry_from_json(
+                    &x,
+                    &json,
+                    accept_inconsistent,
+                    &sample_info,
+                    li,
+                    &refdata,
+                    &to_ref_index,
+                    reannotate,
+                    &ctl,
+                    &mut vdj_cells,
+                    &mut cr_version,
+                    &mut tigs,
+                );
             }
         }
     }
