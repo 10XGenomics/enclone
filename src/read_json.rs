@@ -468,25 +468,71 @@ pub fn read_json(
     }
     let mut f = BufReader::new(open_maybe_compressed(&jsonx));
     // ◼ This loop could be speeded up, see comments above.
-    loop {
-        match read_vector_entry_from_json(&mut f) {
-            None => break,
-            Some(x) => {
-                parse_vector_entry_from_json(
-                    &x,
-                    &json,
-                    accept_inconsistent,
-                    &sample_info,
-                    li,
-                    &refdata,
-                    &to_ref_index,
-                    reannotate,
-                    &ctl,
-                    &mut vdj_cells,
-                    &mut cr_version,
-                    &mut tigs,
-                );
+    if !reannotate {
+        loop {
+            match read_vector_entry_from_json(&mut f) {
+                None => break,
+                Some(x) => {
+                    parse_vector_entry_from_json(
+                        &x,
+                        &json,
+                        accept_inconsistent,
+                        &sample_info,
+                        li,
+                        &refdata,
+                        &to_ref_index,
+                        reannotate,
+                        &ctl,
+                        &mut vdj_cells,
+                        &mut cr_version,
+                        &mut tigs,
+                    );
+                }
             }
+        }
+    } else {
+        // Parallelized for reannotate.
+        let mut xs = Vec::<Vec<u8>>::new();
+        loop {
+            match read_vector_entry_from_json(&mut f) {
+                None => break,
+                Some(x) => {
+                    xs.push(x);
+                }
+            }
+        }
+        let mut results = Vec::<(usize, Vec<String>, String, Vec<TigData>)>::new();
+        for i in 0..xs.len() {
+            results.push((
+                i,
+                Vec::<String>::new(),
+                String::new(),
+                Vec::<TigData>::new(),
+            ));
+        }
+        results.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            parse_vector_entry_from_json(
+                &xs[i],
+                &json,
+                accept_inconsistent,
+                &sample_info,
+                li,
+                &refdata,
+                &to_ref_index,
+                reannotate,
+                &ctl,
+                &mut res.1,
+                &mut res.2,
+                &mut res.3,
+            );
+        });
+        for i in 0..xs.len() {
+            vdj_cells.append(&mut results[i].1);
+            if results[i].2.len() > 0 {
+                *cr_version = results[i].2.clone();
+            }
+            tigs.append(&mut results[i].3);
         }
     }
     let mut tig_bc = Vec::<Vec<TigData>>::new();
