@@ -39,6 +39,29 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     }
     seqs.par_sort();
     seqs.dedup();
+
+    // If there are multiple seqs entries whose first three elements agree,
+    // delete all but the first.
+
+    let mut to_delete = vec![false; seqs.len()];
+    let mut i = 0;
+    while i < seqs.len() {
+        let mut j = i + 1;
+        while j < seqs.len() {
+            if seqs[j].0 != seqs[i].0 || seqs[j].1 != seqs[i].1 || seqs[j].2 != seqs[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        for k in i + 1..j {
+            to_delete[k] = true;
+        }
+        i = j;
+    }
+    erase_if(&mut seqs, &to_delete);
+
+    // Proceed.
+
     let mut edges0 = Vec::<(usize, usize, usize)>::new();
     let mut results = Vec::<(usize, Vec<(usize, usize, usize)>)>::new();
     for i in 0..tig_bc.len() {
@@ -49,17 +72,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
         for j1 in 0..tig_bc[i].len() {
             if tig_bc[i][j1].left {
                 let x1 = &tig_bc[i][j1];
-                let p1 = bin_position(
-                    &seqs,
-                    &(x1.seq.clone(), true, x1.cdr3_aa.clone(), x1.v_ref_id),
-                ) as usize;
+                let p1 =
+                    lower_bound(&seqs, &(x1.seq.clone(), false, x1.cdr3_aa.clone(), 0)) as usize;
                 for j2 in 0..tig_bc[i].len() {
                     if !tig_bc[i][j2].left {
                         let x2 = &tig_bc[i][j2];
-                        let p2 = bin_position(
-                            &seqs,
-                            &(x2.seq.clone(), false, x2.cdr3_aa.clone(), x2.v_ref_id),
-                        ) as usize;
+                        let p2 = lower_bound(&seqs, &(x2.seq.clone(), false, x2.cdr3_aa.clone(), 0))
+                            as usize;
                         res.1.push((p1, p2, min(x1.umi_count, x2.umi_count)));
                     }
                 }
