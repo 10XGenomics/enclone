@@ -86,10 +86,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{enclone help command} for how to remove the \\bold{PRE} part of the \
              command.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -133,10 +130,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              hand-selected gene and one antibody.  You can use any gene(s) you like and any \
              antibodies for which you have feature barcodes.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -207,10 +201,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              \\boldblue{enclone help faq}\\blue{.}\n\n",
         );
         h.print("\\red{Happy encloning!}\n\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -262,10 +253,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              \\bold{LEGEND=color1,\"text1\",...,colorn,\"textn\"}\n\
              to the command line.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -438,9 +426,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.print_tab3();
         h.print("\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 }

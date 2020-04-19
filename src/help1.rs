@@ -98,10 +98,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc_greenish("", "███ USE THIS TO SEARCH ALL THE HELP PAGES! ███");
         h.print_tab2();
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -159,10 +156,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              If you go through all those tests and everything worked, you should be \
              good to go!\n\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -204,10 +198,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              When enclone uses less, it passes the argument -R, which causes certain characters \
              to be hidden, namely escape codes that color or bold text.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -343,10 +334,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             \\boldred{9573} clonotypes having at least two cells each, of which \
             \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -399,10 +387,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "• If for whatever reason you need to turn off output paging, add the argument \
              \\bold{NOPAGER} to the enclone command.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -553,9 +538,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         // done
 
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 }

@@ -36,10 +36,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -246,10 +243,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.doc("See \"enclone help cvars\".", "\\ext");
         h.print_tab2();
         h.print("\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -473,9 +467,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
 
         // done
 
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 }
