@@ -155,14 +155,33 @@ The concatenated help pages are also
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
 
 | command | what it provides |
-| ------- | ---------------- |
+| :------ | :--------------- |
 | enclone help | help to test for correct setup |
 | endclone | what you see here; guide to all the doc |
 | enclone help quick | quick guide to getting started |
 | enclone help how | how enclone works |
 | enclone help command | info about enclone command line argument processing |
-
-___________________________________________________________________________________________________
+| enclone help glossary    |  glossary of terms used by enclone, and conventions                 |
+| enclone help example1    |  explanation of an example                                          |
+| enclone help example2    |  example showing gene expression and feature barcodes               |
+| enclone help support     |  how we can help, enclone@10xgenomics.com                           |
+| enclone help input       |  how to provide input to enclone                                    |
+| enclone help input_tech  |  how to provide input to enclone (technical notes)                  |
+| enclone help parseable   |  parseable output                                                   |
+| enclone help plot        |  generate a honeycomb plot showing clonotypes                       |
+| enclone help filter      |  clonotype filtering options, scanning for feature enrichment       |
+| enclone help special     |  special filtering options                                          |
+| enclone help lvars       |  lead column options                                                |
+| enclone help cvars       |  per chain column options                                           |
+| enclone help amino       |  per chain column options for amino acids                           |
+| enclone help display     |  other clonotype display options                                    |
+| enclone help indels      |  insertion and deletion handling                                    |
+| enclone help color       |  how enclone uses color, and related things                         |
+| enclone help ideas       |  ideas for features that might be implemented                       |
+| enclone help faq         |  frequently asked questions                                         |
+| enclone help developer   |  a few things for developers                                        |
+| enclone help all         |  concatenation of all the help pages                                |
+|                          |  ███ USE THIS TO SEARCH ALL THE HELP PAGES! ███                     |
 
 ## Understanding enclone output
 
