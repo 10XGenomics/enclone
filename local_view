@@ -9,9 +9,6 @@ rm -rf ~/public_html/enclone
 
 mkdir -p ~/public_html/enclone/src
 
-cp -p demo.html ~/public_html/enclone
 cp -p README.md ~/public_html/enclone
-cp -pr pages ~/public_html/enclone
-cp -pr fonts ~/public_html/enclone
-cp -pr img ~/public_html/enclone
-cp -p src/help.all.html ~/public_html/enclone/src
+cp -p {demo.html,demo_alt.html} ~/public_html/enclone
+cp -pr {pages,fonts,img} ~/public_html/enclone
