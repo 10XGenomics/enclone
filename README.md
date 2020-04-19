@@ -153,6 +153,15 @@ documentation within its online menus.  To get started you should:
 The concatenated help pages are also
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
+
+| command | what it provides |
+| ------- | ---------------- |
+| enclone help | help to test for correct setup |
+| endclone | what you see here; guide to all the doc |
+| enclone help quick | quick guide to getting started |
+| enclone help how | how enclone works |
+| enclone help command | info about enclone command line argument processing |
+
 ___________________________________________________________________________________________________
 
 ## Understanding enclone output
