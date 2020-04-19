@@ -156,7 +156,7 @@ The concatenated help pages are also
 
 | command | what it provides |
 | :------ | :--------------- |
-| enclone help | help to test for correct setup |
+| [enclone help](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.setup.html) | help to test for correct setup |
 | endclone | what you see here; guide to all the doc |
 | enclone help quick | quick guide to getting started |
 | enclone help how | how enclone works |
