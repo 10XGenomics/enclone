@@ -96,7 +96,6 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
-
     // Provide help if requested.
 
     {
