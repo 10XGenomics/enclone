@@ -434,7 +434,7 @@ pub fn read_json(
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
     reannotate: bool,
-    mut cr_version: &mut String,
+    cr_version: &mut String,
     ctl: &EncloneControl,
     mut vdj_cells: &mut Vec<String>,
 ) -> Vec<Vec<TigData>> {
