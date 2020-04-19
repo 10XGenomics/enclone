@@ -157,30 +157,30 @@ The concatenated help pages are also
 | command | what it provides |
 | :------ | :--------------- |
 | [enclone help](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.setup.html) | help to test for correct setup |
-| endclone | what you see here; guide to all the doc |
-| enclone help quick | quick guide to getting started |
-| enclone help how | how enclone works |
-| enclone help command | info about enclone command line argument processing |
-| enclone help glossary    |  glossary of terms used by enclone, and conventions                 |
-| enclone help example1    |  explanation of an example                                          |
-| enclone help example2    |  example showing gene expression and feature barcodes               |
-| enclone help support     |  how we can help, enclone@10xgenomics.com                           |
-| enclone help input       |  how to provide input to enclone                                    |
-| enclone help input_tech  |  how to provide input to enclone (technical notes)                  |
-| enclone help parseable   |  parseable output                                                   |
-| enclone help plot        |  generate a honeycomb plot showing clonotypes                       |
-| enclone help filter      |  clonotype filtering options, scanning for feature enrichment       |
-| enclone help special     |  special filtering options                                          |
-| enclone help lvars       |  lead column options                                                |
-| enclone help cvars       |  per chain column options                                           |
-| enclone help amino       |  per chain column options for amino acids                           |
-| enclone help display     |  other clonotype display options                                    |
-| enclone help indels      |  insertion and deletion handling                                    |
-| enclone help color       |  how enclone uses color, and related things                         |
-| enclone help ideas       |  ideas for features that might be implemented                       |
-| enclone help faq         |  frequently asked questions                                         |
-| enclone help developer   |  a few things for developers                                        |
-| enclone help all         |  concatenation of all the help pages                                |
+| [endclone](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.main.html) | what you see here; guide to all the doc |
+| [enclone help quick](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.quick.html) | quick guide to getting started |
+| [enclone help how](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.how.html) | how enclone works |
+| [enclone help command](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.command.html) | info about enclone command line argument processing |
+| [enclone help glossary](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.glossary.html)    |  glossary of terms used by enclone, and conventions                 |
+| [enclone help example1](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.example1.html)    |  explanation of an example                                          |
+| [enclone help example2](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.example2.html)    |  example showing gene expression and feature barcodes               |
+| [enclone help support](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.support.html)     |  how we can help, enclone@10xgenomics.com                           |
+| [enclone help input](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.input.html)       |  how to provide input to enclone                                    |
+| [enclone help input_tech](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.input_tech.html)  |  how to provide input to enclone (technical notes)                  |
+| [enclone help parseable](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.parseable.html)   |  parseable output                                                   |
+| [enclone help plot](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.plot.html)        |  generate a honeycomb plot showing clonotypes                       |
+| [enclone help filter](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.filter.html)      |  clonotype filtering options, scanning for feature enrichment       |
+| [enclone help special](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.special.html)     |  special filtering options                                          |
+| [enclone help lvars](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.lvars.html)       |  lead column options                                                |
+| [enclone help cvars](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.cvars.html)       |  per chain column options                                           |
+| [enclone help amino](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.amino.html)       |  per chain column options for amino acids                           |
+| [enclone help display](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.display.html)     |  other clonotype display options                                    |
+| [enclone help indels](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.indels.html)      |  insertion and deletion handling                                    |
+| [enclone help color](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.color.html)       |  how enclone uses color, and related things                         |
+| [enclone help ideas](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.ideas.html)       |  ideas for features that might be implemented                       |
+| [enclone help faq](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.faq.html)         |  frequently asked questions                                         |
+| [enclone help developer](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.developer.html)   |  a few things for developers                                        |
+| [enclone help all](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.all.html)         |  concatenation of all the help pages                                |
 |                          |  ███ USE THIS TO SEARCH ALL THE HELP PAGES! ███                     |
 
 ## Understanding enclone output
