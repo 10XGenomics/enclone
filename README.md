@@ -158,7 +158,7 @@ command line.  All the latter pages are also listed here <b>[BROKEN LINKS]</b>:
 
 | command | what it provides |
 | :------ | :--------------- |
-| [enclone help](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.setup.html) | help to test for correct setup |
+| [<sub>enclone help</sub>](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.setup.html) | help to test for correct setup |
 | [endclone](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.main.html) | what you see here; guide to all the doc |
 | [enclone help quick](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.quick.html) | quick guide to getting started |
 | [enclone help how](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.how.html) | how enclone works |
