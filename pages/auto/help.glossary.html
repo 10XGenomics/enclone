@@ -1,5 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-[01mglossary of terms used by enclone[0m
+<span style="font-weight:bold;">glossary of terms used by enclone</span>
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
 │V..J                │  the full sequence of a V(D)J transcript, from the beginning of the V       │
@@ -12,7 +22,7 @@
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │clonotype           │  all the cells descended from a single fully rearranged T or B cell         │
 │                    │  (approximated computationally)                                             │
-│exact subclonotype  │  all cells having identical transcripts [01m[31m○[0m                                   │
+│exact subclonotype  │  all cells having identical transcripts <span style="color:#c23621;font-weight:bold;">○</span>                                   │
 │                    │  (every clonotype is a union of exact subclonotypes)                        │
 │clone               │  a cell in a clonotype, or in an exact subclonotype                         │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
@@ -35,7 +45,7 @@
 │                    │  through the Cell Ranger pipeline                                           │
 └────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 
-[01m[31m○[0m The exact requirements for being in the same exact subclonotype are that cells:
+<span style="color:#c23621;font-weight:bold;">○</span> The exact requirements for being in the same exact subclonotype are that cells:
 • have the same number of productive contigs identified
 • that these have identical bases within V..J
 • that they are assigned the same constant region reference sequences
@@ -43,9 +53,12 @@
   (noting that this difference is nearly always zero).
 Note that we allow mutations within the 5'-UTR and constant regions.
 
-[01mconventions[0m
+<span style="font-weight:bold;">conventions</span>
 
 • When we refer to "V segments", we always include the leader segment.
 • Zero or one?  We number exact subclonotypes as 1, 2, ... and likewise with
 chains within a clonotype, however DNA and amino-acid positions are numbered starting at zero.
 
+</pre>
+</body>
+</html>

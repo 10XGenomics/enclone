@@ -1,11 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-[01minformation about providing input to enclone (technical notes)[0m
+<span style="font-weight:bold;">information about providing input to enclone (technical notes)</span>
 
 enclone only uses certain files, which are all in the outs subdirectory of a Cell Ranger pipeline
 directory:
 
 ┌─────────────────────────────────────────────┬──────────┐
-│[01mfile[0m                                         │  [01mpipeline[0m│
+│<span style="font-weight:bold;">file</span>                                         │  <span style="font-weight:bold;">pipeline</span>│
 ├─────────────────────────────────────────────┼──────────┤
 │all_contig_annotations.json                  │  VDJ     │
 ├─────────────────────────────────────────────┼──────────┤
@@ -21,7 +31,10 @@ directory:
 All of these files are required, and in the indicated structure.  The exact files that are used
 could be changed in the future.
 
-Note that the VDJ outs directories must be from Cell Ranger version [01m[31m≥ 3.1[0m.  There is a workaround
+Note that the VDJ outs directories must be from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1</span>.  There is a workaround
 for earlier versions (which you will be informed of if you try), but it is much slower and the
 results may not be as good.
 
+</pre>
+</body>
+</html>

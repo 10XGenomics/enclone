@@ -1,16 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-[01mper-chain column options[0m: These options define per-chain variables, which correspond to columns
+<span style="font-weight:bold;">per-chain column options</span>: These options define per-chain variables, which correspond to columns
 that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
 
 Per-column variables are specified using
-[01mCVARS=x1,...,xn[0m
+<span style="font-weight:bold;">CVARS=x1,...,xn</span>
 where each xi is one of:
 
 ┌────────────┬───────────────────────────────────────────────────────────────────────────────┐
 │var         │  bases at positions in chain that vary across the clonotype                   │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│u           │  [31m●[0m VDJ UMI count for each exact subclonotype, median across cells             │
-│r           │  [31m●[0m VDJ read count for each exact subclonotype, median across cells            │
+│u           │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells             │
+│r           │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells            │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │const       │  constant region name                                                         │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
@@ -39,10 +49,10 @@ where each xi is one of:
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │notes       │  optional note if there is an insertion or the end of J does not exactly abut │
 │            │  the beginning of C; elided if empty; also single base overlaps between       │
-│            │  J and C are not shown unless you use the special option [01mJC1[0m; we do this      │
+│            │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this      │
 │            │  because with some VDJ references, one nearly always has such an overlap      │
 ├────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│ndiff<n>vj  │  number of base differences within V..J between this exact subclonotype and   │
+│ndiff&lt;n>vj  │  number of base differences within V..J between this exact subclonotype and   │
 │            │  exact subclonotype n                                                         │
 │d_univ      │  distance from universal reference, more specifically,                        │
 │            │  number of base differences within V..J between this exact                    │
@@ -52,33 +62,36 @@ where each xi is one of:
 │            │  as above but computed using donor reference                                  │
 └────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
-[47m [0m [31m●[0m These variables have some alternate versions, as shown in the table below:
-[47m [0m 
-[47m [0m ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-[47m [0m │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
-[47m [0m │          │                               │          │  (one cell)  │             │  (one cell)│
-[47m [0m ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-[47m [0m │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
-[47m [0m │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
-[47m [0m │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
-[47m [0m │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
-[47m [0m └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
-[47m [0m Some explanation is required.  If you use enclone without certain options, you get the "visual"
-[47m [0m column.
-[47m [0m • Add the option [01mPER_CELL[0m (see "enclone help display") and then you get visual output with extra
-[47m [0m lines for each cell within an exact subclonotype, and each of those extra lines is described by
-[47m [0m the "visual (one cell)" column.
-[47m [0m • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
-[47m [0m column for that output, unless you specify [01mPCELL[0m, and then you get the last column.
-[47m [0m • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
-[47m [0m (to save space), and optionally, in names of fields on the command line.
-[47m [0m [32m▶[0m If you try out these features, you'll see exactly what happens! [32m◀[0m
+<span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
+<span style="background-color:#cbcccd;"> </span> 
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
+<span style="background-color:#cbcccd;"> </span> column.
+<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
+<span style="background-color:#cbcccd;"> </span> lines for each cell within an exact subclonotype, and each of those extra lines is described by
+<span style="background-color:#cbcccd;"> </span> the "visual (one cell)" column.
+<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
+<span style="background-color:#cbcccd;"> </span> column for that output, unless you specify <span style="font-weight:bold;">PCELL</span>, and then you get the last column.
+<span style="background-color:#cbcccd;"> </span> • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
+<span style="background-color:#cbcccd;"> </span> (to save space), and optionally, in names of fields on the command line.
+<span style="background-color:#cbcccd;"> </span> <span style="color:#25bc24;">▶</span> If you try out these features, you'll see exactly what happens! <span style="color:#25bc24;">◀</span>
 
-At least one variable must be listed.  The default is [01mu,const,notes[0m.  [01mCVARSP[0m: same as [01mCVARS[0m but
+At least one variable must be listed.  The default is <span style="font-weight:bold;">u,const,notes</span>.  <span style="font-weight:bold;">CVARSP</span>: same as <span style="font-weight:bold;">CVARS</span> but
 appends.
 
+</pre>
+</body>
+</html>

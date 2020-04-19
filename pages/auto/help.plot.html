@@ -1,40 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-[01mplotting clonotypes[0m
+<span style="font-weight:bold;">plotting clonotypes</span>
 
 enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
-You can see an example at [32mhttps://github.com/10XGenomics/enclone/blob/master/README.md#honeycomb[0m.
+You can see an example at <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/README.md#honeycomb</span>.
 
 enclone provides three ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.
 
 The first way is to use the argument
-[01mPLOT="filename,sample1->color1,...,samplen->colorn"[0m
+<span style="font-weight:bold;">PLOT="filename,sample1->color1,...,samplen->colorn"</span>
 which creates an svg file of the given name, and assigns the given colors to the given samples. 
 Unspecified samples will be black.
 
 The second way is to provide simply
-[01mPLOT=filename[0m
-on the command line, and then provide the [01mcolor[0m field in the CSV defined by the [01mMETA[0m option.  This
+<span style="font-weight:bold;">PLOT=filename</span>
+on the command line, and then provide the <span style="font-weight:bold;">color</span> field in the CSV defined by the <span style="font-weight:bold;">META</span> option.  This
 assigns a color to each dataset.
 
-The third way is to use the simple [01mPLOT[0m specification, and assign a color to each barcode using
-the [01mbc[0m field for [01mMETA[0m.
+The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
+the <span style="font-weight:bold;">bc</span> field for <span style="font-weight:bold;">META</span>.
 
 The colors should be valid colors for use in an svg file.  They can be named colors like red or
-blue (see [32mhttps://www.w3.org/TR/SVG11/types.html#ColorKeywords[0m for a full list) or a hex
+blue (see <span style="color:#25bc24;">https://www.w3.org/TR/SVG11/types.html#ColorKeywords</span> for a full list) or a hex
 specification like #00FFFF for aqua.  The full color description for svg is at
-[32mhttps://www.w3.org/TR/SVGColor12[0m.
+<span style="color:#25bc24;">https://www.w3.org/TR/SVGColor12</span>.
 
 enclone also recognizes the color abbreviations @1, ..., @6, which refer to enclone's color blind
 friendly palette (see "enclone help color").
 
 Each cell is shown as a disk having the given color, and each clonotype is shown as a cluster of
-these disks, which are positioned at random.  We suggest using the [01mMIN_CELLS[0m option (see "enclone
+these disks, which are positioned at random.  We suggest using the <span style="font-weight:bold;">MIN_CELLS</span> option (see "enclone
 help filter") so that tiny clonotypes do not dominate.  The filename argument may be "stdout". 
 Note that plotting is potentially slow.
 
-To add a legend to the graph, add the argument [01mLEGEND[0m to your command line.  This will give you an
+To add a legend to the graph, add the argument <span style="font-weight:bold;">LEGEND</span> to your command line.  This will give you an
 auto-generated legend.  You can also customize the legend by adding an argument of the form
-[01mLEGEND=color1,"text1",...,colorn,"textn"[0m
+<span style="font-weight:bold;">LEGEND=color1,"text1",...,colorn,"textn"</span>
 to the command line.
 
+</pre>
+</body>
+</html>

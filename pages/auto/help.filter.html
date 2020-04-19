@@ -1,5 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
-[01mclonotype filtering options[0m
+<span style="font-weight:bold;">clonotype filtering options</span>
 
 these options cause only certain clonotypes to be printed
 
@@ -14,7 +24,7 @@ these options cause only certain clonotypes to be printed
 │MAX_CHAINS=n         │  only show clonotypes having at most n chains                         │
 │CHAINS=n             │  only show clonotypes having exactly n chains                         │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│CDR3=<pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches       │
+│CDR3=&lt;pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches       │
 │                     │  the given pattern (regular expression)*, from beginning to end       │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names  │
@@ -53,46 +63,46 @@ https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise
 specification for the regular expression version used by enclone may be found at
 https://docs.rs/regex.
 
-[01mlinear conditions[0m
+<span style="font-weight:bold;">linear conditions</span>
 
 enclone understands linear conditions of the form
-[01mc1*v1 ± ... ± cn*vn > d[0m
+<span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
 where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
-Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or < or <= or ≤.  Each vi is a
-lead variable (see "[01menclone help lvars[0m") that represents a sample/donor/tag count or gene/feature
-barcode UMI count.  In evaluating the condition, each vi is replaced by the [01mmean[0m of its values
+Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  Each vi is a
+lead variable (see "<span style="font-weight:bold;">enclone help lvars</span>") that represents a sample/donor/tag count or gene/feature
+barcode UMI count.  In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values
 across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
 some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
-this [01m(IGHV3-7_g) >= 1[0m.
+this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
 
-[01mfiltering by linear conditions[0m
+<span style="font-weight:bold;">filtering by linear conditions</span>
 
 enclone has the capability to filter by bounding certain lead variables, using the command-line
 argument:
-[01mF="L"[0m
+<span style="font-weight:bold;">F="L"</span>
 where L is a linear condition (as defined above).  Currently this is limited to the case where the
-lead variables have been selected using [01mLVARS[0m or [01mLVARSP[0m!  Multiple bounds may be imposed by using
-multiple instances of [01mF=...[0m .
+lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Multiple bounds may be imposed by using
+multiple instances of <span style="font-weight:bold;">F=...</span> .
 
-[01mfeature scanning[0m
+<span style="font-weight:bold;">feature scanning</span>
 
 If gene expression and/or feature barcode data have been generated, enclone can scan all features
 to find those that are enriched in certain clonotypes relative to certain other clonotypes.  This
 feature is turned on using the command line argument
-[01mSCAN="test,control,threshold"[0m
-where each of [01mtest[0m, [01mcontrol[0m and [01mthreshold[0m are linear conditions as defined above.  Blank spaces
-are ignored.  The [01mtest[0m condition defines the "test clonotypes" and the [01mcontrol[0m condition defines
-the "control clonotypes".  Currently, the lead variables in [01mtest[0m and [01mcontrol[0m must be specified by
-[01mLVARS[0m or [01mLVARSP[0m!  The [01mthreshold[0m condition is special: it may use only the variables "t" and "c"
+<span style="font-weight:bold;">SCAN="test,control,threshold"</span>
+where each of <span style="font-weight:bold;">test</span>, <span style="font-weight:bold;">control</span> and <span style="font-weight:bold;">threshold</span> are linear conditions as defined above.  Blank spaces
+are ignored.  The <span style="font-weight:bold;">test</span> condition defines the "test clonotypes" and the <span style="font-weight:bold;">control</span> condition defines
+the "control clonotypes".  Currently, the lead variables in <span style="font-weight:bold;">test</span> and <span style="font-weight:bold;">control</span> must be specified by
+<span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t" and "c"
 that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
-clonotypes.  To get a meaningful result, you should specify [01mMIN_CELLS[0m appropriately and manually
+clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately and manually
 examine the test and control clonotypes to make sure that they make sense.
 
-[01man example[0m
+<span style="font-weight:bold;">an example</span>
 
 Suppose that your data are comprised of two samples named pre and post, representing time points
 relative to some event.  Then
-[01mSCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"[0m
+<span style="font-weight:bold;">SCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"</span>
 would define the test clonotypes to be those satisfying n_post >= 10*n_pre (so having far more
 post cells then pre cells), the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so
 having lots of pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must have a bit
@@ -107,3 +117,6 @@ cleanly defined.
 
 Currently feature scanning requires that each dataset have identical features.
 
+</pre>
+</body>
+</html>

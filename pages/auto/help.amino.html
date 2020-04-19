@@ -1,6 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
 
 There is a complex per-chain column to the left of other per-chain columns, defined by
-[01mAMINO=x1,...,xn[0m: display amino acid columns for the given categories, in one combined ordered
+<span style="font-weight:bold;">AMINO=x1,...,xn</span>: display amino acid columns for the given categories, in one combined ordered
 group, where each xi is one of:
 
 ┌────────┬───────────────────────────────────────────────────────────────────────────────────┐
@@ -18,8 +28,11 @@ group, where each xi is one of:
 └────────┴───────────────────────────────────────────────────────────────────────────────────┘
 
 Note that we compute positions in base space, and then divide by three to get positions in amino
-acid space.  Thus it can happen that a position in amino acid space is shown for both [01mvar[0m and [01mshare[0m.
+acid space.  Thus it can happen that a position in amino acid space is shown for both <span style="font-weight:bold;">var</span> and <span style="font-weight:bold;">share</span>.
 
-The default value for [01mAMINO[0m is [01mcdr3,var,share,donor[0m.  Note that we only report amino acids that
+The default value for <span style="font-weight:bold;">AMINO</span> is <span style="font-weight:bold;">cdr3,var,share,donor</span>.  Note that we only report amino acids that
 are strictly within V..J, thus specifically excluding the codon bridging J and C.
 
+</pre>
+</body>
+</html>

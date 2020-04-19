@@ -96,11 +96,6 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "STABLE_DOC") {
-            ctl.gen_opt.stable_doc = true;
-        }
-    }
 
     // Provide help if requested.
 
@@ -123,6 +118,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 to_delete[i] = true;
             } else if args[i] == "SVG" {
                 ctl.gen_opt.svg = true;
+                to_delete[i] = true;
+            } else if args[i] == "STABLE_DOC" {
+                ctl.gen_opt.stable_doc = true;
                 to_delete[i] = true;
             } else if args[i] == "FORCE_EXTERNAL" {
                 to_delete[i] = true;
