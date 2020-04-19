@@ -180,8 +180,7 @@ The concatenated help pages are also
 | [enclone help ideas](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.ideas.html)       |  ideas for features that might be implemented                       |
 | [enclone help faq](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.faq.html)         |  frequently asked questions                                         |
 | [enclone help developer](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.developer.html)   |  a few things for developers                                        |
-| [enclone help all](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.all.html)         |  concatenation of all the help pages                                |
-|                          |  ███ USE THIS TO SEARCH ALL THE HELP PAGES! ███                     |
+| [enclone help all](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.all.html)         |  concatenation of all the help pages (USE THIS TO SEARCH ALL THE HELP PAGES) |
 
 ## Understanding enclone output
 
