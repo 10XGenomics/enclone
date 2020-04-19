@@ -1,0 +1,40 @@
+
+[01minformation about enclone command-line argument processing[0m
+
+[01m1. Order of processing[0m
+
+• Before processing its command line, enclone first checks for environment
+variables of the form [01mENCLONE_<x>[0m.  These are converted into command-line arguments.  You can set
+any command-line argument this way.  The reason why you might want to use this feature is if you
+find yourself using the same command-line option over and over, and it is more convenient to set
+it once as an environment variable.
+• For example, setting the environment variable [01mENCLONE_PRE[0m to [01m/Users/me/enclone_data[0m is
+equivalent to providing the command-line argument [01mPRE=/Users/me/enclone_data[0m.
+• After checking environment variables, arguments on the command line are read from left to right;
+if an argument name is repeated, only the rightmost value is used, except as noted specifically in
+the documentation.
+
+[01m2. Color[0m
+
+[01m[38;5;25me[0m[01m[38;5;166mn[0m[38;5;178mc[0m[01m[38;5;75ml[0m[01m[38;5;175mo[0m[38;5;36mn[0m[01m[38;5;166me[0m uses ANSI escape codes for color and bolding, frivolously, for emphasis, and more
+importantly for amino acids, to represent different codons.  This is done automatically but you
+can turn it off....
+
+[01m[31mPLEASE READ THIS:[0m
+
+You can turn off escape codes by adding [01mPLAIN[0m to any command.  Use this if you want to peruse
+output using a text editor which does not grok the escape codes.  However some things will not
+make sense without color.
+
+[01m3. Paging[0m
+
+• enclone automatically pipes its output to [01mless -R -F -X[0m.
+• The effect of this will be that you'll see only the first screen of output.  You can then use
+the spacebar to go forward, b to go backward, and q to quit.  The [01m-R[0m option causes escape
+characters to be correctly displayed, the [01m-F[0m option causes an automatic exit if output fits on a
+single screen, and the [01m-X[0m option prevents output from being sent to the "alternate screen" under
+certain platform/version combinations.
+• Type [01mman less[0m if you need more information.
+• If for whatever reason you need to turn off output paging, add the argument [01mNOPAGER[0m to the
+enclone command.
+

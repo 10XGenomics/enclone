@@ -1,0 +1,54 @@
+
+
+Welcome to enclone!
+
+The purpose of this first page is to help you make sure that you're set up properly
+to run enclone.  PLEASE READ!
+
+(for the main help page, please type instead: enclone)
+
+Here we go through several setup tests.  If you have any problem that you can't
+resolve, please email us at enclone@10xgenomics.com.
+
+
+1. Are you using a fixed width font?
+Look at this:
+A FAT BROWN CAT JUMPED OVER THE WALL
+||||||||||||||||||||||||||||||||||||
+Do those two lines end at the same position?  If not, you need to switch your font.
+
+2. Is your terminal window wide enough to see the help pages?
+Your terminal needs to be at least 100 columns wide.  Look at this:
+0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+Does it appear as a single line?  If not, please widen your window.
+
+3. Can your terminal display box characters?
+Look at this:
+┌────────┬─────────┐
+│banana  │  peel   │
+├────────┼─────────┤
+│oops    │  slipped│
+└────────┴─────────┘
+Do you see a neat rectangle composed of four rectangles with words inside them?  Are the vertical
+lines contiguous?  If not, something is wrong with your terminal!  You may need to change the
+terminal font.  For example, Menlo works, but Courier does not.
+
+4. Can your terminal correctly display ANSI escape sequences?
+The following word should be [01mbold[0m.  The following word should be [38;5;12mblue[0m.
+If that doesn't make sense, or is messed up, something is wrong, and you have two options:
+(a) seek help to fix your terminal window
+(b) turn off escape sequences by adding PLAIN to every enclone command, or set
+the environment variable ENCLONE_PLAIN.
+But that should be only a last resort.
+
+5. Can your terminal correctly display unicode characters?
+Do you see a centered dot here • ?
+If not, your terminal has a problem!
+
+6. Does this entire help page appear at once in your terminal window?
+If not, please increase the number of rows in your window to 56.
+
+
+If you go through all those tests and everything worked, you should be good to go!
+
+

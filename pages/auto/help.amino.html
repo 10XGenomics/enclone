@@ -1,0 +1,25 @@
+
+There is a complex per-chain column to the left of other per-chain columns, defined by
+[01mAMINO=x1,...,xn[0m: display amino acid columns for the given categories, in one combined ordered
+group, where each xi is one of:
+
+┌────────┬───────────────────────────────────────────────────────────────────────────────────┐
+│cdr3    │  CDR3 sequence                                                                    │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│var     │  positions in chain that vary across the clonotype                                │
+│share   │  positions in chain that differ consistently from the donor reference             │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donor   │  positions in chain where the donor reference differs from the universal reference│
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donorn  │  positions in chain where the donor reference differs nonsynonymously             │
+│        │  from the universal reference                                                     │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│a-b     │  amino acids numbered a through b (zero-based, inclusive)                         │
+└────────┴───────────────────────────────────────────────────────────────────────────────────┘
+
+Note that we compute positions in base space, and then divide by three to get positions in amino
+acid space.  Thus it can happen that a position in amino acid space is shown for both [01mvar[0m and [01mshare[0m.
+
+The default value for [01mAMINO[0m is [01mcdr3,var,share,donor[0m.  Note that we only report amino acids that
+are strictly within V..J, thus specifically excluding the codon bridging J and C.
+

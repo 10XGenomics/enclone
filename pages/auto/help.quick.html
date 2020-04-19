@@ -1,0 +1,45 @@
+
+[01mquick guide to getting started[0m
+
+Just type this:
+
+[01menclone BCR=p[0m
+
+where [01mp[0m is the path to your Cell Ranger VDJ directory.
+
+Substitute [01mTCR[0m if that's what you've got.
+
+This will show you all the clonotypes, in descending order by number of cells.
+
+You'll need to make your window wide enough so that lines are not folded.  This depends on the
+dataset.
+
+Only one page of output is shown at a time.  To navigate within the full output, use the space bar
+to go forward and the b key to go backward.
+
+See [01menclone help example1[0m for a detailed guide to how to read the enclone output.  A few key
+things you should know:
+
+1. You'll see numbers near the top.  These are amino acid position numbers, and
+   they read downwards.  Numbering starts at the start codon, numbered zero.
+
+2. Each numbered line represents an exact subclonotype: cells having identical V(D)J transcripts.
+
+3. By default, you'll see data in amino acid space.  Only "interesting" amino acids are shown.
+
+Please read on to learn more!
+
+[01mnavigation in enclone[0m
+
+enclone automatically sends its output through the program "less".  This allows you to navigate
+within the output, using the following keys (and many more, not shown, and which you don't need to
+know):
+• space: causes output to page forward
+• b: causes output to page backward
+• /string: finds instances of "string" in the output
+• n: having done the previous, jump to the next instance
+• q: quit, to return to the command line.
+
+When enclone uses less, it passes the argument -R, which causes certain characters to be hidden,
+namely escape codes that color or bold text.
+

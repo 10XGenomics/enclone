@@ -33,6 +33,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "Please also read the documentation at \
              \\green{https://github.com/10XGenomics/enclone/blob/master/README.md}.\n\n",
         );
+
+        // NOTE!  The information below is mirrored in README.md, so if you change this,
+        // you need to change that too.
+
         h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc_red("enclone help", "help to test for correct setup");
         h.doc_red("enclone", "what you see here: guide to all the doc");

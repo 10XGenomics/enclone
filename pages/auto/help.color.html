@@ -1,0 +1,48 @@
+
+Here is the color palette that enclone uses for amino acids:
+
+[01m[38;5;25m█[0m [01m[38;5;175m█[0m [38;5;36m█[0m [01m[38;5;166m█[0m [01m[38;5;75m█[0m [38;5;178m█[0m 
+
+When enclone shows amino acids, it colors each codon differently, via the following scheme:
+
+Alanine        A  [01m[38;5;75mGCT[0m [01m[38;5;175mGCC[0m [01m[38;5;25mGCA[0m [38;5;36mGCG[0m
+Arginine       R  [01m[38;5;75mCGT[0m [01m[38;5;175mCGC[0m [01m[38;5;25mCGA[0m [38;5;36mCGG[0m [38;5;178mAGA[0m [01m[38;5;166mAGG[0m
+Asparagine     N  [01m[38;5;25mAAT[0m [01m[38;5;166mAAC[0m
+Aspartic Acid  D  [38;5;36mGAT[0m [01m[38;5;25mGAC[0m
+Cysteine       C  [38;5;178mTGT[0m [01m[38;5;75mTGC[0m
+Glutamine      Q  [01m[38;5;166mCAA[0m [01m[38;5;25mCAG[0m
+Glutamic Acid  E  [38;5;178mGAA[0m [01m[38;5;175mGAG[0m
+Glycine        G  [01m[38;5;166mGGT[0m [38;5;36mGGC[0m [01m[38;5;175mGGA[0m [01m[38;5;75mGGG[0m
+Histidine      H  [01m[38;5;175mCAT[0m [38;5;178mCAC[0m
+Isoleucine     I  [01m[38;5;75mATT[0m [01m[38;5;175mATC[0m [01m[38;5;25mATA[0m
+Leucine        L  [01m[38;5;75mTTA[0m [38;5;178mTTG[0m [01m[38;5;166mCTT[0m [38;5;36mCTC[0m [01m[38;5;175mCTA[0m [01m[38;5;25mCTG[0m
+Lysine         K  [01m[38;5;75mAAA[0m [38;5;178mAAG[0m
+Methionine     M  [38;5;36mATG[0m
+Phenylalanine  F  [01m[38;5;25mTTT[0m [01m[38;5;166mTTC[0m
+Proline        P  [38;5;36mCCT[0m [01m[38;5;25mCCC[0m [38;5;178mCCA[0m [01m[38;5;175mCCG[0m
+Serine         S  [01m[38;5;166mTCT[0m [38;5;36mTCC[0m [01m[38;5;175mTCA[0m [01m[38;5;75mTCG[0m [38;5;178mAGT[0m [01m[38;5;25mAGC[0m
+Threonine      T  [01m[38;5;175mACT[0m [38;5;178mACC[0m [01m[38;5;166mACA[0m [01m[38;5;25mACG[0m
+Tryptophan     W  [01m[38;5;166mTGG[0m
+Tyrosine       Y  [01m[38;5;75mTAT[0m [01m[38;5;175mTAC[0m
+Valine         V  [38;5;178mGTT[0m [01m[38;5;75mGTC[0m [38;5;36mGTA[0m [01m[38;5;166mGTG[0m
+
+Colored amino acids enable the compact display of all the information in a clonotype.
+
+The coloring is done using special characters, called ANSI escape characters.  Color is used
+occasionally elsewhere by enclone, and there is also some  bolding, accomplished using the same
+mechanism.
+
+Correct display of colors and bolding depends on having a terminal window that is properly set up.
+ As far as we know, this may always be the case, but it is possible that there are exceptions.  In
+addition, in general, text editors do not correctly interpret escape characters.
+
+For both of these reasons, you may wish to turn off the "special effects", either some or all of
+the time.  You can do this by adding the argument
+[01mPLAIN[0m
+to any enclone command.
+
+We know of two methods to get enclone output into another document, along with colors:
+1. Take a screenshot.
+2. Open a new terminal window, type the enclone command, and then convert the terminal window into
+a pdf.  See [01menclone help faq[0m for related instructions.
+

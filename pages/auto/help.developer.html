@@ -1,0 +1,29 @@
+
+[01ma few options for developers[0m
+
+For instructions on how to compile, please see
+[32mhttps://github.com/10XGenomics/enclone/blob/master/COMPILE.md[0m.
+
+┌───────────┬──────────────────────────────────────────────────────────────────────────────────┐
+│COMP       │  report computational performance stats; use this with NOPRINT if you            │
+│           │  only want to see the computational performance stats, and with NOPAGER if you   │
+│           │  want output to be unbuffered                                                    │
+│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert          │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
+│           │  but easy profiling method, to know what the code is doing if it seems to be     │
+│           │  very slow                                                                       │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
+│HAPS=n     │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
+│           │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
+│           │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
+│           │  in some cases, this accounts for most interrupts, resulting in confusing        │
+│           │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
+│           │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
+│           │  information, you probably need to change an instance in the code of             │
+│           │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
+│           │  selected section.                                                               │
+└───────────┴──────────────────────────────────────────────────────────────────────────────────┘
+

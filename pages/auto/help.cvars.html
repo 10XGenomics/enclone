@@ -1,0 +1,84 @@
+
+[01mper-chain column options[0m: These options define per-chain variables, which correspond to columns
+that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
+
+Per-column variables are specified using
+[01mCVARS=x1,...,xn[0m
+where each xi is one of:
+
+┌────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│var         │  bases at positions in chain that vary across the clonotype                   │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│u           │  [31m●[0m VDJ UMI count for each exact subclonotype, median across cells             │
+│r           │  [31m●[0m VDJ read count for each exact subclonotype, median across cells            │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│const       │  constant region name                                                         │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│edit        │  a string that partially defines the edit of the reference V(D)J concatenation│
+│            │  that gives rise to the observed CDR3; this uses a coordinate system in which │
+│            │  0 is the first base of the J ref segment (or the first base of the D ref     │
+│            │  segment for IGH and TRB); for example D-4:4 denotes the deletion of the last │
+│            │  4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V   │
+│            │  and I0:2;S5 denotes that plus a substitution at position 5; in computing     │
+│            │  "edit", for IGH and TRB, we always test every possible D segment,            │
+│            │  regardless of whether one is annotated, and pick the best one; for this      │
+│            │  reason, "edit" may be slow                                                   │
+│comp        │  a measure of CDR3 complexity, which is the total number of S, D and I        │
+│            │  symbols in "edit" as defined above                                           │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│cdr3_dna    │  the CDR3_DNA sequence                                                        │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│vjlen       │  number of bases from the start of the V region to the end of the J region    │
+│clen        │  length of observed constant region (usually truncated at primer start)       │
+│ulen        │  length of observed 5'-UTR sequence                                           │
+│cdiff       │  differences with universal reference constant region, shown in the           │
+│            │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10            │
+│            │  (same but contig has 10 additional bases beyond end of ref C region          │
+│            │  At most five differences are shown, and if there are more, ... is appended.  │
+│udiff       │  like cdiff, but for the 5'-UTR                                               │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│notes       │  optional note if there is an insertion or the end of J does not exactly abut │
+│            │  the beginning of C; elided if empty; also single base overlaps between       │
+│            │  J and C are not shown unless you use the special option [01mJC1[0m; we do this      │
+│            │  because with some VDJ references, one nearly always has such an overlap      │
+├────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ndiff<n>vj  │  number of base differences within V..J between this exact subclonotype and   │
+│            │  exact subclonotype n                                                         │
+│d_univ      │  distance from universal reference, more specifically,                        │
+│            │  number of base differences within V..J between this exact                    │
+│            │  clonotype and universal reference, exclusive of indels, the last 15          │
+│            │  bases of the V and the first 15 bases of the J                               │
+│d_donor     │  distance from donor reference,                                               │
+│            │  as above but computed using donor reference                                  │
+└────────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+[47m [0m [31m●[0m These variables have some alternate versions, as shown in the table below:
+[47m [0m 
+[47m [0m ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+[47m [0m │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+[47m [0m │          │                               │          │  (one cell)  │             │  (one cell)│
+[47m [0m ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+[47m [0m │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+[47m [0m │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+[47m [0m │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+[47m [0m │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+[47m [0m └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+[47m [0m Some explanation is required.  If you use enclone without certain options, you get the "visual"
+[47m [0m column.
+[47m [0m • Add the option [01mPER_CELL[0m (see "enclone help display") and then you get visual output with extra
+[47m [0m lines for each cell within an exact subclonotype, and each of those extra lines is described by
+[47m [0m the "visual (one cell)" column.
+[47m [0m • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
+[47m [0m column for that output, unless you specify [01mPCELL[0m, and then you get the last column.
+[47m [0m • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
+[47m [0m (to save space), and optionally, in names of fields on the command line.
+[47m [0m [32m▶[0m If you try out these features, you'll see exactly what happens! [32m◀[0m
+
+At least one variable must be listed.  The default is [01mu,const,notes[0m.  [01mCVARSP[0m: same as [01mCVARS[0m but
+appends.
+

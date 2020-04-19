@@ -154,6 +154,10 @@ The concatenated help pages are also
 [here](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/src/help.all.html) 
 <b>[BROKEN LINK]</b>.  We may expand this out in the future to show the separate pages.
 
+## Help me!
+
+All the command line help pages are also here <b>[BROKEN LINKS]</b>:
+
 | command | what it provides |
 | :------ | :--------------- |
 | [enclone help](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.setup.html) | help to test for correct setup |
@@ -164,7 +168,7 @@ The concatenated help pages are also
 | [enclone help glossary](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.glossary.html)    |  glossary of terms used by enclone, and conventions                 |
 | [enclone help example1](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.example1.html)    |  explanation of an example                                          |
 | [enclone help example2](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.example2.html)    |  example showing gene expression and feature barcodes               |
-| [enclone help support](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.support.html)     |  how we can help, enclone@10xgenomics.com                           |
+| [enclone help support](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.support.html)     |  how we can help                                                    |
 | [enclone help input](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.input.html)       |  how to provide input to enclone                                    |
 | [enclone help input_tech](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.input_tech.html)  |  how to provide input to enclone (technical notes)                  |
 | [enclone help parseable](https://htmlpreview.github.io/?https://github.com/10XGenomics/enclone/blob/master/pages/auto/help.parseable.html)   |  parseable output                                                   |

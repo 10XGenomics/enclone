@@ -1,0 +1,109 @@
+
+[01mclonotype filtering options[0m
+
+these options cause only certain clonotypes to be printed
+
+┌─────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│MIN_CELLS=n          │  only show clonotypes having at least n cells                         │
+│MAX_CELLS=n          │  only show clonotypes having at most n cells                          │
+│CELLS=n              │  only show clonotypes having exactly n cells                          │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_UMIS=n           │  only show clonotypes having ≳ n UMIs on some chain on some cell      │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS=n         │  only show clonotypes having at least n chains                        │
+│MAX_CHAINS=n         │  only show clonotypes having at most n chains                         │
+│CHAINS=n             │  only show clonotypes having exactly n chains                         │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│CDR3=<pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches       │
+│                     │  the given pattern (regular expression)*, from beginning to end       │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names  │
+│SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers│
+│                     │  both: looks for V, D, J and C segments; double quote only            │
+│                     │  needed if n > 1                                                      │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes           │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│VJ=seq               │  only show clonotypes using exactly the given V..J sequence           │
+│                     │  (string in alphabet ACGT)                                            │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets       │
+│MAX_DATASETS=n       │  only show clonotypes containing cells from at most n datasets        │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│CDIFF                │  only show clonotypes having a difference in constant region with the │
+│                     │  universal reference                                                  │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│DEL                  │  only show clonotypes exhibiting a deletion                           │
+├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes              │
+└─────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+* Examples of how to specify CDR3:
+
+┌────────────────────────────────────────┬────────────────────────────────────────────────┐
+│CDR3=CARPKSDYIIDAFDIW                   │  have exactly this sequence as a CDR3          │
+│CDR3="CARPKSDYIIDAFDIW|CQVWDSSSDHPYVF"  │  have at least one of these sequences as a CDR3│
+│CDR3=".*DYIID.*"                        │  have a CDR3 that contains DYIID inside it     │
+└────────────────────────────────────────┴────────────────────────────────────────────────┘
+
+Note that double quotes should be used if the pattern contains characters other than letters.
+
+A gentle introduction to regular expressions may be found at
+https://en.wikipedia.org/wiki/Regular_expression#Basic_concepts, and a precise
+specification for the regular expression version used by enclone may be found at
+https://docs.rs/regex.
+
+[01mlinear conditions[0m
+
+enclone understands linear conditions of the form
+[01mc1*v1 ± ... ± cn*vn > d[0m
+where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
+Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or < or <= or ≤.  Each vi is a
+lead variable (see "[01menclone help lvars[0m") that represents a sample/donor/tag count or gene/feature
+barcode UMI count.  In evaluating the condition, each vi is replaced by the [01mmean[0m of its values
+across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
+some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
+this [01m(IGHV3-7_g) >= 1[0m.
+
+[01mfiltering by linear conditions[0m
+
+enclone has the capability to filter by bounding certain lead variables, using the command-line
+argument:
+[01mF="L"[0m
+where L is a linear condition (as defined above).  Currently this is limited to the case where the
+lead variables have been selected using [01mLVARS[0m or [01mLVARSP[0m!  Multiple bounds may be imposed by using
+multiple instances of [01mF=...[0m .
+
+[01mfeature scanning[0m
+
+If gene expression and/or feature barcode data have been generated, enclone can scan all features
+to find those that are enriched in certain clonotypes relative to certain other clonotypes.  This
+feature is turned on using the command line argument
+[01mSCAN="test,control,threshold"[0m
+where each of [01mtest[0m, [01mcontrol[0m and [01mthreshold[0m are linear conditions as defined above.  Blank spaces
+are ignored.  The [01mtest[0m condition defines the "test clonotypes" and the [01mcontrol[0m condition defines
+the "control clonotypes".  Currently, the lead variables in [01mtest[0m and [01mcontrol[0m must be specified by
+[01mLVARS[0m or [01mLVARSP[0m!  The [01mthreshold[0m condition is special: it may use only the variables "t" and "c"
+that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
+clonotypes.  To get a meaningful result, you should specify [01mMIN_CELLS[0m appropriately and manually
+examine the test and control clonotypes to make sure that they make sense.
+
+[01man example[0m
+
+Suppose that your data are comprised of two samples named pre and post, representing time points
+relative to some event.  Then
+[01mSCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"[0m
+would define the test clonotypes to be those satisfying n_post >= 10*n_pre (so having far more
+post cells then pre cells), the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so
+having lots of pre cells), and thresholding on t >= 2*c * 0.1, so that the feature must have a bit
+more than twice as many UMIs in the test than the control.  The 0.1 is there to exclude noise from
+features having very low UMI counts.
+
+Feature scanning is not a proper statistical test.  It is a tool for generating a list of feature
+candidates that may then be examined in more detail by rerunning enclone using some of the
+detected features as lead variables (appropriately suffixed).  Ultimately the power of the scan is
+determined by having "enough" cells in both the test and control sets, and in having those sets
+cleanly defined.
+
+Currently feature scanning requires that each dataset have identical features.
+

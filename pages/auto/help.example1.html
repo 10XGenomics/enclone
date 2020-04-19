@@ -1,0 +1,54 @@
+
+Suppose you have placed the datasets that enclone comes with in the
+directory /users/jdoe/enclone_data.  Then you can run this command:
+
+% enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW
+
+[1m[38;5;27m[1] GROUP = 1 CLONOTYPES = 13 CELLS[0m
+
+[1.1] CLONOTYPE = 13 CELLS
+┌───────────┬───────────────────────────────────────────────┬──────────────────────────────┐
+│           │  [1mCHAIN 1[0m                                      │  CHAIN 2                     │
+│           │  [1m181.1.1|IGHV4-30-2 ◆ 53|IGHJ3[0m                │  254|IGKV1D-39 ◆ 218|IGKJ5   │
+│           ├───────────────────────────────────────────────┼──────────────────────────────┤
+│           │              1 1111111111111111               │  1 111111111111              │
+│           │  2224556788990 1111122222222223               │  0 011111111112              │
+│           │  0571380317346 5678901234567890               │  6 901234567890              │
+│           │                ══════CDR3══════               │    ════CDR3════              │
+│reference  │  [1m[38;5;25mL[0m[38;5;36mS[1m[38;5;175mS[38;5;75mA[0m[38;5;36mSR[38;5;178mP[1m[38;5;175mHP[38;5;75mV[38;5;166mR[0m[38;5;36mS[38;5;178mT[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[1m[38;5;166mW[0m               │  [1m[38;5;175mT[0m [38;5;178mC[1m[38;5;166mQ[38;5;25mQ[0m◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  [1m[38;5;166mV[38;5;75mS[0m[38;5;178mP[1m[38;5;175mTYR[0m[38;5;178mH[1m[38;5;175mYP[0m[38;5;178mV[1m[38;5;25mT[38;5;166mS[38;5;175mT[0m ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[1m[38;5;166mW[0m               │  [1m[38;5;175mT[0m [38;5;178mC[1m[38;5;166mQ[38;5;25mQ[0m◦◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────┼──────────────────────────────┤
+│[1m#   n      [0m│[1m  ........x.... ..............x.     u  const  [0m│[1m  x ......x.....      u  const[0m│
+│1  10      │  [1m[38;5;166mV[38;5;75mS[0m[38;5;178mP[1m[38;5;175mTYR[0m[38;5;178mH[1m[38;5;175mYP[0m[38;5;178mV[1m[38;5;25mT[38;5;166mS[38;5;175mT[0m [38;5;178mC[38;5;36mA[38;5;178mR[1m[38;5;166mR[38;5;175mY[38;5;166mF[38;5;75mG[0m[38;5;36mV[1m[38;5;166mV[38;5;75mA[0m[38;5;36mD[1m[38;5;75mA[38;5;25mF[0m[38;5;36mD[1m[38;5;175mI[38;5;166mW[0m  4285  IGHM   │  [1m[38;5;175mT[0m [38;5;178mC[1m[38;5;166mQ[38;5;25mQ[0m[38;5;178mS[1m[38;5;175mY[0m[38;5;178mST[38;5;36mP[1m[38;5;175mPI[0m[38;5;178mT[1m[38;5;166mF[0m  11793  IGKC │
+│2   2      │  [1m[38;5;166mV[38;5;75mS[0m[38;5;178mP[1m[38;5;175mTYR[0m[38;5;178mH[1m[38;5;175mY[38;5;75mS[0m[38;5;178mV[1m[38;5;25mT[38;5;166mS[38;5;175mT[0m [38;5;178mC[38;5;36mA[38;5;178mR[1m[38;5;166mR[38;5;175mY[38;5;166mF[38;5;75mG[0m[38;5;36mV[1m[38;5;166mV[38;5;75mA[0m[38;5;36mD[1m[38;5;75mA[38;5;25mF[0m[38;5;36mD[1m[38;5;75mI[38;5;166mW[0m  4383  IGHM   │  [1m[38;5;75mA[0m [38;5;178mC[1m[38;5;166mQ[38;5;25mQ[0m[38;5;178mS[1m[38;5;175mY[0m[38;5;178mS[1m[38;5;25mP[0m[38;5;36mP[1m[38;5;175mPI[0m[38;5;178mT[1m[38;5;166mF[0m  13922  IGKC │
+│3   1      │  [1m[38;5;166mV[38;5;75mS[0m[38;5;178mP[1m[38;5;175mTYR[0m[38;5;178mH[1m[38;5;175mYP[0m[38;5;178mV[1m[38;5;25mT[38;5;166mS[38;5;175mT[0m [38;5;178mC[38;5;36mA[38;5;178mR[1m[38;5;166mR[38;5;175mY[38;5;166mF[38;5;75mG[0m[38;5;36mV[1m[38;5;166mV[38;5;75mA[0m[38;5;36mD[1m[38;5;75mA[38;5;25mF[0m[38;5;36mD[1m[38;5;175mI[38;5;166mW[0m     5  IGHM   │                              │
+└───────────┴───────────────────────────────────────────────┴──────────────────────────────┘
+
+This shows an invocation of enclone that takes one dataset as input and exhibits
+all clonotypes for which some chain has the given CDR3 sequence.
+
+What you see here is a compressed view of the entire information encoded in the
+full length transcripts of the 13 cells comprising this clonotype: every base!
+There is a lot to explain about the compression, so please read carefully.
+
+• Clonotypes are grouped.  Here we see just one group having one clonotype in it.
+• This clonotype has three exact subclonotypes in it, the first of which has 10 cells.
+• This clonotype has two chains.  The reference segments for them are shown at the top.
+• The notation 181.1.1 says that this V reference sequence is an alternate allele
+  derived from the universal reference sequence (contig in the reference file)
+  numbered 181, that is from donor 1 ("181.1") and is alternate allele 1 for that donor.
+• Sometimes chains are missing from exact subclonotypes.
+• Amino acids are assigned different colors depending on which codon they represent.
+• Numbered columns show the state of particular amino acids, e.g. the first column is for amino
+  acid 20 in chain 1 (where 0 is the start codon).  The numbers read vertically, downward!
+• Universal ref: state for the contig in the reference file.
+• Donor ref: state for the inferred donor germline sequence.
+• ◦s are "holes" in the recombined region where the reference doesn't make sense.
+• The "dot and x" line has xs where there's a difference *within* the clonotype.
+• Amino acids are shown if they differ from the universal reference or are in the CDR3.
+• u = median UMI count for a chain in the exact subclonotype.
+• const = const region name for a chain in the exact subclonotype.
+
+The view you see here is configurable: see the documentation at [01menclone help lvars[0m and [01menclone
+help cvars[0m.  See also [01menclone help command[0m for how to remove the [01mPRE[0m part of the command.
+
