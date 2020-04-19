@@ -153,7 +153,8 @@ ________________________________________________________________________________
 
 ## Help me!
 
-All the command line help pages are also here <b>[BROKEN LINKS]</b>:
+enclone help is split between material on this site and pages that are invocable from the enclone
+command line.  All the latter pages are also listed here <b>[BROKEN LINKS]</b>:
 
 | command | what it provides |
 | :------ | :--------------- |
