@@ -1,0 +1,80 @@
+@font-face {
+    font-family: "DejaVuLGCSansMono";
+    src: url('../fonts/DejaVuLGCSansMono.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "DejaVuLGCSansMono";
+    src: url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype");
+    font-weight: bold;
+}
+
+code {
+  font-family: "DejaVuLGCSansMono";
+  font-size: 90%;
+  background: rgb(92%,92%,92%);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+html { 
+  font-size: 95%; 
+  font-family: "Arial";
+  line-height: 140%;
+} 
+
+h1 {
+  color: black;
+  line-height: 30px;
+}
+
+body {
+  color: rgb(36, 41, 46);
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-bottom: 50px;
+}
+
+hr {
+    height: .25em;
+    padding: 0;
+    margin: 0px 0;
+    background-color: #e1e4e8;
+    border: 0;
+}
+
+p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 20px;
+}
+
+ol {
+    display: block;
+    list-style-type: decimal;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 20px;
+}
+
+li {
+    margin: 5px 0;
+}
+
+a:link {
+    text-decoration: none;
+    color: rgb(3, 102, 214);
+}
