@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="font-weight:bold;">special filtering options</span>
+
+This page documents some options, most of which allow noise filters to be turned off, and which
+normally should not be invoked.  The last two options can be used to simplify the view of a
+clonotype.
+
+┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NGEX                │  If gene expression and/or feature barcode data are provided, if a barcode  │
+│                    │  is called a cell by the VDJ part of the Cell Ranger pipeline, but not      │
+│                    │  called a cell by the gene expression and/or feature barcode part, then the │
+│                    │  default behavior of enclone is to remove such cells from clonotypes.  This │
+│                    │  option disables that behavior.                                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NCROSS              │  If you specify that two or more libraries arose from the same sample (i.e. │
+│                    │  from the same tube of cells), then the default behavior of enclone is to   │
+│                    │  "cross filter" so as to remove expanded exact subclonotypes that are       │
+│                    │  present in one library but not another, in a fashion that would be highly  │
+│                    │  improbable, assuming random draws of cells from the tube.  These are       │
+│                    │  believed to arise when a plasma or plasmablast cell breaks up during during│
+│                    │  or after pipetting from the tube, and the resulting fragments seed GEMs,   │
+│                    │  yielding expanded 'fake' clonotypes that are residues of real single plasma│
+│                    │  cells.  The NCROSS options turns off this filter, which could be useful so │
+│                    │  long as you interpret the restored clonotypes as representing what are     │
+│                    │  probably single cells.  There may also be other situations where the filter│
+│                    │  should be turned off, and in particular the filter can do weird things if  │
+│                    │  inputs are somehow mis-specified to enclone.  Note that for purposes of    │
+│                    │  this option, enclone defines a sample by the pair                          │
+│                    │  (sample name, donor name).                                                 │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NGRAPH_FILTER       │  By default, enclone filters to remove exact subclonotypes that by virtue of│
+│                    │  their relationship to other exact subclonotypes, appear to arise from      │
+│                    │  background mRNA or a phenotypically similar phenomenon.  The               │
+│                    │  NGRAPH_FILTER option turns off this filtering.                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NQUAL               │  By default, enclone filters out exact subclonotypes having a base in V..J  │
+│                    │  that looks like it might be wrong.  More specifically, enclone finds bases │
+│                    │  which are not Q60 for a barcode, not Q40 for two barcodes, are not         │
+│                    │  supported by other exact subclonotypes, are variant within the clonotype,  │
+│                    │  and which disagree with the donor reference.  NQUAL turns this off.        │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWEAK_CHAINS        │  By default, enclone filters chains from clonotypes that are                │
+│                    │  weak and appear to be artifacts, perhaps arising from a stray mRNA molecule│
+│                    │  that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWEAK_ONESIES       │  By default, enclone filters out onesie clonotypes having a single exact    │
+│                    │  subclonotype, and that are light chain or TRA, and whose number of cells is│
+│                    │  less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.│
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NFOURSIE_KILL       │  By default, if enclone finds a foursie exact subclonotype that             │
+│                    │  contains a twosie exact subclonotype having at least ten cells, it kills   │
+│                    │  the foursie exact subclonotype, no matter how many cells it has.  The      │
+│                    │  foursies that are killed are believed to be rare oddball artifacts arising │
+│                    │  from repeated cell doublets or GEMs that contain two cells and multiple gel│
+│                    │  beads.  The argument NFOURSIE_KILL turns off this filtering.               │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NWHITEF             │  By default, enclone filters out rare artifacts arising from contamination  │
+│                    │  of oligos on gel beads.  The NWHITEF option turns off this filter.         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NBC_DUP             │  By default, enclone filters out duplicated barcodes within an exact        │
+│                    │  subclonotype.  The NBC_DUP option turns off this filter.                   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│MIX_DONORS          │  By default, enclone will prevent cells from different donors from being    │
+│                    │  placed in the same clonotype.  The MIX_DONORS option turns off this        │
+│                    │  behavior, thus allowing cells from different donors to be placed in the    │
+│                    │  same clonotype.  The main use of this option is for specificity testing, in│
+│                    │  which data from different donors are deliberately combined in an attempt   │
+│                    │  to find errors.  Use of the bc field for META input specification          │
+│                    │  automatically turns on this option.                                        │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│KEEP_IMPROPER       │  An exact subclonotype is improper if it does not have one chain            │
+│                    │  of each type.  This option causes all improper exact subclonotypes to be   │
+│                    │  retained, although they may be removed by other filters.                   │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS_EXACT=n  │  Delete any exact subclonotype having less than n chains.  You can use this │
+│                    │  to "purify" a clonotype so as to display only exact subclonotypes having   │
+│                    │  all their chains.                                                          │
+│MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
+│                    │  to use this if you have a very large and complex expanded clonotype,       │
+│                    │  for which you would like to see a simplified view.                         │
+└────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
+
+</pre>
+</body>
+</html>

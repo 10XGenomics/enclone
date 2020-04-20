@@ -291,7 +291,17 @@ pub fn main_enclone(args: &Vec<String>) {
                 "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
             let f = open_for_read![imgt];
             for line in f.lines() {
-                let s = line.unwrap();
+                let mut s = line.unwrap();
+                if ctl.gen_opt.imgt_fix {
+                    // Fix IGHJ6.
+                    if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
+                        .to_string()
+                        || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
+                            .to_string()
+                    {
+                        s += "G";
+                    }
+                }
                 refx += &s;
                 refx += &"\n";
             }

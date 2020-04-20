@@ -171,6 +171,12 @@ impl HelpDesk {
             self.print_plain(&format!("{}\n", strme(&log)));
         }
     }
+    pub fn end_doc(&mut self) {
+        if !self.help_all {
+            self.dump();
+            std::process::exit(0);
+        }
+    }
     pub fn print_with_box(&mut self, x: &str, bold_box: bool) {
         let y = print_to(x);
         let mut rows = Vec::<Vec<String>>::new();

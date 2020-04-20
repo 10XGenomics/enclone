@@ -196,6 +196,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.stable_doc = true;
         } else if is_simple_arg(&arg, "IMGT") {
             ctl.gen_opt.imgt = true;
+        } else if is_simple_arg(&arg, "IMGT_FIX") {
+            ctl.gen_opt.imgt_fix = true;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
         } else if arg == "HTML" {

@@ -183,7 +183,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.ldoc(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact.",
+            "By default, enclone filters out duplicated barcodes within an exact",
         );
         h.doc(
             "",
@@ -247,10 +247,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "for which you would like to see a simplified view.");
         h.print_tab2();
         h.print("\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -552,10 +549,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              there is only one dataset.\n\n",
         );
         h.print("\\bold{LVARSP=x1,...,xn} is like \\bold{LVARS} but appends to the list.\n\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -704,10 +698,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -754,10 +745,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              Note that we only report amino acids that are strictly within V..J, \
              thus specifically excluding the codon bridging J and C.\n\n",
         );
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -824,9 +812,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.print_tab2();
         h.print("\n");
-        if !h.help_all {
-            h.dump();
-            std::process::exit(0);
-        }
+        h.end_doc();
     }
 }

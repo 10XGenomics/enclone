@@ -1,0 +1,7 @@
+#!/bin/csh
+
+enclone HTML STABLE_DOC      > pages/auto/help.main.html
+enclone HTML STABLE_DOC help > pages/auto/help.setup.html
+foreach x (quick how command glossary example1 example2 support input input_tech parseable plot filter special lvars cvars amino display indels color ideas faq developer all)
+    enclone help $x HTML STABLE_DOC > pages/auto/help.$x.html
+end

@@ -125,6 +125,8 @@ How this reference was created
 - /mnt/home/jaffe/repos/cellranger/lib/bin/fetch-imgt --genome human-imgt-20200415
 - mkvdjref --genome=vdj_IMGT_human_20200415 --seqs=human-imgt-20200415-mkvdjref-input.fasta
 
+IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
+
 NGROUP: don't print the GROUP stuff
 
 SVG: render output as svg, clonotype by clonotype.  There are problems with this:

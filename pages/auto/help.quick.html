@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="font-weight:bold;">quick guide to getting started</span>
+
+Just type this:
+
+<span style="font-weight:bold;">enclone BCR=p</span>
+
+where <span style="font-weight:bold;">p</span> is the path to your Cell Ranger VDJ directory.
+
+Substitute <span style="font-weight:bold;">TCR</span> if that's what you've got.
+
+This will show you all the clonotypes, in descending order by number of cells.
+
+You'll need to make your window wide enough so that lines are not folded.  This depends on the
+dataset.
+
+Only one page of output is shown at a time.  To navigate within the full output, use the space bar
+to go forward and the b key to go backward.
+
+See <span style="font-weight:bold;">enclone help example1</span> for a detailed guide to how to read the enclone output.  A few key
+things you should know:
+
+1. You'll see numbers near the top.  These are amino acid position numbers, and
+   they read downwards.  Numbering starts at the start codon, numbered zero.
+
+2. Each numbered line represents an exact subclonotype: cells having identical V(D)J transcripts.
+
+3. By default, you'll see data in amino acid space.  Only "interesting" amino acids are shown.
+
+Please read on to learn more!
+
+<span style="font-weight:bold;">navigation in enclone</span>
+
+enclone automatically sends its output through the program "less".  This allows you to navigate
+within the output, using the following keys (and many more, not shown, and which you don't need to
+know):
+• space: causes output to page forward
+• b: causes output to page backward
+• /string: finds instances of "string" in the output
+• n: having done the previous, jump to the next instance
+• q: quit, to return to the command line.
+
+When enclone uses less, it passes the argument -R, which causes certain characters to be hidden,
+namely escape codes that color or bold text.
+
+</pre>
+</body>
+</html>

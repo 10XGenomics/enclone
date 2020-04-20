@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+Suppose you have placed the datasets that enclone comes with in the
+directory /users/jdoe/enclone_data.  Then you can run this command:
+
+% enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW
+
+<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 13 CELLS</span>
+
+[1.1] CLONOTYPE = 13 CELLS
+┌───────────┬───────────────────────────────────────────────┬──────────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                      │  CHAIN 2                     │
+│           │  <span style="font-weight:bold;">181.1.1|IGHV4-30-2 ◆ 53|IGHJ3</span>                │  254|IGKV1D-39 ◆ 218|IGKJ5   │
+│           ├───────────────────────────────────────────────┼──────────────────────────────┤
+│           │              1 1111111111111111               │  1 111111111111              │
+│           │  2224556788990 1111122222222223               │  0 011111111112              │
+│           │  0571380317346 5678901234567890               │  6 901234567890              │
+│           │                ══════CDR3══════               │    ════CDR3════              │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">S</span><span style="color:#eb99c2;font-weight:bold;">S</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">SR</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">HP</span><span style="color:#72c0ff;">V</span><span style="color:#f37721;">R</span><span style="color:#31c39a;">S</span><span style="color:#e7bd20;">T</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span>◦◦◦◦◦◦◦◦◦              │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">YP</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span>◦◦◦◦◦◦◦◦◦              │
+├───────────┼───────────────────────────────────────────────┼──────────────────────────────┤
+│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ........x.... ..............x.     u  const  </span>│<span style="font-weight:bold;">  x ......x.....      u  const</span>│
+│1  10      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">YP</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4285  IGHM   │  <span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  11793  IGKC │
+│2   2      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4383  IGHM   │  <span style="color:#72c0ff;font-weight:bold;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">S</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  13922  IGKC │
+│3   1      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">YP</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>     5  IGHM   │                              │
+└───────────┴───────────────────────────────────────────────┴──────────────────────────────┘
+
+This shows an invocation of enclone that takes one dataset as input and exhibits
+all clonotypes for which some chain has the given CDR3 sequence.
+
+What you see here is a compressed view of the entire information encoded in the
+full length transcripts of the 13 cells comprising this clonotype: every base!
+There is a lot to explain about the compression, so please read carefully.
+
+• Clonotypes are grouped.  Here we see just one group having one clonotype in it.
+• This clonotype has three exact subclonotypes in it, the first of which has 10 cells.
+• This clonotype has two chains.  The reference segments for them are shown at the top.
+• The notation 181.1.1 says that this V reference sequence is an alternate allele
+  derived from the universal reference sequence (contig in the reference file)
+  numbered 181, that is from donor 1 ("181.1") and is alternate allele 1 for that donor.
+• Sometimes chains are missing from exact subclonotypes.
+• Amino acids are assigned different colors depending on which codon they represent.
+• Numbered columns show the state of particular amino acids, e.g. the first column is for amino
+  acid 20 in chain 1 (where 0 is the start codon).  The numbers read vertically, downward!
+• Universal ref: state for the contig in the reference file.
+• Donor ref: state for the inferred donor germline sequence.
+• ◦s are "holes" in the recombined region where the reference doesn't make sense.
+• The "dot and x" line has xs where there's a difference *within* the clonotype.
+• Amino acids are shown if they differ from the universal reference or are in the CDR3.
+• u = median UMI count for a chain in the exact subclonotype.
+• const = const region name for a chain in the exact subclonotype.
+
+The view you see here is configurable: see the documentation at <span style="font-weight:bold;">enclone help lvars</span> and <span style="font-weight:bold;">enclone
+help cvars</span>.  See also <span style="font-weight:bold;">enclone help command</span> for how to remove the <span style="font-weight:bold;">PRE</span> part of the command.
+
+</pre>
+</body>
+</html>

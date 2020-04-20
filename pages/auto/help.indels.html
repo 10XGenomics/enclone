@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="font-weight:bold;">handling of insertions and deletions</span>
+
+enclone can recognize and display a single insertion or deletion in a contig relative to the
+reference, so long as its length is divisible by three, is relatively short, and occurs within the
+V segment, not too close to its right end.
+
+These indels could be germline, however most such events are already captured in a reference
+sequence.  Currently the donor reference code in enclone does not recognize indels.
+
+SHM deletions are rare, and SHM insertions are even more rare.
+
+Deletions are displayed using hyphens (-).  If you use the <span style="font-weight:bold;">var</span> option for <span style="font-weight:bold;">cvars</span>, the hyphens will
+be displayed in base space, where they are initially observed.  For the <span style="font-weight:bold;">AMINO</span> option, the deletion
+is first shifted by up to two bases, so that the deletion starts at a base position that is
+divisible by three.  Then the deleted amino acids are shown as hyphens.
+
+Insertions are shown only in amino acid space, in a special per-chain column called <span style="font-weight:bold;">notes</span> that
+appears if there is an insertion.  Colored amino acids are shown for the insertion, and the
+position of the insertion is shown.  The position is the position of the amino acid after which
+the insertion appears, where the first amino acid (start codon) is numbered 0.
+
+</pre>
+</body>
+</html>
