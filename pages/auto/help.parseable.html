@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="font-weight:bold;">parseable output</span>
+
+The standard output of enclone is designed to be read by humans, but is not readily parseable by
+computers.  We supplement this with parseable output that can be easily read by computers.
+
+The default behavior for this is to generate a CSV file having "every possible" field (over a
+hundred).  We also provide an option to print only selected fields, and some options which enable
+inspection, short of generating a separate CSV file.
+
+Parseable output is targeted primarily at R and Python users, because of the ease of wrangling CSV
+files with these languages.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃Parseable output is invoked by using the argument                                                ┃
+┃<span style="font-weight:bold;">POUT=filename</span>                                                                                    ┃
+┃specifying the name of the file that is to be written to.                                        ┃
+┃<span style="background-color:#cbcccd;"> </span> The filename "stdout" may be used for a preview; in that case parseable output is generated    ┃
+┃<span style="background-color:#cbcccd;"> </span> separately for each clonotype and the two output types are integrated.  There is also          ┃
+┃<span style="background-color:#cbcccd;"> </span> "stdouth", which is similar, but uses spaces instead of commas, and lines things up in columns.┃
+┃By default, we show four chains for each clonotype, regardless of how many chains it             ┃
+┃has, filling in with null entries.  One may instead specify n chains using the argument          ┃
+┃<span style="font-weight:bold;">PCHAINS=n</span>                                                                                        ┃
+┃The parseable output fields may be specified using                                               ┃
+┃<span style="font-weight:bold;">PCOLS=x1,...,xn</span>                                                                                  ┃
+┃where each xi is one of the field names shown below.                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Over time additional fields may be added and the order of fields may change.
+
+There is an alternate parseable output mode in which one line is emitted for each cell, rather
+then each exact subclonotype.  This mode is enabled by adding the argument <span style="font-weight:bold;">PCELL</span> to the command
+line.  Each exact subclonotype then yields a sequence of output lines that are identical except as
+noted below.
+
+If you want to completely suppress the generation of visual clonotypes, add <span style="font-weight:bold;">NOPRINT</span> to the enclone
+command line.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">FASTA output.</span>  This is a separate feature. To generate nucleotide FASTA output for each chain in  ┃
+┃each exact subclonotype, use the argument <span style="font-weight:bold;">FASTA=filename</span>.  The special case <span style="font-weight:bold;">stdout</span> will cause the ┃
+┃FASTA records to be shown as part of standard output.  The FASTA records that are generated are of┃
+┃the form V(D)JC, where V is the full V segment (including the leader) and C is the full constant  ┃
+┃region, copied verbatim from the reference.  If a particular chain in a particular exact          ┃
+┃subclonotype is not assigned a constant region, then we use the constant region that was assigned ┃
+┃to the clonotype.  If no constant region at all was assigned, then the FASTA record is omitted.   ┃
+┃Similarly, <span style="font-weight:bold;">FASTA_AA=filename</span> may be used to generate a matching amino acid FASTA file.            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+<span style="color:#c23621;font-weight:bold;">───────────────────────</span>
+<span style="color:#c23621;font-weight:bold;">parseable output fields</span>
+<span style="color:#c23621;font-weight:bold;">───────────────────────</span>
+
+<span style="font-weight:bold;">1. per clonotype group fields</span>
+
+┌──────────────┬──────────────────────────────────────────┐
+│group_id      │  identifier of clonotype group - 0,1, ...│
+├──────────────┼──────────────────────────────────────────┤
+│group_ncells  │  total number of cells in the group      │
+└──────────────┴──────────────────────────────────────────┘
+
+<span style="font-weight:bold;">2. per clonotype fields</span>
+
+┌──────────────────┬────────────────────────────────────────────────────────────────┐
+│clonotype_id      │  identifier of clonotype within the clonotype group = 0, 1, ...│
+├──────────────────┼────────────────────────────────────────────────────────────────┤
+│clonotype_ncells  │  total number of cells in the clonotype                        │
+├──────────────────┼────────────────────────────────────────────────────────────────┤
+│nchains           │  total number of chains in the clonotype                       │
+└──────────────────┴────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">3. per chain fields, where &lt;i> is 1,2,... (see above)
+each of these has the same value for each exact clonotype</span>
+
+┌──────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│v_name&lt;i>             │  name of V segment                                                    │
+│d_name&lt;i>             │  name of D segment (or null)                                          │
+│j_name&lt;i>             │  name of J segment                                                    │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│v_id&lt;i>               │  id of V segment                                                      │
+│d_id&lt;i>               │  id of D segment (or null)                                            │
+│j_id&lt;i>               │  id of J segment                                                      │
+├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype                │
+│var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype         │
+│share_indices_dna&lt;i>  │  DNA positions in chain that are constant across the clonotype,       │
+│                      │  but differ from the donor ref                                        │
+│share_indices_aa&lt;i>   │  amino acid positions in chain that are constant across the clonotype,│
+│                      │  all of these are comma-separated lists                               │
+│                      │  but differ from the donor ref                                        │
+└──────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">4. per exact subclonotype fields</span>
+
+┌───────────────────────┬─────────────────────────────────────────────────────────────────────────┐
+│exact_subclonotype_id  │  identifer of exact subclonotype = 1, 2, ...                            │
+├───────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│barcodes               │  comma-separated list of barcodes for the exact subclonotype            │
+│&lt;dataset>_barcodes     │  like "barcodes", but restricted to the dataset with the given name     │
+│barcode                │  if PCELL is specified, barcode for one cell                            │
+│&lt;dataset>_barcode      │  if PCELL is specified, barcode for one cell, or null, if the barcode is│
+│                       │  not from the given dataset                                             │
+├───────────────────────┴─────────────────────────────────────────────────────────────────────────┤
+│In addition, every lead variable may be specified as a field.  See "enclone help lvars".         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">5. per chain, per exact subclonotype fields, where &lt;i> is 1,2,... (see above)</span>
+
+[all apply to chain i of a particular exact clonotype]
+
+┌───────────────┬──────────────────────────────────────────────────────────────────────────┐
+│vj_seq&lt;i>      │  DNA sequence of V..J                                                    │
+│seq&lt;i>         │  full DNA sequence                                                       │
+│q&lt;n>_&lt;i>       │  special option to display a comma-separated list of the quality         │
+│               │  scores for chain i, at zero-based position n, numbered starting at the  │
+│               │  beginning of the V segment, for each cell in the exact subclonotype     │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│v_start&lt;i>     │  start of V segment on full DNA sequence                                 │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│const_id&lt;i>    │  numerical identifier of constant region (or null, if not known)         │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│utr_id&lt;i>      │  numerical identifier of 5'-UTR region (or null, if not known)           │
+│utr_name&lt;i>    │  name of 5'-UTR region (or null, if not known)                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│cdr3_start&lt;i>  │  base position start of CDR3 sequence on full contig                     │
+│cdr3_aa&lt;i>     │  amino acid sequence of CDR3                                             │
+├───────────────┼──────────────────────────────────────────────────────────────────────────┤
+│var_aa&lt;i>      │  amino acids that vary across the clonotype (synonymous changes included)│
+├───────────────┴──────────────────────────────────────────────────────────────────────────┤
+│In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.        │
+│See "enclone help cvars".                                                                 │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+
+</pre>
+</body>
+</html>

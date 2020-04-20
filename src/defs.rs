@@ -362,6 +362,7 @@ pub struct GeneralOpt {
     pub svg: bool,
     pub stable_doc: bool,
     pub imgt: bool,
+    pub imgt_fix: bool,
     pub ngroup: bool,
     pub jc1: bool,
     pub trace_barcode: String,

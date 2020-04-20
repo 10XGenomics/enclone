@@ -29,6 +29,7 @@ use vector_utils::*;
 // Hmm, seems like the edges go from heavy to light.
 
 pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
+    let mut ndels = 0;
     let mut seqs = Vec::<(Vec<u8>, bool, String, usize)>::new();
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
@@ -38,6 +39,29 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     }
     seqs.par_sort();
     seqs.dedup();
+
+    // If there are multiple seqs entries whose first three elements agree,
+    // delete all but the first.
+
+    let mut to_delete = vec![false; seqs.len()];
+    let mut i = 0;
+    while i < seqs.len() {
+        let mut j = i + 1;
+        while j < seqs.len() {
+            if seqs[j].0 != seqs[i].0 || seqs[j].1 != seqs[i].1 || seqs[j].2 != seqs[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        for k in i + 1..j {
+            to_delete[k] = true;
+        }
+        i = j;
+    }
+    erase_if(&mut seqs, &to_delete);
+
+    // Proceed.
+
     let mut edges0 = Vec::<(usize, usize, usize)>::new();
     let mut results = Vec::<(usize, Vec<(usize, usize, usize)>)>::new();
     for i in 0..tig_bc.len() {
@@ -48,17 +72,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
         for j1 in 0..tig_bc[i].len() {
             if tig_bc[i][j1].left {
                 let x1 = &tig_bc[i][j1];
-                let p1 = bin_position(
-                    &seqs,
-                    &(x1.seq.clone(), true, x1.cdr3_aa.clone(), x1.v_ref_id),
-                ) as usize;
+                let p1 =
+                    lower_bound(&seqs, &(x1.seq.clone(), false, x1.cdr3_aa.clone(), 0)) as usize;
                 for j2 in 0..tig_bc[i].len() {
                     if !tig_bc[i][j2].left {
                         let x2 = &tig_bc[i][j2];
-                        let p2 = bin_position(
-                            &seqs,
-                            &(x2.seq.clone(), false, x2.cdr3_aa.clone(), x2.v_ref_id),
-                        ) as usize;
+                        let p2 = lower_bound(&seqs, &(x2.seq.clone(), false, x2.cdr3_aa.clone(), 0))
+                            as usize;
                         res.1.push((p1, p2, min(x1.umi_count, x2.umi_count)));
                     }
                 }
@@ -146,7 +166,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                             let w = stats[i].2;
                             if graph {
                                 println!(
-                                    "\nkill type 2, from {} to {}, ncells = {}, numi = {}",
+                                    "\nkill type 1, from {} to {}, ncells = {}, numi = {}",
                                     seqs[v].2, seqs[w].2, ncells, numi
                                 );
                                 println!(
@@ -165,6 +185,16 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                                     && ncellsx >= MIN_RATIO_KILL * ncells
                                     && numix >= MIN_RATIO_KILL * numi
                                 {
+                                    if graph {
+                                        println!(
+                                            "\nkill type 2, from {} to {}, ncells = {}, numi = {}",
+                                            seqs[v].2, seqs[w].2, ncells, numi
+                                        );
+                                        println!(
+                                            "killed by {} to {}, ncells = {}, numi = {}",
+                                            seqs[v].2, seqs[stats[0].2].2, ncells_best, numi_best
+                                        );
+                                    }
                                     res.1.push((v, w));
                                 }
                             }
@@ -221,6 +251,9 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     });
     for i in 0..tig_bc.len() {
         to_delete[i] = results[i].1;
+        if to_delete[i] {
+            ndels += 1;
+        }
     }
     erase_if(&mut tig_bc, &to_delete);
     if graph {
@@ -231,7 +264,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     // Kill weak branches from heavy to light chains.
 
     let mut log = Vec::<u8>::new();
-    fwriteln!(log, "BRANCHING FROM HEAVY CHAINS");
+    fwriteln!(log, "\nBRANCHING FROM HEAVY CHAINS");
     const MIN_RATIO_KILL_HEAVY: usize = 8;
     const MAX_KILL_HEAVY: usize = 6;
     const MAX_KILL_HEAVY_CELLS: usize = 1;
@@ -266,6 +299,13 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
                     && (stats[i].0).0 <= MAX_KILL_HEAVY
                     && (stats[i].0).1 <= MAX_KILL_HEAVY_CELLS
                 {
+                    if graph {
+                        let w = stats[i].1;
+                        println!(
+                            "\nkill type 3, from {} to {}\nkilled by {} to {}",
+                            seqs[v].2, seqs[w].2, seqs[v].2, seqs[stats[0].1].2
+                        );
+                    }
                     res.1.push((v, stats[i].1));
                 }
             }
@@ -306,10 +346,14 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
     });
     for i in 0..tig_bc.len() {
         to_delete[i] = results[i].1;
+        if to_delete[i] {
+            ndels += 1;
+        }
     }
     erase_if(&mut tig_bc, &to_delete);
     if graph {
         fwriteln!(log, "");
         print!("{}", strme(&log));
+        println!("total graph filter deletions = {}", ndels);
     }
 }

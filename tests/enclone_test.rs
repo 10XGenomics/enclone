@@ -421,30 +421,71 @@ fn test_help_no_stable() {
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
-    let out_file = format!("src/help.all.html");
-    let old = read_to_string(&out_file).unwrap();
-    let mut new = Command::new("target/release/enclone");
-    let mut new = new.arg("help");
-    new = new.arg("all");
-    new = new.arg("HTML");
-    new = new.arg("STABLE_DOC");
-    new = new.arg("NOPAGER");
-    let new = new
-        .arg("FORCE_EXTERNAL")
-        .output()
-        .expect(&format!("failed to execute test_help_output"));
-    if new.status.code() != Some(0) {
-        eprintln!("Attempt to run enclone help all failed.\n");
-        std::process::exit(1);
-    }
-    let new2 = stringme(&new.stdout);
-    if old != new2 {
-        eprintln!(
-            "\nYou need to update help output by typing \
-                \"enclone help all HTML STABLE_DOC > src/help.all.html\", \
-                assuming that the change is expected.\n"
-        );
-        std::process::exit(1);
+    let pages = vec![
+        "setup",
+        "main",
+        "quick",
+        "how",
+        "command",
+        "glossary",
+        "example1",
+        "example2",
+        "support",
+        "input",
+        "input_tech",
+        "parseable",
+        "plot",
+        "filter",
+        "special",
+        "lvars",
+        "cvars",
+        "amino",
+        "display",
+        "indels",
+        "color",
+        "ideas",
+        "faq",
+        "developer",
+        "all",
+    ];
+    for p in pages {
+        let mut command = format!("enclone help {}", p);
+        if p == "setup" {
+            command = "enclone help".to_string();
+        } else if p == "main" {
+            command = "enclone".to_string();
+        }
+        let out_file = format!("pages/auto/help.{}.html", p);
+        let old = read_to_string(&out_file).unwrap();
+        let mut new = Command::new("target/release/enclone");
+        let mut new = new.arg("HTML");
+        if p == "setup" {
+            new = new.arg("help");
+        } else if p == "main" {
+        } else {
+            new = new.arg("help");
+            new = new.arg(p);
+        }
+        new = new.arg("STABLE_DOC");
+        new = new.arg("NOPAGER");
+        let new = new
+            .arg("FORCE_EXTERNAL")
+            .output()
+            .expect(&format!("failed to execute test_help_output"));
+        if new.status.code() != Some(0) {
+            eprintln!("Attempt to run {} failed.\n", command);
+            std::process::exit(1);
+        }
+        let new2 = stringme(&new.stdout);
+        if old != new2 {
+            eprintln!(
+                "\nHelp test failed on {}.\n\
+                 You need to update help output by typing \"./build_help\", \
+                    assuming that the change is expected.\n",
+                p
+            );
+            std::process::exit(1);
+        }
     }
 }
 

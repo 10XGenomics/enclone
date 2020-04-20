@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+There is a complex per-chain column to the left of other per-chain columns, defined by
+<span style="font-weight:bold;">AMINO=x1,...,xn</span>: display amino acid columns for the given categories, in one combined ordered
+group, where each xi is one of:
+
+┌────────┬───────────────────────────────────────────────────────────────────────────────────┐
+│cdr3    │  CDR3 sequence                                                                    │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│var     │  positions in chain that vary across the clonotype                                │
+│share   │  positions in chain that differ consistently from the donor reference             │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donor   │  positions in chain where the donor reference differs from the universal reference│
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│donorn  │  positions in chain where the donor reference differs nonsynonymously             │
+│        │  from the universal reference                                                     │
+├────────┼───────────────────────────────────────────────────────────────────────────────────┤
+│a-b     │  amino acids numbered a through b (zero-based, inclusive)                         │
+└────────┴───────────────────────────────────────────────────────────────────────────────────┘
+
+Note that we compute positions in base space, and then divide by three to get positions in amino
+acid space.  Thus it can happen that a position in amino acid space is shown for both <span style="font-weight:bold;">var</span> and <span style="font-weight:bold;">share</span>.
+
+The default value for <span style="font-weight:bold;">AMINO</span> is <span style="font-weight:bold;">cdr3,var,share,donor</span>.  Note that we only report amino acids that
+are strictly within V..J, thus specifically excluding the codon bridging J and C.
+
+</pre>
+</body>
+</html>

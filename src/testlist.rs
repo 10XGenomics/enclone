@@ -69,6 +69,7 @@ pub const TESTS: [&str; 56] = [
     // 18. makes sure cross filtering is isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
+    // There were also some cells that were lost due to a bug in graph filtering.
     r###"BCR=123085 CDR3=CARRYFGVVADAFDIW"###,
     // 20. example affected by whitelist (gel bead oligo contamination) filtering, and test u_Σ
     r###"BCR=52177 AMINO=cdr3 PER_CELL CDR3=CATWDDSLSGPNWVF CVARSP=u_Σ"###,

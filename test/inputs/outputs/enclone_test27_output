@@ -6,7 +6,7 @@ SUMMARY STATISTICS
 2. for the selected clonotypes
    • number of clonotypes = 337
    • number of clonotypes having at least two cells = 144
-   • number of cells in clonotypes = 1402
+   • number of cells in clonotypes = 1404
    • number of clonotypes having 1 chains = 19
    • number of clonotypes having 2 chains = 304
    • number of clonotypes having 3 chains = 12
@@ -14,6 +14,6 @@ SUMMARY STATISTICS
    ┌───────────────────┐
    │sample  donor     n│
    ├───────────────────┤
-   │s1      d1     1402│
+   │s1      d1     1404│
    └───────────────────┘
    

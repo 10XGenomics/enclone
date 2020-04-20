@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+<span style="font-weight:bold;">other options that control clonotype display</span>
+
+┌───────────┬───────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL   │  expand out each exact clonotype line, showing one line per cell,             │
+│           │  for each such line, displaying the barcode name, the number of UMIs assigned,│
+│           │  and the gene expression UMI count, if applicable, under gex_med              │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│BARCODES   │  print list of all barcodes of the cells in each clonotype, in a              │
+│           │  single line near the top of the printout for a given clonotype               │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SEQC       │  print V..J sequence for each chain in the first exact subclonotype, near     │
+│           │  the top of the printout for a given clonotype                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC  │  print full sequence for each chain in the first exact subclonotype,          │
+│           │  near the top of the printout for a given clonotype                           │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SUM        │  print sum row for each clonotype                                             │
+│MEAN       │  print mean row for each clonotype                                            │
+└───────────┴───────────────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">options that control clonotype grouping</span>
+
+we plan to add grouping capability in a future version of enclone, and for now, as a placeholder,
+we have the following "toy" options:
+
+┌──────────────────┬─────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3  │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
+│GROUP_VJ_REFNAME  │  group by sharing identical V and J reference gene names,           │
+│                  │  but ignores foursies and moresies                                  │
+├──────────────────┼─────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP         │  minimum number of clonotypes in group to print (default = 1)       │
+└──────────────────┴─────────────────────────────────────────────────────────────────────┘
+
+</pre>
+</body>
+</html>

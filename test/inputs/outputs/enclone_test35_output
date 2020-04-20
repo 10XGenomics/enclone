@@ -413,8 +413,8 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="74.09" cy="213.61" r="4.93" fill="red" />
 <circle cx="79.02" cy="222.15" r="4.93" fill="red" />
 <circle cx="83.95" cy="230.68" r="4.93" fill="red" />
-<circle cx="186.85" cy="326.75" r="4.93" fill="orange" />
-<circle cx="191.78" cy="335.29" r="4.93" fill="orange" />
+<circle cx="186.85" cy="326.75" r="4.93" fill="black" />
+<circle cx="191.78" cy="335.29" r="4.93" fill="black" />
 <circle cx="191.78" cy="318.21" r="4.93" fill="orange" />
 <circle cx="196.71" cy="326.75" r="4.93" fill="orange" />
 <circle cx="196.71" cy="343.83" r="4.93" fill="orange" />
@@ -428,12 +428,14 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="206.57" cy="309.67" r="4.93" fill="orange" />
 <circle cx="211.50" cy="335.29" r="4.93" fill="orange" />
 <circle cx="211.50" cy="318.21" r="4.93" fill="orange" />
+<circle cx="211.50" cy="352.37" r="4.93" fill="orange" />
 <circle cx="211.50" cy="301.13" r="4.93" fill="orange" />
 <circle cx="216.43" cy="343.83" r="4.93" fill="orange" />
 <circle cx="216.43" cy="326.75" r="4.93" fill="orange" />
 <circle cx="216.43" cy="309.67" r="4.93" fill="orange" />
 <circle cx="221.36" cy="335.29" r="4.93" fill="orange" />
 <circle cx="221.36" cy="318.21" r="4.93" fill="orange" />
+<circle cx="221.36" cy="352.37" r="4.93" fill="orange" />
 <circle cx="221.36" cy="301.13" r="4.93" fill="orange" />
 <circle cx="226.29" cy="343.83" r="4.93" fill="orange" />
 <circle cx="226.29" cy="326.75" r="4.93" fill="orange" />

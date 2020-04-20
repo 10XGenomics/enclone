@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title></title>
+</head>
+<body>
+<pre style='font-family: "Menlo"; font-size: "12pt";'>
+
+enclone has <span style="color:#c23621;font-weight:bold;">two</span> mechanisms for specifying input datasets: either directly on the command line or
+via a supplementary metadata file. Only one mechanism may be used at a time.
+
+In both cases, you will need to provide paths to directories where the outputs of the Cell Ranger
+pipeline may be found.  enclone uses only some of the pipeline output files, so it is enough that
+those files are present in given directory, and the particular files that are needed may be found
+by typing <span style="font-weight:bold;">enclone help input_tech</span>.  If you use the argument <span style="font-weight:bold;">PRE=p</span> then <span style="font-weight:bold;">p/</span> will be prepended to all
+pipeline paths.  Moreover (see <span style="font-weight:bold;">enclone help command</span>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command
+line by setting the environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to <span style="font-weight:bold;">p</span>.
+
+Both input forms involve abbreviated names (discussed below), which should be as short as
+possible, as longer abbreviations will increase the width of the clonotype displays.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.    ┃
+┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not     ┃
+┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which    ┃
+┃speeds up enclone overall by up to <span style="color:#c23621;font-weight:bold;">50%</span>.  To use this, add the argument <span style="font-weight:bold;">NH5</span> to the enclone command┃
+┃line.  This will work so long as you have write permission on input directories.  The first time ┃
+┃you run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will be       ┃
+┃written; then subsequent invocations will be faster.  Once the file has been created, it will    ┃
+┃always be used, regardless of whether <span style="font-weight:bold;">NH5</span> is used.  Like with other enclone command-line options,┃
+┃if you want <span style="font-weight:bold;">NH5</span> on all the time, you can set the environment variable <span style="font-weight:bold;">ENCLONE_NH5</span>.               ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+<span style="color:#c23621;font-weight:bold;">█ 1 █</span> To point directly at input files on the command line, use e.g.
+<span style="font-weight:bold;">TCR=/home/jdoe/runs/sample345</span>
+or likewise for <span style="font-weight:bold;">BCR</span>.  A more complicated syntax is allowed in which commas, colons and semicolons
+act as delimiters.  Commas go between datasets from the same sample, colons between datasets from
+the same donor, and semicolons separate donors.  If semicolons are used, the value must be quoted.
+
+enclone uses the distinction between datasets, samples and donors in the following ways:
+1. If two datasets come from the same sample, then enclone can filter to remove certain artifacts,
+unless you specify the option <span style="font-weight:bold;">NCROSS</span>.
+See also <span style="color:#25bc24;">https://github.com/10XGenomics/enclone/blob/master/pages/expanded.md#readme</span>.
+2. If two cells came from different donors, then enclone will not put them in the same clonotype,
+unless you specify the option <span style="font-weight:bold;">MIX_DONORS</span>.
+More information may be found at `enclone help special`.  In addition, this is enclone's way of
+keeping datasets organized and affects the output of fields like sample, etc.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is        ┃
+┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">sample345</span> in the above example), or┃
+┃the entire name if there is no slash; samples and donors are assigned identifers s1,... and     ┃
+┃d1,..., respectively; numbering of samples restarts with each new donor.  <span style="font-weight:bold;">To specify samples</span>    ┃
+┃<span style="font-weight:bold;">and donors, use the second input form, and see in particular</span> <span style="color:#25bc24;">abbr:path</span><span style="font-weight:bold;">.</span>                         ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Examples:
+<span style="font-weight:bold;">TCR=p1,p2</span>   -- input data from two libraries from the same sample
+<span style="font-weight:bold;">TCR=p1,p2:q</span> -- input data as above plus another from a different sample from the same donor
+<span style="font-weight:bold;">TCR="a;b"</span>   -- input one library from each of two donors.
+
+Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
+whose right side must have the exact same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Specification of
+both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.
+
+<span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
+<span style="font-weight:bold;">META=filename</span>
+This file should be a CSV (comma-separated values) file, with one line per cell group.  After the
+first line, lines starting with # are ignored.  There must be a field tcr or bcr, and some other
+fields are allowed:
+┌────────┬───────────────┬────────────────────────────────────────────────────────────────────┐
+│<span style="font-weight:bold;">field</span>   │  <span style="font-weight:bold;">default</span>      │  <span style="font-weight:bold;">meaning</span>                                                           │
+├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
+│tcr     │  (required!)  │  path to dataset, or abbr:path, where abbr is an abbreviated       │
+│or bcr  │               │  name for the dataset; exactly one of tcr or bcr must be used      │
+│gex     │  null         │  path to GEX dataset, which may include or consist entirely        │
+│        │               │  of FB data                                                        │
+├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
+│sample  │  s1           │  abbreviated name of sample                                        │
+├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
+│donor   │  d1           │  abbreviated name of donor                                         │
+├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
+│color   │  null         │  color to associate to this dataset (for PLOT option)              │
+├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
+│bc      │  null         │  name of CSV file with header "barcode,sample,donor" that          │
+│        │               │  assigns a sample and donor name to each barcode; if sample and/or │
+│        │               │  donor are also specified, then those are treated as default values│
+│        │               │  to be used in case a particular barcode is not specified by bc;   │
+│        │               │  a fourth field "tag" is allowed and may be arbitrarily specified  │
+│        │               │  Use of bc automatically turns on the MIX_DONORS option.  There is │
+│        │               │  an optional field "color" that assigns a color to a barcode,      │
+│        │               │  and which is used by the PLOT option.  Finally, any other field   │
+│        │               │  name may be specified and then used as a lead variable in PER CELL│
+│        │               │  mode, so long as it is not already a lead variable name.          │
+└────────┴───────────────┴────────────────────────────────────────────────────────────────────┘
+
+</pre>
+</body>
+</html>
