@@ -183,7 +183,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.ldoc(
             "NBC_DUP",
-            "By default, enclone filters out duplicated barcodes within an exact.",
+            "By default, enclone filters out duplicated barcodes within an exact",
         );
         h.doc(
             "",

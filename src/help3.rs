@@ -27,7 +27,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.ldoc("analysis/pca/10_components/projection.csv", "GEX");
         h.print_tab2();
         h.print(
-            "\nAll of these files are required, and in the indicated structure.  The exact files \
+            "\nThe first file is required, and the others are required, in the indicated \
+            structure, if GEX or META/gex arguments are provided.  The exact files \
             that are used could be changed in the future.\n\n",
         );
         h.print(
