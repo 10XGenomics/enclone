@@ -1,3 +1,14 @@
+@font-face {
+    font-family: "DejaVuLGCSansMono";
+    src: url('../fonts/DejaVuLGCSansMono.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "DejaVuLGCSansMono";
+    src: url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype");
+    font-weight: bold;
+}
+
 code {
   font-family: "DejaVuLGCSansMono";
   font-size: 90%;
