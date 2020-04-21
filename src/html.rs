@@ -30,7 +30,8 @@ pub fn insert_html(in_file: &str, out_file: &str) {
         }
         if s == "</head>" {
             fwriteln!(
-                g, "
+                g,
+                "
                 \n
                 <! ––\n
                 💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩\n
