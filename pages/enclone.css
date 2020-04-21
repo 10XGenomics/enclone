@@ -1,16 +1,16 @@
 @font-face {
-    font-family: "DejaVuLGCSansMono";
-    src: url('../fonts/DejaVuLGCSansMono.ttf') format("truetype");
+    font-family: "DejaVuSansMono";
+    src: url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2') format("woff2");
 }
 
 @font-face {
-    font-family: "DejaVuLGCSansMono";
-    src: url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype");
+    font-family: "DejaVuSansMono";
+    src: url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2') format("woff2");
     font-weight: bold;
 }
 
 code {
-  font-family: "DejaVuLGCSansMono";
+  font-family: "DejaVuSansMono";
   font-size: 90%;
   background: rgb(92%,92%,92%);
   padding-left: 5px;
