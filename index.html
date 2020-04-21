@@ -84,8 +84,14 @@ only be obtained from <em>single cell</em> data!  From such data, clonotypes can
 approximated, with high accuracy (see below).  The method we use for this is described briefly in
 the online documentation for enclone, and will be described separately in more detail.</p>
 
-<p>
-<img src="img/performance.svg" alt="performance" title="performance" style="max-width:80%;"></a>
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
+<b>Clonotyping performance.</b>  To test the performance of enclone, we combined data from 443 BCR 
+libraries from 30 donors.  This yielded <span style="color:red">381506</span> clonotypes, of which
+<span style="color:red">9573</span> contained at least two cells each.  Of these,
+<span style="color:red">15 (0.16%)</span> contained data from multiple donors.  These multi-donor 
+clonotypes are errors.  The fact that there are few of them suggests that the rate at which enclone
+places unrelated cells in the same clonotype is low.  This is a consequence of both the paired 
+chain data and the algorithm.
 </p>
 
 <hr>
