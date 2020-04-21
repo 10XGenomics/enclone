@@ -12,6 +12,7 @@ pub mod help3;
 pub mod help4;
 pub mod help5;
 pub mod help_utils;
+pub mod html;
 pub mod info;
 pub mod join;
 pub mod join2;
