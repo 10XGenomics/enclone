@@ -177,7 +177,9 @@ pub fn group_and_print_clonotypes(
         // Generate human readable output.
 
         if !ctl.gen_opt.noprint {
-            fwriteln!(logx, "");
+            if !ctl.gen_opt.html {
+                fwriteln!(logx, "");
+            }
             if last_width > 0 {
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
