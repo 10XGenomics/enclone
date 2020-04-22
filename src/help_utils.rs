@@ -230,8 +230,8 @@ impl HelpDesk {
                 strme(&self.log),
                 "", // source
                 "", // title
-                "<link href='https://cdn.jsdelivr.net/npm/dejavu-sans-mono@1.0.0/css/dejavu-sans-mono.min.css' rel='stylesheet' type='text/css'>",
-                "DejaVuSansMono, Menlo, Courier New",
+                "<link href='https://enclone.10xgenomics.github.io/pages/enclone.css' rel='stylesheet' type='text/css'>",
+                "DejaVuSansMono",
                 12,
             );
             print!("{}", s);
