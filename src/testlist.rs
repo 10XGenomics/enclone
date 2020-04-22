@@ -174,3 +174,13 @@ pub const EXAMPLES: [&str; 2] = [
     // 2.
     r###"BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
 ];
+
+// List of examples on site.
+
+pub const SITE_EXAMPLES: [(&str, &str); 1] = [
+    // 1.
+    (
+        "clonotype_with_gex",
+        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab",
+    ),
+];
