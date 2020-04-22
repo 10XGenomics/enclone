@@ -17,7 +17,7 @@
     url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
     format("truetype"),
     url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
-    local("Menlo"),
+    local("Menlo Regular"),
     local("Courier New");
 }
 
