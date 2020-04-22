@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Build html files by generating and inserting other html files.  To be expanded.
+// Build html files by generating and inserting other html files.
 
 use enclone::html::insert_html;
 use enclone::testlist::SITE_EXAMPLES;
