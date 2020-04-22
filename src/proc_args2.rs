@@ -246,7 +246,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 exit_message = format!(
                     "Something has gone badly wrong.  You have probably \
                      encountered an internal error\nin cellranger.  \
-                     Please email us at help@10xgenomics.com, including the traceback\nshown \
+                     Please email us at support@10xgenomics.com, including the traceback\nshown \
                      above."
                 );
             }
