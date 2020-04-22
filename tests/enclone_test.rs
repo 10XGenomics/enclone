@@ -28,7 +28,7 @@ use rayon::prelude::*;
 use std::cmp::min;
 use std::fs::{read_to_string, remove_file, File};
 use std::io::{Read, Write};
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::time::Instant;
 use string_utils::*;
 
@@ -386,6 +386,45 @@ fn test_version_number_in_readme() {
                 let v = y.force_usize();
                 assert_eq!(v, TEST_FILES_VERSION as usize);
             }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test that the DejaVuSansMono definition in enclone.css has not changed.  We put this here
+// because that definition has to be manually tested, and we don't want it accidentally changed
+// and broken.  This is really gross, but it's not clear how to do it better.
+//
+// Absolutely hideous implementation to verify that
+// cat ../pages/enclone.css | head -36 starts with "2474276863 1467 ".
+//
+// Only works with high probability.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_dejavu() {
+    PrettyTrace::new().on();
+    let mut cat_output_child = Command::new("cat")
+        .arg("pages/enclone.css")
+        .stdout(Stdio::piped())
+        .spawn().unwrap();
+    if let Some(cat_output) = cat_output_child.stdout.take() {
+        let mut head_output_child = Command::new("head")
+            .arg("-36")
+            .stdin(cat_output)
+            .stdout(Stdio::piped())
+            .spawn().unwrap();
+        cat_output_child.wait().unwrap();
+        if let Some(head_output) = head_output_child.stdout.take() {
+            let cksum_output_child = Command::new("cksum")
+                .stdin(head_output)
+                .stdout(Stdio::piped())
+                .spawn().unwrap();
+            let cksum_stdout = cksum_output_child.wait_with_output().unwrap();
+            head_output_child.wait().unwrap();
+            let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
+            assert!(cksum.starts_with("2474276863 1467 "));
         }
     }
 }
