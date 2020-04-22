@@ -16,7 +16,7 @@
     format("woff2"),
     url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
     format("truetype"),
-    url('/fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
     local("Menlo"),
     local("Courier New");
 }
@@ -29,7 +29,7 @@
     format("woff2"),
     url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
     format("truetype"),
-    url('/fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
     local("Menlo Bold"),
     local("Courier New Bold");
 }
