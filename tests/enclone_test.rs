@@ -16,6 +16,7 @@
 // cargo test --release -p enclone enclone -- --nocapture
 
 use ansi_escape::*;
+use enclone::html::insert_html;
 use enclone::proto_io::read_proto;
 use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
@@ -344,6 +345,47 @@ fn test_enclone() {
         TESTS.len(),
         elapsed(&t)
     );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test site examples to make sure they are what they claim to be, and that the
+// merged html files are correct.
+
+#[cfg(not(debug_assertions))]
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_site_examples() {
+    for i in 0..SITE_EXAMPLES.len() {
+        let example_name = SITE_EXAMPLES[i].0;
+        let test = SITE_EXAMPLES[i].1;
+        let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
+        let args = test.split(' ').collect::<Vec<&str>>();
+        let new = Command::new("target/release/enclone")
+            .args(&args)
+            .arg("HTML")
+            .output()
+            .expect(&format!("failed to execute test_site_examples"));
+        let out_stuff = stringme(&new.stdout);
+        if in_stuff != out_stuff {
+            eprintln!("\nThe output for site example {} has changed.\n", i + 1);
+            std::process::exit(1);
+        }
+    }
+
+    insert_html("pages/index.html.src", "test/outputs/index.html");
+    insert_html("pages/expanded.html.src", "test/outputs/expanded.html");
+
+    if read_to_string("index.html").unwrap() != read_to_string("test/outputs/index.html").unwrap() {
+        eprintln!("\nContent of index.html has changed.\n");
+        std::process::exit(1);
+    }
+    if read_to_string("pages/auto/expanded.html").unwrap()
+        != read_to_string("test/outputs/expanded.html").unwrap()
+    {
+        eprintln!("\nContent of expanded.html has changed.\n");
+        std::process::exit(1);
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
