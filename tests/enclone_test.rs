@@ -397,7 +397,7 @@ fn test_version_number_in_readme() {
 // and broken.  This is really gross, but it's not clear how to do it better.
 //
 // Absolutely hideous implementation to verify that
-// cat ../pages/enclone.css | head -36 starts with "2474276863 1467 ".
+// cat pages/enclone.css | head -36 = "2474276863 1467".
 //
 // Only works with high probability.
 
@@ -408,23 +408,27 @@ fn test_dejavu() {
     let mut cat_output_child = Command::new("cat")
         .arg("pages/enclone.css")
         .stdout(Stdio::piped())
-        .spawn().unwrap();
+        .spawn()
+        .unwrap();
     if let Some(cat_output) = cat_output_child.stdout.take() {
         let mut head_output_child = Command::new("head")
             .arg("-36")
             .stdin(cat_output)
             .stdout(Stdio::piped())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         cat_output_child.wait().unwrap();
         if let Some(head_output) = head_output_child.stdout.take() {
             let cksum_output_child = Command::new("cksum")
                 .stdin(head_output)
                 .stdout(Stdio::piped())
-                .spawn().unwrap();
+                .spawn()
+                .unwrap();
             let cksum_stdout = cksum_output_child.wait_with_output().unwrap();
             head_output_child.wait().unwrap();
             let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
-            assert!(cksum.starts_with("2474276863 1467 "));
+            println!("cksum = {}", cksum);
+            assert!(cksum == "2474276863 1467\n".to_string());
         }
     }
 }
