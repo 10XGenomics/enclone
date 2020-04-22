@@ -77,6 +77,7 @@ fn test_enclone() {
         let mut expect_null = false;
         let mut expect_fail = false;
         let mut expect_ok = false;
+        let mut set_in_stone = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
@@ -88,6 +89,10 @@ fn test_enclone() {
         if test.contains(" EXPECT_OK") {
             test = test.replace(" EXPECT_OK", "");
             expect_ok = true;
+        }
+        if test.contains(" SET_IN_STONE") {
+            test = test.replace(" SET_IN_STONE", "");
+            set_in_stone = true;
         }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
@@ -102,13 +107,13 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output\n",
+                 > test/inputs/outputs/enclone_test{}_output; git add test/inputs/outputs/enclone_test{}_output\n",
                 TEST_FILES_VERSION,
                 test,
+                it + 1,
                 it + 1
             );
             emit_end_escape(&mut log);
-            fwriteln!(log, "and then adding/committing the new file.");
             res.2 = stringme(&log);
         } else {
             let mut old = String::new();
@@ -295,6 +300,13 @@ fn test_enclone() {
                      cellranger/lib/rust/enclone (essential!):\n",
                     it + 1
                 );
+                if set_in_stone {
+                    fwriteln!(
+                        log,
+                        "🔴 However, the output of this test was not supposed to have changed.\n\
+                         🔴 Please be extremely carefully if you change it.\n",
+                    );
+                }
                 emit_bold_escape(&mut log);
                 fwriteln!(
                     log,

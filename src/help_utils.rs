@@ -232,7 +232,7 @@ impl HelpDesk {
                 "", // title
                 "<link href='https://enclone.10xgenomics.github.io/pages/enclone.css' rel='stylesheet' type='text/css'>",
                 "DejaVuSansMono",
-                12,
+                14,
             );
             print!("{}", s);
         }
