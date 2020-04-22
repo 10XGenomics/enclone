@@ -28,4 +28,5 @@ fn main() {
     }
 
     insert_html("pages/index.html.src", "index.html");
+    insert_html("pages/expanded.html.src", "pages/auto/expanded.html");
 }

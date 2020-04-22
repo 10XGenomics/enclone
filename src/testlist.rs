@@ -177,10 +177,28 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 1] = [
+pub const SITE_EXAMPLES: [(&str, &str); 5] = [
     // 1.
     (
         "clonotype_with_gex",
         "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab",
+    ),
+    // 2.
+    (
+        "illusory1",
+        "BCR=128037,128040 NCROSS CDR3=CARGGTTTYFISW NGROUP",
+    ),
+    // 3.
+    ("illusory2", "BCR=128037,128040 CDR3=CARGGTTTYFISW NGROUP"),
+    // 4.
+    (
+        "illusory3",
+        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW NGROUP",
+    ),
+    // 5.
+    (
+        "illusory4",
+        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 \
+         NGROUP",
     ),
 ];
