@@ -79,8 +79,8 @@ pub const TESTS: [&str; 60] = [
     r###"BCR="165807;165808" FAIL_ONLY=true EXPECT_NULL"###,
     // 23. here we were generating a fake alternate allele
     r###"BCR=83808 CDR3=CAREGRGMVTTNPFDYW MIN_CELLS_EXACT=30"###,
-    // 24. an example that uses IGHE
-    r###"BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW"###,
+    // 24. an example that uses IGHE, and test NGROUP
+    r###"BCR=52177 CDR3=CSTGWGLDFDFWSGYYTAGYHW NGROUP"###,
     // 25. add mouse B6 example that had messed up constant regions
     r###"TCR=74396 MOUSE CVARSP=cdiff CDR3=CASSDAGDTQYF"###,
     // 26. tests multiple datasets and also LVARS=n,donors,datasets, and share
