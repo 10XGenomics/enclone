@@ -351,23 +351,23 @@ fn test_enclone() {
 
 // Test site for broken links.
 //
-// TURNED OFF BECAUSE IT DOESN'T WORK.  IT RUNS FOREVER.
-
-/*
+// Two approaches left in place for now, to delete one, and the corresponding crate from
+// Cargo.toml.
 
 #[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_for_broken_links() {
     extern crate reqwest;
-    use reqwest::StatusCode;
+    extern crate attohttpc;
+    use std::time::Duration;
     let mut htmls = vec!["index.html".to_string()];
     let pages = read_dir("pages").unwrap();
     for page in pages {
         let page = page.unwrap().path();
         let page = page.to_str().unwrap();
         if page.ends_with(".html") {
-            htmls.push(format!("pages/{}", page));
+            htmls.push(format!("{}", page));
         }
     }
     let auto = read_dir("pages/auto").unwrap();
@@ -375,34 +375,83 @@ fn test_for_broken_links() {
         let page = page.unwrap().path();
         let page = page.to_str().unwrap();
         if page.ends_with(".html") {
-            htmls.push(format!("pages/auto/{}", page));
+            htmls.push(format!("{}", page));
         }
     }
     for x in htmls {
         let f = open_for_read![x];
+        let depth = x.matches('/').count();
         for line in f.lines() {
             let mut s = line.unwrap();
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
-                if !link.starts_with("http") {
+
+                // Allow mailto to enclone.
+
+                if link == "mailto:enclone@10xgenomics.com" {
+                    s = s.after("<a href=\"").to_string();
                     continue;
                 }
-                eprintln!("checking link {}", link);
-                if reqwest::blocking::get(link)
-                    .expect(&format!("could not read link {} on page {}", link, x))
-                    .status()
-                    == StatusCode::NOT_FOUND
-                {
-                    eprintln!("could not read link {} on page {}", link, x);
+
+                // Otherwise if not http..., assume it's a file path.
+
+                if !link.starts_with("http") {
+                    let mut link = link.to_string();
+                    if link.contains('#') {
+                        link = link.before("#").to_string();
+                    }
+                    let mut z = link.clone();
+                    for _ in 0..depth {
+                        if !z.starts_with("../") {
+                            eprintln!("something wrong with file {} on page {}", link, x);
+                            std::process::exit(1);
+                        }
+                        z = z.after("../").to_string();
+                    }
+                    if !path_exists(&z) {
+                        eprintln!("failed to find file {} on page {}", link, x);
+                        std::process::exit(1);
+                    }
+                    s = s.after("<a href=\"").to_string();
+                    continue;
+                }
+
+                // And finally do http....
+
+                eprintln!("checking link \"{}\"", link);
+
+                // Approach 1 to testing if link works.
+
+                use attohttpc::*;
+                let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
+                let response = req
+                    .send()
+                    .expect(&format!("\ncould not read link {} on page {}\n", link, x));
+                if !response.is_success() {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
                     std::process::exit(1);
                 }
+
+                // Approach 2 to testing if link works.
+
+                /*
+                use reqwest::StatusCode;
+                let req = reqwest::blocking::get(link);
+                if req.is_err() {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
+                    std::process::exit(1);
+                }
+                if req.unwrap().status() == StatusCode::NOT_FOUND {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
+                    std::process::exit(1);
+                }
+                */
+
                 s = s.after("<a href=\"").to_string();
             }
         }
     }
 }
-
-*/
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
