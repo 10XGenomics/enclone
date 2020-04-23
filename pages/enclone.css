@@ -1,16 +1,42 @@
+/*
+   DejaVuSansMono font (see https://dejavu-fonts.github.io)
+   We use this font because it works well for our clonotype box character diagrams and it's free.
+   The name is a bit of a misnomer because we try to use Menlo first.
+   Fallback scheme:
+   1. Menlo as local; pretty but likely available only on Macs
+   2. woff2 from CDN; good because woff2 is compact; why is it stored in deathbeds?
+   3. truetype from CDN
+   4. truetype as part of site; LGC is a subset but includes all that we use
+   5. Courier New as local; poorly suited but widely available
+*/
+
 @font-face {
-    font-family: "DejaVuLGCSansMono";
-    src: url('../fonts/DejaVuLGCSansMono.ttf') format("truetype");
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
 }
 
 @font-face {
-    font-family: "DejaVuLGCSansMono";
-    src: url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype");
+    font-family: "DejaVuSansMono";
     font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
 }
 
 code {
-  font-family: "DejaVuLGCSansMono";
+  font-family: "DejaVuSansMono";
   font-size: 90%;
   background: rgb(92%,92%,92%);
   padding-left: 5px;

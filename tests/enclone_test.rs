@@ -16,6 +16,7 @@
 // cargo test --release -p enclone enclone -- --nocapture
 
 use ansi_escape::*;
+use enclone::html::insert_html;
 use enclone::proto_io::read_proto;
 use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
@@ -28,7 +29,7 @@ use rayon::prelude::*;
 use std::cmp::min;
 use std::fs::{read_to_string, remove_file, File};
 use std::io::{Read, Write};
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::time::Instant;
 use string_utils::*;
 
@@ -77,6 +78,7 @@ fn test_enclone() {
         let mut expect_null = false;
         let mut expect_fail = false;
         let mut expect_ok = false;
+        let mut set_in_stone = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
@@ -88,6 +90,10 @@ fn test_enclone() {
         if test.contains(" EXPECT_OK") {
             test = test.replace(" EXPECT_OK", "");
             expect_ok = true;
+        }
+        if test.contains(" SET_IN_STONE") {
+            test = test.replace(" SET_IN_STONE", "");
+            set_in_stone = true;
         }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
@@ -102,13 +108,13 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output\n",
+                 > test/inputs/outputs/enclone_test{}_output; git add test/inputs/outputs/enclone_test{}_output\n",
                 TEST_FILES_VERSION,
                 test,
+                it + 1,
                 it + 1
             );
             emit_end_escape(&mut log);
-            fwriteln!(log, "and then adding/committing the new file.");
             res.2 = stringme(&log);
         } else {
             let mut old = String::new();
@@ -295,6 +301,13 @@ fn test_enclone() {
                      cellranger/lib/rust/enclone (essential!):\n",
                     it + 1
                 );
+                if set_in_stone {
+                    fwriteln!(
+                        log,
+                        "🔴 However, the output of this test was not supposed to have changed.\n\
+                         🔴 Please be extremely careful if you change it.\n",
+                    );
+                }
                 emit_bold_escape(&mut log);
                 fwriteln!(
                     log,
@@ -332,6 +345,47 @@ fn test_enclone() {
         TESTS.len(),
         elapsed(&t)
     );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test site examples to make sure they are what they claim to be, and that the
+// merged html files are correct.
+
+#[cfg(not(debug_assertions))]
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_site_examples() {
+    for i in 0..SITE_EXAMPLES.len() {
+        let example_name = SITE_EXAMPLES[i].0;
+        let test = SITE_EXAMPLES[i].1;
+        let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
+        let args = test.split(' ').collect::<Vec<&str>>();
+        let new = Command::new("target/release/enclone")
+            .args(&args)
+            .arg("HTML")
+            .output()
+            .expect(&format!("failed to execute test_site_examples"));
+        let out_stuff = stringme(&new.stdout);
+        if in_stuff != out_stuff {
+            eprintln!("\nThe output for site example {} has changed.\n", i + 1);
+            std::process::exit(1);
+        }
+    }
+
+    insert_html("pages/index.html.src", "test/outputs/index.html");
+    insert_html("pages/expanded.html.src", "test/outputs/expanded.html");
+
+    if read_to_string("index.html").unwrap() != read_to_string("test/outputs/index.html").unwrap() {
+        eprintln!("\nContent of index.html has changed.\n");
+        std::process::exit(1);
+    }
+    if read_to_string("pages/auto/expanded.html").unwrap()
+        != read_to_string("test/outputs/expanded.html").unwrap()
+    {
+        eprintln!("\nContent of expanded.html has changed.\n");
+        std::process::exit(1);
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -386,6 +440,49 @@ fn test_version_number_in_readme() {
                 let v = y.force_usize();
                 assert_eq!(v, TEST_FILES_VERSION as usize);
             }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test that the DejaVuSansMono definition in enclone.css has not changed.  We put this here
+// because that definition has to be manually tested, and we don't want it accidentally changed
+// and broken.  This is really gross, but it's not clear how to do it better.
+//
+// Absolutely hideous implementation to verify that
+// cat pages/enclone.css | head -36 = "2474276863 1467".
+//
+// Only works with high probability.
+
+#[cfg(not(debug_assertions))]
+#[test]
+fn test_dejavu() {
+    PrettyTrace::new().on();
+    let mut cat_output_child = Command::new("cat")
+        .arg("pages/enclone.css")
+        .stdout(Stdio::piped())
+        .spawn()
+        .unwrap();
+    if let Some(cat_output) = cat_output_child.stdout.take() {
+        let mut head_output_child = Command::new("head")
+            .arg("-36")
+            .stdin(cat_output)
+            .stdout(Stdio::piped())
+            .spawn()
+            .unwrap();
+        cat_output_child.wait().unwrap();
+        if let Some(head_output) = head_output_child.stdout.take() {
+            let cksum_output_child = Command::new("cksum")
+                .stdin(head_output)
+                .stdout(Stdio::piped())
+                .spawn()
+                .unwrap();
+            let cksum_stdout = cksum_output_child.wait_with_output().unwrap();
+            head_output_child.wait().unwrap();
+            let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
+            println!("cksum = {}", cksum);
+            assert!(cksum == "2474276863 1467\n".to_string());
         }
     }
 }
