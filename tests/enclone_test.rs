@@ -27,8 +27,8 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::fs::{read_to_string, remove_file, File};
-use std::io::{Read, Write};
+use std::fs::{read_dir, read_to_string, remove_file, File};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
 use std::time::Instant;
 use string_utils::*;
@@ -346,6 +346,63 @@ fn test_enclone() {
         elapsed(&t)
     );
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test site for broken links.
+//
+// TURNED OFF BECAUSE IT DOESN'T WORK.  IT RUNS FOREVER.
+
+/*
+
+#[cfg(not(debug_assertions))]
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_for_broken_links() {
+    extern crate reqwest;
+    use reqwest::StatusCode;
+    let mut htmls = vec!["index.html".to_string()];
+    let pages = read_dir("pages").unwrap();
+    for page in pages {
+        let page = page.unwrap().path();
+        let page = page.to_str().unwrap();
+        if page.ends_with(".html") {
+            htmls.push(format!("pages/{}", page));
+        }
+    }
+    let auto = read_dir("pages/auto").unwrap();
+    for page in auto {
+        let page = page.unwrap().path();
+        let page = page.to_str().unwrap();
+        if page.ends_with(".html") {
+            htmls.push(format!("pages/auto/{}", page));
+        }
+    }
+    for x in htmls {
+        let f = open_for_read![x];
+        for line in f.lines() {
+            let mut s = line.unwrap();
+            while s.contains("<a href=\"") {
+                let link = s.between("<a href=\"", "\"");
+                if !link.starts_with("http") {
+                    continue;
+                }
+                eprintln!("checking link {}", link);
+                if reqwest::blocking::get(link)
+                    .expect(&format!("could not read link {} on page {}", link, x))
+                    .status()
+                    == StatusCode::NOT_FOUND
+                {
+                    eprintln!("could not read link {} on page {}", link, x);
+                    std::process::exit(1);
+                }
+                s = s.after("<a href=\"").to_string();
+            }
+        }
+    }
+}
+
+*/
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
