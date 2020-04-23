@@ -305,7 +305,7 @@ fn test_enclone() {
                     fwriteln!(
                         log,
                         "🔴 However, the output of this test was not supposed to have changed.\n\
-                         🔴 Please be extremely carefully if you change it.\n",
+                         🔴 Please be extremely careful if you change it.\n",
                     );
                 }
                 emit_bold_escape(&mut log);
