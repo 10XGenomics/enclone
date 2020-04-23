@@ -239,7 +239,7 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                if z > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
+                if z > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
                 }
                 if ctl.gen_opt.svg {

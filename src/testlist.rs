@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 63] = [
+pub const TESTS: [&str; 64] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -164,20 +164,22 @@ pub const TESTS: [&str; 63] = [
         CDR3=CARSFFGDTAMVMFQAFDPW"###,
     // 56. test SVG
     r###"BCR=85333 CDR3=CARDPRGWGVELLYYMDVW SVG NGROUP"###,
-    // 57. test 1/7 for newline correctness
+    // 57. test 1/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN SET_IN_STONE"###,
-    // 58. test 2/7 for newline correctness
+    // 58. test 2/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP SET_IN_STONE"###,
-    // 59. test 3/7 for newline correctness
+    // 59. test 3/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN HTML SET_IN_STONE"###,
-    // 60. test 4/7 for newline correctness
+    // 60. test 4/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
-    // 61. test 5/7 for newline correctness
+    // 61. test 5/8 for newline correctness
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
-    // 62. test 6/7 for newline correctness
+    // 62. test 6/8 for newline correctness
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
-    // 63. test 7/7 for newline correctness
+    // 63. test 7/8 for newline correctness
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
+    // 64. test 8/8 for newline correctness
+    r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
 ];
 
 // List of examples in documentation.
