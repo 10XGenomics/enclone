@@ -18,4 +18,4 @@ jobs:
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: Run Rust tests
-        run: cargo test --release
+        run: cargo test --release --features basic

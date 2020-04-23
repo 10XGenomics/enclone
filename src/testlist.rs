@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 56] = [
+pub const TESTS: [&str; 60] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -164,6 +164,14 @@ pub const TESTS: [&str; 56] = [
         CDR3=CARSFFGDTAMVMFQAFDPW"###,
     // 56. test SVG
     r###"BCR=85333 CDR3=CARDPRGWGVELLYYMDVW SVG NGROUP"###,
+    // 57. test 1/4 for newline correctness
+    r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN SET_IN_STONE"###,
+    // 58. test 2/4 for newline correctness
+    r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP SET_IN_STONE"###,
+    // 59. test 3/4 for newline correctness
+    r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN HTML SET_IN_STONE"###,
+    // 60. test 4/4 for newline correctness
+    r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
 ];
 
 // List of examples in documentation.
@@ -173,4 +181,32 @@ pub const EXAMPLES: [&str; 2] = [
     r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###,
     // 2.
     r###"BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+];
+
+// List of examples on site.
+
+pub const SITE_EXAMPLES: [(&str, &str); 5] = [
+    // 1.
+    (
+        "clonotype_with_gex",
+        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab",
+    ),
+    // 2.
+    (
+        "illusory1",
+        "BCR=128037,128040 NCROSS CDR3=CARGGTTTYFISW NGROUP",
+    ),
+    // 3.
+    ("illusory2", "BCR=128037,128040 CDR3=CARGGTTTYFISW NGROUP"),
+    // 4.
+    (
+        "illusory3",
+        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW NGROUP",
+    ),
+    // 5.
+    (
+        "illusory4",
+        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 \
+         NGROUP",
+    ),
 ];

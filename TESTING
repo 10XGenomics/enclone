@@ -1,10 +1,15 @@
 
-Notes on some testing issues:
+Notes on testing:
 
-1. Testing in debug mode (more precisely with overflow detection on) is a good thing
+1. Test with
+   cargo test --release --features basic -- --nocapture
+   Alternatively, if the full set of datasets are available, use instead
+   cargo test --release -- --nocapture
+
+2. Testing in debug mode (more precisely with overflow detection on) is a good thing
    to do at least occasionally.
 
-2. The code for NOPAGER accidentally broke at one point and we
+3. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
    enclone BCR=...
    enclone BCR=... NOPAGER
@@ -14,6 +19,6 @@ Notes on some testing issues:
    enclone help faq NOPAGER.
    This seems to require manual testing.
 
-3. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
+4. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
    because the output was going to the alternate screen.
    This seems to require manual testing.

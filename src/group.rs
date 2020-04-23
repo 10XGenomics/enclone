@@ -174,35 +174,46 @@ pub fn group_and_print_clonotypes(
         e.orbit(greps[i], &mut o);
         groups += 1;
 
-        // Generate human readable output.
+        // Generate human readable output.  Getting the newlines right is tricky, so
+        // they're marked.
 
         if !ctl.gen_opt.noprint {
-            fwriteln!(logx, "");
+            if !ctl.gen_opt.html && !ctl.gen_opt.ngroup {
+                fwriteln!(logx, ""); // NEWLINE 1
+            }
+
+            // If we just printed a clonotype box, output a bar.
+
             if last_width > 0 {
+                if ctl.gen_opt.ngroup || ctl.gen_opt.html {
+                    fwriteln!(logx, ""); // NEWLINE 2
+                }
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_eight_bit_color_escape(&mut log, 44);
                     fwrite!(logx, "{}", strme(&log));
                 }
-                fwrite!(logx, "╺");
-                for _ in 0..last_width - 2 {
-                    fwrite!(logx, "━");
+                fwrite!(logx, "╺{}╸", "━".repeat(last_width - 2));
+                if !ctl.gen_opt.ngroup {
+                    fwriteln!(logx, ""); // NEWLINE 3
                 }
-                fwrite!(logx, "╸");
-                fwriteln!(logx, "\n");
+                fwriteln!(logx, ""); // NEWLINE 4
                 if ctl.pretty {
                     let mut log = Vec::<u8>::new();
                     emit_end_escape(&mut log);
                     fwrite!(logx, "{}", strme(&log));
                 }
             }
-            if ctl.pretty {
-                let mut log = Vec::<u8>::new();
-                emit_bold_escape(&mut log);
-                emit_eight_bit_color_escape(&mut log, 27);
-                fwrite!(logx, "{}", strme(&log));
-            }
+
+            // If NGROUP is not on, output a GROUP line, including a newline at the end.
+
             if !ctl.gen_opt.ngroup {
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_bold_escape(&mut log);
+                    emit_eight_bit_color_escape(&mut log, 27);
+                    fwrite!(logx, "{}", strme(&log));
+                }
                 fwrite!(
                     logx,
                     "[{}] GROUP = {} CLONOTYPES = {} CELLS",
@@ -210,14 +221,12 @@ pub fn group_and_print_clonotypes(
                     o.len(),
                     n
                 );
-            }
-            if ctl.pretty {
-                let mut log = Vec::<u8>::new();
-                emit_end_escape(&mut log);
-                fwrite!(logx, "{}", strme(&log));
-            }
-            if !ctl.gen_opt.ngroup {
-                fwriteln!(logx, "");
+                if ctl.pretty {
+                    let mut log = Vec::<u8>::new();
+                    emit_end_escape(&mut log);
+                    fwrite!(logx, "{}", strme(&log));
+                }
+                fwriteln!(logx, ""); // NEWLINE 5
             }
         }
         let mut group_ncells = 0;
@@ -230,7 +239,9 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                fwrite!(logx, "\n");
+                if z > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
+                    fwrite!(logx, "\n"); // NEWLINE 6
+                }
                 if ctl.gen_opt.svg {
                     const FONT_SIZE: usize = 15;
                     let s = format!("[{}.{}] {}", groups, j + 1, pics[oo]);
@@ -645,8 +656,9 @@ pub fn group_and_print_clonotypes(
             strme(&logx),
             "", // source
             "", // title
-            "Menlo",
-            12,
+            "<link href='https://enclone.10xgenomics.github.io/pages/enclone.css' rel='stylesheet' type='text/css'>",
+            "DejaVuSansMono",
+            14,
         );
         print!("{}", s);
     }

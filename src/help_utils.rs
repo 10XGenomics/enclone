@@ -230,8 +230,9 @@ impl HelpDesk {
                 strme(&self.log),
                 "", // source
                 "", // title
-                "Menlo",
-                12,
+                "<link href='../enclone.css' rel='stylesheet' type='text/css'>",
+                "DejaVuSansMono",
+                14,
             );
             print!("{}", s);
         }
