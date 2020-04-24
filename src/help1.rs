@@ -259,13 +259,28 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              number of chains, identical V..J sequences, identical C segment assignments, \
              and the same distance between the J stop and the C start (which is usually zero).\n\n\
              \
-             \\boldred{3}.  Finding the germline sequences.  \
-             For samples from a given donor, enclone derives \"donor reference sequences\" \
-             for the V chains present in the donor's genome.  This is powerful, even though \
-             based on imperfect information.  V segments vary in their expression frequency and \
-             thus the more cells which are present, the more complete the information will be.  It \
-             is also not possible to accurately determine the last ~15 bases in a V chain from \
-             transcript data because these bases are mutated during recombination.\n\n\
+             \\boldred{3}.  Finding the germline sequences.  For samples from a given donor, \
+             enclone derives \"donor reference sequences\" for the V chains present in the donor's \
+             genome.  This is powerful, even though based on imperfect information.  V segments \
+             vary in their expression frequency and thus the more cells which are present, the \
+             more complete the information will be.  It is also not possible to accurately \
+             determine the terminal bases in a V chain from transcript data alone because these \
+             bases mutate during recombination and because of non-templated nucleotide addition.\n\n\
+             \
+             The idea for how this is done is roughly the following: for each V segment, we choose \
+             one cell from each clonotype (although these have not actually been computed yet, so \
+             it's an approximation).  Next for each position on the V segment, excluding the last \
+             15 bases, we determine the distribution of bases that occur within these selected \
+             cells.  We only consider those positions where a non-reference base occurs at least \
+             four times and is at least 25% of the total.  Then each cell has a footprint relative \
+             to these positions; we require that these footprints satisfy similar evidence \
+             criteria.  Each such non-reference footprint then defines an \"alternate allele\".  \
+             We do not restrict the number of alternate alleles because they may arise from \
+             duplicated gene copies.\n\n\
+             \
+             A similar approach was attempted for J segments but at the time of testing did not \
+             appear to enhance clonotyping specificity.  This could be revisited later and might \
+             be of interest even if it does not improve specificity.\n\n\
              \
              \\boldred{4}.  What joins are tested.  \
              Pairs of exact subclonotypes are considered for joining, as described below.  This \

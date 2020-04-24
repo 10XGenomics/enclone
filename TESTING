@@ -1,15 +1,19 @@
-
 Notes on testing:
 
-1. Test with
-   cargo test --release --features basic -- --nocapture
-   Alternatively, if the full set of datasets are available, use instead
-   cargo test --release -- --nocapture
+1. Some files are auto-generated.  There are two programs that do this:
+   ./build_help
+   build_html.
+   Run these if needed before testing.  Otherwise the tests will catch the problem.
 
-2. Testing in debug mode (more precisely with overflow detection on) is a good thing
+2. Test with
+   cargo test --release -- --nocapture
+   assuming that the full set of datasets is available.  Otherwise use instead:
+   cargo test --release --features basic -- --nocapture
+
+3. Testing in debug mode (more precisely with overflow detection on) is a good thing
    to do at least occasionally.
 
-3. The code for NOPAGER accidentally broke at one point and we
+4. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
    enclone BCR=...
    enclone BCR=... NOPAGER
@@ -19,6 +23,6 @@ Notes on testing:
    enclone help faq NOPAGER.
    This seems to require manual testing.
 
-4. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
+5. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
    because the output was going to the alternate screen.
    This seems to require manual testing.

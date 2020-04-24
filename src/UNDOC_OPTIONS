@@ -10,7 +10,7 @@ Optional arguments controlling printing of join events:
 - ANN: print annotations of contig
 - ANN0: print annotations of contig, after truncation to V..J
 - PFREQ=n: show data for 1/n joins even if correct
-- BC: show barcodes
+- SHOW_BC: show barcodes
 - PRINT_FAILED_JOINS: print failed join events.
 
 Optional arguments that control clonotype filtering:
@@ -126,8 +126,6 @@ How this reference was created
 - mkvdjref --genome=vdj_IMGT_human_20200415 --seqs=human-imgt-20200415-mkvdjref-input.fasta
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
-
-NGROUP: don't print the GROUP stuff
 
 SVG: render output as svg, clonotype by clonotype.  There are problems with this:
 1. Safari does not correctly render these svg files.

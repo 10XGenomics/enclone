@@ -791,8 +791,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print("\n");
         h.print(
             "\\bold{options that control clonotype grouping}\n\n\
-             we plan to add grouping capability in a future version of enclone, and for now, as a \
-             placeholder, we have the following \"toy\" options:\n\n",
+             By default, enclone organizes clonotypes into groups, and each group contains \
+             just one clonotype!  If you prefer not to see the grouping messages, you can \
+             turn them off by adding the option \\bold{NGROUP} to the enclone command line.  \
+             We intend to add useful versions of grouping to a future version of enclone, that \
+             are reflective of functional (antigen-binding) differences.  For now there are the \
+             following \"toy\" options:\n\n",
         );
         h.rows.clear();
 

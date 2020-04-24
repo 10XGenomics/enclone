@@ -14,6 +14,146 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Parse barcode-level information file.
+
+fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
+    let mut sample_donor = HashMap::<String, (String, String)>::new();
+    let mut tag = HashMap::<String, String>::new();
+    let mut barcode_color = HashMap::<String, String>::new();
+    let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
+    if bc != "".to_string() {
+        if ctl.gen_opt.pre != "".to_string() {
+            bc = format!("{}/{}", ctl.gen_opt.pre, bc);
+        }
+        if !path_exists(&bc) {
+            let mut head = "In your META file, a value for bc";
+            if call_type == "BC" {
+                head = "The BC argument";
+            }
+            eprintln!(
+                "\n{} implies the existence of \
+                 a file\n{}\nbut that file does not exist.\n",
+                head, bc
+            );
+            std::process::exit(1);
+        }
+        let f = open_for_read![&bc];
+        let mut first = true;
+        let mut fieldnames = Vec::<String>::new();
+        let mut barcode_pos = 0;
+        let mut sample_pos = 0;
+        let mut donor_pos = 0;
+        let mut tag_pos = None;
+        let mut color_pos = None;
+        let mut to_alt = Vec::<isize>::new();
+        for line in f.lines() {
+            let s = line.unwrap();
+            if first {
+                let fields = s.split(',').collect::<Vec<&str>>();
+                to_alt = vec![-1 as isize; fields.len()];
+                let required = vec!["barcode", "sample", "donor"];
+                for f in required.iter() {
+                    if !fields.contains(f) {
+                        let mut origin = "from the bc field used in META";
+                        if call_type == "BC" {
+                            origin = "from the BC argument";
+                        }
+                        eprintln!(
+                            "\nThe file\n{}\n{}\nis missing the field {}.\n",
+                            bc, origin, f
+                        );
+                        std::process::exit(1);
+                    }
+                }
+                for x in fields.iter() {
+                    fieldnames.push(x.to_string());
+                }
+                for i in 0..fields.len() {
+                    if fields[i] == "barcode" {
+                        barcode_pos = i;
+                    } else if fields[i] == "sample" {
+                        sample_pos = i;
+                    } else if fields[i] == "donor" {
+                        donor_pos = i;
+                    } else if fields[i] == "tag" {
+                        tag_pos = Some(i);
+                    } else if fields[i] == "color" {
+                        color_pos = Some(i);
+                    } else {
+                        to_alt[i] = alt_bc_fields.len() as isize;
+                        alt_bc_fields
+                            .push((fields[i].to_string(), HashMap::<String, String>::new()));
+                    }
+                }
+                first = false;
+            } else {
+                let fields = s.split(',').collect::<Vec<&str>>();
+                if fields.len() != fieldnames.len() {
+                    let mut origin = "bc in META";
+                    if call_type == "BC" {
+                        origin = "BC";
+                    }
+                    eprintln!(
+                        "\nThere is a line\n{}\nin a CSV file defined by {}\n\
+                         that has {} fields, which isn't right, because the header line\n\
+                         has {} fields..  This is for the file\n{}.\n",
+                        s,
+                        origin,
+                        fields.len(),
+                        fieldnames.len(),
+                        bc
+                    );
+                    std::process::exit(1);
+                }
+                for i in 0..fields.len() {
+                    if to_alt[i] >= 0 {
+                        alt_bc_fields[to_alt[i] as usize]
+                            .1
+                            .insert(fields[barcode_pos].to_string(), fields[i].to_string());
+                    }
+                }
+                if !fields[barcode_pos].contains('-') {
+                    let mut origin = "bc in META";
+                    if call_type == "BC" {
+                        origin = "BC";
+                    }
+                    eprintln!(
+                        "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
+                         by {}.  That doesn't make sense because a barcode\n\
+                         should include a hyphen.\n",
+                        fields[barcode_pos], bc, origin
+                    );
+                    std::process::exit(1);
+                }
+                sample_donor.insert(
+                    fields[barcode_pos].to_string(),
+                    (
+                        fields[sample_pos].to_string(),
+                        fields[donor_pos].to_string(),
+                    ),
+                );
+                if tag_pos.is_some() {
+                    let tag_pos = tag_pos.unwrap();
+                    tag.insert(fields[barcode_pos].to_string(), fields[tag_pos].to_string());
+                }
+                if color_pos.is_some() {
+                    let color_pos = color_pos.unwrap();
+                    barcode_color.insert(
+                        fields[barcode_pos].to_string(),
+                        fields[color_pos].to_string(),
+                    );
+                }
+            }
+        }
+    }
+    ctl.sample_info.sample_donor.push(sample_donor);
+    ctl.sample_info.tag.push(tag);
+    ctl.sample_info.barcode_color.push(barcode_color);
+    ctl.sample_info.alt_bc_fields.push(alt_bc_fields);
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
     ctl.sample_info = SampleInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
@@ -316,7 +456,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
+pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
     if !path_exists(&f) {
         eprintln!("\nCan't find the file referenced by your META argument.\n");
         std::process::exit(1);
@@ -433,135 +573,9 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                 }
             }
 
-            // Parse bc.
+            // Parse bc and finish up.
 
-            let mut sample_donor = HashMap::<String, (String, String)>::new();
-            let mut tag = HashMap::<String, String>::new();
-            let mut barcode_color = HashMap::<String, String>::new();
-            let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
-            if bc != "".to_string() {
-                if ctl.gen_opt.pre != "".to_string() {
-                    bc = format!("{}/{}", ctl.gen_opt.pre, bc);
-                }
-                if !path_exists(&bc) {
-                    eprintln!(
-                        "\nIn your META file, a value for bc implies the existence of \
-                         a file\n{}\nbut that file does not exist.\n",
-                        bc
-                    );
-                    std::process::exit(1);
-                }
-                let f = open_for_read![&bc];
-
-                // Parse one bc file.
-
-                let mut first = true;
-                let mut fieldnames = Vec::<String>::new();
-                let mut barcode_pos = 0;
-                let mut sample_pos = 0;
-                let mut donor_pos = 0;
-                let mut tag_pos = None;
-                let mut color_pos = None;
-                let mut to_alt = Vec::<isize>::new();
-                for line in f.lines() {
-                    let s = line.unwrap();
-                    if first {
-                        let fields = s.split(',').collect::<Vec<&str>>();
-                        to_alt = vec![-1 as isize; fields.len()];
-                        let required = vec!["barcode", "sample", "donor"];
-                        for f in required.iter() {
-                            if !fields.contains(f) {
-                                eprintln!(
-                                    "\nThe file\n\
-                                     {}\n\
-                                     from the bc field used in META\n\
-                                     is missing the field {}.\n",
-                                    bc, f
-                                );
-                                std::process::exit(1);
-                            }
-                        }
-                        for x in fields.iter() {
-                            fieldnames.push(x.to_string());
-                        }
-                        for i in 0..fields.len() {
-                            if fields[i] == "barcode" {
-                                barcode_pos = i;
-                            } else if fields[i] == "sample" {
-                                sample_pos = i;
-                            } else if fields[i] == "donor" {
-                                donor_pos = i;
-                            } else if fields[i] == "tag" {
-                                tag_pos = Some(i);
-                            } else if fields[i] == "color" {
-                                color_pos = Some(i);
-                            } else {
-                                to_alt[i] = alt_bc_fields.len() as isize;
-                                alt_bc_fields.push((
-                                    fields[i].to_string(),
-                                    HashMap::<String, String>::new(),
-                                ));
-                            }
-                        }
-                        first = false;
-                    } else {
-                        let fields = s.split(',').collect::<Vec<&str>>();
-                        if fields.len() != fieldnames.len() {
-                            eprintln!(
-                                "\nThere is a line\n{}\n\
-                                 in the CSV file defined by bc in META\n\
-                                 that has {} fields, which isn't right, because the header line\n\
-                                 has {} fields..  This is for the file\n{}\ndefined by bc.\n",
-                                s,
-                                fields.len(),
-                                fieldnames.len(),
-                                bc
-                            );
-                            std::process::exit(1);
-                        }
-                        for i in 0..fields.len() {
-                            if to_alt[i] >= 0 {
-                                alt_bc_fields[to_alt[i] as usize]
-                                    .1
-                                    .insert(fields[barcode_pos].to_string(), fields[i].to_string());
-                            }
-                        }
-                        if !fields[barcode_pos].contains('-') {
-                            eprintln!(
-                                "\nThe barcode \"{}\" appears in the file\n{}\ndefined \
-                                 by bc in META.  That doesn't make sense because a barcode\n\
-                                 should include a hyphen.\n",
-                                fields[barcode_pos], bc
-                            );
-                            std::process::exit(1);
-                        }
-                        sample_donor.insert(
-                            fields[barcode_pos].to_string(),
-                            (
-                                fields[sample_pos].to_string(),
-                                fields[donor_pos].to_string(),
-                            ),
-                        );
-                        if tag_pos.is_some() {
-                            let tag_pos = tag_pos.unwrap();
-                            tag.insert(
-                                fields[barcode_pos].to_string(),
-                                fields[tag_pos].to_string(),
-                            );
-                        }
-                        if color_pos.is_some() {
-                            let color_pos = color_pos.unwrap();
-                            barcode_color.insert(
-                                fields[barcode_pos].to_string(),
-                                fields[color_pos].to_string(),
-                            );
-                        }
-                    }
-                }
-            }
-
-            // Finish up.
-
+            parse_bc(bc.clone(), &mut ctl, "META");
             if ctl.gen_opt.pre != "".to_string() {
                 path = format!("{}/{}/outs", ctl.gen_opt.pre, path);
                 if gpath != "".to_string() {
@@ -590,10 +604,6 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             ctl.sample_info.donor_id.push(donor);
             ctl.sample_info.sample_id.push(sample);
             ctl.sample_info.color.push(color);
-            ctl.sample_info.sample_donor.push(sample_donor);
-            ctl.sample_info.tag.push(tag);
-            ctl.sample_info.barcode_color.push(barcode_color);
-            ctl.sample_info.alt_bc_fields.push(alt_bc_fields);
         }
     }
 }

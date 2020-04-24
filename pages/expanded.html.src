@@ -44,7 +44,7 @@ To that end, we show an example, using two libraries obtained from a single tube
 obtained from a healthy human donor.  The two libraries contain 7287 and 9559 cells, respectively,
 of which ~12% are B cells.  All the data shown here are part of the large dataset
 package described in the 
-<a href="../index.html#download">download section of the main enclone page</a>.</p>
+<a href="../../index.html#download">download section of the main enclone page</a>.</p>
 
 <pre><code>enclone BCR=128037,128040 NCROSS
 </code></pre>
