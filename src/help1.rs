@@ -280,7 +280,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \
              A similar approach was attempted for J segments but at the time of testing did not \
              appear to enhance clonotyping specificity.  This could be revisited later and might \
-             be of interest even if does not improve specificity.\n\n\
+             be of interest even if it does not improve specificity.\n\n\
              \
              \\boldred{4}.  What joins are tested.  \
              Pairs of exact subclonotypes are considered for joining, as described below.  This \
