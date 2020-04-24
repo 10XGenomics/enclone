@@ -10,5 +10,5 @@ mkdir -p ~/public_html/enclone/src
 
 cp -p index.html ~/public_html/enclone
 cp -p README.md ~/public_html/enclone
-cp -p demo_alt.html ~/public_html/enclone
+cp -p google_font_test.html ~/public_html/enclone
 cp -pr {pages,fonts,img} ~/public_html/enclone
