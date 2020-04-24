@@ -42,29 +42,23 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
         let mut barcode_pos = 0;
-        let mut sample_pos = 0;
-        let mut donor_pos = 0;
-        let mut tag_pos = None;
-        let mut color_pos = None;
+        let (mut sample_pos, mut donor_pos, mut tag_pos, mut color_pos) = (None, None, None, None);
         let mut to_alt = Vec::<isize>::new();
         for line in f.lines() {
             let s = line.unwrap();
             if first {
                 let fields = s.split(',').collect::<Vec<&str>>();
                 to_alt = vec![-1 as isize; fields.len()];
-                let required = vec!["barcode", "sample", "donor"];
-                for f in required.iter() {
-                    if !fields.contains(f) {
-                        let mut origin = "from the bc field used in META";
-                        if call_type == "BC" {
-                            origin = "from the BC argument";
-                        }
-                        eprintln!(
-                            "\nThe file\n{}\n{}\nis missing the field {}.\n",
-                            bc, origin, f
-                        );
-                        std::process::exit(1);
+                if !fields.contains(&"barcode") {
+                    let mut origin = "from the bc field used in META";
+                    if call_type == "BC" {
+                        origin = "from the BC argument";
                     }
+                    eprintln!(
+                        "\nThe file\n{}\n{}\nis missing the barcode field.\n",
+                        bc, origin,
+                    );
+                    std::process::exit(1);
                 }
                 for x in fields.iter() {
                     fieldnames.push(x.to_string());
@@ -73,9 +67,9 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     if fields[i] == "barcode" {
                         barcode_pos = i;
                     } else if fields[i] == "sample" {
-                        sample_pos = i;
+                        sample_pos = Some(i);
                     } else if fields[i] == "donor" {
-                        donor_pos = i;
+                        donor_pos = Some(i);
                     } else if fields[i] == "tag" {
                         tag_pos = Some(i);
                     } else if fields[i] == "color" {
@@ -126,14 +120,18 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     );
                     std::process::exit(1);
                 }
-                sample_for_bc.insert(
-                    fields[barcode_pos].to_string(),
-                    fields[sample_pos].to_string(),
-                );
-                donor_for_bc.insert(
-                    fields[barcode_pos].to_string(),
-                    fields[donor_pos].to_string(),
-                );
+                if sample_pos.is_some() {
+                    sample_for_bc.insert(
+                        fields[barcode_pos].to_string(),
+                        fields[sample_pos.unwrap()].to_string(),
+                    );
+                }
+                if donor_pos.is_some() {
+                    donor_for_bc.insert(
+                        fields[barcode_pos].to_string(),
+                        fields[donor_pos.unwrap()].to_string(),
+                    );
+                }
                 if tag_pos.is_some() {
                     let tag_pos = tag_pos.unwrap();
                     tag.insert(fields[barcode_pos].to_string(), fields[tag_pos].to_string());
