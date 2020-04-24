@@ -51,7 +51,7 @@ reference sequences" for the V chains present in the donor's genome.  This is po
 though based on imperfect information.  V segments vary in their expression frequency and thus the
 more cells which are present, the more complete the information will be.  It is also not possible
 to accurately determine the terminal bases in a V chain from transcript data alone because these
-bases mutate during recombination.
+bases mutate during recombination and because of non-templated nucleotide addition.
 
 The idea for how this is done is roughly the following: for each V segment, we choose one cell
 from each clonotype (although these have not actually been computed yet, so it's an
@@ -65,7 +65,7 @@ from duplicated gene copies.
 
 A similar approach was attempted for J segments but at the time of testing did not appear to
 enhance clonotyping specificity.  This could be revisited later and might be of interest even if
-does not improve specificity.
+it does not improve specificity.
 
 <span style="color:#c23621;font-weight:bold;">4</span>.  What joins are tested.  Pairs of exact subclonotypes are considered for joining, as described
 below.  This process only considers exact subclonotypes have two or three chains.  There is some
