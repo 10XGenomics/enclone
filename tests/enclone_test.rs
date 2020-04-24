@@ -27,11 +27,13 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::fs::{read_to_string, remove_file, File};
-use std::io::{Read, Write};
+use std::collections::HashSet;
+use std::fs::{read_dir, read_to_string, remove_file, File};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
 use std::time::Instant;
 use string_utils::*;
+use vector_utils::*;
 
 const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
@@ -108,7 +110,8 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output; git add test/inputs/outputs/enclone_test{}_output\n",
+                 > test/inputs/outputs/enclone_test{}_output; \
+                 git add test/inputs/outputs/enclone_test{}_output\n",
                 TEST_FILES_VERSION,
                 test,
                 it + 1,
@@ -345,6 +348,186 @@ fn test_enclone() {
         TESTS.len(),
         elapsed(&t)
     );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test site for broken links and spellcheck.
+//
+// Two approaches for checking broken links left in place for now, to delete one, and the
+// corresponding crate from
+// Cargo.toml.
+//
+// This looks for
+// ▓<a href="..."▓.
+// Should also look for at least:
+// ▓ href="..."▓
+// ▓ href='...'▓
+// ▓ src="..."▓.
+
+#[cfg(not(debug_assertions))]
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_for_broken_links_and_spellcheck() {
+    extern crate reqwest;
+    extern crate attohttpc;
+    use std::time::Duration;
+
+    // Set up dictionary exceptions.
+
+    let extra_words = "barcode barcoding clonotype clonotypes clonotyping codebase contig contigs \
+        csv cvars enclone genomics germline grok hypermutation hypermutations indel indels \
+        linux loh lvars metadata onesie parseable pbmc spacebar subclonotype subclonotypes \
+        svg umi umis underperforming vdj zenodo";
+    let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
+
+    // Set up dictionary.
+
+    let dictionary0 = read_to_string("src/english_wordlist").unwrap();
+    let dictionary0 = dictionary0.split('\n').collect::<Vec<&str>>();
+    let mut dictionary = Vec::<String>::new();
+    for w in dictionary0.iter() {
+        let mut x = w.to_string();
+        x.make_ascii_lowercase();
+        dictionary.push(x);
+    }
+    for w in extra_words {
+        dictionary.push(w.to_string());
+    }
+    unique_sort(&mut dictionary);
+
+    // Find html pages on site.
+
+    let mut htmls = vec!["index.html".to_string()];
+    let pages = read_dir("pages").unwrap();
+    for page in pages {
+        let page = page.unwrap().path();
+        let page = page.to_str().unwrap();
+        if page.ends_with(".html") {
+            htmls.push(format!("{}", page));
+        }
+    }
+    let auto = read_dir("pages/auto").unwrap();
+    for page in auto {
+        let page = page.unwrap().path();
+        let page = page.to_str().unwrap();
+        if page.ends_with(".html") {
+            htmls.push(format!("{}", page));
+        }
+    }
+
+    // Test each html.
+
+    let mut tested = HashSet::<String>::new();
+    for x in htmls {
+        let f = open_for_read![x];
+        let depth = x.matches('/').count();
+        for line in f.lines() {
+            let mut s = line.unwrap();
+
+            // Test spelling.  Case insensitive.
+
+            let mut s0 = s.replace(',', " ");
+            s0 = s0.replace('.', " ");
+            s0 = s0.replace(';', " ");
+            let words = s0.split(' ').collect::<Vec<&str>>();
+            let mut ok = true;
+            for i in 0..words.len() {
+                let w = words[i].to_string();
+                for c in w.chars() {
+                    if !c.is_ascii_alphabetic() {
+                        ok = false;
+                    }
+                }
+                if w.is_empty() || !ok {
+                    continue;
+                }
+                let mut wl = w.clone();
+                wl.make_ascii_lowercase();
+                if !bin_member(&dictionary, &wl.to_string()) {
+                    eprintln!(
+                        "\nthe word \"{}\" in file {} isn't in the dictionary\n",
+                        w, x
+                    );
+                    std::process::exit(1);
+                }
+            }
+
+            // Check links.
+
+            while s.contains("<a href=\"") {
+                let link = s.between("<a href=\"", "\"");
+                if tested.contains(&link.to_string()) {
+                    s = s.after("<a href=\"").to_string();
+                    continue;
+                }
+                tested.insert(link.to_string());
+
+                // Allow mailto to enclone.
+
+                if link == "mailto:enclone@10xgenomics.com" {
+                    s = s.after("<a href=\"").to_string();
+                    continue;
+                }
+
+                // Otherwise if not http..., assume it's a file path.
+
+                if !link.starts_with("http") {
+                    let mut link = link.to_string();
+                    if link.contains('#') {
+                        link = link.before("#").to_string();
+                    }
+                    let mut z = link.clone();
+                    for _ in 0..depth {
+                        if !z.starts_with("../") {
+                            eprintln!("something wrong with file {} on page {}", link, x);
+                            std::process::exit(1);
+                        }
+                        z = z.after("../").to_string();
+                    }
+                    if !path_exists(&z) {
+                        eprintln!("failed to find file {} on page {}", link, x);
+                        std::process::exit(1);
+                    }
+                    s = s.after("<a href=\"").to_string();
+                    continue;
+                }
+
+                // And finally do http....
+
+                eprintln!("checking link \"{}\"", link);
+
+                // Approach 1 to testing if link works.
+
+                use attohttpc::*;
+                let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
+                let response = req
+                    .send()
+                    .expect(&format!("\ncould not read link {} on page {}\n", link, x));
+                if !response.is_success() {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
+                    std::process::exit(1);
+                }
+
+                // Approach 2 to testing if link works.
+
+                /*
+                use reqwest::StatusCode;
+                let req = reqwest::blocking::get(link);
+                if req.is_err() {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
+                    std::process::exit(1);
+                }
+                if req.unwrap().status() == StatusCode::NOT_FOUND {
+                    eprintln!("\ncould not read link {} on page {}\n", link, x);
+                    std::process::exit(1);
+                }
+                */
+
+                s = s.after("<a href=\"").to_string();
+            }
+        }
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
