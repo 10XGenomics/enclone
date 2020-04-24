@@ -27,6 +27,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::min;
+use std::collections::HashSet;
 use std::fs::{read_dir, read_to_string, remove_file, File};
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
@@ -108,7 +109,8 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output; git add test/inputs/outputs/enclone_test{}_output\n",
+                 > test/inputs/outputs/enclone_test{}_output; \
+                 git add test/inputs/outputs/enclone_test{}_output\n",
                 TEST_FILES_VERSION,
                 test,
                 it + 1,
@@ -354,12 +356,12 @@ fn test_enclone() {
 // Two approaches left in place for now, to delete one, and the corresponding crate from
 // Cargo.toml.
 //
-// This looks for ▓<a href="..."▓
+// This looks for
+// ▓<a href="..."▓.
 // Should also look for at least:
-// ▓ href="..."▓ 
+// ▓ href="..."▓
 // ▓ href='...'▓
-// ▓ src="..."▓
-// and the code should not test the same link over and over.
+// ▓ src="..."▓.
 
 #[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
@@ -385,6 +387,7 @@ fn test_for_broken_links() {
             htmls.push(format!("{}", page));
         }
     }
+    let mut tested = HashSet::<String>::new();
     for x in htmls {
         let f = open_for_read![x];
         let depth = x.matches('/').count();
@@ -392,6 +395,11 @@ fn test_for_broken_links() {
             let mut s = line.unwrap();
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
+                if tested.contains(&link.to_string()) {
+                    s = s.after("<a href=\"").to_string();
+                    continue;
+                }
+                tested.insert(link.to_string());
 
                 // Allow mailto to enclone.
 
