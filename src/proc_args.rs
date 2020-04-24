@@ -114,6 +114,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut have_gex = false;
     let mut have_meta = false;
     let mut gex = String::new();
+    let mut bc = String::new();
     for i in 1..args.len() {
         if args[i].starts_with("TCR=") {
             have_tcr = true;
@@ -127,13 +128,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if args[i].starts_with("GEX=") {
             gex = args[i].after("GEX=").to_string();
         }
+        if args[i].starts_with("BC=") {
+            bc = args[i].after("BC=").to_string();
+        }
     }
-    if have_meta && (have_tcr || have_bcr || have_gex) {
-        eprintln!("\nIf META is specified, then none of TCR, BCR or GEX can be specified.\n");
+    if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
+        eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
         std::process::exit(1);
     }
     if have_tcr && have_bcr {
-        eprintln!("\nPlease do not specify both TCR and BCR.\n");
+        eprintln!("\nKindly please do not specify both TCR and BCR.\n");
         std::process::exit(1);
     }
 
@@ -519,6 +523,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         } else if arg.starts_with("GEX=") {
+        } else if arg.starts_with("BC=") {
         } else if is_usize_arg(&arg, "MIN_MULT") {
             ctl.allele_alg_opt.min_mult = arg.after("MIN_MULT=").force_usize();
         } else if is_usize_arg(&arg, "MIN_EXACTS") {
@@ -581,7 +586,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
         {
-            proc_xcr(&arg, &gex, have_gex, &mut ctl);
+            proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
         } else {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);

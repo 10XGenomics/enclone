@@ -155,7 +155,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
+pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut EncloneControl) {
     ctl.sample_info = SampleInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
         eprintln!("\nOnly one of TCR or BCR can be specified.\n");
@@ -181,6 +181,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
     }
     let donor_groups = val.split(';').collect::<Vec<&str>>();
     let donor_groups_gex = gex.split(';').collect::<Vec<&str>>();
+    let donor_groups_bc = bc.split(';').collect::<Vec<&str>>();
     let mut xcr = "TCR".to_string();
     if ctl.gen_opt.bcr {
         xcr = "BCR".to_string();
@@ -188,6 +189,14 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
     if have_gex && donor_groups_gex.len() != donor_groups.len() {
         eprintln!(
             "\nThe {} and GEX arguments do not exactly mirror each \
+             other's structure.\n",
+            xcr
+        );
+        std::process::exit(1);
+    }
+    if !bc.is_empty() && donor_groups_bc.len() != donor_groups.len() {
+        eprintln!(
+            "\nThe {} and BC arguments do not exactly mirror each \
              other's structure.\n",
             xcr
         );
@@ -207,9 +216,22 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 std::process::exit(1);
             }
         }
+        let mut sample_groups_bc = Vec::<&str>::new();
+        if !bc.is_empty() {
+            sample_groups_bc = donor_groups_bc[id].split(':').collect::<Vec<&str>>();
+            if sample_groups_bc.len() != sample_groups.len() {
+                eprintln!(
+                    "\nThe {} and BC arguments do not exactly mirror each \
+                     other's structure.\n",
+                    xcr
+                );
+                std::process::exit(1);
+            }
+        }
         for (is, s) in sample_groups.iter().enumerate() {
             let datasets = (*s).split(',').collect::<Vec<&str>>();
             let mut datasets_gex = Vec::<&str>::new();
+            let mut datasets_bc = Vec::<&str>::new();
             let mut datasetsx = Vec::<String>::new();
             for i in 0..datasets.len() {
                 if datasets[i].contains('-') {
@@ -236,6 +258,17 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 if datasets_gex.len() != datasetsx.len() {
                     eprintln!(
                         "\nThe {} and GEX arguments do not exactly mirror each \
+                         other's structure.\n",
+                        xcr
+                    );
+                    std::process::exit(1);
+                }
+            }
+            if !bc.is_empty() {
+                datasets_bc = sample_groups_bc[is].split(',').collect::<Vec<&str>>();
+                if datasets_bc.len() != datasetsx.len() {
+                    eprintln!(
+                        "\nThe {} and BC arguments do not exactly mirror each \
                          other's structure.\n",
                         xcr
                     );
@@ -351,6 +384,14 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                     std::process::exit(1);
                 }
 
+                // Now work on the BC path.
+
+                let mut bcx = String::new();
+                if !bc.is_empty() {
+                    bcx = datasets_bc[ix].to_string();
+                }
+                parse_bc(bcx, &mut ctl, "BC");
+
                 // Now work on the GEX path.
 
                 let mut pg = String::new();
@@ -440,19 +481,7 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 ctl.sample_info.donor_id.push(donor_name);
                 ctl.sample_info.color.push("".to_string());
                 ctl.sample_info.sample_id.push(sample_name);
-                ctl.sample_info
-                    .sample_for_bc
-                    .push(HashMap::<String, String>::new());
-                ctl.sample_info
-                    .donor_for_bc
-                    .push(HashMap::<String, String>::new());
                 ctl.sample_info.tag.push(HashMap::<String, String>::new());
-                ctl.sample_info
-                    .barcode_color
-                    .push(HashMap::<String, String>::new());
-                ctl.sample_info
-                    .alt_bc_fields
-                    .push(Vec::<(String, HashMap<String, String>)>::new());
             }
         }
     }
