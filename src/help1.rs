@@ -265,7 +265,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              vary in their expression frequency and thus the more cells which are present, the \
              more complete the information will be.  It is also not possible to accurately \
              determine the terminal bases in a V chain from transcript data alone because these \
-             bases mutate during recombination.\n\n\
+             bases mutate during recombination and because of non-templated nucleotide addition.\n\n\
              \
              The idea for how this is done is roughly the following: for each V segment, we choose \
              one cell from each clonotype (although these have not actually been computed yet, so \
