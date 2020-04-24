@@ -14,6 +14,12 @@ jobs:
     steps:
       - name: Checkout enclone master
         uses: actions/checkout@master
+      - name: rust-version
+        run: rustup -V
+      - name: rustup update
+        run: rustup self update
+      - name: rustup -V
+        run: rustup update
       - name: Check Rust formatting
       # Check formatting
         run: cargo fmt -- --check
