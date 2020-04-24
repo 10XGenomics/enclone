@@ -16,8 +16,8 @@ jobs:
         uses: actions/checkout@master
       - name: rustup-version
         run: rustup -V
-      - name: rustup update
-        run: rustup self update
+      - name: rustup reinstall
+        run: rustup toolchain remove stable && rustup toolchain install stable
       - name: rustup-version
         run: rustup -V
       - name: Check Rust formatting
