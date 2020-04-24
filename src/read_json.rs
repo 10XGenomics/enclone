@@ -330,20 +330,24 @@ fn parse_vector_entry_from_json(
     let mut sample = None;
     let mut donor = None;
     let mut tag = None;
-    if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
-        sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
-        donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+    if sample_info.sample_for_bc[li].contains_key(&barcode.clone()) {
+        sample = Some(sample_info.sample_for_bc[li][&barcode.clone()].clone());
     } else {
-        // the way we use s1 and d1 here is flaky
+        // the way we use s1 here is flaky
         if sample_info.sample_id[li].len() > 0
             && (sample_info.sample_id[li] != "s1".to_string()
-                || sample_info.sample_donor[li].len() == 0)
+                || sample_info.sample_for_bc[li].len() == 0)
         {
             sample = Some(sample_info.sample_id[li].clone());
         }
-        if sample_info.donor_id[li].len() > 0
+    }
+    if sample_info.donor_for_bc[li].contains_key(&barcode.clone()) {
+        donor = Some(sample_info.donor_for_bc[li][&barcode.clone()].clone());
+    } else {
+        // the way we use d1 here is flaky
+        if sample_info.sample_id[li].len() > 0
             && (sample_info.donor_id[li] != "d1".to_string()
-                || sample_info.sample_donor[li].len() == 0)
+                || sample_info.donor_for_bc[li].len() == 0)
         {
             donor = Some(sample_info.donor_id[li].clone());
         }

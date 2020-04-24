@@ -17,7 +17,8 @@ use vector_utils::*;
 // Parse barcode-level information file.
 
 fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
-    let mut sample_donor = HashMap::<String, (String, String)>::new();
+    let mut sample_for_bc = HashMap::<String, String>::new();
+    let mut donor_for_bc = HashMap::<String, String>::new();
     let mut tag = HashMap::<String, String>::new();
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
@@ -125,12 +126,13 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     );
                     std::process::exit(1);
                 }
-                sample_donor.insert(
+                sample_for_bc.insert(
                     fields[barcode_pos].to_string(),
-                    (
-                        fields[sample_pos].to_string(),
-                        fields[donor_pos].to_string(),
-                    ),
+                    fields[sample_pos].to_string(),
+                );
+                donor_for_bc.insert(
+                    fields[barcode_pos].to_string(),
+                    fields[donor_pos].to_string(),
                 );
                 if tag_pos.is_some() {
                     let tag_pos = tag_pos.unwrap();
@@ -146,7 +148,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
             }
         }
     }
-    ctl.sample_info.sample_donor.push(sample_donor);
+    ctl.sample_info.sample_for_bc.push(sample_for_bc);
+    ctl.sample_info.donor_for_bc.push(donor_for_bc);
     ctl.sample_info.tag.push(tag);
     ctl.sample_info.barcode_color.push(barcode_color);
     ctl.sample_info.alt_bc_fields.push(alt_bc_fields);
@@ -440,8 +443,11 @@ pub fn proc_xcr(f: &str, gex: &str, have_gex: bool, ctl: &mut EncloneControl) {
                 ctl.sample_info.color.push("".to_string());
                 ctl.sample_info.sample_id.push(sample_name);
                 ctl.sample_info
-                    .sample_donor
-                    .push(HashMap::<String, (String, String)>::new());
+                    .sample_for_bc
+                    .push(HashMap::<String, String>::new());
+                ctl.sample_info
+                    .donor_for_bc
+                    .push(HashMap::<String, String>::new());
                 ctl.sample_info.tag.push(HashMap::<String, String>::new());
                 ctl.sample_info
                     .barcode_color
