@@ -440,6 +440,14 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
             let mut barcode_color = HashMap::<String, String>::new();
             let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
             if bc != "".to_string() {
+                // Parse one bc file.
+
+                /*
+                USES: ctl, bc, call type
+                WRITES: sample_donor, tag, barcode_color, alt_bc_fields
+                but could just push these to ctl
+                */
+
                 if ctl.gen_opt.pre != "".to_string() {
                     bc = format!("{}/{}", ctl.gen_opt.pre, bc);
                 }
@@ -452,9 +460,6 @@ pub fn proc_meta(f: &str, ctl: &mut EncloneControl) {
                     std::process::exit(1);
                 }
                 let f = open_for_read![&bc];
-
-                // Parse one bc file.
-
                 let mut first = true;
                 let mut fieldnames = Vec::<String>::new();
                 let mut barcode_pos = 0;
