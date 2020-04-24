@@ -353,6 +353,13 @@ fn test_enclone() {
 //
 // Two approaches left in place for now, to delete one, and the corresponding crate from
 // Cargo.toml.
+//
+// This looks for ▓<a href="..."▓
+// Should also look for at least:
+// ▓ href="..."▓ 
+// ▓ href='...'▓
+// ▓ src="..."▓
+// and the code should not test the same link over and over.
 
 #[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
