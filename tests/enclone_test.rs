@@ -33,6 +33,7 @@ use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
 use std::time::Instant;
 use string_utils::*;
+use vector_utils::*;
 
 const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
@@ -351,9 +352,10 @@ fn test_enclone() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test site for broken links.
+// Test site for broken links and spellcheck.
 //
-// Two approaches left in place for now, to delete one, and the corresponding crate from
+// Two approaches for checking broken links left in place for now, to delete one, and the
+// corresponding crate from
 // Cargo.toml.
 //
 // This looks for
@@ -366,10 +368,36 @@ fn test_enclone() {
 #[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
-fn test_for_broken_links() {
+fn test_for_broken_links_and_spellcheck() {
     extern crate reqwest;
     extern crate attohttpc;
     use std::time::Duration;
+
+    // Set up dictionary exceptions.
+
+    let extra_words = "barcode barcoding clonotype clonotypes clonotyping codebase contig contigs \
+        csv cvars enclone genomics germline grok hypermutation hypermutations indel indels \
+        linux loh lvars metadata onesie parseable pbmc spacebar subclonotype subclonotypes \
+        svg umi umis underperforming vdj zenodo";
+    let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
+
+    // Set up dictionary.
+
+    let dictionary0 = read_to_string("src/english_wordlist").unwrap();
+    let dictionary0 = dictionary0.split('\n').collect::<Vec<&str>>();
+    let mut dictionary = Vec::<String>::new();
+    for w in dictionary0.iter() {
+        let mut x = w.to_string();
+        x.make_ascii_lowercase();
+        dictionary.push(x);
+    }
+    for w in extra_words {
+        dictionary.push(w.to_string());
+    }
+    unique_sort(&mut dictionary);
+
+    // Find html pages on site.
+
     let mut htmls = vec!["index.html".to_string()];
     let pages = read_dir("pages").unwrap();
     for page in pages {
@@ -387,12 +415,46 @@ fn test_for_broken_links() {
             htmls.push(format!("{}", page));
         }
     }
+
+    // Test each html.
+
     let mut tested = HashSet::<String>::new();
     for x in htmls {
         let f = open_for_read![x];
         let depth = x.matches('/').count();
         for line in f.lines() {
             let mut s = line.unwrap();
+
+            // Test spelling.  Case insensitive.
+
+            let mut s0 = s.replace(',', " ");
+            s0 = s0.replace('.', " ");
+            s0 = s0.replace(';', " ");
+            let words = s0.split(' ').collect::<Vec<&str>>();
+            let mut ok = true;
+            for i in 0..words.len() {
+                let w = words[i].to_string();
+                for c in w.chars() {
+                    if !c.is_ascii_alphabetic() {
+                        ok = false;
+                    }
+                }
+                if w.is_empty() || !ok {
+                    continue;
+                }
+                let mut wl = w.clone();
+                wl.make_ascii_lowercase();
+                if !bin_member(&dictionary, &wl.to_string()) {
+                    eprintln!(
+                        "\nthe word \"{}\" in file {} isn't in the dictionary\n",
+                        w, x
+                    );
+                    std::process::exit(1);
+                }
+            }
+
+            // Check links.
+
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
                 if tested.contains(&link.to_string()) {

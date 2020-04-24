@@ -369,7 +369,7 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 <h2>Combining multiomic data</h2>
 
 <p>Gene expression and feature barcode data can be displayed simultaneously with VDJ data.  For
-example, here we add columms for the same clonotype, showing the median number of UMIs detected
+example, here we add columns for the same clonotype, showing the median number of UMIs detected
 for, all genes, a particular gene, and a particular antibody:</p>
 
 #include pages/auto/clonotype_with_gex.html
@@ -426,7 +426,7 @@ antigen specificity to multiple antigens directly via feature barcoding
 (<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>).</p>
 <p>These data are easy to display in enclone!  You can directly select candidates for
 vaccine or therapeutic development by picking large clonotypes with high antigen counts and single
-or multiple antigen specifities.</p>
+or multiple antigen specificities.</p>
 <p>We are actively working on further functionality that will make this process even more effective.</p>
 
 <p>Another example use of enclone shows how to <b><a href="pages/auto/expanded.html">detect illusory clonotypes</a></b>.</p>
