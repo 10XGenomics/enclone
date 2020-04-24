@@ -10,7 +10,7 @@ Optional arguments controlling printing of join events:
 - ANN: print annotations of contig
 - ANN0: print annotations of contig, after truncation to V..J
 - PFREQ=n: show data for 1/n joins even if correct
-- BC: show barcodes
+- SHOW_BC: show barcodes
 - PRINT_FAILED_JOINS: print failed join events.
 
 Optional arguments that control clonotype filtering:
