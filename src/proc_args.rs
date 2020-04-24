@@ -621,15 +621,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.sample_info.sample_list = samples.clone();
     ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.tag_list = tags;
-    let mut sample_donor_list = Vec::<(usize, usize)>::new();
-    for i in 0..sample_donor.len() {
-        sample_donor_list.push((
-            bin_position(&samples, &sample_donor[i].0) as usize,
-            bin_position(&donors, &sample_donor[i].1) as usize,
-        ));
-    }
-    unique_sort(&mut sample_donor_list);
-    ctl.sample_info.sample_donor_list = sample_donor_list;
     for i in 0..ctl.sample_info.sample_donor.len() {
         if ctl.sample_info.sample_donor[i].len() > 0 {
             ctl.clono_filt_opt.donor = true;

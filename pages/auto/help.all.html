@@ -633,36 +633,37 @@ Matching gene expression and/or feature barcode data may also be supplied using 
 whose right side must have the exact same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Specification of
 both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.
 
+In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
+having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV file,
+which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">sample</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
+may also include arbitrary other fields.  The <span style="font-weight:bold;">sample</span> and <span style="font-weight:bold;">donor</span> fields allow a particular sample
+and donor to be associated to a given barcode.  A use case for this is genetic demultiplexing. 
+The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is used by the <span style="font-weight:bold;">PLOT</span>
+option.  All other fields are treated as lead variables, but values are only displayed in <span style="font-weight:bold;">PER_CELL</span>
+mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include existing lead variable
+names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
+
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>
 This file should be a CSV (comma-separated values) file, with one line per cell group.  After the
 first line, lines starting with # are ignored.  There must be a field tcr or bcr, and some other
 fields are allowed:
-┌────────┬───────────────┬────────────────────────────────────────────────────────────────────┐
-│<span style="font-weight:bold;">field</span>   │  <span style="font-weight:bold;">default</span>      │  <span style="font-weight:bold;">meaning</span>                                                           │
-├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
-│tcr     │  (required!)  │  path to dataset, or abbr:path, where abbr is an abbreviated       │
-│or bcr  │               │  name for the dataset; exactly one of tcr or bcr must be used      │
-│gex     │  null         │  path to GEX dataset, which may include or consist entirely        │
-│        │               │  of FB data                                                        │
-├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
-│sample  │  s1           │  abbreviated name of sample                                        │
-├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
-│donor   │  d1           │  abbreviated name of donor                                         │
-├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
-│color   │  null         │  color to associate to this dataset (for PLOT option)              │
-├────────┼───────────────┼────────────────────────────────────────────────────────────────────┤
-│bc      │  null         │  name of CSV file with header "barcode,sample,donor" that          │
-│        │               │  assigns a sample and donor name to each barcode; if sample and/or │
-│        │               │  donor are also specified, then those are treated as default values│
-│        │               │  to be used in case a particular barcode is not specified by bc;   │
-│        │               │  a fourth field "tag" is allowed and may be arbitrarily specified  │
-│        │               │  Use of bc automatically turns on the MIX_DONORS option.  There is │
-│        │               │  an optional field "color" that assigns a color to a barcode,      │
-│        │               │  and which is used by the PLOT option.  Finally, any other field   │
-│        │               │  name may be specified and then used as a lead variable in PER CELL│
-│        │               │  mode, so long as it is not already a lead variable name.          │
-└────────┴───────────────┴────────────────────────────────────────────────────────────────────┘
+┌────────┬───────────────┬──────────────────────────────────────────────────────────────┐
+│<span style="font-weight:bold;">field</span>   │  <span style="font-weight:bold;">default</span>      │  <span style="font-weight:bold;">meaning</span>                                                     │
+├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│tcr     │  (required!)  │  path to dataset, or abbr:path, where abbr is an abbreviated │
+│or bcr  │               │  name for the dataset; exactly one of tcr or bcr must be used│
+│gex     │  null         │  path to GEX dataset, which may include or consist entirely  │
+│        │               │  of FB data                                                  │
+├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│sample  │  s1           │  abbreviated name of sample                                  │
+├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│donor   │  d1           │  abbreviated name of donor                                   │
+├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│color   │  null         │  color to associate to this dataset (for <span style="font-weight:bold;">PLOT</span> option)        │
+├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
+│bc      │  null         │  name of CSV file as in the <span style="font-weight:bold;">BC</span> option                        │
+└────────┴───────────────┴──────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help input_tech
