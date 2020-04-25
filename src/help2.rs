@@ -145,7 +145,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
              \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             \\green{https://enclone.10xgenomics.github.io/pages/HISTORY.html} \
+             \\green{https://enclone.10xgenomics.github.io/pages/history.html} \
              \\blue{for the history of what was changed}\n\
              \\blue{and when.  We will try not to break} \
              \\blue{things, but when we first introduce a feature, it may}\n\

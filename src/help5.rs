@@ -364,7 +364,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\n\\bold{a few options for developers}\n\n");
         h.print(
             "For instructions on how to compile, please see\n\
-             \\green{https://enclone.10xgenomics.github.io/pages/COMPILE.html}.\n\n",
+             \\green{https://enclone.10xgenomics.github.io/pages/compile.html}.\n\n",
         );
         h.doc(
             "COMP",
