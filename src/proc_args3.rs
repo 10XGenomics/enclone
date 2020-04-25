@@ -4,13 +4,115 @@
 
 use crate::defs::*;
 use io_utils::*;
-use marsoc::*;
+use itertools::Itertools;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Functions to find the path to data.
+
+fn get_path(p: &str, ctl: &EncloneControl) -> String {
+    for x in ctl.gen_opt.pre.iter() {
+        let pp = format!("{}/{}", x, p);
+        if path_exists(&pp) {
+            return pp;
+        }
+    }
+    p.to_string()
+}
+
+fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
+    for x in ctl.gen_opt.pre.iter() {
+        let pp = format!("{}/{}", x, p);
+        if path_exists(&pp) {
+            return pp;
+        }
+    }
+    if !path_exists(&p) {
+        if ctl.gen_opt.pre.is_empty() {
+            eprintln!(
+                "\nUnable to find the path {}.  This came from the {} argument.\n",
+                p, source
+            );
+        } else {
+            eprintln!(
+                "\nUnable to find the path {}, even if prepended by any of the directories \
+                in PRE={}.\nThis came from the {} argument.\n",
+                p,
+                ctl.gen_opt.pre.iter().format(","),
+                source
+            );
+        }
+        std::process::exit(1);
+    }
+    p.to_string()
+}
+
+fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> String {
+    let mut pp = get_path(&p, &ctl);
+    if !path_exists(&pp) {
+        if !ctl.gen_opt.internal_run {
+            get_path_fail(&pp, &ctl, source);
+        } else {
+            // For internal runs, try much harder.  This is so that internal users can
+            // just type an internal numerical id for a dataset and have it always
+            // work.  The code that's used here should be placed somewhere else.
+
+            if p.parse::<usize>().is_ok() {
+                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", p);
+                let o = Command::new("curl")
+                    .arg(url)
+                    .output()
+                    .expect("failed to execute xena http");
+                let m = String::from_utf8(o.stdout).unwrap();
+                if m.contains("502 Bad Gateway") {
+                    eprintln!(
+                        "\nWell this is sad.  The URL \
+                        http://xena/api/analyses/{} yielded a 502 Bad Geteway \
+                        message.  Either try again later or ask someone for help.\n\n",
+                        p
+                    );
+                    std::process::exit(1);
+                }
+                if m.contains("\"path\":\"") {
+                    let path = m.between("\"path\":\"", "\"").to_string();
+                    ctl.gen_opt.current_ref = true;
+                    pp = format!("{}/outs", path);
+                    if !path_exists(&pp) {
+                        eprintln!(
+                            "\nIt looks like you've provided a xena id {} for \
+                            which\nthe pipeline outs folder has not yet been generated.\n\n",
+                            p
+                        );
+                        std::process::exit(1);
+                    }
+                } else {
+                    eprintln!(
+                        "\nIt looks like you've provided either an incorrect \
+                        xena id {} or else one for which\n\
+                        the pipeline outs folder has not yet been generated.\n\n",
+                        p
+                    );
+                    std::process::exit(1);
+                }
+            } else {
+                eprintln!(
+                    "\nAfter searching high and low, your path for {} \
+                    cannot be found.\nPlease check its value and also the value \
+                    for PRE if you provided that.\n\n",
+                    source
+                );
+                std::process::exit(1);
+            }
+        }
+    }
+    pp
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -23,21 +125,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
     if bc != "".to_string() {
-        if ctl.gen_opt.pre != "".to_string() {
-            bc = format!("{}/{}", ctl.gen_opt.pre, bc);
-        }
-        if !path_exists(&bc) {
-            let mut head = "In your META file, a value for bc";
-            if call_type == "BC" {
-                head = "The BC argument";
-            }
-            eprintln!(
-                "\n{} implies the existence of \
-                 a file\n{}\nbut that file does not exist.\n",
-                head, bc
-            );
-            std::process::exit(1);
-        }
+        bc = get_path_fail(&bc, &ctl, call_type);
         let f = open_for_read![&bc];
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -279,109 +367,13 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 let mut p = (*x).to_string();
                 // ◼ In CR 4.0, the way we get to outs below will need to change.
 
-                // Specify the "outs" path p.
-                //
-                // Use case 1.  PRE is specified.
-
-                if ctl.gen_opt.pre != "" {
-                    if !p.ends_with("/outs") {
-                        p = format!("{}/{}/outs", ctl.gen_opt.pre, p);
-                    } else {
-                        p = format!("{}/{}", ctl.gen_opt.pre, p);
-                    }
-
-                // Use case 2.  It's an internal run, an id has been provided, and PRE
-                // was not specified.  Then we look internally.
-                } else if ctl.gen_opt.internal_run
-                    && p.parse::<u32>().is_ok()
-                    && ctl.gen_opt.pre == ""
-                {
-                    p = format!("{}", get_outs(&p));
-
-                // Use case 3.  All else.
-                } else if !p.ends_with("/outs") {
+                let mut source = f.clone();
+                if f.contains('=') {
+                    source = f.before("=");
+                }
+                p = get_path_or_internal_id(&p, &mut ctl, source);
+                if !p.ends_with("/outs") && path_exists(&format!("{}/outs", p)) {
                     p = format!("{}/outs", p);
-                }
-
-                // For an internal run, see if removing PRE works.
-
-                if ctl.gen_opt.internal_run
-                    && ctl.gen_opt.pre.len() > 0
-                    && !path_exists(&p)
-                    && path_exists(x)
-                {
-                    p = x.clone();
-                    if path_exists(&format!("{}/outs", x)) {
-                        p = format!("{}/outs", x);
-                    }
-                }
-
-                // For internal runs, try much harder.  This is so that internal users can just
-                // type an internal numerical id for a dataset and have it always work.
-                // The code that's used here should be placed somewhere else.
-
-                if !path_exists(&p) && ctl.gen_opt.internal_run && x.parse::<usize>().is_ok() {
-                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", x);
-                    let o = Command::new("curl")
-                        .arg(url)
-                        .output()
-                        .expect("failed to execute xena http");
-                    let m = String::from_utf8(o.stdout).unwrap();
-                    if m.contains("502 Bad Gateway") {
-                        panic!("502 Bad Gateway from http://xena/api/analyses/{}", x);
-                    }
-                    if m.contains("\"path\":\"") {
-                        let path = m.between("\"path\":\"", "\"").to_string();
-                        ctl.gen_opt.current_ref = true;
-                        p = format!("{}/outs", path);
-                    }
-                }
-
-                // Now, possibly, we should remove the /outs suffix.  We do this to allow for the
-                // case where the customer has copied Cell Ranger output files but not preserved
-                // the directory structure.  Or perhaps they appended /outs to their path.
-
-                if !path_exists(&p) {
-                    p = p.rev_before("/outs").to_string();
-                }
-
-                // If the path p doesn't exist, we have to give up.
-
-                if !path_exists(&p) {
-                    if !f.contains("=") {
-                        eprintln!("\nCan't find the path {}.\n", p);
-                        std::process::exit(1);
-                    } else if ctl.gen_opt.pre != "".to_string() {
-                        if !p.contains("/outs") {
-                            eprintln!(
-                                "\nThe value given for {} on the enclone command line \
-                                 includes\n{}, which after prefixing by PRE yields\n\
-                                 {},\n\
-                                 and that path does not exist.\n",
-                                f.before("="),
-                                x,
-                                p
-                            );
-                        } else {
-                            eprintln!(
-                                "\nThe value given for {} on the enclone command line \
-                                 includes\n{}, which after prefixing by PRE yields\n\
-                                 {},\n\
-                                 and that path does not contain a subdirectory outs.\n",
-                                f.before("="),
-                                x,
-                                p.rev_before("/outs")
-                            );
-                        }
-                    } else {
-                        eprintln!(
-                            "\nThe value given for {} on the enclone command line \
-                             includes\n{}, and that path does not contain a subdirectory outs.\n",
-                            f.before("="),
-                            x
-                        );
-                    }
-                    std::process::exit(1);
                 }
 
                 // Now work on the BC path.
@@ -397,72 +389,9 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 let mut pg = String::new();
                 if have_gex {
                     pg = datasets_gex[ix].to_string();
-                }
-                if pg != "".to_string() {
-                    let pg0 = pg.clone();
-                    let pg_outs = if ctl.gen_opt.pre == "" {
-                        format!("{}/outs", pg)
-                    } else {
-                        format!("{}/{}/outs", ctl.gen_opt.pre, pg)
-                    };
-                    if ctl.gen_opt.internal_run
-                        && pg.parse::<u32>().is_ok()
-                        && !path_exists(&format!("{}/raw_gene_bc_matrices_h5.h5", pg_outs))
-                        && !path_exists(&format!("{}/raw_feature_bc_matrix.h5", pg_outs))
-                    {
-                        let url = format!("https://xena.fuzzplex.com/api/analyses/{}", pg);
-                        let o = Command::new("curl")
-                            .arg(url)
-                            .output()
-                            .expect("failed to execute xena http");
-                        let m = String::from_utf8(o.stdout).unwrap();
-                        if m.contains("502 Bad Gateway") {
-                            panic!("502 Bad Gateway from http://xena/api/analyses/{}", pg);
-                        }
-                        if m.contains("\"path\":\"") {
-                            let path = m.between("\"path\":\"", "\"").to_string();
-                            pg = format!("{}/outs", path);
-                        } else {
-                            eprintln!(
-                                "\nSomething went wrong finding the GEX data \
-                                for {}.\n",
-                                pg
-                            );
-                        }
-                    } else {
-                        pg = pg_outs;
-                    }
-
-                    // Now, possibly, we should remove the /outs suffix, see discussion above.
-
-                    if !path_exists(&pg) {
-                        pg = pg.rev_before("/outs").to_string();
-                    }
-
-                    // Check for nonexistent path
-
-                    if !path_exists(&pg) {
-                        if ctl.gen_opt.pre != "".to_string() {
-                            let mut pg = pg.clone();
-                            if pg.contains("/outs") {
-                                pg = pg.rev_before("/outs").to_string();
-                            }
-                            eprintln!(
-                                "\nThe value given for GEX on the enclone command line \
-                                 includes\n{}, which after prefixing by PRE yields\n\
-                                 {},\n\
-                                 and that path does not contain a subdirectory outs.\n",
-                                pg0, pg
-                            );
-                        } else {
-                            eprintln!(
-                                "\nThe value given for GEX on the enclone command line \
-                                 includes\n{}, and that path does not contain a subdirectory \
-                                 outs.\n",
-                                pg.rev_before("/outs")
-                            );
-                        }
-                        std::process::exit(1);
+                    pg = get_path_or_internal_id(&pg, &mut ctl, "GEX");
+                    if !pg.ends_with("/outs") && path_exists(&format!("{}/outs", pg)) {
+                        pg = format!("{}/outs", pg);
                     }
                 }
 
@@ -609,17 +538,8 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             // Parse bc and finish up.
 
             parse_bc(bc.clone(), &mut ctl, "META");
-            if ctl.gen_opt.pre != "".to_string() {
-                path = format!("{}/{}/outs", ctl.gen_opt.pre, path);
-                if gpath != "".to_string() {
-                    gpath = format!("{}/{}/outs", ctl.gen_opt.pre, gpath);
-                }
-            } else {
-                path = format!("{}/outs", path);
-                if gpath != "".to_string() {
-                    gpath = format!("{}/outs", gpath);
-                }
-            }
+            path = get_path_or_internal_id(&path, &mut ctl, "META");
+            gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
             let mut dp = None;
             for j in 0..donors.len() {
                 if donor == donors[j] {

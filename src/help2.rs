@@ -270,11 +270,17 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              the Cell Ranger pipeline may be found.  enclone uses only some of the pipeline \
              output files, so it is enough that those files are present in given directory, and \
              the particular files that are needed may be found by typing \
-             \\bold{enclone help input_tech}.  \
-             If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
-             pipeline paths.  Moreover (see \\bold{enclone help command}), you can avoid putting \
+             \\bold{enclone help input_tech}.\n\n",
+        );
+        h.print_with_box(
+            "If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
+             pipeline paths.  A comma-separated list is also allowed \\bold{PRE=p1,...,pn}, in \
+             which case these directories are searched from left to right, until one works, and \
+             if all fail, the path is used without prepending anything.  Lastly, \
+             (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
-             \\bold{ENCLONE_PRE} to \\bold{p}.\n\n",
+             \\bold{ENCLONE_PRE} to the desired value.",
+            true,
         );
         h.print(
             "Both input forms involve abbreviated names (discussed below), which should be as \

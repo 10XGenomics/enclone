@@ -307,7 +307,7 @@ impl SampleInfo {
 
 #[derive(Default)]
 pub struct GeneralOpt {
-    pub pre: String,
+    pub pre: Vec<String>,
     pub insertions: bool,
     pub indels: bool,
     pub reannotate: bool,

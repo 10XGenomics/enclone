@@ -53,7 +53,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.pre = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
+        ctl.gen_opt.pre = vec![format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION)];
     }
 
     // Set up general options.
@@ -64,7 +64,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.exact = None;
     for i in 1..args.len() {
         if args[i].starts_with("PRE=") {
-            ctl.gen_opt.pre = args[i].after("PRE=").to_string();
+            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
+            ctl.gen_opt.pre.clear();
+            for x in pre.iter() {
+                ctl.gen_opt.pre.push(x.to_string());
+            }
         }
     }
     ctl.gen_opt.full_counts = true;
