@@ -221,12 +221,12 @@ smaller pieces reside in GEMs that may or may not contain an actual intact cell.
 the cells are detected as T cells (using TCR data <code>128024</code> from the same cell draw).  We
 can mark these cells in the same display using the command
 
-<pre><code>enclone BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 LVARSP=T
+<pre><code>enclone BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred,T MIN_CHAINS_EXACT=2
 </code></pre>
 
 where the file <code>128024_cells.csv</code> is a CSV file with header <code>barcode,T</code>
 and having one line for each barcode in
-<code>128024/outs/cell_barcodes.json</code>, of the form e.g. <code>AAACGGGAGAGAACAG-1,◯</code>.
+<code>128024/outs/cell_barcodes.json</code>, e.g. <code>AAACGGGAGAGAACAG-1,◯</code>.
 (We used the character <code>◯</code> as a value just because we liked it.)
 
 <p>
