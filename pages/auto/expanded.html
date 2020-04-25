@@ -38,9 +38,9 @@ of how to detect them.</p>
 we hypothesize that they arise when an individual cell disintegrates or leaks. This leaves
 fragments that seed multiple GEM partitions, producing a clonotype that appears larger than
 its true size.</p>
-<p>We believe that events of this type usually originate from plasma or plasmablast B cells.  We thus
-focus on B cells in this vignette.  However with obvious changes, the same methods also apply to
-T cells.</p>
+<p>We believe that events of this type usually originate from plasma or plasmablast B cells.  We 
+thus focus on B cells in this vignette.  However with obvious changes, the same methods also apply 
+to T cells.</p>
 <p>Disintegration might occur during or after preparation of the sample.  One
 way to document such an event would be to create two libraries from a single tube of cells.  If
 the clonotype is large and appears in only one of two libraries, one could be reasonably certain
@@ -65,10 +65,10 @@ package described in the
 
 <pre><code>enclone BCR=128037,128040 NCROSS
 </code></pre>
-<p>The <code>NCROSS</code> option instructs enclone to <i>not</i> filter out expanded clonotypes that appear
-in only one dataset arising from the same sample (and which based on their sizes are highly
-improbable).  Normally one would want this filtering, but these clonotypes are exactly what we
-wish to see now!  Here is the top clonotype:</p>
+<p>The <code>NCROSS</code> option instructs enclone to <i>not</i> filter out expanded clonotypes 
+that appear in only one dataset arising from the same sample (and which based on their sizes are 
+highly improbable).  Normally one would want this filtering, but these clonotypes are exactly what 
+we wish to see now!  Here is the top clonotype:</p>
 
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 122 CELLS
 ┌──────────────────┬───────────────────────────────────────┬─────────────────────────────────────┐
@@ -90,7 +90,7 @@ wish to see now!  Here is the top clonotype:</p>
 </span></pre>
 
 <p>If we do not use the <code>NCROSS</code> option, and search for the clonotype using the heavy 
-chain CDR3 sequence, we see just one cell (the others having been filtered out)</p>
+chain CDR3 sequence, we see just one cell (the others having been filtered out):</p>
 <pre><code>enclone BCR=128037,128040 CDR3=CARGGTTTYFISW
 </code></pre>
 
@@ -139,10 +139,11 @@ we henceforth ignore the data made from the other draw of cells, useful though i
 <p>Now we see less cells.  This is because the default behavior of enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.  Most of these
 would have consisted of "nearly empty drops", GEMs containing just a B cell fragment.</p>
-<p>Now we add the option <code>PER_CELL</code>, causing data for each cell to be displayed, and we also add two
+<p>Now we add the option <code>PER_CELL</code>, causing data for each cell to be displayed, and we 
+also add two
 fields to the display.  One is <code>gex</code>, the normalized count of gene expression UMIs,
-and the other is a field <code>cred</code> (short for "credibility"), that is more complicated.  We will also
-hide the onesie (single chain) cells.</p>
+and the other is a field <code>cred</code> (short for "credibility"), that is more complicated.  We
+will also hide the onesie (single chain) cells.</p>
 <pre><code>enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2
 </code></pre>
 
@@ -201,14 +202,15 @@ hide the onesie (single chain) cells.</p>
 └────────────────────────────────────────┴──────────────────────────────────────────┴────────────────────────────────────────┘
 </span></pre>
 
-<p>The field <code>cred</code> is a measure of the extent to which cells having gene expression similar to a
+<p>The field <code>cred</code> is a measure of the extent to which cells having gene expression 
+similar to a
 given putative B cell are themselves B cells.  In more detail, first for any datasets, let n be
 the number of VDJ cells that are also GEX cells.  Now for a given cell, we find the n GEX cells
 that are closest to it in PCA space, and report the percent of those that are also VDJ cells.<br>
-This is <code>cred</code>.  The closer this number is to 100, the more the given cell looks like a typical
-B cell.  Conversely, a very low number makes the given cell appear suspect.</p>
-<p>The values of <code>cred</code> vary considerably from dataset to dataset, requiring somewhat different
-interpretation.  We show the distribution for this one dataset:</p>
+This is <code>cred</code>.  The closer this number is to 100, the more the given cell looks like a 
+typical B cell.  Conversely, a very low number makes the given cell appear suspect.</p>
+<p>The values of <code>cred</code> vary considerably from dataset to dataset, requiring somewhat 
+different interpretation.  We show the distribution for this one dataset:</p>
 
 <p>
 <img src="../../img/cred_gex_dist.png" alt="cred_gex_dist" title="cred_gex_dist" width="90%" style="max-width:100%;"></a>
