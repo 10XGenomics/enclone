@@ -117,7 +117,8 @@ solution</a>.</p>
 padding: 8px; width: 875px; font-size: 120%">
 Please be aware that <b>enclone</b> has features that we may generalize or otherwise change to
 improve usability.  This includes breaking syntax that previously worked, although we
-will try not to do so capriciously!  Any such change will be tracked
+will try not to do so capriciously!  Any such change will be shown in
+<span style="color:red">red</span>
 <a href="pages/history.html">here</a>, and we are also happy to help if you find yourself stuck.
 </p>
 
