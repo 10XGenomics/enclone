@@ -13,7 +13,7 @@
 //
 // To test just this test, use:
 //
-// cargo test --release -p enclone enclone -- --nocapture
+// cargo test -p enclone enclone -- --nocapture
 
 use ansi_escape::*;
 use enclone::html::insert_html;
@@ -39,24 +39,8 @@ const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-#[cfg(debug_assertions)]
-#[test]
-fn test_enclone_fail() {
-    println!("\n\"cargo test\" deliberately fails here because without running in release mode,");
-    println!("the test in enclone would be too slow.  We could simply elide the test, but");
-    println!("then you wouldn't know that you're missing an important test.  If you really want");
-    println!("to run all tests except this test in debug(dev) mode, please use");
-    println!("\"cargo test --all --exclude enclone\"");
-    println!("However please also note that even with the extra test, \"cargo test --release\"");
-    println!("will be faster then the above.\n");
-    assert!(0 == 1);
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // Test that files are rustfmt'ed.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_formatting() {
     let mut rs = Vec::<String>::new();
@@ -90,7 +74,6 @@ fn test_formatting() {
 // If you ever need to change the output of all tests, use the main program
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -395,7 +378,6 @@ fn test_enclone() {
 // ▓ href='...'▓
 // ▓ src="..."▓.
 
-#[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
@@ -565,7 +547,6 @@ fn test_for_broken_links_and_spellcheck() {
 // Test site examples to make sure they are what they claim to be, and that the
 // merged html files are correct.
 
-#[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_site_examples() {
@@ -605,7 +586,6 @@ fn test_site_examples() {
 
 // Test that examples are what we claim they are.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -640,7 +620,6 @@ fn test_enclone_examples() {
 
 // Test that references to the dataset version in README.md are current.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -668,7 +647,6 @@ fn test_version_number_in_readme() {
 //
 // Only works with high probability.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -704,7 +682,6 @@ fn test_dejavu() {
 
 // Test that enclone help all HTML works (without STABLE_DOC).
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
@@ -727,7 +704,6 @@ fn test_help_no_stable() {
 
 // Test that help output hasn't changed.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
@@ -803,7 +779,6 @@ fn test_help_output() {
 
 // Test that PREBUILD works.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -898,7 +873,6 @@ fn test_enclone_prebuild() {
 // It also tests to make sure that the LOUPE output is unchanged.  If it changed for a good
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];

@@ -17,7 +17,7 @@ fn main() {
         let out_file = format!("pages/auto/{}.html", example_name);
         let args = test.split(' ').collect::<Vec<&str>>();
         let outputs = File::create(&out_file).unwrap();
-        Command::new("target/release/enclone")
+        Command::new("target/debug/enclone")
             .args(&args)
             .arg("HTML")
             .stdout(Stdio::from(outputs))

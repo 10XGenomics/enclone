@@ -1,13 +1,13 @@
 [package]
 name = "enclone"
 version = "0.2.0"
-authors = ["David Jaffe <david.jaffe@10xgenomics.com>, 
-            Keri Dockter <keri.dockter@10xgenomics.com>, 
-            Shaun Jackman <shaun.jackman@10xgenomics.com>, 
-            Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>, 
-            Meryl Lewis <meryl.lewis@10xgenomics.com>, 
-            Patrick Marks <patrick.marks@10xgenomics.com>, 
-            Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"]
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
 build = "build.rs"
 publish = false
@@ -68,3 +68,11 @@ basic = []
 
 [profile.release]
 debug = 1
+lto = true
+codegen-units = 1
+
+[profile.dev]
+opt-level = 3
+
+[profile.test]
+opt-level = 3
