@@ -45,8 +45,9 @@ with its salient features, including mutated amino acids.</p>
        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg">
   </th>
   <th style="text-align: left; font-weight:normal">
-       Watch your step!  This site is under construction and undergoing initial testing.  A
-       number of things are broken.  Please do not enter unless you've been directed here.
+       Watch your step!  This site is under construction, undergoing initial testing, and your
+       experience may be rocky.
+       <br><b>In fact at this moment, a number of things are broken.</b>
        <br><br>
        (Photo credit: NIOSH/Wikipedia)
   </th>
@@ -56,7 +57,8 @@ with its salient features, including mutated amino acids.</p>
 
 <p>enclone and this page are designed for immunologists, but anyone can download and experiment
 with it.</p>
-<p><b>Background:</b> when you get sick, your body mounts an immune response by selectively amplifying
+<p><b>Background:</b> when you get sick, your body mounts an immune response by selectively 
+amplifying
 immune cells and mutations within these selected cells.  enclone allows you to see the history of
 single immune cells within a biological sample (such as a blood draw or biopsy).  This history
 reflects how the cognate receptors of these cells evolved in response to antigens, including
@@ -91,8 +93,8 @@ that end, we start with this simple goal:</p>
 </table>
 
 To make sure we are using terminology in the same way, the following diagram shows what a
-<em>clonotype</em> is for B cells.  The same applies for T cells, but things are simpler because T cells
-do not have somatic hypermutation.
+<em>clonotype</em> is for B cells.  The same applies for T cells, but things are simpler because 
+T cells do not have somatic hypermutation.
 
 <img src="img/what_is_a_clonotype.svg" alt="what is a clonotype" title="what is a clonotype" style="max-width:80%;"></a>
 
@@ -142,8 +144,8 @@ will try not to do so capriciously!  Any such change will be tracked
 <h2>Installing enclone</h2>
 
 <p><b>(these instructions are not yet functional)</b></p>
-<p><b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please let us
-know if availability on other platforms is important to you.</p>
+<p><b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please 
+let us know if availability on other platforms is important to you.</p>
 <p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
 <pre><code>mkdir -p ~/bin; cd ~/bin</code>
 <code>wget https://github.com/10XGenomics/enclone/releases/download/latest/linux/enclone
@@ -372,18 +374,18 @@ figure out how it all works.</p>
 <img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" style="max-width:100%;"></a>
 </p> 
 
-<p>Notice the compression in two directions.  Vertically, rather than showing one line for every cell,
-we group cells into a single line if they have identical VDJ transcripts.  Horizontally, rather than
-showing all transcript positions, we only show "interesting" positions.  This is a flexible
-concept, and what we show by default are all positions exhibiting a difference from the reference
-and all positions in the CDR3.</p>
+<p>Notice the compression in two directions.  Vertically, rather than showing one line for every 
+cell, we group cells into a single line if they have identical VDJ transcripts.  Horizontally, 
+rather than showing all transcript positions, we only show "interesting" positions.  This is a 
+flexible concept, and what we show by default are all positions exhibiting a difference from the 
+reference and all positions in the CDR3.</p>
 <p>The same exact output would be obtained by typing</p>
 <pre><code>enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
 </code></pre>
 <p>provided that you put test data in the location indicated under download instructions.  Otherwise
-you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in the directory
-<code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, obtained from a human
-ovarian cancer sample.</p>
+you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in 
+the directory <code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, 
+obtained from a human ovarian cancer sample.</p>
 <p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
