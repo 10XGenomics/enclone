@@ -65,6 +65,9 @@ pub fn load_gex(
         ));
     }
     let gex_outs = &ctl.sample_info.gex_path;
+    // Here and in other places, where an error message can be printed in a parallel loop, it
+    // would be better if the thread could use a global lock to prevent multiple threads from
+    // issuing an error message.
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {

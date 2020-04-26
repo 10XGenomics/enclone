@@ -111,6 +111,9 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
             }
         }
     }
+    if !pp.ends_with("/outs") && path_exists(&format!("{}/outs", pp)) {
+        pp = format!("{}/outs", pp);
+    }
     pp
 }
 
@@ -372,9 +375,6 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     source = f.before("=");
                 }
                 p = get_path_or_internal_id(&p, &mut ctl, source);
-                if !p.ends_with("/outs") && path_exists(&format!("{}/outs", p)) {
-                    p = format!("{}/outs", p);
-                }
 
                 // Now work on the BC path.
 
@@ -390,9 +390,6 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 if have_gex {
                     pg = datasets_gex[ix].to_string();
                     pg = get_path_or_internal_id(&pg, &mut ctl, "GEX");
-                    if !pg.ends_with("/outs") && path_exists(&format!("{}/outs", pg)) {
-                        pg = format!("{}/outs", pg);
-                    }
                 }
 
                 // OK everything worked, all set.
@@ -539,7 +536,9 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
 
             parse_bc(bc.clone(), &mut ctl, "META");
             path = get_path_or_internal_id(&path, &mut ctl, "META");
-            gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
+            if gpath.len() > 0 {
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
+            }
             let mut dp = None;
             for j in 0..donors.len() {
                 if donor == donors[j] {
