@@ -237,6 +237,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "all their chains.");
         h.doc(
+            "CHAINS_EXACT=n",
+            "Delete any exact subclonotype not having exactly n chains.",
+        );
+        h.doc(
             "MIN_CELLS_EXACT=n",
             "Delete any exact subclonotype having less than n cells.  You might want",
         );

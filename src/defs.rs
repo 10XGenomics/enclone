@@ -327,6 +327,7 @@ pub struct GeneralOpt {
     pub fasta_aa_filename: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
+    pub chains_exact: usize,
     pub exact: Option<usize>,
     pub binary: String,
     pub proto: String,

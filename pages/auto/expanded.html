@@ -144,7 +144,7 @@ also add two
 fields to the display.  One is <code>gex</code>, the normalized count of gene expression UMIs,
 and the other is a field <code>cred</code> (short for "credibility"), that is more complicated.  We
 will also hide the onesie (single chain) cells.</p>
-<pre><code>enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2
+<pre><code>enclone BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred CHAINS_EXACT=2
 </code></pre>
 
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 38 CELLS
@@ -223,7 +223,7 @@ smaller pieces reside in GEMs that may or may not contain an actual intact cell.
 the cells are detected as T cells (using TCR data <code>128024</code> from the same cell draw).  We
 can mark these cells in the same display using the command
 
-<pre><code>enclone BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred,T MIN_CHAINS_EXACT=2
+<pre><code>enclone BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred,T CHAINS_EXACT=2
 </code></pre>
 
 where the file <code>128024_cells.csv</code> is a CSV file with header <code>barcode,T</code>

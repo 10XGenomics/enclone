@@ -561,6 +561,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.min_cells_exact = arg.after("MIN_CELLS_EXACT=").force_usize();
         } else if is_usize_arg(&arg, "MIN_CHAINS_EXACT") {
             ctl.gen_opt.min_chains_exact = arg.after("MIN_CHAINS_EXACT=").force_usize();
+        } else if is_usize_arg(&arg, "CHAINS_EXACT") {
+            ctl.gen_opt.chains_exact = arg.after("CHAINS_EXACT=").force_usize();
         } else if is_usize_arg(&arg, "EXACT") {
             ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
         } else if is_usize_arg(&arg, "MIN_UMI") {
