@@ -66,13 +66,14 @@ string_utils = "0.1.1"
 [features]
 basic = []
 
+[profile.dev]
+debug = 1
+opt-level = 3
+
 [profile.release]
 debug = 1
 lto = true
 codegen-units = 1
-
-[profile.dev]
-opt-level = 3
 
 [profile.test]
 opt-level = 3
