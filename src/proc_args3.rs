@@ -42,7 +42,7 @@ fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
         } else {
             eprintln!(
                 "\nUnable to find the path {}, even if prepended by any of the directories \
-                in PRE={}.\nThis came from the {} argument.\n",
+                in\nPRE={}.\nThis came from the {} argument.\n",
                 p,
                 ctl.gen_opt.pre.iter().format(","),
                 source

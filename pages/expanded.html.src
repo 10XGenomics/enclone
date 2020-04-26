@@ -112,9 +112,7 @@ and having one line for each barcode in
 <code>128024/outs/cell_barcodes.json</code>, e.g. <code>AAACGGGAGAGAACAG-1,◯</code>.
 (We used the character <code>◯</code> as a value just because we liked it.)
 
-<p>
-<img src="../../img/illusory5.png" alt="illusory5" title="illusory5" width="90%" style="max-width:100%;"></a>
-</p>
+#include pages/auto/illusory5.html
 
 <p>We thus conclude in this case that the clonotype is likely contaminated with many cells that
 are not B cells, and in fact that the entire clonotype probably arose from a single true B cell.

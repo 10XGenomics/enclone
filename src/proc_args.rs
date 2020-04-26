@@ -53,7 +53,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.pre = vec![format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION)];
+        ctl.gen_opt.pre = vec![
+            format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
+            format!("test/inputs"),
+        ];
     }
 
     // Set up general options.
