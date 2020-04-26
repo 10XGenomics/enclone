@@ -127,6 +127,15 @@ clonotypes and fields you wish to see.  You can run enclone on a laptop or a des
 <p>enclone, in addition to <a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>,
 supports the analysis of VDJ and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
 solution</a>.</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
+padding: 8px; width: 875px; font-size: 120%">
+Please be aware that <b>enclone</b> has features that we may generalize or otherwise change to
+improve usability.  This includes breaking syntax that previously worked, although we
+will try not to do so capriciously!  Any such change will be tracked
+<a href="pages/history.html">here</a>, and we are also happy to help if you find yourself stuck.
+</p>
+
 <hr>
 
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
@@ -177,8 +186,8 @@ downloaded by:
 
 <p><b>4.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
-<p><b>5. Periodically update or check the <a href="pages/history.html">history</a> to see if anything has
-changed that might affect you.</b></p>
+<p><b>5. Periodically update or check the <a href="pages/history.html">history</a> to see if 
+anything has changed that might affect you.</b></p>
 <hr>
 
 <h2>Running enclone</h2>
@@ -375,10 +384,10 @@ and all positions in the CDR3.</p>
 you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in the directory
 <code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, obtained from a human
 ovarian cancer sample.</p>
-<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which the given
-CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all clonotypes
-are shown.  Clonotypes are shown from largest to smallest, and the output is automatically paged,
-so you can scroll through it.</p>
+<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 
+the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
+clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
+automatically paged, so you can scroll through it.</p>
 <p>By default, enclone prints clonotypes in this human-readable form.  You can also instruct enclone
 to print clonotypes in machine-readable forms that are suitable for input to other programs.</p>
 <hr>
@@ -414,10 +423,12 @@ for, all genes, a particular gene, and a particular antibody:</p>
 
 <p>To obtain this, we added the extra arguments
 <code>GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab</code>
-to the previous command.  The <code>GEX</code> part points to the directory containing gene expression and
-feature barcode data.  The <code>LVARSP</code> part defines the additional columns to be displayed.</p>
+to the previous command.  The <code>GEX</code> part points to the directory containing gene 
+expression and feature barcode data.  The <code>LVARSP</code> part defines the additional columns 
+to be displayed.</p>
 <p>Other types of data can be brought in via featuring barcoding.  For example, response to
-multiple antigens can be measured using <a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
+multiple antigens can be measured using 
+<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
 and these data displayed as additional columns.</p>
 <hr>
 
