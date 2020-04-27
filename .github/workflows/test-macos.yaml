@@ -15,7 +15,7 @@ jobs:
       - name: rust version
         run: | 
           rustc --version
-          rustup default 1.26.0
+          rustup default 1.42.0
           rustc --version
       - name: Checkout enclone master
         uses: actions/checkout@master
