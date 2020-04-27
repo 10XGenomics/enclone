@@ -101,7 +101,8 @@ chain data and the algorithm.
 
 <h2>The enclone software</h2>
 
-<p>enclone is open-source, beta software.  Binary executables for Linux and Mac can be
+<p>enclone is beta software released under <a href="LICENSE.txt">this license</a>.  Binary 
+executables for Linux and Mac can be
 directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
 running!  To use enclone, you need to know how to run command-line tools.  This is something that
 can be learned easily, particularly if you have a friend or colleague who can help you
@@ -337,8 +338,12 @@ For completeness, here are all the other pages on this site:
     <td align="left">people who want to contribute code</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/fetching_test_datasets.html">fetching test datasets 
+    <td align="left"><a href="pages/fetching_test_datasets.html">fetching test datasets</a></td>
     <td align="left">anyone for whom direct instructions don't work</td>
+</tr>
+<tr>
+    <td align="left"><a href="LICENSE.txt">license</a></td>
+    <td align="left">everyone</td>
 </tr>
 </tbody>
 </table>
@@ -456,7 +461,7 @@ make enclone as useful as possible.
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
 padding: 8px; width: 875px; font-size: 120%">
-<b>enclone</b> is provided as an open-source tool for use by the community.  Although we cannot
+<b>enclone</b> is provided as an tool for use by the community.  Although we cannot
 guarantee full support for the software, please email us at 
 <a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>
 if you have problems, questions or comments 
