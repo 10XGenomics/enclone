@@ -385,9 +385,9 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up dictionary exceptions.
 
     let extra_words = "barcode barcoding clonotype clonotypes clonotyping codebase contig contigs \
-        csv cvars enclone executables genomics germline grok hypermutation hypermutations indel \
-        indels linux loh lvars metadata onesie parseable pbmc spacebar subclonotype subclonotypes \
-        svg umi umis underperforming vdj workflow zenodo";
+        csv cvars enclone executables genomics germline github grok hypermutation hypermutations \
+        indel indels linux loh lvars metadata onesie parseable pbmc spacebar subclonotype \
+        subclonotypes svg umi umis underperforming vdj workflow zenodo";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.
