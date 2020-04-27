@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout enclone master
         uses: actions/checkout@master
+      - name: rustup targets
+        run: rustup show
       - name: Check Rust formatting
       # Check formatting
         run: cargo fmt -- --check
