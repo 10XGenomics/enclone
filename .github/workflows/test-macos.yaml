@@ -14,11 +14,8 @@ jobs:
     steps:
       - name: Checkout enclone master
         uses: actions/checkout@master
-      - name: rustup check
-        run: |
-          rustup -V
-          rustup component add rustfmt --toolchain stable-x86_64-apple-darwin
-          rustup -V
+      - name: add rustfmt 
+        run: rustup component add rustfmt --toolchain stable-x86_64-apple-darwin
       - name: Check Rust formatting
       # Check formatting
         run: cargo fmt -- --check
