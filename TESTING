@@ -12,7 +12,7 @@ Notes on testing:
    Otherwise use instead:
    cargo t --features basic
 
-3. Testing with overflow detection on) is a good thing to do at least occasionally.
+3. Testing with overflow detection on is a good thing to do at least occasionally.
 
 4. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
