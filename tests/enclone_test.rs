@@ -171,7 +171,7 @@ fn test_enclone() {
 
             // Form the command and execute it.
 
-            let mut new = Command::new("target/debug/enclone");
+            let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
             let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
             for i in 0..args.len() {
                 new = new.arg(&args[i]);
@@ -552,7 +552,7 @@ fn test_site_examples() {
         let test = SITE_EXAMPLES[i].1;
         let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
         let args = test.split(' ').collect::<Vec<&str>>();
-        let new = Command::new("target/debug/enclone")
+        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .arg("HTML")
             .output()
@@ -591,7 +591,7 @@ fn test_enclone_examples() {
         let out_file = format!("src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
-        let mut new = Command::new("target/debug/enclone");
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
         for i in 0..args.len() {
             new = new.arg(&args[i]);
@@ -682,7 +682,7 @@ fn test_dejavu() {
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
-    let mut new = Command::new("target/debug/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg("help");
     new = new.arg("all");
     new = new.arg("HTML");
@@ -740,7 +740,7 @@ fn test_help_output() {
         }
         let out_file = format!("pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
-        let mut new = Command::new("target/debug/enclone");
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg("HTML");
         if p == "setup" {
             new = new.arg("help");
@@ -797,7 +797,7 @@ fn test_enclone_prebuild() {
     let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
-    let mut new = Command::new("target/debug/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
@@ -830,7 +830,7 @@ fn test_enclone_prebuild() {
 
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
-    let mut new = Command::new("target/debug/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
@@ -879,7 +879,7 @@ fn test_proto_write() -> Result<(), Error> {
     let proto_arg = format!("PROTO={}.proto", LOUPE_OUT_FILENAME);
     for t in tests.iter() {
         // FIXME: It would be nicer to use the enclone API here
-        std::process::Command::new("target/debug/enclone")
+        std::process::Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&[&pre_arg, *t, &binary_arg, &proto_arg])
             .output()
             .expect(&format!("failed to execute enclone for test_proto_write"));
