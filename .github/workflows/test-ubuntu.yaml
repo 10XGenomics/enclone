@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: rust version
-        run: rustup default 1.42.0
+        run: rustup default 1.43.0
       - name: Checkout enclone master
         uses: actions/checkout@master
       - name: add rustfmt
-        run: rustup component add rustfmt --toolchain 1.42.0-x86_64-unknown-linux-gnu
+        run: rustup component add rustfmt --toolchain 1.43.0-x86_64-unknown-linux-gnu
       - name: Check Rust formatting
       # Check formatting
         run: cargo fmt -- --check
