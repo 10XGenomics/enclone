@@ -506,19 +506,28 @@ fn test_for_broken_links_and_spellcheck() {
 
                 eprintln!("checking link \"{}\"", link);
 
-                // Approach 1 to testing if link works.
+                // Approach 1 to testing if link works.  This seemed to hand once in spite of
+                // the timeout.
 
                 use attohttpc::*;
-                let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
-                let response = req
-                    .send()
-                    .expect(&format!("\ncould not read link {} on page {}\n", link, x));
-                if !response.is_success() {
+                const LINK_RETRIES: usize = 5;
+                for i in 0..LINK_RETRIES {
+                    if i > 0 {
+                        eprintln!("retrying");
+                    }
+                    let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
+                    let response = req
+                        .send()
+                        .expect(&format!("\ncould not read link {} on page {}\n", link, x));
+                    if response.is_success() {
+                        break;
+                    }
                     eprintln!("\ncould not read link {} on page {}\n", link, x);
                     std::process::exit(1);
                 }
 
-                // Approach 2 to testing if link works.
+                // Approach 2 to testing if link works.  This may not have a timeout and does
+                // not auto retry like approach 1.
 
                 /*
                 use reqwest::StatusCode;
