@@ -513,7 +513,7 @@ fn test_for_broken_links_and_spellcheck() {
                 const LINK_RETRIES: usize = 5;
                 for i in 0..LINK_RETRIES {
                     if i > 0 {
-                        eprintln!("retrying");
+                        eprintln!("retrying link {}, attempt {}", link, i);
                     }
                     let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
                     let response = req
