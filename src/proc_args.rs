@@ -123,6 +123,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut gex = String::new();
     let mut bc = String::new();
     let mut metas = Vec::<String>::new();
+    let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i].starts_with("TCR=") {
             have_tcr = true;
@@ -598,7 +599,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
         {
-            proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+            xcrs.push(arg.to_string());
         } else {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
@@ -607,6 +608,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
         proc_meta(&f, &mut ctl);
+    }
+    if xcrs.len() > 0 {
+        let arg = &xcrs[xcrs.len() - 1];
+        proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
     }
     if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
