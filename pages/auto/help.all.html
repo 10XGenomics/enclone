@@ -843,7 +843,8 @@ enclone help filter
 
 <span style="font-weight:bold;">clonotype filtering options</span>
 
-these options cause only certain clonotypes to be printed
+These options cause only certain clonotypes to be printed.  Please see also "enclone help
+special".
 
 ┌─────────────────────┬───────────────────────────────────────────────────────────────────────┐
 │MIN_CELLS=n          │  only show clonotypes having at least n cells                         │
@@ -960,6 +961,9 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
+│                    │  or not called high confidence.                                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NGEX                │  If gene expression and/or feature barcode data are provided, if a barcode  │
 │                    │  is called a cell by the VDJ part of the Cell Ranger pipeline, but not      │
 │                    │  called a cell by the gene expression and/or feature barcode part, then the │
