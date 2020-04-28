@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 67] = [
+pub const TESTS: [&str; 68] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -186,7 +186,10 @@ pub const TESTS: [&str; 67] = [
     r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
         POUT=stdouth PCOLS=barcode,T CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
     // 67. expect fail if garbage PRE
-    r###"NO_PRE EXPECT_FAIL PRE=garbage_gerbil_stuff BCR=86237 CELLS=3"###,
+    r###"PRE=garbage_gerbil_stuff BCR=86237 CELLS=3 EXPECT_FAIL NO_PRE"###,
+    // 68. a test of PRE
+    r###"PRE=mumbo_jumbo,test/inputs/version{TEST_FILES_VERSION} BCR=86237 NO_PRE
+        CDR3=CARENHPVEYCSSTSCYKAYYYGMDVW"###,
 ];
 
 // List of examples in documentation.

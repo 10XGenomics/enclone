@@ -112,9 +112,13 @@ fn test_enclone() {
             test = test.replace(" NO_PRE", "");
             no_pre = true;
         }
+        test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
-        let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+        let mut pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+        if no_pre {
+            pre_arg = String::new();
+        }
         if !path_exists(&out_file) && !expect_fail && !expect_ok {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
