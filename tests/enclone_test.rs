@@ -569,6 +569,12 @@ fn test_site_examples() {
         let out_stuff = stringme(&new.stdout);
         if in_stuff != out_stuff {
             eprintln!("\nThe output for site example {} has changed.\n", i + 1);
+            eprintln!(
+                "Possibly this could be because you're running \"cargo t\" in an \
+                environment without the\n\
+                extended dataset collection.  Possibly you should run \
+                \"cargo test --basic -- --nocapture\" instead.\n"
+            );
             std::process::exit(1);
         }
     }
