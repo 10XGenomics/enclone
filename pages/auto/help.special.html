@@ -16,6 +16,9 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
+│                    │  or not called high confidence.                                             │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NGEX                │  If gene expression and/or feature barcode data are provided, if a barcode  │
 │                    │  is called a cell by the VDJ part of the Cell Ranger pipeline, but not      │
 │                    │  called a cell by the gene expression and/or feature barcode part, then the │
@@ -85,6 +88,7 @@ clonotype.
 │MIN_CHAINS_EXACT=n  │  Delete any exact subclonotype having less than n chains.  You can use this │
 │                    │  to "purify" a clonotype so as to display only exact subclonotypes having   │
 │                    │  all their chains.                                                          │
+│CHAINS_EXACT=n      │  Delete any exact subclonotype not having exactly n chains.                 │
 │MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
 │                    │  to use this if you have a very large and complex expanded clonotype,       │
 │                    │  for which you would like to see a simplified view.                         │

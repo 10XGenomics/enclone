@@ -71,14 +71,14 @@ fn parse_vector_entry_from_json(
 ) {
     let v: Value = serde_json::from_str(strme(&x)).unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-    if !v["is_cell"].as_bool().unwrap_or(false) {
+    if !ctl.gen_opt.ncell && !v["is_cell"].as_bool().unwrap_or(false) {
         return;
     }
     vdj_cells.push(barcode.clone());
     if !v["productive"].as_bool().unwrap_or(false) {
         return;
     }
-    if !v["high_confidence"].as_bool().unwrap_or(false) {
+    if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
         return;
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
@@ -330,20 +330,24 @@ fn parse_vector_entry_from_json(
     let mut sample = None;
     let mut donor = None;
     let mut tag = None;
-    if sample_info.sample_donor[li].contains_key(&barcode.clone()) {
-        sample = Some(sample_info.sample_donor[li][&barcode.clone()].0.clone());
-        donor = Some(sample_info.sample_donor[li][&barcode.clone()].1.clone());
+    if sample_info.sample_for_bc[li].contains_key(&barcode.clone()) {
+        sample = Some(sample_info.sample_for_bc[li][&barcode.clone()].clone());
     } else {
-        // the way we use s1 and d1 here is flaky
+        // the way we use s1 here is flaky
         if sample_info.sample_id[li].len() > 0
             && (sample_info.sample_id[li] != "s1".to_string()
-                || sample_info.sample_donor[li].len() == 0)
+                || sample_info.sample_for_bc[li].len() == 0)
         {
             sample = Some(sample_info.sample_id[li].clone());
         }
-        if sample_info.donor_id[li].len() > 0
+    }
+    if sample_info.donor_for_bc[li].contains_key(&barcode.clone()) {
+        donor = Some(sample_info.donor_for_bc[li][&barcode.clone()].clone());
+    } else {
+        // the way we use d1 here is flaky
+        if sample_info.sample_id[li].len() > 0
             && (sample_info.donor_id[li] != "d1".to_string()
-                || sample_info.sample_donor[li].len() == 0)
+                || sample_info.donor_for_bc[li].len() == 0)
         {
             donor = Some(sample_info.donor_id[li].clone());
         }
@@ -592,7 +596,7 @@ pub fn parse_json_annotations_files(
         let json = format!("{}/{}", ctl.sample_info.dataset_path[li], ann);
         let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
-            eprintln!("can't find {} or {}", json, json_lz4);
+            eprintln!("\ncan't find {} or {}\n", json, json_lz4);
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(

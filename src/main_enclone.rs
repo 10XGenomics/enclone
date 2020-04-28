@@ -178,7 +178,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let json = format!("{}/{}", ctl.sample_info.dataset_path[0], ann);
     let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[0], ann);
     if !path_exists(&json) && !path_exists(&json_lz4) {
-        eprintln!("can't find {} or {}", json, json_lz4);
+        eprintln!("\ncan't find {} or {}\n", json, json_lz4);
         std::process::exit(1);
     }
     let mut jsonx = json.clone();

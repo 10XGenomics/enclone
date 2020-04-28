@@ -284,10 +284,11 @@ pub struct SampleInfo {
     pub sample_list: Vec<String>,  // unique-sorted list of sample short names
     pub donor_list: Vec<String>,   // unique-sorted list of donor short names
     pub tag_list: Vec<String>,     // unique-sorted list of tag short names
-    pub sample_donor_list: Vec<(usize, usize)>, // unique-sorted list of (sample, donor) indices
     pub donors: usize,             // number of donors
-    // map dataset index to map of barcode to (sample,donor):
-    pub sample_donor: Vec<HashMap<String, (String, String)>>,
+    // map dataset index to map of barcode to sample:
+    pub sample_for_bc: Vec<HashMap<String, String>>,
+    // map dataset index to map of barcode to donor:
+    pub donor_for_bc: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to tag:
     pub tag: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to color:
@@ -306,7 +307,7 @@ impl SampleInfo {
 
 #[derive(Default)]
 pub struct GeneralOpt {
-    pub pre: String,
+    pub pre: Vec<String>,
     pub insertions: bool,
     pub indels: bool,
     pub reannotate: bool,
@@ -326,6 +327,7 @@ pub struct GeneralOpt {
     pub fasta_aa_filename: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
+    pub chains_exact: usize,
     pub exact: Option<usize>,
     pub binary: String,
     pub proto: String,
@@ -366,6 +368,7 @@ pub struct GeneralOpt {
     pub ngroup: bool,
     pub jc1: bool,
     pub trace_barcode: String,
+    pub ncell: bool,
 }
 
 // Allele finding algorithmic options.

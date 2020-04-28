@@ -423,7 +423,7 @@ pub fn find_alleles(
                 // For each lena id from the donor, classify the alleles from that lena
                 // id according to the classification just derived.  Print the matrix.
                 // This is for diagnostic purposes only.
-                // Turned off because dataset_list was broken when sample_donor was
+                // Turned off because dataset_list was broken when donor_for_bc was
                 // added to SampleInfo.  (The printing had already been commented out.)
 
                 /*

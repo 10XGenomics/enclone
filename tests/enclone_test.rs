@@ -8,12 +8,9 @@
 // was gotten before.  If the output is different, look at it
 // and decide if the change is justified, and if so update the output file.
 //
-// This test only runs if you use cargo test --release.  The test for
-// not debug_assertions is a proxy for that.
-//
 // To test just this test, use:
 //
-// cargo test --release -p enclone enclone -- --nocapture
+// cargo test -p enclone enclone -- --nocapture
 
 use ansi_escape::*;
 use enclone::html::insert_html;
@@ -39,17 +36,31 @@ const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-#[cfg(debug_assertions)]
+// Test that files are rustfmt'ed.
+
 #[test]
-fn test_enclone_fail() {
-    println!("\n\"cargo test\" deliberately fails here because without running in release mode,");
-    println!("the test in enclone would be too slow.  We could simply elide the test, but");
-    println!("then you wouldn't know that you're missing an important test.  If you really want");
-    println!("to run all tests except this test in debug(dev) mode, please use");
-    println!("\"cargo test --all --exclude enclone\"");
-    println!("However please also note that even with the extra test, \"cargo test --release\"");
-    println!("will be faster then the above.\n");
-    assert!(0 == 1);
+fn test_formatting() {
+    let mut rs = Vec::<String>::new();
+    let src = read_dir("src").unwrap();
+    for x in src {
+        let x = x.unwrap().path();
+        let x = x.to_str().unwrap();
+        if x.ends_with(".rs") {
+            rs.push(x.to_string());
+        }
+    }
+    rs.push("build.rs".to_string());
+    rs.push("tests/enclone_test.rs".to_string());
+    use itertools::Itertools;
+    let new = Command::new("rustfmt")
+        .arg("--check")
+        .args(&rs)
+        .output()
+        .expect(&format!("failed to execute test_formatting"));
+    if new.status.code().unwrap() != 0 {
+        eprintln!("\nYou need to run rustfmt.\n");
+        std::process::exit(1);
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -60,7 +71,6 @@ fn test_enclone_fail() {
 // If you ever need to change the output of all tests, use the main program
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -161,7 +171,7 @@ fn test_enclone() {
 
             // Form the command and execute it.
 
-            let mut new = Command::new("target/release/enclone");
+            let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
             let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
             for i in 0..args.len() {
                 new = new.arg(&args[i]);
@@ -325,7 +335,7 @@ fn test_enclone() {
                 fwriteln!(
                     log,
                     "You can then retest using:\n\n\
-                     cargo test --release -p enclone enclone  -- --nocapture"
+                     cargo test -p enclone enclone  -- --nocapture"
                 );
                 if new2.len() > 0 {
                     fwriteln!(log, "");
@@ -365,7 +375,6 @@ fn test_enclone() {
 // ▓ href='...'▓
 // ▓ src="..."▓.
 
-#[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
@@ -376,9 +385,9 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up dictionary exceptions.
 
     let extra_words = "barcode barcoding clonotype clonotypes clonotyping codebase contig contigs \
-        csv cvars enclone genomics germline grok hypermutation hypermutations indel indels \
-        linux loh lvars metadata onesie parseable pbmc spacebar subclonotype subclonotypes \
-        svg umi umis underperforming vdj zenodo";
+        csv cvars enclone executables genomics germline github grok hypermutation hypermutations \
+        indel indels linux loh lvars metadata onesie parseable pbmc spacebar subclonotype \
+        subclonotypes svg umi umis underperforming vdj website workflow zenodo";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.
@@ -535,7 +544,6 @@ fn test_for_broken_links_and_spellcheck() {
 // Test site examples to make sure they are what they claim to be, and that the
 // merged html files are correct.
 
-#[cfg(not(debug_assertions))]
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_site_examples() {
@@ -544,7 +552,7 @@ fn test_site_examples() {
         let test = SITE_EXAMPLES[i].1;
         let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
         let args = test.split(' ').collect::<Vec<&str>>();
-        let new = Command::new("target/release/enclone")
+        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .arg("HTML")
             .output()
@@ -575,7 +583,6 @@ fn test_site_examples() {
 
 // Test that examples are what we claim they are.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -584,7 +591,7 @@ fn test_enclone_examples() {
         let out_file = format!("src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
-        let mut new = Command::new("target/release/enclone");
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
         for i in 0..args.len() {
             new = new.arg(&args[i]);
@@ -610,7 +617,6 @@ fn test_enclone_examples() {
 
 // Test that references to the dataset version in README.md are current.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -638,7 +644,6 @@ fn test_version_number_in_readme() {
 //
 // Only works with high probability.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -674,11 +679,10 @@ fn test_dejavu() {
 
 // Test that enclone help all HTML works (without STABLE_DOC).
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
-    let mut new = Command::new("target/release/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg("help");
     new = new.arg("all");
     new = new.arg("HTML");
@@ -697,7 +701,6 @@ fn test_help_no_stable() {
 
 // Test that help output hasn't changed.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
@@ -737,7 +740,7 @@ fn test_help_output() {
         }
         let out_file = format!("pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
-        let mut new = Command::new("target/release/enclone");
+        let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg("HTML");
         if p == "setup" {
             new = new.arg("help");
@@ -758,6 +761,7 @@ fn test_help_output() {
         }
         let new2 = stringme(&new.stdout);
         if old != new2 {
+            eprintme!(old.len(), new2.len());
             eprintln!(
                 "\nHelp test failed on {}.\n\
                  You need to update help output by typing \"./build_help\", \
@@ -773,7 +777,6 @@ fn test_help_output() {
 
 // Test that PREBUILD works.
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -794,7 +797,7 @@ fn test_enclone_prebuild() {
     let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
-    let mut new = Command::new("target/release/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
@@ -827,7 +830,7 @@ fn test_enclone_prebuild() {
 
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
-    let mut new = Command::new("target/release/enclone");
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
@@ -868,7 +871,6 @@ fn test_enclone_prebuild() {
 // It also tests to make sure that the LOUPE output is unchanged.  If it changed for a good
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
-#[cfg(not(debug_assertions))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
@@ -877,7 +879,7 @@ fn test_proto_write() -> Result<(), Error> {
     let proto_arg = format!("PROTO={}.proto", LOUPE_OUT_FILENAME);
     for t in tests.iter() {
         // FIXME: It would be nicer to use the enclone API here
-        std::process::Command::new("target/release/enclone")
+        std::process::Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&[&pre_arg, *t, &binary_arg, &proto_arg])
             .output()
             .expect(&format!("failed to execute enclone for test_proto_write"));

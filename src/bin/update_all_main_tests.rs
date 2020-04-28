@@ -69,7 +69,7 @@ fn main() {
 
         // Form the command and execute it.
 
-        let mut new = Command::new("target/release/enclone");
+        let mut new = Command::new("target/debug/enclone");
         let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
         for i in 0..args.len() {
             new = new.arg(&args[i]);

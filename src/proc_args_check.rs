@@ -246,10 +246,20 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
 // Check pcols args.
 
 pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
+    let mut alt_bcs = Vec::<String>::new();
+    for li in 0..ctl.sample_info.alt_bc_fields.len() {
+        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[i][i].0.clone());
+        }
+    }
+    unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
     for x in ctl.parseable_opt.pcols.iter() {
         let mut ok = false;
+        if bin_member(&alt_bcs, x) {
+            ok = true;
+        }
         for y in PLVARS_ALLOWED.iter() {
             if *x == *y {
                 ok = true;

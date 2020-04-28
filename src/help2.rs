@@ -140,12 +140,12 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "support") || h.help_all {
         h.begin_doc("support");
         h.print(
-            "\n\\red{enclone (beta) is provided as an open-source tool for use by the community.  \
+            "\n\\red{enclone (beta) is provided as a tool for use by the community.  \
              Although we cannot guarantee full support for the software, please email us at \
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
              \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             \\green{https://enclone.10xgenomics.github.io/pages/HISTORY.html} \
+             \\green{https://enclone.10xgenomics.github.io/pages/history.html} \
              \\blue{for the history of what was changed}\n\
              \\blue{and when.  We will try not to break} \
              \\blue{things, but when we first introduce a feature, it may}\n\
@@ -270,11 +270,17 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              the Cell Ranger pipeline may be found.  enclone uses only some of the pipeline \
              output files, so it is enough that those files are present in given directory, and \
              the particular files that are needed may be found by typing \
-             \\bold{enclone help input_tech}.  \
-             If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
-             pipeline paths.  Moreover (see \\bold{enclone help command}), you can avoid putting \
+             \\bold{enclone help input_tech}.\n\n",
+        );
+        h.print_with_box(
+            "If you use the argument \\bold{PRE=p} then \\bold{p/} will be prepended to all \
+             pipeline paths.  A comma-separated list is also allowed \\bold{PRE=p1,...,pn}, in \
+             which case these directories are searched from left to right, until one works, and \
+             if all fail, the path is used without prepending anything.  Lastly, \
+             (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
-             \\bold{ENCLONE_PRE} to \\bold{p}.\n\n",
+             \\bold{ENCLONE_PRE} to the desired value.",
+            true,
         );
         h.print(
             "Both input forms involve abbreviated names (discussed below), which should be as \
@@ -341,6 +347,20 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              as the \\bold{TCR} or \\bold{BCR} argument.  Specification of both \
              \\bold{TCR} and \\bold{BCR} is not allowed.\n\n",
         );
+        h.print(
+            "In addition, barcode-level data may be specified using \\bold{BC=...}, whose right \
+             side is a list of paths having the same structure as the \\bold{TCR} or \\bold{BCR} \
+             argument.  Each such path must be for a CSV file, which must include the field \
+             \\bold{barcode}, may include special fields \\bold{sample}, \\bold{donor}, \
+             \\bold{tag} and \\bold{color}, and may also include arbitrary other fields.  The \
+             \\bold{sample} and \\bold{donor} fields allow a particular sample and donor to be \
+             associated to a given barcode.  A use case for this is genetic demultiplexing.  The \
+             \\bold{tag} field is intended to be used with tag demultiplexing.  The \\bold{color} \
+             field is used by the \\bold{PLOT} option.  All other fields are treated as lead \
+             variables, but values are only displayed in \\bold{PER_CELL} mode, or for parseable \
+             output using \\bold{PCELL}.  These fields should not include existing lead variable \
+             names.  Use of \\bold{BC} automatically turns on the \\bold{MIX_DONORS} option.\n\n",
+        );
         h.print("\\boldred{█ 2 █} To specify a metadata file, use the command line argument\n");
         h.print("\\bold{META=filename}\n");
         h.print(
@@ -368,62 +388,12 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.ldoc3("sample", "s1", "abbreviated name of sample");
 
         h.ldoc3("donor", "d1", "abbreviated name of donor");
-        h.ldoc3(
+        h.ldoc3pr(
             "color",
             "null",
-            "color to associate to this dataset (for PLOT option)",
+            "color to associate to this dataset (for \\bold{PLOT} option)",
         );
-        h.ldoc3(
-            "bc",
-            "null",
-            "name of CSV file with header \"barcode,sample,donor\" that",
-        );
-        h.doc3(
-            "",
-            "",
-            "assigns a sample and donor name to each barcode; if sample and/or",
-        );
-        h.doc3(
-            "",
-            "",
-            "donor are also specified, then those are treated as default values",
-        );
-        h.doc3(
-            "",
-            "",
-            "to be used in case a particular barcode is not specified by bc;",
-        );
-        h.doc3(
-            "",
-            "",
-            "a fourth field \"tag\" is allowed and may be arbitrarily specified",
-        );
-
-        h.doc3(
-            "",
-            "",
-            "Use of bc automatically turns on the MIX_DONORS option.  There is",
-        );
-        h.doc3(
-            "",
-            "",
-            "an optional field \"color\" that assigns a color to a barcode,",
-        );
-        h.doc3(
-            "",
-            "",
-            "and which is used by the PLOT option.  Finally, any other field",
-        );
-        h.doc3(
-            "",
-            "",
-            "name may be specified and then used as a lead variable in PER CELL",
-        );
-        h.doc3(
-            "",
-            "",
-            "mode, so long as it is not already a lead variable name.",
-        );
+        h.ldoc3pr("bc", "null", "name of CSV file as in the \\bold{BC} option");
         h.print_tab3();
         h.print("\n");
         h.end_doc();

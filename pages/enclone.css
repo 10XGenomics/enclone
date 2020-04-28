@@ -36,31 +36,31 @@
 }
 
 code {
-  font-family: "DejaVuSansMono";
-  font-size: 90%;
-  background: rgb(92%,92%,92%);
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-top: 1px;
-  padding-bottom: 1px;
+    font-family: "DejaVuSansMono";
+    font-size: 90%;
+    background: rgb(92%,92%,92%);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 html { 
-  font-size: 95%; 
-  font-family: "Arial";
-  line-height: 140%;
+    font-size: 95%; 
+    font-family: "Arial";
+    line-height: 140%;
 } 
 
 h1 {
-  color: black;
-  line-height: 30px;
+    color: black;
+    line-height: 30px;
 }
 
 body {
-  color: rgb(36, 41, 46);
-  margin-left: 25px;
-  margin-right: 25px;
-  margin-bottom: 50px;
+    color: rgb(36, 41, 46);
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 50px;
 }
 
 hr {
@@ -103,4 +103,15 @@ li {
 a:link {
     text-decoration: none;
     color: rgb(3, 102, 214);
+}
+
+a:link {
+    color: #feb236; /* univisited links are in a lighter orange */
+    font-weight: bold;
+}
+
+/* visited link */
+a:visited {
+    color: #ff7b25; /* visited links are in a darker orange */
+    font-weight: bold;
 }

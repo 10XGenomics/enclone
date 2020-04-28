@@ -21,6 +21,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              two options can be used to simplify the view of a clonotype.\n\n",
         );
         h.doc(
+            "NCELL",
+            "Use contigs found by Cell Ranger even if they were not in a called cell, ",
+        );
+        h.doc("", "or not called high confidence.");
+        h.ldoc(
             "NGEX",
             "If gene expression and/or feature barcode data are provided, if a barcode",
         );
@@ -236,6 +241,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "to \"purify\" a clonotype so as to display only exact subclonotypes having",
         );
         h.doc("", "all their chains.");
+        h.doc(
+            "CHAINS_EXACT=n",
+            "Delete any exact subclonotype not having exactly n chains.",
+        );
         h.doc(
             "MIN_CELLS_EXACT=n",
             "Delete any exact subclonotype having less than n cells.  You might want",
