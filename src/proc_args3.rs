@@ -181,8 +181,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     }
                     eprintln!(
                         "\nThere is a line\n{}\nin a CSV file defined by {}\n\
-                         that has {} fields, which isn't right, because the header line\n\
-                         has {} fields..  This is for the file\n{}.\n",
+                         that has {} fields, which isn't right, because the header line \
+                         has {} fields.  This is for the file\n{}.\n",
                         s,
                         origin,
                         fields.len(),
