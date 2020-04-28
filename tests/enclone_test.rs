@@ -28,6 +28,8 @@ use std::collections::HashSet;
 use std::fs::{read_dir, read_to_string, remove_file, File};
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
+use std::thread;
+use std::time;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -525,6 +527,7 @@ fn test_for_broken_links_and_spellcheck() {
                 const LINK_RETRIES: usize = 5;
                 for i in 0..LINK_RETRIES {
                     if i > 0 {
+                        thread::sleep(time::Duration::from_millis(100));
                         eprintln!("retrying link {}, attempt {}", link, i);
                     }
                     let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
