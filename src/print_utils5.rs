@@ -200,7 +200,7 @@ pub fn delete_weaks(
     bads: &mut Vec<bool>,
 ) {
     // Mark for deletion exact subclonotypes that fail the MIN_CELLS_EXACT or MIN_CHAINS_EXACT
-    // tests.
+    // or CHAINS_EXACT tests.
 
     let nexacts = exacts.len();
     for u in 0..nexacts {
@@ -208,6 +208,11 @@ pub fn delete_weaks(
             bads[u] = true;
         }
         if exact_clonotypes[exacts[u]].share.len() < ctl.gen_opt.min_chains_exact {
+            bads[u] = true;
+        }
+        if ctl.gen_opt.chains_exact > 0
+            && exact_clonotypes[exacts[u]].share.len() != ctl.gen_opt.chains_exact
+        {
             bads[u] = true;
         }
     }

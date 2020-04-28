@@ -30,11 +30,11 @@ have successfully installed the Rust compiler by running <code>rustc --version</
 <p>Clone the <code>enclone</code> repository and build <code>enclone</code> using Cargo (which comes with Rust) by running:</p>
 <code>git clone git@github.com:10XGenomics/enclone.git
 
-cargo build --release --bin enclone
+cargo build --bin enclone
 </code>
 
-<p>         and then put <code>target/release/enclone</code> in your path. This can be done in multiple ways, including running
-        <code>PATH=$PATH:~/where/you/cloned/enclone/target/release/enclone</code>.
+<p>         and then put <code>target/debug/enclone</code> in your path. This can be done in multiple ways, including running
+        <code>PATH=$PATH:~/where/you/cloned/enclone/target/debug/enclone</code>.
 See also <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path" rel="nofollow">this helpful post on StackExchange</a>.</p>
 <p>         Compilation takes 8-10 minutes on a 2017 MacBook Pro with a dual-core i7 and 5-7 minutes on a similar Linux machine.</p>
 
@@ -60,7 +60,7 @@ makes sense relative to your working directory.</p>
 <li>
 <p>If you want to run the built-in tests, type</p>
 
-<code>cargo test --release -- --nocapture
+<code>cargo test -- --nocapture
 </code>
 
 </li>

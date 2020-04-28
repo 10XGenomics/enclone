@@ -1,0 +1,48 @@
+name: Test enclone
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+env:
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  build:
+    name: test-job-macos
+    # This job runs on MacOS Catalina
+    runs-on: macos-latest
+    steps:
+      - name: rust version
+        run: rustup default 1.43.0
+      - name: add rustfmt 
+        run: rustup component add rustfmt --toolchain 1.43.0-x86_64-apple-darwin
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+      - name: Check Rust formatting
+      # Check formatting
+        run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release
+      - name: unit tests
+        run: cargo test --release --features basic -- --nocapture 
+
+    name: test-job-ubuntu
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: rust version
+        run: rustup default 1.43.0
+      - name: add rustfmt
+        run: rustup component add rustfmt --toolchain 1.43.0-x86_64-unknown-linux-gnu
+      - name: Check Rust formatting
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+      # Check formatting
+        run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release
+      - name: unit tests
+        run: cargo test --release --features basic -- --nocapture

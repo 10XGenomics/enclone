@@ -1,0 +1,6 @@
+# Create stable copy of enclone, probably temporary.  Run ./local_view first.
+
+mkdir -p ~/enclone_stable
+cp target/debug/enclone ~/enclone_stable
+rm -rf ~/public_html/enclone_stable
+cp -pr ~/public_html/enclone ~/public_html/enclone_stable

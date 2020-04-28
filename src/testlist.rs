@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 64] = [
+pub const TESTS: [&str; 65] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -180,6 +180,8 @@ pub const TESTS: [&str; 64] = [
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
     // 64. test 8/8 for newline correctness
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
+    // 65. test NCELL
+    r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
 ];
 
 // List of examples in documentation.
@@ -193,7 +195,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 5] = [
+pub const SITE_EXAMPLES: [(&str, &str); 6] = [
     // 1.
     (
         "clonotype_with_gex",
@@ -216,5 +218,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 5] = [
         "illusory4",
         "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 \
          NGROUP",
+    ),
+    // 6.
+    (
+        "illusory5",
+        "BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL \
+         LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP",
     ),
 ];

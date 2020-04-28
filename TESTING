@@ -6,12 +6,13 @@ Notes on testing:
    Run these if needed before testing.  Otherwise the tests will catch the problem.
 
 2. Test with
-   cargo test --release -- --nocapture
-   assuming that the full set of datasets is available.  Otherwise use instead:
-   cargo test --release --features basic -- --nocapture
+   cargo t
+   assuming that the full set of datasets is available.  
+   (This automatically runs with -- --nocapture.)
+   Otherwise use instead:
+   cargo test --features basic -- --nocapture
 
-3. Testing in debug mode (more precisely with overflow detection on) is a good thing
-   to do at least occasionally.
+3. Testing with overflow detection on is a good thing to do at least occasionally.
 
 4. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
@@ -24,5 +25,4 @@ Notes on testing:
    This seems to require manual testing.
 
 5. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
-   because the output was going to the alternate screen.
-   This seems to require manual testing.
+   because the output was going to the alternate screen.  This seems to require manual testing.

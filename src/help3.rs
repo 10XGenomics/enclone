@@ -257,7 +257,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         // intro
 
         h.print("\n\\bold{clonotype filtering options}\n\n");
-        h.print("these options cause only certain clonotypes to be printed\n\n");
+        h.print(
+            "These options cause only certain clonotypes to be printed.  Please see \
+            also \"enclone help special\".\n\n",
+        );
 
         // doc *CELLS
 

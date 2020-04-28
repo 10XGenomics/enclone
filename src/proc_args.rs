@@ -53,7 +53,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.pre = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
+        ctl.gen_opt.pre = vec![
+            format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
+            format!("test/inputs"),
+        ];
     }
 
     // Set up general options.
@@ -64,7 +67,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.exact = None;
     for i in 1..args.len() {
         if args[i].starts_with("PRE=") {
-            ctl.gen_opt.pre = args[i].after("PRE=").to_string();
+            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
+            ctl.gen_opt.pre.clear();
+            for x in pre.iter() {
+                ctl.gen_opt.pre.push(x.to_string());
+            }
         }
     }
     ctl.gen_opt.full_counts = true;
@@ -114,6 +121,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut have_gex = false;
     let mut have_meta = false;
     let mut gex = String::new();
+    let mut bc = String::new();
     for i in 1..args.len() {
         if args[i].starts_with("TCR=") {
             have_tcr = true;
@@ -127,13 +135,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if args[i].starts_with("GEX=") {
             gex = args[i].after("GEX=").to_string();
         }
+        if args[i].starts_with("BC=") {
+            bc = args[i].after("BC=").to_string();
+        }
     }
-    if have_meta && (have_tcr || have_bcr || have_gex) {
-        eprintln!("\nIf META is specified, then none of TCR, BCR or GEX can be specified.\n");
+    if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
+        eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
         std::process::exit(1);
     }
     if have_tcr && have_bcr {
-        eprintln!("\nPlease do not specify both TCR and BCR.\n");
+        eprintln!("\nKindly please do not specify both TCR and BCR.\n");
         std::process::exit(1);
     }
 
@@ -198,6 +209,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.imgt = true;
         } else if is_simple_arg(&arg, "IMGT_FIX") {
             ctl.gen_opt.imgt_fix = true;
+        } else if is_simple_arg(&arg, "NCELL") {
+            ctl.gen_opt.ncell = true;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
         } else if arg == "HTML" {
@@ -519,6 +532,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         } else if arg.starts_with("GEX=") {
+        } else if arg.starts_with("BC=") {
         } else if is_usize_arg(&arg, "MIN_MULT") {
             ctl.allele_alg_opt.min_mult = arg.after("MIN_MULT=").force_usize();
         } else if is_usize_arg(&arg, "MIN_EXACTS") {
@@ -552,6 +566,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.min_cells_exact = arg.after("MIN_CELLS_EXACT=").force_usize();
         } else if is_usize_arg(&arg, "MIN_CHAINS_EXACT") {
             ctl.gen_opt.min_chains_exact = arg.after("MIN_CHAINS_EXACT=").force_usize();
+        } else if is_usize_arg(&arg, "CHAINS_EXACT") {
+            ctl.gen_opt.chains_exact = arg.after("CHAINS_EXACT=").force_usize();
         } else if is_usize_arg(&arg, "EXACT") {
             ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
         } else if is_usize_arg(&arg, "MIN_UMI") {
@@ -581,7 +597,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
         {
-            proc_xcr(&arg, &gex, have_gex, &mut ctl);
+            proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
         } else {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
@@ -598,12 +614,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut donors = Vec::<String>::new();
     let mut samples = Vec::<String>::new();
     let mut tags = Vec::<String>::new();
-    let mut sample_donor = Vec::<(String, String)>::new();
+    let mut sample_for_bc = Vec::<String>::new();
+    let mut donor_for_bc = Vec::<String>::new();
     for i in 0..ctl.sample_info.n() {
-        for x in ctl.sample_info.sample_donor[i].iter() {
-            donors.push((x.1).1.clone());
-            samples.push((x.1).0.clone());
-            sample_donor.push(((x.1).0.clone(), (x.1).1.clone()));
+        for x in ctl.sample_info.sample_for_bc[i].iter() {
+            samples.push(x.1.clone());
+            sample_for_bc.push(x.1.clone());
+        }
+        for x in ctl.sample_info.donor_for_bc[i].iter() {
+            donors.push(x.1.clone());
+            donor_for_bc.push(x.1.clone());
         }
         for x in ctl.sample_info.tag[i].iter() {
             tags.push((x.1).clone());
@@ -614,24 +634,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     unique_sort(&mut donors);
     unique_sort(&mut samples);
     unique_sort(&mut tags);
-    unique_sort(&mut sample_donor);
+    unique_sort(&mut sample_for_bc);
+    unique_sort(&mut donor_for_bc);
     ctl.sample_info.donors = donors.len();
     ctl.sample_info.dataset_list = ctl.sample_info.dataset_id.clone();
     unique_sort(&mut ctl.sample_info.dataset_list);
     ctl.sample_info.sample_list = samples.clone();
     ctl.sample_info.donor_list = donors.clone();
     ctl.sample_info.tag_list = tags;
-    let mut sample_donor_list = Vec::<(usize, usize)>::new();
-    for i in 0..sample_donor.len() {
-        sample_donor_list.push((
-            bin_position(&samples, &sample_donor[i].0) as usize,
-            bin_position(&donors, &sample_donor[i].1) as usize,
-        ));
-    }
-    unique_sort(&mut sample_donor_list);
-    ctl.sample_info.sample_donor_list = sample_donor_list;
-    for i in 0..ctl.sample_info.sample_donor.len() {
-        if ctl.sample_info.sample_donor[i].len() > 0 {
+    for i in 0..ctl.sample_info.donor_for_bc.len() {
+        if ctl.sample_info.donor_for_bc[i].len() > 0 {
             ctl.clono_filt_opt.donor = true;
         }
     }
