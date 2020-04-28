@@ -607,6 +607,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
+        let f = get_path_fail(&f, &ctl, "META");
         proc_meta(&f, &mut ctl);
     }
     if xcrs.len() > 0 {

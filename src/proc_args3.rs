@@ -26,7 +26,7 @@ fn get_path(p: &str, ctl: &EncloneControl) -> String {
     p.to_string()
 }
 
-fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
+pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     for x in ctl.gen_opt.pre.iter() {
         let pp = format!("{}/{}", x, p);
         if path_exists(&pp) {
