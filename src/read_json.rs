@@ -71,14 +71,14 @@ fn parse_vector_entry_from_json(
 ) {
     let v: Value = serde_json::from_str(strme(&x)).unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-    if !v["is_cell"].as_bool().unwrap_or(false) {
+    if !ctl.gen_opt.ncell && !v["is_cell"].as_bool().unwrap_or(false) {
         return;
     }
     vdj_cells.push(barcode.clone());
     if !v["productive"].as_bool().unwrap_or(false) {
         return;
     }
-    if !v["high_confidence"].as_bool().unwrap_or(false) {
+    if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
         return;
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();

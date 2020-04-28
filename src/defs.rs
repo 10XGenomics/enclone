@@ -368,6 +368,7 @@ pub struct GeneralOpt {
     pub ngroup: bool,
     pub jc1: bool,
     pub trace_barcode: String,
+    pub ncell: bool,
 }
 
 // Allele finding algorithmic options.
