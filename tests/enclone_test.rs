@@ -91,6 +91,7 @@ fn test_enclone() {
         let mut expect_fail = false;
         let mut expect_ok = false;
         let mut set_in_stone = false;
+        let mut no_pre = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
@@ -107,8 +108,13 @@ fn test_enclone() {
             test = test.replace(" SET_IN_STONE", "");
             set_in_stone = true;
         }
+        if test.contains(" NO_PRE") {
+            test = test.replace(" NO_PRE", "");
+            no_pre = true;
+        }
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
+        let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
         if !path_exists(&out_file) && !expect_fail && !expect_ok {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
@@ -119,10 +125,9 @@ fn test_enclone() {
             emit_bold_escape(&mut log);
             fwriteln!(
                 log,
-                "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output; \
+                "enclone {} {} > test/inputs/outputs/enclone_test{}_output; \
                  git add test/inputs/outputs/enclone_test{}_output\n",
-                TEST_FILES_VERSION,
+                pre_arg,
                 test,
                 it + 1,
                 it + 1
@@ -172,8 +177,11 @@ fn test_enclone() {
             // Form the command and execute it.
 
             let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-            let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
-            for i in 0..args.len() {
+            let mut new = new.arg(&args[0]);
+            if !no_pre {
+                new = new.arg(&pre_arg);
+            }
+            for i in 1..args.len() {
                 new = new.arg(&args[i]);
             }
             // dubious use of expect:
@@ -324,9 +332,9 @@ fn test_enclone() {
                 emit_bold_escape(&mut log);
                 fwriteln!(
                     log,
-                    "enclone PRE=test/inputs/version{} {} \
+                    "enclone {} {} \
                      > test/inputs/outputs/enclone_test{}_output\n",
-                    TEST_FILES_VERSION,
+                    pre_arg,
                     test,
                     it + 1
                 );
