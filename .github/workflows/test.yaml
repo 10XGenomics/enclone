@@ -11,36 +11,36 @@ env:
 
 jobs:
   build:
-    - name: test-job-macos
-      # This job runs on MacOS Catalina
-      runs-on: macos-latest
-      steps:
-        - name: rust version
-          run: rustup default 1.43.0
-        - name: add rustfmt 
-          run: rustup component add rustfmt
-        - name: Checkout enclone master
-          uses: actions/checkout@master
-        - name: Check Rust formatting
-          run: cargo fmt -- --check
-        - name: build-enclone
-          run: cargo build --release
-        - name: unit tests
-          run: cargo test --release --features basic -- --nocapture 
+    name: test-job-macos
+    # This job runs on MacOS Catalina
+    runs-on: macos-latest
+    steps:
+      - name: rust version
+        run: rustup default 1.43.0
+      - name: add rustfmt 
+        run: rustup component add rustfmt
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
+      - name: build-enclone
+        run: cargo build --release
+      - name: unit tests
+        run: cargo test --release --features basic -- --nocapture 
 
-    - name: test-job-ubuntu
-      # This job runs on Linux
-      runs-on: ubuntu-latest
-      steps:
-        - name: rust version
-          run: rustup default 1.43.0
-        - name: add rustfmt
-          run: rustup component add rustfmt
-        - name: Check Rust formatting
-          run: cargo fmt -- --check
-        - name: Checkout enclone master
-          uses: actions/checkout@master
-        - name: build-enclone
-          run: cargo build --release
-        - name: unit tests
-          run: cargo test --release --features basic -- --nocapture
+    name: test-job-ubuntu
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: rust version
+        run: rustup default 1.43.0
+      - name: add rustfmt
+        run: rustup component add rustfmt
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+      - name: build-enclone
+        run: cargo build --release
+      - name: unit tests
+        run: cargo test --release --features basic -- --nocapture
