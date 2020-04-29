@@ -589,6 +589,31 @@ pub fn group_and_print_clonotypes(
         }
         fwriteln!(logx, "   • number of datasets = {}", ctl.sample_info.n());
         fwriteln!(logx, "   • number of donors = {}", ctl.sample_info.donors);
+
+        // Print mean reads per cell if known.
+
+        let mut known = true;
+        for i in 0..ctl.sample_info.n() {
+            if ctl.sample_info.cells_cellranger[i].is_none() {
+                known = false;
+            } else if ctl.sample_info.mean_read_pairs_per_cell_cellranger[i].is_none() {
+                known = false;
+            }
+        }
+        if known {
+            let (mut cells, mut read_pairs) = (0, 0);
+            for i in 0..ctl.sample_info.n() {
+                let c = ctl.sample_info.cells_cellranger[i].unwrap();
+                let rpc = ctl.sample_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
+                cells += c;
+                read_pairs += cells * rpc;
+            }
+            let rpc = ((read_pairs as f64) / (cells as f64)).round();
+            fwriteln!(logx, "   • read pairs per cell (from cellranger) = {}", rpc);
+        }
+
+        // Print computational performance stats.
+
         if !ctl.gen_opt.summary_clean {
             fwriteln!(
                 logx,
