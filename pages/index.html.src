@@ -131,13 +131,17 @@ stuck.</p>
 <p><b>(these instructions are not yet functional)</b></p>
 <p><b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please 
 let us know if availability on other platforms is important to you.</p>
+
 <p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
+
 <pre><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>wget https://github.com/10XGenomics/enclone/releases/download/latest/linux/enclone
-</code></pre>
+<code>rm -f enclone; wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+
 or on a Mac
-<pre><code>wget https://github.com/10XGenomics/enclone/releases/download/latest/mac/enclone
-</code></pre>
+
+<pre><code>mkdir -p ~/bin; cd ~/bin</code>
+<code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
+
 <p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
 want to update.  At a later date, there will also be separately numbered releases that have passed
 a more extensive set of tests.</p>
