@@ -134,7 +134,7 @@ let us know if availability on other platforms is important to you.</p>
 <p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
 
 <pre><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>rm -f enclone; wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+<code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
 
 or on a Mac
 
