@@ -30,7 +30,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
         h.print(
-            "Please also read the documentation at \\green{https://enclone.10xgenomics.com}.\n\n",
+            "Please also read the documentation at \\green{https://10xgenomics.github.io/enclone}.\n\n",
         );
 
         h.docpr("\\bold{command}", "\\bold{what it provides}");
