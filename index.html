@@ -151,7 +151,7 @@ let us know if availability on other platforms is important to you.</p>
 <p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
 
 <pre><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>rm -f enclone; wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+<code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
 
 or on a Mac
 
@@ -187,7 +187,6 @@ regression tests (included in the codebase).
 A much larger collection of datasets (including those above) is also provided and can be 
 downloaded by:
 
-<pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.README</code>
 <code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz</code>
 <code>rm -rf ~/enclone/data</code>
 <code>zcat enclone_data_1.0.tar.gz | tar xf -</code>
