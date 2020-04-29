@@ -520,7 +520,7 @@ fn test_for_broken_links_and_spellcheck() {
 
                 eprintln!("checking link \"{}\"", link);
 
-                // Approach 1 to testing if link works.  This seemed to hand once in spite of
+                // Approach 1 to testing if link works.  This seemed to hang once in spite of
                 // the timeout.
 
                 use attohttpc::*;
