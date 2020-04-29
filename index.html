@@ -145,16 +145,19 @@ stuck.</p>
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Installing enclone</h2>
 
-<p><b>(these instructions are not yet functional)</b></p>
 <p><b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please 
 let us know if availability on other platforms is important to you.</p>
+
 <p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
+
 <pre><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>wget https://github.com/10XGenomics/enclone/releases/download/latest/linux/enclone
-</code></pre>
+<code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+
 or on a Mac
-<pre><code>wget https://github.com/10XGenomics/enclone/releases/download/latest/mac/enclone
-</code></pre>
+
+<pre><code>mkdir -p ~/bin; cd ~/bin</code>
+<code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
+
 <p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
 want to update.  At a later date, there will also be separately numbered releases that have passed
 a more extensive set of tests.</p>
@@ -184,9 +187,12 @@ regression tests (included in the codebase).
 A much larger collection of datasets (including those above) is also provided and can be 
 downloaded by:
 
-<pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.README</code>
-<code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz
-</code></pre>
+<pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz</code>
+<code>rm -rf ~/enclone/data</code>
+<code>zcat enclone_data_1.0.tar.gz | tar xf -</code>
+<code>mv enclone_data_1.0 ~/enclone/data</code></pre>
+
+On a Mac, you may need to use <code>curl</code> instead.
 
 <p><b>4.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
