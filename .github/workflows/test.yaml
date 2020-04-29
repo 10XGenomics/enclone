@@ -18,11 +18,10 @@ jobs:
       - name: rust version
         run: rustup default 1.43.0
       - name: add rustfmt 
-        run: rustup component add rustfmt --toolchain 1.43.0-x86_64-apple-darwin
+        run: rustup component add rustfmt
       - name: Checkout enclone master
         uses: actions/checkout@master
       - name: Check Rust formatting
-      # Check formatting
         run: cargo fmt -- --check
       - name: build-enclone
         run: cargo build --release
@@ -36,12 +35,11 @@ jobs:
       - name: rust version
         run: rustup default 1.43.0
       - name: add rustfmt
-        run: rustup component add rustfmt --toolchain 1.43.0-x86_64-unknown-linux-gnu
+        run: rustup component add rustfmt
       - name: Check Rust formatting
+        run: cargo fmt -- --check
       - name: Checkout enclone master
         uses: actions/checkout@master
-      # Check formatting
-        run: cargo fmt -- --check
       - name: build-enclone
         run: cargo build --release
       - name: unit tests
