@@ -5,8 +5,11 @@ use crate::proc_args2::*;
 use crate::proc_args3::*;
 use crate::proc_args_check::*;
 use crate::testlist::*;
+use io_utils::*;
 use perf_stats::*;
 use regex::Regex;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::{env, time::Instant};
 use string_utils::*;
 use vector_utils::*;
@@ -122,6 +125,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut have_meta = false;
     let mut gex = String::new();
     let mut bc = String::new();
+    let mut metas = Vec::<String>::new();
+    let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i].starts_with("TCR=") {
             have_tcr = true;
@@ -592,16 +597,74 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             // done above
         } else if arg.starts_with("META=") {
             let f = arg.after("META=");
-            proc_meta(&f, &mut ctl);
+            metas.push(f.to_string());
         } else if arg.starts_with("TCR=")
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
         {
-            proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+            xcrs.push(arg.to_string());
         } else {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
         }
+    }
+    if metas.len() > 0 {
+        let f = &metas[metas.len() - 1];
+        let f = get_path_fail(&f, &ctl, "META");
+        proc_meta(&f, &mut ctl);
+    }
+    if xcrs.len() > 0 {
+        let arg = &xcrs[xcrs.len() - 1];
+        proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+    }
+    for i in 0..ctl.sample_info.n() {
+        let (mut cells_cr, mut rpc_cr) = (None, None);
+        if ctl.gen_opt.internal_run {
+            let p = &ctl.sample_info.dataset_path[i];
+            let mut f = format!("{}/metrics_summary_csv.csv", p);
+            if !path_exists(&f) {
+                f = format!("{}/metrics_summary.csv", p);
+            }
+            if path_exists(&f) {
+                let f = open_for_read![&f];
+                let mut count = 0;
+                let (mut cells_field, mut rpc_field) = (None, None);
+                for line in f.lines() {
+                    count += 1;
+                    let s = line.unwrap();
+                    let fields = parse_csv(&s);
+                    for (i, x) in fields.iter().enumerate() {
+                        if count == 1 {
+                            if *x == "Estimated Number of Cells" {
+                                cells_field = Some(i);
+                            } else if *x == "Mean Read Pairs per Cell" {
+                                rpc_field = Some(i);
+                            }
+                        } else if count == 2 {
+                            if Some(i) == cells_field {
+                                let mut n = x.to_string();
+                                if n.contains("\"") {
+                                    n = n.between("\"", "\"").to_string();
+                                }
+                                n = n.replace(",", "");
+                                cells_cr = Some(n.force_usize());
+                            } else if Some(i) == rpc_field {
+                                let mut n = x.to_string();
+                                if n.contains("\"") {
+                                    n = n.between("\"", "\"").to_string();
+                                }
+                                n = n.replace(",", "");
+                                rpc_cr = Some(n.force_usize());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ctl.sample_info.cells_cellranger.push(cells_cr);
+        ctl.sample_info
+            .mean_read_pairs_per_cell_cellranger
+            .push(rpc_cr);
     }
     if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");

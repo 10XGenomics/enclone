@@ -28,6 +28,8 @@ use std::collections::HashSet;
 use std::fs::{read_dir, read_to_string, remove_file, File};
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
+use std::thread;
+use std::time;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -91,6 +93,7 @@ fn test_enclone() {
         let mut expect_fail = false;
         let mut expect_ok = false;
         let mut set_in_stone = false;
+        let mut no_pre = false;
         if test.contains(" EXPECT_NULL") {
             test = test.replace(" EXPECT_NULL", "");
             expect_null = true;
@@ -107,8 +110,17 @@ fn test_enclone() {
             test = test.replace(" SET_IN_STONE", "");
             set_in_stone = true;
         }
+        if test.contains(" NO_PRE") {
+            test = test.replace(" NO_PRE", "");
+            no_pre = true;
+        }
+        test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
+        let mut pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+        if no_pre {
+            pre_arg = String::new();
+        }
         if !path_exists(&out_file) && !expect_fail && !expect_ok {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
             fwriteln!(
@@ -119,10 +131,9 @@ fn test_enclone() {
             emit_bold_escape(&mut log);
             fwriteln!(
                 log,
-                "enclone PRE=test/inputs/version{} {} \
-                 > test/inputs/outputs/enclone_test{}_output; \
+                "enclone {} {} > test/inputs/outputs/enclone_test{}_output; \
                  git add test/inputs/outputs/enclone_test{}_output\n",
-                TEST_FILES_VERSION,
+                pre_arg,
                 test,
                 it + 1,
                 it + 1
@@ -172,8 +183,11 @@ fn test_enclone() {
             // Form the command and execute it.
 
             let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-            let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
-            for i in 0..args.len() {
+            let mut new = new.arg(&args[0]);
+            if !no_pre {
+                new = new.arg(&pre_arg);
+            }
+            for i in 1..args.len() {
                 new = new.arg(&args[i]);
             }
             // dubious use of expect:
@@ -324,9 +338,9 @@ fn test_enclone() {
                 emit_bold_escape(&mut log);
                 fwriteln!(
                     log,
-                    "enclone PRE=test/inputs/version{} {} \
+                    "enclone {} {} \
                      > test/inputs/outputs/enclone_test{}_output\n",
-                    TEST_FILES_VERSION,
+                    pre_arg,
                     test,
                     it + 1
                 );
@@ -506,19 +520,29 @@ fn test_for_broken_links_and_spellcheck() {
 
                 eprintln!("checking link \"{}\"", link);
 
-                // Approach 1 to testing if link works.
+                // Approach 1 to testing if link works.  This seemed to hang once in spite of
+                // the timeout.
 
                 use attohttpc::*;
-                let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
-                let response = req
-                    .send()
-                    .expect(&format!("\ncould not read link {} on page {}\n", link, x));
-                if !response.is_success() {
+                const LINK_RETRIES: usize = 5;
+                for i in 0..LINK_RETRIES {
+                    if i > 0 {
+                        thread::sleep(time::Duration::from_millis(100));
+                        eprintln!("retrying link {}, attempt {}", link, i);
+                    }
+                    let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
+                    let response = req
+                        .send()
+                        .expect(&format!("\ncould not read link {} on page {}\n", link, x));
+                    if response.is_success() {
+                        break;
+                    }
                     eprintln!("\ncould not read link {} on page {}\n", link, x);
                     std::process::exit(1);
                 }
 
-                // Approach 2 to testing if link works.
+                // Approach 2 to testing if link works.  This may not have a timeout and does
+                // not auto retry like approach 1.
 
                 /*
                 use reqwest::StatusCode;
@@ -560,6 +584,12 @@ fn test_site_examples() {
         let out_stuff = stringme(&new.stdout);
         if in_stuff != out_stuff {
             eprintln!("\nThe output for site example {} has changed.\n", i + 1);
+            eprintln!(
+                "Possibly this could be because you're running \"cargo t\" in an \
+                environment without the\n\
+                extended dataset collection.  Possibly you should run \
+                \"cargo test --basic -- --nocapture\" instead.\n"
+            );
             std::process::exit(1);
         }
     }

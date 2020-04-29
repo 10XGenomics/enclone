@@ -26,7 +26,7 @@ fn get_path(p: &str, ctl: &EncloneControl) -> String {
     p.to_string()
 }
 
-fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
+pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     for x in ctl.gen_opt.pre.iter() {
         let pp = format!("{}/{}", x, p);
         if path_exists(&pp) {
@@ -181,8 +181,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     }
                     eprintln!(
                         "\nThere is a line\n{}\nin a CSV file defined by {}\n\
-                         that has {} fields, which isn't right, because the header line\n\
-                         has {} fields..  This is for the file\n{}.\n",
+                         that has {} fields, which isn't right, because the header line \
+                         has {} fields.  This is for the file\n{}.\n",
                         s,
                         origin,
                         fields.len(),
