@@ -29,9 +29,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              Cell Ranger and Loupe,}\nenclone \
              uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
         );
-        h.print(
-            "Please also read the online documentation at \\green{bit.ly/enclone}.\n\n",
-        );
+        h.print("Please also read the online documentation at \\green{bit.ly/enclone}.\n\n");
 
         h.docpr("\\bold{command}", "\\bold{what it provides}");
         h.ldoc_red("enclone help", "help to test for correct setup");
