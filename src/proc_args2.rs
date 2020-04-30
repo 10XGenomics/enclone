@@ -114,6 +114,15 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 to_delete[i] = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
+                ctl.gen_opt.html_title = "enclone output".to_string();
+                to_delete[i] = true;
+            } else if args[i].starts_with("HTML=") {
+                ctl.gen_opt.html = true;
+                let mut title = args[i].after("HTML=").to_string();
+                if title.starts_with("\"") && title.ends_with("\"") {
+                    title = title.between("\"", "\"").to_string();
+                }
+                ctl.gen_opt.html_title = title;
                 to_delete[i] = true;
             } else if args[i] == "SVG" {
                 ctl.gen_opt.svg = true;

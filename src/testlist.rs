@@ -146,7 +146,7 @@ pub const TESTS: [&str; 71] = [
     r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX H5"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
-        FASTA_AA=stdout HTML"###,
+        FASTA_AA=stdout HTML=CAAWDDSLNGWVF"###,
     // 50. make sure this doesn't fail
     r###"NOPAGER EXPECT_OK"###,
     // 51. make sure this fails gracefully
