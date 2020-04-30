@@ -145,7 +145,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
              If you prefer you may submit a GitHub issue.}\n\n\
              \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             \\green{https://10xgenomics.github.io/enclone/pages/history.html} \
+             history page at \\green{bit.ly/enclone} \
              \\blue{for the history of what was changed}\n\
              \\blue{and when.  We will try not to break} \
              \\blue{things, but when we first introduce a feature, it may}\n\
@@ -214,7 +214,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "enclone can create a \"honeycomb\" plot showing each clonotype as a cluster of \
              dots, one per cell.  You can see an example at \
-             \\green{https://10xgenomics.github.io/enclone/index.html#honeycomb}.\n\n\
+             \\green{bit.ly/enclone}.\n\n\
              \
              enclone provides three ways to assign colors in such a plot.  We describe them in \
              order of precedence, i.e. color data for the first will be used if provided, etc.\n\n\
@@ -314,8 +314,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              ways:\n\
              1. If two datasets come from the same sample, then enclone can filter to remove \
              certain artifacts, unless you specify the option \\bold{NCROSS}.\n\
-             See also \\green{\
-             https://10xgenomics.github.io/enclone/pages/auto/expanded.html}.\n\
+             See also illusory clonotypes page at \\green{bit.ly/enclone}.\n\
              2. If two cells came from different donors, then enclone will not put them in the \
              same clonotype, unless you specify the option \\bold{MIX_DONORS}.\n\
              More information may be found at `enclone help special`.  In addition, this is \
