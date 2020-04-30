@@ -30,6 +30,15 @@ If applicable, add screenshots to help explain your problem.
 **enclone version (please tell us what version you're using):**
 What is your output from `enclone --version`?
 
+**rustc, cargo, and other relevant versions:**
+If you're building `enclone` from source and hit a snag, it helps for us
+to know what tools you're using to build. The following commands can help
+you to fill in and provide this information:
+
+- `rustc --version`
+- `cargo --version`
+- `rustup --version`
+
 **Additional context**
 Add any other context about the problem here. Please share any data you
 can so we can better assist you! Please also note that we may not be
