@@ -2,4 +2,4 @@
 
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" />
 
-Please go here <a href="http://enclone.10xgenomics.com">enclone.10xgenomics.com</a> for more information!
+Please go here <a href="https://bit.ly/enclone">bit.ly/enclone</a> for more information!
