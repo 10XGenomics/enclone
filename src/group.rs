@@ -563,12 +563,16 @@ pub fn group_and_print_clonotypes(
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
         let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
+        let mut umis = Vec::<usize>::new();
         for i in 0..nclono {
             let mut n = 0;
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
                 n += ex.ncells();
                 for k in 0..ex.clones.len() {
+                    for l in 0..ex.clones[k].len() {
+                        umis.push(ex.clones[k][l].umi_count);
+                    }
                     let x = &ex.clones[k][0];
                     sd.push((x.sample_index, x.donor_index));
                 }
@@ -578,6 +582,16 @@ pub fn group_and_print_clonotypes(
             }
             ncells += n;
             nchains.push(mat[i].len());
+        }
+        umis.sort();
+        let (mut middle, mut denom) = (0, 0);
+        for j in umis.len() / 3..(2 * umis.len()) / 3 {
+            middle += umis[j];
+            denom += 1;
+        }
+        let mut middle_mean_umis = 0.0;
+        if denom > 0 {
+            middle_mean_umis = (middle as f64) / (denom as f64);
         }
         sd.sort();
         let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
@@ -644,6 +658,11 @@ pub fn group_and_print_clonotypes(
             );
             i = j;
         }
+        fwriteln!(
+            logx,
+            "   • mean over middle third of contig UMI counts = {:.2}",
+            middle_mean_umis,
+        );
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
         rows.push(row);
