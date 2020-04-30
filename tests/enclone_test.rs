@@ -446,6 +446,10 @@ fn test_for_broken_links_and_spellcheck() {
     tested.insert("https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd".to_string());
     tested.insert("http://www.w3.org/1999/xhtml".to_string());
 
+    // Hardcode exception for funny svn URL.
+
+    tested.insert("https://github.com/10XGenomics/enclone/trunk".to_string());
+
     // Test each html.
 
     for x in htmls {
