@@ -29,7 +29,7 @@ jobs:
           readelf -V target/release/enclone;
           ';
           mkdir ${{runner.temp}}/artifacts;
-          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-linux';
+          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-linux
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
