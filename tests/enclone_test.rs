@@ -440,9 +440,14 @@ fn test_for_broken_links_and_spellcheck() {
         }
     }
 
-    // Test each html.
+    // Hardcoded exceptions to link testing, because of slowness.
 
     let mut tested = HashSet::<String>::new();
+    tested.insert("https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd".to_string());
+    tested.insert("http://www.w3.org/1999/xhtml".to_string());
+
+    // Test each html.
+
     for x in htmls {
         let f = open_for_read![x];
         let depth = x.matches('/').count();
@@ -550,6 +555,7 @@ fn test_for_broken_links_and_spellcheck() {
                 // And finally do http....
 
                 links.push(link.to_string());
+                s = s.after("<a href=\"").to_string();
             }
             for link in links {
                 eprintln!("checking link \"{}\"", link);
@@ -565,14 +571,22 @@ fn test_for_broken_links_and_spellcheck() {
                         eprintln!("retrying link {}, attempt {}", link, i);
                     }
                     let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
-                    let response = req
-                        .send()
-                        .expect(&format!("\ncould not read link {} on page {}\n", link, x));
-                    if response.is_success() {
-                        break;
+                    let response = req.send();
+                    if response.is_err() {
+                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        if i == LINK_RETRIES - 1 {
+                            std::process::exit(1);
+                        }
+                    } else {
+                        let response = response.unwrap();
+                        if response.is_success() {
+                            break;
+                        }
+                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        if i == LINK_RETRIES - 1 {
+                            std::process::exit(1);
+                        }
                     }
-                    eprintln!("\ncould not read link {} on page {}\n", link, x);
-                    std::process::exit(1);
                 }
 
                 // Approach 2 to testing if link works.  This may not have a timeout and does
@@ -590,8 +604,6 @@ fn test_for_broken_links_and_spellcheck() {
                     std::process::exit(1);
                 }
                 */
-
-                s = s.after("<a href=\"").to_string();
             }
         }
     }
