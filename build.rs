@@ -67,7 +67,7 @@ fn get_commit_date() -> String {
     let output = Command::new("git")
         .arg("log")
         .arg("-1")
-        .arg("--pretty=format:%ci") // Committer data, ISO 8601-like format
+        .arg("--pretty=format:%ci") // Committer date, ISO 8601-like format
         .current_dir(env!("CARGO_MANIFEST_DIR"))
         .output()
         .unwrap();
