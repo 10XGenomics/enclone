@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve enclone
 title: ''
 labels: ''
 assignees: ''
@@ -26,6 +26,9 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS: [e.g. OS X, Ubuntu, Centos]
  - Version [e.g. 10.15.3, 18.04, 7]
+
+**enclone version (please tell us what version you're using):**
+What is your output from `enclone --version`?
 
 **Additional context**
 Add any other context about the problem here.
