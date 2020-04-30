@@ -146,7 +146,7 @@ pub const TESTS: [&str; 71] = [
     r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX H5"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
-        FASTA_AA=stdout HTML"###,
+        FASTA_AA=stdout HTML=CAAWDDSLNGWVF"###,
     // 50. make sure this doesn't fail
     r###"NOPAGER EXPECT_OK"###,
     // 51. make sure this fails gracefully
@@ -215,30 +215,36 @@ pub const SITE_EXAMPLES: [(&str, &str); 6] = [
     // 1.
     (
         "clonotype_with_gex",
-        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab",
+        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab \
+         HTML=\"enclone example with gex\"",
     ),
     // 2.
     (
         "illusory1",
-        "BCR=128037,128040 NCROSS CDR3=CARGGTTTYFISW NGROUP",
+        "BCR=128037,128040 NCROSS CDR3=CARGGTTTYFISW NGROUP \
+         HTML=\"illusory clonotype expansion 1\"",
     ),
     // 3.
-    ("illusory2", "BCR=128037,128040 CDR3=CARGGTTTYFISW NGROUP"),
+    (
+        "illusory2",
+        "BCR=128037,128040 CDR3=CARGGTTTYFISW NGROUP \
+      HTML=\"illusory clonotype expansion 2\"",
+    ),
     // 4.
     (
         "illusory3",
-        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW NGROUP",
+        "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW NGROUP HTML=\"illusory clonotype expansion 3\"",
     ),
     // 5.
     (
         "illusory4",
         "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 \
-         NGROUP",
+         NGROUP HTML=\"illusory clonotype expansion 4\"",
     ),
     // 6.
     (
         "illusory5",
         "BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL \
-         LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP",
+         LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP HTML=\"illusory clonotype expansion 5\"",
     ),
 ];

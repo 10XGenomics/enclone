@@ -14,6 +14,7 @@
 
 use ansi_escape::*;
 use enclone::html::insert_html;
+use enclone::misc3::parse_bsv;
 use enclone::proto_io::read_proto;
 use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
@@ -145,40 +146,7 @@ fn test_enclone() {
             if !expect_fail && !expect_ok {
                 old = read_to_string(&out_file).unwrap();
             }
-
-            // Get arguments, by parsing command, breaking at blanks, but not if they're in quotes.
-            // This is identical to parse_csv, except for the splitting character.
-            // Should refactor.
-
-            let mut args = Vec::<String>::new();
-            let mut w = Vec::<char>::new();
-            for c in test.chars() {
-                w.push(c);
-            }
-            let (mut quotes, mut i) = (0, 0);
-            while i < w.len() {
-                let mut j = i;
-                while j < w.len() {
-                    if quotes % 2 == 0 && w[j] == ' ' {
-                        break;
-                    }
-                    if w[j] == '"' {
-                        quotes += 1;
-                    }
-                    j += 1;
-                }
-                let (mut start, mut stop) = (i, j);
-                if stop - start >= 2 && w[start] == '"' && w[stop - 1] == '"' {
-                    start += 1;
-                    stop -= 1;
-                }
-                let mut s = String::new();
-                for m in start..stop {
-                    s.push(w[m]);
-                }
-                args.push(s);
-                i = j + 1;
-            }
+            let args = parse_bsv(&test);
 
             // Form the command and execute it.
 
@@ -379,11 +347,13 @@ fn test_enclone() {
 // Test site for broken links and spellcheck.
 //
 // Two approaches for checking broken links left in place for now, to delete one, and the
-// corresponding crate from
-// Cargo.toml.
+// corresponding crate from Cargo.toml.
 //
 // This looks for
-// ▓<a href="..."▓.
+// ▓<a href="..."▓
+// ▓http:...[, '")}<#\n]▓
+// ▓https:...[, '")}<#\n]▓.
+// (These also test termination by ". ".)
 // Should also look for at least:
 // ▓ href="..."▓
 // ▓ href='...'▓
@@ -438,9 +408,18 @@ fn test_for_broken_links_and_spellcheck() {
         }
     }
 
-    // Test each html.
+    // Hardcoded exceptions to link testing, because of slowness.
 
     let mut tested = HashSet::<String>::new();
+    tested.insert("https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd".to_string());
+    tested.insert("http://www.w3.org/1999/xhtml".to_string());
+
+    // Hardcode exception for funny svn URL.
+
+    tested.insert("https://github.com/10XGenomics/enclone/trunk".to_string());
+
+    // Test each html.
+
     for x in htmls {
         let f = open_for_read![x];
         let depth = x.matches('/').count();
@@ -477,6 +456,36 @@ fn test_for_broken_links_and_spellcheck() {
 
             // Check links.
 
+            let mut links = Vec::<String>::new();
+            let mut chars = Vec::<char>::new();
+            for c in s.chars() {
+                chars.push(c);
+            }
+            let mut i = 0;
+            let terminators = vec![',', ' ', '\'', '"', ')', '}', '<', '#', '\n'];
+            while i < chars.len() {
+                let http = chars[i..].starts_with(&vec!['h', 't', 't', 'p', ':']);
+                let https = chars[i..].starts_with(&vec!['h', 't', 't', 'p', 's', ':']);
+                if http || https {
+                    for j in i + 5..chars.len() {
+                        if terminators.contains(&chars[j])
+                            || (chars[j] == '.' && j < chars.len() - 1 && chars[j + 1] == ' ')
+                        {
+                            let mut link = String::new();
+                            for k in i..j {
+                                link.push(chars[k]);
+                            }
+                            if !tested.contains(&link.to_string()) {
+                                links.push(link.clone());
+                                tested.insert(link.to_string());
+                            }
+                            i = j - 1;
+                            break;
+                        }
+                    }
+                }
+                i += 1;
+            }
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
                 if tested.contains(&link.to_string()) {
@@ -517,6 +526,10 @@ fn test_for_broken_links_and_spellcheck() {
 
                 // And finally do http....
 
+                links.push(link.to_string());
+                s = s.after("<a href=\"").to_string();
+            }
+            for link in links {
                 eprintln!("checking link \"{}\"", link);
 
                 // Approach 1 to testing if link works.  This seemed to hang once in spite of
@@ -529,19 +542,27 @@ fn test_for_broken_links_and_spellcheck() {
                         thread::sleep(time::Duration::from_millis(100));
                         eprintln!("retrying link {}, attempt {}", link, i);
                     }
-                    let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
-                    let response = req
-                        .send()
-                        .expect(&format!("\ncould not read link {} on page {}\n", link, x));
-                    if response.is_success() {
-                        break;
+                    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
+                    let response = req.send();
+                    if response.is_err() {
+                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        if i == LINK_RETRIES - 1 {
+                            std::process::exit(1);
+                        }
+                    } else {
+                        let response = response.unwrap();
+                        if response.is_success() {
+                            break;
+                        }
+                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        if i == LINK_RETRIES - 1 {
+                            std::process::exit(1);
+                        }
                     }
-                    eprintln!("\ncould not read link {} on page {}\n", link, x);
-                    std::process::exit(1);
                 }
 
                 // Approach 2 to testing if link works.  This may not have a timeout and does
-                // not auto retry like approach 1.
+                // not auto retry like approach 1.  Also may not compile anymore.
 
                 /*
                 use reqwest::StatusCode;
@@ -555,8 +576,6 @@ fn test_for_broken_links_and_spellcheck() {
                     std::process::exit(1);
                 }
                 */
-
-                s = s.after("<a href=\"").to_string();
             }
         }
     }
@@ -574,10 +593,9 @@ fn test_site_examples() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
         let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
-        let args = test.split(' ').collect::<Vec<&str>>();
+        let args = parse_bsv(&test);
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
-            .arg("HTML")
             .output()
             .expect(&format!("failed to execute test_site_examples"));
         let out_stuff = stringme(&new.stdout);

@@ -178,7 +178,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "Yes, there are choices:\n\
              \\bold{A}. On a Mac, you can screenshot from a terminal window.\n\
              \\bold{B}. Add the argument \\bold{HTML} to the enclone command line.  Then the \
-             output will be presented as html.\n\
+             output will be presented as html, with title \"enclone output\".  If you want to \
+             set the title, use \\bold{HTML=\"...\"}.\n\
              \\bold{C}. You can then convert the html to pdf.  The best way on a Mac is to open \
              Safari, which is the best browser for this particular purpose, \
              select the file where you've saved the html, and then export as pdf.  Do not convert \
@@ -364,7 +365,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\n\\bold{a few options for developers}\n\n");
         h.print(
             "For instructions on how to compile, please see\n\
-             \\green{https://10xgenomics.github.io/enclone/pages/compile.html}.\n\n",
+             \\green{bit.ly/enclone}.\n\n",
         );
         h.doc(
             "COMP",
