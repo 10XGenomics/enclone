@@ -4,9 +4,11 @@
 // printed out at appropriate points by enclone.  This files is a slightly modified version
 // of https://vallentin.dev/2019/06/06/versioning.
 
+extern crate chrono;
 extern crate prost_build;
 extern crate string_utils;
 
+use chrono::prelude::*;
 use prost_build::Config;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;
@@ -58,22 +60,11 @@ fn is_github() -> bool {
     }
 }
 
-fn get_commit_date() -> String {
-    match std::env::var("GITHUB_SHA") {
-        Ok(_) => return "DATE".into(),
-        _ => (),
-    }
+// We used to have the commit date here but this is easier and serves the same purpose for
+// the version string.
 
-    let output = Command::new("git")
-        .arg("log")
-        .arg("-1")
-        .arg("--pretty=format:%ci") // Committer date, ISO 8601-like format
-        .current_dir(env!("CARGO_MANIFEST_DIR"))
-        .output()
-        .unwrap();
-    assert!(output.status.success());
-    let s = String::from_utf8_lossy(&output.stdout).to_string();
-    s.before(" ").to_string()
+fn get_commit_date() -> String {
+    Local::now().to_string().before(" ").to_string()
 }
 
 fn get_branch_name() -> String {
