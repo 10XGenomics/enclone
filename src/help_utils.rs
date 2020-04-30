@@ -18,6 +18,7 @@ pub struct HelpDesk {
     pub html: bool,
     pub rows: Vec<Vec<String>>,
     pub log: Vec<u8>,
+    pub title: String,
 }
 
 impl HelpDesk {
@@ -29,6 +30,7 @@ impl HelpDesk {
             html: html,
             rows: Vec::<Vec<String>>::new(),
             log: Vec::<u8>::new(),
+            title: String::new(),
         }
     }
     pub fn doc(&mut self, x1: &str, x2: &str) {
@@ -137,6 +139,7 @@ impl HelpDesk {
         self.print_plain(&format!("{}", log));
     }
     pub fn begin_doc(&mut self, title: &str) {
+        self.title = format!("enclone help {}", title);
         self.rows.clear();
         if self.help_all {
             let mut log = Vec::<u8>::new();
@@ -234,7 +237,7 @@ impl HelpDesk {
             let s = convert_text_with_ansi_escapes_to_html(
                 strme(&self.log),
                 "", // source
-                "", // title
+                &self.title,
                 "<link href='../enclone.css' rel='stylesheet' type='text/css'>",
                 "DejaVuSansMono",
                 14,
