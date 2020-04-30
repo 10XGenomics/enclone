@@ -314,7 +314,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              ways:\n\
              1. If two datasets come from the same sample, then enclone can filter to remove \
              certain artifacts, unless you specify the option \\bold{NCROSS}.\n\
-             See also illusory clonotypes page at \\green{bit.ly/enclone}.\n\
+             See also illusory clonotype expansion page at \\green{bit.ly/enclone}.\n\
              2. If two cells came from different donors, then enclone will not put them in the \
              same clonotype, unless you specify the option \\bold{MIX_DONORS}.\n\
              More information may be found at `enclone help special`.  In addition, this is \

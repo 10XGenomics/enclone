@@ -3,6 +3,7 @@
 // Build html files by generating and inserting other html files.
 
 use enclone::html::insert_html;
+use enclone::misc3::parse_bsv;
 use enclone::testlist::SITE_EXAMPLES;
 use pretty_trace::*;
 use std::fs::File;
@@ -15,11 +16,10 @@ fn main() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
         let out_file = format!("pages/auto/{}.html", example_name);
-        let args = test.split(' ').collect::<Vec<&str>>();
+        let args = parse_bsv(&test);
         let outputs = File::create(&out_file).unwrap();
         Command::new("target/debug/enclone")
             .args(&args)
-            .arg("HTML")
             .stdout(Stdio::from(outputs))
             .spawn()
             .unwrap()

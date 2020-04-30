@@ -14,6 +14,7 @@
 
 use ansi_escape::*;
 use enclone::html::insert_html;
+use enclone::misc3::parse_bsv;
 use enclone::proto_io::read_proto;
 use enclone::testlist::*;
 use enclone::types::EncloneOutputs;
@@ -145,40 +146,7 @@ fn test_enclone() {
             if !expect_fail && !expect_ok {
                 old = read_to_string(&out_file).unwrap();
             }
-
-            // Get arguments, by parsing command, breaking at blanks, but not if they're in quotes.
-            // This is identical to parse_csv, except for the splitting character.
-            // Should refactor.
-
-            let mut args = Vec::<String>::new();
-            let mut w = Vec::<char>::new();
-            for c in test.chars() {
-                w.push(c);
-            }
-            let (mut quotes, mut i) = (0, 0);
-            while i < w.len() {
-                let mut j = i;
-                while j < w.len() {
-                    if quotes % 2 == 0 && w[j] == ' ' {
-                        break;
-                    }
-                    if w[j] == '"' {
-                        quotes += 1;
-                    }
-                    j += 1;
-                }
-                let (mut start, mut stop) = (i, j);
-                if stop - start >= 2 && w[start] == '"' && w[stop - 1] == '"' {
-                    start += 1;
-                    stop -= 1;
-                }
-                let mut s = String::new();
-                for m in start..stop {
-                    s.push(w[m]);
-                }
-                args.push(s);
-                i = j + 1;
-            }
+            let args = parse_bsv(&test);
 
             // Form the command and execute it.
 
@@ -625,10 +593,9 @@ fn test_site_examples() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
         let in_stuff = read_to_string(&format!("pages/auto/{}.html", example_name)).unwrap();
-        let args = test.split(' ').collect::<Vec<&str>>();
+        let args = parse_bsv(&test);
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
-            .arg("HTML")
             .output()
             .expect(&format!("failed to execute test_site_examples"));
         let out_stuff = stringme(&new.stdout);
