@@ -392,7 +392,6 @@ fn test_enclone() {
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
-    extern crate reqwest;
     extern crate attohttpc;
     use std::time::Duration;
 
