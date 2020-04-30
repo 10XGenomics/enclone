@@ -31,4 +31,7 @@ If applicable, add screenshots to help explain your problem.
 What is your output from `enclone --version`?
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. Please share any data you
+can so we can better assist you! Please also note that we may not be
+able to fix all problems quickly and that some problems take longer
+than others to address.
