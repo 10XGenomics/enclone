@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--  -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
-<title>enclone</title>
+<title>enclone (bt.ly/enclone)</title>
 <link rel="stylesheet" type="text/css" href="pages/enclone.css">
 </head>
 
@@ -141,8 +141,7 @@ or on a Mac
 <code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
 
 <p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
-want to update.  At a later date, there will also be separately numbered releases that have passed
-a more extensive set of tests.</p>
+want to update.</p>
 <p>It is not necessary to compile enclone, unless you want to contribute
 to the enclone codebase.  
 Please see <b><a href="pages/compile.html">compilation</a></b>.</p>
@@ -474,6 +473,13 @@ if you have problems, questions or comments
 enclone is beta software and thus a work in progress.  We are actively making many changes and may 
 be unable to respond promptly to your particular request.
 </p>
+
+<hr>
+
+<h2>Where am I?</h2>
+
+<!-- dunno why negative left margin needed to line things up on left: -->
+<p style="margin-left: -1.5px; margin-top: 30px; font-family: DejaVuSansMono; font-size: 200%; color: blue">bit.ly/enclone</p>
 
 </body>
 </html>

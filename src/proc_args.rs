@@ -218,7 +218,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.ncell = true;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
-        } else if arg == "HTML" {
+        } else if arg == "HTML" || arg.starts_with("HTML=") {
         } else if arg == "SVG" {
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));

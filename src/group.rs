@@ -681,7 +681,7 @@ pub fn group_and_print_clonotypes(
         let s = convert_text_with_ansi_escapes_to_html(
             strme(&logx),
             "", // source
-            "", // title
+            &ctl.gen_opt.html_title,
             "<link href='https://10xgenomics.github.io/enclone/pages/enclone.css' \
              rel='stylesheet' type='text/css'>",
             "DejaVuSansMono",
