@@ -21,15 +21,15 @@ jobs:
       - name: Make release build
         run: >
           docker run -v ${{github.workspace}}:/root
-            -e GITHUB_SHA -e GITHUB_REF
-            docker.pkg.github.com/10xdev/toolchain-scripts/toolchain:latest
+          -e GITHUB_SHA -e GITHUB_REF
+          docker.pkg.github.com/10xdev/toolchain-scripts/toolchain:latest
           /bin/bash -lec '
           cargo build --release;
           target/release/enclone --help | grep -q enclone;
           readelf -V target/release/enclone;
           ';
           mkdir ${{runner.temp}}/artifacts;
-          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-linux';
+          cp -a target/release/enclone ${{runner.temp}}/artifacts/enclone-linux
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
