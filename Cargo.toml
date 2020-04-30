@@ -1,6 +1,6 @@
 [package]
 name = "enclone"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
@@ -55,9 +55,8 @@ git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 
 [dev-dependencies]
-attohttpc = "0.12.0"
+attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 flate2 = "1.0.12"
-reqwest = { version = "0.10.4", features = ["blocking"] }
 
 [build-dependencies]
 prost-build = "0.5.0"
