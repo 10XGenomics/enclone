@@ -379,11 +379,13 @@ fn test_enclone() {
 // Test site for broken links and spellcheck.
 //
 // Two approaches for checking broken links left in place for now, to delete one, and the
-// corresponding crate from
-// Cargo.toml.
+// corresponding crate from Cargo.toml.
 //
 // This looks for
-// ▓<a href="..."▓.
+// ▓<a href="..."▓
+// ▓http:...[, '")}<#\n]▓
+// ▓https:...[, '")}<#\n]▓.
+// (These also test termination by ". ".)
 // Should also look for at least:
 // ▓ href="..."▓
 // ▓ href='...'▓
@@ -477,6 +479,36 @@ fn test_for_broken_links_and_spellcheck() {
 
             // Check links.
 
+            let mut links = Vec::<String>::new();
+            let mut chars = Vec::<char>::new();
+            for c in s.chars() {
+                chars.push(c);
+            }
+            let mut i = 0;
+            let terminators = vec![',', ' ', '\'', '"', ')', '}', '<', '#', '\n'];
+            while i < chars.len() {
+                let http = chars[i..].starts_with(&vec!['h', 't', 't', 'p', ':']);
+                let https = chars[i..].starts_with(&vec!['h', 't', 't', 'p', 's', ':']);
+                if http || https {
+                    for j in i + 5..chars.len() {
+                        if terminators.contains(&chars[j])
+                            || (chars[j] == '.' && j < chars.len() - 1 && chars[j + 1] == ' ')
+                        {
+                            let mut link = String::new();
+                            for k in i..j {
+                                link.push(chars[k]);
+                            }
+                            if !tested.contains(&link.to_string()) {
+                                links.push(link.clone());
+                                tested.insert(link.to_string());
+                            }
+                            i = j - 1;
+                            break;
+                        }
+                    }
+                }
+                i += 1;
+            }
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
                 if tested.contains(&link.to_string()) {
@@ -517,6 +549,9 @@ fn test_for_broken_links_and_spellcheck() {
 
                 // And finally do http....
 
+                links.push(link.to_string());
+            }
+            for link in links {
                 eprintln!("checking link \"{}\"", link);
 
                 // Approach 1 to testing if link works.  This seemed to hang once in spite of
@@ -529,7 +564,7 @@ fn test_for_broken_links_and_spellcheck() {
                         thread::sleep(time::Duration::from_millis(100));
                         eprintln!("retrying link {}, attempt {}", link, i);
                     }
-                    let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
+                    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
                     let response = req
                         .send()
                         .expect(&format!("\ncould not read link {} on page {}\n", link, x));
@@ -541,7 +576,7 @@ fn test_for_broken_links_and_spellcheck() {
                 }
 
                 // Approach 2 to testing if link works.  This may not have a timeout and does
-                // not auto retry like approach 1.
+                // not auto retry like approach 1.  Also may not compile anymore.
 
                 /*
                 use reqwest::StatusCode;
