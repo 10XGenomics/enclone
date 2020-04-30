@@ -36,7 +36,7 @@ fn main() {
 
 fn get_commit_hash() -> String {
     match std::env::var("GITHUB_SHA") {
-        Ok(v) => return v,
+        Ok(v) => return v[0..7].to_string(),
         _ => (),
     }
 
