@@ -598,27 +598,28 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.ldoc("const", "constant region name");
         h.ldoc(
             "edit",
-            "a string that partially defines the edit of the reference V(D)J concatenation",
+            "a string that defines the edit of the reference V(D)J concatenation versus",
         );
         h.doc(
             "",
-            "that gives rise to the observed CDR3; this uses a coordinate system in which",
+            "the contig, from the beginning of the CDR3 to the end of the J segment;",
         );
         h.doc(
             "",
-            "0 is the first base of the J ref segment (or the first base of the D ref",
+            "this uses a coordinate system in which 0 is the first base of the J ref",
         );
         h.doc(
             "",
-            "segment for IGH and TRB); for example D-4:4 denotes the deletion of the last",
+            "segment (or the first base of the D ref segment for IGH and TRB); for",
         );
         h.doc(
             "",
-            "4 bases of the V segment, I0:2 denotes an insertion of 2 bases after the V",
+            "example D-4:4 denotes the deletion of the last 4 bases of the V segment, ",
         );
+        h.doc("", "I0:2 denotes an insertion of 2 bases after the V");
         h.doc(
             "",
-            "and I0:2;S5 denotes that plus a substitution at position 5; in computing",
+            "and I0:2•S5 denotes that plus a substitution at position 5; in computing",
         );
         h.doc(
             "",

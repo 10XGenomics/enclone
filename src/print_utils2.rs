@@ -914,7 +914,7 @@ pub fn row_fill(
                     let mut rpos = (al.ystart as isize) - (vref.len() as isize);
                     let mut count = 0;
                     let start = td.cdr3_start;
-                    let stop = td.cdr3_start + 3 * td.cdr3_aa.len();
+                    let stop = td.j_stop - td.v_start;
                     let mut edits = Vec::<String>::new();
                     while m < al.operations.len() {
                         let n = next_diff(&al.operations, m);
@@ -953,7 +953,7 @@ pub fn row_fill(
                     }
                     if count < comp {
                         comp = count;
-                        edit = format!("{}", edits.iter().format(""));
+                        edit = format!("{}", edits.iter().format("•"));
                     }
                 }
                 if *var == "comp".to_string() {
