@@ -953,7 +953,7 @@ pub fn row_fill(
                     }
                     if count < comp {
                         comp = count;
-                        edit = format!("{}", edits.iter().format(""));
+                        edit = format!("{}", edits.iter().format("•"));
                     }
                 }
                 if *var == "comp".to_string() {
