@@ -144,25 +144,52 @@ stuck.</p>
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Installing enclone</h2>
 
-<p><b>1.  Open terminal window.</b>  Open a terminal window on your Linux or Mac computer. Please 
-let us know if availability on other platforms is important to you.</p>
+<p><b>1.  Downlad enclone.</b> 
+Open a terminal window and type the following to download the enclone executable:</p>
 
-<p><b>2.  Download enclone.</b>  Type the following to download the enclone executable:</p>
-
-<pre><code>mkdir -p ~/bin; cd ~/bin</code>
+<table rules="all" cellpadding="3" style="border: 2px solid black">
+  <tr>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       Linux
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
 <code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
-
-or on a Mac
-
-<pre><code>mkdir -p ~/bin; cd ~/bin</code>
+  </th>
+  </tr>
+  <tr>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       Mac
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
 <code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
+  </th>
+  </tr>
+  <tr>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       Windows
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       not currently supported, let us know if this is important to you
+       </p>
+  </th>
+  </tr>
+</table>
 
 <p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
 want to update.</p>
 <p>It is not necessary to compile enclone, unless you want to contribute
 to the enclone codebase.  
 Please see <b><a href="pages/compile.html">compilation</a></b>.</p>
-<p><b>3.  Download test data.</b>  Type the following to download the enclone test datasets
+<p><b>2.  Download test data.</b>  Type the following to download the enclone test datasets
 (plus source code, because it's easier to fetch everything):</p>
 <pre><code>cd</code>
 <code>svn export https://github.com/10XGenomics/enclone/trunk enclone
@@ -192,9 +219,9 @@ downloaded by:
 
 On a Mac, you may need to use <code>curl</code> instead.
 
-<p><b>4.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  Ask a colleague for help
+<p><b>3.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  Ask a colleague for help
 if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
-<p><b>5. Periodically update or check the <a href="pages/history.html">history</a> to see if 
+<p><b>4. Periodically update or check the <a href="pages/history.html">history</a> to see if 
 anything has changed that might affect you.</b></p>
 <hr>
 
