@@ -605,7 +605,7 @@ fn test_site_examples() {
                 "Possibly this could be because you're running \"cargo t\" in an \
                 environment without the\n\
                 extended dataset collection.  Possibly you should run \
-                \"cargo test --basic -- --nocapture\" instead.\n"
+                \"cargo test basic -- --nocapture\" instead.\n"
             );
             std::process::exit(1);
         }
