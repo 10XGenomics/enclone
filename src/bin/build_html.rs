@@ -26,6 +26,7 @@ fn main() {
         let args = parse_bsv(&test);
         let new = Command::new("target/debug/enclone")
             .args(&args)
+            .arg("MAX_CORES=24")
             .output()
             .expect(&format!("failed to execute build_html"));
         r.1 = stringme(&new.stdout);
