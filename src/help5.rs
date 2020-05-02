@@ -186,7 +186,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              to pdf via printing, which produces a less readable file, and also distorts colors.  \
              (We do not know why the colors are distorted.)\n\
              \\bold{D}. If you want to put enclone output in a Google Doc, you can do it via \
-             approache \\bold{A}, although then you won't be able to select text \
+             approach \\bold{A}, although then you won't be able to select text \
              within the copied region.  \
              Alternatively, if you open the html file in a browser, you can then select \
              text (including clonotype box text) and paste into a Google Doc.  It will be pretty \
