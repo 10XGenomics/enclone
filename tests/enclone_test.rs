@@ -367,10 +367,17 @@ fn test_for_broken_links_and_spellcheck() {
 
     // Set up dictionary exceptions.
 
-    let extra_words = "barcode barcoding clonotype clonotypes clonotyping codebase contig contigs \
-        csv cvars enclone executables genomics germline github grok hypermutation hypermutations \
-        indel indels linux loh lvars metadata onesie parseable pbmc spacebar subclonotype \
-        subclonotypes svg umi umis underperforming vdj website workflow zenodo";
+    let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
+        clonotyping codebase colorn contig contigs cred \
+        csv ctrlc cvars dejavusansmono dyiid enclone executables false foursie foursies genomics \
+        germline github githubusercontent google grok gz html \
+        hypermutation hypermutations igh ighm igkc imgt \
+        indel indels json linux loh lvars macbook metadata mkdir moresies multiomic ncbi ncross \
+        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell plasmablast \
+        screenshot spacebar stackexchange subclonotype \
+        subclonotypes svg thresholding tracebacks trb twosie \
+        umi umis underperforming unicode vdj website wget wikimedia \
+        wikipedia workaround workflow xf xhtml xkcd zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.
