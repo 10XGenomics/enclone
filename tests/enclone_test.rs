@@ -432,8 +432,8 @@ fn test_for_broken_links_and_spellcheck() {
             s0 = s0.replace('.', " ");
             s0 = s0.replace(';', " ");
             let words = s0.split(' ').collect::<Vec<&str>>();
-            let mut ok = true;
             for i in 0..words.len() {
+                let mut ok = true;
                 let w = words[i].to_string();
                 for c in w.chars() {
                     if !c.is_ascii_alphabetic() {
