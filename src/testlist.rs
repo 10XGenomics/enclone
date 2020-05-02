@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 71] = [
+pub const TESTS: [&str; 72] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -198,6 +198,8 @@ pub const TESTS: [&str; 71] = [
     // 71. another test of META
     r###"PRE=test/inputs/version{TEST_FILES_VERSION},test/inputs META=test11_meta
         CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex NO_PRE"###,
+    // 72. test SUMMARY_CSV
+    r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
 ];
 
 // List of examples in documentation.

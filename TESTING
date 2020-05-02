@@ -2,7 +2,8 @@ Notes on testing:
 
 1. Some files are auto-generated.  There are two programs that do this:
    ./build_help
-   build_html.
+   build_html
+   merge_html [subset of build_html but maybe what you need].
    Run these if needed before testing.  Otherwise the tests will catch the problem.
 
 2. Test with

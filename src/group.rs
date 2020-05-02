@@ -553,26 +553,46 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    // Compute a umi stat.
+
+    let nclono = exacts.len();
+    let mut umis = Vec::<usize>::new();
+    for i in 0..nclono {
+        for j in 0..exacts[i].len() {
+            let ex = &exact_clonotypes[exacts[i][j]];
+            for k in 0..ex.clones.len() {
+                for l in 0..ex.clones[k].len() {
+                    umis.push(ex.clones[k][l].umi_count);
+                }
+            }
+        }
+    }
+    umis.sort();
+    let (mut middle, mut denom) = (0, 0);
+    for j in umis.len() / 3..(2 * umis.len()) / 3 {
+        middle += umis[j];
+        denom += 1;
+    }
+    let mut middle_mean_umis = 0.0;
+    if denom > 0 {
+        middle_mean_umis = (middle as f64) / (denom as f64);
+    }
+
     // Print summary stats.
 
     if ctl.gen_opt.summary {
         fwriteln!(logx, "\nSUMMARY STATISTICS");
         fwriteln!(logx, "1. overall");
-        let nclono = exacts.len();
         let mut nclono2 = 0;
         let mut ncells = 0;
         let mut nchains = Vec::<usize>::new();
         let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
-        let mut umis = Vec::<usize>::new();
         for i in 0..nclono {
             let mut n = 0;
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
                 n += ex.ncells();
                 for k in 0..ex.clones.len() {
-                    for l in 0..ex.clones[k].len() {
-                        umis.push(ex.clones[k][l].umi_count);
-                    }
                     let x = &ex.clones[k][0];
                     sd.push((x.sample_index, x.donor_index));
                 }
@@ -582,16 +602,6 @@ pub fn group_and_print_clonotypes(
             }
             ncells += n;
             nchains.push(mat[i].len());
-        }
-        umis.sort();
-        let (mut middle, mut denom) = (0, 0);
-        for j in umis.len() / 3..(2 * umis.len()) / 3 {
-            middle += umis[j];
-            denom += 1;
-        }
-        let mut middle_mean_umis = 0.0;
-        if denom > 0 {
-            middle_mean_umis = (middle as f64) / (denom as f64);
         }
         sd.sort();
         let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
@@ -690,6 +700,13 @@ pub fn group_and_print_clonotypes(
         print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
         log = log.replace("\n", "\n   ");
         fwrite!(logx, "   {}", log);
+    }
+
+    // Print summary csv stats.
+
+    if ctl.gen_opt.summary_csv {
+        println!("\nmiddle_mean_umis");
+        println!("{:.2}", middle_mean_umis);
     }
 
     // Print to stdout.

@@ -312,6 +312,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.mouse = true;
         } else if is_simple_arg(&arg, "SUMMARY") {
             ctl.gen_opt.summary = true;
+        } else if is_simple_arg(&arg, "SUMMARY_CSV") {
+            ctl.gen_opt.summary_csv = true;
         } else if arg.starts_with("F=") {
             let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));

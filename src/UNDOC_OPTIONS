@@ -133,3 +133,5 @@ SVG: render output as svg, clonotype by clonotype.  There are problems with this
 3. We don't render background, so this is broken for PER_CELL.
 
 TRACE_BARCODE: print some additional information for this particular barcode
+
+SUMMARY_CSV: nascent option to emit some summary information as CSV output

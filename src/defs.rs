@@ -348,6 +348,7 @@ pub struct GeneralOpt {
     pub cellranger: bool,
     pub summary: bool,
     pub summary_clean: bool,
+    pub summary_csv: bool,
     pub cr_version: String,
     pub nwarn: bool,
     pub gene_scan_test: Option<LinearCondition>,
