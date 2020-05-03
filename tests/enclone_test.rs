@@ -55,7 +55,9 @@ fn test_licenses() {
             To install it, type:\n\
             rustup install cargo-license\n\
             When it is done installing, it will tell you where it put the binary, and you\n\
-            should add that path to your PATH.\n"
+            should add that path to your PATH.\n\
+            You can also avoid this test entirely by running instead \
+            \"cargo test basic -- --nocapture\".\n"
         );
         std::process::exit(1);
     }
