@@ -64,7 +64,8 @@ fn test_licenses() {
     let mut fails = Vec::<String>::new();
     for l in lic.iter() {
         if l.len() > 0 {
-            let (package, _version) = (l.between(";32m", ""), l.between(":", ","));
+            let (package, mut version) = (l.between(";32m", ""), l.between(":", ",").to_string());
+            version = version.replace(" ", "");
             let x = l.between("\"", "\"");
             let mut ok = false;
             for y in ACCEPTABLE_PACKAGES.iter() {
@@ -86,11 +87,12 @@ fn test_licenses() {
                 }
             }
             if !ok {
-                fails.push(l.to_string());
+                fails.push(format!("{}, {}, {}", package, version, x));
             }
         }
     }
     if fails.len() > 0 {
+        fails.sort();
         let mut msg = format!("\nLicense check failed.  The following packages had problems:\n");
         for i in 0..fails.len() {
             msg += &format!("{}. {}\n", i + 1, fails[i]);
