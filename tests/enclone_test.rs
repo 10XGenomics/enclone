@@ -39,6 +39,69 @@ const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Test licenses of included packages.
+
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_licenses() {
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 3] = ["MIT", "ISC", "Zlib"];
+    // The following packages are acceptable because 10x owns them.
+    const ACCEPTABLE_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
+    let new = Command::new("cargo-license").arg("-d").output();
+    if new.is_err() {
+        eprintln!(
+            "\nFailed to execute cargo-license.  This means that either you have not \
+            installed cargo-license,\nor that you have not added it to your PATH.  \
+            To install it, type:\n\
+            rustup install cargo-license\n\
+            When it is done installing, it will tell you where it put the binary, and you\n\
+            should add that path to your PATH.\n"
+        );
+        std::process::exit(1);
+    }
+    let lic = stringme(&new.unwrap().stdout);
+    let lic = lic.split('\n').collect::<Vec<&str>>();
+    let mut fails = Vec::<String>::new();
+    for l in lic.iter() {
+        if l.len() > 0 {
+            let (package, _version) = (l.between(";32m", ""), l.between(":", ","));
+            let x = l.between("\"", "\"");
+            let mut ok = false;
+            for y in ACCEPTABLE_PACKAGES.iter() {
+                if package == *y {
+                    ok = true;
+                }
+            }
+            for y in ACCEPTABLE_LICENSE_TYPES.iter() {
+                if x == *y {
+                    ok = true;
+                }
+                if !x.contains(" AND ") {
+                    if x.ends_with(&format!(" OR {}", y)) {
+                        ok = true;
+                    }
+                    if x.starts_with(&format!("{} OR ", y)) {
+                        ok = true;
+                    }
+                }
+            }
+            if !ok {
+                fails.push(l.to_string());
+            }
+        }
+    }
+    if fails.len() > 0 {
+        let mut msg = format!("\nLicense check failed.  The following packages had problems:\n");
+        for i in 0..fails.len() {
+            msg += &format!("{}. {}\n", i + 1, fails[i]);
+        }
+        eprintln!("{}", msg);
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Test that files are rustfmt'ed.
 
 #[test]
