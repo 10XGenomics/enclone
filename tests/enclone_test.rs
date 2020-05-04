@@ -24,18 +24,37 @@ use io_utils::*;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
+use serde_json::Value;
 use std::cmp::min;
 use std::collections::HashSet;
 use std::fs::{read_dir, read_to_string, remove_file, File};
+use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use string_utils::*;
 use vector_utils::*;
 
 const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+fn valid_link(link: &str) -> bool {
+    use attohttpc::*;
+    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
+    let response = req.send();
+    if response.is_err() {
+        return false;
+    } else {
+        let response = response.unwrap();
+        if response.is_success() {
+            return true;
+        }
+        return false;
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -45,9 +64,11 @@ const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 3] = ["MIT", "ISC", "Zlib"];
+    const A2: &str = "Apache-2.0";
+    // Note that we also accept Apache-2.0 provided that there is no NOTICE file.
     // The following packages are acceptable because 10x owns them.
     const ACCEPTABLE_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
-    let new = Command::new("cargo-license").arg("-d").output();
+    let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
         eprintln!(
             "\nFailed to execute cargo-license.  This means that either you have not \
@@ -61,35 +82,66 @@ fn test_licenses() {
         );
         std::process::exit(1);
     }
-    let lic = stringme(&new.unwrap().stdout);
-    let lic = lic.split('\n').collect::<Vec<&str>>();
+    let lic = &new.unwrap().stdout;
+    let mut f = &lic[..];
     let mut fails = Vec::<String>::new();
-    for l in lic.iter() {
-        if l.len() > 0 {
-            let (package, mut version) = (l.between(";32m", ""), l.between(":", ",").to_string());
-            version = version.replace(" ", "");
-            let x = l.between("\"", "\"");
-            let mut ok = false;
-            for y in ACCEPTABLE_PACKAGES.iter() {
-                if package == *y {
-                    ok = true;
-                }
-            }
-            for y in ACCEPTABLE_LICENSE_TYPES.iter() {
-                if x == *y {
-                    ok = true;
-                }
-                if !x.contains(" AND ") {
-                    if x.ends_with(&format!(" OR {}", y)) {
-                        ok = true;
-                    }
-                    if x.starts_with(&format!("{} OR ", y)) {
-                        ok = true;
+    loop {
+        match read_vector_entry_from_json(&mut f) {
+            None => break,
+            Some(x) => {
+                let v: Value = serde_json::from_str(strme(&x)).unwrap();
+                let package = v["name"].to_string().between("\"", "\"").to_string();
+                let version = v["version"].to_string().between("\"", "\"").to_string();
+                let mut license = String::new();
+                if v.get("license").is_some() {
+                    license = v["license"].to_string();
+                    if license.contains('"') {
+                        license = license.between("\"", "\"").to_string();
                     }
                 }
-            }
-            if !ok {
-                fails.push(format!("{}, {}, {}", package, version, x));
+                let mut repo = String::new();
+                if v.get("repository").is_some() {
+                    repo = v["repository"].to_string();
+                    if repo.contains('"') {
+                        repo = repo.between("\"", "\"").to_string();
+                    }
+                }
+                let mut ok = false;
+                for y in ACCEPTABLE_PACKAGES.iter() {
+                    if package == *y {
+                        ok = true;
+                    }
+                }
+                for y in ACCEPTABLE_LICENSE_TYPES.iter() {
+                    if license == *y {
+                        ok = true;
+                    }
+                    if license.ends_with(&format!(" OR {}", y)) {
+                        ok = true;
+                    }
+                    if license.starts_with(&format!("{} OR ", y)) {
+                        ok = true;
+                    }
+                }
+                if !ok {
+                    let (mut x1, mut x2) = (false, false);
+                    if repo.starts_with("https://github.com") {
+                        let f1 = format!("{}/blob/master/Cargo.toml", repo);
+                        if valid_link(&f1) {
+                            x1 = true;
+                        }
+                        let f2 = format!("{}/blob/master/NOTICE", repo);
+                        if valid_link(&f2) {
+                            x2 = true;
+                        }
+                    }
+                    let a2 = license == A2
+                        || license.ends_with(&format!(" OR {}", A2))
+                        || license.starts_with(&format!("{} OR ", A2));
+                    if !(a2 && x1 && !x2) {
+                        fails.push(format!("{}, {}, {}, {}", package, version, license, repo));
+                    }
+                }
             }
         }
     }
@@ -100,7 +152,7 @@ fn test_licenses() {
             msg += &format!("{}. {}\n", i + 1, fails[i]);
         }
         eprintln!("{}", msg);
-        // std::process::exit(1);
+        std::process::exit(1);
     }
 }
 
