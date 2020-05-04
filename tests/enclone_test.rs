@@ -67,11 +67,12 @@ fn valid_link(link: &str) -> bool {
 // 2. If both license and license_field are null, then there is no problem.
 // 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
 //    and there is no NOTICE file, then there is no problem.  Note that we include the
-//    Apache-2.0 license as part of this repo.
+//    Apache-2.0 license as part of this repo in third_party.
 // 4. If the package is owned by 10x, then there is no problem.
 // 5. cloudabi OK because we've included the license for it.
 // 6. fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
-//    and that file does not exist.
+//    at https://fuchsia.googlesource.com/fuchsia/+/master/LICENSE, which we include in
+//    third_party under fuchsia.
 // 7. ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
 //    the ring license.
 // 8. webpki OK because we include the webpki license and also that for chromium.
