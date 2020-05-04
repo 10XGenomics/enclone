@@ -58,15 +58,23 @@ fn valid_link(link: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test licenses of included packages.
+// Test licenses of included packages and their dependencies.
+//
+// The following rules are applied:
+// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib, or is a logical expression
+//    for which one of those is sufficient, then there is no problem.
+// 2. If both license and license_field are null, then there is no problem.
+// 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
+//    and there is not NOTICE file, then there is no problem.  Note that we include the 
+//    Apache-2.0 license as part of this repo.
+// 4. If the package is owned by 10x, then there is no problem.
 
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 3] = ["MIT", "ISC", "Zlib"];
     const A2: &str = "Apache-2.0";
-    // Note that we also accept Apache-2.0 provided that there is no NOTICE file.
-    // The following packages are acceptable because 10x owns them.
+    // The following packages are owned by 10x.
     const ACCEPTABLE_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
@@ -98,6 +106,16 @@ fn test_licenses() {
                     if license.contains('"') {
                         license = license.between("\"", "\"").to_string();
                     }
+                }
+                let mut license_file = String::new();
+                if v.get("license_file").is_some() {
+                    license_file = v["license_file"].to_string();
+                    if license_file.contains('"') {
+                        license_file = license_file.between("\"", "\"").to_string();
+                    }
+                }
+                if license == "null" && license_file == "null" {
+                    continue;
                 }
                 let mut repo = String::new();
                 if v.get("repository").is_some() {
@@ -138,9 +156,10 @@ fn test_licenses() {
                     let a2 = license == A2
                         || license.ends_with(&format!(" OR {}", A2))
                         || license.starts_with(&format!("{} OR ", A2));
-                    if !(a2 && x1 && !x2) {
-                        fails.push(format!("{}, {}, {}, {}", package, version, license, repo));
+                    if a2 && x1 && !x2 {
+                        continue;
                     }
+                    fails.push(format!("{}, {}, {}, {}", package, version, license, repo));
                 }
             }
         }
