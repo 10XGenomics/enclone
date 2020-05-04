@@ -61,21 +61,25 @@ fn valid_link(link: &str) -> bool {
 // Test licenses of included packages and their dependencies.
 //
 // The following rules are applied:
-// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib, or is a logical expression
-//    for which one of those is sufficient, then there is no problem.
+// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or MPL-2.0, or is a logical
+//    expression for which one of those is sufficient, then there is no problem.  Note that for
+//    MPL-2.0, we inform people how to get the source code for dependent crates.
 // 2. If both license and license_field are null, then there is no problem.
 // 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
-//    and there is not NOTICE file, then there is no problem.  Note that we include the 
+//    and there is not NOTICE file, then there is no problem.  Note that we include the
 //    Apache-2.0 license as part of this repo.
 // 4. If the package is owned by 10x, then there is no problem.
+// 5. cloudabi OK because we've included the license for it.
+// 6. fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
+//    and that file does not exist.
 
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_licenses() {
-    const ACCEPTABLE_LICENSE_TYPES: [&str; 3] = ["MIT", "ISC", "Zlib"];
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 4] = ["MIT", "ISC", "Zlib", "MPL-2.0"];
     const A2: &str = "Apache-2.0";
-    // The following packages are owned by 10x.
-    const ACCEPTABLE_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
+    const ACCEPTABLE_10X_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 2] = ["cloudabi", "fuchsia-cprng"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
         eprintln!(
@@ -125,7 +129,12 @@ fn test_licenses() {
                     }
                 }
                 let mut ok = false;
-                for y in ACCEPTABLE_PACKAGES.iter() {
+                for y in ACCEPTABLE_10X_PACKAGES.iter() {
+                    if package == *y {
+                        ok = true;
+                    }
+                }
+                for y in ACCEPTABLE_OTHER_PACKAGES.iter() {
                     if package == *y {
                         ok = true;
                     }
