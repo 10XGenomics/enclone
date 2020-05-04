@@ -66,7 +66,7 @@ fn valid_link(link: &str) -> bool {
 //    MPL-2.0, we inform people how to get the source code for dependent crates.
 // 2. If both license and license_field are null, then there is no problem.
 // 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
-//    and there is not NOTICE file, then there is no problem.  Note that we include the
+//    and there is no NOTICE file, then there is no problem.  Note that we include the
 //    Apache-2.0 license as part of this repo.
 // 4. If the package is owned by 10x, then there is no problem.
 // 5. cloudabi OK because we've included the license for it.
