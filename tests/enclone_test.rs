@@ -74,6 +74,7 @@ fn valid_link(link: &str) -> bool {
 //    and that file does not exist.
 // 7. ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
 //    the ring license.
+// 8. webpki OK because we include the webpki license and also that for chromium.
 
 #[cfg(not(feature = "basic"))]
 #[test]
@@ -81,7 +82,7 @@ fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 4] = ["MIT", "ISC", "Zlib", "MPL-2.0"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 3] = ["cloudabi", "fuchsia-cprng", "ring"];
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 4] = ["cloudabi", "fuchsia-cprng", "ring", "webpki"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
         eprintln!(
