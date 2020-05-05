@@ -1,0 +1,463 @@
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+
+// The purpose of this file is the function plot_clonotypes.  It plots clonotypes as partial
+// hexagonal closest packings.  This is visually kind of satisfying, but also a bit weird looking.
+// In some cases, by eye, you can see rounder forms that could be created by relocating some of
+// the cells.
+
+use crate::string_width::*;
+use enclone_core::defs::*;
+use io_utils::*;
+use std::fs::File;
+use std::io::Write;
+use std::io::*;
+use string_utils::*;
+use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
+// radius r, starting at the origin and going first to the right.  Return the coordinates of the
+// center of the nth disk.  See this picture:
+// https://www.researchgate.net/profile/Guorui_Li4/publication/220270050/figure/fig1/
+//         AS:393993713143808@1470946829076/The-hexagonal-coordinate-system.png
+// There is no attempt at efficiency.
+
+fn hex_coord(n: usize, r: f64) -> (f64, f64) {
+    // Special case.
+    if n == 0 {
+        return (0.0, 0.0);
+    }
+    // If the hexagons are numbered 0, 1, ... outward, which hexagon "hid" are we on and
+    // which position "hpos" on that are we at?
+    let mut hid = 1;
+    let mut k = 6;
+    let mut hpos = n - 1;
+    loop {
+        if hpos < k {
+            break;
+        }
+        hpos -= k;
+        hid += 1;
+        k += 6;
+    }
+    // Find coordinates.
+    let c = r * 3.0f64.sqrt() / 2.0; // center to center distance, divided by 2
+    let mut x = hid as f64 * 2.0 * c;
+    let mut y = 0.0;
+    let mut p = hpos;
+    if p > 0 {
+        // Traverse the six faces, as far as we have to go.
+        for _ in 0..hid {
+            x -= c;
+            y += 1.5;
+            p -= 1;
+            if p == 0 {
+                break;
+            }
+        }
+        if p > 0 {
+            for _ in 0..hid {
+                x -= 2.0 * c;
+                p -= 1;
+                if p == 0 {
+                    break;
+                }
+            }
+            if p > 0 {
+                for _ in 0..hid {
+                    x -= c;
+                    y -= 1.5;
+                    p -= 1;
+                    if p == 0 {
+                        break;
+                    }
+                }
+                if p > 0 {
+                    for _ in 0..hid {
+                        x += c;
+                        y -= 1.5;
+                        p -= 1;
+                        if p == 0 {
+                            break;
+                        }
+                    }
+                    if p > 0 {
+                        for _ in 0..hid {
+                            x += 2.0 * c;
+                            p -= 1;
+                            if p == 0 {
+                                break;
+                            }
+                        }
+                        if p > 0 {
+                            for _ in 0..hid - 1 {
+                                x += c;
+                                y += 1.5;
+                                p -= 1;
+                                if p == 0 {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    x *= 2.0 / 3.0f64.sqrt();
+    y *= 2.0 / 3.0f64.sqrt();
+    (x, y)
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Pack circles of given radii.  There is probably a literature on this, and this is probably
+// a very crappy algorithm.  The answer is certainly not optimal.  The run time is O(n^2) where
+// the constant includes a factor of 10^5.  Return centers for the circles.
+
+fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
+    let mut c = Vec::<(f64, f64)>::new();
+    if r.is_empty() {
+        return c;
+    }
+    c.push((0.0, 0.0));
+    let mut bigr = r[0];
+    let mut rand = 0i64;
+    // We use a ridiculously large sample.  Reducing it to 1000 substantially reduces symmetry.
+    // Presumably as the number of clusters increases, the sample would need to be increased
+    // (ideally) to increase symmetry.
+    const SAMPLE: usize = 100000;
+    const MUL: f64 = 1.5;
+    for i in 1..r.len() {
+        let mut q = Vec::<(f64, f64, f64)>::new();
+        loop {
+            for _ in 0..SAMPLE {
+                // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
+                // generator (from the internet) for speed and reproducibility, although there
+                // might be something better in the standard packages.
+                let rand1 = 6_364_136_223_846_793_005i64
+                    .wrapping_mul(rand)
+                    .wrapping_add(1_442_695_040_888_963_407);
+                let rand2 = 6_364_136_223_846_793_005i64
+                    .wrapping_mul(rand1)
+                    .wrapping_add(1_442_695_040_888_963_407);
+                rand = rand2;
+                let mut r1 = (2.0 * (rand1 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
+                let mut r2 = (2.0 * (rand2 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
+                // Make it bigger.
+                r1 *= (bigr + r[i]) * MUL;
+                r2 *= (bigr + r[i]) * MUL;
+                // See if circle at (r1,r2) overlaps any of the existing circles.
+                let mut ok = true;
+                for k in 0..i {
+                    let d = ((c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2)).sqrt();
+                    if d < r[i] + r[k] {
+                        ok = false;
+                        break;
+                    }
+                }
+                if ok {
+                    q.push((r1 * r1 + r2 * r2, r1, r2));
+                }
+            }
+            q.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            if !q.is_empty() {
+                break;
+            }
+        }
+        c.push((q[0].1, q[0].2));
+        bigr = bigr.max(r[i] + (c[i].0 * c[i].0 + c[i].1 * c[i].1).sqrt());
+    }
+    c
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Given a collection of circles having specified colors, create an svg string that shows the
+// circles on a canvas of fixed size.  The circles are moved and resized accordingly.
+
+fn circles_to_svg(
+    center: &Vec<(f64, f64)>,
+    radius: &Vec<f64>,
+    color: &Vec<String>,
+    width: usize,
+    height: usize,
+    boundary: usize,
+) -> String {
+    let n = center.len();
+    assert!(!center.is_empty());
+    assert!(radius.len() == n);
+    assert!(color.len() == n);
+    assert!(boundary < width);
+    assert!(boundary < height);
+    for i in 0..n {
+        assert!(radius[i] > 0.0);
+    }
+    let mut out = format!(
+        "<svg version=\"1.1\"\n\
+         baseProfile=\"full\"\n\
+         width=\"{}\" height=\"{}\"\n\
+         xmlns=\"http://www.w3.org/2000/svg\">\n",
+        width, height
+    );
+    let mut center = center.clone();
+    let mut radius = radius.clone();
+    let mut xmin = center[0].0;
+    let mut xmax = center[0].0;
+    let mut ymin = center[0].1;
+    let mut ymax = center[0].1;
+    for i in 0..n {
+        xmin = xmin.min(center[i].0 - radius[i]);
+        xmax = xmax.max(center[i].0 + radius[i]);
+        ymin = ymin.min(center[i].1 - radius[i]);
+        ymax = ymax.max(center[i].1 + radius[i]);
+    }
+    let width = width - boundary;
+    let height = height - boundary;
+    let scale = ((width as f64) / (xmax - xmin)).min((height as f64) / (ymax - ymin));
+    for i in 0..n {
+        center[i].0 -= xmin;
+        center[i].1 -= ymin;
+        center[i].0 *= scale;
+        center[i].1 *= scale;
+        radius[i] *= scale;
+        center[i].0 += boundary as f64;
+        center[i].1 += boundary as f64;
+    }
+    for i in 0..center.len() {
+        out += &format!(
+            "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
+            center[i].0, center[i].1, radius[i], color[i]
+        );
+    }
+
+    out += "</svg>\n";
+    out
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Here, and in "enclone help color", we swap the order of colors, placing the last three before
+// the first three.  This is because the last three seem to make a better three-color palette.
+
+fn substitute_enclone_color(color: &mut String) {
+    if *color == "@1".to_string() {
+        *color = "rgb(0,95,175)".to_string();
+    } else if *color == "@2".to_string() {
+        *color = "rgb(215,135,175)".to_string();
+    } else if *color == "@3".to_string() {
+        *color = "rgb(0,175,135)".to_string();
+    } else if *color == "@4".to_string() {
+        *color = "rgb(215,95,0)".to_string();
+    } else if *color == "@5".to_string() {
+        *color = "rgb(95,175,255)".to_string();
+    } else if *color == "@6".to_string() {
+        *color = "rgb(215,175,0)".to_string();
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn plot_clonotypes(
+    ctl: &EncloneControl,
+    exacts: &Vec<Vec<usize>>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+) {
+    if ctl.gen_opt.plot_file.is_empty() {
+        return;
+    }
+    if exacts.is_empty() {
+        eprintln!("\nThere are no clonotypes to plot, giving up.\n");
+        std::process::exit(1);
+    }
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
+    let mut radii = Vec::<f64>::new();
+    const SEP: f64 = 1.0; // separation between clusters
+    let mut samples = Vec::<String>::new();
+    for i in 0..exacts.len() {
+        let mut colors = Vec::<String>::new();
+        let mut coords = Vec::<(f64, f64)>::new();
+        let mut n = 0;
+        for j in 0..exacts[i].len() {
+            let ex = &exact_clonotypes[exacts[i][j]];
+            for j in 0..ex.clones.len() {
+                let mut color = "black".to_string();
+                if ex.clones[j][0].sample_index.is_some() {
+                    let s = &ctl.sample_info.sample_list[ex.clones[j][0].sample_index.unwrap()];
+                    samples.push(s.clone());
+                    if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                        color = ctl.gen_opt.sample_color_map[s].clone();
+                    }
+                }
+                if ctl.gen_opt.sample_color_map.is_empty() {
+                    let mut dataset_colors = false;
+                    for c in ctl.sample_info.color.iter() {
+                        if !c.is_empty() {
+                            dataset_colors = true;
+                        }
+                    }
+                    let di = ex.clones[j][0].dataset_index;
+                    if dataset_colors {
+                        color = ctl.sample_info.color[di].clone();
+                    } else {
+                        let bc = &ex.clones[j][0].barcode;
+                        if ctl.sample_info.barcode_color[di].contains_key(bc) {
+                            color = ctl.sample_info.barcode_color[di][bc].clone();
+                        }
+                    }
+                }
+                colors.push(color);
+                coords.push(hex_coord(n, 1.0));
+                n += 1;
+            }
+        }
+        unique_sort(&mut samples);
+
+        // Move the colors around to get vertical separation, e.g. blues on the left, reds
+        // on the right.
+
+        colors.sort();
+        coords.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+        // Substitute enclone colors.
+
+        for j in 0..colors.len() {
+            substitute_enclone_color(&mut colors[j]);
+        }
+
+        // Save.
+
+        let mut radius = 0.0f64;
+        for j in 0..coords.len() {
+            radius =
+                radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
+        }
+        radius += SEP;
+        clusters.push((colors, coords));
+        radii.push(radius);
+    }
+    let centers = pack_circles(&radii);
+    for i in 0..clusters.len() {
+        for j in 0..clusters[i].1.len() {
+            clusters[i].1[j].0 += centers[i].0;
+            clusters[i].1[j].1 += centers[i].1;
+        }
+    }
+    let mut center = Vec::<(f64, f64)>::new();
+    let mut radius = Vec::<f64>::new();
+    let mut color = Vec::<String>::new();
+    for i in 0..clusters.len() {
+        for j in 0..clusters[i].0.len() {
+            color.push(clusters[i].0[j].clone());
+            center.push((clusters[i].1[j].0, clusters[i].1[j].1));
+            radius.push(1.0);
+        }
+    }
+    const WIDTH: usize = 400;
+    const HEIGHT: usize = 400;
+    const BOUNDARY: usize = 10;
+    for i in 0..center.len() {
+        center[i].1 = -center[i].1; // otherwise inverted, not sure why
+    }
+    let mut svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+
+    // Add legend.
+
+    if ctl.gen_opt.use_legend {
+        let mut colors = Vec::<String>::new();
+        let mut max_string_width = 0.0f64;
+        if ctl.gen_opt.legend.len() == 0 {
+            for s in samples.iter() {
+                let mut color = "black".to_string();
+                if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                    color = ctl.gen_opt.sample_color_map[s].clone();
+                }
+                colors.push(color);
+            }
+        } else {
+            samples.clear();
+            for i in 0..ctl.gen_opt.legend.len() {
+                colors.push(ctl.gen_opt.legend[i].0.clone());
+                samples.push(ctl.gen_opt.legend[i].1.clone());
+            }
+        }
+        for i in 0..colors.len() {
+            substitute_enclone_color(&mut colors[i]);
+        }
+        for s in samples.iter() {
+            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
+        }
+
+        // Calculate the actual height of the svg.
+
+        let mut actual_height = 0.0f64;
+        let fields = svg.split(' ').collect::<Vec<&str>>();
+        let mut y = 0.0;
+        for i in 0..fields.len() {
+            if fields[i].starts_with("cy=") {
+                y = fields[i].between("\"", "\"").force_f64();
+            }
+            if fields[i].starts_with("r=") {
+                let r = fields[i].between("\"", "\"").force_f64();
+                actual_height = actual_height.max(y + r);
+            }
+        }
+
+        // Build the legend.
+
+        let n = samples.len();
+        const FONT_SIZE: usize = 20;
+        const LEGEND_CIRCLE_RADIUS: usize = 4;
+        const LEGEND_BOX_STROKE_WIDTH: usize = 2;
+        let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
+        let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
+        let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        svg = svg.rev_before("<").to_string();
+        svg += &format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+             style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
+            BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+        );
+        for i in 0..samples.len() {
+            let y = legend_ystart as f64
+                + BOUNDARY as f64 * 2.5
+                + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
+            svg += &format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                BOUNDARY * 3,
+                y,
+                FONT_SIZE,
+                samples[i]
+            );
+            svg += &format!(
+                "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
+                BOUNDARY * 2,
+                y - BOUNDARY as f64 / 2.0,
+                LEGEND_CIRCLE_RADIUS,
+                colors[i]
+            );
+        }
+        let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
+        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+        svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+    }
+
+    // Output the svg file.
+
+    if ctl.gen_opt.plot_file != "stdout".to_string() {
+        let f = File::create(&ctl.gen_opt.plot_file);
+        if f.is_err() {
+            eprintln!(
+                "\nThe file {} in your PLOT argument could not be created.\n",
+                ctl.gen_opt.plot_file
+            );
+            std::process::exit(1);
+        }
+        let mut f = BufWriter::new(f.unwrap());
+        fwriteln!(f, "{}", svg);
+    } else {
+        println!("{}", svg);
+    }
+}

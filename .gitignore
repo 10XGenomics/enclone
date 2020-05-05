@@ -1,3 +1,3 @@
-target
-test/inputs/version14/85679/outs/raw_feature_bc_matrix/matrix.bin
-test/outputs
+enclone/target
+enclone/test/inputs/version14/85679/outs/raw_feature_bc_matrix/matrix.bin
+enclone/test/outputs
