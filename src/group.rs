@@ -718,7 +718,7 @@ pub fn group_and_print_clonotypes(
     // Print summary csv stats.
 
     if ctl.gen_opt.summary_csv {
-        println!("\nmiddle_mean_umis,n_twosiethreesie");
+        println!("\nmiddle_mean_umis,n_twothreesie");
         println!("{:.2},{}", middle_mean_umis, n23);
     }
 
