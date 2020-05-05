@@ -85,8 +85,8 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     pp = format!("{}/outs", path);
                     if !path_exists(&pp) {
                         eprintln!(
-                            "\nIt looks like you've provided a xena id {} for \
-                            which\nthe pipeline outs folder has not yet been generated.\n\n",
+                            "\nIt looks like you've provided a xena analysis id for \
+                            which the pipeline outs folder\n{}\nhas not yet been generated.\n\n",
                             p
                         );
                         std::process::exit(1);
