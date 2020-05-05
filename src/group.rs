@@ -578,6 +578,18 @@ pub fn group_and_print_clonotypes(
         middle_mean_umis = (middle as f64) / (denom as f64);
     }
 
+    // Compute n23.
+
+    let mut n23 = 0;
+    for i in 0..nclono {
+        for j in 0..exacts[i].len() {
+            let ex = &exact_clonotypes[exacts[i][j]];
+            if ex.share.len() == 2 || ex.share.len() == 3 {
+                n23 += ex.ncells();
+            }
+        }
+    }
+
     // Print summary stats.
 
     if ctl.gen_opt.summary {
@@ -655,7 +667,8 @@ pub fn group_and_print_clonotypes(
             "   • number of clonotypes having at least two cells = {}",
             nclono2
         );
-        fwriteln!(logx, "   • number of cells in clonotypes = {}", ncells);
+        fwriteln!(logx, "   • number of cells = {}", ncells);
+        fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
@@ -705,8 +718,8 @@ pub fn group_and_print_clonotypes(
     // Print summary csv stats.
 
     if ctl.gen_opt.summary_csv {
-        println!("\nmiddle_mean_umis");
-        println!("{:.2}", middle_mean_umis);
+        println!("\nmiddle_mean_umis,n_twosiethreesie");
+        println!("{:.2},{}", middle_mean_umis, n23);
     }
 
     // Print to stdout.
