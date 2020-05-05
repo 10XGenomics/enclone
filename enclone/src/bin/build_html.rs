@@ -38,6 +38,6 @@ fn main() {
         fwrite!(&mut f, "{}", results[i].1);
     }
 
-    insert_html("pages/index.html.src", "index.html");
-    insert_html("pages/expanded.html.src", "pages/auto/expanded.html");
+    insert_html("pages/index.html.src", "index.html", false);
+    insert_html("pages/expanded.html.src", "pages/auto/expanded.html", false);
 }

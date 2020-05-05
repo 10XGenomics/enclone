@@ -789,8 +789,12 @@ fn test_site_examples() {
         }
     }
 
-    insert_html("../pages/index.html.src", "test/outputs/index.html");
-    insert_html("../pages/expanded.html.src", "test/outputs/expanded.html");
+    insert_html("../pages/index.html.src", "test/outputs/index.html", true);
+    insert_html(
+        "../pages/expanded.html.src",
+        "test/outputs/expanded.html",
+        true,
+    );
 
     if read_to_string("../index.html").unwrap()
         != read_to_string("test/outputs/index.html").unwrap()

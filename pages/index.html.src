@@ -161,7 +161,8 @@ Open a terminal window and type the following to download the enclone executable
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       not currently supported, let us know if this is important to you
+       not currently supported, let us know if this is important to you, and see
+       <b><a href="pages/windows.html">this page</a></b>
        </p>
   </th>
   </tr>
@@ -375,6 +376,10 @@ For completeness, here are all the other pages on this site:
 <tr>
     <td align="left"><a href="LICENSE.txt">license</a></td>
     <td align="left">everyone</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/windows.html">Windows</a></td>
+    <td align="left">people using Windows computers</td>
 </tr>
 </tbody>
 </table>

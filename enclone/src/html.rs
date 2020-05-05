@@ -7,13 +7,17 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
 
-pub fn insert_html(in_file: &str, out_file: &str) {
+pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
     let f = open_for_read![&in_file];
     let mut g = open_for_write_new![&out_file];
     for line in f.lines() {
         let s = line.unwrap();
         if s.starts_with("#include ") {
-            let h = open_for_read![&format!("../{}", s.after("#include "))];
+            let mut f = format!("../{}", s.after("#include "));
+            if !up {
+                f = format!("{}", s.after("#include "));
+            }
+            let h = open_for_read![&f];
             let mut started = false;
             for line in h.lines() {
                 let t = line.unwrap();
