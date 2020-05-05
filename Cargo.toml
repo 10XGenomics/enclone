@@ -4,6 +4,7 @@ members = [
     "enclone",
     "enclone_core",
     "enclone_help",
+    "enclone_main",
 ]
 
 [profile.dev]
