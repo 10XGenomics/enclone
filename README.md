@@ -1,3 +1,5 @@
+![](https://github.com/10XGenomics/enclone/workflows/Build%20and%20Upload%20Release/badge.svg)
+
 <a name="top" style="display:block; position:relative; top:-150px;"></a>
 
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" />
