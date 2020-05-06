@@ -146,7 +146,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         println!("");
     }
 
-    // Get sample descriptions.  Flaky and particularly flaky when lena args are paths,
+    // Get sample descriptions.  Flaky and particularly flaky when internal sample args are paths,
     // since it will look in outs for the file.
 
     let tinv = Instant::now();
