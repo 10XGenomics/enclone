@@ -72,7 +72,7 @@ Other optional arguments:
 - PROTO=filename: generate proto output file
 - NO_REUSE: exit if significant barcode reuse found, intended to detect accidental inclusion
             of multiple datasets from the same cDNA from the same GEM well
-- DUMP_LENAS: special option to dump the list of lena ids and exit.
+- DUMP_INTERNAL_IDS: special option to dump the list of internal ids and exit.
 - TOY: toy with phylogeny
 
 If an argument is a nonnegative integer, it is treated as if specified by TCR= or BCR=, but 

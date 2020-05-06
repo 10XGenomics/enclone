@@ -230,7 +230,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Dump lenas.
 
     for i in 1..args.len() {
-        if is_simple_arg(&args[i], "DUMP_LENAS") {
+        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS") {
             let mut x = Vec::<usize>::new();
             for y in ctl.sample_info.dataset_id.iter() {
                 x.push(y.force_usize());

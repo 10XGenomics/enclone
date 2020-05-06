@@ -190,7 +190,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.join_print_opt.ann = true;
         } else if is_simple_arg(&arg, "ANN0") {
             ctl.join_print_opt.ann0 = true;
-        } else if is_simple_arg(&arg, "DUMP_LENAS") {
+        } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
         } else if is_simple_arg(&arg, "SHOW_BC") {
             ctl.join_print_opt.show_bc = true;
         } else if is_simple_arg(&arg, "PER_CELL") {
