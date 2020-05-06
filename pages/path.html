@@ -15,7 +15,8 @@
 
 <h1>Setting your path for enclone</h1>
 
-This page explains how to edit your shell initialization file to add <code>:~/bin</code> to 
+This page explains how to edit your shell initialization file to add <code>~/bin</code> to 
+the beginning of your
 <code>PATH</code>.  This will work in both Linux and Mac environments.  If you are using a 
 Windows computer, it will work if you use Windows Subsystem for Linux (WSL) or are using Linux
 through dual boot.
@@ -46,20 +47,25 @@ and we'll add further instructions.
 
 <b>3. Now type exactly this.  You only need to do it once, as it will persist "forever".</b>
 
-<p style="margin-top: 15px"></p>
+<pre style="margin-top: 25px"><code>test -r ~/.bash_profile && echo 'PATH=~/bin:$PATH' >> ~/.bash_profile || echo 'PATH=~/bin:$PATH' >> ~/.profile</code></pre>
 
-<pre><code>echo "PATH=\$PATH:~/bin" >> ~/.bash_profile</code>
-<code>source ~/.bash_profile</code></pre>
+<p style="margin-top: 25px">This will put <code>~/bin</code> at the beginning of your path.  It 
+is complicated because some versions of Linux use the file <code>.bash_profile</code>, and some 
+use <code>.profile</code>.</p>
 
-<p style="margin-top: 10px"></p>
-
-If you have other windows open in which you might run enclone,
-then you should type the above <code>source</code> line
-in those windows too.  Or close and reopen them if you prefer.
+To get this to take effect, close and reopen all your windows in which you'll be rerunning enclone.
 
 <br><br>
 
-<b>4. Carry on with enclone: you're all set!</b>
+<b>4. Let us know if this doesn't work.</b>
+
+<br><br>
+
+It is conceivable that the instructions are not configured correctly for all computers.
+
+<br><br>
+
+<b>5. Otherwise, carry on with enclone: you're all set!</b>
 
 </body>
 </html>
