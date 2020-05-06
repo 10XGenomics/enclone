@@ -36,9 +36,11 @@ Otherwise you'll have to type <code>~/bin/enclone</code> every time, and that's 
 <br><br>
 
 Not exactly.  They only work if you're running the <code>bash</code> shell.  To determine if this
-is the case, type <code>echo $SHELL</code>.  If the answer is <code>/bin/bash</code>, then you
-are.  Otherwise, the instructions on this page will not work.  If you need help, let us know,
-and we will generalize these instructions to other shells as needed.
+is the case, type <code>echo $SHELL</code>.  If the answer is <code>/bin/bash</code> or some
+other string that ends with <code>/bash</code>, then you
+are.  Otherwise, the instructions on this page will not work.  If you're stuck, let us know
+at <a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>,
+and we'll add further instructions.
 
 <br><br>
 
@@ -50,6 +52,12 @@ and we will generalize these instructions to other shells as needed.
 <code>source ~/.bash_profile</code></pre>
 
 <p style="margin-top: 10px"></p>
+
+If you have other windows open in which you might run enclone,
+then you should type the above <code>source</code> line
+in those windows too.  Or close and reopen them if you prefer.
+
+<br><br>
 
 <b>4. Carry on with enclone: you're all set!</b>
 
