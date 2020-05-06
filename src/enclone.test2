@@ -1,9 +1,0 @@
-#!/bin/csh
-
-set rootdir = `dirname $0`
-
-enclone \
-    BCR=`cat $rootdir/testdata.public.bcr.human | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
-        tr '\n' ';' | tr -s ';'` \
-    ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT NO_REUSE PRINT_FAILED_JOINS \
-    MIX_DONORS PRE=/mnt/assembly/vdj/current14 $*

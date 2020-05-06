@@ -1,0 +1,25 @@
+[package]
+name = "enclone_core"
+version = "0.2.6"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+publish = false
+
+[dependencies]
+ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
+mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+regex = "1.3.1"
+string_utils = "0.1.1"
+vector_utils = "0.1.0"
+
+[dependencies.hdf5]
+features = ["conda"]
+git = "https://github.com/pmarks/hdf5-rs.git"
+rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"

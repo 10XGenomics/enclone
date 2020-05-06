@@ -1,0 +1,52 @@
+[package]
+name = "enclone_main"
+version = "0.2.6"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+build = "build.rs"
+publish = false
+
+[dependencies]
+debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
+enclone_core = { path = "../enclone_core" }
+enclone_help = { path = "../enclone_help" }
+enclone = { path = "../enclone" }
+equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+io_utils = "0.2.4"
+itertools = "^0.7"
+perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+pretty_trace = "0.3.0"
+regex = "1.3.1"
+serde = "1.0.90"
+serde_derive = "1.0.102"
+serde_json = "*"
+stats_utils = "0.1.0"
+string_utils = "0.1.1"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vector_utils = "0.1.0"
+
+[build-dependencies]
+chrono = "0.4.11"
+prost-build = "0.5.0"
+string_utils = "0.1.1"
+
+[dependencies.hdf5]
+features = ["conda"]
+git = "https://github.com/pmarks/hdf5-rs.git"
+rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
+
+[dev-dependencies]
+ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
+failure = "0.1.5"
+flate2 = "1.0.12"
+rayon = "1.0.2"
+
+[features]
+basic = []
