@@ -418,6 +418,18 @@ reference and all positions in the CDR3.</p>
 you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in 
 the directory <code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, 
 obtained from a human ovarian cancer sample.</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 900px">
+<b>What does <code>PRE</code> do?</b>
+It provides a <i>search path</i> for all other paths that you provide to enclone.  But this is
+just a convenience and nothing
+fancy is going on -- enclone is just gluing together paths.  For example, all three of the following
+argument combinations do the same thing:
+<br>1. <code>PRE=~/enclone/datasets BCR=123085</code>
+<br>2. <code>PRE=~/enclone BCR=datasets/123085</code>
+<br>3. <code>BCR=~/enclone/datasets/123085</code>.
+</p>
+
 <p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
