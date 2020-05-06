@@ -203,8 +203,8 @@ downloaded by:
 
 On a Mac, you may need to use <code>curl</code> instead.
 
-<p><b>3.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  Ask a colleague for help
-if needed.  Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
+<p><b>3.  Update your path.</b>  Edit your shell initialization file to add <code>:~/bin</code> to <code>PATH</code>.  If you don't know how to do this, please see <a href="pages/path.html">here</a>.
+Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
 <p><b>4. Periodically update or check the <a href="pages/history.html">history</a> to see if 
 anything has changed that might affect you.</b></p>
 <hr>
@@ -380,6 +380,10 @@ For completeness, here are all the other pages on this site:
 <tr>
     <td align="left"><a href="pages/windows.html">Windows</a></td>
     <td align="left">people using Windows computers</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/path.html">adding <code>~/bin</code> to your path</a></td>
+    <td align="left">people who need help setting their path</td>
 </tr>
 </tbody>
 </table>

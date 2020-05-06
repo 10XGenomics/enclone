@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>setting your path for enclone</title>
+<link rel="stylesheet" type="text/css" href="enclone.css">
+</head>
+
+<body>
+
+<br>
+<img src="../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>Setting your path for enclone</h1>
+
+This page explains how to edit your shell initialization file to add <code>:~/bin</code> to 
+<code>PATH</code>.  This will work in both Linux and Mac environments.  If you are using a 
+Windows computer, it will work if you use Windows Subsystem for Linux (WSL) or are using Linux
+through dual boot.
+
+<br><br>
+
+<b>1. Why is this necessary?</b>
+
+<br><br>
+
+If you do this, then every time you want to run enclone, you'll type <code>enclone</code>.
+Otherwise you'll have to type <code>~/bin/enclone</code> every time, and that's inconvenient.
+
+<br><br>
+
+<b>2. Are these instructions universal?</b>
+
+<br><br>
+
+Not exactly.  They only work if you're running the <code>bash</code> shell.  To determine if this
+is the case, type <code>echo $SHELL</code>.  If the answer is <code>/bin/bash</code>, then you
+are.  Otherwise, the instructions on this page will not work.  If you need help, let us know,
+and we will generalize these instructions to other shells as needed.
+
+<br><br>
+
+<b>3. Now type exactly this.  You only need to do it once, as it will persist "forever".</b>
+
+<p style="margin-top: 15px"></p>
+
+<pre><code>echo "PATH=\$PATH:~/bin" >> ~/.bash_profile</code>
+<code>source ~/.bash_profile</code></pre>
+
+<p style="margin-top: 10px"></p>
+
+<b>4. Carry on with enclone: you're all set!</b>
+
+</body>
+</html>
