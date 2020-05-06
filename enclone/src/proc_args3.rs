@@ -10,6 +10,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
+use tilde_expand::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -18,12 +19,19 @@ use vector_utils::*;
 
 fn get_path(p: &str, ctl: &EncloneControl) -> String {
     for x in ctl.gen_opt.pre.iter() {
-        let pp = format!("{}/{}", x, p);
+        let mut pp = format!("{}/{}", x, p);
+        if pp.starts_with("~") {
+            pp = stringme(&tilde_expand(&pp.as_bytes()));
+        }
         if path_exists(&pp) {
             return pp;
         }
     }
-    p.to_string()
+    let mut pp = p.to_string();
+    if pp.starts_with("~") {
+        pp = stringme(&tilde_expand(&pp.as_bytes()));
+    }
+    pp
 }
 
 pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
@@ -74,7 +82,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     eprintln!(
                         "\nWell this is sad.  The URL \
                         http://xena/api/analyses/{} yielded a 502 Bad Geteway \
-                        message.  Either try again later or ask someone for help.\n\n",
+                        message.  Either try again later or ask someone for help.\n",
                         p
                     );
                     std::process::exit(1);
@@ -95,7 +103,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     eprintln!(
                         "\nIt looks like you've provided either an incorrect \
                         xena id {} or else one for which\n\
-                        the pipeline outs folder has not yet been generated.\n\n",
+                        the pipeline outs folder has not yet been generated.\n",
                         p
                     );
                     std::process::exit(1);
@@ -104,7 +112,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                 eprintln!(
                     "\nAfter searching high and low, your path for {} \
                     cannot be found.\nPlease check its value and also the value \
-                    for PRE if you provided that.\n\n",
+                    for PRE if you provided that.\n",
                     source
                 );
                 std::process::exit(1);

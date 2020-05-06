@@ -61,7 +61,8 @@ fn valid_link(link: &str) -> bool {
 // Test licenses of included packages and their dependencies.
 //
 // The following rules are applied:
-// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or MPL-2.0, or is a logical
+// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0,
+//    or is a logical
 //    expression for which one of those is sufficient, then there is no problem.  Note that for
 //    MPL-2.0, we inform people how to get the source code for dependent crates.
 // 2. If both license and license_field are null, then there is no problem.
@@ -80,7 +81,7 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_licenses() {
-    const ACCEPTABLE_LICENSE_TYPES: [&str; 4] = ["MIT", "ISC", "Zlib", "MPL-2.0"];
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 5] = ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0"];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
     const ACCEPTABLE_OTHER_PACKAGES: [&str; 4] = ["cloudabi", "fuchsia-cprng", "ring", "webpki"];
