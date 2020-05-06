@@ -94,7 +94,7 @@ fn test_licenses() {
             When it is done installing, it will tell you where it put the binary, and you\n\
             should add that path to your PATH.\n\
             You can also avoid this test entirely by running instead \
-            \"cargo test basic -- --nocapture\".\n"
+            \"cd enclone; cargo test basic -- --nocapture\".\n"
         );
         std::process::exit(1);
     }
@@ -783,7 +783,7 @@ fn test_site_examples() {
                 "Possibly this could be because you're running \"cargo t\" in an \
                 environment without the\n\
                 extended dataset collection.  Possibly you should run \
-                \"cargo test basic -- --nocapture\" instead.\n"
+                \"cd enclone; cargo test basic -- --nocapture\" instead.\n"
             );
             std::process::exit(1);
         }
