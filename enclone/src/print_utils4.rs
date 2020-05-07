@@ -13,10 +13,13 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Note confusing notation.  The object cdr3 contains pairs (String,usize) consisting of
+// the cdr3_aa and the length of seq_del.
+
 pub fn define_mat(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
-    cdr3s: &Vec<Vec<String>>,
+    cdr3s: &Vec<Vec<(String, usize)>>,
     js: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
@@ -24,10 +27,10 @@ pub fn define_mat(
     // Form the flattened list of all CDR3_AAs.
 
     let nexacts = cdr3s.len();
-    let mut all_cdr3s = Vec::<Vec<u8>>::new();
+    let mut all_cdr3s = Vec::<(Vec<u8>, usize)>::new();
     for j in 0..nexacts {
         for k in 0..cdr3s[j].len() {
-            all_cdr3s.push(cdr3s[j][k].as_bytes().to_vec());
+            all_cdr3s.push((cdr3s[j][k].0.as_bytes().to_vec(), cdr3s[j][k].1));
         }
     }
 
@@ -42,11 +45,12 @@ pub fn define_mat(
     let mut ec: EquivRel = EquivRel::new(all_cdr3s.len() as i32);
     for m1 in 0..all_cdr3s.len() {
         for m2 in m1 + 1..all_cdr3s.len() {
-            let (x1, x2) = (&all_cdr3s[m1], &all_cdr3s[m2]);
-            if x1.len() == x2.len() {
+            let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
+            let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
+            if x1.len() == x2.len() && y1 == y2 {
                 let mut diffs = 0;
-                for u in 0..all_cdr3s[m1].len() {
-                    if all_cdr3s[m1][u] != all_cdr3s[m2][u] {
+                for u in 0..x1.len() {
+                    if x1[u] != x2[u] {
                         diffs += 1;
                     }
                 }
@@ -100,7 +104,7 @@ pub fn define_mat(
     for u in 0..nexacts {
         let x = &cdr3s[u];
         for (iy, y) in x.iter().enumerate() {
-            let p = bin_position(&all_cdr3s, &y.as_bytes().to_vec());
+            let p = bin_position(&all_cdr3s, &(y.0.as_bytes().to_vec(), y.1));
             let c = ec.class_id(p);
             let q = bin_position(&r, &c) as usize;
             rpos.insert((u, iy), q);
@@ -149,7 +153,7 @@ pub fn define_mat(
                     continue;
                 }
                 for m in 0..ex.share.len() {
-                    if ex.share[m].cdr3_aa == y.after(":") {
+                    if ex.share[m].cdr3_aa == y.0.after(":") && ex.share[m].seq_del.len() == y.1 {
                         mat[cx][u] = Some(m);
                         continue 'exact;
                     }
