@@ -279,13 +279,13 @@ fn test_enclone() {
             fwriteln!(
                 log,
                 "Do this by executing the following command from \
-                 cellranger/lib/rust/enclone:\n"
+                 the top level of the enclone repo:\n"
             );
             emit_bold_escape(&mut log);
             fwriteln!(
                 log,
-                "enclone {} {} > test/inputs/outputs/enclone_test{}_output; \
-                 git add test/inputs/outputs/enclone_test{}_output\n",
+                "enclone {} {} > enclone_main/test/inputs/outputs/enclone_test{}_output; \
+                 git add enclone_main/test/inputs/outputs/enclone_test{}_output\n",
                 pre_arg,
                 test,
                 it + 1,

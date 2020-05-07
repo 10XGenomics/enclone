@@ -210,15 +210,17 @@ just one dataset (<code>123085</code>), like this:</p>
 <p>The test datasets were selected because they happened to be useful as part of algorithmic 
 regression tests (included in the codebase).  
 
-A much larger collection of datasets (including those above) is also provided and can be 
+A much larger collection of datasets (including most of those above) is also provided and can be 
 downloaded by:
 
 <pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz</code>
-<code>rm -rf ~/enclone/data</code>
 <code>zcat enclone_data_1.0.tar.gz | tar xf -</code>
-<code>mv enclone_data_1.0 ~/enclone/data</code></pre>
+<code>mv enclone_data_1.0 ~/enclone/datasets2</code></pre>
 
 On a Mac, you may need to use <code>curl</code> instead.
+
+<p>If you want simultaneous access to both the small and large dataset collections, you can
+supply the argument <code>PRE=~/enclone/datasets,~/enclone/datasets2</code> to enclone.</p>
 
 <p><b>3.  Update your path.</b>  Edit your shell initialization file to prepend
 <code>~/bin:</code> to your <code>PATH</code>.  If you don't know how to do this, please see 
