@@ -11,9 +11,9 @@ use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
-use io_utils::*;
 use perf_stats::*;
 use rayon::prelude::*;
+use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -30,6 +30,7 @@ pub fn build_info(
     // improve both time and space computational performance by reducing that redundancy.
 
     let timer = Instant::now();
+    let exiting = AtomicBool::new(false);
     let mut total_clones = 0;
     for i in 0..exact_clonotypes.len() {
         total_clones += exact_clonotypes[i].ncells();
@@ -143,8 +144,8 @@ pub fn build_info(
             let mut vsnx = String::new();
             if x.annv.len() == 2 {
                 if x.annv[0].1 as usize > rt.len() {
-                    printme!(x.annv[0].1, rt.len());
-                    json_error(None, &ctl);
+                    let msg = format!("x.annv[0].1 = {}, rt.len() = {}", x.annv[0].1, rt.len());
+                    json_error(None, &ctl, &exiting, &msg);
                 }
                 let mut r = rt.slice(0, x.annv[0].1 as usize).to_owned();
                 // deletion

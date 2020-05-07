@@ -13,44 +13,51 @@ use itertools::Itertools;
 use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader, time::Instant};
 use string_utils::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn json_error(json: Option<&str>, ctl: &EncloneControl) {
-    eprint!(
-        "\nThere is something wrong with the contig annotations in the Cell Ranger output \
-         file"
-    );
-    if json.is_some() {
-        eprint!("\n{}.", json.unwrap());
-    } else {
-        eprint!(".");
-    }
-    if ctl.gen_opt.internal_run {
+pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
+    // The following line prevents error messages from this function from being
+    // printed multiple times.
+    if !exiting.swap(true, Ordering::Relaxed) {
         eprint!(
-            "\n\nATTENTION INTERNAL 10X USERS!\n\
-            Quite possibly you are using data from a Cell Ranger run carried out using a version\n\
-            between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
-            argument CURRENT_REF to your command line.  If that doesn't work, please see below."
+            "\nThere is something wrong with the contig annotations in the Cell Ranger output \
+             file"
         );
+        if json.is_some() {
+            eprint!("\n{}.", json.unwrap());
+        } else {
+            eprint!(".");
+        }
+        eprint!("\n\npossibly relevant internal data: {}", msg);
+        if ctl.gen_opt.internal_run {
+            eprint!(
+                "\n\nATTENTION INTERNAL 10X USERS!\n\
+                Quite possibly you are using data from a Cell Ranger run carried out using a version\n\
+                between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
+                argument CURRENT_REF to your command line.  If that doesn't work, please see below."
+            );
+        }
+        eprintln!(
+            "\n\nHere are possible sources of this problem:\n\n\
+             1. If the file was generated using \
+             Cell Ranger version < 3.1, please either\nregenerate the file using the \
+             current Cell Ranger version, or else run this program with the RE option to\n\
+             regenerate annotations from scratch, but we warn you that this code \
+             is not guaranteed to run\ncorrectly on outdated json files.\n\n\
+             2. Make sure you have the correct chain type, TCR or BCR.\n\n\
+             3. Make sure you have the correct reference sequence.  See \
+             \"enclone help faq\".\n\n\
+             4. If none of these apply, please report the problem to \
+             enclone@10xgenomics.com.  But please\nfirst rerun with RE to confirm the problem.\n"
+        );
+        std::process::exit(1);
     }
-    eprintln!(
-        "\n\nHere are possible sources of this problem:\n\n\
-         1. If the file was generated using \
-         Cell Ranger version < 3.1, please either\nregenerate the file using the \
-         current Cell Ranger version, or else run this program with the RE option to\n\
-         regenerate annotations from scratch, but we warn you that this code \
-         is not guaranteed to run\ncorrectly on outdated json files.\n\n\
-         2. Make sure you have the correct chain type, TCR or BCR.\n\n\
-         3. Make sure you have the correct reference sequence.  See \
-         \"enclone help faq\".\n\n\
-         4. If none of these apply, please report the problem to \
-         enclone@10xgenomics.com.  But please\nfirst rerun with RE to confirm the problem.\n"
-    );
-    std::process::exit(1);
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -68,6 +75,7 @@ fn parse_vector_entry_from_json(
     vdj_cells: &mut Vec<String>,
     cr_version: &mut String,
     tigs: &mut Vec<TigData>,
+    exiting: &AtomicBool,
 ) {
     let v: Value = serde_json::from_str(strme(&x)).unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
@@ -299,8 +307,8 @@ fn parse_vector_entry_from_json(
     // Keep going.
 
     if tig_start < 0 || tig_stop < 0 {
-        eprintme!(tig_start, tig_stop);
-        json_error(Some(&json), &ctl);
+        let msg = format!("tig_start = {}, tig_stop = {}", tig_start, tig_stop);
+        json_error(Some(&json), &ctl, exiting, &msg);
     }
     let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
     let quals0 = v["quals"].to_string();
@@ -490,6 +498,7 @@ pub fn read_json(
             Vec::<TigData>::new(),
         ));
     }
+    let exiting = AtomicBool::new(false);
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         parse_vector_entry_from_json(
@@ -505,6 +514,7 @@ pub fn read_json(
             &mut res.1,
             &mut res.2,
             &mut res.3,
+            &exiting,
         );
     });
     for i in 0..xs.len() {
