@@ -21,7 +21,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool) {
+pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
     // The following line prevents error messages from this function from being
     // printed multiple times.
     if !exiting.swap(true, Ordering::Relaxed) {
@@ -34,6 +34,7 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
         } else {
             eprint!(".");
         }
+        eprint!("\n\npossibly relevant internal data: {}", msg);
         if ctl.gen_opt.internal_run {
             eprint!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
@@ -306,8 +307,8 @@ fn parse_vector_entry_from_json(
     // Keep going.
 
     if tig_start < 0 || tig_stop < 0 {
-        eprintme!(tig_start, tig_stop);
-        json_error(Some(&json), &ctl, exiting);
+        let msg = format!("tig_start = {}, tig_stop = {}", tig_start, tig_stop);
+        json_error(Some(&json), &ctl, exiting, &msg);
     }
     let (tig_start, tig_stop) = (tig_start as usize, tig_stop as usize);
     let quals0 = v["quals"].to_string();
