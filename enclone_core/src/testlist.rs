@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 74] = [
+pub const TESTS: [&str; 75] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -205,6 +205,8 @@ pub const TESTS: [&str; 74] = [
     // 74. this changed after a bug was fixed; the RE can probably be dropped later when we
     // rerun all the datasets
     r###"BCR=123085 RE CDR3=CARGYEDFTMKYGMDVW POUT=stdouth PCOLS=utr_id2"###,
+    // 75. this changed after a bug in RE was fixed, and this is in fact testing RE
+    r###"BCR=123085 CDR3=CQQSYSTPRTF RE"###,
 ];
 
 // List of examples in documentation.
