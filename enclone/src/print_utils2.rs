@@ -662,7 +662,11 @@ pub fn row_fill(
                 } else {
                     let mut f = Vec::<f64>::new();
                     for i in 0..fcounts.len() {
-                        f.push(100.0 * fcounts[i] / gex_mean);
+                        let mut x = 0.0;
+                        if gex_mean > 0.0 {
+                            x = 100.0 * fcounts[i] / gex_mean;
+                        }
+                        f.push(x);
                     }
                     stats.push((x.clone(), f));
                 }
