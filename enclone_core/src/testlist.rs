@@ -202,7 +202,7 @@ pub const TESTS: [&str; 74] = [
     r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
     // 73. this crashed before a bug was fixed
     r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D"###,
-    // 74. this changed after a bug was fixed; the RE can probably be dropped later when we 
+    // 74. this changed after a bug was fixed; the RE can probably be dropped later when we
     // rerun all the datasets
     r###"BCR=123085 RE CDR3=CARGYEDFTMKYGMDVW POUT=stdouth PCOLS=utr_id2"###,
 ];
