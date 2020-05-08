@@ -21,7 +21,7 @@ Optional arguments that control clonotype filtering:
 - HAVE_ONESIE: only show clonotypes including a onesie exact subclonotype
 
 Optional arguments that control miscellaneous logging:
-- DESCRIP: print sample descriptions
+- DESCRIP: print sample descriptions, and also reference info
 - REUSE: print barcode reuse (that might arise from index hopping)
 - EXACT=n: print some data about exact subclonotype n.
 

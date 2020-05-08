@@ -446,6 +446,9 @@ pub fn main_enclone(args: &Vec<String>) {
             );
             std::process::exit(1);
         }
+        if ctl.gen_opt.descrip {
+            println!("using reference = {}", ctl.gen_opt.refname);
+        }
         let fx = File::open(&ctl.gen_opt.refname);
         if fx.is_err() {
             eprintln!(
@@ -490,14 +493,23 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     } else if ctl.gen_opt.mouse {
         if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+            if ctl.gen_opt.descrip {
+                println!("using old mouse reference");
+            }
             refx = mouse_ref_old();
         } else {
+            if ctl.gen_opt.descrip {
+                println!("using new mouse reference");
+            }
             refx = mouse_ref();
         }
     } else {
         if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
             let imgt =
                 "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
+            if ctl.gen_opt.descrip {
+                println!("using imgt human reference");
+            }
             let f = open_for_read![imgt];
             for line in f.lines() {
                 let mut s = line.unwrap();
@@ -516,8 +528,14 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             ctl.gen_opt.reannotate = true;
         } else if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
+            if ctl.gen_opt.descrip {
+                println!("using old human reference");
+            }
             refx = human_ref_old();
         } else {
+            if ctl.gen_opt.descrip {
+                println!("using new human reference");
+            }
             refx = human_ref();
         }
     }
