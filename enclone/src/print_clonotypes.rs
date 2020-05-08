@@ -399,8 +399,16 @@ pub fn print_clonotypes(
 
                 // Define amino acid positions to show.
 
-                let show_aa =
-                    build_show_aa(&ctl, &rsi, &vars_amino, &shares_amino, &refdata, &dref);
+                let show_aa = build_show_aa(
+                    &ctl,
+                    &rsi,
+                    &vars_amino,
+                    &shares_amino,
+                    &refdata,
+                    &dref,
+                    &exacts,
+                    &exact_clonotypes,
+                );
 
                 // Build varmat.
 
