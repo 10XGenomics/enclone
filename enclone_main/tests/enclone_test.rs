@@ -271,8 +271,11 @@ fn test_enclone() {
         let mut log = Vec::<u8>::new();
         let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
         let mut pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+        let mut local_pre_arg =
+            format!("PRE=enclone_main/test/inputs/version{}", TEST_FILES_VERSION);
         if no_pre {
             pre_arg = String::new();
+            local_pre_arg = String::new();
         }
         if !path_exists(&out_file) && !expect_fail && !expect_ok {
             fwriteln!(log, "\nYou need to create the output file {}.\n", out_file);
@@ -286,7 +289,7 @@ fn test_enclone() {
                 log,
                 "enclone {} {} > enclone_main/test/inputs/outputs/enclone_test{}_output; \
                  git add enclone_main/test/inputs/outputs/enclone_test{}_output\n",
-                pre_arg,
+                local_pre_arg,
                 test,
                 it + 1,
                 it + 1
@@ -460,7 +463,7 @@ fn test_enclone() {
                     log,
                     "enclone {} {} \
                      > enclone_main/test/inputs/outputs/enclone_test{}_output\n",
-                    pre_arg,
+                    local_pre_arg,
                     test,
                     it + 1
                 );
