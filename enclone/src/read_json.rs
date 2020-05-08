@@ -118,6 +118,44 @@ fn parse_vector_entry_from_json(
         let x = DnaString::from_dna_string(&full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
+
+        // If there are multiple V segment alignments, possibly reduce to just one.
+
+        let mut ann2 = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut j = 0;
+        while j < ann.len() {
+            let t = ann[j].2 as usize;
+            let mut k = j + 1;
+            while k < ann.len() {
+                if refdata.segtype[ann[k].2 as usize] != refdata.segtype[t] {
+                    break;
+                }
+                k += 1;
+            }
+            if refdata.segtype[t] == "V".to_string() && k - j > 1 {
+                let mut entries = 1;
+                if j < ann.len() - 1 && ann[j + 1].2 as usize == t {
+                    if (ann[j].0 + ann[j].1 == ann[j + 1].0 && ann[j].3 + ann[j].1 < ann[j + 1].3)
+                        || (ann[j].0 + ann[j].1 < ann[j + 1].0
+                            && ann[j].3 + ann[j].1 == ann[j + 1].3)
+                    {
+                        entries = 2;
+                    }
+                }
+                for l in j..j + entries {
+                    ann2.push(ann[l].clone());
+                }
+            } else {
+                for l in j..k {
+                    ann2.push(ann[l].clone());
+                }
+            }
+            j = k;
+        }
+        ann = ann2;
+
+        // Proceed.
+
         if ctl.gen_opt.trace_barcode == barcode.to_string() {
             let mut log = Vec::<u8>::new();
             print_some_annotations(&refdata, &ann, &mut log, false);
