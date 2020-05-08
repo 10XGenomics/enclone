@@ -38,7 +38,8 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
         if ctl.gen_opt.internal_run {
             eprint!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
-                Quite possibly you are using data from a Cell Ranger run carried out using a version\n\
+                Quite possibly you are using data from a Cell Ranger run carried out using a \
+                version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
                 argument CURRENT_REF to your command line.  If that doesn't work, please see below."
             );
@@ -199,19 +200,21 @@ fn parse_vector_entry_from_json(
                 .between("\"", "\"")
                 .to_string();
             if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
-                eprintln!(
-                    "\nThere is an inconsistency between the reference \
-                     file used to create the Cell Ranger output files in\n{}\nand the \
-                     reference that enclone is using.  For example, the feature \
-                     numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
-                     You should be able to remedy this by supplying\n\
-                     REF=vdj_reference_fasta_filename as an argument to enclone.\n",
-                    json.rev_before("/"),
-                    feature_id,
-                    gene_name,
-                    refdata.name[feature_idx]
-                );
-                std::process::exit(1);
+                if !exiting.swap(true, Ordering::Relaxed) {
+                    eprintln!(
+                        "\nThere is an inconsistency between the reference \
+                         file used to create the Cell Ranger output files in\n{}\nand the \
+                         reference that enclone is using.  For example, the feature \
+                         numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
+                         You should be able to remedy this by supplying\n\
+                         REF=vdj_reference_fasta_filename as an argument to enclone.\n",
+                        json.rev_before("/"),
+                        feature_id,
+                        gene_name,
+                        refdata.name[feature_idx]
+                    );
+                    std::process::exit(1);
+                }
             }
             if region_type == "L-REGION+V-REGION" && ref_start == 0 {
                 let chain = a["feature"]["chain"]
