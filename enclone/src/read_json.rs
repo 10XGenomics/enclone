@@ -154,6 +154,12 @@ fn parse_vector_entry_from_json(
                 }
                 if ann[i].3 == 0 {
                     tig_start = ann[i].0 as isize;
+                    if tig_start > cdr3_start as isize {
+                        panic!(
+                            "Something is wrong with the CDR3 start for this contig:\n\n{}.",
+                            &full_seq
+                        );
+                    }
                     cdr3_start -= tig_start as usize;
                 }
                 v_stop = (ann[i].0 + ann[i].1) as usize;
