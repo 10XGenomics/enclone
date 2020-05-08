@@ -459,7 +459,7 @@ fn test_enclone() {
                 fwriteln!(
                     log,
                     "enclone {} {} \
-                     > test/inputs/outputs/enclone_test{}_output\n",
+                     > enclone_main/test/inputs/outputs/enclone_test{}_output\n",
                     pre_arg,
                     test,
                     it + 1
