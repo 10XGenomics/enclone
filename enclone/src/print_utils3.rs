@@ -369,6 +369,7 @@ pub fn insert_reference_rows(
                     }
                     bcs.sort();
                     eprintln!("\ncz = {}", cz);
+                    eprintln!("pass = {}", pass);
                     eprintln!("seq_del.len() = {}", rsi.seq_del_lens[cz]);
                     eprintln!("vlen = {}", vlen);
                     eprintln!("jlen = {}", jlen);
