@@ -355,11 +355,13 @@ pub fn insert_reference_rows(
                     vlen = dref[rsi.vpids[cz].unwrap()].nt_sequence.len();
                     vseq = dref[rsi.vpids[cz].unwrap()].nt_sequence.clone();
                 }
-                vlen -= ctl.heur.ref_v_trim;
-                let jlen = refdata.refs[rsi.jids[cz]].len() - ctl.heur.ref_j_trim;
+                let mut trim = ctl.heur.ref_v_trim;
+                vlen -= trim;
+                let mut jlen = refdata.refs[rsi.jids[cz]].len() - trim;
                 let jseq = refdata.refs[rsi.jids[cz]].to_ascii_vec();
-                let gap = rsi.seq_del_lens[cz] as isize - vlen as isize - jlen as isize;
-                if gap < 0 {
+                let mut gap = rsi.seq_del_lens[cz] as isize - vlen as isize - jlen as isize;
+
+                if gap < -2 * (trim as isize) {
                     let mut bcs = Vec::<String>::new();
                     for u in 0..exacts.len() {
                         let ex = &exact_clonotypes[exacts[u]];
@@ -381,6 +383,18 @@ pub fn insert_reference_rows(
                         bcs.iter().format(",")
                     );
                 }
+
+                if gap < 0 {
+                    let mut ptrim = (-gap) / 2;
+                    if (-gap) % 2 == 1 {
+                        ptrim += 1;
+                    }
+                    vlen += ptrim as usize;
+                    jlen += ptrim as usize;
+                    gap += 2 * ptrim;
+                    trim -= ptrim as usize;
+                }
+
                 let gap = gap as usize;
                 for j in 0..vlen {
                     refseq.push(vseq[j]);
@@ -389,7 +403,7 @@ pub fn insert_reference_rows(
                     refseq.push(b'-');
                 }
                 for j in 0..jlen {
-                    refseq.push(jseq[j + ctl.heur.ref_j_trim]);
+                    refseq.push(jseq[j + trim]);
                 }
                 let mut refx = String::new();
                 let cs = rsi.cdr3_starts[cz] / 3;
