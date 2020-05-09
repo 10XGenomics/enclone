@@ -1061,7 +1061,16 @@ pub fn print_clonotypes(
                 // Insert universal and donor reference rows.
 
                 insert_reference_rows(
-                    &ctl, &rsi, &show_aa, &refdata, &dref, &row1, &mut drows, &mut rows,
+                    &ctl,
+                    &rsi,
+                    &show_aa,
+                    &refdata,
+                    &dref,
+                    &row1,
+                    &mut drows,
+                    &mut rows,
+                    &exacts,
+                    &exact_clonotypes,
                 );
 
                 // Insert horizontal line.

@@ -8,6 +8,7 @@ use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
 use io_utils::*;
+use itertools::Itertools;
 use std::io::Write;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -325,6 +326,8 @@ pub fn insert_reference_rows(
     row1: &Vec<String>,
     drows: &mut Vec<Vec<String>>,
     rows: &mut Vec<Vec<String>>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if drows.len() >= 1 {
@@ -356,7 +359,22 @@ pub fn insert_reference_rows(
                 let jlen = refdata.refs[rsi.jids[cz]].len() - ctl.heur.ref_j_trim;
                 let jseq = refdata.refs[rsi.jids[cz]].to_ascii_vec();
                 let gap = rsi.seq_del_lens[cz] as isize - vlen as isize - jlen as isize;
-                assert!(gap >= 0);
+                if gap < 0 {
+                    let mut bcs = Vec::<String>::new();
+                    for u in 0..exacts.len() {
+                        let ex = &exact_clonotypes[exacts[u]];
+                        for i in 0..ex.clones.len() {
+                            bcs.push(ex.clones[i][0].barcode.clone());
+                        }
+                    }
+                    bcs.sort();
+                    panic!(
+                        "Something is wrong because gap is {}, which is negative.\n\
+                        This is happening for the clonotype with these barcodes:\n{}.",
+                        gap,
+                        bcs.iter().format(",")
+                    );
+                }
                 let gap = gap as usize;
                 for j in 0..vlen {
                     refseq.push(vseq[j]);
