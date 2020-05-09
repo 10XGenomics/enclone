@@ -209,6 +209,11 @@ pub const TESTS: [&str; 75] = [
     r###"BCR=123085 CDR3=CQQSYSTPRTF RE"###,
 ];
 
+pub const EXTENDED_TESTS: [&str; 1] = [
+    // 1. test that used to crash on a particular barcode
+    r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
+];
+
 // List of examples in documentation.
 
 pub const EXAMPLES: [&str; 2] = [
