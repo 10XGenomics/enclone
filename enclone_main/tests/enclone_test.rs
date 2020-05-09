@@ -746,7 +746,7 @@ fn test_for_broken_links_and_spellcheck() {
                 s = s.after("<a href=\"").to_string();
             }
             for link in links {
-                eprintln!("checking link \"{}\"", link);
+                // eprintln!("checking link \"{}\"", link);
 
                 // Approach 1 to testing if link works.  This seemed to hang once in spite of
                 // the timeout.
