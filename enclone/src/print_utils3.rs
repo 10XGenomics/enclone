@@ -368,6 +368,11 @@ pub fn insert_reference_rows(
                         }
                     }
                     bcs.sort();
+                    eprintln!("\ncz = {}", cz);
+                    eprintln!("seq_del.len() = {}", rsi.seq_del_lens[cz]);
+                    eprintln!("vlen = {}", vlen);
+                    eprintln!("jlen = {}", jlen);
+                    eprintln!("gap = seq_del.len() - vlen - jlen");
                     panic!(
                         "Something is wrong because gap is {}, which is negative.\n\
                         This is happening for the clonotype with these barcodes:\n{}.",
