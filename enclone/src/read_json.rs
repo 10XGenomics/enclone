@@ -38,7 +38,8 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
         if ctl.gen_opt.internal_run {
             eprint!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
-                Quite possibly you are using data from a Cell Ranger run carried out using a version\n\
+                Quite possibly you are using data from a Cell Ranger run carried out using a \
+                version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
                 argument CURRENT_REF to your command line.  If that doesn't work, please see below."
             );
@@ -117,6 +118,44 @@ fn parse_vector_entry_from_json(
         let x = DnaString::from_dna_string(&full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
+
+        // If there are multiple V segment alignments, possibly reduce to just one.
+
+        let mut ann2 = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut j = 0;
+        while j < ann.len() {
+            let t = ann[j].2 as usize;
+            let mut k = j + 1;
+            while k < ann.len() {
+                if refdata.segtype[ann[k].2 as usize] != refdata.segtype[t] {
+                    break;
+                }
+                k += 1;
+            }
+            if refdata.segtype[t] == "V".to_string() && k - j > 1 {
+                let mut entries = 1;
+                if j < ann.len() - 1 && ann[j + 1].2 as usize == t {
+                    if (ann[j].0 + ann[j].1 == ann[j + 1].0 && ann[j].3 + ann[j].1 < ann[j + 1].3)
+                        || (ann[j].0 + ann[j].1 < ann[j + 1].0
+                            && ann[j].3 + ann[j].1 == ann[j + 1].3)
+                    {
+                        entries = 2;
+                    }
+                }
+                for l in j..j + entries {
+                    ann2.push(ann[l].clone());
+                }
+            } else {
+                for l in j..k {
+                    ann2.push(ann[l].clone());
+                }
+            }
+            j = k;
+        }
+        ann = ann2;
+
+        // Proceed.
+
         if ctl.gen_opt.trace_barcode == barcode.to_string() {
             let mut log = Vec::<u8>::new();
             print_some_annotations(&refdata, &ann, &mut log, false);
@@ -153,6 +192,12 @@ fn parse_vector_entry_from_json(
                 }
                 if ann[i].3 == 0 {
                     tig_start = ann[i].0 as isize;
+                    if tig_start > cdr3_start as isize {
+                        panic!(
+                            "Something is wrong with the CDR3 start for this contig:\n\n{}.",
+                            &full_seq
+                        );
+                    }
                     cdr3_start -= tig_start as usize;
                 }
                 v_stop = (ann[i].0 + ann[i].1) as usize;
@@ -199,19 +244,21 @@ fn parse_vector_entry_from_json(
                 .between("\"", "\"")
                 .to_string();
             if refdata.name[feature_idx] != gene_name && !accept_inconsistent {
-                eprintln!(
-                    "\nThere is an inconsistency between the reference \
-                     file used to create the Cell Ranger output files in\n{}\nand the \
-                     reference that enclone is using.  For example, the feature \
-                     numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
-                     You should be able to remedy this by supplying\n\
-                     REF=vdj_reference_fasta_filename as an argument to enclone.\n",
-                    json.rev_before("/"),
-                    feature_id,
-                    gene_name,
-                    refdata.name[feature_idx]
-                );
-                std::process::exit(1);
+                if !exiting.swap(true, Ordering::Relaxed) {
+                    eprintln!(
+                        "\nThere is an inconsistency between the reference \
+                         file used to create the Cell Ranger output files in\n{}\nand the \
+                         reference that enclone is using.  For example, the feature \
+                         numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
+                         You should be able to remedy this by supplying\n\
+                         REF=vdj_reference_fasta_filename as an argument to enclone.\n",
+                        json.rev_before("/"),
+                        feature_id,
+                        gene_name,
+                        refdata.name[feature_idx]
+                    );
+                    std::process::exit(1);
+                }
             }
             if region_type == "L-REGION+V-REGION" && ref_start == 0 {
                 let chain = a["feature"]["chain"]

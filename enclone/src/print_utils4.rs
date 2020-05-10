@@ -5,6 +5,7 @@ use amino::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use equiv::EquivRel;
+use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::*;
@@ -175,6 +176,8 @@ pub fn build_show_aa(
     shares_amino: &Vec<Vec<usize>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
 ) -> Vec<Vec<usize>> {
     let cols = rsi.vids.len();
     let mut show_aa = vec![Vec::<usize>::new(); cols];
@@ -218,7 +221,22 @@ pub fn build_show_aa(
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
-            assert!(gap >= 0);
+            if gap < 0 {
+                let mut bcs = Vec::<String>::new();
+                for u in 0..exacts.len() {
+                    let ex = &exact_clonotypes[exacts[u]];
+                    for i in 0..ex.clones.len() {
+                        bcs.push(ex.clones[i][0].barcode.clone());
+                    }
+                }
+                bcs.sort();
+                panic!(
+                    "Something is wrong because gap is {}, which is negative.\n\
+                    This is happening for the clonotype with these barcodes:\n{}.",
+                    gap,
+                    bcs.iter().format(",")
+                );
+            }
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
                     show_aa[cx].push(j / 3);

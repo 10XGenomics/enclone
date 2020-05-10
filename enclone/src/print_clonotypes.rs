@@ -399,8 +399,16 @@ pub fn print_clonotypes(
 
                 // Define amino acid positions to show.
 
-                let show_aa =
-                    build_show_aa(&ctl, &rsi, &vars_amino, &shares_amino, &refdata, &dref);
+                let show_aa = build_show_aa(
+                    &ctl,
+                    &rsi,
+                    &vars_amino,
+                    &shares_amino,
+                    &refdata,
+                    &dref,
+                    &exacts,
+                    &exact_clonotypes,
+                );
 
                 // Build varmat.
 
@@ -863,8 +871,19 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
-                // Apply bounds.
+                // Apply bounds.  Before sorting we check for non-numbers because otherwise you'll
+                // get an inscrutable traceback.
 
+                for i in 0..stats.len() {
+                    for j in 0..stats[i].1.len() {
+                        if !stats[i].1[j].is_finite() {
+                            panic!(
+                                "About to sort but there's a non-finite value, which would \
+                                cause the sort to fail.  This is a bug."
+                            );
+                        }
+                    }
+                }
                 stats.sort_by(|a, b| a.partial_cmp(b).unwrap());
                 let mut stats2 = Vec::<(String, Vec<f64>)>::new();
                 let mut i = 0;
@@ -1042,7 +1061,16 @@ pub fn print_clonotypes(
                 // Insert universal and donor reference rows.
 
                 insert_reference_rows(
-                    &ctl, &rsi, &show_aa, &refdata, &dref, &row1, &mut drows, &mut rows,
+                    &ctl,
+                    &rsi,
+                    &show_aa,
+                    &refdata,
+                    &dref,
+                    &row1,
+                    &mut drows,
+                    &mut rows,
+                    &exacts,
+                    &exact_clonotypes,
                 );
 
                 // Insert horizontal line.
