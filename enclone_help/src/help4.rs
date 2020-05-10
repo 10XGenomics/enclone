@@ -644,7 +644,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "clen",
             "length of observed constant region (usually truncated at primer start)",
         );
-        h.doc("ulen", "length of observed 5'-UTR sequence");
+        h.doc("ulen", "length of observed 5'-UTR sequence;");
+        h.doc(
+            "",
+            "note however that what report is just the start of the V segment",
+        );
+        h.doc(
+            "",
+            "on the contig, and thus the length may include junk before the UTR",
+        );
         h.doc(
             "cdiff",
             "differences with universal reference constant region, shown in the",

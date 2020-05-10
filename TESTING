@@ -4,7 +4,8 @@ Notes on testing:
 
 2. Test with
    cargo t
-   assuming that the full set of datasets is available.  
+   assuming that the full set of datasets is available.  They would have to be in
+   the "right" place, and it's not entirely specified where that is.
    (This automatically runs with -- --nocapture.)
    Otherwise use instead:
    cd enclone; cargo test --features basic -- --nocapture
