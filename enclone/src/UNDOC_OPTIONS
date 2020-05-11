@@ -118,6 +118,8 @@ LVARS entries
   in PCA space is ≤ n.  This is only implemented for PER_CELL.
   This uses the file analysis_csv/pca/10_components/projection.csv.
   WARNING: this only makes sense if you have one dataset--this condition is not checked.
+- npe<n> = total number of cells in this clonotype that are within PCA distance n of this cell
+- ppe<n> = percent of all gex cells within PCA distance n of this cell that are in this clonotype
 
 IMGT: specify the IMGT reference, only implemented for human, forces RE so slow
 How this reference was created
