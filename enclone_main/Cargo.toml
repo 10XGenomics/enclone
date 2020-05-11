@@ -30,11 +30,6 @@ string_utils = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vector_utils = "0.1.0"
 
-[build-dependencies]
-chrono = "0.4.11"
-prost-build = "0.5.0"
-string_utils = "0.1.1"
-
 [dependencies.hdf5]
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
