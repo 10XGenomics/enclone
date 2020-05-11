@@ -6,9 +6,6 @@
 // This was originally engineered without PrettyTrace, but the problem with this was that if the
 // test failed, you get a godawful mess that is impossible to distangle.
 
-extern crate pretty_trace;
-extern crate rayon;
-
 use pretty_trace::*;
 use rayon::prelude::*;
 
@@ -45,7 +42,7 @@ fn test_traceback1() {
              ▓▓▓ traceback begins with\n{}",
             morsel,
             env!("CARGO_PKG_VERSION"),
-            env!("VERSION_STRING"),
+            version_string(),
             head,
         );
         std::process::exit(1);
