@@ -197,25 +197,15 @@ fn test_licenses() {
 
 #[test]
 fn test_formatting() {
-    let mut rs = Vec::<String>::new();
-    let src = read_dir("src").unwrap();
-    for x in src {
-        let x = x.unwrap().path();
-        let x = x.to_str().unwrap();
-        if x.ends_with(".rs") {
-            rs.push(x.to_string());
-        }
-    }
-    rs.push("build.rs".to_string());
-    rs.push("tests/enclone_test.rs".to_string());
-    use itertools::Itertools;
-    let new = Command::new("rustfmt")
+    let new = Command::new("cargo-fmt")
+        .arg("--all")
+        .arg("--")
         .arg("--check")
-        .args(&rs)
         .output()
         .expect(&format!("failed to execute test_formatting"));
     if new.status.code().unwrap() != 0 {
         eprintln!("\nYou need to run rustfmt.\n");
+        eprintln!("{}\n", strme(&new.stdout));
         std::process::exit(1);
     }
 }
