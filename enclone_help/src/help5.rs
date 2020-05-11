@@ -4,10 +4,9 @@
 
 use crate::help_utils::*;
 use ansi_escape::*;
+use enclone_core::*;
 use enclone_core::defs::*;
 use string_utils::*;
-
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -332,7 +331,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\nversion {}.\n",
-                VERSION_STRING
+                version_string()
             ));
         } else {
             h.print(

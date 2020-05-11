@@ -3,12 +3,11 @@
 // Test for help request.
 
 use crate::help_utils::*;
+use enclone_core::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use std::env;
 use string_utils::*;
-
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -159,7 +158,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             h.print(&format!(
                 "{} : {}.\n\n",
                 env!("CARGO_PKG_VERSION"),
-                VERSION_STRING
+                version_string()
             ));
         } else {
             h.print("(your enclone version information will be printed here).\n\n");
