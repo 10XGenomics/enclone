@@ -353,6 +353,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\\boldblue{17. Can I print the enclone version?}\n\n");
         h.print("Yes, type \"enclone version\".\n\n");
 
+        h.print("\\boldblue{18. Can enclone ingest multiple datasets from the same library?}\n\n");
+        h.print(
+            "If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  \
+            This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}."
+        );
+
         h.end_doc();
     }
 

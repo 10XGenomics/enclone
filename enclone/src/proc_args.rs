@@ -394,8 +394,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_group_opt.vj_refname = true;
         } else if is_simple_arg(&arg, "NPLAIN") {
             ctl.pretty = true;
-        } else if is_simple_arg(&arg, "NO_REUSE") {
-            ctl.gen_opt.no_reuse = true;
+        } else if is_simple_arg(&arg, "ACCEPT_REUSE") {
+            ctl.gen_opt.accept_reuse = true;
         } else if is_simple_arg(&arg, "NOPAGER") {
         } else if is_simple_arg(&arg, "NOPRINT") {
             ctl.gen_opt.noprint = true;

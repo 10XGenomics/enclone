@@ -566,7 +566,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "attohttpc 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",

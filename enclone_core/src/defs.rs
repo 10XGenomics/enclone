@@ -335,7 +335,7 @@ pub struct GeneralOpt {
     pub proto: String,
     pub h5: bool,
     pub h5_pre: bool,
-    pub no_reuse: bool,
+    pub accept_reuse: bool,
     pub descrip: bool,
     pub ext: String,
     pub extc: HashMap<(String, String), String>,
