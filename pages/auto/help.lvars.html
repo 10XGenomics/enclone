@@ -59,9 +59,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 └───────────────┴────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
-● Example: IG.*_g matches all genes that begin with IG.  The regular expression must be in the
-alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it contains a
-character in []()|*.  See "enclone help filter" for more information about regular expressions.
+● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
+begin with TRA or TRB.  Double quotes as in <span style="font-weight:bold;">LVARS="..."</span> may be needed.  The regular expression
+must be in the alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it
+contains a character in []()|*.  See "enclone help filter" for more information about regular
+expressions.
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
