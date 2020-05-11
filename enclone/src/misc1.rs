@@ -185,7 +185,7 @@ pub fn lookup_heavy_chain_reuse(
 // 5. Informatic mixup of libraries.
 // 6. Nothing other than a low probability event (unlikely).
 //
-// Note that in case 1, we have evidence that a plasma cell or permblast existed in the
+// Note that in case 1, we have evidence that a plasma cell or plasmablast existed in the
 // original cells that were drawn (perhaps breaking up in the process of drawing), and was
 // subsequently distintegrated.
 
