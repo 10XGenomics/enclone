@@ -22,6 +22,7 @@ use enclone::proc_args2::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone_core::defs::*;
+use enclone_core::*;
 use enclone_help::help1::*;
 use enclone_help::help2::*;
 use enclone_help::help3::*;
@@ -44,8 +45,6 @@ use std::{
 use string_utils::*;
 use vector_utils::*;
 
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
-
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
@@ -53,7 +52,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     {
         if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
-            println!("{} : {}", env!("CARGO_PKG_VERSION"), VERSION_STRING);
+            println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
             std::process::exit(0);
         }
         let mut args = args.clone();
@@ -202,7 +201,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     {} : {}.\n\n\
                     Thank you and have a nice day!",
                     env!("CARGO_PKG_VERSION"),
-                    VERSION_STRING
+                    version_string()
                 );
             } else {
                 exit_message = format!(

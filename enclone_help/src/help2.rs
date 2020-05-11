@@ -3,9 +3,9 @@
 // Test for help request.
 
 use crate::help_utils::*;
-use enclone_core::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use std::env;
 use string_utils::*;
 
