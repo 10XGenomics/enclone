@@ -12,7 +12,8 @@ SUMMARY STATISTICS
    • number of clonotypes having 2 chains = 304
    • number of clonotypes having 3 chains = 12
    • number of clonotypes having 4 chains = 2
-   • mean over middle third of contig UMI counts = 814.40
+   • mean over middle third of contig UMI counts (heavy chain/ TRB) = 319.42
+   • mean over middle third of contig UMI counts (light chain/ TRA) = 1701.26
    ┌───────────────────┐
    │sample  donor     n│
    ├───────────────────┤

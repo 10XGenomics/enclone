@@ -553,29 +553,44 @@ pub fn group_and_print_clonotypes(
         }
     }
 
-    // Compute a umi stat.
+    // Compute two umi stats.
 
     let nclono = exacts.len();
-    let mut umis = Vec::<usize>::new();
+    let mut umish = Vec::<usize>::new();
+    let mut umisl = Vec::<usize>::new();
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
             for k in 0..ex.clones.len() {
-                for l in 0..ex.clones[k].len() {
-                    umis.push(ex.clones[k][l].umi_count);
+                for l in 0..ex.share.len() {
+                    if ex.share[l].left {
+                        umish.push(ex.clones[k][l].umi_count);
+                    } else {
+                        umisl.push(ex.clones[k][l].umi_count);
+                    }
                 }
             }
         }
     }
-    umis.sort();
-    let (mut middle, mut denom) = (0, 0);
-    for j in umis.len() / 3..(2 * umis.len()) / 3 {
-        middle += umis[j];
-        denom += 1;
+    umish.sort();
+    umisl.sort();
+    let (mut middleh, mut denomh) = (0, 0);
+    for j in umish.len() / 3..(2 * umish.len()) / 3 {
+        middleh += umish[j];
+        denomh += 1;
     }
-    let mut middle_mean_umis = 0.0;
-    if denom > 0 {
-        middle_mean_umis = (middle as f64) / (denom as f64);
+    let mut middle_mean_umish = 0.0;
+    if denomh > 0 {
+        middle_mean_umish = (middleh as f64) / (denomh as f64);
+    }
+    let (mut middlel, mut denoml) = (0, 0);
+    for j in umisl.len() / 3..(2 * umisl.len()) / 3 {
+        middlel += umisl[j];
+        denoml += 1;
+    }
+    let mut middle_mean_umisl = 0.0;
+    if denoml > 0 {
+        middle_mean_umisl = (middlel as f64) / (denoml as f64);
     }
 
     // Compute n23.
@@ -683,8 +698,13 @@ pub fn group_and_print_clonotypes(
         }
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts = {:.2}",
-            middle_mean_umis,
+            "   • mean over middle third of contig UMI counts (heavy chain/ TRB) = {:.2}",
+            middle_mean_umish,
+        );
+        fwriteln!(
+            logx,
+            "   • mean over middle third of contig UMI counts (light chain/ TRA) = {:.2}",
+            middle_mean_umisl,
         );
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
@@ -718,8 +738,8 @@ pub fn group_and_print_clonotypes(
     // Print summary csv stats.
 
     if ctl.gen_opt.summary_csv {
-        println!("\nmiddle_mean_umis,n_twothreesie");
-        println!("{:.2},{}", middle_mean_umis, n23);
+        println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,,n_twothreesie");
+        println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
     }
 
     // Print to stdout.
