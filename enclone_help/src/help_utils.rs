@@ -221,10 +221,10 @@ impl HelpDesk {
                 } else {
                     count += 1;
                     if count > 100 {
-                        eprintln!("\nHelp line is too long:\n{}", line);
-                        eprintln!("Try running with LONG_HELP to locate the problem.");
+                        eprintln!("\nHelp line is too long:\n\n{}", line);
+                        eprintln!("\nTry running with LONG_HELP to locate the problem.\n");
+                        std::process::exit(1);
                     }
-                    assert!(count <= 100);
                 }
             }
         }
