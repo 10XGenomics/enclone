@@ -355,6 +355,7 @@ pub struct GeneralOpt {
     pub gene_scan_control: Option<LinearCondition>,
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
+    pub plot_by_isotype: bool,
     pub sample_color_map: HashMap<String, String>,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,

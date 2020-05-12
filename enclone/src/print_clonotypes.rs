@@ -1638,7 +1638,7 @@ pub fn print_clonotypes(
 
     // Plot clonotypes.
 
-    plot_clonotypes(&ctl, &exacts, &exact_clonotypes);
+    plot_clonotypes(&ctl, &refdata, &exacts, &exact_clonotypes);
 
     // Tally low gene expression count.
     // WARNING: THIS MAY ONLY WORK IF YOU RUN WITH CLONES=1 AND NO OTHER FILTERS.
