@@ -14,21 +14,27 @@
 enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
 You can see an example at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
-enclone provides three ways to assign colors in such a plot.  We describe them in order of
+enclone provides four ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.
 
-The first way is to use the argument
+<span style="color:#c23621;font-weight:bold;">1.</span> The first way is to use the argument
 <span style="font-weight:bold;">PLOT="filename,sample1->color1,...,samplen->colorn"</span>
 which creates an svg file of the given name, and assigns the given colors to the given samples. 
 Unspecified samples will be black.
 
-The second way is to provide simply
+<span style="color:#c23621;font-weight:bold;">2.</span> The second way is to provide simply
 <span style="font-weight:bold;">PLOT=filename</span>
 on the command line, and then provide the <span style="font-weight:bold;">color</span> field in the CSV defined by the <span style="font-weight:bold;">META</span> option.  This
 assigns a color to each dataset.
 
-The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
+<span style="color:#c23621;font-weight:bold;">3.</span> The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
 the <span style="font-weight:bold;">bc</span> field for <span style="font-weight:bold;">META</span>.
+
+<span style="color:#c23621;font-weight:bold;">4.</span> The fourth way is <span style="font-weight:bold;">PLOT_BY_ISOTYPE=filename</span>.  This plots by heavy chain constant region name and
+labels accordingly.  (This only makes sense for BCR.) Some cells may be labeled "unassigned", for
+one of three reasons: (1) no heavy chain was found; (2) no constant region was found; (3) two
+heavy chains were found and had conflicting constant region names.  Currently a maximum of 12
+constant region names is allowed.  Let us know if you have more and we will fix this.
 
 The colors should be valid colors for use in an svg file.  They can be named colors like red or
 blue (see <span style="color:#25bc24;">https://www.w3.org/TR/SVG11/types.html#ColorKeywords</span> for a full list) or a hex
