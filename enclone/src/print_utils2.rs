@@ -473,6 +473,8 @@ pub fn row_fill(
                     }
                     let pc = 100.0 * creds as f64 / top as f64;
                     credsx.push(pc);
+                } else {
+                    credsx.push(0.0);
                 }
             }
             credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
