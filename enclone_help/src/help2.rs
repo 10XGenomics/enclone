@@ -238,7 +238,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              chain was found; (2) no constant region was found; (3) two heavy chains were found \
              and had conflicting constant region names.  Currently a maximum of 12 constant \
              region names is allowed.  Let us know if you have more and we will fix this.  \
-             Note that \\bold{PLOT_BY_ISOTYPE} cannot be used with \\bold{PLOT} \
+             Note that\n\\bold{PLOT_BY_ISOTYPE} cannot be used with \\bold{PLOT} \
              or \\bold{LEGEND}.\n\n\
              \
              The colors should be valid colors for use in an svg file.  They can be named colors \
