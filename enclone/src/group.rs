@@ -491,6 +491,19 @@ pub fn group_and_print_clonotypes(
                                         if vals.len() > 1 {
                                             id = m;
                                         }
+                                        if id >= vals.len() {
+                                            panic!(
+                                                "id >= vals.len() where id = {} and vals.len() \
+                                                = {},\nparseable variable = {}, barcodes include \
+                                                {}, n = {}, y[c] = {}",
+                                                id,
+                                                vals.len(),
+                                                c,
+                                                ex.clones[0][0].barcode,
+                                                n,
+                                                y[c],
+                                            );
+                                        }
                                         let val = vals[id];
                                         if !val.contains(',') {
                                             if ctl.parseable_opt.pout != "stdout".to_string() {
