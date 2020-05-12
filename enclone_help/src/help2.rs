@@ -5,10 +5,9 @@
 use crate::help_utils::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use std::env;
 use string_utils::*;
-
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -159,7 +158,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             h.print(&format!(
                 "{} : {}.\n\n",
                 env!("CARGO_PKG_VERSION"),
-                VERSION_STRING
+                version_string()
             ));
         } else {
             h.print("(your enclone version information will be printed here).\n\n");
@@ -216,21 +215,33 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              dots, one per cell.  You can see an example at \
              \\green{bit.ly/enclone}.\n\n\
              \
-             enclone provides three ways to assign colors in such a plot.  We describe them in \
+             enclone provides four ways to assign colors in such a plot.  We describe them in \
              order of precedence, i.e. color data for the first will be used if provided, etc.\n\n\
              \
-             The first way is to use the argument\n\
+             \\boldred{1.} The first way is to use the argument\n\
              \\bold{PLOT=\"filename,sample1->color1,...,samplen->colorn\"}\n\
              which creates an svg file of the given name, and assigns the given colors to the \
              given samples.  Unspecified samples will be black.\n\n\
              \
-             The second way is to provide simply\n\
+             \\boldred{2.} The second way is to provide simply\n\
              \\bold{PLOT=filename}\non the command line, and then provide the \\bold{color} field \
              in the CSV defined by the \\bold{META} option.  This assigns a color to each \
              dataset.\n\n\
              \
-             The third way is to use the simple \\bold{PLOT} specification, and assign a color to \
-             each barcode using the \\bold{bc} field for \\bold{META}.\n\n\
+             \\boldred{3.} The third way is to use the simple \\bold{PLOT} specification, and \
+             assign a color to each barcode using the \\bold{bc} field for \\bold{META}.\n\n\
+             \
+             \\boldred{4.} The fourth way is \\bold{PLOT_BY_ISOTYPE=filename}.  This plots by \
+             heavy \
+             chain constant region name and labels accordingly.  (This only makes sense for BCR.) \
+             Some cells may be labeled \"unassigned\", for one of three reasons: (1) no heavy \
+             chain was found; (2) no constant region was found; (3) two heavy chains were found \
+             and had conflicting constant region names.  Running with \\bold{MIN_CHAINS_EXACT=2} \
+             is usually a good idea to avoid noise coming from cells for which only a light \
+             chain was detected.  Currently a maximum of 12 constant \
+             region names is allowed.  Let us know if you have more and we will fix this.  \
+             Note that \\bold{PLOT_BY_ISOTYPE} cannot be used with \\bold{PLOT} \
+             or \\bold{LEGEND}.\n\n\
              \
              The colors should be valid colors for use in an svg file.  They can be named colors \
              like red or blue (see \

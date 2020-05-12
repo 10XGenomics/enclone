@@ -22,21 +22,28 @@
 </li>
 <li>
 <p>You need to have the Rust compiler installed. Detailed instructions on how to do this
-can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can confirm that you
+can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can 
+confirm that you
 have successfully installed the Rust compiler by running <code>rustc --version</code>.</p>
 </li>
 
 <li>
-<p>Clone the <code>enclone</code> repository and build <code>enclone</code> using Cargo (which comes with Rust) by running:</p>
-<code>git clone git@github.com:10XGenomics/enclone.git
+<p>Clone the <code>enclone</code> repository and build <code>enclone</code> using Cargo (which 
+comes with Rust) by running:</p>
+<pre><code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code>
+<code>cd enclone</code>
+<code>cargo b</code></pre>
 
-cargo build --bin enclone
-</code>
+(The <code>--depth=1</code> part avoids downloading history, which is faster, but if you want
+the history, exclude that argument.)
 
-<p>         and then put <code>target/debug/enclone</code> in your path. This can be done in multiple ways, including running
-        <code>PATH=$PATH:~/where/you/cloned/enclone/target/debug/enclone</code>.
-See also <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path" rel="nofollow">this helpful post on StackExchange</a>.</p>
-<p>         Compilation takes 8-10 minutes on a 2017 MacBook Pro with a dual-core i7 and 5-7 minutes on a similar Linux machine.</p>
+<p>and then add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>.  
+See <a href="../pages/path.html">this</a> for help.
+
+<p>         
+Compilation takes 8-10 minutes on a 2017 MacBook Pro with a dual-core i7 and 5-7 minutes on a 
+similar Linux machine.
+</p>
 
 </li>
 
@@ -46,10 +53,12 @@ See also <a href="https://unix.stackexchange.com/questions/26047/how-to-correctl
 <li>
 <p>Copy the directory <code>enclone/test/inputs</code> to somewhere you can point to, or just leave it
 where it is.  These are test data you can play with; you can also supply your own output
-from a Cell Ranger immune profiling run (so long as there is an <code>all_contig_annotations.json</code> output).
-When you read the documentation at step 6, you'll get to a place where you put <code>PRE=enclone/test/inputs</code>
-or instead with the path where your copied data reside.  But you need to supply <code>PRE</code> with a path that
-makes sense relative to your working directory.</p>
+from a Cell Ranger immune profiling run (so long as there is an 
+<code>all_contig_annotations.json</code> output).
+When you read the documentation at step 6, you'll get to a place where you put 
+<code>PRE=enclone/test/inputs</code>
+or instead with the path where your copied data reside.  But you need to supply 
+<code>PRE</code> with a path that makes sense relative to your working directory.</p>
 </li>
 <li>
 <p>Type <code>enclone help</code>, and read the terminal setup instructions there.</p>
@@ -60,13 +69,13 @@ makes sense relative to your working directory.</p>
 <li>
 <p>If you want to run the built-in tests, type</p>
 
-<code>cargo test -- --nocapture
-</code>
+<pre><code>cargo t</code></pre>
 
 </li>
 </ol>
 
-<p>If you have problems, please write to us at <a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.</p>
+<p>If you have problems, please write to us at 
+<a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.</p>
 
 </body>
 </html>

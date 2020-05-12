@@ -1,13 +1,10 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Check that an out-of-range reference within a rayon parallel loop yields a correct traceback.
-// Make sure that line 20 stays as line 20.  Otherwise change the reference to traceback1.rs:20.
+// Make sure that line 17 stays as line 17.  Otherwise change the reference to traceback1.rs:17.
 //
 // This was originally engineered without PrettyTrace, but the problem with this was that if the
 // test failed, you get a godawful mess that is impossible to distangle.
-
-extern crate pretty_trace;
-extern crate rayon;
 
 use pretty_trace::*;
 use rayon::prelude::*;
@@ -17,7 +14,7 @@ fn main() {
     let z = vec![0; 100];
     let mut x = vec![0; 100];
     x.par_iter_mut().for_each(|r| {
-        let _ = z[100 + *r]; // line 20!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        let _ = z[100 + *r]; // line 17!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     });
 }
 
@@ -25,12 +22,13 @@ fn main() {
 fn test_traceback1() {
     extern crate assert_cmd;
     use assert_cmd::prelude::*;
+    use enclone_core::*;
     use std::{env, process::Command};
     let mut cmd = Command::cargo_bin("traceback1").unwrap();
     let cmd = cmd
         .output()
         .expect(&format!("very strange, failed to execute test_traceback1"));
-    let morsel = "traceback1.rs:20";
+    let morsel = "traceback1.rs:17";
     let err = std::str::from_utf8(&cmd.stderr).unwrap();
     if !err.contains(&morsel) {
         let mut head = String::new();
@@ -45,7 +43,7 @@ fn test_traceback1() {
              ▓▓▓ traceback begins with\n{}",
             morsel,
             env!("CARGO_PKG_VERSION"),
-            env!("VERSION_STRING"),
+            version_string(),
             head,
         );
         std::process::exit(1);

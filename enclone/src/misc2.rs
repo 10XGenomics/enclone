@@ -462,8 +462,8 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
 // datasets were obtained from the same cDNA (from the same GEM well).
 
 pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
-    if ctl.gen_opt.no_reuse {
-        const MIN_REUSE_FRAC_TO_SHOW: f64 = 0.1;
+    if !ctl.gen_opt.accept_reuse {
+        const MIN_REUSE_FRAC_TO_SHOW: f64 = 0.25;
         let mut all = Vec::<(String, usize, usize)>::new();
         let mut total = vec![0; ctl.sample_info.dataset_id.len()];
         for i in 0..tig_bc.len() {
@@ -509,11 +509,17 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
             let frac = n as f64 / min(n1, n2) as f64;
             if frac >= MIN_REUSE_FRAC_TO_SHOW {
                 if !found {
-                    eprintln!("\nBARCODE REUSE DETECTED:\n");
+                    eprintln!("\nSignificant barcode reuse detected.  If at least 25% of the barcodes \
+                        in one dataset\nare present in another dataset, is is likely that two datasets \
+                        arising from the\nsame library were included as input to enclone.  Since this \
+                        would normally occur\nonly by accident, enclone exits.  \
+                        If you wish to override this behavior,\nplease rerun with the argument \
+                        ACCEPT_REUSE.\n\nHere are the instances of reuse that were observed:\n"
+                    );
                     found = true;
                 }
                 eprintln!(
-                    "{}, {} ==> {} of {}, {} ({:.1}%)",
+                    "{}, {} ==> {} of {}, {} barcodes ({:.1}%)",
                     ctl.sample_info.dataset_id[l1],
                     ctl.sample_info.dataset_id[l2],
                     n,

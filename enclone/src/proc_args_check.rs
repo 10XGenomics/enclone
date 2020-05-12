@@ -412,9 +412,15 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
 
-        // Check for pe<n>.
+        // Check for pe<n> and npe<n> and ppe<n>.
 
         if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {
+            continue;
+        }
+        if x.starts_with("npe") && x.after("npe").parse::<usize>().is_ok() {
+            continue;
+        }
+        if x.starts_with("ppe") && x.after("ppe").parse::<usize>().is_ok() {
             continue;
         }
 

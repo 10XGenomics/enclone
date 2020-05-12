@@ -418,6 +418,10 @@ pub fn row_fill(
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
+        } else if x.starts_with("npe") {
+            lvar![i, x, format!("")];
+        } else if x.starts_with("ppe") {
+            lvar![i, x, format!("")];
         } else if x == "cred" || x == "cred_cell" {
             let mut credsx = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
