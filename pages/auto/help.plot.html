@@ -33,9 +33,10 @@ the <span style="font-weight:bold;">bc</span> field for <span style="font-weight
 <span style="color:#c23621;font-weight:bold;">4.</span> The fourth way is <span style="font-weight:bold;">PLOT_BY_ISOTYPE=filename</span>.  This plots by heavy chain constant region name and
 labels accordingly.  (This only makes sense for BCR.) Some cells may be labeled "unassigned", for
 one of three reasons: (1) no heavy chain was found; (2) no constant region was found; (3) two
-heavy chains were found and had conflicting constant region names.  Currently a maximum of 12
-constant region names is allowed.  Let us know if you have more and we will fix this.  Note that
-<span style="font-weight:bold;">PLOT_BY_ISOTYPE</span> cannot be used with <span style="font-weight:bold;">PLOT</span> or <span style="font-weight:bold;">LEGEND</span>.
+heavy chains were found and had conflicting constant region names.  Running with <span style="font-weight:bold;">MIN_CHAINS_EXACT=2</span>
+is usually a good idea to avoid noise coming from cells for which only a light chain was detected.
+ Currently a maximum of 12 constant region names is allowed.  Let us know if you have more and we
+will fix this.  Note that <span style="font-weight:bold;">PLOT_BY_ISOTYPE</span> cannot be used with <span style="font-weight:bold;">PLOT</span> or <span style="font-weight:bold;">LEGEND</span>.
 
 The colors should be valid colors for use in an svg file.  They can be named colors like red or
 blue (see <span style="color:#25bc24;">https://www.w3.org/TR/SVG11/types.html#ColorKeywords</span> for a full list) or a hex

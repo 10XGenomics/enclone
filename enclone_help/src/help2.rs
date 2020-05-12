@@ -236,9 +236,11 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              chain constant region name and labels accordingly.  (This only makes sense for BCR.) \
              Some cells may be labeled \"unassigned\", for one of three reasons: (1) no heavy \
              chain was found; (2) no constant region was found; (3) two heavy chains were found \
-             and had conflicting constant region names.  Currently a maximum of 12 constant \
+             and had conflicting constant region names.  Running with \\bold{MIN_CHAINS_EXACT=2} \
+             is usually a good idea to avoid noise coming from cells for which only a light \
+             chain was detected.  Currently a maximum of 12 constant \
              region names is allowed.  Let us know if you have more and we will fix this.  \
-             Note that\n\\bold{PLOT_BY_ISOTYPE} cannot be used with \\bold{PLOT} \
+             Note that \\bold{PLOT_BY_ISOTYPE} cannot be used with \\bold{PLOT} \
              or \\bold{LEGEND}.\n\n\
              \
              The colors should be valid colors for use in an svg file.  They can be named colors \
