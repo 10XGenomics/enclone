@@ -70,8 +70,6 @@ Other optional arguments:
 - HEAVY_CHAIN_REUSE: look for instances of heavy chain reuse
 - BINARY=filename: generate binary output file
 - PROTO=filename: generate proto output file
-- NO_REUSE: exit if significant barcode reuse found, intended to detect accidental inclusion
-            of multiple datasets from the same cDNA from the same GEM well
 - DUMP_INTERNAL_IDS: special option to dump the list of internal ids and exit.
 - TOY: toy with phylogeny
 
