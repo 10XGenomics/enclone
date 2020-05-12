@@ -5,11 +5,9 @@
 // of https://vallentin.dev/2019/06/06/versioning.
 
 extern crate chrono;
-extern crate prost_build;
 extern crate string_utils;
 
 use chrono::prelude::*;
-use prost_build::Config;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;
 use string_utils::*;
@@ -31,8 +29,6 @@ fn main() {
         ARCH
     );
     println!("cargo:rustc-env=VERSION_STRING={}", version_string);
-    let mut config = Config::new();
-    config.type_attribute(".", "#[derive(::serde::Serialize, ::serde::Deserialize)]");
 }
 
 fn get_commit_hash() -> String {

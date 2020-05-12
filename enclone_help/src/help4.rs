@@ -542,9 +542,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              as input to enclone.\n\n",
         );
         h.print(
-            "● Example: IG.*_g matches all genes that begin with IG.  The regular expression must \
-             be in the alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression \
-             if it contains a character in []()|*.  See \"enclone help filter\" \
+            "● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches \
+             all genes that begin with TRA or TRB.  Double quotes as in \\bold{LVARS=\"...\"} \
+             may be needed.  The regular expression must \
+             be in the alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular \
+             expression if it contains a character in []()|*.  \
+             See \"enclone help filter\" \
              for more information about regular expressions.\n\n",
         );
         explain_alt_versions(&mut h);

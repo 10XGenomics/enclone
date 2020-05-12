@@ -6,12 +6,14 @@
 // the cells.
 
 use crate::string_width::*;
+use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -261,6 +263,7 @@ fn substitute_enclone_color(color: &mut String) {
 
 pub fn plot_clonotypes(
     ctl: &EncloneControl,
+    refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
 ) {
@@ -269,6 +272,21 @@ pub fn plot_clonotypes(
     }
     if exacts.is_empty() {
         eprintln!("\nThere are no clonotypes to plot, giving up.\n");
+        std::process::exit(1);
+    }
+
+    let mut const_names = Vec::<String>::new();
+    for id in refdata.cs.iter() {
+        if refdata.rtype[*id] == 0 {
+            const_names.push(refdata.name[*id].clone());
+        }
+    }
+    unique_sort(&mut const_names);
+    if ctl.gen_opt.plot_by_isotype && const_names.len() > 12 {
+        eprintln!(
+            "\nCurrently PLOT_BY_ISOTYPE only works if there are at most 12 constant \
+            region names.  If this is a problem, please let us know and we will generalize it.\n"
+        );
         std::process::exit(1);
     }
     let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
@@ -283,27 +301,50 @@ pub fn plot_clonotypes(
             let ex = &exact_clonotypes[exacts[i][j]];
             for j in 0..ex.clones.len() {
                 let mut color = "black".to_string();
-                if ex.clones[j][0].sample_index.is_some() {
-                    let s = &ctl.sample_info.sample_list[ex.clones[j][0].sample_index.unwrap()];
-                    samples.push(s.clone());
-                    if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
-                        color = ctl.gen_opt.sample_color_map[s].clone();
-                    }
-                }
-                if ctl.gen_opt.sample_color_map.is_empty() {
-                    let mut dataset_colors = false;
-                    for c in ctl.sample_info.color.iter() {
-                        if !c.is_empty() {
-                            dataset_colors = true;
+
+                // Determine color for PLOT_BY_ISOTYPE.
+
+                if ctl.gen_opt.plot_by_isotype {
+                    let mut crefs = Vec::<Option<usize>>::new();
+                    for l in 0..ex.share.len() {
+                        if ex.share[l].left {
+                            crefs.push(ex.share[l].c_ref_id);
                         }
                     }
-                    let di = ex.clones[j][0].dataset_index;
-                    if dataset_colors {
-                        color = ctl.sample_info.color[di].clone();
-                    } else {
-                        let bc = &ex.clones[j][0].barcode;
-                        if ctl.sample_info.barcode_color[di].contains_key(bc) {
-                            color = ctl.sample_info.barcode_color[di][bc].clone();
+                    unique_sort(&mut crefs);
+                    let mut color_id = 0;
+                    if crefs.solo() && crefs[0].is_some() {
+                        let c = &refdata.name[crefs[0].unwrap()];
+                        let p = bin_position(&const_names, &c) as usize;
+                        color_id = 1 + p;
+                    }
+                    let x = print_color13(color_id);
+                    color = format!("rgb({},{},{})", x.0, x.1, x.2);
+
+                // Determine color in other cases.
+                } else {
+                    if ex.clones[j][0].sample_index.is_some() {
+                        let s = &ctl.sample_info.sample_list[ex.clones[j][0].sample_index.unwrap()];
+                        samples.push(s.clone());
+                        if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                            color = ctl.gen_opt.sample_color_map[s].clone();
+                        }
+                    }
+                    if ctl.gen_opt.sample_color_map.is_empty() {
+                        let mut dataset_colors = false;
+                        for c in ctl.sample_info.color.iter() {
+                            if !c.is_empty() {
+                                dataset_colors = true;
+                            }
+                        }
+                        let di = ex.clones[j][0].dataset_index;
+                        if dataset_colors {
+                            color = ctl.sample_info.color[di].clone();
+                        } else {
+                            let bc = &ex.clones[j][0].barcode;
+                            if ctl.sample_info.barcode_color[di].contains_key(bc) {
+                                color = ctl.sample_info.barcode_color[di][bc].clone();
+                            }
                         }
                     }
                 }
@@ -364,28 +405,45 @@ pub fn plot_clonotypes(
 
     // Add legend.
 
-    if ctl.gen_opt.use_legend {
+    if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype {
         let mut colors = Vec::<String>::new();
+        let mut labels = Vec::<String>::new();
         let mut max_string_width = 0.0f64;
-        if ctl.gen_opt.legend.len() == 0 {
-            for s in samples.iter() {
-                let mut color = "black".to_string();
-                if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
-                    color = ctl.gen_opt.sample_color_map[s].clone();
-                }
+        if ctl.gen_opt.plot_by_isotype {
+            for i in 0..const_names.len() {
+                labels.push(const_names[i].clone());
+                let color_id = i + 1;
+                let x = print_color13(color_id);
+                let color = format!("rgb({},{},{})", x.0, x.1, x.2);
                 colors.push(color);
             }
+            labels.push("undetermined".to_string());
+            let color_id = 0;
+            let x = print_color13(color_id);
+            let color = format!("rgb({},{},{})", x.0, x.1, x.2);
+            colors.push(color);
         } else {
-            samples.clear();
-            for i in 0..ctl.gen_opt.legend.len() {
-                colors.push(ctl.gen_opt.legend[i].0.clone());
-                samples.push(ctl.gen_opt.legend[i].1.clone());
+            if ctl.gen_opt.legend.len() == 0 {
+                for s in samples.iter() {
+                    let mut color = "black".to_string();
+                    if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
+                        color = ctl.gen_opt.sample_color_map[s].clone();
+                    }
+                    colors.push(color);
+                }
+            } else {
+                samples.clear();
+                for i in 0..ctl.gen_opt.legend.len() {
+                    colors.push(ctl.gen_opt.legend[i].0.clone());
+                    samples.push(ctl.gen_opt.legend[i].1.clone());
+                }
             }
+            for i in 0..colors.len() {
+                substitute_enclone_color(&mut colors[i]);
+            }
+            labels = samples.clone();
         }
-        for i in 0..colors.len() {
-            substitute_enclone_color(&mut colors[i]);
-        }
-        for s in samples.iter() {
+        for s in labels.iter() {
             max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
         }
 
@@ -406,7 +464,7 @@ pub fn plot_clonotypes(
 
         // Build the legend.
 
-        let n = samples.len();
+        let n = labels.len();
         const FONT_SIZE: usize = 20;
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         const LEGEND_BOX_STROKE_WIDTH: usize = 2;
@@ -419,7 +477,7 @@ pub fn plot_clonotypes(
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
             BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
-        for i in 0..samples.len() {
+        for i in 0..labels.len() {
             let y = legend_ystart as f64
                 + BOUNDARY as f64 * 2.5
                 + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
@@ -429,7 +487,7 @@ pub fn plot_clonotypes(
                 BOUNDARY * 3,
                 y,
                 FONT_SIZE,
-                samples[i]
+                labels[i]
             );
             svg += &format!(
                 "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",

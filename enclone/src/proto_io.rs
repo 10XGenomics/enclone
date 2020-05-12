@@ -148,7 +148,7 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let universal_reference = proto_reader.read_and_decode()?;
     // Read the donor reference
     let donor_reference = proto_reader.read_and_decode()?;
-    // Number of clonotyopes
+    // Number of clonotypes
     let num_clonotypes: u32 = proto_reader.read_and_decode()?;
     let mut clonotypes = Vec::new();
     for _ in 0..num_clonotypes {

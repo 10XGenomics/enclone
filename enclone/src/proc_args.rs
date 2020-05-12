@@ -152,6 +152,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nKindly please do not specify both TCR and BCR.\n");
         std::process::exit(1);
     }
+    let mut using_plot = false;
 
     // Traverse arguments.
 
@@ -336,6 +337,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             ctl.gen_opt.gene_scan_threshold = Some(threshold);
         } else if arg.starts_with("PLOT=") {
+            using_plot = true;
             let x = arg.after("PLOT=").split(',').collect::<Vec<&str>>();
             if x.is_empty() {
                 eprintln!("\nArgument to PLOT is invalid.\n");
@@ -350,6 +352,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.gen_opt
                     .sample_color_map
                     .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
+            }
+        } else if arg.starts_with("PLOT_BY_ISOTYPE=") {
+            ctl.gen_opt.plot_by_isotype = true;
+            ctl.gen_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
+            if ctl.gen_opt.plot_file.is_empty() {
+                eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
+                std::process::exit(1);
             }
         } else if is_simple_arg(&arg, "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
@@ -394,8 +403,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_group_opt.vj_refname = true;
         } else if is_simple_arg(&arg, "NPLAIN") {
             ctl.pretty = true;
-        } else if is_simple_arg(&arg, "NO_REUSE") {
-            ctl.gen_opt.no_reuse = true;
+        } else if is_simple_arg(&arg, "ACCEPT_REUSE") {
+            ctl.gen_opt.accept_reuse = true;
         } else if is_simple_arg(&arg, "NOPAGER") {
         } else if is_simple_arg(&arg, "NOPRINT") {
             ctl.gen_opt.noprint = true;
@@ -667,6 +676,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ctl.sample_info
             .mean_read_pairs_per_cell_cellranger
             .push(rpc_cr);
+    }
+    if ctl.gen_opt.plot_by_isotype {
+        if using_plot || ctl.gen_opt.use_legend {
+            eprintln!("\nPLOT_BY_ISOTYPE cannot be used with PLOT or LEGEND.\n");
+            std::process::exit(1);
+        }
+        if !have_bcr {
+            eprintln!("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n");
+            std::process::exit(1);
+        }
     }
     if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");

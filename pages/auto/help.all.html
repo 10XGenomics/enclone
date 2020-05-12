@@ -538,21 +538,29 @@ enclone help plot
 enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
 You can see an example at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
-enclone provides three ways to assign colors in such a plot.  We describe them in order of
+enclone provides four ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.
 
-The first way is to use the argument
+<span style="color:#c23621;font-weight:bold;">1.</span> The first way is to use the argument
 <span style="font-weight:bold;">PLOT="filename,sample1->color1,...,samplen->colorn"</span>
 which creates an svg file of the given name, and assigns the given colors to the given samples. 
 Unspecified samples will be black.
 
-The second way is to provide simply
+<span style="color:#c23621;font-weight:bold;">2.</span> The second way is to provide simply
 <span style="font-weight:bold;">PLOT=filename</span>
 on the command line, and then provide the <span style="font-weight:bold;">color</span> field in the CSV defined by the <span style="font-weight:bold;">META</span> option.  This
 assigns a color to each dataset.
 
-The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
+<span style="color:#c23621;font-weight:bold;">3.</span> The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
 the <span style="font-weight:bold;">bc</span> field for <span style="font-weight:bold;">META</span>.
+
+<span style="color:#c23621;font-weight:bold;">4.</span> The fourth way is <span style="font-weight:bold;">PLOT_BY_ISOTYPE=filename</span>.  This plots by heavy chain constant region name and
+labels accordingly.  (This only makes sense for BCR.) Some cells may be labeled "unassigned", for
+one of three reasons: (1) no heavy chain was found; (2) no constant region was found; (3) two
+heavy chains were found and had conflicting constant region names.  Running with <span style="font-weight:bold;">MIN_CHAINS_EXACT=2</span>
+is usually a good idea to avoid noise coming from cells for which only a light chain was detected.
+ Currently a maximum of 12 constant region names is allowed.  Let us know if you have more and we
+will fix this.  Note that <span style="font-weight:bold;">PLOT_BY_ISOTYPE</span> cannot be used with <span style="font-weight:bold;">PLOT</span> or <span style="font-weight:bold;">LEGEND</span>.
 
 The colors should be valid colors for use in an svg file.  They can be named colors like red or
 blue (see <span style="color:#25bc24;">https://www.w3.org/TR/SVG11/types.html#ColorKeywords</span> for a full list) or a hex
@@ -1093,9 +1101,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 └───────────────┴────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
-● Example: IG.*_g matches all genes that begin with IG.  The regular expression must be in the
-alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it contains a
-character in []()|*.  See "enclone help filter" for more information about regular expressions.
+● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
+begin with TRA or TRB.  Double quotes as in <span style="font-weight:bold;">LVARS="..."</span> may be needed.  The regular expression
+must be in the alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it
+contains a character in []()|*.  See "enclone help filter" for more information about regular
+expressions.
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 
@@ -1556,7 +1566,10 @@ generate the input data.
 
 Yes, type "enclone version".
 
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+<span style="color:#5833ff;font-weight:bold;">18. Can enclone ingest multiple datasets from the same library?</span>
+
+If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  This
+behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help developer
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
