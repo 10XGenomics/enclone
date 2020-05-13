@@ -9,20 +9,23 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn is_pattern(x: &String) -> bool {
+pub fn is_pattern(x: &String, parseable: bool) -> bool {
     let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
-    for x in ends0.iter() {
+    for z in ends0.iter() {
         for y in suffixes.iter() {
-            ends.push(format!("{}{}", x, y));
+            ends.push(format!("{}{}", z, y));
         }
     }
     let mut x = x.clone();
     if x.contains(':') {
         x = x.rev_after(":").to_string();
+    }
+    if parseable && x.ends_with("_cell") {
+        x = x.rev_before("_cell").to_string();
     }
     let mut pat = false;
     for y in ends.iter() {
@@ -341,6 +344,8 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
         }
         if LVARS_ALLOWED.contains(&x.as_str()) || gpvar {
             ok = true;
+        } else if is_pattern(&x, true) {
+            ok = true;
         } else {
             for p in 1..=pchains {
                 let ps = format!("{}", p);
@@ -474,7 +479,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
 
         // Check for patterns.
 
-        if is_pattern(&x) {
+        if is_pattern(&x, false) {
             continue;
         }
 
