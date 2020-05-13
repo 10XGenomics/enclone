@@ -305,9 +305,6 @@ pub fn main_enclone(args: &Vec<String>) {
     vars.append(&mut ctl.parseable_opt.pcols.clone());
     unique_sort(&mut vars);
     for x in vars.iter() {
-        /*
-        println!("trying {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        */
         for (iy, y) in ends.iter().enumerate() {
             let mut xc = x.clone();
             if x.ends_with("_cell") {
@@ -377,9 +374,6 @@ pub fn main_enclone(args: &Vec<String>) {
                         let mut matches = false;
                         for li in 0..ctl.sample_info.n() {
                             if ctl.clono_print_opt.regex_match[li].contains_key(&pp) {
-                                /*
-                                println!("marking {}", pp); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                */
                                 matches = true;
                             }
                         }

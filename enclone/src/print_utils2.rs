@@ -658,25 +658,12 @@ pub fn row_fill(
                     }
                 }
             }
-            /*
-            use io_utils::*; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            if pass == 2 {  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                println!(""); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                printme!(x, y, xorig); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            */
             let mut computed = false;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
                 let mut ux = Vec::<usize>::new();
-                /*
-                println!("checking for {}", y); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                */
                 if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
-                    /*
-                    println!("found"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    */
                     ux = ctl.clono_print_opt.regex_match[li][&y].clone();
                 }
                 if
@@ -710,15 +697,7 @@ pub fn row_fill(
                     }
                 }
             }
-            /*
-            printme!(computed); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            */
             if computed {
-                /*
-                if pass == 2 { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    printme!(x, y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                */
                 if !y0.ends_with("_%") {
                     stats.push((x.clone(), fcounts_sub.clone()));
                 } else {
@@ -738,14 +717,7 @@ pub fn row_fill(
                 let mean = sum / counts_sub.len() as f64;
 
                 if xorig.ends_with("_%_cell") {
-                    /*
-                    printme!(pass); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    */
                     if pass == 2 {
-                        /*
-                        println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                        printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                        */
                         let mut c = Vec::<String>::new();
                         for j in 0..counts_sub.len() {
                             c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
@@ -754,14 +726,7 @@ pub fn row_fill(
                         speak!(u, x, val);
                     }
                 } else if xorig.ends_with("_cell") {
-                    /*
-                    printme!(pass); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    */
                     if pass == 2 {
-                        /*
-                        println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                        printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                        */
                         let val = format!("{}", counts_sub.iter().format(";"));
                         speak!(u, x, val);
                     }
@@ -780,15 +745,6 @@ pub fn row_fill(
                         lvar![i, x, format!("{}", sum.round())];
                     } else if y0.ends_with("_%") {
                         lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
-                    /*
-                    } else if xorig.ends_with("_cell") {
-                        if pass == 2 {
-                            println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                            printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                            let val = format!("{}", counts_sub.iter().format(";"));
-                            speak!(u, x, val);
-                        }
-                    */
                     } else {
                         let mut median = 0.0;
                         if counts_sub_sorted.len() > 0 {
