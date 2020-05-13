@@ -219,7 +219,7 @@ pub const TESTS: [&str; 81] = [
     r###"BCR=86237 GEX=85679 POUT=stdout PCELL NGEX NCELL EXPECT_OK"###,
     // 81. IG:IG.*_g_%_cell and variants in parseable output
     r###"BCR=86237 GEX=85679 CDR3=CARSFFGDTAMVMFQAFDPW POUT=stdouth PCELL
-        PCOLS="barcode,IG:IG.*_g_%_cell,IG.*_g_%_cell,IG.*_g_%""###,
+        PCOLS="barcode,IG:IG.*_g_%_cell,IG.*_g_%_cell,IGN:IG.*_g_%,IG.*_g_%""###,
 ];
 
 pub const EXTENDED_TESTS: [&str; 1] = [
