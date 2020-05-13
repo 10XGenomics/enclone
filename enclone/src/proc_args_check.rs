@@ -9,6 +9,54 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn is_pattern(x: &String) -> bool {
+    let ends0 = [
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+    ];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    let mut ends = Vec::<String>::new();
+    for x in ends0.iter() {
+        for y in suffixes.iter() {
+            ends.push(format!("{}{}", x, y));
+        }
+    }
+    let mut x = x.clone();
+    if x.contains(':') {
+        x = x.rev_after(":").to_string();
+    }
+    let mut pat = false;
+    for y in ends.iter() {
+        if x.ends_with(y) {
+            let p = x.rev_before(y);
+            if !p.is_empty() && Regex::new(&p).is_ok() {
+                let mut ok = true;
+                let mut special = false;
+                let p = p.as_bytes();
+                for i in 0..p.len() {
+                    if !((p[i] >= b'A' && p[i] <= b'Z')
+                        || (p[i] >= b'a' && p[i] <= b'z')
+                        || (p[i] >= b'0' && p[i] <= b'9')
+                        || b".-_[]()|*".contains(&p[i]))
+                    {
+                        ok = false;
+                        break;
+                    }
+                    if b"[]()|*".contains(&p[i]) {
+                        special = true;
+                    }
+                }
+                if ok && special {
+                    pat = true;
+                    break;
+                }
+            }
+        }
+    }
+    pat
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String>, category: &str) {
     let g_ends0 = ["_g"];
     let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
@@ -426,39 +474,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
 
         // Check for patterns.
 
-        let mut x = x.clone();
-        if x.contains(':') {
-            x = x.rev_after(":").to_string();
-        }
-        let mut pat = false;
-        for y in ends.iter() {
-            if x.ends_with(y) {
-                let p = x.rev_before(y);
-                if !p.is_empty() && Regex::new(&p).is_ok() {
-                    let mut ok = true;
-                    let mut special = false;
-                    let p = p.as_bytes();
-                    for i in 0..p.len() {
-                        if !((p[i] >= b'A' && p[i] <= b'Z')
-                            || (p[i] >= b'a' && p[i] <= b'z')
-                            || (p[i] >= b'0' && p[i] <= b'9')
-                            || b".-_[]()|*".contains(&p[i]))
-                        {
-                            ok = false;
-                            break;
-                        }
-                        if b"[]()|*".contains(&p[i]) {
-                            special = true;
-                        }
-                    }
-                    if ok && special {
-                        pat = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if pat {
+        if is_pattern(&x) {
             continue;
         }
 
