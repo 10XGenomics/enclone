@@ -436,7 +436,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x = x.replace("_mean", "_μ");
                 ctl.parseable_opt.pcols.push(x.to_string());
                 ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
+                ctl.parseable_opt.pcols_sortx = ctl.parseable_opt.pcols.clone();
+                for j in 0..ctl.parseable_opt.pcols_sortx.len() {
+                    if ctl.parseable_opt.pcols_sortx[j].contains(":") {
+                        ctl.parseable_opt.pcols_sortx[j] =
+                            ctl.parseable_opt.pcols_sortx[j].before(":").to_string();
+                    }
+                }
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
+                unique_sort(&mut ctl.parseable_opt.pcols_sortx);
             }
         } else if is_simple_arg(&arg, "PLAIN") {
         } else if is_simple_arg(&arg, "NOPRETTY") {

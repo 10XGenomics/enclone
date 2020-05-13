@@ -102,7 +102,7 @@ pub fn row_fill(
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty()
-                    || bin_member(&ctl.parseable_opt.pcols_sort, &v)
+                    || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
                 {
                     out_data[$u].insert(v, $val);
                 }
@@ -639,7 +639,8 @@ pub fn row_fill(
             }
             lvar![i, x, s.clone()];
         } else {
-            let (mut counts, mut fcounts) = (Vec::<f64>::new(), Vec::<f64>::new());
+            let (mut counts_sub, mut fcounts_sub) = (Vec::<f64>::new(), Vec::<f64>::new());
+            let xorig = x.clone();
             let (mut x, mut y) = (x.to_string(), x.to_string());
             if x.contains(':') {
                 x = x.before(":").to_string();
@@ -648,26 +649,39 @@ pub fn row_fill(
                 y = y.after(":").to_string();
             }
             let y0 = y.clone();
-            let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
-            for s in suffixes.iter() {
-                if y.ends_with(s) {
-                    y = y.rev_before(&s).to_string();
-                    break;
+            for _ in 1..=2 {
+                let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
+                for s in suffixes.iter() {
+                    if y.ends_with(s) {
+                        y = y.rev_before(&s).to_string();
+                        break;
+                    }
                 }
             }
             /*
             use io_utils::*; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            if pass == 2 { printme!(x, y); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if pass == 2 {  // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                println!(""); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                printme!(x, y, xorig); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             */
             let mut computed = false;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
                 let mut ux = Vec::<usize>::new();
+                /*
+                println!("checking for {}", y); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                */
                 if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
+                    /*
+                    println!("found"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    */
                     ux = ctl.clono_print_opt.regex_match[li][&y].clone();
                 }
-                if i < lvars.len() && ux.len() > 0 {
+                if
+                /* i < lvars.len() && */
+                ux.len() > 0 {
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                     if p >= 0 {
                         computed = true;
@@ -678,8 +692,8 @@ pub fn row_fill(
                             );
                             raw_count += raw_counti;
                         }
-                        counts.push(raw_count.round() as f64);
-                        fcounts.push(raw_count);
+                        counts_sub.push(raw_count.round() as f64);
+                        fcounts_sub.push(raw_count);
                     }
                 } else {
                     if gex_info.feature_id[li].contains_key(&y) {
@@ -690,12 +704,15 @@ pub fn row_fill(
                             let raw_count = get_gex_matrix_entry(
                                 &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
                             );
-                            counts.push(raw_count.round() as f64);
-                            fcounts.push(raw_count);
+                            counts_sub.push(raw_count.round() as f64);
+                            fcounts_sub.push(raw_count);
                         }
                     }
                 }
             }
+            /*
+            printme!(computed); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            */
             if computed {
                 /*
                 if pass == 2 { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -703,43 +720,82 @@ pub fn row_fill(
                 } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 */
                 if !y0.ends_with("_%") {
-                    stats.push((x.clone(), fcounts.clone()));
+                    stats.push((x.clone(), fcounts_sub.clone()));
                 } else {
                     let mut f = Vec::<f64>::new();
-                    for i in 0..fcounts.len() {
+                    for i in 0..fcounts_sub.len() {
                         let mut x = 0.0;
                         if gex_mean > 0.0 {
-                            x = 100.0 * fcounts[i] / gex_mean;
+                            x = 100.0 * fcounts_sub[i] / gex_mean;
                         }
                         f.push(x);
                     }
                     stats.push((x.clone(), f));
                 }
-                let mut counts_sorted = counts.clone();
-                counts_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let sum = fcounts.iter().sum::<f64>();
-                let mean = sum / counts.len() as f64;
-                if y0.ends_with("_min") {
-                    lvar![i, x, format!("{}", counts_sorted[0].round())];
-                } else if y0.ends_with("_max") {
-                    lvar![i, x, format!("{}", counts_sorted[counts.len() - 1].round())];
-                } else if y0.ends_with("_μ") {
-                    lvar![i, x, format!("{}", mean.round())];
-                } else if y0.ends_with("_Σ") {
-                    lvar![i, x, format!("{}", sum.round())];
-                } else if y0.ends_with("_%") {
-                    lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
-                } else if y0.ends_with("_cell") {
+                let mut counts_sub_sorted = counts_sub.clone();
+                counts_sub_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                let sum = fcounts_sub.iter().sum::<f64>();
+                let mean = sum / counts_sub.len() as f64;
+
+                if xorig.ends_with("_%_cell") {
+                    /*
+                    printme!(pass); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    */
                     if pass == 2 {
-                        let val = format!("{}", counts.iter().format(";"));
+                        /*
+                        println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        */
+                        let mut c = Vec::<String>::new();
+                        for j in 0..counts_sub.len() {
+                            c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
+                        }
+                        let val = format!("{}", c.iter().format(";"));
+                        speak!(u, x, val);
+                    }
+                } else if xorig.ends_with("_cell") {
+                    /*
+                    printme!(pass); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    */
+                    if pass == 2 {
+                        /*
+                        println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        */
+                        let val = format!("{}", counts_sub.iter().format(";"));
                         speak!(u, x, val);
                     }
                 } else {
-                    let mut median = 0.0;
-                    if counts_sorted.len() > 0 {
-                        median = counts_sorted[counts_sorted.len() / 2].round();
+                    if y0.ends_with("_min") {
+                        lvar![i, x, format!("{}", counts_sub_sorted[0].round())];
+                    } else if y0.ends_with("_max") {
+                        lvar![
+                            i,
+                            x,
+                            format!("{}", counts_sub_sorted[counts_sub.len() - 1].round())
+                        ];
+                    } else if y0.ends_with("_μ") {
+                        lvar![i, x, format!("{}", mean.round())];
+                    } else if y0.ends_with("_Σ") {
+                        lvar![i, x, format!("{}", sum.round())];
+                    } else if y0.ends_with("_%") {
+                        lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
+                    /*
+                    } else if xorig.ends_with("_cell") {
+                        if pass == 2 {
+                            println!("speaking {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                            printme!(y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                            let val = format!("{}", counts_sub.iter().format(";"));
+                            speak!(u, x, val);
+                        }
+                    */
+                    } else {
+                        let mut median = 0.0;
+                        if counts_sub_sorted.len() > 0 {
+                            median = counts_sub_sorted[counts_sub_sorted.len() / 2].round();
+                        }
+                        lvar![i, x, format!("{}", median)];
                     }
-                    lvar![i, x, format!("{}", median)];
                 }
             }
         }

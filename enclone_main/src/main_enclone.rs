@@ -301,10 +301,20 @@ pub fn main_enclone(args: &Vec<String>) {
             endsz.push(ends1[ix].to_string());
         }
     }
-    for x in ctl.clono_print_opt.lvars.iter() {
+    let mut vars = ctl.clono_print_opt.lvars.clone();
+    vars.append(&mut ctl.parseable_opt.pcols.clone());
+    unique_sort(&mut vars);
+    for x in vars.iter() {
+        /*
+        println!("trying {}", x); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        */
         for (iy, y) in ends.iter().enumerate() {
-            if x.ends_with(y) {
-                let mut p = x.rev_before(y);
+            let mut xc = x.clone();
+            if x.ends_with("_cell") {
+                xc = xc.rev_before("_cell").to_string();
+            }
+            if xc.ends_with(y) {
+                let mut p = xc.rev_before(y);
                 if p.contains(':') {
                     p = p.after(":");
                 }
@@ -367,6 +377,9 @@ pub fn main_enclone(args: &Vec<String>) {
                         let mut matches = false;
                         for li in 0..ctl.sample_info.n() {
                             if ctl.clono_print_opt.regex_match[li].contains_key(&pp) {
+                                /*
+                                println!("marking {}", pp); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                                */
                                 matches = true;
                             }
                         }

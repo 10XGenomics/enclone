@@ -480,11 +480,12 @@ pub struct ClonoGroupOpt {
 
 #[derive(Default)]
 pub struct ParseableOpt {
-    pub pout: String,            // name of parseable output file
-    pub pchains: usize,          // number of chains to show in parseable output
-    pub pcols: Vec<String>,      // column names to show in parseable output
-    pub pcols_sort: Vec<String>, // sorted column names to show in parseable output
-    pub pbarcode: bool,          // generate output per barcode rather than per exact subclonotype
+    pub pout: String,             // name of parseable output file
+    pub pchains: usize,           // number of chains to show in parseable output
+    pub pcols: Vec<String>,       // column names to show in parseable output
+    pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
+    pub pcols_sortx: Vec<String>, // same but before colon if present
+    pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype
 }
 
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given
