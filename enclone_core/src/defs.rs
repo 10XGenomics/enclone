@@ -453,7 +453,7 @@ pub struct ClonoFiltOpt {
 
 #[derive(Default)]
 pub struct ClonoPrintOpt {
-    pub bu: bool,                          // print barcodes and UMI counts
+    pub bu: bool,                                      // print barcodes and UMI counts
     pub seqc: bool, // print V..J sequence for each chain if constant across clonotype
     pub full_seqc: bool, // print contig sequence for each chain if constant across clonotype
     pub barcodes: bool, // print the list of barcodes
@@ -461,7 +461,7 @@ pub struct ClonoPrintOpt {
     pub amino: Vec<String>, // categories for amino acid columns (per-chain per-exact subclonotype)
     pub cvars: Vec<String>, // per-chain per-exact-clonotype columns
     pub lvars: Vec<String>, // per-exact-clonotype ('lead') columns
-    pub lvars_match: Vec<Vec<Vec<usize>>>, // matching features for <regular expression>_g etc.
+    pub regex_match: Vec<HashMap<String, Vec<usize>>>, // matching features for <regex>_g etc.
     pub chain_brief: bool, // show abbreviated chain headers
     pub sum: bool,  // print sum row
     pub mean: bool, // print mean row

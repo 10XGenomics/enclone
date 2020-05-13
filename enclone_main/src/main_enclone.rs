@@ -284,25 +284,31 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Find matching features for <regular expression>_g etc.
 
-    ctl.clono_print_opt.lvars_match =
-        vec![vec![Vec::<usize>::new(); ctl.clono_print_opt.lvars.len()]; ctl.sample_info.n()];
+    ctl.clono_print_opt.regex_match =
+        vec![HashMap::<String, Vec<usize>>::new(); ctl.sample_info.n()];
     let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
+    let ends1 = [
+        "_g", "_ab", "_ag", "_cr", "_cu", "_g", "_ab", "_ag", "_cr", "_cu", "_g",
+    ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
-    for x in ends0.iter() {
+    let mut endsz = Vec::<String>::new();
+    for (ix, x) in ends0.iter().enumerate() {
         for y in suffixes.iter() {
             ends.push(format!("{}{}", x, y));
+            endsz.push(ends1[ix].to_string());
         }
     }
-    for (i, x) in ctl.clono_print_opt.lvars.iter().enumerate() {
-        for y in ends.iter() {
+    for x in ctl.clono_print_opt.lvars.iter() {
+        for (iy, y) in ends.iter().enumerate() {
             if x.ends_with(y) {
                 let mut p = x.rev_before(y);
                 if p.contains(':') {
                     p = p.after(":");
                 }
+                let pp = format!("{}{}", p, endsz[iy]);
                 if !p.is_empty() && Regex::new(&p).is_ok() {
                     let mut ok = true;
                     let mut px = false;
@@ -323,6 +329,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     if ok && px {
                         let reg = Regex::new(&format!("^{}$", p));
                         for li in 0..ctl.sample_info.n() {
+                            let mut js = Vec::<usize>::new();
                             for j in 0..gex_info.gex_features[li].len() {
                                 let f = &gex_info.gex_features[li][j];
                                 let ff = f.split('\t').collect::<Vec<&str>>();
@@ -350,13 +357,16 @@ pub fn main_enclone(args: &Vec<String>) {
                                     && (reg.as_ref().unwrap().is_match(&ff[0])
                                         || reg.as_ref().unwrap().is_match(&ff[1]))
                                 {
-                                    ctl.clono_print_opt.lvars_match[li][i].push(j);
+                                    js.push(j);
                                 }
+                            }
+                            if js.len() > 0 {
+                                ctl.clono_print_opt.regex_match[li].insert(pp.clone(), js);
                             }
                         }
                         let mut matches = false;
                         for li in 0..ctl.sample_info.n() {
-                            if !ctl.clono_print_opt.lvars_match[li][i].is_empty() {
+                            if ctl.clono_print_opt.regex_match[li].contains_key(&pp) {
                                 matches = true;
                             }
                         }

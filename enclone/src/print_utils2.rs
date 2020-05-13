@@ -655,16 +655,24 @@ pub fn row_fill(
                     break;
                 }
             }
+            /*
+            use io_utils::*; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            if pass == 2 { printme!(x, y); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            */
             let mut computed = false;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = ex.clones[l][0].barcode.clone();
-                if i < lvars.len() && ctl.clono_print_opt.lvars_match[li][i].len() > 0 {
+                let mut ux = Vec::<usize>::new();
+                if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
+                    ux = ctl.clono_print_opt.regex_match[li][&y].clone();
+                }
+                if i < lvars.len() && ux.len() > 0 {
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                     if p >= 0 {
                         computed = true;
                         let mut raw_count = 0.0;
-                        for fid in ctl.clono_print_opt.lvars_match[li][i].iter() {
+                        for fid in ux.iter() {
                             let raw_counti = get_gex_matrix_entry(
                                 &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize, &y,
                             );
@@ -689,6 +697,11 @@ pub fn row_fill(
                 }
             }
             if computed {
+                /*
+                if pass == 2 { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    printme!(x, y0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                */
                 if !y0.ends_with("_%") {
                     stats.push((x.clone(), fcounts.clone()));
                 } else {
