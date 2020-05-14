@@ -106,8 +106,8 @@ FORCE_EXTERNAL: do not test for internal run
 STABLE_DOC: print documentation in a way that it won't change when the git version changes
 
 LVARS entries
-* entropy = the sum over all genes of -q/log2(q), where q is the fraction of total gene UMIs
-  in the given gene
+* entropy = for each cell, take the sum over all genes of -q/log2(q), where q is the fraction of 
+  total gene UMIs in the given gene; for an exact subclonotype report the median of these values
 * clust = cluster id, from analysis_csv/clustering/graphclust/clusters.csv
   (for now, has to be in that exact place; not implemented for PCELL)
 * type = cell type, from analysis_csv/celltypes/celltypes.csv
