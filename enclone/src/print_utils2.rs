@@ -346,6 +346,7 @@ pub fn row_fill(
         gex_sum = fcounts.iter().sum::<f64>();
         gex_mean = gex_sum / fcounts.len() as f64;
     }
+    let entropies_unsorted = entropies.clone();
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
     if entropies.len() > 0 {
@@ -604,6 +605,12 @@ pub fn row_fill(
             }
         } else if x == "entropy" {
             lvar![i, x, format!("{:.2}", entropy)];
+        } else if x == "entropy_cell" {
+            let mut e = Vec::<String>::new();
+            for x in entropies_unsorted.iter() {
+                e.push(format!("{:.2}", x));
+            }
+            speak!(u, x, format!("{}", e.iter().format(";")));
         } else if x == "gex_min" {
             lvar![i, x, format!("{}", gex_min)];
         } else if x == "gex_max" {
@@ -666,9 +673,7 @@ pub fn row_fill(
                 if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
                     ux = ctl.clono_print_opt.regex_match[li][&y].clone();
                 }
-                if
-                /* i < lvars.len() && */
-                ux.len() > 0 {
+                if ux.len() > 0 {
                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                     if p >= 0 {
                         computed = true;
