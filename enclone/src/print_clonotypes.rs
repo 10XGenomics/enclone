@@ -849,7 +849,7 @@ pub fn print_clonotypes(
                                                 let n = row[j].1;
                                                 if gex_info.is_gex[li][f] {
                                                     let q = n as f64 / gex_count as f64;
-                                                    entropy += q * q.log2();
+                                                    entropy -= q * q.log2();
                                                 }
                                             }
                                         } else {
@@ -858,7 +858,7 @@ pub fn print_clonotypes(
                                                 if gex_info.is_gex[li][ind_all[l][j] as usize] {
                                                     let n = d_all[l][j] as usize;
                                                     let q = n as f64 / gex_count as f64;
-                                                    entropy += q * q.log2();
+                                                    entropy -= q * q.log2();
                                                 }
                                             }
                                         }
