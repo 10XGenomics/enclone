@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 20] = [
+pub const LVARS_ALLOWED: [&str; 21] = [
     "datasets",
     "samples",
     "donors",
@@ -29,6 +29,7 @@ pub const LVARS_ALLOWED: [&str; 20] = [
     "cred_cell",
     "type",
     "entropy",
+    "entropy_cell",
     "near",
     "far",
     "ext",
@@ -374,6 +375,7 @@ pub struct GeneralOpt {
     pub jc1: bool,
     pub trace_barcode: String,
     pub ncell: bool,
+    pub baseline: bool,
 }
 
 // Allele finding algorithmic options.
@@ -453,7 +455,7 @@ pub struct ClonoFiltOpt {
 
 #[derive(Default)]
 pub struct ClonoPrintOpt {
-    pub bu: bool,                          // print barcodes and UMI counts
+    pub bu: bool,                                      // print barcodes and UMI counts
     pub seqc: bool, // print V..J sequence for each chain if constant across clonotype
     pub full_seqc: bool, // print contig sequence for each chain if constant across clonotype
     pub barcodes: bool, // print the list of barcodes
@@ -461,7 +463,7 @@ pub struct ClonoPrintOpt {
     pub amino: Vec<String>, // categories for amino acid columns (per-chain per-exact subclonotype)
     pub cvars: Vec<String>, // per-chain per-exact-clonotype columns
     pub lvars: Vec<String>, // per-exact-clonotype ('lead') columns
-    pub lvars_match: Vec<Vec<Vec<usize>>>, // matching features for <regular expression>_g etc.
+    pub regex_match: Vec<HashMap<String, Vec<usize>>>, // matching features for <regex>_g etc.
     pub chain_brief: bool, // show abbreviated chain headers
     pub sum: bool,  // print sum row
     pub mean: bool, // print mean row
@@ -480,11 +482,12 @@ pub struct ClonoGroupOpt {
 
 #[derive(Default)]
 pub struct ParseableOpt {
-    pub pout: String,            // name of parseable output file
-    pub pchains: usize,          // number of chains to show in parseable output
-    pub pcols: Vec<String>,      // column names to show in parseable output
-    pub pcols_sort: Vec<String>, // sorted column names to show in parseable output
-    pub pbarcode: bool,          // generate output per barcode rather than per exact subclonotype
+    pub pout: String,             // name of parseable output file
+    pub pchains: usize,           // number of chains to show in parseable output
+    pub pcols: Vec<String>,       // column names to show in parseable output
+    pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
+    pub pcols_sortx: Vec<String>, // same but before colon if present
+    pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype
 }
 
 // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given

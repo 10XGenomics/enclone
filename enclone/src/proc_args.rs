@@ -287,6 +287,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
+        } else if is_simple_arg(&arg, "BASELINE") {
+            ctl.gen_opt.baseline = true;
         } else if is_simple_arg(&arg, "ACCEPT_INCONSISTENT") {
             ctl.gen_opt.accept_inconsistent = true;
         } else if is_simple_arg(&arg, "NGEX") {
@@ -436,7 +438,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x = x.replace("_mean", "_μ");
                 ctl.parseable_opt.pcols.push(x.to_string());
                 ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
+                ctl.parseable_opt.pcols_sortx = ctl.parseable_opt.pcols.clone();
+                for j in 0..ctl.parseable_opt.pcols_sortx.len() {
+                    if ctl.parseable_opt.pcols_sortx[j].contains(":") {
+                        ctl.parseable_opt.pcols_sortx[j] =
+                            ctl.parseable_opt.pcols_sortx[j].before(":").to_string();
+                    }
+                }
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
+                unique_sort(&mut ctl.parseable_opt.pcols_sortx);
             }
         } else if is_simple_arg(&arg, "PLAIN") {
         } else if is_simple_arg(&arg, "NOPRETTY") {

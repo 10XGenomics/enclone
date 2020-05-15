@@ -68,6 +68,15 @@ pub fn group_and_print_clonotypes(
     {
         fwriteln!(pout, "{}", pcols.iter().format(","));
     }
+    let mut pcols2 = Vec::<String>::new();
+    for i in 0..pcols.len() {
+        if pcols[i].contains(":") {
+            pcols2.push(pcols[i].before(":").to_string());
+        } else {
+            pcols2.push(pcols[i].clone());
+        }
+    }
+    pcols = pcols2;
 
     // Set up for fasta output.
 

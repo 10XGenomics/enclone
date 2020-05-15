@@ -495,7 +495,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         for j in 0..gex_features[i].len() {
             let f = &gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
-            if !ff[2].starts_with(&"Antibody") {
+            if ff[2].starts_with(&"Gene") {
                 is_gex[i][j] = true;
             }
         }
