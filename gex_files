@@ -1,8 +1,8 @@
 Here we spec the GEX file requirements.  This is complicated by differences between the 
-customer (CS) and internal (PD) pipeline outs file structures and by the need for backward 
+customer (CS) and internal (PD) pipeline outs file structures and the need for backward 
 compatibility.
 
-These requirements may change over time.
+These requirements are likely to change over time.
 
 CS                                            PD
 metrics_summary.csv                           metrics_summary_csv.csv

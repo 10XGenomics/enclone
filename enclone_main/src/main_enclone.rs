@@ -274,8 +274,8 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    // Get gene expression and antibody counts.  Sanity check variables in cases where that
-    // has to occur after loading gex data.  Actually, it could occur after loading only
+    // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
+    // has to occur after loading GEX data.  This could also occur after loading only
     // the feature list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
@@ -375,7 +375,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    // Determine the Cell Ranger version that was used.  Really painful.
+    // Determine the Cell Ranger version that was used.
 
     let ann;
     if !ctl.gen_opt.cellranger {
@@ -432,7 +432,7 @@ pub fn main_enclone(args: &Vec<String>) {
         ctl.gen_opt.cr_version = "4.0".to_string();
     }
 
-    // Find the reference.
+    // Find the VDJ reference.
 
     let tr = Instant::now();
     let mut refdata = RefData::new();
@@ -549,7 +549,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     /*
 
-    // Remove V sequences that don't begin with a start codon.  And do some tidying.
+    // Remove V sequences not beginning with a start codon and do some tidying.
     // Commented out until proven useful.
 
     let lines = refx.split('\n').collect::<Vec<&str>>();
@@ -619,7 +619,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut vdj_cells,
     );
 
-    // Search for SHM indels.  Exploratory.
+    // Search for SHM indels.
 
     let tproto = Instant::now();
     search_for_shm_indels(&ctl, &tig_bc);
@@ -638,7 +638,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     cross_filter(&ctl, &mut tig_bc);
 
-    // Remove cells that are not called cells by gex or feature barcodes.
+    // Remove cells that are not called cells by GEX or feature barcodes.
 
     if !ctl.clono_filt_opt.ngex {
         let mut to_delete = vec![false; tig_bc.len()];

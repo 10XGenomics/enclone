@@ -10,4 +10,4 @@ Originally we were going to use Menlo, which is on public sites, but the licensi
 is unclear and there's no explanation where the files came from.
 
 The reason we're supplying monospace fonts at all is that the only universally available
-monospace font is Courier New, and that looks pretty bad for the enclone clonotypes.
+monospace font is Courier New, which poorly displays the enclone clonotypes.

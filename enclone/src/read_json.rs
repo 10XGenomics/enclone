@@ -622,7 +622,7 @@ pub fn parse_json_annotations_files(
     vdj_cells: &mut Vec<Vec<String>>,
 ) {
     let tl = Instant::now();
-    // (lena index, contig name, V..J length): (?)
+    // (sample index, contig name, V..J length): (?)
     let mut results = Vec::<(
         usize,
         Vec<(String, usize)>,
