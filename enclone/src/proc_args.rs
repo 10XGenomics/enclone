@@ -287,6 +287,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
+        } else if is_simple_arg(&arg, "BASELINE") {
+            ctl.gen_opt.baseline = true;
         } else if is_simple_arg(&arg, "ACCEPT_INCONSISTENT") {
             ctl.gen_opt.accept_inconsistent = true;
         } else if is_simple_arg(&arg, "NGEX") {

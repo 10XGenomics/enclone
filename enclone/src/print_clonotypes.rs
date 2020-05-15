@@ -146,6 +146,34 @@ pub fn print_clonotypes(
         n_vdj_gex.push(n);
     }
 
+    // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
+    // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
+
+    if ctl.gen_opt.baseline {
+        let mut umis = Vec::<usize>::new();
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            if o.solo() {
+                let x: &CloneInfo = &info[o[0] as usize];
+                let ex = &exact_clonotypes[x.clonotype_index];
+                if ex.ncells() == 1 && ex.share.duo() && ex.share[0].left != ex.share[1].left {
+                    umis.push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
+                }
+            }
+        }
+        umis.sort();
+        println!("\n{} umi counts", umis.len());
+        if umis.len() > 0 {
+            println!("1% ==> {}", umis[umis.len() / 100]);
+            println!("2% ==> {}", umis[umis.len() / 50]);
+            println!("5% ==> {}", umis[umis.len() / 20]);
+            println!("10% ==> {}", umis[umis.len() / 10]);
+            println!("20% ==> {}", umis[umis.len() / 5]);
+            println!("50% ==> {}", umis[umis.len() / 2]);
+        }
+    }
+
     // Traverse the orbits.
 
     // 0: index in reps
