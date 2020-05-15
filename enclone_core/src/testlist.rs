@@ -66,7 +66,7 @@ pub const TESTS: [&str; 82] = [
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
     r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL NH5"###,
-    // 18. makes sure cross filtering is isn't applied to two samples from same donor
+    // 18. makes sure cross filtering isn't applied to two samples from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
     // There were also some cells that were lost due to a bug in graph filtering.
