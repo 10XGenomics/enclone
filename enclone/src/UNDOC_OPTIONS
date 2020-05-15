@@ -75,7 +75,7 @@ Other optional arguments:
 
 If an argument is a nonnegative integer, it is treated as if specified by TCR= or BCR=, but 
 without setting one of them.  Nonnegative integers are recognized as 10x dataset identifiers 
-("lena ids") and their internal location is automatically found.  Inclusive ranges l1-l2 are 
+("sample IDs") and their location is automatically found.  Inclusive ranges l1-l2 are 
 expanded out.
 
 CELLRANGER: for use if called from cellranger -- changes failure message and prevents exit
@@ -86,7 +86,7 @@ Given output of an external clonotyping algorithm which took as inputs the pipel
 for the lenas in enclone.testdata, for each exact subclonotype found by enclone, report its 
 composition in the external clonotyping, as clonotype_id[count], ...
 The input file should have lines of the form:
-lena barcode clonotype_id.
+sample barcode clonotype_id.
 
 REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
 positive to be a clonotype that contains cells from multiple donors.
