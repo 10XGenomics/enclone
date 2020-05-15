@@ -22,7 +22,7 @@ Notes on testing:
    enclone help faq NOPAGER.
    This seems to require manual testing.
 
-5. In OSX Catalina, in full screen mode, at one point enclone appeared to have no output,
+5. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
    because the output was going to the alternate screen.  This seems to require manual testing.
 
 6. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
