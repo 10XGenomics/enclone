@@ -58,7 +58,7 @@ pub fn print_clonotypes(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
-    eq: &EquivRel,
+    orbits: &Vec<Vec<i32>>,
     gex_info: &GexInfo,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     vdj_cells: &Vec<Vec<String>>,
@@ -80,11 +80,6 @@ pub fn print_clonotypes(
     let mut parseable_fields = Vec::<String>::new();
     set_speakers(&ctl, &mut parseable_fields);
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
-
-    // Compute orbits.
-
-    let mut reps = Vec::<i32>::new();
-    eq.orbit_reps(&mut reps);
 
     // Test for presence of gex data.
 
@@ -146,37 +141,6 @@ pub fn print_clonotypes(
         n_vdj_gex.push(n);
     }
 
-    // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
-    // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
-
-    if ctl.gen_opt.baseline {
-        let mut umis = Vec::<usize>::new();
-        for i in 0..reps.len() {
-            let mut o = Vec::<i32>::new();
-            eq.orbit(reps[i], &mut o);
-            if o.solo() {
-                let x: &CloneInfo = &info[o[0] as usize];
-                let ex = &exact_clonotypes[x.clonotype_index];
-                if ex.ncells() == 1 && ex.share.duo() && ex.share[0].left != ex.share[1].left {
-                    umis.push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
-                }
-            }
-        }
-        umis.sort();
-        let nu = umis.len();
-        println!("\n{} umi counts", nu);
-        if nu > 0 {
-            let umin = (umis[nu / 10] as f64).min(4.0 * (umis[nu / 2] as f64).sqrt());
-            println!("1% ==> {}", umis[umis.len() / 100]);
-            println!("2% ==> {}", umis[umis.len() / 50]);
-            println!("5% ==> {}", umis[umis.len() / 20]);
-            println!("10% ==> {}", umis[umis.len() / 10]);
-            println!("20% ==> {}", umis[umis.len() / 5]);
-            println!("50% ==> {}", umis[umis.len() / 2]);
-            println!("umin = {:.2}", umin);
-        }
-    }
-
     // Traverse the orbits.
 
     // 0: index in reps
@@ -198,7 +162,7 @@ pub fn print_clonotypes(
         Vec<bool>,
         Vec<bool>,
     )>::new();
-    for i in 0..reps.len() {
+    for i in 0..orbits.len() {
         results.push((
             i,
             Vec::<String>::new(),
@@ -215,8 +179,7 @@ pub fn print_clonotypes(
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
-        let mut o = Vec::<i32>::new();
-        eq.orbit(reps[i], &mut o);
+        let o = &orbits[i];
         let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
         for id in o.iter() {
             let x: &CloneInfo = &info[*id as usize];
@@ -1462,7 +1425,7 @@ pub fn print_clonotypes(
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
     let mut mat = Vec::<Vec<Vec<Option<usize>>>>::new(); // ditto
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
-    for i in 0..reps.len() {
+    for i in 0..orbits.len() {
         for j in 0..results[i].1.len() {
             pics.push(results[i].1[j].clone());
             exacts.push(results[i].2[j].0.clone());
@@ -1490,7 +1453,7 @@ pub fn print_clonotypes(
         let mut tests = Vec::<usize>::new();
         let mut controls = Vec::<usize>::new();
         let mut count = 0;
-        for i in 0..reps.len() {
+        for i in 0..orbits.len() {
             for j in 0..results[i].1.len() {
                 if results[i].9[j] {
                     tests.push(count);

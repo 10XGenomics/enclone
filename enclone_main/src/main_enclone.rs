@@ -37,6 +37,7 @@ use pretty_trace::*;
 use regex::Regex;
 use serde_json::Value;
 use std::{
+    cmp::max,
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
@@ -795,6 +796,94 @@ pub fn main_enclone(args: &Vec<String>) {
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
 
+    // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
+    // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
+
+    let mut orbits = Vec::<Vec<i32>>::new();
+    let mut reps = Vec::<i32>::new();
+    eq.orbit_reps(&mut reps);
+    if !ctl.clono_filt_opt.umi_filt {
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            orbits.push(o);
+        }
+    }
+    if ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt {
+        let mut umis = Vec::<usize>::new();
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            if o.solo() {
+                let x: &CloneInfo = &info[o[0] as usize];
+                let ex = &exact_clonotypes[x.clonotype_index];
+                if ex.ncells() == 1 && ex.share.duo() && ex.share[0].left != ex.share[1].left {
+                    umis.push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
+                }
+            }
+        }
+        umis.sort();
+        let nu = umis.len();
+        if ctl.gen_opt.baseline {
+            println!("\n{} umi counts", nu);
+        }
+        let mut umin = 0.0;
+        if nu > 0 {
+            umin = (umis[nu / 10] as f64).min(4.0 * (umis[nu / 2] as f64).sqrt());
+        }
+        if nu > 0 && ctl.gen_opt.baseline {
+            println!("1% ==> {}", umis[umis.len() / 100]);
+            println!("2% ==> {}", umis[umis.len() / 50]);
+            println!("5% ==> {}", umis[umis.len() / 20]);
+            println!("10% ==> {}", umis[umis.len() / 10]);
+            println!("20% ==> {}", umis[umis.len() / 5]);
+            println!("50% ==> {}", umis[umis.len() / 2]);
+            println!("umin = {:.2}", umin);
+        }
+        if ctl.clono_filt_opt.umi_filt {
+            const MIN_BASELINE_CELLS: usize = 20;
+            if nu >= MIN_BASELINE_CELLS {
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    eq.orbit(reps[i], &mut o);
+                    let mut ncells = 0;
+                    for j in 0..o.len() {
+                        let x: &CloneInfo = &info[o[j] as usize];
+                        let ex = &exact_clonotypes[x.clonotype_index];
+                        ncells += ex.ncells();
+                    }
+                    if ncells >= 2 {
+                        let mut to_deletex = vec![false; o.len()];
+                        for j in 0..o.len() {
+                            let x: &CloneInfo = &info[o[j] as usize];
+                            let ex = &mut exact_clonotypes[x.clonotype_index];
+                            let mut to_delete = vec![false; ex.ncells()];
+                            for k in 0..ex.ncells() {
+                                let (mut umish, mut umisl) = (0, 0);
+                                for l in 0..ex.share.len() {
+                                    if ex.share[l].left {
+                                        umish = max(umish, ex.clones[k][l].umi_count);
+                                    } else {
+                                        umisl = max(umish, ex.clones[k][l].umi_count);
+                                    }
+                                }
+                                if ((umish + umisl) as f64) < umin {
+                                    to_delete[k] = true;
+                                }
+                            }
+                            erase_if(&mut ex.clones, &to_delete);
+                            if ex.clones.is_empty() {
+                                to_deletex[j] = true;
+                            }
+                        }
+                        erase_if(&mut o, &to_deletex);
+                    }
+                    orbits.push(o);
+                }
+            }
+        }
+    }
+
     // Find and print clonotypes.
 
     let torb = Instant::now();
@@ -805,7 +894,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &ctl,
         &exact_clonotypes,
         &info,
-        &eq,
+        &orbits,
         &gex_info,
         &join_info,
         &vdj_cells,

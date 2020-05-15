@@ -449,6 +449,7 @@ pub struct ClonoFiltOpt {
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub barcode: Vec<String>, // requires one of these barcodes
+    pub umi_filt: bool,      // umi count filter
 }
 
 // Clonotype printing options.

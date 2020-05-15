@@ -285,6 +285,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
+        } else if is_simple_arg(&arg, "UMI_FILT") {
+            ctl.clono_filt_opt.umi_filt = true;
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&arg, "BASELINE") {
