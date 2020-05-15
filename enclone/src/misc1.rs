@@ -213,7 +213,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             ) as usize;
         }
 
-        // For each sample index, and each sample, compute the total number of productive pairs.
+        // For each dataset index, and each sample, compute the total number of productive pairs.
 
         let mut n_dataset_index = vec![0; ctl.sample_info.n()];
         let mut n_sample = vec![0; samples.len()];
@@ -225,13 +225,13 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             }
         }
 
-        // Find all the V..J segments, and for each, the number of times it appears in each sample ID.
+        // Find all the V..J segments, and for each, the number of times it appears in each dataset ID.
         //
-        // Note that there is no point running this unless we have at least two sample IDs, and in
-        // fact unless there is a sample with at least two lena ids.  Better: just gather data for
-        // the sample for which there are at least two lena ids.  Also no point if NCROSS.
+        // Note that there is no point running this unless we have at least two dataset IDs, and in
+        // fact unless there is a sample with at least two dataset IDs.  Better: just gather data for
+        // the sample for which there are at least two dataset IDs.  Also no point if NCROSS.
 
-        let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, lena index, count)
+        let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, dataset index, count)
         {
             for i in 0..tig_bc.len() {
                 for j in 0..tig_bc[i].len() {

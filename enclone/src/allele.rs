@@ -420,7 +420,7 @@ pub fn find_alleles(
                     }
                 }
 
-                // For each sample ID from the donor, classify the alleles from that sample
+                // For each dataset ID from the donor, classify the alleles from that dataset
                 // ID according to the classification just derived.  Print the matrix.
                 // This is for diagnostic purposes only.
                 // Turned off because dataset_list was broken when donor_for_bc was
