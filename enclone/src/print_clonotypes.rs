@@ -163,14 +163,17 @@ pub fn print_clonotypes(
             }
         }
         umis.sort();
-        println!("\n{} umi counts", umis.len());
-        if umis.len() > 0 {
+        let nu = umis.len();
+        println!("\n{} umi counts", nu);
+        if nu > 0 {
+            let umin = (umis[nu / 10] as f64).min(4.0 * (umis[nu / 2] as f64).sqrt());
             println!("1% ==> {}", umis[umis.len() / 100]);
             println!("2% ==> {}", umis[umis.len() / 50]);
             println!("5% ==> {}", umis[umis.len() / 20]);
             println!("10% ==> {}", umis[umis.len() / 10]);
             println!("20% ==> {}", umis[umis.len() / 5]);
             println!("50% ==> {}", umis[umis.len() / 2]);
+            println!("umin = {:.2}", umin);
         }
     }
 
