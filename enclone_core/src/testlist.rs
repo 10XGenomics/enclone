@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 80] = [
+pub const TESTS: [&str; 82] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -217,6 +217,12 @@ pub const TESTS: [&str; 80] = [
     r###"BCR=86237 GEX=85679 POUT=stdout NGEX NCELL EXPECT_OK"###,
     // 80. make sure that POUT with PCELL works on full dataset with gex
     r###"BCR=86237 GEX=85679 POUT=stdout PCELL NGEX NCELL EXPECT_OK"###,
+    // 81. IG:IG.*_g_%_cell and variants in parseable output
+    r###"BCR=86237 GEX=85679 CDR3=CARSFFGDTAMVMFQAFDPW POUT=stdouth PCELL
+        PCOLS="barcode,IG:IG.*_g_%_cell,IG.*_g_%_cell,IGN:IG.*_g_%,IG.*_g_%""###,
+    // 82. test entropy
+    r###"BCR=123085 GEX=123749 LVARSP=entropy PER_CELL POUT=stdouth PCELL
+        PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
 ];
 
 pub const EXTENDED_TESTS: [&str; 1] = [

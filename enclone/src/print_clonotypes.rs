@@ -146,6 +146,37 @@ pub fn print_clonotypes(
         n_vdj_gex.push(n);
     }
 
+    // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
+    // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
+
+    if ctl.gen_opt.baseline {
+        let mut umis = Vec::<usize>::new();
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            if o.solo() {
+                let x: &CloneInfo = &info[o[0] as usize];
+                let ex = &exact_clonotypes[x.clonotype_index];
+                if ex.ncells() == 1 && ex.share.duo() && ex.share[0].left != ex.share[1].left {
+                    umis.push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
+                }
+            }
+        }
+        umis.sort();
+        let nu = umis.len();
+        println!("\n{} umi counts", nu);
+        if nu > 0 {
+            let umin = (umis[nu / 10] as f64).min(4.0 * (umis[nu / 2] as f64).sqrt());
+            println!("1% ==> {}", umis[umis.len() / 100]);
+            println!("2% ==> {}", umis[umis.len() / 50]);
+            println!("5% ==> {}", umis[umis.len() / 20]);
+            println!("10% ==> {}", umis[umis.len() / 10]);
+            println!("20% ==> {}", umis[umis.len() / 5]);
+            println!("50% ==> {}", umis[umis.len() / 2]);
+            println!("umin = {:.2}", umin);
+        }
+    }
+
     // Traverse the orbits.
 
     // 0: index in reps
@@ -849,7 +880,7 @@ pub fn print_clonotypes(
                                                 let n = row[j].1;
                                                 if gex_info.is_gex[li][f] {
                                                     let q = n as f64 / gex_count as f64;
-                                                    entropy += q * q.log2();
+                                                    entropy -= q * q.log2();
                                                 }
                                             }
                                         } else {
@@ -858,7 +889,7 @@ pub fn print_clonotypes(
                                                 if gex_info.is_gex[li][ind_all[l][j] as usize] {
                                                     let n = d_all[l][j] as usize;
                                                     let q = n as f64 / gex_count as f64;
-                                                    entropy += q * q.log2();
+                                                    entropy -= q * q.log2();
                                                 }
                                             }
                                         }
@@ -914,13 +945,15 @@ pub fn print_clonotypes(
                                         let mut count = 0.0;
                                         let l = bcl.2;
                                         if p >= 0 {
-                                            if k < lvars.len()
-                                                && ctl.clono_print_opt.lvars_match[li][k].len() > 0
+                                            let mut ux = Vec::<usize>::new();
+                                            if ctl.clono_print_opt.regex_match[li].contains_key(&y)
                                             {
+                                                ux =
+                                                    ctl.clono_print_opt.regex_match[li][&y].clone();
+                                            }
+                                            if ux.len() > 0 {
                                                 computed = true;
-                                                for fid in
-                                                    ctl.clono_print_opt.lvars_match[li][k].iter()
-                                                {
+                                                for fid in ux.iter() {
                                                     let counti = get_gex_matrix_entry(
                                                         &ctl, &gex_info, *fid, &d_all, &ind_all,
                                                         li, l, p as usize, &y,
