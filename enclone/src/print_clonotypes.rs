@@ -746,6 +746,7 @@ pub fn print_clonotypes(
                             l,
                         ));
                     }
+                    // WHY ARE WE SORTING HERE?
                     bli.sort();
                     for col in 0..cols {
                         if mat[col][u].is_some() {
@@ -768,6 +769,7 @@ pub fn print_clonotypes(
                             let bc = &bcl.0;
                             let li = bcl.1;
                             row.push(format!("$  {}", bc.clone()));
+                            let ex = &exact_clonotypes[exacts[u]];
                             for k in 0..lvars.len() {
                                 let nr = row.len();
                                 if bin_member(&alt_bcs, &lvars[k]) {
@@ -809,6 +811,12 @@ pub fn print_clonotypes(
                                         n_gex = 1;
                                     }
                                     row.push(format!("{}", n_gex));
+                                } else if lvars[k] == "mark".to_string() {
+                                    let mut mark = String::new();
+                                    if ex.clones[bcl.2][0].marked {
+                                        mark = "x".to_string();
+                                    }
+                                    row.push(mark);
                                 } else if lvars[k] == "entropy".to_string() && have_gex {
                                     // NOTE DUPLICATION WITH CODE BELOW.
                                     let mut gex_count = 0;
@@ -959,7 +967,6 @@ pub fn print_clonotypes(
                                 ncall += rsi.cvars[k].len();
                             }
                             let mut cx = vec!["".to_string(); ncall];
-                            let ex = &exact_clonotypes[exacts[u]];
                             let mut cp = 0;
                             for col in 0..cols {
                                 let m = mat[col][u];

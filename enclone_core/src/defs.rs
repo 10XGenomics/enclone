@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 21] = [
+pub const LVARS_ALLOWED: [&str; 22] = [
     "datasets",
     "samples",
     "donors",
@@ -33,6 +33,7 @@ pub const LVARS_ALLOWED: [&str; 21] = [
     "near",
     "far",
     "ext",
+    "mark",
 ];
 
 pub const CVARS_ALLOWED: [&str; 24] = [
@@ -450,6 +451,7 @@ pub struct ClonoFiltOpt {
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub barcode: Vec<String>, // requires one of these barcodes
     pub umi_filt: bool,      // umi count filter
+    pub umi_filt_mark: bool, // umi count filter (but only mark)
 }
 
 // Clonotype printing options.
@@ -577,6 +579,7 @@ pub struct TigData0 {
     pub tag_index: Option<usize>,    // index of tag
     pub umi_count: usize,            // number of UMIs supporting contig
     pub read_count: usize,           // number of reads supporting contig
+    pub marked: bool,                // if marked for possible deletion
 }
 
 #[derive(Clone)]

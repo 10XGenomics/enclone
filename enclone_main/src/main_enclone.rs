@@ -809,7 +809,7 @@ pub fn main_enclone(args: &Vec<String>) {
             orbits.push(o);
         }
     }
-    if ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt {
+    if ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
         let mut umis = Vec::<usize>::new();
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
@@ -840,7 +840,7 @@ pub fn main_enclone(args: &Vec<String>) {
             println!("50% ==> {}", umis[umis.len() / 2]);
             println!("umin = {:.2}", umin);
         }
-        if ctl.clono_filt_opt.umi_filt {
+        if ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
             const MIN_BASELINE_CELLS: usize = 20;
             if nu >= MIN_BASELINE_CELLS {
                 for i in 0..reps.len() {
@@ -869,16 +869,23 @@ pub fn main_enclone(args: &Vec<String>) {
                                 }
                                 if ((umish + umisl) as f64) < umin {
                                     to_delete[k] = true;
+                                    if ctl.clono_filt_opt.umi_filt_mark {
+                                        ex.clones[k][0].marked = true;
+                                    }
                                 }
                             }
-                            erase_if(&mut ex.clones, &to_delete);
-                            if ex.clones.is_empty() {
-                                to_deletex[j] = true;
+                            if ctl.clono_filt_opt.umi_filt {
+                                erase_if(&mut ex.clones, &to_delete);
+                                if ex.clones.is_empty() {
+                                    to_deletex[j] = true;
+                                }
                             }
                         }
                         erase_if(&mut o, &to_deletex);
                     }
-                    orbits.push(o);
+                    if ctl.clono_filt_opt.umi_filt {
+                        orbits.push(o);
+                    }
                 }
             }
         }
