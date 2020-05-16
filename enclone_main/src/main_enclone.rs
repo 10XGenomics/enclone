@@ -810,7 +810,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
-        let mut umis = Vec::<usize>::new();
+        let mut umis = vec![Vec::<usize>::new(); ctl.sample_info.n()];
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
             eq.orbit(reps[i], &mut o);
@@ -818,47 +818,53 @@ pub fn main_enclone(args: &Vec<String>) {
                 let x: &CloneInfo = &info[o[0] as usize];
                 let ex = &exact_clonotypes[x.clonotype_index];
                 if ex.ncells() == 1 && ex.share.duo() && ex.share[0].left != ex.share[1].left {
-                    umis.push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
+                    umis[ex.clones[0][0].dataset_index]
+                        .push(ex.clones[0][0].umi_count + ex.clones[0][1].umi_count);
                 }
             }
         }
-        umis.sort();
-        let nu = umis.len();
-        if ctl.gen_opt.baseline {
-            println!("\n{} umi counts", nu);
-        }
-        let mut umin = 0.0;
-        if nu > 0 {
-            umin = (umis[nu / 10] as f64).min(4.0 * (umis[nu / 2] as f64).sqrt());
-        }
-        if nu > 0 && ctl.gen_opt.baseline {
-            println!("1% ==> {}", umis[umis.len() / 100]);
-            println!("2% ==> {}", umis[umis.len() / 50]);
-            println!("5% ==> {}", umis[umis.len() / 20]);
-            println!("10% ==> {}", umis[umis.len() / 10]);
-            println!("20% ==> {}", umis[umis.len() / 5]);
-            println!("50% ==> {}", umis[umis.len() / 2]);
-            println!("umin = {:.2}", umin);
+        let mut nu = vec![0; ctl.sample_info.n()];
+        let mut umin = vec![0.0; ctl.sample_info.n()];
+        for l in 0..ctl.sample_info.n() {
+            umis[l].sort();
+            nu[l] = umis[l].len();
+            if ctl.gen_opt.baseline {
+                println!("\n{} umi counts for dataset {}", nu[l], l + 1);
+            }
+            if nu[l] > 0 {
+                umin[l] =
+                    (umis[l][nu[l] / 10] as f64).min(4.0 * (umis[l][nu[l] / 2] as f64).sqrt());
+            }
+            if nu[l] > 0 && ctl.gen_opt.baseline {
+                println!("1% ==> {}", umis[l][umis[l].len() / 100]);
+                println!("2% ==> {}", umis[l][umis[l].len() / 50]);
+                println!("5% ==> {}", umis[l][umis[l].len() / 20]);
+                println!("10% ==> {}", umis[l][umis[l].len() / 10]);
+                println!("20% ==> {}", umis[l][umis[l].len() / 5]);
+                println!("50% ==> {}", umis[l][umis[l].len() / 2]);
+                println!("umin = {:.2}", umin[l]);
+            }
         }
         if ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
             const MIN_BASELINE_CELLS: usize = 20;
-            if nu >= MIN_BASELINE_CELLS {
-                for i in 0..reps.len() {
-                    let mut o = Vec::<i32>::new();
-                    eq.orbit(reps[i], &mut o);
-                    let mut ncells = 0;
+            for i in 0..reps.len() {
+                let mut o = Vec::<i32>::new();
+                eq.orbit(reps[i], &mut o);
+                let mut ncells = 0;
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &exact_clonotypes[x.clonotype_index];
+                    ncells += ex.ncells();
+                }
+                if ncells >= 2 {
+                    let mut to_deletex = vec![false; o.len()];
                     for j in 0..o.len() {
                         let x: &CloneInfo = &info[o[j] as usize];
-                        let ex = &exact_clonotypes[x.clonotype_index];
-                        ncells += ex.ncells();
-                    }
-                    if ncells >= 2 {
-                        let mut to_deletex = vec![false; o.len()];
-                        for j in 0..o.len() {
-                            let x: &CloneInfo = &info[o[j] as usize];
-                            let ex = &mut exact_clonotypes[x.clonotype_index];
-                            let mut to_delete = vec![false; ex.ncells()];
-                            for k in 0..ex.ncells() {
+                        let ex = &mut exact_clonotypes[x.clonotype_index];
+                        let mut to_delete = vec![false; ex.ncells()];
+                        for k in 0..ex.ncells() {
+                            let li = ex.clones[k][0].dataset_index;
+                            if nu[li] >= MIN_BASELINE_CELLS {
                                 let (mut umish, mut umisl) = (0, 0);
                                 for l in 0..ex.share.len() {
                                     if ex.share[l].left {
@@ -867,25 +873,25 @@ pub fn main_enclone(args: &Vec<String>) {
                                         umisl = max(umish, ex.clones[k][l].umi_count);
                                     }
                                 }
-                                if ((umish + umisl) as f64) < umin {
+                                if ((umish + umisl) as f64) < umin[li] {
                                     to_delete[k] = true;
                                     if ctl.clono_filt_opt.umi_filt_mark {
                                         ex.clones[k][0].marked = true;
                                     }
                                 }
                             }
-                            if ctl.clono_filt_opt.umi_filt {
-                                erase_if(&mut ex.clones, &to_delete);
-                                if ex.clones.is_empty() {
-                                    to_deletex[j] = true;
-                                }
+                        }
+                        if ctl.clono_filt_opt.umi_filt {
+                            erase_if(&mut ex.clones, &to_delete);
+                            if ex.clones.is_empty() {
+                                to_deletex[j] = true;
                             }
                         }
-                        erase_if(&mut o, &to_deletex);
                     }
-                    if ctl.clono_filt_opt.umi_filt {
-                        orbits.push(o);
-                    }
+                    erase_if(&mut o, &to_deletex);
+                }
+                if ctl.clono_filt_opt.umi_filt {
+                    orbits.push(o);
                 }
             }
         }
