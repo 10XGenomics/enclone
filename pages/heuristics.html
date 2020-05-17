@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone heuristics</title>
+<link rel="stylesheet" type="text/css" href="enclone.css">
+</head>
+
+<body>
+
+<br>
+<img src="../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>enclone heuristics</h1>
+
+<p>This page is a start in describing the heuristics that enclone uses.  It will be gradually
+expanded.</p>
+
+<hr>
+
+<p><b>UMI filtering.</b>  enclone filters out cells having low UMI counts, according to a 
+heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
+filter.</code>
+
+<p>The motivation for this filter is to mitigate illusory clonotype expansions arising from
+fragmentation of plasma cells or other physical processes (not all fully understood).  These
+processes all result in "cells" having low UMI counts, many of which do not correspond to intact 
+real cells.  Illusory clonotype expansions are generally infrequent, but occasionally cluster
+in individual datasets.</p>
+
+<p>Nomenclature: for any cell, find the maximum UMI count for its zero or more heavy chains
+(or TRB, for TCR), and the maximum for its light chains.  The sum of these two maxima is 
+denoted <code>umitot</code>.</p>
+
+<p>The algorithm for this filter first establishes a baseline for the expected value of 
+<code>umitot</code>, for each dataset taken individually.  To do this, all clonotypes having 
+exactly one cell and exactly one heavy and light chain each are examined.  If there are less than 
+<code>20<code> such cells, the filter is not applied to cells in that dataset.  Otherwise,
+let <code>n_50% denote the median of the <code>umitot</code> values for the dataset, and let
+<code>n_10%</code> the 10th percentile.  Let
+<pre><code>umin = min( n_10%, n_50% - 4 * sqrt(n_50%) ).</code></pre>
+This is the baseline <i>low</i> value for <code>umitot</code>.  The reason for having the second
+part of the <code>min</code> is to prevent filtering in cases where UMI counts are sufficiently 
+low that poisson variability could cause a real cell to appear fake.</p>
+
+</body>
+</html>
