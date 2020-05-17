@@ -800,11 +800,11 @@ pub fn main_enclone(args: &Vec<String>) {
     // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
     //
     // For each cell, let umish be the umi count for its heavy chain having the most umis, and
-    // similarly define umisl.  Let umitot = umish + umisl.  
-    // 
-    // If every cell in a clonotype would have been deleted, first find the exact subclonotype for 
-    // which the sum of its umitot values is greatest, and then in it, find the cell having 
-    // highest umitot value.  Protect this cell.
+    // similarly define umisl.  Let umitot = umish + umisl.
+    //
+    // If every cell in a clonotype would have been deleted, first find the exact subclonotype for
+    // which the sum of its umitot values is greatest, and then in it, find the cell having
+    // highest umitot value.  Protect this cell, so long as it has at least two chains.
 
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
