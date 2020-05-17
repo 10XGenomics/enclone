@@ -858,33 +858,58 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 if ncells >= 2 {
                     let mut to_deletex = vec![false; o.len()];
-                    for j in 0..o.len() {
-                        let x: &CloneInfo = &info[o[j] as usize];
-                        let ex = &mut exact_clonotypes[x.clonotype_index];
-                        let mut to_delete = vec![false; ex.ncells()];
-                        for k in 0..ex.ncells() {
-                            let li = ex.clones[k][0].dataset_index;
-                            if nu[li] >= MIN_BASELINE_CELLS {
-                                let (mut umish, mut umisl) = (0, 0);
-                                for l in 0..ex.share.len() {
-                                    if ex.share[l].left {
-                                        umish = max(umish, ex.clones[k][l].umi_count);
-                                    } else {
-                                        umisl = max(umish, ex.clones[k][l].umi_count);
+                    let (mut best_ex, mut best_ex_sum) = (0, 0);
+                    let (mut best_cell, mut best_cell_count) = (0, 0);
+                    let mut baselined = true;
+                    for pass in 1..=3 {
+                        for j in 0..o.len() {
+                            let x: &CloneInfo = &info[o[j] as usize];
+                            let ex = &mut exact_clonotypes[x.clonotype_index];
+                            let mut to_delete = vec![false; ex.ncells()];
+                            let mut ex_sum = 0;
+                            for k in 0..ex.ncells() {
+                                let li = ex.clones[k][0].dataset_index;
+                                if nu[li] >= MIN_BASELINE_CELLS {
+                                    let (mut umish, mut umisl) = (0, 0);
+                                    for l in 0..ex.share.len() {
+                                        if ex.share[l].left {
+                                            umish = max(umish, ex.clones[k][l].umi_count);
+                                        } else {
+                                            umisl = max(umish, ex.clones[k][l].umi_count);
+                                        }
                                     }
-                                }
-                                if ((umish + umisl) as f64) < umin[li] {
-                                    to_delete[k] = true;
-                                    if ctl.clono_filt_opt.umi_filt_mark {
-                                        ex.clones[k][0].marked = true;
+                                    let umitot = umish + umisl;
+                                    if pass == 1 {
+                                        ex_sum += umitot;
                                     }
+                                    if pass == 2 && j == best_ex && umitot > best_cell_count {
+                                        best_cell = k;
+                                        best_cell_count = umitot;
+                                    }
+                                    if pass == 3 && (umitot as f64) < umin[li] {
+                                        if !baselined
+                                            || (best_ex, best_cell) != (j, k)
+                                            || ex.share.len() == 1
+                                        {
+                                            to_delete[k] = true;
+                                            if ctl.clono_filt_opt.umi_filt_mark {
+                                                ex.clones[k][0].marked = true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    baselined = false;
                                 }
                             }
-                        }
-                        if ctl.clono_filt_opt.umi_filt {
-                            erase_if(&mut ex.clones, &to_delete);
-                            if ex.clones.is_empty() {
-                                to_deletex[j] = true;
+                            if pass == 1 && ex_sum > best_ex_sum {
+                                best_ex = j;
+                                best_ex_sum = ex_sum;
+                            }
+                            if pass == 3 && ctl.clono_filt_opt.umi_filt {
+                                erase_if(&mut ex.clones, &to_delete);
+                                if ex.clones.is_empty() {
+                                    to_deletex[j] = true;
+                                }
                             }
                         }
                     }
