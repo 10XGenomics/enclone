@@ -707,6 +707,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             eprintln!("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n");
             std::process::exit(1);
         }
+        if ctl.gen_opt.plot_by_mark {
+            eprintln!("\nPLOT_BY_ISOTYPE and PLOT_BY_MARK cannot be used together.\n");
+            std::process::exit(1);
+        }
     }
     if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");

@@ -293,10 +293,33 @@ pub fn plot_clonotypes(
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
     let mut samples = Vec::<String>::new();
+
+    // Go through the clonotypes.
+
     for i in 0..exacts.len() {
         let mut colors = Vec::<String>::new();
         let mut coords = Vec::<(f64, f64)>::new();
         let mut n = 0;
+
+        // For PLOT_BY_MARK, find the dataset having the largest number of cells.
+
+        let mut dsx = 0;
+        if ctl.gen_opt.plot_by_mark {
+            let mut ds = Vec::<usize>::new();
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                for j in 0..ex.clones.len() {
+                    ds.push(ex.clones[j][0].dataset_index);
+                }
+            }
+            ds.sort();
+            let mut freq = Vec::<(u32,usize)>::new();
+            make_freq(&ds, &mut freq);
+            dsx = freq[0].1;
+        }
+
+        // Go through the exact subclonotypes in a clonotype.
+
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
             for j in 0..ex.clones.len() {
@@ -320,6 +343,25 @@ pub fn plot_clonotypes(
                     }
                     let x = print_color13(color_id);
                     color = format!("rgb({},{},{})", x.0, x.1, x.2);
+
+                // Determine color for PLOT_BY_MARK.
+
+                } else if ctl.gen_opt.plot_by_mark {
+                    let dom = ex.clones[j][0].dataset_index == dsx;
+                    let marked = ex.clones[j][0].marked;
+                    if dom {
+                        if !marked {
+                            color = "red".to_string();
+                        } else {
+                            color = "rgb(255,200,200)".to_string();
+                        }
+                    } else {
+                        if !marked {
+                            color = "blue".to_string();
+                        } else {
+                            color = "rgb(200,200,255)".to_string();
+                        }
+                    }
 
                 // Determine color in other cases.
                 } else {
