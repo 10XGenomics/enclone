@@ -28,6 +28,20 @@ pub fn survives_filter(
     if n < ctl.clono_filt_opt.ncells_low {
         return false;
     }
+    if ctl.clono_filt_opt.marked {
+        let mut marked = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            for i in 0..ex.clones.len() {
+                if ex.clones[i][0].marked {
+                    marked = true;
+                }
+            }
+        }
+        if !marked {
+            return false;
+        }
+    }
     let cols = rsi.vids.len();
     if ctl.clono_filt_opt.barcode.len() > 0 {
         let mut ok = false;
