@@ -45,5 +45,13 @@ This is the baseline <i>low</i> value for <code>umitot</code>.  The reason for h
 part of the <code>min</code> is to prevent filtering in cases where UMI counts are sufficiently 
 low that poisson variability could cause a real cell to appear fake.</p>
 
+<p>Next we scan each clonotype having at least two cells, and delete every cell having 
+<code>umitot < umin</code>, with the following qualification.  If <i>every</i> cell in a clonotype 
+would be deleted, then we find its exact subclonotype having the highest sum for 
+<code>umitot</code>, summing across its cells.  Then we save the cell in this exact subclonotype 
+having the highest <code>umitot</code> value.
+
+This UMI filter is carried out before most of the other filters.
+
 </body>
 </html>
