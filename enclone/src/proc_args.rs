@@ -712,6 +712,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+    if ctl.gen_opt.plot_by_mark {
+        if using_plot || ctl.gen_opt.use_legend {
+            eprintln!("\nPLOT_BY_MARK cannot be used with PLOT or LEGEND.\n");
+            std::process::exit(1);
+        }
+    }
     if ctl.parseable_opt.pbarcode && ctl.parseable_opt.pout.len() == 0 {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
         std::process::exit(1);

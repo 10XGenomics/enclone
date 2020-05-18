@@ -313,7 +313,7 @@ pub fn plot_clonotypes(
                 }
             }
             ds.sort();
-            let mut freq = Vec::<(u32,usize)>::new();
+            let mut freq = Vec::<(u32, usize)>::new();
             make_freq(&ds, &mut freq);
             dsx = freq[0].1;
         }
@@ -345,7 +345,6 @@ pub fn plot_clonotypes(
                     color = format!("rgb({},{},{})", x.0, x.1, x.2);
 
                 // Determine color for PLOT_BY_MARK.
-
                 } else if ctl.gen_opt.plot_by_mark {
                     let dom = ex.clones[j][0].dataset_index == dsx;
                     let marked = ex.clones[j][0].marked;
@@ -447,9 +446,8 @@ pub fn plot_clonotypes(
 
     // Add legend.
 
-    if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype {
-        let mut colors = Vec::<String>::new();
-        let mut labels = Vec::<String>::new();
+    if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype || ctl.gen_opt.plot_by_mark {
+        let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
         let mut max_string_width = 0.0f64;
         if ctl.gen_opt.plot_by_isotype {
             for i in 0..const_names.len() {
@@ -464,6 +462,15 @@ pub fn plot_clonotypes(
             let x = print_color13(color_id);
             let color = format!("rgb({},{},{})", x.0, x.1, x.2);
             colors.push(color);
+        } else if ctl.gen_opt.plot_by_mark {
+            colors.push("red".to_string());
+            labels.push("in most common dataset, !marked".to_string());
+            colors.push("rgb(255,200,200)".to_string());
+            labels.push("in most common dataset, marked".to_string());
+            colors.push("blue".to_string());
+            labels.push("not in most common dataset, !marked".to_string());
+            colors.push("rgb(200,200,255)".to_string());
+            labels.push("not in most common dataset, marked".to_string());
         } else {
             if ctl.gen_opt.legend.len() == 0 {
                 for s in samples.iter() {
