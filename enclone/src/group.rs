@@ -731,12 +731,12 @@ pub fn group_and_print_clonotypes(
         }
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (heavy chain/ TRB) = {:.2}",
+            "   • mean over middle third of contig UMI counts (heavy chain / TRB) = {:.2}",
             middle_mean_umish,
         );
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (light chain/ TRA) = {:.2}",
+            "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
             middle_mean_umisl,
         );
         let mut rows = Vec::<Vec<String>>::new();
