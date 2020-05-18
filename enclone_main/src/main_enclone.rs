@@ -914,10 +914,14 @@ pub fn main_enclone(args: &Vec<String>) {
                             }
                             if pass == 3 && ctl.clono_filt_opt.umi_filt {
                                 erase_if(&mut ex.clones, &to_delete);
-                                if ex.clones.is_empty() {
-                                    to_deletex[j] = true;
-                                }
                             }
+                        }
+                    }
+                    for j in 0..o.len() {
+                        let x: &CloneInfo = &info[o[j] as usize];
+                        let ex = &mut exact_clonotypes[x.clonotype_index];
+                        if ex.ncells() == 0 {
+                            to_deletex[j] = true;
                         }
                     }
                     erase_if(&mut o, &to_deletex);
