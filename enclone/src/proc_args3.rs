@@ -15,6 +15,50 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn expand_integer_ranges(x: &str) -> String {
+    let mut tokens = Vec::<String>::new();
+    let mut token = String::new();
+    for c in x.chars() {
+        if c == ',' || c == ':' || c == ';' {
+            if token.len() > 0 {
+                tokens.push(token.clone());
+                token.clear();
+            }
+            tokens.push(c.to_string());
+        } else {
+            token.push(c);
+        }
+    }
+    if token.len() > 0 {
+        tokens.push(token);
+    }
+    let mut tokens2 = Vec::<String>::new();
+    for i in 0..tokens.len() {
+        if tokens[i].contains("-")
+            && tokens[i].before("-").parse::<usize>().is_ok()
+            && tokens[i].after("-").parse::<usize>().is_ok()
+        {
+            let n1 = tokens[i].before("-").force_usize();
+            let n2 = tokens[i].after("-").force_usize();
+            if n1 <= n2 {
+                for n in n1..=n2 {
+                    if n > n1 {
+                        tokens2.push(",".to_string());
+                    }
+                    tokens2.push(format!("{}", n));
+                }
+                continue;
+            }
+        }
+        tokens2.push(tokens[i].clone());
+    }
+    let mut y = String::new();
+    for i in 0..tokens2.len() {
+        y += &tokens2[i];
+    }
+    y
+}
+
 // Functions to find the path to data.
 
 fn get_path(p: &str, ctl: &EncloneControl) -> String {
@@ -262,7 +306,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     ctl.gen_opt.tcr = f.starts_with("TCR=");
     ctl.gen_opt.bcr = f.starts_with("BCR=");
-    let val: String;
+    let mut val: String;
     if ctl.gen_opt.tcr {
         val = f.after("TCR=").to_string();
     } else if ctl.gen_opt.bcr {
@@ -278,8 +322,10 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         eprintln!("Perhaps you need to remove some white space from your command line.\n");
         std::process::exit(1);
     }
+    val = expand_integer_ranges(&val);
     let donor_groups = val.split(';').collect::<Vec<&str>>();
-    let donor_groups_gex = gex.split(';').collect::<Vec<&str>>();
+    let gex2 = expand_integer_ranges(&gex);
+    let donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
     let donor_groups_bc = bc.split(';').collect::<Vec<&str>>();
     let mut xcr = "TCR".to_string();
     if ctl.gen_opt.bcr {
@@ -287,8 +333,12 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     if have_gex && donor_groups_gex.len() != donor_groups.len() {
         eprintln!(
-            "\nThe {} and GEX arguments do not exactly mirror each \
+            "\nThere are {} {} donor groups and {} GEX donor groups, so \
+             the {} and GEX arguments do not exactly mirror each \
              other's structure.\n",
+            xcr,
+            donor_groups.len(),
+            donor_groups_gex.len(),
             xcr
         );
         std::process::exit(1);
@@ -308,8 +358,13 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             sample_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
             if sample_groups_gex.len() != sample_groups.len() {
                 eprintln!(
-                    "\nThe {} and GEX arguments do not exactly mirror each \
+                    "\nFor donor {}, there are {} {} sample groups and {} GEX sample groups, so \
+                     the {} and GEX arguments do not exactly mirror each \
                      other's structure.\n",
+                    id + 1,
+                    xcr,
+                    sample_groups.len(),
+                    sample_groups_gex.len(),
                     xcr
                 );
                 std::process::exit(1);
@@ -332,32 +387,20 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             let mut datasets_gex = Vec::<&str>::new();
             let mut datasets_bc = Vec::<&str>::new();
             let mut datasetsx = Vec::<String>::new();
+            // presumably pointless now:
             for i in 0..datasets.len() {
-                if datasets[i].contains('-') {
-                    let (f1, f2) = (datasets[i].before("-"), datasets[i].after("-"));
-                    if f1.parse::<usize>().is_ok() && f2.parse::<usize>().is_ok() {
-                        let (l1, l2) = (f1.force_usize(), f2.force_usize());
-                        if l1 <= l2 {
-                            for l in l1..=l2 {
-                                datasetsx.push(format!("{}", l));
-                            }
-                        } else {
-                            eprintln!("\nIllegal argument {}.\n", datasets[i]);
-                            std::process::exit(1);
-                        }
-                    } else {
-                        datasetsx.push(datasets[i].to_string());
-                    }
-                } else {
-                    datasetsx.push(datasets[i].to_string());
-                }
+                datasetsx.push(datasets[i].to_string());
             }
             if have_gex {
                 datasets_gex = sample_groups_gex[is].split(',').collect::<Vec<&str>>();
                 if datasets_gex.len() != datasetsx.len() {
                     eprintln!(
-                        "\nThe {} and GEX arguments do not exactly mirror each \
+                        "\nSee {} {} datasets and {} GEX datasets, so \
+                         the {} and GEX arguments do not exactly mirror each \
                          other's structure.\n",
+                        xcr,
+                        datasetsx.len(),
+                        datasets_gex.len(),
                         xcr
                     );
                     std::process::exit(1);
