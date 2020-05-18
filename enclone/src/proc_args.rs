@@ -366,6 +366,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
                 std::process::exit(1);
             }
+        } else if arg.starts_with("PLOT_BY_MARK=") {
+            ctl.gen_opt.plot_by_mark = true;
+            ctl.gen_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
+            if ctl.gen_opt.plot_file.is_empty() {
+                eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
+                std::process::exit(1);
+            }
         } else if is_simple_arg(&arg, "SUMMARY_CLEAN") {
             ctl.gen_opt.summary_clean = true;
         } else if arg.starts_with("EMAIL=") {
