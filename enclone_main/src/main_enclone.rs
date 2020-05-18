@@ -805,6 +805,8 @@ pub fn main_enclone(args: &Vec<String>) {
     // If every cell in a clonotype would have been deleted, first find the exact subclonotype for
     // which the sum of its umitot values is greatest, and then in it, find the cell having
     // highest umitot value.  Protect this cell, so long as it has at least two chains.
+    //
+    // See heuristics.html for more notes.
 
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
@@ -889,7 +891,11 @@ pub fn main_enclone(args: &Vec<String>) {
                                     if pass == 1 {
                                         ex_sum += umitot;
                                     }
-                                    if pass == 2 && j == best_ex && umitot > best_cell_count {
+                                    if pass == 2
+                                        && j == best_ex
+                                        && umitot > best_cell_count
+                                        && ex.share.len() > 1
+                                    {
                                         best_cell = k;
                                         best_cell_count = umitot;
                                     }
