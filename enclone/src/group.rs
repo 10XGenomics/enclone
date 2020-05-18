@@ -100,20 +100,6 @@ pub fn group_and_print_clonotypes(
         }
     };
 
-    // Echo command.
-
-    if ctl.gen_opt.echo {
-        let args: Vec<String> = env::args().collect();
-        println!("");
-        if ctl.gen_opt.html {
-            println!("<span style=\"font-family=DejaVuSansMono\">");
-        }
-        println!("{}", args.iter().format(" "));
-        if ctl.gen_opt.html {
-            println!("</span>");
-        }
-    }
-
     // Group clonotypes and make output.
 
     let mut last_width = 0;
@@ -188,9 +174,19 @@ pub fn group_and_print_clonotypes(
     }
     reverse_sort(&mut grepsn);
 
-    // Now print.
+    // Echo command.
 
     let mut logx = Vec::<u8>::new();
+    if ctl.gen_opt.echo {
+        let args: Vec<String> = env::args().collect();
+        fwriteln!(logx, "\n{}", args.iter().format(" "));
+        if ctl.gen_opt.html {
+            fwriteln!(logx, "");
+        }
+    }
+
+    // Now print clonotypes.
+
     for z in 0..grepsn.len() {
         let i = grepsn[z].1;
         let n = grepsn[z].0;
