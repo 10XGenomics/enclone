@@ -922,7 +922,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                     erase_if(&mut o, &to_deletex);
                 }
-                if ctl.clono_filt_opt.umi_filt {
+                if ctl.clono_filt_opt.umi_filt && !o.is_empty() {
                     orbits.push(o);
                 }
             }
