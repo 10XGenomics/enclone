@@ -624,6 +624,9 @@ impl ExactClonotype {
     pub fn ncells(&self) -> usize {
         self.clones.len()
     }
+    pub fn nchains(&self) -> usize {
+        self.share.len()
+    }
     pub fn max_umi_count(&self) -> usize {
         let mut m = 0;
         for i in 0..self.clones.len() {
