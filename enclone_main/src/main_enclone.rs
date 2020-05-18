@@ -933,7 +933,28 @@ pub fn main_enclone(args: &Vec<String>) {
                     erase_if(&mut o, &to_deletex);
                 }
                 if ctl.clono_filt_opt.umi_filt && !o.is_empty() {
-                    orbits.push(o);
+                    orbits.push(o.clone());
+                    /*
+                    // The following code is off, and should not be an assert anyway.  The reason
+                    // the code should possibly be here is that in principle an orbit could be
+                    // disconnected, and in such cases it should be pulled apart.  That would be
+                    // a small change to this code.  However, we've never seen an example, so we
+                    // haven't done it.
+                    let mut eqx = EquivRel::new(o.len() as i32);
+                    for i1 in 0..o.len() {
+                        for i2 in i1+1..o.len() {
+                            if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
+                                if eq.class_id(o[i1] as i32) == eq.class_id(o[i2] as i32) {
+                                    eqx.join(i1 as i32, i2 as i32);
+                                }
+                            }
+                        }
+                    }
+                    if eqx.norbits() > 1 {
+                        eprintln!("\nToo many orbits: {}.\n", eqx.norbits());
+                        std::process::exit(1);
+                    }
+                    */
                 }
             }
         }
