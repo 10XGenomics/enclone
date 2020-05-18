@@ -309,7 +309,9 @@ pub fn print_clonotypes(
 
             // Filter.
 
-            if pass == 2 && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata) {
+            if pass == 2
+                && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata, &gex_info)
+            {
                 continue;
             }
 

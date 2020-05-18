@@ -455,6 +455,7 @@ pub struct ClonoFiltOpt {
     pub umi_filt: bool,      // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
     pub marked: bool,        // only print clonotypes having a mark
+    pub marked_b: bool,      // only print clonotypes having a mark and which are typed as B cells
 }
 
 // Clonotype printing options.

@@ -16,6 +16,7 @@ pub fn survives_filter(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
+    gex_info: &GexInfo,
 ) -> bool {
     let mut mults = Vec::<usize>::new();
     for i in 0..exacts.len() {
@@ -39,6 +40,26 @@ pub fn survives_filter(
             }
         }
         if !marked {
+            return false;
+        }
+    }
+    if ctl.clono_filt_opt.marked_b {
+        let mut marked_b = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            for i in 0..ex.clones.len() {
+                if ex.clones[i][0].marked {
+                    let li = ex.clones[i][0].dataset_index;
+                    let bc = &ex.clones[i][0].barcode;
+                    if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                        if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                            marked_b = true;
+                        }
+                    }
+                }
+            }
+        }
+        if !marked_b {
             return false;
         }
     }

@@ -293,6 +293,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.umi_filt_mark = true;
         } else if is_simple_arg(&arg, "MARKED") {
             ctl.clono_filt_opt.marked = true;
+        } else if is_simple_arg(&arg, "MARKED_B") {
+            ctl.clono_filt_opt.marked_b = true;
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&arg, "BASELINE") {
