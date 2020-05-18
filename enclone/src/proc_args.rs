@@ -215,6 +215,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.imgt = true;
         } else if is_simple_arg(&arg, "IMGT_FIX") {
             ctl.gen_opt.imgt_fix = true;
+        } else if is_simple_arg(&arg, "ECHO") {
+            ctl.gen_opt.echo = true;
         } else if is_simple_arg(&arg, "NCELL") {
             ctl.gen_opt.ncell = true;
         } else if arg == "LEGEND" {

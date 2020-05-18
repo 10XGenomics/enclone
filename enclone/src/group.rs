@@ -12,6 +12,7 @@ use io_utils::*;
 use itertools::*;
 use perf_stats::*;
 use std::collections::HashMap;
+use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
@@ -98,6 +99,20 @@ pub fn group_and_print_clonotypes(
             Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
+
+    // Echo command.
+
+    if ctl.gen_opt.echo {
+        let args: Vec<String> = env::args().collect();
+        println!("");
+        if ctl.gen_opt.html {
+            println!("<span style=\"font-family=DejaVuSansMono\">");
+        }
+        println!("{}", args.iter().format(" "));
+        if ctl.gen_opt.html {
+            println!("</span>");
+        }
+    }
 
     // Group clonotypes and make output.
 
