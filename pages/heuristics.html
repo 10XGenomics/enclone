@@ -22,7 +22,7 @@ technical.
 
 <hr>
 
-<p><b>UMI filtering.</b>  enclone filters out cells having low UMI counts, according to a 
+<p><b>UMI filtering.</b>  enclone filters out B cells having low UMI counts, according to a 
 heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
 filter.</code>
 
@@ -32,8 +32,8 @@ processes all result in "cells" having low UMI counts, many of which do not corr
 real cells.  Illusory clonotype expansions are generally infrequent, but occasionally cluster
 in individual datasets.</p>
 
-<p>Nomenclature: for any cell, find the maximum UMI count for its zero or more heavy chains
-(or TRB, for TCR), and the maximum for its light chains.  The sum of these two maxima is 
+<p>Nomenclature: for any cell, find the maximum UMI count for its zero or more heavy chains,
+and the maximum for its light chains.  The sum of these two maxima is 
 denoted <code>umitot</code>.</p>
 
 <p>The algorithm for this filter first establishes a baseline for the expected value of 

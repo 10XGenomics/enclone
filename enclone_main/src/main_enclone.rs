@@ -796,6 +796,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
 
+    // This is only for B cells.
     // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
     // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
     //
