@@ -626,13 +626,16 @@ pub fn group_and_print_clonotypes(
         middle_mean_umisl = (middlel as f64) / (denoml as f64);
     }
 
-    // Compute n23.
+    // Compute n1 and n23.
 
+    let mut n1 = 0;
     let mut n23 = 0;
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
-            if ex.share.len() == 2 || ex.share.len() == 3 {
+            if ex.nchains() == 1 {
+                n1 += ex.ncells();
+            } else if ex.nchains() == 2 || ex.nchains() == 3 {
                 n23 += ex.ncells();
             }
         }
@@ -716,6 +719,7 @@ pub fn group_and_print_clonotypes(
             nclono2
         );
         fwriteln!(logx, "   • number of cells = {}", ncells);
+        fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         nchains.sort();
         let mut i = 0;
