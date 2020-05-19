@@ -46,7 +46,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Test for internal run.
 
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if (key == "HOST" || key == "HOSTNAME")
+            && (value.ends_with(".fuzzplex.com") || value.ends_with(".txgmesh.net"))
+        {
             ctl.gen_opt.internal_run = true;
         }
     }
