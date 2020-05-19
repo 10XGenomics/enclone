@@ -842,8 +842,9 @@ pub fn main_enclone(args: &Vec<String>) {
                 println!("\n{} umi counts for dataset {}", nu[l], l + 1);
             }
             if nu[l] > 0 {
-                umin[l] =
-                    (umis[l][nu[l] / 10] as f64).min(4.0 * (umis[l][nu[l] / 2] as f64).sqrt());
+                let n10 = umis[l][nu[l] / 10] as f64;
+                let n50 = umis[l][nu[l] / 2] as f64;
+                umin[l] = n10.min(n50 - (4.0 * n50.sqrt()));
             }
             if nu[l] > 0 && ctl.gen_opt.baseline {
                 println!("1% ==> {}", umis[l][umis[l].len() / 100]);
