@@ -715,16 +715,29 @@ pub fn group_and_print_clonotypes(
 
         // Compute marking stats.
 
-        let (mut nmarked, mut nmarked_good) = (0, 0);
+        let (mut nmarked, mut nmarked_good, mut ndubious) = (0, 0, 0);
         if ctl.gen_opt.mark_stats {
             for i in 0..nclono {
+                let mut datasets = Vec::<usize>::new();
+                let mut ncells = 0;
                 for j in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][j]];
+                    ncells += ex.ncells();
                     let mut datasets = Vec::<usize>::new();
                     for l in 0..ex.ncells() {
                         datasets.push(ex.clones[l][0].dataset_index);
                     }
-                    unique_sort(&mut datasets);
+                }
+                datasets.sort();
+                let mut freq = Vec::<(u32, usize)>::new();
+                make_freq(&datasets, &mut freq);
+                if ncells >= 2 {
+                    if freq.len() == 1 || freq[0].0 >= 10 * freq[1].0 {
+                        ndubious += freq[0].0;
+                    }
+                }
+                for j in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][j]];
                     for l in 0..ex.ncells() {
                         if ex.clones[l][0].marked {
                             nmarked += 1;
@@ -737,7 +750,7 @@ pub fn group_and_print_clonotypes(
                                     b = true;
                                 }
                             }
-                            if chains_ok && datasets.len() >= 2 && b {
+                            if chains_ok && freq.len() >= 2 && b {
                                 nmarked_good += 1;
                             }
                         }
@@ -759,6 +772,7 @@ pub fn group_and_print_clonotypes(
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         if ctl.gen_opt.mark_stats {
+            fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
             fwriteln!(logx, "   • number of marked cells = {}", nmarked);
             fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
         }
