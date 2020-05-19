@@ -34,6 +34,7 @@ pub fn group_and_print_clonotypes(
     parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
+    gex_info: &GexInfo,
 ) {
     // Build index to join info.
 
@@ -711,6 +712,42 @@ pub fn group_and_print_clonotypes(
             #[cfg(not(target_os = "macos"))]
             fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
+
+        // Compute marking stats.
+
+        let (mut nmarked, mut nmarked_good) = (0, 0);
+        if ctl.gen_opt.mark_stats {
+            for i in 0..nclono {
+                for j in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][j]];
+                    let mut datasets = Vec::<usize>::new();
+                    for l in 0..ex.ncells() {
+                        datasets.push(ex.clones[l][0].dataset_index);
+                    }
+                    unique_sort(&mut datasets);
+                    for l in 0..ex.ncells() {
+                        if ex.clones[l][0].marked {
+                            nmarked += 1;
+                            let chains_ok = ex.nchains() >= 2 && ex.nchains() <= 3;
+                            let mut b = false;
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = &ex.clones[l][0].barcode;
+                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                                    b = true;
+                                }
+                            }
+                            if chains_ok && datasets.len() >= 2 && b {
+                                nmarked_good += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Print other stats.
+
         fwriteln!(logx, "2. for the selected clonotypes");
         fwriteln!(logx, "   • number of clonotypes = {}", nclono);
         fwriteln!(
@@ -721,6 +758,10 @@ pub fn group_and_print_clonotypes(
         fwriteln!(logx, "   • number of cells = {}", ncells);
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
+        if ctl.gen_opt.mark_stats {
+            fwriteln!(logx, "   • number of marked cells = {}", nmarked);
+            fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
+        }
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {

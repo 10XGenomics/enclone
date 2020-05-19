@@ -1453,6 +1453,7 @@ pub fn print_clonotypes(
         &parseable_fields,
         &mut out_datas,
         &join_info,
+        &gex_info,
     );
 
     // Do gene scan.

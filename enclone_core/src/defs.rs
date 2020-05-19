@@ -379,6 +379,7 @@ pub struct GeneralOpt {
     pub ncell: bool,
     pub baseline: bool,
     pub echo: bool,
+    pub mark_stats: bool,
 }
 
 // Allele finding algorithmic options.
