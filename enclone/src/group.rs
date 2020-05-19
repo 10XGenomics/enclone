@@ -723,7 +723,6 @@ pub fn group_and_print_clonotypes(
                 for j in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][j]];
                     ncells += ex.ncells();
-                    let mut datasets = Vec::<usize>::new();
                     for l in 0..ex.ncells() {
                         datasets.push(ex.clones[l][0].dataset_index);
                     }
