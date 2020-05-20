@@ -48,6 +48,26 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn binomial_sum(n: usize, k: usize, p: f64) -> f64 {
+    assert!(n >= 1);
+    assert!(k <= n);
+    let mut sum = 0.0;
+    let mut choose = 1.0;
+    for _ in 0..n {
+        choose *= 1.0 - p;
+    }
+    let q = p / (1.0 - p);
+    for i in 0..=k {
+        sum += choose;
+        choose *= (n - i) as f64;
+        choose /= (i + 1) as f64;
+        choose *= q;
+    }
+    sum
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Provide help if requested.
 
@@ -867,12 +887,28 @@ pub fn main_enclone(args: &Vec<String>) {
                     let ex = &exact_clonotypes[x.clonotype_index];
                     ncells += ex.ncells();
                 }
+                let mut nbads = 0;
                 if ncells >= 2 {
                     let mut to_deletex = vec![false; o.len()];
                     let (mut best_ex, mut best_ex_sum) = (0, 0);
                     let (mut best_cell, mut best_cell_count) = (0, 0);
                     let mut baselined = true;
                     for pass in 1..=3 {
+                        if pass == 2 {
+                            if nbads == 0 {
+                                break;
+                            }
+                            let p = 0.1;
+                            let bound = 0.01;
+
+                            // Find probability of observing nbads or more events of probability
+                            // p in a sample of size ncells, and if that is at least bound,
+                            // don't delete any cells.
+
+                            if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
+                                break;
+                            }
+                        }
                         for j in 0..o.len() {
                             let x: &CloneInfo = &info[o[j] as usize];
                             let ex = &mut exact_clonotypes[x.clonotype_index];
@@ -900,6 +936,9 @@ pub fn main_enclone(args: &Vec<String>) {
                                     {
                                         best_cell = k;
                                         best_cell_count = umitot;
+                                    }
+                                    if pass == 1 && (umitot as f64) < umin[li] {
+                                        nbads += 1;
                                     }
                                     if pass == 3 && (umitot as f64) < umin[li] {
                                         if !baselined
