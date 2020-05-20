@@ -56,6 +56,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
+        ctl.gen_opt.current_ref = true; // not sure this is right
         ctl.gen_opt.pre = vec![
             format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
             format!("enclone/test/inputs"),
