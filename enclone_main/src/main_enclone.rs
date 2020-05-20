@@ -893,20 +893,22 @@ pub fn main_enclone(args: &Vec<String>) {
                     let (mut best_ex, mut best_ex_sum) = (0, 0);
                     let (mut best_cell, mut best_cell_count) = (0, 0);
                     let mut baselined = true;
+                    let mut protected = false;
                     for pass in 1..=3 {
                         if pass == 2 {
                             if nbads == 0 {
-                                break;
-                            }
-                            let p = 0.1;
-                            let bound = 0.01;
+                                protected = true;
+                            } else {
+                                let p = 0.1;
+                                let bound = 0.01;
 
-                            // Find probability of observing nbads or more events of probability
-                            // p in a sample of size ncells, and if that is at least bound,
-                            // don't delete any cells.
+                                // Find probability of observing nbads or more events of probability
+                                // p in a sample of size ncells, and if that is at least bound,
+                                // don't delete any cells (except onesies).
 
-                            if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
-                                break;
+                                if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
+                                    protected = true;
+                                }
                             }
                         }
                         for j in 0..o.len() {
@@ -937,17 +939,25 @@ pub fn main_enclone(args: &Vec<String>) {
                                         best_cell = k;
                                         best_cell_count = umitot;
                                     }
-                                    if pass == 1 && (umitot as f64) < umin[li] {
-                                        nbads += 1;
-                                    }
-                                    if pass == 3 && (umitot as f64) < umin[li] {
-                                        if !baselined
-                                            || (best_ex, best_cell) != (j, k)
-                                            || ex.share.len() == 1
-                                        {
-                                            to_delete[k] = true;
-                                            if ctl.clono_filt_opt.umi_filt_mark {
-                                                ex.clones[k][0].marked = true;
+                                    if (umitot as f64) < umin[li] {
+                                        if pass == 1 {
+                                            nbads += 1;
+                                        } else if pass == 3 && protected {
+                                            if ex.share.len() == 1 {
+                                                to_delete[k] = true;
+                                                if ctl.clono_filt_opt.umi_filt_mark {
+                                                    ex.clones[k][0].marked = true;
+                                                }
+                                            }
+                                        } else if pass == 3 {
+                                            if !baselined
+                                                || (best_ex, best_cell) != (j, k)
+                                                || ex.share.len() == 1
+                                            {
+                                                to_delete[k] = true;
+                                                if ctl.clono_filt_opt.umi_filt_mark {
+                                                    ex.clones[k][0].marked = true;
+                                                }
                                             }
                                         }
                                     }
