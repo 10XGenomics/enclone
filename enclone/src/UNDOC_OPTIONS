@@ -152,3 +152,8 @@ MARK_STATS: generate two statistics (assumes GEX data included)
    - that are in a clonotype having cells from >= 2 datasets
    - and which GEX classifies as B cell
    - and which have 2 or 3 chains.
+
+BI=n, where 1 <= n <= 13 (for now):
+load BCR and GEX from datasets described in enclone.testdata.bcr.gex
+(This only works internally where we have these datasets available.)
+(BI short for "built-in".)

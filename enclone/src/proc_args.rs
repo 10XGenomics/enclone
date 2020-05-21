@@ -155,6 +155,44 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     let mut using_plot = false;
 
+    // Preprocess BI argument.
+
+    if ctl.gen_opt.internal_run {
+        for i in 1..args.len() {
+            if args[i].starts_with("BI=") {
+                let n = args[i].after("BI=");
+                if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
+                    eprintln!("\nBI=n only works if 1 <= n <= 13.\n");
+                    std::process::exit(1);
+                }
+                let mut args2 = Vec::<String>::new();
+                for j in 0..i {
+                    args2.push(args[j].clone());
+                }
+                let n = n.force_usize();
+                let f = include_str!["enclone.testdata.bcr.gex"];
+                let mut found = false;
+                for s in f.lines() {
+                    if s == format!("DONOR={}", n) {
+                        found = true;
+                    } else if found && s.starts_with("DONOR=") {
+                        break;
+                    }
+                    if found {
+                        if s.starts_with("BCR=") || s.starts_with("GEX=") {
+                            args2.push(s.to_string());
+                        }
+                    }
+                }
+                for j in i + 1..args.len() {
+                    args2.push(args[j].clone());
+                }
+                args = args2;
+                break;
+            }
+        }
+    }
+
     // Traverse arguments.
 
     for i in 1..args.len() {
@@ -218,6 +256,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.imgt_fix = true;
         } else if is_simple_arg(&arg, "ECHO") {
             ctl.gen_opt.echo = true;
+        } else if arg.starts_with("BI=") {
+            continue;
         } else if is_simple_arg(&arg, "MARK_STATS") {
             ctl.gen_opt.mark_stats = true;
         } else if is_simple_arg(&arg, "NCELL") {
