@@ -120,8 +120,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
-    let mut have_tcr = false;
-    let mut have_bcr = false;
+    let (mut have_tcr, mut have_bcr) = (false, false);
     let mut have_gex = false;
     let mut have_meta = false;
     let mut gex = String::new();
@@ -129,7 +128,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut metas = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
-        if args[i].starts_with("TCR=") {
+        if args[i].starts_with("BI=") {
+            have_bcr = true;
+            have_gex = true;
+        } else if args[i].starts_with("TCR=") {
             have_tcr = true;
         } else if args[i].starts_with("BCR=") {
             have_bcr = true;
@@ -181,6 +183,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     if found {
                         if s.starts_with("BCR=") || s.starts_with("GEX=") {
                             args2.push(s.to_string());
+                        }
+                        if s.starts_with("GEX=") {
+                            gex = s.after("GEX=").to_string();
                         }
                     }
                 }
