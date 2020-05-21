@@ -146,9 +146,12 @@ Do not use UMI_FILT and UMI_FILT_MARK together.
 
 ECHO: echo command
 
-MARK_STATS: generate two statistics (assumes GEX data included)
-1. number of cells that are marked (in selected clonotypes)
-2. of these, number that are "good", defined as
+MARK_STATS: generate three statistics (assumes GEX data included)
+1. number of dubious cells, where dubious means not classified as a B cell, or in a clonotype for 
+   which the ratio of the top dataset cells to the runner up dataset cells is at least 10 
+   (e.g. 3:0 works as does 10:1)
+2. number of cells that are marked (in selected clonotypes)
+3. of these, number that are "good", defined as
    - that are in a clonotype having cells from >= 2 datasets
    - and which GEX classifies as B cell
    - and which have 2 or 3 chains.

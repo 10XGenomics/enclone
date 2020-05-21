@@ -731,8 +731,25 @@ pub fn group_and_print_clonotypes(
                 let mut freq = Vec::<(u32, usize)>::new();
                 make_freq(&datasets, &mut freq);
                 if ncells >= 2 {
+                    let mut di = -1;
                     if freq.len() == 1 || freq[0].0 >= 10 * freq[1].0 {
-                        ndubious += freq[0].0;
+                        di = freq[0].1 as isize;
+                    }
+                    for j in 0..exacts[i].len() {
+                        let ex = &exact_clonotypes[exacts[i][j]];
+                        for l in 0..ex.ncells() {
+                            let mut b = false;
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = &ex.clones[l][0].barcode;
+                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                                    b = true;
+                                }
+                            }
+                            if ex.clones[l][0].dataset_index as isize == di || !b {
+                                ndubious += 1;
+                            }
+                        }
                     }
                 }
                 for j in 0..exacts[i].len() {
