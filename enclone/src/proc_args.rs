@@ -146,6 +146,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if args[i].starts_with("BC=") {
             bc = args[i].after("BC=").to_string();
         }
+        if is_simple_arg(&args[i], "MARK_STATS") {
+            ctl.gen_opt.mark_stats = true;
+        }
+        if is_simple_arg(&args[i], "MARKED_B") {
+            ctl.clono_filt_opt.marked_b = true;
+        }
     }
     if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
         eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
@@ -264,7 +270,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg.starts_with("BI=") {
             continue;
         } else if is_simple_arg(&arg, "MARK_STATS") {
-            ctl.gen_opt.mark_stats = true;
         } else if is_simple_arg(&arg, "NCELL") {
             ctl.gen_opt.ncell = true;
         } else if arg == "LEGEND" {
@@ -342,7 +347,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&arg, "MARKED") {
             ctl.clono_filt_opt.marked = true;
         } else if is_simple_arg(&arg, "MARKED_B") {
-            ctl.clono_filt_opt.marked_b = true;
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&arg, "BASELINE") {
