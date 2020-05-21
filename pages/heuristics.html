@@ -16,8 +16,8 @@
 <h1>enclone heuristics</h1>
 
 <p>This page is a start in describing the heuristics that enclone uses.  It will be gradually
-expanded.  See also <a href="../pages/auto/help.how.html">enclone help how</a>.  This page is very
-technical.
+expanded.  See also <a href="../pages/auto/help.how.html">enclone help how</a>.  The content here
+is geeky and technical; the algorithms "work" but are in general not optimal.
 </p>
 
 <hr>
@@ -48,12 +48,27 @@ part of the <code>min</code> is to prevent filtering in cases where UMI counts a
 low that poisson variability could cause a real cell to appear fake.</p>
 
 <p>Next we scan each clonotype having at least two cells, and delete every cell having 
-<code>umitot < umin</code>, with the following qualification.  If <i>every</i> cell in a clonotype 
-would be deleted, then we find its exact subclonotype having the highest sum for 
-<code>umitot</code>, summing across its cells.  Then we save the cell in this exact subclonotype 
-having the highest <code>umitot</code> value.
+<code>umitot < umin</code>, with the following qualifications:  
+<ul>
+<li>Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
+probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
+less then <code>0.01</code>.  The more cells are flagged in a clonotype, the more likely this
+test is satisfied, which is the point of the test.
+</li>
+<li>If <i>every</i> cell in a clonotype would be deleted, then we find its exact subclonotype 
+having the highest sum for <code>umitot</code>, summing across its cells.  Then we protect from
+deletion the cell in this exact subclonotype having the highest <code>umitot</code> value.  We 
+do this because in general even if a clonotype expansion did not occur, there was probably at
+least a single <i>bona fide</i> cell that gave rise to it.
+</li>
+</ul>
 
-This UMI filter is carried out before most of the other filters.
+A better test could probably be devised that started from the expected distribution of UMI counts.
+The test would trigger based on the number and improbability of low UMI counts.  The current test 
+only considers the number of counts that fall below a threshold, and not their particular values.
+
+<p>This UMI filter is carried out before most of the other filters.</p>
 
 </body>
 </html>
