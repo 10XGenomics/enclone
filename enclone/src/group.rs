@@ -770,11 +770,6 @@ pub fn group_and_print_clonotypes(
         fwriteln!(logx, "   • number of cells = {}", ncells);
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
-        if ctl.gen_opt.mark_stats {
-            fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
-            fwriteln!(logx, "   • number of marked cells = {}", nmarked);
-            fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
-        }
         nchains.sort();
         let mut i = 0;
         while i < nchains.len() {
@@ -797,6 +792,12 @@ pub fn group_and_print_clonotypes(
             "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
             middle_mean_umisl,
         );
+        if ctl.gen_opt.mark_stats {
+            fwriteln!(logx, "   --------------------------------");
+            fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
+            fwriteln!(logx, "   • number of marked cells = {}", nmarked);
+            fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
+        }
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
         rows.push(row);
