@@ -676,22 +676,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     cross_filter(&ctl, &mut tig_bc);
 
-    // Remove cells that are not called cells by GEX or feature barcodes.
-
-    if !ctl.clono_filt_opt.ngex {
-        let mut to_delete = vec![false; tig_bc.len()];
-        for m in 0..tig_bc.len() {
-            let li = tig_bc[m][0].dataset_index;
-            if ctl.sample_info.gex_path[li].len() > 0 {
-                let gbc = &gex_info.gex_cell_barcodes[li];
-                if !bin_member(&gbc, &tig_bc[m][0].barcode) {
-                    to_delete[m] = true;
-                }
-            }
-        }
-        erase_if(&mut tig_bc, &to_delete);
-    }
-
     // Look for barcode reuse.
 
     check_for_barcode_reuse(&ctl, &tig_bc);
@@ -985,30 +969,64 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 if ctl.clono_filt_opt.umi_filt && !o.is_empty() {
                     orbits.push(o.clone());
-                    /*
-                    // The following code is off, and should not be an assert anyway.  The reason
-                    // the code should possibly be here is that in principle an orbit could be
-                    // disconnected, and in such cases it should be pulled apart.  That would be
-                    // a small change to this code.  However, we've never seen an example, so we
-                    // haven't done it.
-                    let mut eqx = EquivRel::new(o.len() as i32);
-                    for i1 in 0..o.len() {
-                        for i2 in i1+1..o.len() {
-                            if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
-                                if eq.class_id(o[i1] as i32) == eq.class_id(o[i2] as i32) {
-                                    eqx.join(i1 as i32, i2 as i32);
-                                }
-                            }
-                        }
-                    }
-                    if eqx.norbits() > 1 {
-                        eprintln!("\nToo many orbits: {}.\n", eqx.norbits());
-                        std::process::exit(1);
-                    }
-                    */
                 }
             }
         }
+    }
+
+    // Remove cells that are not called cells by GEX or feature barcodes.
+
+    if !ctl.clono_filt_opt.ngex {
+        let mut orbits2 = Vec::<Vec<i32>>::new();
+        for i in 0..orbits.len() {
+            let mut o = orbits[i].clone();
+            let mut to_deletex = vec![false; o.len()];
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &mut exact_clonotypes[x.clonotype_index];
+                let mut to_delete = vec![false; ex.ncells()];
+                for k in 0..ex.ncells() {
+                    let li = ex.clones[k][0].dataset_index;
+                    let bc = &ex.clones[k][0].barcode;
+                    if ctl.sample_info.gex_path[li].len() > 0 {
+                        let gbc = &gex_info.gex_cell_barcodes[li];
+                        if !bin_member(&gbc, &bc) {
+                            to_delete[k] = true;
+                        }
+                    }
+                }
+                erase_if(&mut ex.clones, &to_delete);
+                if ex.ncells() == 0 {
+                    to_deletex[j] = true;
+                }
+            }
+            erase_if(&mut o, &to_deletex);
+            if !o.is_empty() {
+                /*
+                // The following code is off, and should not be an assert anyway.  The reason
+                // the code should possibly be here is that in principle an orbit could be
+                // disconnected, and in such cases it should be pulled apart.  That would be
+                // a small change to this code.  However, we've never seen an example, so we
+                // haven't done it.
+                let mut eqx = EquivRel::new(o.len() as i32);
+                for i1 in 0..o.len() {
+                    for i2 in i1+1..o.len() {
+                        if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
+                            if eq.class_id(o[i1] as i32) == eq.class_id(o[i2] as i32) {
+                                eqx.join(i1 as i32, i2 as i32);
+                            }
+                        }
+                    }
+                }
+                if eqx.norbits() > 1 {
+                    eprintln!("\nToo many orbits: {}.\n", eqx.norbits());
+                    std::process::exit(1);
+                }
+                */
+                orbits2.push(o.clone());
+            }
+        }
+        orbits = orbits2;
     }
 
     // Find and print clonotypes.
