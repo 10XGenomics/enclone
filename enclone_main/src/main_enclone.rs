@@ -821,7 +821,9 @@ pub fn main_enclone(args: &Vec<String>) {
             orbits.push(o);
         }
     }
-    if ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
+    if is_bcr
+        && (ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark)
+    {
         let mut umis = vec![Vec::<usize>::new(); ctl.sample_info.n()];
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
