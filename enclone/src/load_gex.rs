@@ -7,13 +7,11 @@ use hdf5::types::FixedAscii;
 use hdf5::Dataset;
 use io_utils::*;
 use mirror_sparse_matrix::*;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
     io::{BufRead, BufReader},
-    time::Instant,
 };
 use string_utils::*;
 use vector_utils::*;
@@ -35,7 +33,7 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
 ) {
-    let comp = ctl.comp;
+    // let comp = ctl.comp;
     let mut results = Vec::<(
         usize,
         Vec<String>,
@@ -327,7 +325,7 @@ pub fn load_gex(
             // Read the binary matrix file if appropriate.
 
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
-                let t = Instant::now();
+                // let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
                 /*
                 if comp {
