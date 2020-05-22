@@ -811,6 +811,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // which the sum of its umitot values is greatest, and then in it, find the cell having
     // highest umitot value.  Protect this cell, so long as it has at least two chains.
 
+    let tumi = Instant::now();
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
     eq.orbit_reps(&mut reps);
@@ -1027,6 +1028,9 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
         orbits = orbits2;
+    }
+    if ctl.comp {
+        println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
     }
 
     // Find and print clonotypes.
