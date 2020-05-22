@@ -800,8 +800,8 @@ pub fn main_enclone(args: &Vec<String>) {
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
 
-    // This is only for B cells.
-    // Experiment: study UMI counts.  Find all clonotypes having one cell which has two chains,
+    // For B cells, filter based on UMI counts.  More details in heuristics.html.
+    // Find all clonotypes having one cell which has two chains,
     // one heavy and one light.  Get the sum of the chain UMI counts for this cell.
     //
     // For each cell, let umish be the umi count for its heavy chain having the most umis, and
@@ -810,8 +810,6 @@ pub fn main_enclone(args: &Vec<String>) {
     // If every cell in a clonotype would have been deleted, first find the exact subclonotype for
     // which the sum of its umitot values is greatest, and then in it, find the cell having
     // highest umitot value.  Protect this cell, so long as it has at least two chains.
-    //
-    // See heuristics.html for more notes.
 
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
