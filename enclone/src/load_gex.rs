@@ -327,14 +327,14 @@ pub fn load_gex(
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
                 // let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
-                /*
-                if comp {
-                    println!(
-                        "-- used {:.2} seconds reading feature_barcode_matrix.bin",
-                        elapsed(&t)
-                    );
-                }
-                */
+            /*
+            if comp {
+                println!(
+                    "-- used {:.2} seconds reading feature_barcode_matrix.bin",
+                    elapsed(&t)
+                );
+            }
+            */
 
             // Or else construct it from the h5 if appropriate.
             } else if !ctl.gen_opt.h5 {
