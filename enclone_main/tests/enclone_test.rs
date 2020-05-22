@@ -21,6 +21,7 @@ use enclone_core::testlist::*;
 use failure::Error;
 use flate2::read::GzDecoder;
 use io_utils::*;
+use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
@@ -829,10 +830,14 @@ fn test_site_examples() {
                 }
             }
             eprintln!(
-                "Possibly this could be because you're running \"cargo t\" in an \
+                "\nPossibly this could be because you're running \"cargo t\" in an \
                 environment without the\n\
                 extended dataset collection.  Possibly you should run \
-                \"cd enclone; cargo test basic -- --nocapture\" instead.\n"
+                \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
+                Otherwise, if you're satisfied with the new output, you can update using\n\n\
+                enclone {} > pages/auto/{}.html.\n",
+                args.iter().format(" "),
+                example_name
             );
             std::process::exit(1);
         }
