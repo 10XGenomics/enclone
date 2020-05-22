@@ -252,7 +252,10 @@ fn run_test(it: usize, test: &str, testname: &str, ok: &mut bool, logx: &mut Str
     let mut log = Vec::<u8>::new();
     let out_file = format!("test/inputs/outputs/enclone_{}{}_output", testname, it + 1);
     let mut pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
-    let mut local_pre_arg = format!("PRE=enclone_main/test/inputs/version{}", TEST_FILES_VERSION);
+    let mut local_pre_arg = format!(
+        "PRE=enclone_main/test/inputs/version{},enclone_main",
+        TEST_FILES_VERSION
+    );
     if no_pre {
         pre_arg = String::new();
         local_pre_arg = String::new();
