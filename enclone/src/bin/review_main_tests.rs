@@ -17,7 +17,14 @@ fn main() {
         results.push((i, false, String::new()));
     }
     results.par_iter_mut().for_each(|res| {
-        run_test("enclone", res.0, &TESTS[res.0], "test", &mut res.1, &mut res.2);
+        run_test(
+            "enclone",
+            res.0,
+            &TESTS[res.0],
+            "test",
+            &mut res.1,
+            &mut res.2,
+        );
     });
     for i in 0..TESTS.len() {
         if !results[i].1 {
