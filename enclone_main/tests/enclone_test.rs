@@ -432,7 +432,7 @@ fn run_test(it: usize, test: &str, testname: &str, ok: &mut bool, logx: &mut Str
                 log,
                 "enclone subtest {} failed.  If you are happy with the new output, \
                  you can replace the\noutput by executing the following command from \
-                 cellranger/lib/rust/enclone (essential!):\n",
+                 the top level of the enclone repo (essential):\n",
                 it + 1
             );
             if set_in_stone {
