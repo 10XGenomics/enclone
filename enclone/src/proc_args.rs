@@ -169,15 +169,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for i in 1..args.len() {
             if args[i].starts_with("BI=") {
                 let n = args[i].after("BI=");
-                if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
-                    eprintln!("\nBI=n only works if 1 <= n <= 13.\n");
-                    std::process::exit(1);
+                if n != "m1" {
+                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
+                        eprintln!("\nBI=n only works if 1 <= n <= 13, or n = m1.\n");
+                        std::process::exit(1);
+                    }
                 }
                 let mut args2 = Vec::<String>::new();
                 for j in 0..i {
                     args2.push(args[j].clone());
                 }
-                let n = n.force_usize();
                 let f = include_str!["enclone.testdata.bcr.gex"];
                 let mut found = false;
                 for s in f.lines() {
@@ -192,6 +193,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                         }
                         if s.starts_with("GEX=") {
                             gex = s.after("GEX=").to_string();
+                        }
+                        if s == "SPECIES=mouse" {
+                            args2.push("MOUSE".to_string());
                         }
                     }
                 }
