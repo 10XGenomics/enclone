@@ -2,6 +2,8 @@
 
 // Walk through the main tests, show which have changed, and give option to update results.
 // (First version, just prints output and pipes to less.)
+//
+// NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
 use enclone::run_test::*;
 use enclone_core::testlist::*;
