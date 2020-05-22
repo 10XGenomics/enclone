@@ -3,7 +3,6 @@
 use crate::misc3::parse_bsv;
 use ansi_escape::*;
 use enclone_core::testlist::*;
-// use flate2::read::GzDecoder;
 use io_utils::*;
 use std::cmp::min;
 use std::fs::read_to_string;
@@ -13,13 +12,15 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Run an enclone main test.
+
 pub fn run_test(
-    enclone: &str,
-    it: usize,
-    test: &str,
-    testname: &str,
-    ok: &mut bool,
-    logx: &mut String,
+    enclone: &str,     // name of the enclone executable
+    it: usize,         // test number
+    test: &str,        // arguments for the test
+    testname: &str,    // test category e.g. "test" or "ext_test"
+    ok: &mut bool,     // true if test passes
+    logx: &mut String, // logging from test
 ) {
     let mut test = test.replace("\n", "");
     for _ in 0..3 {
