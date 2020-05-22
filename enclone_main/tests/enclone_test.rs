@@ -232,6 +232,7 @@ fn test_enclone() {
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let test = TESTS[it].to_string();
+        let mut out = String::new();
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
             it,
@@ -239,6 +240,7 @@ fn test_enclone() {
             "test",
             &mut res.1,
             &mut res.2,
+            &mut out,
         );
     });
     for i in 0..results.len() {
@@ -273,6 +275,7 @@ fn test_extended() {
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let test = EXTENDED_TESTS[it].to_string();
+        let mut out = String::new();
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
             it,
@@ -280,6 +283,7 @@ fn test_extended() {
             "ext_test",
             &mut res.1,
             &mut res.2,
+            &mut out,
         );
     });
     for i in 0..results.len() {

@@ -19,6 +19,7 @@ fn main() {
         results.push((i, false, String::new()));
     }
     results.par_iter_mut().for_each(|res| {
+        let mut out = String::new();
         run_test(
             "enclone",
             res.0,
@@ -26,6 +27,7 @@ fn main() {
             "test",
             &mut res.1,
             &mut res.2,
+            &mut out,
         );
     });
     for i in 0..TESTS.len() {

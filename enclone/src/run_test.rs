@@ -21,6 +21,7 @@ pub fn run_test(
     testname: &str,    // test category e.g. "test" or "ext_test"
     ok: &mut bool,     // true if test passes
     logx: &mut String, // logging from test
+    out: &mut String,  // stdout of test
 ) {
     let mut test = test.replace("\n", "");
     for _ in 0..3 {
@@ -120,6 +121,7 @@ pub fn run_test(
             .expect(&format!("failed to execute enclone for test{}", it + 1));
         let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
         let new2 = stringme(&new.stdout);
+        *out = new2.clone();
 
         // Process tests that were supposed to fail or supposed to succeed.
 
