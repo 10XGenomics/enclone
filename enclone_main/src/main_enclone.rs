@@ -815,7 +815,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
     eq.orbit_reps(&mut reps);
-    if !ctl.clono_filt_opt.umi_filt {
+    if is_tcr || !ctl.clono_filt_opt.umi_filt {
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
             eq.orbit(reps[i], &mut o);
