@@ -218,6 +218,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              This starts with, for each cell, \
              \\bold{the full length sequence of all its VDJ receptor chains}.  Such data may be \
              obtained using the 10x Genomics immune profiling platform.\n\n\
+             See also the heuristics page at \\green{bit.ly/enclone}.\n\n\
              \
              For this, there are fundamental challenges:\n\n",
         );

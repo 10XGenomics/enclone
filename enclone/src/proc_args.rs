@@ -56,6 +56,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
+        ctl.gen_opt.current_ref = true; // not sure this is right
         ctl.gen_opt.pre = vec![
             format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
             format!("enclone/test/inputs"),
@@ -92,6 +93,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.weak_foursies = true;
     ctl.clono_filt_opt.bc_dup = true;
     ctl.clono_filt_opt.max_datasets = 1000000000;
+    ctl.clono_filt_opt.umi_filt = true;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -119,8 +121,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
-    let mut have_tcr = false;
-    let mut have_bcr = false;
+    let (mut have_tcr, mut have_bcr) = (false, false);
     let mut have_gex = false;
     let mut have_meta = false;
     let mut gex = String::new();
@@ -128,7 +129,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut metas = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
-        if args[i].starts_with("TCR=") {
+        if args[i].starts_with("BI=") {
+            have_bcr = true;
+            have_gex = true;
+        } else if args[i].starts_with("TCR=") {
             have_tcr = true;
         } else if args[i].starts_with("BCR=") {
             have_bcr = true;
@@ -143,6 +147,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if args[i].starts_with("BC=") {
             bc = args[i].after("BC=").to_string();
         }
+        if is_simple_arg(&args[i], "MARK_STATS") {
+            ctl.gen_opt.mark_stats = true;
+        }
+        if is_simple_arg(&args[i], "MARKED_B") {
+            ctl.clono_filt_opt.marked_b = true;
+        }
     }
     if have_meta && (have_tcr || have_bcr || have_gex || bc.len() > 0) {
         eprintln!("\nIf META is specified, then none of TCR, BCR, GEX or BC can be specified.\n");
@@ -153,6 +163,51 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         std::process::exit(1);
     }
     let mut using_plot = false;
+
+    // Preprocess BI argument.
+
+    if ctl.gen_opt.internal_run {
+        for i in 1..args.len() {
+            if args[i].starts_with("BI=") {
+                let n = args[i].after("BI=");
+                if n != "m1" {
+                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
+                        eprintln!("\nBI=n only works if 1 <= n <= 13, or n = m1.\n");
+                        std::process::exit(1);
+                    }
+                }
+                let mut args2 = Vec::<String>::new();
+                for j in 0..i {
+                    args2.push(args[j].clone());
+                }
+                let f = include_str!["enclone.testdata.bcr.gex"];
+                let mut found = false;
+                for s in f.lines() {
+                    if s == format!("DONOR={}", n) {
+                        found = true;
+                    } else if found && s.starts_with("DONOR=") {
+                        break;
+                    }
+                    if found {
+                        if s.starts_with("BCR=") || s.starts_with("GEX=") {
+                            args2.push(s.to_string());
+                        }
+                        if s.starts_with("GEX=") {
+                            gex = s.after("GEX=").to_string();
+                        }
+                        if s == "SPECIES=mouse" {
+                            args2.push("MOUSE".to_string());
+                        }
+                    }
+                }
+                for j in i + 1..args.len() {
+                    args2.push(args[j].clone());
+                }
+                args = args2;
+                break;
+            }
+        }
+    }
 
     // Traverse arguments.
 
@@ -215,6 +270,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.imgt = true;
         } else if is_simple_arg(&arg, "IMGT_FIX") {
             ctl.gen_opt.imgt_fix = true;
+        } else if is_simple_arg(&arg, "ECHO") {
+            ctl.gen_opt.echo = true;
+        } else if arg.starts_with("BI=") {
+            continue;
+        } else if is_simple_arg(&arg, "MARK_STATS") {
         } else if is_simple_arg(&arg, "NCELL") {
             ctl.gen_opt.ncell = true;
         } else if arg == "LEGEND" {
@@ -285,6 +345,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
+        } else if is_simple_arg(&arg, "NUMI") {
+            ctl.clono_filt_opt.umi_filt = false;
+        } else if is_simple_arg(&arg, "UMI_FILT_MARK") {
+            ctl.clono_filt_opt.umi_filt_mark = true;
+        } else if is_simple_arg(&arg, "MARKED") {
+            ctl.clono_filt_opt.marked = true;
+        } else if is_simple_arg(&arg, "MARKED_B") {
         } else if is_simple_arg(&arg, "GRAPH") {
             ctl.gen_opt.graph = true;
         } else if is_simple_arg(&arg, "BASELINE") {
@@ -360,6 +427,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
             if ctl.gen_opt.plot_file.is_empty() {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
+                std::process::exit(1);
+            }
+        } else if arg.starts_with("PLOT_BY_MARK=") {
+            ctl.gen_opt.plot_by_mark = true;
+            ctl.gen_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
+            if ctl.gen_opt.plot_file.is_empty() {
+                eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
                 std::process::exit(1);
             }
         } else if is_simple_arg(&arg, "SUMMARY_CLEAN") {
@@ -694,6 +768,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
         if !have_bcr {
             eprintln!("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n");
+            std::process::exit(1);
+        }
+        if ctl.gen_opt.plot_by_mark {
+            eprintln!("\nPLOT_BY_ISOTYPE and PLOT_BY_MARK cannot be used together.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.plot_by_mark {
+        if using_plot || ctl.gen_opt.use_legend {
+            eprintln!("\nPLOT_BY_MARK cannot be used with PLOT or LEGEND.\n");
             std::process::exit(1);
         }
     }

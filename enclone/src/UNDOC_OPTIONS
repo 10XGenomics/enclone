@@ -136,3 +136,26 @@ SVG: render output as svg, clonotype by clonotype.  There are problems with this
 TRACE_BARCODE: print some additional information for this particular barcode
 
 SUMMARY_CSV: nascent option to emit some summary information as CSV output
+
+A complex of related experimental stuff:
+- BASELINE: show stats relevant to NUMI and the the following two options
+- UMI_FILT_MARK: mark cells based on these stats; view with undocumented lvar "mark"
+  and only viewable with PER_CELL
+Do not use UMI_FILT_MARK without NUMI.
+
+ECHO: echo command
+
+MARK_STATS: generate three statistics (assumes GEX data included)
+1. number of dubious cells, where dubious means not classified as a B cell, or in a clonotype for 
+   which the ratio of the top dataset cells to the runner up dataset cells is at least 10 
+   (e.g. 3:0 works as does 10:1)
+2. number of cells that are marked (in selected clonotypes)
+3. of these, number that are "good", defined as
+   - that are in a clonotype having cells from >= 2 datasets
+   - and which GEX classifies as B cell
+   - and which have 2 or 3 chains.
+
+BI=n, where 1 <= n <= 13 (for now):
+load BCR and GEX from datasets described in enclone.testdata.bcr.gex
+(This only works internally where we have these datasets available.)
+(BI short for "built-in".)

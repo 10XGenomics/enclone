@@ -97,6 +97,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "this option, enclone defines a sample by the pair");
         h.doc("", "(sample name, donor name).");
         h.ldoc(
+            "NUMI",
+            "Filter out B cells based on low BCR UMI counts.  The heuristics for this",
+        );
+        h.docpr(
+            "",
+            "are described on the enclone site at \\green{bit.ly/enclone}.",
+        );
+        h.ldoc(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of",
         );

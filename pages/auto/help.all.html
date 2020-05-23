@@ -185,6 +185,8 @@ evolutionary relationship between cells within a sample.  This starts with, for 
 full length sequence of all its VDJ receptor chains</span>.  Such data may be obtained using the 10x
 Genomics immune profiling platform.
 
+See also the heuristics page at <span style="color:#25bc24;">bit.ly/enclone</span>.
+
 For this, there are fundamental challenges:
 
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -390,9 +392,9 @@ directory /users/jdoe/enclone_data.  Then you can run this command:
 
 % enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW
 
-<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 13 CELLS</span>
+<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 12 CELLS</span>
 
-[1.1] CLONOTYPE = 13 CELLS
+[1.1] CLONOTYPE = 12 CELLS
 ┌───────────┬───────────────────────────────────────────────┬──────────────────────────────┐
 │           │  <span style="font-weight:bold;">CHAIN 1</span>                                      │  CHAIN 2                     │
 │           │  <span style="font-weight:bold;">181.1.1|IGHV4-30-2 ◆ 53|IGHJ3</span>                │  254|IGKV1D-39 ◆ 218|IGKJ5   │
@@ -407,7 +409,6 @@ directory /users/jdoe/enclone_data.  Then you can run this command:
 │<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ........x.... ..............x.     u  const  </span>│<span style="font-weight:bold;">  x ......x.....      u  const</span>│
 │1  10      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">YP</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4285  IGHM   │  <span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  11793  IGKC │
 │2   2      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4383  IGHM   │  <span style="color:#72c0ff;font-weight:bold;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">S</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  13922  IGKC │
-│3   1      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">YP</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;">S</span><span style="color:#eb99c2;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>     5  IGHM   │                              │
 └───────────┴───────────────────────────────────────────────┴──────────────────────────────┘
 
 This shows an invocation of enclone that takes one dataset as input and exhibits
@@ -993,6 +994,9 @@ clonotype.
 │                    │  inputs are somehow mis-specified to enclone.  Note that for purposes of    │
 │                    │  this option, enclone defines a sample by the pair                          │
 │                    │  (sample name, donor name).                                                 │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NUMI                │  Filter out B cells based on low BCR UMI counts.  The heuristics for this   │
+│                    │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                       │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NGRAPH_FILTER       │  By default, enclone filters to remove exact subclonotypes that by virtue of│
 │                    │  their relationship to other exact subclonotypes, appear to arise from      │

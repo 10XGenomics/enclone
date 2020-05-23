@@ -1,20 +1,20 @@
 
 FEATURE SCAN
 
-3 clonotypes containing 248 cells in test set
-18 clonotypes containing 526 cells in control set
+3 clonotypes containing 238 cells in test set
+15 clonotypes containing 372 cells in control set
 
 enriched features
 
 id               name         library_type        test  control  enrichment
-ENSG00000143248  RGS5         Gene Expression     0.58     0.05       12.30
-ENSG00000243466  IGKV1-5      Gene Expression   243.72     0.23     1050.78
-ENSG00000239951  IGKV3-20     Gene Expression   614.04     0.42     1474.81
-ENSG00000243264  IGKV2D-29    Gene Expression     1.04     0.01      109.02
-ENSG00000102055  PPP1R2C      Gene Expression     0.73     0.01       63.63
-ENSG00000280411  IGHV1-69D    Gene Expression   575.42     0.24     2364.63
-ENSG00000274576  IGHV2-70     Gene Expression     1.23     0.02       81.13
+ENSG00000243466  IGKV1-5      Gene Expression   253.94     0.29      874.67
+ENSG00000239951  IGKV3-20     Gene Expression   639.82     0.45     1408.37
+ENSG00000243264  IGKV2D-29    Gene Expression     1.08     0.01       80.34
+ENSG00000102055  PPP1R2C      Gene Expression     0.76     0.02       46.89
+ENSG00000280411  IGHV1-69D    Gene Expression   599.58     0.31     1906.36
+ENSG00000274576  IGHV2-70     Gene Expression     1.29     0.02       59.79
 ENSG00000259337  IGHV1OR15-2  Gene Expression     0.15     0.00         inf
-ENSG00000211662  IGLV3-21     Gene Expression  3124.92     0.65     4778.23
-ENSG00000211669  IGLV3-10     Gene Expression  3914.93     0.64     6074.50
+ENSG00000167641  PPP1R14A     Gene Expression     0.31     0.02       16.30
+ENSG00000211662  IGLV3-21     Gene Expression  3256.12     0.77     4205.82
+ENSG00000211669  IGLV3-10     Gene Expression  4079.23     0.69     5881.68
 

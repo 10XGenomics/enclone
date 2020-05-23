@@ -12,6 +12,7 @@ use io_utils::*;
 use itertools::*;
 use perf_stats::*;
 use std::collections::HashMap;
+use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
@@ -33,6 +34,7 @@ pub fn group_and_print_clonotypes(
     parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
+    gex_info: &GexInfo,
 ) {
     // Build index to join info.
 
@@ -173,9 +175,19 @@ pub fn group_and_print_clonotypes(
     }
     reverse_sort(&mut grepsn);
 
-    // Now print.
+    // Echo command.
 
     let mut logx = Vec::<u8>::new();
+    if ctl.gen_opt.echo {
+        let args: Vec<String> = env::args().collect();
+        fwriteln!(logx, "\n{}", args.iter().format(" "));
+        if ctl.gen_opt.html {
+            fwriteln!(logx, "");
+        }
+    }
+
+    // Now print clonotypes.
+
     for z in 0..grepsn.len() {
         let i = grepsn[z].1;
         let n = grepsn[z].0;
@@ -615,13 +627,16 @@ pub fn group_and_print_clonotypes(
         middle_mean_umisl = (middlel as f64) / (denoml as f64);
     }
 
-    // Compute n23.
+    // Compute n1 and n23.
 
+    let mut n1 = 0;
     let mut n23 = 0;
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
-            if ex.share.len() == 2 || ex.share.len() == 3 {
+            if ex.nchains() == 1 {
+                n1 += ex.ncells();
+            } else if ex.nchains() == 2 || ex.nchains() == 3 {
                 n23 += ex.ncells();
             }
         }
@@ -697,6 +712,71 @@ pub fn group_and_print_clonotypes(
             #[cfg(not(target_os = "macos"))]
             fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
+
+        // Compute marking stats.
+
+        let (mut nmarked, mut nmarked_good, mut ndubious) = (0, 0, 0);
+        if ctl.gen_opt.mark_stats {
+            for i in 0..nclono {
+                let mut datasets = Vec::<usize>::new();
+                let mut ncells = 0;
+                for j in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][j]];
+                    ncells += ex.ncells();
+                    for l in 0..ex.ncells() {
+                        datasets.push(ex.clones[l][0].dataset_index);
+                    }
+                }
+                datasets.sort();
+                let mut freq = Vec::<(u32, usize)>::new();
+                make_freq(&datasets, &mut freq);
+                if ncells >= 2 {
+                    let mut di = -1;
+                    if freq.len() == 1 || freq[0].0 >= 10 * freq[1].0 {
+                        di = freq[0].1 as isize;
+                    }
+                    for j in 0..exacts[i].len() {
+                        let ex = &exact_clonotypes[exacts[i][j]];
+                        for l in 0..ex.ncells() {
+                            let mut b = false;
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = &ex.clones[l][0].barcode;
+                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                                    b = true;
+                                }
+                            }
+                            if ex.clones[l][0].dataset_index as isize == di || !b {
+                                ndubious += 1;
+                            }
+                        }
+                    }
+                }
+                for j in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][j]];
+                    for l in 0..ex.ncells() {
+                        if ex.clones[l][0].marked {
+                            nmarked += 1;
+                            let chains_ok = ex.nchains() >= 2 && ex.nchains() <= 3;
+                            let mut b = false;
+                            let li = ex.clones[l][0].dataset_index;
+                            let bc = &ex.clones[l][0].barcode;
+                            if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                                    b = true;
+                                }
+                            }
+                            if chains_ok && freq.len() >= 2 && b {
+                                nmarked_good += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Print other stats.
+
         fwriteln!(logx, "2. for the selected clonotypes");
         fwriteln!(logx, "   • number of clonotypes = {}", nclono);
         fwriteln!(
@@ -705,6 +785,7 @@ pub fn group_and_print_clonotypes(
             nclono2
         );
         fwriteln!(logx, "   • number of cells = {}", ncells);
+        fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
         nchains.sort();
         let mut i = 0;
@@ -720,14 +801,20 @@ pub fn group_and_print_clonotypes(
         }
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (heavy chain/ TRB) = {:.2}",
+            "   • mean over middle third of contig UMI counts (heavy chain / TRB) = {:.2}",
             middle_mean_umish,
         );
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (light chain/ TRA) = {:.2}",
+            "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
             middle_mean_umisl,
         );
+        if ctl.gen_opt.mark_stats {
+            fwriteln!(logx, "   --------------------------------");
+            fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
+            fwriteln!(logx, "   • number of marked cells = {}", nmarked);
+            fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
+        }
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
         rows.push(row);

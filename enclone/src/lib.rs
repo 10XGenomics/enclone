@@ -31,6 +31,7 @@ pub mod proc_args3;
 pub mod proc_args_check;
 pub mod proto_io;
 pub mod read_json;
+pub mod run_test;
 pub mod string_width;
 pub mod subset_json;
 pub mod types;

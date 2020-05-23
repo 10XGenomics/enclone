@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 21] = [
+pub const LVARS_ALLOWED: [&str; 22] = [
     "datasets",
     "samples",
     "donors",
@@ -33,6 +33,7 @@ pub const LVARS_ALLOWED: [&str; 21] = [
     "near",
     "far",
     "ext",
+    "mark",
 ];
 
 pub const CVARS_ALLOWED: [&str; 24] = [
@@ -357,6 +358,7 @@ pub struct GeneralOpt {
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
     pub plot_by_isotype: bool,
+    pub plot_by_mark: bool,
     pub sample_color_map: HashMap<String, String>,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
@@ -376,6 +378,8 @@ pub struct GeneralOpt {
     pub trace_barcode: String,
     pub ncell: bool,
     pub baseline: bool,
+    pub echo: bool,
+    pub mark_stats: bool,
 }
 
 // Allele finding algorithmic options.
@@ -449,6 +453,10 @@ pub struct ClonoFiltOpt {
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub barcode: Vec<String>, // requires one of these barcodes
+    pub umi_filt: bool,      // umi count filter
+    pub umi_filt_mark: bool, // umi count filter (but only mark)
+    pub marked: bool,        // only print clonotypes having a mark
+    pub marked_b: bool,      // only print clonotypes having a mark and which are typed as B cells
 }
 
 // Clonotype printing options.
@@ -576,6 +584,7 @@ pub struct TigData0 {
     pub tag_index: Option<usize>,    // index of tag
     pub umi_count: usize,            // number of UMIs supporting contig
     pub read_count: usize,           // number of reads supporting contig
+    pub marked: bool,                // if marked for possible deletion
 }
 
 #[derive(Clone)]
@@ -618,6 +627,9 @@ pub struct ExactClonotype {
 impl ExactClonotype {
     pub fn ncells(&self) -> usize {
         self.clones.len()
+    }
+    pub fn nchains(&self) -> usize {
+        self.share.len()
     }
     pub fn max_umi_count(&self) -> usize {
         let mut m = 0;
