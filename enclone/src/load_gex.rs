@@ -7,13 +7,11 @@ use hdf5::types::FixedAscii;
 use hdf5::Dataset;
 use io_utils::*;
 use mirror_sparse_matrix::*;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
     io::{BufRead, BufReader},
-    time::Instant,
 };
 use string_utils::*;
 use vector_utils::*;
@@ -35,7 +33,7 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
 ) {
-    let comp = ctl.comp;
+    // let comp = ctl.comp;
     let mut results = Vec::<(
         usize,
         Vec<String>,
@@ -202,6 +200,13 @@ pub fn load_gex(
                     r.8.insert(barcode.to_string(), cell_type.to_string());
                     r.10 = true;
                 }
+            } else if ctl.gen_opt.mark_stats || ctl.clono_filt_opt.marked_b {
+                eprintln!(
+                    "\nIf you use MARK_STATS or MARKED_B, celltypes.csv has to exist, \
+                    and this file\n{}\ndoes not exist.\n",
+                    types_file
+                );
+                std::process::exit(1);
             }
 
             // Read PCA file.
@@ -320,14 +325,16 @@ pub fn load_gex(
             // Read the binary matrix file if appropriate.
 
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
-                let t = Instant::now();
+                // let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
-                if comp {
-                    println!(
-                        "-- used {:.2} seconds reading feature_barcode_matrix.bin",
-                        elapsed(&t)
-                    );
-                }
+            /*
+            if comp {
+                println!(
+                    "-- used {:.2} seconds reading feature_barcode_matrix.bin",
+                    elapsed(&t)
+                );
+            }
+            */
 
             // Or else construct it from the h5 if appropriate.
             } else if !ctl.gen_opt.h5 {
