@@ -1,5 +1,5 @@
 [package]
-name = "enclone"
+name = "enclone_print"
 version = "0.2.82"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
@@ -9,6 +9,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
+build = "build.rs"
 license = "LICENSE.txt"
 publish = false
 

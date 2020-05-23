@@ -15,10 +15,10 @@
 use ansi_escape::*;
 use enclone::html::insert_html;
 use enclone::misc3::parse_bsv;
-use enclone::proto_io::read_proto;
 use enclone::run_test::*;
-use enclone::types::EncloneOutputs;
 use enclone_core::testlist::*;
+use enclone_print::proto_io::read_proto;
+use enclone_print::types::EncloneOutputs;
 use failure::Error;
 use flate2::read::GzDecoder;
 use io_utils::*;
@@ -87,7 +87,7 @@ fn valid_link(link: &str) -> bool {
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 5] = ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0"];
     const A2: &str = "Apache-2.0";
-    const ACCEPTABLE_10X_PACKAGES: [&str; 3] = ["enclone", "exons", "vdj_ann"];
+    const ACCEPTABLE_10X_PACKAGES: [&str; 4] = ["enclone", "enclone_print", "exons", "vdj_ann"];
     const ACCEPTABLE_OTHER_PACKAGES: [&str; 4] = ["cloudabi", "fuchsia-cprng", "ring", "webpki"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
