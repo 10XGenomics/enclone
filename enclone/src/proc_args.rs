@@ -213,6 +213,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let mut simple_set = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
+        ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
@@ -226,9 +227,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("DESCRIP", &mut ctl.gen_opt.descrip),
         ("ECHO", &mut ctl.gen_opt.echo),
         ("EXP", &mut ctl.gen_opt.exp),
+        ("FORCE", &mut ctl.force),
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
         ("GRAPH", &mut ctl.gen_opt.graph),
+        ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
+        ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
+        ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),
         ("IMGT_FIX", &mut ctl.gen_opt.imgt_fix),
         ("INDELS", &mut ctl.gen_opt.indels),
@@ -244,8 +249,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
+        ("NPLAIN", &mut ctl.pretty),
         ("NWHITEF", &mut ctl.gen_opt.nwhitef),
+        ("NWARN", &mut ctl.gen_opt.nwarn),
+        ("PCELL", &mut ctl.parseable_opt.pbarcode),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
         ("RE", &mut ctl.gen_opt.reannotate),
@@ -255,10 +264,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("STABLE_DOC", &mut ctl.gen_opt.stable_doc),
         ("SUM", &mut ctl.clono_print_opt.sum),
         ("SUMMARY", &mut ctl.gen_opt.summary),
+        ("SUMMARY_CLEAN", &mut ctl.gen_opt.summary_clean),
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         ("TOY", &mut ctl.toy),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
-        ("UMI_RATIO_FILT_MARK", &mut ctl.clono_filt_opt.umi_ratio_filt_mark),
+        (
+            "UMI_RATIO_FILT_MARK",
+            &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
+        ),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("WEAK", &mut ctl.gen_opt.weak),
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
@@ -338,12 +351,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&arg, "H5_SLICE") {
             ctl.gen_opt.h5_pre = false;
         } else if is_simple_arg(&arg, "CTRLC") {
-        } else if is_simple_arg(&arg, "FORCE") {
-            ctl.force = true;
         } else if is_simple_arg(&arg, "CELLRANGER") {
         } else if is_simple_arg(&arg, "FORCE_EXTERNAL") {
-        } else if is_simple_arg(&arg, "NWARN") {
-            ctl.gen_opt.nwarn = true;
         } else if arg.starts_with("BINARY=") {
             ctl.gen_opt.binary = arg.after("BINARY=").to_string();
         } else if arg.starts_with("PROTO=") {
@@ -426,8 +435,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
                 std::process::exit(1);
             }
-        } else if is_simple_arg(&arg, "SUMMARY_CLEAN") {
-            ctl.gen_opt.summary_clean = true;
         } else if arg.starts_with("EMAIL=") {
         } else if arg.starts_with("REF=") {
             ctl.gen_opt.refname = arg.after("REF=").to_string();
@@ -437,23 +444,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.fail_only = false;
         } else if is_simple_arg(&arg, "NQUAL") {
             ctl.clono_filt_opt.qual_filter = false;
-        } else if is_simple_arg(&arg, "HEAVY_CHAIN_REUSE") {
-            ctl.gen_opt.heavy_chain_reuse = true;
-        } else if is_simple_arg(&arg, "GROUP_HEAVY_CDR3") {
-            ctl.clono_group_opt.heavy_cdr3_aa = true;
-        } else if is_simple_arg(&arg, "GROUP_VJ_REFNAME") {
-            ctl.clono_group_opt.vj_refname = true;
-        } else if is_simple_arg(&arg, "NPLAIN") {
-            ctl.pretty = true;
-        } else if is_simple_arg(&arg, "ACCEPT_REUSE") {
-            ctl.gen_opt.accept_reuse = true;
         } else if is_simple_arg(&arg, "NOPAGER") {
-        } else if is_simple_arg(&arg, "NOPRINT") {
-            ctl.gen_opt.noprint = true;
         } else if arg.starts_with("POUT=") {
             ctl.parseable_opt.pout = arg.after("POUT=").to_string();
-        } else if is_simple_arg(&arg, "PCELL") {
-            ctl.parseable_opt.pbarcode = true;
         } else if arg.starts_with("DONOR_REF_FILE=") {
             ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
         } else if arg.starts_with("EXT=") {
