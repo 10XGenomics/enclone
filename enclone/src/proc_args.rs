@@ -209,7 +209,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Define simple set arguments.  These set the value to true.
+    // Define simple set arguments.  These all set the value of something to true.
 
     let mut simple_set = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
@@ -218,13 +218,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("ANN0", &mut ctl.join_print_opt.ann0),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
         ("BASELINE", &mut ctl.gen_opt.baseline),
+        ("BCJOIN", &mut ctl.join_alg_opt.bcjoin),
+        ("CDIFF", &mut ctl.clono_filt_opt.cdiff),
         ("CHAIN_BRIEF", &mut ctl.clono_print_opt.chain_brief),
         ("CON", &mut ctl.allele_print_opt.con),
         ("CON_CON", &mut ctl.gen_opt.con_con),
         ("CON_TRACE", &mut ctl.allele_print_opt.con_trace),
         ("CURRENT_REF", &mut ctl.gen_opt.current_ref),
         ("DEBUG_TABLE_PRINTING", &mut ctl.debug_table_printing),
+        ("DEL", &mut ctl.clono_filt_opt.del),
         ("DESCRIP", &mut ctl.gen_opt.descrip),
+        ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
         ("EXP", &mut ctl.gen_opt.exp),
         ("FORCE", &mut ctl.force),
@@ -273,6 +277,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
         ),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
+        ("VDUP", &mut ctl.clono_filt_opt.vdup),
         ("WEAK", &mut ctl.gen_opt.weak),
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
     ];
@@ -560,18 +565,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-        } else if is_simple_arg(&arg, "CDIFF") {
-            ctl.clono_filt_opt.cdiff = true;
-        } else if is_simple_arg(&arg, "DEL") {
-            ctl.clono_filt_opt.del = true;
         } else if is_usize_arg(&arg, "MIN_DATASETS") {
             ctl.clono_filt_opt.min_datasets = arg.after("MIN_DATASETS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_DATASETS") {
             ctl.clono_filt_opt.max_datasets = arg.after("MAX_DATASETS=").force_usize();
         } else if is_usize_arg(&arg, "MIN_GROUP") {
             ctl.clono_group_opt.min_group = arg.after("MIN_GROUP=").force_usize();
-        } else if is_simple_arg(&arg, "BCJOIN") {
-            ctl.join_alg_opt.bcjoin = true;
         } else if arg.starts_with("EXFASTA=") {
             ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
         } else if arg.starts_with("FASTA=") {
@@ -594,8 +593,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.allele_alg_opt.min_mult = arg.after("MIN_MULT=").force_usize();
         } else if is_usize_arg(&arg, "MIN_EXACTS") {
             ctl.clono_filt_opt.min_exacts = arg.after("MIN_EXACTS=").force_usize();
-        } else if is_simple_arg(&arg, "VDUP") {
-            ctl.clono_filt_opt.vdup = true;
         } else if is_usize_arg(&arg, "MIN_CHAINS") {
             ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CHAINS") {
@@ -641,8 +638,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_usize_arg(&arg, "CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
-        } else if is_simple_arg(&arg, "EASY") {
-            ctl.join_alg_opt.easy = true;
         } else if is_usize_arg(&arg, "PFREQ") {
             ctl.join_print_opt.pfreq = arg.after("PFREQ=").force_usize();
         } else if arg.starts_with("HAPS=") {
