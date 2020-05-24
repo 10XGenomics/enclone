@@ -209,7 +209,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Define simple set arguments.  These all set the value of something to true.
+    // Define arguments that set something to true.
 
     let mut simple_set = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
@@ -282,6 +282,23 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
     ];
 
+    // Define arguments that set something to a usize.
+
+    let usize_set = [
+        ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
+        ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
+        ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
+        ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
+        ("MIN_CHAINS_EXACT", &mut ctl.gen_opt.min_chains_exact),
+        ("MIN_DATASETS", &mut ctl.clono_filt_opt.min_datasets),
+        ("MIN_EXACTS", &mut ctl.clono_filt_opt.min_exacts),
+        ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
+        ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
+        ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
+        ("ONESIE_MULT", &mut ctl.onesie_mult),
+        ("PCHAINS", &mut ctl.parseable_opt.pchains),
+    ];
+
     // Traverse arguments.
 
     'args_loop: for i in 1..args.len() {
@@ -320,14 +337,35 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
 
+        // Process usize args.
+
+        for j in 0..usize_set.len() {
+            if is_usize_arg(&arg, &usize_set[j].0) {
+                *(usize_set[j].1) = arg.after(&format!("{}=", usize_set[j].0)).force_usize();
+                continue 'args_loop;
+            }
+        }
+
         // Process the argument.
 
         if is_simple_arg(&arg, "SEQ") {
             ctl.join_print_opt.seq = true;
+
+        // Not movable.
         } else if is_simple_arg(&arg, "H5") {
-            ctl.gen_opt.force_h5 = true; // not movable
+            ctl.gen_opt.force_h5 = true;
         } else if arg == "LEGEND" {
-            ctl.gen_opt.use_legend = true; // not movable
+            ctl.gen_opt.use_legend = true;
+        } else if is_usize_arg(&arg, "REQUIRED_FPS") {
+            ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
+        } else if is_usize_arg(&arg, "EXACT") {
+            ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
+        } else if is_usize_arg(&arg, "MIN_CHAINS") {
+            ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CHAINS") {
+            ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
+
+        // Other.
         } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
         } else if is_simple_arg(&arg, "COMP") {
         } else if is_simple_arg(&arg, "COMP2") {
@@ -458,15 +496,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.ext = arg.after("EXT=").to_string();
         } else if arg.starts_with("TRACE_BARCODE=") {
             ctl.gen_opt.trace_barcode = arg.after("TRACE_BARCODE=").to_string();
-        } else if is_usize_arg(&arg, "PCHAINS") {
-            ctl.parseable_opt.pchains = arg.after("PCHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CORES") {
             let nthreads = arg.after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
                 .num_threads(nthreads)
                 .build_global();
-        } else if is_usize_arg(&arg, "REQUIRED_FPS") {
-            ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
         } else if arg.starts_with("PCOLS=") {
             ctl.parseable_opt.pcols.clear();
             let p = arg.after("PCOLS=").split(',').collect::<Vec<&str>>();
@@ -565,12 +599,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-        } else if is_usize_arg(&arg, "MIN_DATASETS") {
-            ctl.clono_filt_opt.min_datasets = arg.after("MIN_DATASETS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_DATASETS") {
-            ctl.clono_filt_opt.max_datasets = arg.after("MAX_DATASETS=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_GROUP") {
-            ctl.clono_group_opt.min_group = arg.after("MIN_GROUP=").force_usize();
         } else if arg.starts_with("EXFASTA=") {
             ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
         } else if arg.starts_with("FASTA=") {
@@ -589,14 +617,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
         } else if arg.starts_with("GEX=") {
         } else if arg.starts_with("BC=") {
-        } else if is_usize_arg(&arg, "MIN_MULT") {
-            ctl.allele_alg_opt.min_mult = arg.after("MIN_MULT=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_EXACTS") {
-            ctl.clono_filt_opt.min_exacts = arg.after("MIN_EXACTS=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_CHAINS") {
-            ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_CHAINS") {
-            ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "CHAINS") {
             ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
@@ -616,20 +636,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.clono_filt_opt.segn.push(x.to_string());
             }
             ctl.clono_filt_opt.segn.sort();
-        } else if is_usize_arg(&arg, "MIN_CELLS_EXACT") {
-            ctl.gen_opt.min_cells_exact = arg.after("MIN_CELLS_EXACT=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_CHAINS_EXACT") {
-            ctl.gen_opt.min_chains_exact = arg.after("MIN_CHAINS_EXACT=").force_usize();
-        } else if is_usize_arg(&arg, "CHAINS_EXACT") {
-            ctl.gen_opt.chains_exact = arg.after("CHAINS_EXACT=").force_usize();
-        } else if is_usize_arg(&arg, "EXACT") {
-            ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
-        } else if is_usize_arg(&arg, "MIN_UMI") {
-            ctl.clono_filt_opt.min_umi = arg.after("MIN_UMI=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_ALT") {
-            ctl.allele_alg_opt.min_alt = arg.after("MIN_ALT=").force_usize();
-        } else if is_usize_arg(&arg, "ONESIE_MULT") {
-            ctl.onesie_mult = arg.after("ONESIE_MULT=").force_usize();
         } else if arg.starts_with("PRE=") {
         } else if is_usize_arg(&arg, "MIN_CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
