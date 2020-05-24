@@ -975,6 +975,63 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
+    // Filter B cells based on UMI count ratios.  For now just marking.  This assumes V..J
+    // identity to filter.
+
+    if ctl.clono_filt_opt.umi_ratio_filt_mark {
+        const MIN_UMI_RATIO: usize = 1000;
+        // let mut orbits2 = Vec::<Vec<i32>>::new();
+        for i in 0..orbits.len() {
+            let /* mut */ o = orbits[i].clone();
+            // let mut to_deletex = vec![false; o.len()];
+            let mut z = Vec::<(Vec<u8>, usize, usize, usize)>::new();
+            let mut to_delete = Vec::<Vec<bool>>::new();
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &mut exact_clonotypes[x.clonotype_index];
+                to_delete.push(vec![false; ex.ncells()]);
+                for k in 0..ex.ncells() {
+                    for m in 0..ex.clones[k].len() {
+                        z.push((ex.share[m].seq.clone(), ex.clones[k][m].umi_count, j, k));
+                    }
+                }
+            }
+            reverse_sort(&mut z);
+            let mut j = 0;
+            while j < z.len() {
+                let k = next_diff1_4(&z, j as i32) as usize;
+                for l in j..k {
+                    if z[j].1 >= MIN_UMI_RATIO * z[l].1 {
+                        to_delete[z[l].2][z[l].3] = true;
+                    }
+                }
+                j = k;
+            }
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &mut exact_clonotypes[x.clonotype_index];
+                for l in 0..ex.ncells() {
+                    if to_delete[j][l] {
+                        ex.clones[l][0].marked = true;
+                    }
+                }
+                /*
+                erase_if(&mut ex.clones, &to_delete[j]);
+                if ex.ncells() == 0 {
+                    to_deletex[j] = true;
+                }
+                */
+            }
+            /*
+            erase_if(&mut o, &to_deletex);
+            if !o.is_empty() {
+                orbits2.push(o.clone());
+            }
+            */
+        }
+        // orbits = orbits2;
+    }
+
     // Remove cells that are not called cells by GEX or feature barcodes.
 
     if !ctl.clono_filt_opt.ngex {

@@ -143,6 +143,8 @@ A complex of related experimental stuff:
   and only viewable with PER_CELL
 Do not use UMI_FILT_MARK without NUMI.
 
+UMI_RATIO_FILT_MARK
+
 ECHO: echo command
 
 MARK_STATS: generate three statistics (assumes GEX data included)

@@ -258,6 +258,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         ("TOY", &mut ctl.toy),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
+        ("UMI_RATIO_FILT_MARK", &mut ctl.clono_filt_opt.umi_ratio_filt_mark),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("WEAK", &mut ctl.gen_opt.weak),
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
