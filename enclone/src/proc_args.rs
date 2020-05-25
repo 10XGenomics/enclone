@@ -364,8 +364,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CHAINS") {
             ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
+        } else if arg == "PRINT_CPU" {
+        } else if arg == "PRINT_CPU_INFO" {
 
-        // Other.
+            // Other.
         } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
         } else if is_simple_arg(&arg, "COMP") {
         } else if is_simple_arg(&arg, "COMP2") {

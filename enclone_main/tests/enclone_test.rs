@@ -27,6 +27,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use serde_json::Value;
+use stats_utils::*;
 use std::cmp::min;
 use std::collections::HashSet;
 use std::fs::{read_dir, read_to_string, remove_file, File};
@@ -60,6 +61,75 @@ fn valid_link(link: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// SPEED (AND NOT BASIC)
+// calibrated for bespin1, and requires linux
+// cargo test --test enclone_test --features cpu -- --nocapture
+// from enclone_main directory
+// or just ./speed from root directory
+
+#[cfg(not(feature = "basic"))]
+#[cfg(feature = "cpu")]
+#[test]
+fn test_cpu() {
+    let it = 1;
+    let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 23800;
+    let percent_dev = 5.0;
+    let mut out = String::new();
+    let mut ok = false;
+    let mut log = String::new();
+    let mut cpu_all_start = 0;
+    {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_start = t.before(" ").force_usize();
+            break;
+        }
+    }
+    run_test(
+        env!("CARGO_BIN_EXE_enclone"),
+        it,
+        &test,
+        "cpu",
+        &mut ok,
+        &mut log,
+        &mut out,
+    );
+    let this_used = out.before("\n").force_usize();
+    let mut cpu_all_stop = 0;
+    {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_stop = t.before(" ").force_usize();
+            break;
+        }
+    }
+    let all_used = cpu_all_stop - cpu_all_start;
+    let dev = 100.0 * (this_used as f64 - expect as f64) / (expect as f64);
+    println!(
+        "\nused cpu = {} = {:.1}% of total, dev = {:.1}%\n",
+        this_used,
+        percent_ratio(this_used, all_used),
+        dev
+    );
+    if dev.abs() > percent_dev {
+        eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // NOT BASIC
 
 // Test licenses of included packages and their dependencies.
@@ -83,6 +153,7 @@ fn valid_link(link: &str) -> bool {
 // 8. webpki OK because we include the webpki license and also that for chromium.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 5] = ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0"];
@@ -197,6 +268,7 @@ fn test_licenses() {
 
 // Test that files are rustfmt'ed.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_formatting() {
     let new = Command::new("cargo-fmt")
@@ -220,6 +292,7 @@ fn test_formatting() {
 // If you ever need to change the output of all tests, use the main program
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -263,6 +336,7 @@ fn test_enclone() {
 // Regression tests using extended dataset collection.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_extended() {
     PrettyTrace::new().on();
@@ -319,6 +393,7 @@ fn test_extended() {
 // ▓ src="..."▓.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
@@ -556,6 +631,7 @@ fn test_for_broken_links_and_spellcheck() {
 // merged html files are correct.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
@@ -628,6 +704,7 @@ fn test_site_examples() {
 
 // Test that examples are what we claim they are.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -662,6 +739,7 @@ fn test_enclone_examples() {
 
 // Test that references to the dataset version in README.md are current.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -689,6 +767,7 @@ fn test_version_number_in_readme() {
 //
 // Only works with high probability.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -724,6 +803,7 @@ fn test_dejavu() {
 
 // Test that enclone help all HTML works (without STABLE_DOC).
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
@@ -746,6 +826,7 @@ fn test_help_no_stable() {
 
 // Test that help output hasn't changed.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
@@ -822,6 +903,7 @@ fn test_help_output() {
 
 // Test that PREBUILD works.
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -916,6 +998,7 @@ fn test_enclone_prebuild() {
 // It also tests to make sure that the LOUPE output is unchanged.  If it changed for a good
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];

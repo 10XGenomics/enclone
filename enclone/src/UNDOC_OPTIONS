@@ -161,3 +161,6 @@ BI=n, where 1 <= n <= 13 (for now):
 load BCR and GEX from datasets described in enclone.testdata.bcr.gex
 (This only works internally where we have these datasets available.)
 (BI short for "built-in".)
+
+PRINT_CPU: print number of cpu cycles used
+PRINT_CPU_INFO: print info about cpu usage

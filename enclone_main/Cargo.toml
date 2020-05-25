@@ -45,3 +45,4 @@ rayon = "1.0.2"
 
 [features]
 basic = []
+cpu = []

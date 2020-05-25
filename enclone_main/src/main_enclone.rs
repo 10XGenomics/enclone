@@ -269,8 +269,17 @@ pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
     let tall = Instant::now();
+    let (mut print_cpu, mut print_cpu_info) = (false, false);
+    for i in 1..args.len() {
+        if args[i] == "PRINT_CPU" {
+            print_cpu = true;
+        }
+        if args[i] == "PRINT_CPU_INFO" {
+            print_cpu_info = true;
+        }
+    }
     let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
-    {
+    if print_cpu || print_cpu_info {
         let f = open_for_read!["/proc/stat"];
         for line in f.lines() {
             let s = line.unwrap();
@@ -1179,7 +1188,7 @@ pub fn main_enclone(args: &Vec<String>) {
     }
 
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
-    {
+    if print_cpu || print_cpu_info {
         let f = open_for_read!["/proc/stat"];
         for line in f.lines() {
             let s = line.unwrap();
@@ -1196,9 +1205,17 @@ pub fn main_enclone(args: &Vec<String>) {
             let fields = s.split(' ').collect::<Vec<&str>>();
             cpu_this_stop = fields[13].force_usize();
         }
+        let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
+        if print_cpu {
+            println!("{}", this_used);
+        } else {
+            println!(
+                "used cpu = {} = {:.1}% of total",
+                this_used,
+                percent_ratio(this_used, all_used)
+            );
+        }
     }
-    let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
-    println!("used cpu = {} = {:.1}% of total", this_used, percent_ratio(this_used, all_used));
 
     println!("");
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
