@@ -979,55 +979,91 @@ pub fn main_enclone(args: &Vec<String>) {
     // identity to filter.
 
     if ctl.clono_filt_opt.umi_ratio_filt_mark {
-        const MIN_UMI_RATIO: usize = 1000;
+        const MIN_UMI_RATIO: usize = 200;
         // let mut orbits2 = Vec::<Vec<i32>>::new();
-        for i in 0..orbits.len() {
+        'orbit: for i in 0..orbits.len() {
+            let mut ncells = 0;
             let /* mut */ o = orbits[i].clone();
-            // let mut to_deletex = vec![false; o.len()];
-            let mut z = Vec::<(Vec<u8>, usize, usize, usize)>::new();
-            let mut to_delete = Vec::<Vec<bool>>::new();
             for j in 0..o.len() {
                 let x: &CloneInfo = &info[o[j] as usize];
-                let ex = &mut exact_clonotypes[x.clonotype_index];
-                to_delete.push(vec![false; ex.ncells()]);
-                for k in 0..ex.ncells() {
-                    for m in 0..ex.clones[k].len() {
-                        z.push((ex.share[m].seq.clone(), ex.clones[k][m].umi_count, j, k));
+                let ex = &exact_clonotypes[x.clonotype_index];
+                ncells += ex.ncells();
+            }
+            let mut nbads = 0;
+            for pass in 1..=2 {
+                if pass == 2 {
+                    if nbads == 0 {
+                        continue 'orbit;
+                    } else {
+                        let p = 0.1;
+                        let bound = 0.01;
+
+                        // Find probability of observing nbads or more events of probability
+                        // p in a sample of size ncells, and if that is at least bound,
+                        // don't delete any cells.
+
+                        if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
+                            continue 'orbit;
+                        }
                     }
                 }
-            }
-            reverse_sort(&mut z);
-            let mut j = 0;
-            while j < z.len() {
-                let k = next_diff1_4(&z, j as i32) as usize;
-                for l in j..k {
-                    if z[j].1 >= MIN_UMI_RATIO * z[l].1 {
-                        to_delete[z[l].2][z[l].3] = true;
+                // let mut to_deletex = vec![false; o.len()];
+                let mut z = Vec::<(Vec<u8>, usize, usize, usize, usize)>::new();
+                let mut to_delete = Vec::<Vec<bool>>::new();
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &mut exact_clonotypes[x.clonotype_index];
+                    to_delete.push(vec![false; ex.ncells()]);
+                    for k in 0..ex.ncells() {
+                        let mut tot = 0;
+                        for m in 0..ex.clones[k].len() {
+                            tot += ex.clones[k][m].umi_count;
+                        }
+                        for m in 0..ex.clones[k].len() {
+                            z.push((
+                                ex.share[m].seq.clone(),
+                                ex.clones[k][m].umi_count,
+                                j,
+                                k,
+                                tot,
+                            ));
+                        }
                     }
                 }
-                j = k;
-            }
-            for j in 0..o.len() {
-                let x: &CloneInfo = &info[o[j] as usize];
-                let ex = &mut exact_clonotypes[x.clonotype_index];
-                for l in 0..ex.ncells() {
-                    if to_delete[j][l] {
-                        ex.clones[l][0].marked = true;
+                reverse_sort(&mut z);
+                let mut j = 0;
+                while j < z.len() {
+                    let k = next_diff1_5(&z, j as i32) as usize;
+                    for l in j..k {
+                        if z[j].1 >= MIN_UMI_RATIO * z[l].4 {
+                            to_delete[z[l].2][z[l].3] = true;
+                        }
                     }
+                    j = k;
+                }
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &mut exact_clonotypes[x.clonotype_index];
+                    for l in 0..ex.ncells() {
+                        if to_delete[j][l] {
+                            ex.clones[l][0].marked = true;
+                            nbads += 1;
+                        }
+                    }
+                    /*
+                    erase_if(&mut ex.clones, &to_delete[j]);
+                    if ex.ncells() == 0 {
+                        to_deletex[j] = true;
+                    }
+                    */
                 }
                 /*
-                erase_if(&mut ex.clones, &to_delete[j]);
-                if ex.ncells() == 0 {
-                    to_deletex[j] = true;
+                erase_if(&mut o, &to_deletex);
+                if !o.is_empty() {
+                    orbits2.push(o.clone());
                 }
                 */
             }
-            /*
-            erase_if(&mut o, &to_deletex);
-            if !o.is_empty() {
-                orbits2.push(o.clone());
-            }
-            */
         }
         // orbits = orbits2;
     }
