@@ -4,6 +4,7 @@ use crate::misc3::parse_bsv;
 use ansi_escape::*;
 use enclone_core::testlist::*;
 use io_utils::*;
+use itertools::Itertools;
 use std::cmp::min;
 use std::fs::read_to_string;
 use std::io::Write;
@@ -157,10 +158,11 @@ pub fn run_test(
                 } else {
                     if status != 0 {
                         fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
-                        fwriteln!(
+                        fwrite!(
                             log,
                             "That test was supposed to have succeeded, but instead \
-                             failed.\n"
+                             failed, with stderr = {}",
+                            new_err.iter().format("\n")
                         );
                     } else {
                         *ok = true;
