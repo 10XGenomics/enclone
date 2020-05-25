@@ -36,6 +36,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use regex::Regex;
 use serde_json::Value;
+use stats_utils::*;
 use std::{
     cmp::max,
     collections::HashMap,
@@ -268,6 +269,25 @@ pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
     let tall = Instant::now();
+    let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
+    {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_start = t.before(" ").force_usize();
+            break;
+        }
+        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let fields = s.split(' ').collect::<Vec<&str>>();
+            cpu_this_start = fields[13].force_usize();
+        }
+    }
     let mut ctl = EncloneControl::default();
     setup(&mut ctl, &args);
 
@@ -1157,6 +1177,29 @@ pub fn main_enclone(args: &Vec<String>) {
             peak_mem_usage_gb()
         );
     }
+
+    let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
+    {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_stop = t.before(" ").force_usize();
+            break;
+        }
+        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let fields = s.split(' ').collect::<Vec<&str>>();
+            cpu_this_stop = fields[13].force_usize();
+        }
+    }
+    let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
+    println!("used cpu = {} = {:.1}% of total", this_used, percent_ratio(this_used, all_used));
+
     println!("");
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {
