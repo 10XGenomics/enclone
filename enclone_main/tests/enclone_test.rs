@@ -2,15 +2,10 @@
 
 #![allow(unused_imports, dead_code)]
 
-// somewhat misplaced comments:
-//
-// Run enclone on a test case and verify that the output is identical to what
-// was gotten before.  If the output is different, look at it
-// and decide if the change is justified, and if so update the output file.
-//
-// To test just this test, use:
-//
-// cargo test -p enclone enclone -- --nocapture
+// There are three categories of tests here:
+// 1. basic tests (feature = basic), runs without additional data requirements
+// 2. nonbasic tests, requires extended dataset distributed with enclone
+// 3. speed test (feature = cpu), requires non-public dataset, but for no particularly good reason.
 
 use ansi_escape::*;
 use enclone::html::insert_html;
