@@ -873,7 +873,12 @@ pub fn main_enclone(args: &Vec<String>) {
             umis[l].sort();
             nu[l] = umis[l].len();
             if ctl.gen_opt.baseline {
-                println!("\n{} umi counts for dataset {}", nu[l], l + 1);
+                println!(
+                    "\n{} umi counts for dataset {} = {}",
+                    nu[l],
+                    l + 1,
+                    ctl.sample_info.dataset_id[l]
+                );
             }
             if nu[l] > 0 {
                 let n10 = umis[l][nu[l] / 10] as f64;
