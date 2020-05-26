@@ -94,6 +94,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.bc_dup = true;
     ctl.clono_filt_opt.max_datasets = 1000000000;
     ctl.clono_filt_opt.umi_filt = true;
+    ctl.clono_filt_opt.umi_ratio_filt = true;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -419,6 +420,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&arg, "NUMI") {
             ctl.clono_filt_opt.umi_filt = false;
+        } else if is_simple_arg(&arg, "NUMI_RATIO") {
+            ctl.clono_filt_opt.umi_ratio_filt = false;
         } else if is_simple_arg(&arg, "MARKED_B") {
         } else if is_simple_arg(&arg, "NWEAK_CHAINS") {
             ctl.clono_filt_opt.weak_chains = false;
