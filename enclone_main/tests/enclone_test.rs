@@ -5,7 +5,7 @@
 // There are three categories of tests here:
 // 1. basic tests (feature = basic), runs without additional data requirements
 // 2. nonbasic tests, requires extended dataset distributed with enclone
-// 3. speed test (feature = cpu), requires non-public dataset, but for no particularly good reason.
+// 3. speed test (feature = cpu), requires non-public datasets.
 
 use ansi_escape::*;
 use enclone::html::insert_html;
@@ -68,7 +68,7 @@ fn valid_link(link: &str) -> bool {
 fn test_cpu() {
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 23800;
+    let expect = 7600;
     let percent_dev = 5.0;
     let mut out = String::new();
     let mut ok = false;

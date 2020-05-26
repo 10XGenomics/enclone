@@ -2,8 +2,8 @@ Notes on building and testing:
 
 1. Run ./build to build.  See notes there.
 
-2. Test speed with ./speed.  This uses datasets that are not available externally, although 
-   there's no good reason for that.
+2. Test speed with ./speed.  This uses datasets that are not available externally.  The 
+   particular data used have a very large clonotype that causes the code to be slow.
 
 3. Test other things with
    cargo t
