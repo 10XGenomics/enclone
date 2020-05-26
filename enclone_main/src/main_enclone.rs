@@ -1008,7 +1008,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // identity to filter.
 
     if ctl.clono_filt_opt.umi_ratio_filt_mark {
-        const MIN_UMI_RATIO: usize = 200;
+        const MIN_UMI_RATIO: usize = 500;
         // let mut orbits2 = Vec::<Vec<i32>>::new();
         'orbit: for i in 0..orbits.len() {
             let mut ncells = 0;
