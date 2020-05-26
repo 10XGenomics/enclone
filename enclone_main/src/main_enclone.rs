@@ -1088,10 +1088,12 @@ pub fn main_enclone(args: &Vec<String>) {
                         }
                     }
                 }
-                if ctl.clono_filt_opt.umi_ratio_filt {
-                    erase_if(&mut o, &to_deletex);
-                    if !o.is_empty() {
-                        orbits2.push(o.clone());
+                if pass == 2 {
+                    if ctl.clono_filt_opt.umi_ratio_filt {
+                        erase_if(&mut o, &to_deletex);
+                        if !o.is_empty() {
+                            orbits2.push(o.clone());
+                        }
                     }
                 }
             }
@@ -1129,27 +1131,6 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             erase_if(&mut o, &to_deletex);
             if !o.is_empty() {
-                /*
-                // The following code is off, and should not be an assert anyway.  The reason
-                // the code should possibly be here is that in principle an orbit could be
-                // disconnected, and in such cases it should be pulled apart.  That would be
-                // a small change to this code.  However, we've never seen an example, so we
-                // haven't done it.
-                let mut eqx = EquivRel::new(o.len() as i32);
-                for i1 in 0..o.len() {
-                    for i2 in i1+1..o.len() {
-                        if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
-                            if eq.class_id(o[i1] as i32) == eq.class_id(o[i2] as i32) {
-                                eqx.join(i1 as i32, i2 as i32);
-                            }
-                        }
-                    }
-                }
-                if eqx.norbits() > 1 {
-                    eprintln!("\nToo many orbits: {}.\n", eqx.norbits());
-                    std::process::exit(1);
-                }
-                */
                 orbits2.push(o.clone());
             }
         }
@@ -1158,6 +1139,58 @@ pub fn main_enclone(args: &Vec<String>) {
     if ctl.comp {
         println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
     }
+
+    // Check for disjoint orbits.  This is an incomplete test.
+
+    let mut orbits2 = Vec::<Vec<i32>>::new();
+    for i in 0..orbits.len() {
+        let o = orbits[i].clone();
+        let mut eqx = EquivRel::new(o.len() as i32);
+        for i1 in 0..o.len() {
+            for i2 in i1 + 1..o.len() {
+                if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
+                    let x1: &CloneInfo = &info[o[i1] as usize];
+                    let ex1 = &exact_clonotypes[x1.clonotype_index];
+                    let x2: &CloneInfo = &info[o[i2] as usize];
+                    let ex2 = &exact_clonotypes[x2.clonotype_index];
+                    'cloop: for m1 in 0..ex1.nchains() {
+                        for m2 in 0..ex2.nchains() {
+                            if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
+                                && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
+                            {
+                                eqx.join(i1 as i32, i2 as i32);
+                                break 'cloop;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if eqx.norbits() == 1 {
+            orbits2.push(o.clone());
+        } else {
+            let mut repsx = Vec::<i32>::new();
+            eqx.orbit_reps(&mut repsx);
+            for j in 0..repsx.len() {
+                let mut ox = Vec::<i32>::new();
+                eqx.orbit(repsx[j], &mut ox);
+                let mut o2 = Vec::<i32>::new();
+                for k in 0..ox.len() {
+                    let x: &CloneInfo = &info[o[ox[k] as usize] as usize];
+                    let ex = &exact_clonotypes[x.clonotype_index];
+                    let mut cdr3s = Vec::<String>::new();
+                    for m in 0..ex.share.len() {
+                        cdr3s.push(ex.share[m].cdr3_aa.clone());
+                    }
+                    println!("cdr3s = {}", cdr3s.iter().format(","));
+
+                    o2.push(o[ox[k] as usize]);
+                }
+                orbits2.push(o2);
+            }
+        }
+    }
+    orbits = orbits2;
 
     // Find and print clonotypes.
 
