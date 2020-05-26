@@ -1022,6 +1022,7 @@ pub fn main_enclone(args: &Vec<String>) {
             for pass in 1..=2 {
                 if pass == 2 {
                     if nbads == 0 {
+                        orbits2.push(o.clone());
                         continue 'orbit;
                     } else {
                         let p = 0.1;
@@ -1032,6 +1033,7 @@ pub fn main_enclone(args: &Vec<String>) {
                         // don't delete any cells.
 
                         if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
+                            orbits2.push(o.clone());
                             continue 'orbit;
                         }
                     }
@@ -1081,7 +1083,7 @@ pub fn main_enclone(args: &Vec<String>) {
                             nbads += 1;
                         }
                     }
-                    if ctl.clono_filt_opt.umi_ratio_filt {
+                    if pass == 2 && ctl.clono_filt_opt.umi_ratio_filt {
                         erase_if(&mut ex.clones, &to_delete[j]);
                         if ex.ncells() == 0 {
                             to_deletex[j] = true;
@@ -1150,16 +1152,20 @@ pub fn main_enclone(args: &Vec<String>) {
             for i2 in i1 + 1..o.len() {
                 if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
                     let x1: &CloneInfo = &info[o[i1] as usize];
-                    let ex1 = &exact_clonotypes[x1.clonotype_index];
                     let x2: &CloneInfo = &info[o[i2] as usize];
-                    let ex2 = &exact_clonotypes[x2.clonotype_index];
-                    'cloop: for m1 in 0..ex1.nchains() {
-                        for m2 in 0..ex2.nchains() {
-                            if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
-                                && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
-                            {
-                                eqx.join(i1 as i32, i2 as i32);
-                                break 'cloop;
+                    if x1.clonotype_index == x2.clonotype_index {
+                        eqx.join(i1 as i32, i2 as i32);
+                    } else {
+                        let ex1 = &exact_clonotypes[x1.clonotype_index];
+                        let ex2 = &exact_clonotypes[x2.clonotype_index];
+                        'cloop: for m1 in 0..ex1.nchains() {
+                            for m2 in 0..ex2.nchains() {
+                                if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
+                                    && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
+                                {
+                                    eqx.join(i1 as i32, i2 as i32);
+                                    break 'cloop;
+                                }
                             }
                         }
                     }
@@ -1176,14 +1182,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 eqx.orbit(repsx[j], &mut ox);
                 let mut o2 = Vec::<i32>::new();
                 for k in 0..ox.len() {
-                    let x: &CloneInfo = &info[o[ox[k] as usize] as usize];
-                    let ex = &exact_clonotypes[x.clonotype_index];
-                    let mut cdr3s = Vec::<String>::new();
-                    for m in 0..ex.share.len() {
-                        cdr3s.push(ex.share[m].cdr3_aa.clone());
-                    }
-                    println!("cdr3s = {}", cdr3s.iter().format(","));
-
                     o2.push(o[ox[k] as usize]);
                 }
                 orbits2.push(o2);
