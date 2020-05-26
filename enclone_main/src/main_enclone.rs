@@ -1009,8 +1009,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    // Filter B cells based on UMI count ratios.  For now just marking.  This assumes V..J
-    // identity to filter.
+    // Filter B cells based on UMI count ratios.  This assumes V..J identity to filter.
 
     if ctl.clono_filt_opt.umi_ratio_filt || ctl.clono_filt_opt.umi_ratio_filt_mark {
         const MIN_UMI_RATIO: usize = 500;
