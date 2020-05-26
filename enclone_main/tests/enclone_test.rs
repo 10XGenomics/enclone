@@ -69,7 +69,7 @@ fn test_cpu() {
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
     let expect = 7900;
-    let percent_dev = 5.0;
+    let percent_dev = 6.0;
     let mut out = String::new();
     let mut ok = false;
     let mut log = String::new();
