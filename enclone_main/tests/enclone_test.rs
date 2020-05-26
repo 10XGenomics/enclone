@@ -68,7 +68,7 @@ fn valid_link(link: &str) -> bool {
 fn test_cpu() {
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 8700;
+    let expect = 8100;
     let percent_dev = 5.0;
     let mut out = String::new();
     let mut ok = false;
