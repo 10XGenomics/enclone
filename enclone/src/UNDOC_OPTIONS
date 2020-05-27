@@ -166,3 +166,5 @@ PRINT_CPU: print number of cpu cycles used
 PRINT_CPU_INFO: print info about cpu usage
 
 recognizes S<xena_analysis_set_id>
+
+PLOT_BY_MARK
