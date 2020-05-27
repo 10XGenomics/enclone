@@ -120,12 +120,12 @@ fn expand_analysis_sets(x: &str) -> String {
                             ids[j]
                         );
                         std::process::exit(1);
-                            }
+                    }
                     if !m.contains("\"wiped\"") {
                         ids2.push(ids[j].to_string());
                     }
                 }
-    
+
                 // Proceed.
 
                 for j in 0..ids2.len() {
