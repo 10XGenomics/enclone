@@ -80,16 +80,18 @@ fn expand_analysis_sets(x: &str) -> String {
     for i in 0..tokens.len() {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
-            let url = format!("https://xena.txgmesh.net/api/analysis_sets/{}", setid);
+            // do not use xena.txgmesh.net, does not work from inside enclone
+            let url = format!("https://xena.fuzzplex.com/api/analysis_sets/{}", setid);
             let o = Command::new("curl")
                 .arg(url)
                 .output()
                 .expect("failed to execute xena http");
             let m = String::from_utf8(o.stdout).unwrap();
             if m.contains("502 Bad Gateway") {
+                // do not use xena.txgmesh.net, does not work from inside enclone
                 eprintln!(
                     "\nWell, this is sad.  The URL \
-                    http://xena.txgmesh.net/api/analysis_sets/{} returned a 502 Bad Gateway \
+                    http://xena.fuzzplex.com/api/analysis_sets/{} returned a 502 Bad Gateway \
                     message.  Please try again later or ask someone for help.\n\n",
                     setid
                 );
@@ -106,16 +108,18 @@ fn expand_analysis_sets(x: &str) -> String {
                 // Remove wiped analysis ids.
 
                 for j in 0..ids.len() {
-                    let url = format!("https://xena.txgmesh.net/api/analyses/{}", ids[j]);
+                    // do not use xena.txgmesh.net, does not work from inside enclone
+                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", ids[j]);
                     let o = Command::new("curl")
                         .arg(url)
                         .output()
                         .expect("failed to execute xena http");
                     let m = String::from_utf8(o.stdout).unwrap();
                     if m.contains("502 Bad Gateway") {
+                        // do not use xena.txgmesh.net, does not work from inside enclone
                         eprintln!(
                             "\nWell, this is sad.  The URL \
-                            http://xena.txgmesh.net/api/analyses/{} returned a 502 Bad Gateway \
+                            http://xena.fuzzplex.com/api/analyses/{} returned a 502 Bad Gateway \
                             message.  Please try again later or ask someone for help.\n",
                             ids[j]
                         );
@@ -209,16 +213,18 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
             // work.  The code that's used here should be placed somewhere else.
 
             if p.parse::<usize>().is_ok() {
-                let url = format!("https://xena.txgmesh.net/api/analyses/{}", p);
+                // do not use xena.txgmesh.net, does not work from inside enclone
+                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", p);
                 let o = Command::new("curl")
                     .arg(url.clone())
                     .output()
                     .expect("failed to execute xena http");
                 let m = String::from_utf8(o.stdout).unwrap();
                 if m.contains("502 Bad Gateway") {
+                    // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena.txgmesh.net/api/analyses/{} yielded a 502 Bad Gateway \
+                        http://xena.fuzzplex.com/api/analyses/{} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
                         p
                     );
