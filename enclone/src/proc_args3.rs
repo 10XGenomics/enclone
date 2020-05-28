@@ -211,7 +211,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
             if p.parse::<usize>().is_ok() {
                 let url = format!("https://xena.txgmesh.net/api/analyses/{}", p);
                 let o = Command::new("curl")
-                    .arg(url)
+                    .arg(url.clone())
                     .output()
                     .expect("failed to execute xena http");
                 let m = String::from_utf8(o.stdout).unwrap();
@@ -231,8 +231,9 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     if !path_exists(&pp) {
                         eprintln!(
                             "\nIt looks like you've provided a xena analysis id for \
-                            which the pipeline outs folder\n{}\nhas not yet been generated.\n\n",
-                            p
+                            which the pipeline outs folder\n{}\nhas not yet been generated.\n\
+                            This path did not exist:\n{}\n\n",
+                            p, pp
                         );
                         std::process::exit(1);
                     }
@@ -240,8 +241,9 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     eprintln!(
                         "\nIt looks like you've provided either an incorrect \
                         xena id {} or else one for which\n\
-                        the pipeline outs folder has not yet been generated.\n",
-                        p
+                        the pipeline outs folder has not yet been generated.\n\
+                        This URL\n{}\ndid not provide a path.\n",
+                        p, url
                     );
                     std::process::exit(1);
                 }
