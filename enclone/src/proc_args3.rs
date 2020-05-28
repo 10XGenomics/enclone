@@ -88,9 +88,9 @@ fn expand_analysis_sets(x: &str) -> String {
             let m = String::from_utf8(o.stdout).unwrap();
             if m.contains("502 Bad Gateway") {
                 eprintln!(
-                    "\nWell this is sad.  The URL \
-                    http://xena/api/analysis_sets/{} yielded a 502 Bad Geteway \
-                    message.  Either try again later or ask someone for help.\n\n",
+                    "\nWell, this is sad.  The URL \
+                    http://xena/api/analysis_sets/{} returned a 502 Bad Gateway \
+                    message.  Please try again later or ask someone for help.\n\n",
                     setid
                 );
                 std::process::exit(1);
