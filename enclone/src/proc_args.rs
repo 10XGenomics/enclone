@@ -666,6 +666,23 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+
+    // Sanity check arguments.
+
+    if ctl.clono_filt_opt.umi_filt && ctl.clono_filt_opt.umi_filt_mark {
+        eprintln!(
+            "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \
+            the filter,\nas otherwise nothing will be marked.\n"
+        );
+        std::process::exit(1);
+    }
+    if ctl.clono_filt_opt.umi_ratio_filt && ctl.clono_filt_opt.umi_ratio_filt_mark {
+        eprintln!(
+            "\nIf you use UMI_RATIO_FILT_MARK, you should also use NUMI_RATIO, to turn off \
+            the filter,\nas otherwise nothing will be marked.\n"
+        );
+        std::process::exit(1);
+    }
     check_cvars(&ctl);
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
