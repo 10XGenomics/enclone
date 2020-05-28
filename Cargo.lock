@@ -561,7 +561,7 @@ dependencies = [
  "enclone 0.3.0",
  "enclone_core 0.3.0",
  "enclone_help 0.3.0",
- "enclone_print 0.2.82",
+ "enclone_print 0.3.0",
  "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "failure 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "flate2 1.0.13 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -583,7 +583,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.2.82"
+version = "0.3.0"
 dependencies = [
  "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",

@@ -80,7 +80,7 @@ fn expand_analysis_sets(x: &str) -> String {
     for i in 0..tokens.len() {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
-            let url = format!("https://xena.fuzzplex.com/api/analysis_sets/{}", setid);
+            let url = format!("https://xena.txgmesh.net/api/analysis_sets/{}", setid);
             let o = Command::new("curl")
                 .arg(url)
                 .output()
@@ -89,7 +89,7 @@ fn expand_analysis_sets(x: &str) -> String {
             if m.contains("502 Bad Gateway") {
                 eprintln!(
                     "\nWell, this is sad.  The URL \
-                    http://xena/api/analysis_sets/{} returned a 502 Bad Gateway \
+                    http://xena.txgmesh.net/api/analysis_sets/{} returned a 502 Bad Gateway \
                     message.  Please try again later or ask someone for help.\n\n",
                     setid
                 );
@@ -106,7 +106,7 @@ fn expand_analysis_sets(x: &str) -> String {
                 // Remove wiped analysis ids.
 
                 for j in 0..ids.len() {
-                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", ids[j]);
+                    let url = format!("https://xena.txgmesh.net/api/analyses/{}", ids[j]);
                     let o = Command::new("curl")
                         .arg(url)
                         .output()
@@ -115,8 +115,8 @@ fn expand_analysis_sets(x: &str) -> String {
                     if m.contains("502 Bad Gateway") {
                         eprintln!(
                             "\nWell, this is sad.  The URL \
-                            http://xena/api/analyses/{} returned a 502 Bad Gateway \
-                            message.  Either try again later or ask someone for help.\n",
+                            http://xena.txgmesh.net/api/analyses/{} returned a 502 Bad Gateway \
+                            message.  Please try again later or ask someone for help.\n",
                             ids[j]
                         );
                         std::process::exit(1);
@@ -209,7 +209,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
             // work.  The code that's used here should be placed somewhere else.
 
             if p.parse::<usize>().is_ok() {
-                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", p);
+                let url = format!("https://xena.txgmesh.net/api/analyses/{}", p);
                 let o = Command::new("curl")
                     .arg(url)
                     .output()
@@ -218,8 +218,8 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                 if m.contains("502 Bad Gateway") {
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena/api/analyses/{} yielded a 502 Bad Geteway \
-                        message.  Either try again later or ask someone for help.\n",
+                        http://xena.txgmesh.net/api/analyses/{} yielded a 502 Bad Gateway \
+                        message.  Please try again later or ask someone for help.\n",
                         p
                     );
                     std::process::exit(1);
