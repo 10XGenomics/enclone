@@ -15,6 +15,7 @@ publish = false
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
+enclone_print = { path = "../enclone_print" }
 enclone = { path = "../enclone" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "0.2.4"
@@ -44,3 +45,4 @@ rayon = "1.0.2"
 
 [features]
 basic = []
+cpu = []

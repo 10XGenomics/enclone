@@ -358,7 +358,8 @@ pub fn row_fill(
     // LinearCondition::require_valid_variables.
 
     let mut all_lvars = lvars.clone();
-    if ctl.parseable_opt.pcols.is_empty() {
+    if ctl.parseable_opt.pout.len() == 0 {
+    } else if ctl.parseable_opt.pcols.is_empty() {
         for i in 0..LVARS_ALLOWED.len() {
             if !lvars.contains(&LVARS_ALLOWED[i].to_string()) {
                 all_lvars.push(LVARS_ALLOWED[i].to_string());

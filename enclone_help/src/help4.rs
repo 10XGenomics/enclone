@@ -104,6 +104,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "are described on the enclone site at \\green{bit.ly/enclone}.",
         );
+        h.doc(
+            "NUMI_RATIO",
+            "Filter out B cells based on low BCR UMI counts relative to another cell",
+        );
+        h.doc("", "in a given clonotype.  The heuristics for this");
+        h.docpr(
+            "",
+            "are described on the enclone site at \\green{bit.ly/enclone}.",
+        );
         h.ldoc(
             "NGRAPH_FILTER",
             "By default, enclone filters to remove exact subclonotypes that by virtue of",

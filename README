@@ -1,16 +1,17 @@
-Notes on testing:
+Notes on building and testing:
 
 1. Run ./build to build.  See notes there.
 
-2. Test with
+2. Test speed with ./speed.  This uses datasets that are not available externally.  The 
+   particular data used have a very large clonotype that causes the code to be slow.
+
+3. Test other things with
    cargo t
    assuming that the full set of datasets is available.  They would have to be in
    the "right" place, and it's not entirely specified where that is.
    (This automatically runs with -- --nocapture.)
    Otherwise use instead:
    cd enclone; cargo test --features basic -- --nocapture
-
-3. Testing with overflow detection on is a good thing to do at least occasionally.
 
 4. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:

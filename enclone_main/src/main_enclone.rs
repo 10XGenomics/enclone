@@ -12,11 +12,9 @@ use enclone::graph_filter::*;
 use enclone::info::*;
 use enclone::join::*;
 use enclone::load_gex::*;
-use enclone::loupe::*;
 use enclone::misc1::*;
 use enclone::misc2::*;
 use enclone::misc3::*;
-use enclone::print_clonotypes::*;
 use enclone::proc_args::*;
 use enclone::proc_args2::*;
 use enclone::proc_args_check::*;
@@ -29,6 +27,8 @@ use enclone_help::help3::*;
 use enclone_help::help4::*;
 use enclone_help::help5::*;
 use enclone_help::help_utils::*;
+use enclone_print::loupe::*;
+use enclone_print::print_clonotypes::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
@@ -36,6 +36,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use regex::Regex;
 use serde_json::Value;
+use stats_utils::*;
 use std::{
     cmp::max,
     collections::HashMap,
@@ -268,6 +269,34 @@ pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
     let tall = Instant::now();
+    let (mut print_cpu, mut print_cpu_info) = (false, false);
+    for i in 1..args.len() {
+        if args[i] == "PRINT_CPU" {
+            print_cpu = true;
+        }
+        if args[i] == "PRINT_CPU_INFO" {
+            print_cpu_info = true;
+        }
+    }
+    let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
+    if print_cpu || print_cpu_info {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_start = t.before(" ").force_usize();
+            break;
+        }
+        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let fields = s.split(' ').collect::<Vec<&str>>();
+            cpu_this_start = fields[13].force_usize();
+        }
+    }
     let mut ctl = EncloneControl::default();
     setup(&mut ctl, &args);
 
@@ -844,7 +873,12 @@ pub fn main_enclone(args: &Vec<String>) {
             umis[l].sort();
             nu[l] = umis[l].len();
             if ctl.gen_opt.baseline {
-                println!("\n{} umi counts for dataset {}", nu[l], l + 1);
+                println!(
+                    "\n{} umi counts for dataset {} = {}",
+                    nu[l],
+                    l + 1,
+                    ctl.sample_info.dataset_id[l]
+                );
             }
             if nu[l] > 0 {
                 let n10 = umis[l][nu[l] / 10] as f64;
@@ -975,6 +1009,106 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
+    // Filter B cells based on UMI count ratios.  This assumes V..J identity to filter.
+
+    if is_bcr && (ctl.clono_filt_opt.umi_ratio_filt || ctl.clono_filt_opt.umi_ratio_filt_mark) {
+        const MIN_UMI_RATIO: usize = 500;
+        let mut orbits2 = Vec::<Vec<i32>>::new();
+        'orbit: for i in 0..orbits.len() {
+            let mut ncells = 0;
+            let mut o = orbits[i].clone();
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &exact_clonotypes[x.clonotype_index];
+                ncells += ex.ncells();
+            }
+            let mut nbads = 0;
+            for pass in 1..=2 {
+                if pass == 2 {
+                    if nbads == 0 {
+                        orbits2.push(o.clone());
+                        continue 'orbit;
+                    } else {
+                        let p = 0.1;
+                        let bound = 0.01;
+
+                        // Find probability of observing nbads or more events of probability
+                        // p in a sample of size ncells, and if that is at least bound,
+                        // don't delete any cells.
+
+                        if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
+                            orbits2.push(o.clone());
+                            continue 'orbit;
+                        }
+                    }
+                }
+                let mut to_deletex = vec![false; o.len()];
+                let mut z = Vec::<(Vec<u8>, usize, usize, usize, usize)>::new();
+                let mut to_delete = Vec::<Vec<bool>>::new();
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &mut exact_clonotypes[x.clonotype_index];
+                    to_delete.push(vec![false; ex.ncells()]);
+                    for k in 0..ex.ncells() {
+                        let mut tot = 0;
+                        for m in 0..ex.clones[k].len() {
+                            tot += ex.clones[k][m].umi_count;
+                        }
+                        for m in 0..ex.clones[k].len() {
+                            z.push((
+                                ex.share[m].seq.clone(),
+                                ex.clones[k][m].umi_count,
+                                j,
+                                k,
+                                tot,
+                            ));
+                        }
+                    }
+                }
+                reverse_sort(&mut z);
+                let mut j = 0;
+                while j < z.len() {
+                    let k = next_diff1_5(&z, j as i32) as usize;
+                    for l in j..k {
+                        if z[j].1 >= MIN_UMI_RATIO * z[l].4 {
+                            to_delete[z[l].2][z[l].3] = true;
+                        }
+                    }
+                    j = k;
+                }
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &mut exact_clonotypes[x.clonotype_index];
+                    for l in 0..ex.ncells() {
+                        if to_delete[j][l] {
+                            if ctl.clono_filt_opt.umi_ratio_filt_mark {
+                                ex.clones[l][0].marked = true;
+                            }
+                            nbads += 1;
+                        }
+                    }
+                    if pass == 2 && ctl.clono_filt_opt.umi_ratio_filt {
+                        erase_if(&mut ex.clones, &to_delete[j]);
+                        if ex.ncells() == 0 {
+                            to_deletex[j] = true;
+                        }
+                    }
+                }
+                if pass == 2 {
+                    if ctl.clono_filt_opt.umi_ratio_filt {
+                        erase_if(&mut o, &to_deletex);
+                        if !o.is_empty() {
+                            orbits2.push(o.clone());
+                        }
+                    }
+                }
+            }
+        }
+        if ctl.clono_filt_opt.umi_ratio_filt {
+            orbits = orbits2;
+        }
+    }
+
     // Remove cells that are not called cells by GEX or feature barcodes.
 
     if !ctl.clono_filt_opt.ngex {
@@ -1003,27 +1137,6 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             erase_if(&mut o, &to_deletex);
             if !o.is_empty() {
-                /*
-                // The following code is off, and should not be an assert anyway.  The reason
-                // the code should possibly be here is that in principle an orbit could be
-                // disconnected, and in such cases it should be pulled apart.  That would be
-                // a small change to this code.  However, we've never seen an example, so we
-                // haven't done it.
-                let mut eqx = EquivRel::new(o.len() as i32);
-                for i1 in 0..o.len() {
-                    for i2 in i1+1..o.len() {
-                        if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
-                            if eq.class_id(o[i1] as i32) == eq.class_id(o[i2] as i32) {
-                                eqx.join(i1 as i32, i2 as i32);
-                            }
-                        }
-                    }
-                }
-                if eqx.norbits() > 1 {
-                    eprintln!("\nToo many orbits: {}.\n", eqx.norbits());
-                    std::process::exit(1);
-                }
-                */
                 orbits2.push(o.clone());
             }
         }
@@ -1032,6 +1145,54 @@ pub fn main_enclone(args: &Vec<String>) {
     if ctl.comp {
         println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
     }
+
+    // Check for disjoint orbits.  This is an incomplete test.
+
+    let mut orbits2 = Vec::<Vec<i32>>::new();
+    for i in 0..orbits.len() {
+        let o = orbits[i].clone();
+        let mut eqx = EquivRel::new(o.len() as i32);
+        for i1 in 0..o.len() {
+            for i2 in i1 + 1..o.len() {
+                if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
+                    let x1: &CloneInfo = &info[o[i1] as usize];
+                    let x2: &CloneInfo = &info[o[i2] as usize];
+                    if x1.clonotype_index == x2.clonotype_index {
+                        eqx.join(i1 as i32, i2 as i32);
+                    } else {
+                        let ex1 = &exact_clonotypes[x1.clonotype_index];
+                        let ex2 = &exact_clonotypes[x2.clonotype_index];
+                        'cloop: for m1 in 0..ex1.nchains() {
+                            for m2 in 0..ex2.nchains() {
+                                if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
+                                    && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
+                                {
+                                    eqx.join(i1 as i32, i2 as i32);
+                                    break 'cloop;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if eqx.norbits() == 1 {
+            orbits2.push(o.clone());
+        } else {
+            let mut repsx = Vec::<i32>::new();
+            eqx.orbit_reps(&mut repsx);
+            for j in 0..repsx.len() {
+                let mut ox = Vec::<i32>::new();
+                eqx.orbit(repsx[j], &mut ox);
+                let mut o2 = Vec::<i32>::new();
+                for k in 0..ox.len() {
+                    o2.push(o[ox[k] as usize]);
+                }
+                orbits2.push(o2);
+            }
+        }
+    }
+    orbits = orbits2;
 
     // Find and print clonotypes.
 
@@ -1064,6 +1225,37 @@ pub fn main_enclone(args: &Vec<String>) {
             peak_mem_usage_gb()
         );
     }
+
+    let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
+    if print_cpu || print_cpu_info {
+        let f = open_for_read!["/proc/stat"];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let mut t = s.after("cpu");
+            while t.starts_with(' ') {
+                t = t.after(" ");
+            }
+            cpu_all_stop = t.before(" ").force_usize();
+            break;
+        }
+        let f = open_for_read![&format!("/proc/{}/stat", std::process::id())];
+        for line in f.lines() {
+            let s = line.unwrap();
+            let fields = s.split(' ').collect::<Vec<&str>>();
+            cpu_this_stop = fields[13].force_usize();
+        }
+        let (this_used, all_used) = (cpu_this_stop - cpu_this_start, cpu_all_stop - cpu_all_start);
+        if print_cpu {
+            println!("{}", this_used);
+        } else {
+            println!(
+                "used cpu = {} = {:.1}% of total",
+                this_used,
+                percent_ratio(this_used, all_used)
+            );
+        }
+    }
+
     println!("");
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {
