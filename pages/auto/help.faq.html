@@ -60,7 +60,21 @@ Runs where we combine several hundred datasets execute in a couple minutes (on a
 mileage could vary, and we are interested in cases where it is underperforming.  Let us know.  We
 are aware of several things that could be done to speed up enclone.
 
-<span style="color:#5833ff;font-weight:bold;">4. What platforms does enclone run on?</span>
+<span style="color:#5833ff;font-weight:bold;">4. How does enclone fit into the 10x Genomics software ecosystem?</span>
+
+There are several parts to the answer:
+• enclone is a standalone executable that by default produces human-readable output.
+• You can also run enclone to produce parseable output (see <span style="font-weight:bold;">enclone help parseable</span>), and that
+output can be digested using code that you write (for example, in R).
+• When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
+enclone with a special option that yields only an output file for the 10x visualization tool
+Loupe.
+• Clonotypes may then be viewed using Loupe.  The view of a clonotype provided by Loupe is
+different than the view provided by enclone.  Loupe shows a continuous expanse of bases across
+each chain, which you can scroll across, rather than the compressed view of "important" bases or
+amino acids that enclone shows.
+
+<span style="color:#5833ff;font-weight:bold;">5. What platforms does enclone run on?</span>
 
 1. Linux/x86-64 (that's most servers)
 2. Mac.
@@ -68,12 +82,12 @@ are aware of several things that could be done to speed up enclone.
 However, we have not and cannot test every possible configuration of these platforms.  Please let
 us know if you encounter problems!
 
-<span style="color:#5833ff;font-weight:bold;">5. How can I print out all the donor reference sequences?</span>
+<span style="color:#5833ff;font-weight:bold;">6. How can I print out all the donor reference sequences?</span>
 
 Add the argument <span style="font-weight:bold;">DONOR_REF_FILE=filename</span> to your enclone command, and fasta for the donor
 reference sequences will be dumped there.
 
-<span style="color:#5833ff;font-weight:bold;">6. How does enclone know what VDJ reference sequences I'm using?</span>
+<span style="color:#5833ff;font-weight:bold;">7. How does enclone know what VDJ reference sequences I'm using?</span>
 
 It does not!  It assumes that you have the <span style="font-weight:bold;">human</span> reference sequences that shipped with the latest
 version of Cell Ranger.  If instead your sequences are mouse, then you can specify that by adding
@@ -81,7 +95,7 @@ the argument <span style="font-weight:bold;">MOUSE</span> to your command line. 
 please specify that by adding <span style="font-weight:bold;">REF=f</span> to your command line, where <span style="font-weight:bold;">f</span> is the name of your VDJ
 reference fasta file.
 
-<span style="color:#5833ff;font-weight:bold;">7. Can I provide data from more than one donor?</span>
+<span style="color:#5833ff;font-weight:bold;">8. Can I provide data from more than one donor?</span>
 
 Yes.  Type <span style="font-weight:bold;">enclone help input</span> for details.  The default behavior of enclone is to prevent cells
 from different donors from being placed in the same clonotype.  The <span style="font-weight:bold;">MIX_DONORS</span> option may be used
@@ -90,29 +104,29 @@ than one donor will be flagged as errors, unless you use the <span style="font-w
 warnings.  The primary reason for allowing entry of data from multiple donors is to allow
 estimation of enclone's error rate.
 
-<span style="color:#5833ff;font-weight:bold;">8. What are some command line argument values quoted?</span>
+<span style="color:#5833ff;font-weight:bold;">9. What are some command line argument values quoted?</span>
 
 Command line argument values that contain any of these characters ;|* need to be quoted like so
 <span style="font-weight:bold;">TCR="a;b"</span>
 to prevent the shell from interpreting them for a purpose completely unrelated to enclone.  This
 is a trap, because forgetting to add the quotes can result in nonsensical and confusing behavior!
 
-<span style="color:#5833ff;font-weight:bold;">9. If enclone fails, does it return nonzero exit status?</span>
+<span style="color:#5833ff;font-weight:bold;">10. If enclone fails, does it return nonzero exit status?</span>
 
 Yes, unless output of enclone is going to a terminal.  In that case, you'll always get zero.
 
-<span style="color:#5833ff;font-weight:bold;">10. Could a cell be missing from an enclone clonotype?</span>
+<span style="color:#5833ff;font-weight:bold;">11. Could a cell be missing from an enclone clonotype?</span>
 
 Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
 described in <span style="font-weight:bold;">enclone help special</span>, and which you can turn off.  We also delete cells for which
 more than four chains were found.
 
-<span style="color:#5833ff;font-weight:bold;">11. Can enclone print summary stats?</span>
+<span style="color:#5833ff;font-weight:bold;">12. Can enclone print summary stats?</span>
 
 Yes, if you add the option <span style="font-weight:bold;">SUMMARY</span>, then some summary stats will be printed.  If you only want to
 see the summary stats, then also add the option <span style="font-weight:bold;">NOPRINT</span>.
 
-<span style="color:#5833ff;font-weight:bold;">12. What is the notes column?</span>
+<span style="color:#5833ff;font-weight:bold;">13. What is the notes column?</span>
 
 The notes column appears if one of two relatively rare events occurs:
 
@@ -138,18 +152,18 @@ option <span style="font-weight:bold;">JC1</span>.  The reason for this is that 
 those supplied with Cell Ranger 3.1) often have an extra base at the beginning of their C
 segments, resulting in annoying overlap notes for a large fraction of clonotypes.
 
-<span style="color:#5833ff;font-weight:bold;">13. Can I cap the number of threads used by enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">14. Can I cap the number of threads used by enclone?</span>
 
 You can use the command-line argument <span style="font-weight:bold;">MAX_CORES=n</span> to cap the number of cores used in parallel
 loops.  The number of threads used is typically one higher.
 
-<span style="color:#5833ff;font-weight:bold;">14. Does enclone work under Windows?</span>
+<span style="color:#5833ff;font-weight:bold;">15. Does enclone work under Windows?</span>
 
 No.  There are nontrivial technical problems with getting this to work.  If you're sufficiently
 curious, see the notes in the source code file misc1.rs.  Please let us know if you're interested
 in support for Windows.
 
-<span style="color:#5833ff;font-weight:bold;">15. Can I use enclone if I have only gene expression data?</span>
+<span style="color:#5833ff;font-weight:bold;">16. Can I use enclone if I have only gene expression data?</span>
 
 Possibly.  In some cases this works very well, but in other cases it does not.  Success depends on
 dataset characteristics that have not been carefully investigated.  To attempt this, you need to
@@ -158,7 +172,7 @@ Ranger that the run is to be treated as BCR or TCR.  Two separate invocations ca
 both.  Note also that Cell Ranger has been only minimally tested for this configuration and that
 this is not an officially supported Cell Ranger configuration.
 
-<span style="color:#5833ff;font-weight:bold;">16. How can I cite enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">17. How can I cite enclone?</span>
 
 This version of enclone has been provided under a non-disclosure agreement,
 however once enclone has officially launched, you will be able to cite this version as:
@@ -169,11 +183,11 @@ to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide
 that you used when you ran enclone and indicate the version of Cell Ranger that you used to
 generate the input data.
 
-<span style="color:#5833ff;font-weight:bold;">17. Can I print the enclone version?</span>
+<span style="color:#5833ff;font-weight:bold;">18. Can I print the enclone version?</span>
 
 Yes, type "enclone version".
 
-<span style="color:#5833ff;font-weight:bold;">18. Can enclone ingest multiple datasets from the same library?</span>
+<span style="color:#5833ff;font-weight:bold;">19. Can enclone ingest multiple datasets from the same library?</span>
 
 If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  This
 behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.</span></pre>
