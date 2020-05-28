@@ -11,6 +11,7 @@ use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;
 use perf_stats::*;
+use stats_utils::*;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -649,7 +650,7 @@ pub fn group_and_print_clonotypes(
         fwriteln!(logx, "1. overall");
         let mut nclono2 = 0;
         let mut ncells = 0;
-        let mut nchains = Vec::<usize>::new();
+        let mut ncc = Vec::<(usize, usize)>::new();
         let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
         for i in 0..nclono {
             let mut n = 0;
@@ -665,7 +666,7 @@ pub fn group_and_print_clonotypes(
                 nclono2 += 1;
             }
             ncells += n;
-            nchains.push(mat[i].len());
+            ncc.push((mat[i].len(), n));
         }
         sd.sort();
         let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
@@ -778,27 +779,69 @@ pub fn group_and_print_clonotypes(
         // Print other stats.
 
         fwriteln!(logx, "2. for the selected clonotypes");
-        fwriteln!(logx, "   • number of clonotypes = {}", nclono);
-        fwriteln!(
-            logx,
-            "   • number of clonotypes having at least two cells = {}",
-            nclono2
-        );
-        fwriteln!(logx, "   • number of cells = {}", ncells);
-        fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
-        fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
-        nchains.sort();
+
+        // Print summary table for chains / clonotypes / cells.
+
+        ncc.sort();
         let mut i = 0;
-        while i < nchains.len() {
-            let j = next_diff(&nchains, i);
-            fwriteln!(
-                logx,
-                "   • number of clonotypes having {} chains = {}",
-                nchains[i],
-                j - i
-            );
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+            "chains".to_string(),
+            "clonotypes with this".to_string(),
+            "cells in these".to_string(),
+            "%".to_string(),
+        ];
+        rows.push(row);
+        let row = vec![
+            "".to_string(),
+            "number of chains".to_string(),
+            "clonotypes".to_string(),
+            "".to_string(),
+        ];
+        rows.push(row);
+        let row = vec!["\\hline".to_string(); 4];
+        rows.push(row);
+        while i < ncc.len() {
+            let j = next_diff1_2(&ncc, i as i32) as usize;
+            let nchains_this = ncc[i].0;
+            let nclono_this = j - i;
+            let mut ncells_this = 0;
+            for k in i..j {
+                ncells_this += ncc[k].1;
+            }
+            let row = vec![
+                format!("{}", nchains_this),
+                format!("{}", nclono_this),
+                format!("{}", ncells_this),
+                format!("{:.1}", percent_ratio(ncells_this, ncells)),
+            ];
+            rows.push(row);
             i = j;
         }
+        let row = vec![
+            "total".to_string(),
+            format!("{}", nclono),
+            format!("{}", ncells),
+            "100.0".to_string(),
+        ];
+        rows.push(row);
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l|r|r|r".to_vec(), false, false);
+        log = log.replace("\n", "\n   ");
+        fwrite!(logx, "   {}", log);
+
+        // Print other cell/clonotype stats.
+
+        fwriteln!(
+            logx,
+            "• number of clonotypes having at least two cells = {}",
+            nclono2
+        );
+        fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
+        fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
+
+        // Print UMI stats.
+
         fwriteln!(
             logx,
             "   • mean over middle third of contig UMI counts (heavy chain / TRB) = {:.2}",
@@ -809,14 +852,24 @@ pub fn group_and_print_clonotypes(
             "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
             middle_mean_umisl,
         );
+
+        // Print marking stats.
+
         if ctl.gen_opt.mark_stats {
             fwriteln!(logx, "   --------------------------------");
             fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
             fwriteln!(logx, "   • number of marked cells = {}", nmarked);
             fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
         }
+
+        // Print sample/donor table.
+
         let mut rows = Vec::<Vec<String>>::new();
-        let row = vec!["sample".to_string(), "donor".to_string(), "n".to_string()];
+        let row = vec![
+            "sample".to_string(),
+            "donor".to_string(),
+            "cells".to_string(),
+        ];
         rows.push(row);
         let row = vec!["\\hline".to_string(); 3];
         rows.push(row);

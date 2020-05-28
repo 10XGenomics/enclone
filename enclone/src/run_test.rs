@@ -4,6 +4,7 @@ use crate::misc3::parse_bsv;
 use ansi_escape::*;
 use enclone_core::testlist::*;
 use io_utils::*;
+use itertools::Itertools;
 use std::cmp::min;
 use std::fs::read_to_string;
 use std::io::Write;
@@ -33,6 +34,7 @@ pub fn run_test(
     let mut set_in_stone = false;
     let mut no_pre = false;
     let mut nforce = false;
+    let mut ncores = false;
     if test.contains(" EXPECT_NULL") {
         test = test.replace(" EXPECT_NULL", "");
         expect_null = true;
@@ -56,6 +58,10 @@ pub fn run_test(
     if test.contains(" NFORCE") {
         test = test.replace(" NFORCE", "");
         nforce = true;
+    }
+    if test.contains(" NCORES") {
+        test = test.replace(" NCORES", "");
+        ncores = true;
     }
     test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
     let mut log = Vec::<u8>::new();
@@ -110,13 +116,15 @@ pub fn run_test(
         if !nforce {
             new = new.arg("FORCE_EXTERNAL")
         }
-        // dubious use of expect:
-        let new = new
+        if !ncores {
             // Cap number of cores at 24.  Surprisingly, for testing on a 64-core
             // server, this significantly reduces wallclock.  And substituting either
             // 16 or 64 is slower.  Slower at the time of testing!  As we add tests or
             // change the algorithms, this may change.
-            .arg("MAX_CORES=24")
+            new = new.arg("MAX_CORES=24")
+        }
+        // dubious use of expect:
+        let new = new
             .output()
             .expect(&format!("failed to execute enclone for test{}", it + 1));
         let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
@@ -157,10 +165,11 @@ pub fn run_test(
                 } else {
                     if status != 0 {
                         fwriteln!(log, "\nCommand for subtest {} failed.", it + 1);
-                        fwriteln!(
+                        fwrite!(
                             log,
                             "That test was supposed to have succeeded, but instead \
-                             failed.\n"
+                             failed, with stderr = {}",
+                            new_err.iter().format("\n")
                         );
                     } else {
                         *ok = true;

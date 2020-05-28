@@ -4,20 +4,24 @@ SUMMARY STATISTICS
    • number of datasets = 1
    • number of donors = 1
 2. for the selected clonotypes
-   • number of clonotypes = 325
+   ┌────────┬────────────────────────┬──────────────────┬───────┐
+   │chains  │  clonotypes with this  │  cells in these  │      %│
+   │        │      number of chains  │      clonotypes  │       │
+   ├────────┼────────────────────────┼──────────────────┼───────┤
+   │1       │                     8  │               8  │    0.7│
+   │2       │                   304  │             923  │   78.4│
+   │3       │                    11  │             243  │   20.6│
+   │4       │                     2  │               4  │    0.3│
+   │total   │                   325  │            1178  │  100.0│
+   └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 126
-   • number of cells = 1178
    • number of cells having 1 chain = 42
    • number of cells having 2 or 3 chains = 1135
-   • number of clonotypes having 1 chains = 8
-   • number of clonotypes having 2 chains = 304
-   • number of clonotypes having 3 chains = 11
-   • number of clonotypes having 4 chains = 2
    • mean over middle third of contig UMI counts (heavy chain / TRB) = 354.20
    • mean over middle third of contig UMI counts (light chain / TRA) = 2753.42
-   ┌───────────────────┐
-   │sample  donor     n│
-   ├───────────────────┤
-   │s1      d1     1178│
-   └───────────────────┘
+   ┌────────────────────┐
+   │sample  donor  cells│
+   ├────────────────────┤
+   │s1      d1      1178│
+   └────────────────────┘
    

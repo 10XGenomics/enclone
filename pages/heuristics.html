@@ -22,7 +22,8 @@ is geeky and technical.
 
 <hr>
 
-<p><b>UMI filtering.</b>  enclone filters out B cells having low UMI counts, according to a 
+<p><b>UMI filtering.</b>  enclone filters out B cells having low UMI counts, relative to a baseline
+that is determined for each dataset, according to a
 heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
 filter.</code>
 
@@ -69,6 +70,23 @@ The test would trigger based on the number and improbability of low UMI counts. 
 only considers the number of counts that fall below a threshold, and not their particular values.
 
 <p>This UMI filter is carried out before most of the other filters.</p>
+
+<hr>
+
+<p><b>UMI ratio filtering.</b>  enclone filters out B cells having low UMI counts, relative to
+other UMI counts in a given clonotype, according to a 
+heuristic described here, unless the argument <code>NUMI_RATIO</code> is supplied, to turn off that
+filter.</code>
+
+<p>First we mark a cell for possible deletion, if the VDJ UMI count for some chain of some other 
+cell is at least 500 times greater than the total VDJ UMI count for the given cell.</p>
+
+<p>Then we scan each clonotype having at least two cells, and delete every cell marked as above,
+with the following qualification.  
+Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
+probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
+less then <code>0.01</code>.</p>
 
 </body>
 </html>

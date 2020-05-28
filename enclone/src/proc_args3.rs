@@ -59,6 +59,99 @@ fn expand_integer_ranges(x: &str) -> String {
     y
 }
 
+fn expand_analysis_sets(x: &str) -> String {
+    let mut tokens = Vec::<String>::new();
+    let mut token = String::new();
+    for c in x.chars() {
+        if c == ',' || c == ':' || c == ';' {
+            if token.len() > 0 {
+                tokens.push(token.clone());
+                token.clear();
+            }
+            tokens.push(c.to_string());
+        } else {
+            token.push(c);
+        }
+    }
+    if token.len() > 0 {
+        tokens.push(token);
+    }
+    let mut tokens2 = Vec::<String>::new();
+    for i in 0..tokens.len() {
+        if tokens[i].starts_with('S') {
+            let setid = tokens[i].after("S");
+            let url = format!("https://xena.txgmesh.net/api/analysis_sets/{}", setid);
+            let o = Command::new("curl")
+                .arg(url)
+                .output()
+                .expect("failed to execute xena http");
+            let m = String::from_utf8(o.stdout).unwrap();
+            if m.contains("502 Bad Gateway") {
+                eprintln!(
+                    "\nWell, this is sad.  The URL \
+                    http://xena.txgmesh.net/api/analysis_sets/{} returned a 502 Bad Gateway \
+                    message.  Please try again later or ask someone for help.\n\n",
+                    setid
+                );
+                std::process::exit(1);
+            }
+            // printme!(m);
+            if m.contains("\"analysis_ids\":[") {
+                let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
+                ids = ids.replace(" ", "");
+                ids = ids.replace("\n", "");
+                let ids = ids.split(',').collect::<Vec<&str>>();
+                let mut ids2 = Vec::<String>::new();
+
+                // Remove wiped analysis ids.
+
+                for j in 0..ids.len() {
+                    let url = format!("https://xena.txgmesh.net/api/analyses/{}", ids[j]);
+                    let o = Command::new("curl")
+                        .arg(url)
+                        .output()
+                        .expect("failed to execute xena http");
+                    let m = String::from_utf8(o.stdout).unwrap();
+                    if m.contains("502 Bad Gateway") {
+                        eprintln!(
+                            "\nWell, this is sad.  The URL \
+                            http://xena.txgmesh.net/api/analyses/{} returned a 502 Bad Gateway \
+                            message.  Please try again later or ask someone for help.\n",
+                            ids[j]
+                        );
+                        std::process::exit(1);
+                    }
+                    if !m.contains("\"wiped\"") {
+                        ids2.push(ids[j].to_string());
+                    }
+                }
+
+                // Proceed.
+
+                for j in 0..ids2.len() {
+                    if j > 0 {
+                        tokens2.push(",".to_string());
+                    }
+                    tokens2.push(ids2[j].to_string());
+                }
+                continue;
+            } else {
+                eprintln!(
+                    "\nIt looks like you've provided an incorrect analysis set id {}.\n",
+                    setid
+                );
+                std::process::exit(1);
+            }
+        }
+        tokens2.push(tokens[i].clone());
+    }
+    let mut y = String::new();
+    for i in 0..tokens2.len() {
+        y += &tokens2[i];
+    }
+    y
+}
+
 // Functions to find the path to data.
 
 fn get_path(p: &str, ctl: &EncloneControl) -> String {
@@ -116,7 +209,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
             // work.  The code that's used here should be placed somewhere else.
 
             if p.parse::<usize>().is_ok() {
-                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", p);
+                let url = format!("https://xena.txgmesh.net/api/analyses/{}", p);
                 let o = Command::new("curl")
                     .arg(url)
                     .output()
@@ -125,8 +218,8 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                 if m.contains("502 Bad Gateway") {
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena/api/analyses/{} yielded a 502 Bad Geteway \
-                        message.  Either try again later or ask someone for help.\n",
+                        http://xena.txgmesh.net/api/analyses/{} yielded a 502 Bad Gateway \
+                        message.  Please try again later or ask someone for help.\n",
                         p
                     );
                     std::process::exit(1);
@@ -323,8 +416,14 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         std::process::exit(1);
     }
     val = expand_integer_ranges(&val);
+    if ctl.gen_opt.internal_run {
+        val = expand_analysis_sets(&val);
+    }
     let donor_groups = val.split(';').collect::<Vec<&str>>();
-    let gex2 = expand_integer_ranges(&gex);
+    let mut gex2 = expand_integer_ranges(&gex);
+    if ctl.gen_opt.internal_run {
+        gex2 = expand_analysis_sets(&gex2);
+    }
     let donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
     let donor_groups_bc = bc.split(';').collect::<Vec<&str>>();
     let mut xcr = "TCR".to_string();
