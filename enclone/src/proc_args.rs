@@ -210,6 +210,33 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
+    // Preprocess NALL.
+
+    for i in 1..args.len() {
+        if args[i] == "NALL".to_string() {
+            let f = [
+                "NCELL",
+                "NGEX",
+                "NCROSS",
+                "NUMI",
+                "NUMI_RATIO",
+                "NGRAPH_FILTER",
+                "NQUAL",
+                "NWEAK_CHAINS",
+                "NWEAK_ONESIES",
+                "NFOURSIE_KILL",
+                "NWHITEF",
+                "NBC_DUP",
+                "MIX_DONORS",
+                "KEEP_IMPROPER",
+            ];
+            for j in 0..f.len() {
+                args.push(f[j].to_string());
+            }
+            break;
+        }
+    }
+
     // Define arguments that set something to true.
 
     let mut simple_set = vec![
@@ -418,6 +445,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
+        } else if is_simple_arg(&arg, "NALL") {
         } else if is_simple_arg(&arg, "NUMI") {
             ctl.clono_filt_opt.umi_filt = false;
         } else if is_simple_arg(&arg, "NUMI_RATIO") {

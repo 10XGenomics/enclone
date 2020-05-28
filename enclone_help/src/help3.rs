@@ -96,7 +96,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
         h.print_with_box(
-            "\\bold{FASTA output.}  This is a separate feature. \
+            "\\bold{FASTA output.}  This is a separate feature.  \
              To generate nucleotide FASTA output for each chain in each exact subclonotype, \
              use the argument \\bold{FASTA=filename}.  The special case \\bold{stdout} will \
              cause the FASTA records to be shown as part of standard output.  The FASTA records \
@@ -107,6 +107,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              constant region at all was assigned, then the FASTA record is omitted.  \
              Similarly, \\bold{FASTA_AA=filename} may be used to generate a matching amino acid \
              FASTA file.",
+            true,
+        );
+        h.print_with_box(
+            "\\bold{CLUSTAL output.}  This is a separate feature.  \
+             To generate CLUSTAL-type output, with one line per cell, use \\bold{CLUSTAL=filename} \
+             or \\bold{CLUSTAL=stdout}.  Each sequence is the concatenation of the V..J sequences \
+             for a given cell's chains, with gap (-) characters shown if a chain is missing.  We \
+             recommend using appropriate filtering options to drop the exact subclonotypes having \
+             missing chains, e.g. CHAINS_EXACT=2 or 3 depending on the clonotype.",
             true,
         );
         h.print(
