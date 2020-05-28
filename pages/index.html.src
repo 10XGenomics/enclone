@@ -121,7 +121,9 @@ get started.  You do not need to be able to program, or anything of that sort.</
 <p>enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended
 as an exploratory tool.  You can dynamically change your command line to select specific
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.</p>
-<p>enclone, in addition to <a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>,
+<p>enclone, in addition to 
+<a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>
+(and in which the core algorithm of enclone will be integrated at a later point in time),
 supports the analysis of VDJ and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
 solution</a>.</p>
 
