@@ -752,7 +752,7 @@ If you want to completely suppress the generation of visual clonotypes, add <spa
 command line.
 
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">FASTA output.</span>  This is a separate feature. To generate nucleotide FASTA output for each chain in  ┃
+┃<span style="font-weight:bold;">FASTA output.</span>  This is a separate feature.  To generate nucleotide FASTA output for each chain in ┃
 ┃each exact subclonotype, use the argument <span style="font-weight:bold;">FASTA=filename</span>.  The special case <span style="font-weight:bold;">stdout</span> will cause the ┃
 ┃FASTA records to be shown as part of standard output.  The FASTA records that are generated are of┃
 ┃the form V(D)JC, where V is the full V segment (including the leader) and C is the full constant  ┃
@@ -761,6 +761,14 @@ command line.
 ┃to the clonotype.  If no constant region at all was assigned, then the FASTA record is omitted.   ┃
 ┃Similarly, <span style="font-weight:bold;">FASTA_AA=filename</span> may be used to generate a matching amino acid FASTA file.            ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">CLUSTAL output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one line per┃
+┃cell, use <span style="font-weight:bold;">CLUSTAL=filename</span> or <span style="font-weight:bold;">CLUSTAL=stdout</span>.  Each sequence is the concatenation of the V..J   ┃
+┃sequences for a given cell's chains, with gap (-) characters shown if a chain is missing.  We   ┃
+┃recommend using appropriate filtering options to drop the exact subclonotypes having missing    ┃
+┃chains, e.g. CHAINS_EXACT=2 or 3 depending on the clonotype.                                    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
