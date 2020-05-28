@@ -1,6 +1,10 @@
 # These are matched BCR/GEX datasets, all human except one mouse.
-# These overlap other dataset lists.
-# Note the multiple donors etc. are included within individual sets.
+#
+# These overlap other dataset lists, and many of the ids given here are not given in any
+# other list.  All are included in the big VDJ dataset collection that is internal to 10x,
+# and not all are distributable.
+#
+# Note that in some cases, multiple donors etc. are included within individual sets.
 
 DONOR=1
 NAME=B cells
