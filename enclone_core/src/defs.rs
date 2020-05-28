@@ -329,6 +329,7 @@ pub struct GeneralOpt {
     pub fasta: String,
     pub fasta_filename: String,
     pub fasta_aa_filename: String,
+    pub clustal: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub chains_exact: usize,

@@ -21,6 +21,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              two options can be used to simplify the view of a clonotype.\n\n",
         );
         h.doc(
+            "NALL",
+            "Turn off all the noise filters shown below.  This may yield quite a mess.",
+        );
+        h.ldoc(
             "NCELL",
             "Use contigs found by Cell Ranger even if they were not in a called cell, ",
         );
