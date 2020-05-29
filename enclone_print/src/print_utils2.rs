@@ -87,12 +87,14 @@ pub fn row_fill(
     stats: &mut Vec<(String, Vec<f64>)>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
+    lvarsc: &Vec<String>,
+    nd_fields: &Vec<String>,
 ) {
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
-    let lvars = &ctl.clono_print_opt.lvars;
+    let lvars = lvarsc.clone();
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     macro_rules! speak {
@@ -429,6 +431,21 @@ pub fn row_fill(
             }
             clust.sort();
             lvar![i, x, format!("{}", abbrev_list(&clust))];
+        } else if x == "n_other" {
+            let mut n = 0;
+            for j in 0..ex.clones.len() {
+                let mut found = false;
+                let f = format!("n_{}", ex.clones[j][0].dataset_index);
+                for i in 0..nd_fields.len() {
+                    if f == nd_fields[i] {
+                        found = true;
+                    }
+                }
+                if !found {
+                    n += 1;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
         } else if x == "type" {
             let mut cell_types = Vec::<String>::new();
             /*
