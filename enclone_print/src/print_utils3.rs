@@ -450,10 +450,10 @@ pub fn build_table_stuff(
     justify: &mut Vec<u8>,
     drows: &mut Vec<Vec<String>>,
     rows: &mut Vec<Vec<String>>,
+    lvars: &Vec<String>,
 ) {
     // Build lead header row and justification to match.
 
-    let lvars = &ctl.clono_print_opt.lvars;
     let cols = rsi.vids.len();
     let nexacts = exacts.len();
     if !ctl.clono_print_opt.bu {

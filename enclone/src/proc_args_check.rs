@@ -423,6 +423,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             ends.push(format!("{}{}", x, y));
         }
     }
+    let mut nd_used = false;
     'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
         // See if type is ok.
 
@@ -463,6 +464,20 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                     continue 'main_loop;
                 }
             }
+        }
+
+        // Check for nd<k>.
+
+        if x.starts_with("nd")
+            && x.after("nd").parse::<usize>().is_ok()
+            && x.after("nd").force_usize() >= 1
+        {
+            if nd_used {
+                eprintln!("\nOnly one instance of the lead variable nd<k> is allowed.\n");
+                std::process::exit(1);
+            }
+            nd_used = true;
+            continue;
         }
 
         // Check for pe<n> and npe<n> and ppe<n>.

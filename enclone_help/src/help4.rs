@@ -448,6 +448,23 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "or sample or donor or tag short name; may name only one such category",
         );
         h.ldoc(
+            "nd<k>",
+            "For k a positive integer, this creates k+1 fields, that are specific to each",
+        );
+        h.doc(
+            "",
+            "clonotype.  The first field is n_<d1>, where d1 is the name of the dataset",
+        );
+        h.doc(
+            "",
+            "having the most cells in the clonotype.  If k ≥ 2, then you'll get a",
+        );
+        h.doc(
+            "",
+            "\"runner-up\" field n_<d2>, etc.  Finally you get a field n_other, however",
+        );
+        h.doc("", "fields will be elided if they represent no cells.");
+        h.ldoc(
             "near",
             "Hamming distance of V..J DNA sequence to nearest neighbor",
         );

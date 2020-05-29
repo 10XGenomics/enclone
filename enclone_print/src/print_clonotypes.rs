@@ -423,6 +423,60 @@ pub fn print_clonotypes(
                     }
                 }
 
+                // Find the fields associated to nd<k> if used.
+
+                let mut lvarsc = lvars.clone();
+                let mut nd_fields = Vec::<String>::new();
+                for (i, x) in lvars.iter().enumerate() {
+                    if x.starts_with("nd")
+                        && x.after("nd").parse::<usize>().is_ok()
+                        && x.after("nd").force_usize() >= 1
+                    {
+                        lvarsc.clear();
+                        for m in 0..i {
+                            lvarsc.push(lvars[m].clone());
+                        }
+                        let k = x.after("nd").force_usize();
+                        let mut n = vec![0 as usize; ctl.sample_info.n()];
+                        for u in 0..nexacts {
+                            let ex = &exact_clonotypes[exacts[u]];
+                            for l in 0..ex.ncells() {
+                                n[ex.clones[l][0].dataset_index] += 1;
+                            }
+                        }
+                        let mut datasets = ctl.sample_info.dataset_id.clone();
+                        // does not work for unknown reason, so "manually" replaced
+                        // sort_sync2(&mut n, &mut datasets);
+                        let permutation = permutation::sort(&n[..]);
+                        n = permutation.apply_slice(&n[..]);
+                        datasets = permutation.apply_slice(&datasets[..]);
+                        n.reverse();
+                        datasets.reverse();
+                        for l in 0..n.len() {
+                            if n[l] == 0 {
+                                n.truncate(l);
+                                datasets.truncate(l);
+                                break;
+                            }
+                        }
+                        for l in 0..k {
+                            if l >= n.len() {
+                                break;
+                            }
+                            nd_fields.push(format!("n_{}", datasets[l].clone()));
+                            lvarsc.push(format!("n_{}", datasets[l].clone()));
+                        }
+                        if n.len() > k {
+                            nd_fields.push("n_other".to_string());
+                            lvarsc.push("n_other".to_string());
+                        }
+                        for m in i + 1..lvars.len() {
+                            lvarsc.push(lvars[m].clone());
+                        }
+                    }
+                }
+                let lvars = lvarsc.clone();
+
                 // Now build table content.
                 // sr: now pretty pointless
 
@@ -739,6 +793,8 @@ pub fn print_clonotypes(
                         &mut stats,
                         &vdj_cells,
                         &n_vdj_gex,
+                        &lvars,
+                        &nd_fields,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -770,11 +826,37 @@ pub fn print_clonotypes(
                             let mut row = Vec::<String>::new();
                             let bc = &bcl.0;
                             let li = bcl.1;
+                            let di = ex.clones[bcl.2][0].dataset_index;
                             row.push(format!("$  {}", bc.clone()));
                             let ex = &exact_clonotypes[exacts[u]];
                             for k in 0..lvars.len() {
                                 let nr = row.len();
-                                if bin_member(&alt_bcs, &lvars[k]) {
+                                let mut filled = false;
+                                for l in 0..ctl.sample_info.n() {
+                                    if lvars[k] == format!("n_{}", ctl.sample_info.dataset_id[l]) {
+                                        let mut n = 0;
+                                        if di == l {
+                                            n = 1;
+                                        }
+                                        row.push(format!("{}", n));
+                                        filled = true;
+                                    }
+                                }
+                                if filled {
+                                } else if lvars[k] == "n_other".to_string() {
+                                    let mut n = 0;
+                                    let f = format!("n_{}", ex.clones[bcl.2][0].dataset_index);
+                                    let mut found = false;
+                                    for i in 0..nd_fields.len() {
+                                        if f == nd_fields[i] {
+                                            found = true;
+                                        }
+                                    }
+                                    if !found {
+                                        n = 1;
+                                    }
+                                    row.push(format!("{}", n));
+                                } else if bin_member(&alt_bcs, &lvars[k]) {
                                     let mut val = String::new();
                                     let alt = &ctl.sample_info.alt_bc_fields[li];
                                     for j in 0..alt.len() {
@@ -1183,6 +1265,7 @@ pub fn print_clonotypes(
                     &mut justify,
                     &mut drows,
                     &mut rows,
+                    &lvars,
                 );
 
                 // Insert universal and donor reference rows.

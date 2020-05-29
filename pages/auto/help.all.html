@@ -978,6 +978,8 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NALL                │  Turn off all the noise filters shown below.  This may yield quite a mess.  │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
 │                    │  or not called high confidence.                                             │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
@@ -1073,47 +1075,53 @@ clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌───────────────┬────────────────────────────────────────────────────────────────────────────┐
-│datasets       │  dataset identifiers                                                       │
-│samples        │  sample identifiers                                                        │
-│donors         │  donor identifiers                                                         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│n              │  number of cells                                                           │
-│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset      │
-│               │  or sample or donor or tag short name; may name only one such category     │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                 │
-│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                │
-│               │  both compare to cells having chains in the same columns of the clonotype, │
-│               │  with - shown if there is no other exact subclonotype to compare to        │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are    │
-│               │  grouped according to the Hamming distance of their V..J sequences.  Those │
-│               │  within distance d are defined to be in the same group, and this is        │
-│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The     │
-│               │  ordering of these identifiers is arbitrary.  This option is best applied  │
-│               │  to cases where all exact subclonotypes have a complete set of chains.     │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                        │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type   │
-│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow   │
-│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;  │
-│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr│
-│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●│
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│cred           │  Short for credibility.  It is a measure of the extent to which cells      │
-│               │  having gene expression similar to a given putative B cell are themselves  │
-│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n   │
-│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,    │
-│               │  find the n GEX cells that are closest to it in PCA space, and report the  │
-│               │  percent of those that are also VDJ cells.  For multiple datasets, it would│
-│               │  be better to "aggr" the data, however that is not currently supported     │
-│               │  The computation is also inefficient, so let us know if it's causing       │
-│               │  problems for you.  And cred makes much better sense for samples that      │
-│               │  consist of mixed cell types, rather than consisting of pure B or T cells. │
-└───────────────┴────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬──────────────────────────────────────────────────────────────────────────────┐
+│datasets       │  dataset identifiers                                                         │
+│samples        │  sample identifiers                                                          │
+│donors         │  donor identifiers                                                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│n              │  number of cells                                                             │
+│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset        │
+│               │  or sample or donor or tag short name; may name only one such category       │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│nd&lt;k>          │  For k a positive integer, this creates k+1 fields, that are specific to each│
+│               │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset  │
+│               │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a        │
+│               │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however    │
+│               │  fields will be elided if they represent no cells.                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                   │
+│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                  │
+│               │  both compare to cells having chains in the same columns of the clonotype,   │
+│               │  with - shown if there is no other exact subclonotype to compare to          │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are      │
+│               │  grouped according to the Hamming distance of their V..J sequences.  Those   │
+│               │  within distance d are defined to be in the same group, and this is          │
+│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The       │
+│               │  ordering of these identifiers is arbitrary.  This option is best applied    │
+│               │  to cases where all exact subclonotypes have a complete set of chains.       │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                          │
+│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type     │
+│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow     │
+│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;    │
+│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr  │
+│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●  │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cred           │  Short for credibility.  It is a measure of the extent to which cells        │
+│               │  having gene expression similar to a given putative B cell are themselves    │
+│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n     │
+│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,      │
+│               │  find the n GEX cells that are closest to it in PCA space, and report the    │
+│               │  percent of those that are also VDJ cells.  For multiple datasets, it would  │
+│               │  be better to "aggr" the data, however that is not currently supported       │
+│               │  The computation is also inefficient, so let us know if it's causing         │
+│               │  problems for you.  And cred makes much better sense for samples that        │
+│               │  consist of mixed cell types, rather than consisting of pure B or T cells.   │
+└───────────────┴──────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
 ● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
