@@ -435,7 +435,8 @@ pub fn row_fill(
             let mut n = 0;
             for j in 0..ex.clones.len() {
                 let mut found = false;
-                let f = format!("n_{}", ex.clones[j][0].dataset_index);
+                let di = ex.clones[j][0].dataset_index;
+                let f = format!("n_{}", ctl.sample_info.dataset_id[di]);
                 for i in 0..nd_fields.len() {
                     if f == nd_fields[i] {
                         found = true;
