@@ -29,7 +29,7 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
-    mat: &Vec<Vec<Vec<Option<usize>>>>,
+    rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     parseable_fields: &Vec<String>,
@@ -98,6 +98,18 @@ pub fn group_and_print_clonotypes(
         "stdout" => (Box::new(stdout()) as Box<Write>),
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
+            Box::new(File::create(&path).unwrap()) as Box<Write>
+        }
+    };
+
+    // Set up for clustal output.
+
+    #[allow(bare_trait_objects)]
+    let mut clout = match ctl.gen_opt.clustal.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.clustal);
             Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
@@ -310,13 +322,149 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
+            // Generate clustal output.  See:
+            // 1. http://meme-suite.org/doc/clustalw-format.html
+            // 2. https://www.ebi.ac.uk/seqdb/confluence/display/THD/Help+-+Clustal+Omega+FAQ
+            //    at "What do the consensus symbols mean in the alignment?".
+
+            if ctl.gen_opt.clustal.len() > 0 {
+                let stdout = ctl.gen_opt.clustal == "stdout".to_string();
+                if stdout {
+                    fwriteln!(logx, "CLUSTALW\n");
+                } else {
+                    fwriteln!(clout, "CLUSTALW\n");
+                }
+                let mut aa = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let mut s = ex.share[r].seq_del_amino.clone();
+                            seq.append(&mut s);
+                        }
+                    }
+                    for l in 0..ex.ncells() {
+                        names.push(format!(
+                            "{}.{}.{}.{}",
+                            groups,
+                            j + 1,
+                            u + 1,
+                            ex.clones[l][0].barcode
+                        ));
+                    }
+                    aa.append(&mut vec![seq; ex.ncells()]);
+                }
+                const W: usize = 60;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..aa[i].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(clout, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, aa[i].len());
+                    for i in 0..aa.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}  {}", strme(&aa[i][start..stop]), stop - start);
+                        } else {
+                            fwrite!(clout, "{}", names[i]);
+                            fwrite!(
+                                clout,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(clout, "{}  {}", strme(&aa[i][start..stop]), stop - start);
+                        }
+                    }
+                    for p in start..stop {
+                        let mut res = Vec::<u8>::new();
+                        for i in 0..aa.len() {
+                            res.push(aa[i][p]);
+                        }
+                        unique_sort(&mut res);
+                        if res.solo() {
+                            if stdout {
+                                fwrite!(logx, "*");
+                            } else {
+                                fwrite!(clout, "*");
+                            }
+                        } else {
+                            'pass: for pass in 1..=2 {
+                                let x: Vec<&[u8]>;
+                                if pass == 1 {
+                                    x = vec![
+                                        b"STA", b"NEQK", b"NHQK", b"NDEQ", b"QHRK", b"MILV",
+                                        b"MILF", b"HY", b"FYW",
+                                    ];
+                                } else {
+                                    x = vec![
+                                        b"CSA", b"ATV", b"SAG", b"STNK", b"STPA", b"SGND",
+                                        b"SNDEQK", b"NDEQHK", b"NEQHRK", b"FVLIM", b"HFY",
+                                    ];
+                                }
+                                for y in x.iter() {
+                                    let mut sub = true;
+                                    for c in res.iter() {
+                                        if !y.contains(c) {
+                                            sub = false;
+                                            break;
+                                        }
+                                    }
+                                    if sub {
+                                        let sym;
+                                        if pass == 1 {
+                                            sym = ":";
+                                        } else {
+                                            sym = ".";
+                                        }
+                                        if stdout {
+                                            fwrite!(logx, "{}", sym);
+                                        } else {
+                                            fwrite!(clout, "{}", sym);
+                                        }
+                                        break 'pass;
+                                    }
+                                }
+                            }
+                            if stdout {
+                                fwrite!(logx, " ");
+                            } else {
+                                fwrite!(clout, " ");
+                            }
+                        }
+                    }
+                    if stdout {
+                        fwriteln!(logx, "");
+                    } else {
+                        fwriteln!(clout, "");
+                    }
+                }
+            }
+
             // Generate fasta output.
 
             if ctl.gen_opt.fasta_filename.len() > 0 {
                 for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..mat[oo].len() {
-                        if mat[oo][m][k].is_some() {
-                            let r = mat[oo][m][k].unwrap();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_some() {
+                            let r = rsi[oo].mat[m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
                             if ctl.gen_opt.fasta_filename != "stdout".to_string() {
                                 fwriteln!(
@@ -341,8 +489,8 @@ pub fn group_and_print_clonotypes(
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
                                 for l in 0..exacts[oo].len() {
-                                    if mat[oo][m][l].is_some() {
-                                        let r2 = mat[oo][m][l].unwrap();
+                                    if rsi[oo].mat[m][l].is_some() {
+                                        let r2 = rsi[oo].mat[m][l].unwrap();
                                         let ex2 = &exact_clonotypes[exacts[oo][l]];
                                         let cid2 = ex2.share[r2].c_ref_id;
                                         if cid2.is_some() {
@@ -370,9 +518,9 @@ pub fn group_and_print_clonotypes(
 
             if ctl.gen_opt.fasta_aa_filename.len() > 0 {
                 for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..mat[oo].len() {
-                        if mat[oo][m][k].is_some() {
-                            let r = mat[oo][m][k].unwrap();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_some() {
+                            let r = rsi[oo].mat[m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
                             if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
                                 fwriteln!(
@@ -397,8 +545,8 @@ pub fn group_and_print_clonotypes(
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
                                 for l in 0..exacts[oo].len() {
-                                    if mat[oo][m][l].is_some() {
-                                        let r2 = mat[oo][m][l].unwrap();
+                                    if rsi[oo].mat[m][l].is_some() {
+                                        let r2 = rsi[oo].mat[m][l].unwrap();
                                         let ex2 = &exact_clonotypes[exacts[oo][l]];
                                         let cid2 = ex2.share[r2].c_ref_id;
                                         if cid2.is_some() {
@@ -666,7 +814,7 @@ pub fn group_and_print_clonotypes(
                 nclono2 += 1;
             }
             ncells += n;
-            ncc.push((mat[i].len(), n));
+            ncc.push((rsi[i].mat.len(), n));
         }
         sd.sort();
         let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
