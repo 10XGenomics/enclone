@@ -333,6 +333,7 @@ pub struct GeneralOpt {
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub chains_exact: usize,
+    pub complete: bool,
     pub exact: Option<usize>,
     pub binary: String,
     pub proto: String,
