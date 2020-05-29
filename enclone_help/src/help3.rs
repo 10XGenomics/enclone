@@ -117,7 +117,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              recommend using appropriate filtering options to drop the exact subclonotypes having \
              missing chains, e.g. CHAINS_EXACT=2 or 3 depending on the clonotype.  If one does \
              not specify stdout, the output is a single file obtained by tarring together one \
-             file per clonotype, without actually generating separate files.",
+             file per clonotype, without actually generating separate files.  To avoid confusion, \
+             we suggest that the filename end with \".tar\".",
             true,
         );
         h.print(

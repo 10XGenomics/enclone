@@ -18,9 +18,10 @@ use std::fs::File;
 use std::io::Write;
 use std::io::*;
 use std::path::Path;
-use std::time::Instant;
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tables::*;
+use tar::{Builder, Header};
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -104,15 +105,11 @@ pub fn group_and_print_clonotypes(
 
     // Set up for clustal output.
 
-    #[allow(bare_trait_objects)]
-    let mut clout = match ctl.gen_opt.clustal.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
-        _ => {
-            let path = Path::new(&ctl.gen_opt.clustal);
-            Box::new(File::create(&path).unwrap()) as Box<Write>
-        }
-    };
+    let mut clustal = None;
+    if ctl.gen_opt.clustal.len() > 0 && ctl.gen_opt.clustal != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.clustal).unwrap();
+        clustal = Some(Builder::new(file));
+    }
 
     // Group clonotypes and make output.
 
@@ -329,11 +326,12 @@ pub fn group_and_print_clonotypes(
 
             if ctl.gen_opt.clustal.len() > 0 {
                 let stdout = ctl.gen_opt.clustal == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
                 if stdout {
                     fwriteln!(logx, "");
                     fwriteln!(logx, "CLUSTALW\n");
                 } else {
-                    fwriteln!(clout, "CLUSTALW\n");
+                    fwriteln!(data, "CLUSTALW\n");
                 }
                 let mut aa = Vec::<Vec<u8>>::new();
                 let mut names = Vec::<String>::new();
@@ -342,18 +340,20 @@ pub fn group_and_print_clonotypes(
                     let mut seq = Vec::<u8>::new();
                     for m in 0..rsi[oo].mat.len() {
                         if rsi[oo].mat[m][k].is_none() {
-                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
                         } else {
                             let r = rsi[oo].mat[m][k].unwrap();
-                            let mut s = ex.share[r].seq_del_amino.clone();
+                            let s = ex.share[r].seq_del_amino.clone();
+                            let mut s = aa_seq(&s, 0);
                             seq.append(&mut s);
                         }
                     }
                     for l in 0..ex.ncells() {
                         names.push(format!(
-                            "{}.{}.{}.{}",
+                            "{}.{}.{}.{}.{}",
                             groups,
                             j + 1,
+                            k + 1,
                             l + 1,
                             ex.clones[l][0].barcode
                         ));
@@ -371,7 +371,7 @@ pub fn group_and_print_clonotypes(
                         if stdout {
                             fwriteln!(logx, "");
                         } else {
-                            fwriteln!(clout, "");
+                            fwriteln!(data, "");
                         }
                     }
                     let stop = std::cmp::min(start + W, aa[0].len());
@@ -385,19 +385,19 @@ pub fn group_and_print_clonotypes(
                             );
                             fwriteln!(logx, "{}  {}", strme(&aa[i][start..stop]), stop - start);
                         } else {
-                            fwrite!(clout, "{}", names[i]);
+                            fwrite!(data, "{}", names[i]);
                             fwrite!(
-                                clout,
+                                data,
                                 "{}",
                                 strme(&vec![b' '; name_width + PAD - names[i].len()])
                             );
-                            fwriteln!(clout, "{}  {}", strme(&aa[i][start..stop]), stop - start);
+                            fwriteln!(data, "{}  {}", strme(&aa[i][start..stop]), stop - start);
                         }
                     }
                     if stdout {
                         fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
                     } else {
-                        fwrite!(clout, "{}", strme(&vec![b' '; name_width + PAD]));
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
                     }
                     for p in start..stop {
                         let mut res = Vec::<u8>::new();
@@ -409,7 +409,7 @@ pub fn group_and_print_clonotypes(
                             if stdout {
                                 fwrite!(logx, "*");
                             } else {
-                                fwrite!(clout, "*");
+                                fwrite!(data, "*");
                             }
                         } else {
                             let mut con = false;
@@ -444,7 +444,7 @@ pub fn group_and_print_clonotypes(
                                         if stdout {
                                             fwrite!(logx, "{}", sym);
                                         } else {
-                                            fwrite!(clout, "{}", sym);
+                                            fwrite!(data, "{}", sym);
                                         }
                                         con = true;
                                         break 'pass;
@@ -455,7 +455,7 @@ pub fn group_and_print_clonotypes(
                                 if stdout {
                                     fwrite!(logx, " ");
                                 } else {
-                                    fwrite!(clout, " ");
+                                    fwrite!(data, " ");
                                 }
                             }
                         }
@@ -463,8 +463,22 @@ pub fn group_and_print_clonotypes(
                     if stdout {
                         fwriteln!(logx, "");
                     } else {
-                        fwriteln!(clout, "");
+                        fwriteln!(data, "");
                     }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0444);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    clustal
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
                 }
             }
 
@@ -744,6 +758,12 @@ pub fn group_and_print_clonotypes(
                 }
             }
         }
+    }
+
+    // Finish CLUSTAL.
+
+    if clustal.is_some() {
+        clustal.unwrap().finish().unwrap();
     }
 
     // Compute two umi stats.
