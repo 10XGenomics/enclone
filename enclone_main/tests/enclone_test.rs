@@ -328,7 +328,7 @@ fn test_enclone() {
 
 // NOT BASIC
 
-// Regression tests using extended dataset collection.
+// Regression tests using the extended public dataset collection.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
