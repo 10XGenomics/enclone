@@ -152,7 +152,7 @@ pub fn print_clonotypes(
     let mut results = Vec::<(
         usize,
         Vec<String>,
-        Vec<(Vec<usize>, Vec<Vec<Option<usize>>>)>,
+        Vec<(Vec<usize>, ColInfo)>,
         usize,
         usize,
         usize,
@@ -166,7 +166,7 @@ pub fn print_clonotypes(
         results.push((
             i,
             Vec::<String>::new(),
-            Vec::<(Vec<usize>, Vec<Vec<Option<usize>>>)>::new(),
+            Vec::<(Vec<usize>, ColInfo)>::new(),
             0,
             0,
             0,
@@ -1489,7 +1489,7 @@ pub fn print_clonotypes(
                 // Save.
 
                 res.1.push(logz);
-                res.2.push((exacts.clone(), mat.clone()));
+                res.2.push((exacts.clone(), rsi.clone()));
                 for u in 0..exacts.len() {
                     res.8 += exact_clonotypes[exacts[u]].ncells() as isize;
                 }
@@ -1516,13 +1516,13 @@ pub fn print_clonotypes(
 
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
-    let mut mat = Vec::<Vec<Vec<Option<usize>>>>::new(); // ditto
+    let mut rsi = Vec::<ColInfo>::new(); // ditto
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     for i in 0..orbits.len() {
         for j in 0..results[i].1.len() {
             pics.push(results[i].1[j].clone());
             exacts.push(results[i].2[j].0.clone());
-            mat.push(results[i].2[j].1.clone());
+            rsi.push(results[i].2[j].1.clone());
         }
         out_datas.append(&mut results[i].7);
     }
@@ -1531,7 +1531,7 @@ pub fn print_clonotypes(
         &refdata,
         &pics,
         &exacts,
-        &mat,
+        &rsi,
         &exact_clonotypes,
         &ctl,
         &parseable_fields,

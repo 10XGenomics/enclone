@@ -712,7 +712,7 @@ pub struct GexInfo {
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains
 // in a clonotype.
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ColInfo {
     pub uids: Vec<Option<usize>>,
     pub vids: Vec<usize>,
