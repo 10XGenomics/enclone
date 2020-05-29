@@ -845,7 +845,8 @@ pub fn print_clonotypes(
                                 if filled {
                                 } else if lvars[k] == "n_other".to_string() {
                                     let mut n = 0;
-                                    let f = format!("n_{}", ex.clones[bcl.2][0].dataset_index);
+                                    let di = ex.clones[bcl.2][0].dataset_index;
+                                    let f = format!("n_{}", ctl.sample_info.dataset_id[di]);
                                     let mut found = false;
                                     for i in 0..nd_fields.len() {
                                         if f == nd_fields[i] {
