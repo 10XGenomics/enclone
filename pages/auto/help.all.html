@@ -762,15 +762,15 @@ command line.
 ┃Similarly, <span style="font-weight:bold;">FASTA_AA=filename</span> may be used to generate a matching amino acid FASTA file.            ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">CLUSTAL output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one line per ┃
-┃cell, use <span style="font-weight:bold;">CLUSTAL=filename</span> or <span style="font-weight:bold;">CLUSTAL=stdout</span>.  Each sequence is the concatenation of the V..J    ┃
-┃sequences for a given cell's chains, with gap (-) characters shown if a chain is missing.  We    ┃
-┃recommend using appropriate filtering options to drop the exact subclonotypes having missing     ┃
-┃chains, e.g. CHAINS_EXACT=2 or 3 depending on the clonotype.  If one does not specify stdout, the┃
-┃output is a single file obtained by tarring together one file per clonotype, without actually    ┃
-┃generating separate files.  To avoid confusion, we suggest that the filename end with ".tar".    ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">CLUSTAL output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one line per  ┃
+┃cell, use <span style="font-weight:bold;">CLUSTAL=filename</span> or <span style="font-weight:bold;">CLUSTAL=stdout</span>.  Each sequence is the concatenation of the V..J     ┃
+┃sequences for a given cell's chains, with gap (-) characters shown if a chain is missing.  We     ┃
+┃recommend using appropriate filtering options to drop the exact subclonotypes having missing      ┃
+┃chains, e.g. using COMPLETE.  If one does not specify stdout, the output is a single file obtained┃
+┃by tarring together one file per clonotype, without actually generating separate files.  To avoid ┃
+┃confusion, we suggest that the filename end with ".tar".                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
@@ -1063,6 +1063,7 @@ clonotype.
 │CHAINS_EXACT=n      │  Delete any exact subclonotype not having exactly n chains.                 │
 │MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
 │                    │  to use this if you have a very large and complex expanded clonotype,       │
+│COMPLETE            │  delete any exact subclonotype that has less chains than the clonotype      │
 │                    │  for which you would like to see a simplified view.                         │
 └────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 
