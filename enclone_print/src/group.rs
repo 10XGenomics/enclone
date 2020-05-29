@@ -470,7 +470,7 @@ pub fn group_and_print_clonotypes(
                     let mut header = Header::new_gnu();
                     header.set_size(data.len() as u64);
                     header.set_cksum();
-                    header.set_mode(0o0444);
+                    header.set_mode(0o0644);
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
                     let filename = format!("{}.{}", groups, j + 1);
