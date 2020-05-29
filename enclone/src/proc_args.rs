@@ -430,6 +430,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.binary = arg.after("BINARY=").to_string();
         } else if arg.starts_with("PROTO=") {
             ctl.gen_opt.proto = arg.after("PROTO=").to_string();
+        } else if arg.starts_with("CLUSTAL=") {
+            ctl.gen_opt.clustal = arg.after("CLUSTAL=").to_string();
         } else if is_simple_arg(&arg, "PRINT_FAILED_JOINS") {
             ctl.join_print_opt.quiet = false;
         } else if arg.starts_with("BARCODE=") {
