@@ -233,9 +233,12 @@ pub const TESTS: [&str; 85] = [
 
 // Test using the extended public dataset collection.
 
-pub const EXTENDED_TESTS: [&str; 1] = [
+pub const EXTENDED_TESTS: [&str; 2] = [
     // 1. test that used to crash on a particular barcode
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
+    // 2. tests nd2
+    r###"BCR=123085,123086,123089,123090 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CTRDRDLRGATDAFDIW
+     NO_PRE NFORCE"###,
 ];
 
 // List of examples in documentation.
