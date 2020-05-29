@@ -330,6 +330,7 @@ pub fn group_and_print_clonotypes(
             if ctl.gen_opt.clustal.len() > 0 {
                 let stdout = ctl.gen_opt.clustal == "stdout".to_string();
                 if stdout {
+                    fwriteln!(logx, "");
                     fwriteln!(logx, "CLUSTALW\n");
                 } else {
                     fwriteln!(clout, "CLUSTALW\n");
@@ -353,7 +354,7 @@ pub fn group_and_print_clonotypes(
                             "{}.{}.{}.{}",
                             groups,
                             j + 1,
-                            u + 1,
+                            l + 1,
                             ex.clones[l][0].barcode
                         ));
                     }
@@ -365,7 +366,7 @@ pub fn group_and_print_clonotypes(
                 for i in 0..names.len() {
                     name_width = std::cmp::max(name_width, names[i].len());
                 }
-                for start in (0..aa[i].len()).step_by(W) {
+                for start in (0..aa[0].len()).step_by(W) {
                     if start > 0 {
                         if stdout {
                             fwriteln!(logx, "");
@@ -373,7 +374,7 @@ pub fn group_and_print_clonotypes(
                             fwriteln!(clout, "");
                         }
                     }
-                    let stop = std::cmp::min(start + W, aa[i].len());
+                    let stop = std::cmp::min(start + W, aa[0].len());
                     for i in 0..aa.len() {
                         if stdout {
                             fwrite!(logx, "{}", names[i]);
@@ -393,6 +394,11 @@ pub fn group_and_print_clonotypes(
                             fwriteln!(clout, "{}  {}", strme(&aa[i][start..stop]), stop - start);
                         }
                     }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(clout, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
                     for p in start..stop {
                         let mut res = Vec::<u8>::new();
                         for i in 0..aa.len() {
@@ -406,6 +412,7 @@ pub fn group_and_print_clonotypes(
                                 fwrite!(clout, "*");
                             }
                         } else {
+                            let mut con = false;
                             'pass: for pass in 1..=2 {
                                 let x: Vec<&[u8]>;
                                 if pass == 1 {
@@ -439,14 +446,17 @@ pub fn group_and_print_clonotypes(
                                         } else {
                                             fwrite!(clout, "{}", sym);
                                         }
+                                        con = true;
                                         break 'pass;
                                     }
                                 }
                             }
-                            if stdout {
-                                fwrite!(logx, " ");
-                            } else {
-                                fwrite!(clout, " ");
+                            if !con {
+                                if stdout {
+                                    fwrite!(logx, " ");
+                                } else {
+                                    fwrite!(clout, " ");
+                                }
                             }
                         }
                     }
