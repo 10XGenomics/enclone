@@ -387,9 +387,9 @@ pub fn print_clonotypes(
                     );
                 }
 
-                // Done unless on second pass.  Unless there are bounds.
+                // Done unless on second pass.  Unless there are bounds or COMPLETE specified.
 
-                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 {
+                if pass == 1 && ctl.clono_filt_opt.bounds.len() == 0 && !ctl.gen_opt.complete {
                     continue;
                 }
 
@@ -1146,6 +1146,28 @@ pub fn print_clonotypes(
                     if !x.satisfied(&means) {
                         for u in 0..nexacts {
                             bads[u] = true;
+                        }
+                    }
+                }
+
+                // Process COMPLETE.
+
+                if ctl.gen_opt.complete {
+                    let mut used = vec![false; cols];
+                    for u in 0..nexacts {
+                        if !bads[u] {
+                            for m in 0..cols {
+                                if mat[m][u].is_some() {
+                                    used[m] = true;
+                                }
+                            }
+                        }
+                    }
+                    for u in 0..nexacts {
+                        for m in 0..cols {
+                            if used[m] && mat[m][u].is_none() {
+                                bads[u] = true;
+                            }
                         }
                     }
                 }

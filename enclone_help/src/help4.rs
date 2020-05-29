@@ -274,6 +274,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "to use this if you have a very large and complex expanded clonotype,",
         );
+        h.doc(
+            "COMPLETE",
+            "delete any exact subclonotype that has less chains than the clonotype",
+        );
         h.doc("", "for which you would like to see a simplified view.");
         h.print_tab2();
         h.print("\n");
