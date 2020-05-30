@@ -319,14 +319,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              higher.\n\n",
         );
 
-        h.print("\\boldblue{15. Does enclone work under Windows?}\n\n");
-        h.print(
-            "No.  There are nontrivial technical problems with getting this to work.  If you're \
-             sufficiently curious, see the notes in the source code file misc1.rs.  Please let us \
-             know if you're interested in support for Windows.\n\n",
-        );
-
-        h.print("\\boldblue{16. Can I use enclone if I have only gene expression data?}\n\n");
+        h.print("\\boldblue{15. Can I use enclone if I have only gene expression data?}\n\n");
         h.print(
             "Possibly.  In some cases this works very well, but in other cases it does not.  \
             Success depends on dataset characteristics that have not been carefully investigated.  \
@@ -337,7 +330,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             is not an officially supported Cell Ranger configuration.\n\n",
         );
 
-        h.print("\\boldblue{17. How can I cite enclone?}\n\n");
+        h.print("\\boldblue{16. How can I cite enclone?}\n\n");
         h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
         h.print(
             "however once enclone has officially launched, you will be able to cite this \
@@ -367,10 +360,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             Cell Ranger that you used to generate the input data.\n\n",
         );
 
-        h.print("\\boldblue{18. Can I print the enclone version?}\n\n");
+        h.print("\\boldblue{17. Can I print the enclone version?}\n\n");
         h.print("Yes, type \"enclone version\".\n\n");
 
-        h.print("\\boldblue{19. Can enclone ingest multiple datasets from the same library?}\n\n");
+        h.print("\\boldblue{18. Can enclone ingest multiple datasets from the same library?}\n\n");
         h.print(
             "If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  \
             This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}."
