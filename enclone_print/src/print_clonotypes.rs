@@ -750,6 +750,17 @@ pub fn print_clonotypes(
                     }
                 }
 
+                // Precompute for near and far.
+
+                let mut fp = vec![Vec::<usize>::new(); varmat.len()]; // footprints
+                for i in 0..varmat.len() {
+                    for j in 0..varmat[i].len() {
+                        if varmat[i][j] != vec![b'-'] {
+                            fp[i].push(j);
+                        }
+                    }
+                }
+
                 // Build rows.
 
                 let mut cell_count = 0;
@@ -775,6 +786,7 @@ pub fn print_clonotypes(
                         &gex_info,
                         &refdata,
                         &varmat,
+                        &fp,
                         &vars_amino,
                         &show_aa,
                         &mut bads,
