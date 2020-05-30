@@ -885,7 +885,7 @@ fn test_help_output() {
             eprintme!(old.len(), new2.len());
             eprintln!(
                 "\nHelp test failed on {}.\n\
-                 You need to update help output by typing \"./build_help\", \
+                 You need to update help output by typing \"./build\", \
                     assuming that the change is expected.\n",
                 p
             );
