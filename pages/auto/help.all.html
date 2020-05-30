@@ -1577,13 +1577,7 @@ segments, resulting in annoying overlap notes for a large fraction of clonotypes
 You can use the command-line argument <span style="font-weight:bold;">MAX_CORES=n</span> to cap the number of cores used in parallel
 loops.  The number of threads used is typically one higher.
 
-<span style="color:#5833ff;font-weight:bold;">15. Does enclone work under Windows?</span>
-
-No.  There are nontrivial technical problems with getting this to work.  If you're sufficiently
-curious, see the notes in the source code file misc1.rs.  Please let us know if you're interested
-in support for Windows.
-
-<span style="color:#5833ff;font-weight:bold;">16. Can I use enclone if I have only gene expression data?</span>
+<span style="color:#5833ff;font-weight:bold;">15. Can I use enclone if I have only gene expression data?</span>
 
 Possibly.  In some cases this works very well, but in other cases it does not.  Success depends on
 dataset characteristics that have not been carefully investigated.  To attempt this, you need to
@@ -1592,7 +1586,7 @@ Ranger that the run is to be treated as BCR or TCR.  Two separate invocations ca
 both.  Note also that Cell Ranger has been only minimally tested for this configuration and that
 this is not an officially supported Cell Ranger configuration.
 
-<span style="color:#5833ff;font-weight:bold;">17. How can I cite enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">16. How can I cite enclone?</span>
 
 This version of enclone has been provided under a non-disclosure agreement,
 however once enclone has officially launched, you will be able to cite this version as:
@@ -1603,11 +1597,11 @@ to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide
 that you used when you ran enclone and indicate the version of Cell Ranger that you used to
 generate the input data.
 
-<span style="color:#5833ff;font-weight:bold;">18. Can I print the enclone version?</span>
+<span style="color:#5833ff;font-weight:bold;">17. Can I print the enclone version?</span>
 
 Yes, type "enclone version".
 
-<span style="color:#5833ff;font-weight:bold;">19. Can enclone ingest multiple datasets from the same library?</span>
+<span style="color:#5833ff;font-weight:bold;">18. Can enclone ingest multiple datasets from the same library?</span>
 
 If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  This
 behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
