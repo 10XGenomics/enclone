@@ -69,6 +69,7 @@ pub fn row_fill(
     gex_info: &GexInfo,
     refdata: &RefData,
     varmat: &Vec<Vec<Vec<u8>>>,
+    fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
@@ -157,17 +158,6 @@ pub fn row_fill(
         };
     }
     let cols = varmat[0].len();
-
-    // Precompute for near and far.
-
-    let mut fp = vec![Vec::<usize>::new(); varmat.len()]; // footprints
-    for i in 0..varmat.len() {
-        for j in 0..varmat[i].len() {
-            if varmat[i][j] != vec![b'-'] {
-                fp[i].push(j);
-            }
-        }
-    }
 
     // Set up lead variable macro.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
