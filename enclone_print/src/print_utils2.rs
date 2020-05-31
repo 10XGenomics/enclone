@@ -453,7 +453,13 @@ pub fn row_fill(
             cell_types.sort();
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x == "mark" {
-            lvar![i, x, format!("")];
+            let mut n = 0;
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].marked {
+                    n += 1;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
         } else if x.starts_with("npe") {
