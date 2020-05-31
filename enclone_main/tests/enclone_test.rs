@@ -720,6 +720,14 @@ fn test_enclone_examples() {
             .output()
             .expect(&format!("failed to execute test_enclone_examples"));
         let new2 = stringme(&new.stdout);
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nenclone_test_examples: example{} failed to execute, stderr =\n{}",
+                t + 1,
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
         if old != new2 {
             eprintln!(
                 "\nenclone_test_examples: the file example{} is not up to date\n",
