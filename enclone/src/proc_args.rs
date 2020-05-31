@@ -239,7 +239,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Define arguments that set something to true.
 
-    let mut simple_set = vec![
+    let mut set_true = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
         ("ANN", &mut ctl.join_print_opt.ann),
@@ -311,9 +311,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
     ];
 
+    // Define arguments that set something to false.
+
+    let mut set_false = vec![
+        ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
+        ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
+        ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
+        ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
+        ("NSILENT", &mut ctl.silent),
+        ("NUMI", &mut ctl.clono_filt_opt.umi_filt),
+        ("NUMI_RATIO", &mut ctl.clono_filt_opt.umi_ratio_filt),
+        ("NWEAK_CHAINS", &mut ctl.clono_filt_opt.weak_chains),
+        ("NWEAK_ONESIES", &mut ctl.clono_filt_opt.weak_onesies),
+        ("PRINT_FAILED_JOINS", &mut ctl.join_print_opt.quiet),
+    ];
+
     // Define arguments that set something to a usize.
 
-    let usize_set = [
+    let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
@@ -357,20 +372,29 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
 
-        // Process simple set arguments.
+        // Process set_true arguments.
 
-        for j in 0..simple_set.len() {
-            if arg == simple_set[j].0.to_string() {
-                *(simple_set[j].1) = true;
+        for j in 0..set_true.len() {
+            if arg == set_true[j].0.to_string() {
+                *(set_true[j].1) = true;
                 continue 'args_loop;
             }
         }
 
-        // Process usize args.
+        // Process set_false arguments.
 
-        for j in 0..usize_set.len() {
-            if is_usize_arg(&arg, &usize_set[j].0) {
-                *(usize_set[j].1) = arg.after(&format!("{}=", usize_set[j].0)).force_usize();
+        for j in 0..set_false.len() {
+            if arg == set_false[j].0.to_string() {
+                *(set_false[j].1) = false;
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_usize args.
+
+        for j in 0..set_usize.len() {
+            if is_usize_arg(&arg, &set_usize[j].0) {
+                *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
                 continue 'args_loop;
             }
         }
@@ -383,6 +407,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Not movable.
         } else if is_simple_arg(&arg, "H5") {
             ctl.gen_opt.force_h5 = true;
+        } else if is_simple_arg(&arg, "NH5") {
+            ctl.gen_opt.force_h5 = false;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
         } else if is_usize_arg(&arg, "REQUIRED_FPS") {
@@ -400,6 +426,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
         } else if is_simple_arg(&arg, "COMP") {
         } else if is_simple_arg(&arg, "COMP2") {
+        } else if is_simple_arg(&arg, "MARKED_B") {
         } else if is_simple_arg(&arg, "LONG_HELP") {
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
@@ -420,10 +447,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     .legend
                     .push((x[2 * i].clone(), x[2 * i + 1].clone()));
             }
-        } else if is_simple_arg(&arg, "NH5") {
-            ctl.gen_opt.force_h5 = false;
-        } else if is_simple_arg(&arg, "H5_SLICE") {
-            ctl.gen_opt.h5_pre = false;
         } else if is_simple_arg(&arg, "CTRLC") {
         } else if is_simple_arg(&arg, "CELLRANGER") {
         } else if is_simple_arg(&arg, "FORCE_EXTERNAL") {
@@ -433,8 +456,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.proto = arg.after("PROTO=").to_string();
         } else if arg.starts_with("CLUSTAL=") {
             ctl.gen_opt.clustal = arg.after("CLUSTAL=").to_string();
-        } else if is_simple_arg(&arg, "PRINT_FAILED_JOINS") {
-            ctl.join_print_opt.quiet = false;
         } else if arg.starts_with("BARCODE=") {
             let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
             let mut x = Vec::<String>::new();
@@ -449,19 +470,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             ctl.clono_filt_opt.barcode = x;
         } else if is_simple_arg(&arg, "NALL") {
-        } else if is_simple_arg(&arg, "NUMI") {
-            ctl.clono_filt_opt.umi_filt = false;
-        } else if is_simple_arg(&arg, "NUMI_RATIO") {
-            ctl.clono_filt_opt.umi_ratio_filt = false;
-        } else if is_simple_arg(&arg, "MARKED_B") {
-        } else if is_simple_arg(&arg, "NWEAK_CHAINS") {
-            ctl.clono_filt_opt.weak_chains = false;
-        } else if is_simple_arg(&arg, "NWEAK_ONESIES") {
-            ctl.clono_filt_opt.weak_onesies = false;
-        } else if is_simple_arg(&arg, "NFOURSIE_KILL") {
-            ctl.clono_filt_opt.weak_foursies = false;
-        } else if is_simple_arg(&arg, "NBC_DUP") {
-            ctl.clono_filt_opt.bc_dup = false;
         } else if arg.starts_with("F=") {
             let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
@@ -517,12 +525,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg.starts_with("EMAIL=") {
         } else if arg.starts_with("REF=") {
             ctl.gen_opt.refname = arg.after("REF=").to_string();
-        } else if is_simple_arg(&arg, "NSILENT") {
-            ctl.silent = false;
         } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
             ctl.clono_filt_opt.fail_only = false;
-        } else if is_simple_arg(&arg, "NQUAL") {
-            ctl.clono_filt_opt.qual_filter = false;
         } else if is_simple_arg(&arg, "NOPAGER") {
         } else if arg.starts_with("POUT=") {
             ctl.parseable_opt.pout = arg.after("POUT=").to_string();
