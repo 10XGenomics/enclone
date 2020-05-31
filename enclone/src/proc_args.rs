@@ -349,6 +349,29 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
     ];
 
+    // Define arguments that do nothing (because already parsed).
+
+    let set_nothing = [
+        "BC",
+        "CELLRANGER",
+        "COMP",
+        "COMP2",
+        "CTRLC",
+        "DUMP_INTERNAL_IDS",
+        "EMAIL",
+        "FORCE_EXTERNAL",
+        "GEX",
+        "LONG_HELP",
+        "MARKED_B",
+        "NOPAGER",
+        "NOPRETTY",
+        "PLAIN",
+        "PRE",
+        "PRINT_CPU",
+        "PRINT_CPU_INFO",
+        "SVG",
+    ];
+
     // Traverse arguments.
 
     'args_loop: for i in 1..args.len() {
@@ -405,6 +428,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
 
+        // Process set_nothing args.
+
+        for j in 0..set_nothing.len() {
+            if arg == set_nothing[j].to_string() || arg.starts_with(&format!("{}=", set_nothing[j]))
+            {
+                continue 'args_loop;
+            }
+        }
+
         // Process the argument.
 
         if is_simple_arg(&arg, "SEQ") {
@@ -425,22 +457,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CHAINS") {
             ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
-        } else if arg == "PRINT_CPU" {
-        } else if arg == "PRINT_CPU_INFO" {
 
-            // Other.
-        } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
-        } else if is_simple_arg(&arg, "COMP") {
-        } else if is_simple_arg(&arg, "COMP2") {
-        } else if is_simple_arg(&arg, "MARKED_B") {
-        } else if is_simple_arg(&arg, "LONG_HELP") {
+        // Other.
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
         } else if arg.starts_with("BI=") {
             continue;
         } else if is_simple_arg(&arg, "MARK_STATS") {
         } else if arg == "HTML" || arg.starts_with("HTML=") {
-        } else if arg == "SVG" {
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));
             if x.len() == 0 || x.len() % 2 != 0 {
@@ -453,9 +477,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     .legend
                     .push((x[2 * i].clone(), x[2 * i + 1].clone()));
             }
-        } else if is_simple_arg(&arg, "CTRLC") {
-        } else if is_simple_arg(&arg, "CELLRANGER") {
-        } else if is_simple_arg(&arg, "FORCE_EXTERNAL") {
         } else if arg.starts_with("BINARY=") {
             ctl.gen_opt.binary = arg.after("BINARY=").to_string();
         } else if arg.starts_with("PROTO=") {
@@ -528,12 +549,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
                 std::process::exit(1);
             }
-        } else if arg.starts_with("EMAIL=") {
         } else if arg.starts_with("REF=") {
             ctl.gen_opt.refname = arg.after("REF=").to_string();
         } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
             ctl.clono_filt_opt.fail_only = false;
-        } else if is_simple_arg(&arg, "NOPAGER") {
         } else if arg.starts_with("POUT=") {
             ctl.parseable_opt.pout = arg.after("POUT=").to_string();
         } else if arg.starts_with("DONOR_REF_FILE=") {
@@ -566,8 +585,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
                 unique_sort(&mut ctl.parseable_opt.pcols_sortx);
             }
-        } else if is_simple_arg(&arg, "PLAIN") {
-        } else if is_simple_arg(&arg, "NOPRETTY") {
         } else if arg.starts_with("VJ=") {
             ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();
             for c in ctl.clono_filt_opt.vj.iter() {
@@ -661,8 +678,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 std::process::exit(1);
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
-        } else if arg.starts_with("GEX=") {
-        } else if arg.starts_with("BC=") {
         } else if is_usize_arg(&arg, "CHAINS") {
             ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
@@ -682,7 +697,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.clono_filt_opt.segn.push(x.to_string());
             }
             ctl.clono_filt_opt.segn.sort();
-        } else if arg.starts_with("PRE=") {
         } else if is_usize_arg(&arg, "MIN_CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CELLS") {
