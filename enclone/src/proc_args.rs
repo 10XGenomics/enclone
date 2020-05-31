@@ -61,6 +61,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
             format!("enclone/test/inputs"),
         ];
+    } else {
+        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+        ctl.gen_opt.pre = vec![
+            format!("{}/enclone/datasets", home),
+            format!("{}/enclone/datasets2", home),
+        ];
     }
 
     // Set up general options.
