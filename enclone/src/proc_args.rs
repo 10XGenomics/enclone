@@ -348,6 +348,21 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
         ("ONESIE_MULT", &mut ctl.onesie_mult),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
+        ("PFREQ", &mut ctl.join_print_opt.pfreq),
+    ];
+
+    // Define arguments that set something to a string.
+
+    let set_string = [
+        ("BINARY", &mut ctl.gen_opt.binary),
+        ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
+        ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
+        ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("EXT", &mut ctl.gen_opt.ext),
+        ("POUT", &mut ctl.parseable_opt.pout),
+        ("PROTO", &mut ctl.gen_opt.proto),
+        ("REF", &mut ctl.gen_opt.refname),
+        ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
     ];
 
     // Define arguments that do nothing (because already parsed).
@@ -362,6 +377,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "EMAIL",
         "FORCE_EXTERNAL",
         "GEX",
+        "HAPS",
         "LONG_HELP",
         "MARKED_B",
         "NOPAGER",
@@ -429,6 +445,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
 
+        // Process set_string args.
+
+        for j in 0..set_string.len() {
+            if arg.starts_with(&format!("{}=", set_string[j].0)) {
+                *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
+                continue 'args_loop;
+            }
+        }
+
         // Process set_nothing args.
 
         for j in 0..set_nothing.len() {
@@ -458,6 +483,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CHAINS") {
             ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
+        } else if is_usize_arg(&arg, "MIN_CELLS") {
+            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CELLS") {
+            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
+        } else if arg.starts_with("EXFASTA=") {
+            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
+        } else if arg.starts_with("FASTA=") {
+            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
+        } else if arg.starts_with("FASTA_AA=") {
+            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
         // Other.
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
@@ -478,14 +513,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     .legend
                     .push((x[2 * i].clone(), x[2 * i + 1].clone()));
             }
-        } else if arg.starts_with("BINARY=") {
-            ctl.gen_opt.binary = arg.after("BINARY=").to_string();
-        } else if arg.starts_with("PROTO=") {
-            ctl.gen_opt.proto = arg.after("PROTO=").to_string();
-        } else if arg.starts_with("CLUSTAL_AA=") {
-            ctl.gen_opt.clustal_aa = arg.after("CLUSTAL_AA=").to_string();
-        } else if arg.starts_with("CLUSTAL_DNA=") {
-            ctl.gen_opt.clustal_dna = arg.after("CLUSTAL_DNA=").to_string();
         } else if arg.starts_with("BARCODE=") {
             let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
             let mut x = Vec::<String>::new();
@@ -552,18 +579,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
                 std::process::exit(1);
             }
-        } else if arg.starts_with("REF=") {
-            ctl.gen_opt.refname = arg.after("REF=").to_string();
         } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
             ctl.clono_filt_opt.fail_only = false;
-        } else if arg.starts_with("POUT=") {
-            ctl.parseable_opt.pout = arg.after("POUT=").to_string();
-        } else if arg.starts_with("DONOR_REF_FILE=") {
-            ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
-        } else if arg.starts_with("EXT=") {
-            ctl.gen_opt.ext = arg.after("EXT=").to_string();
-        } else if arg.starts_with("TRACE_BARCODE=") {
-            ctl.gen_opt.trace_barcode = arg.after("TRACE_BARCODE=").to_string();
         } else if is_usize_arg(&arg, "MAX_CORES") {
             let nthreads = arg.after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
@@ -665,12 +682,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-        } else if arg.starts_with("EXFASTA=") {
-            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
-        } else if arg.starts_with("FASTA=") {
-            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
-        } else if arg.starts_with("FASTA_AA=") {
-            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
         } else if arg.starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
             if !reg.is_ok() {
@@ -700,17 +711,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.clono_filt_opt.segn.push(x.to_string());
             }
             ctl.clono_filt_opt.segn.sort();
-        } else if is_usize_arg(&arg, "MIN_CELLS") {
-            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_CELLS") {
-            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
         } else if is_usize_arg(&arg, "CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
-        } else if is_usize_arg(&arg, "PFREQ") {
-            ctl.join_print_opt.pfreq = arg.after("PFREQ=").force_usize();
-        } else if arg.starts_with("HAPS=") {
-            // done above
         } else if arg.starts_with("META=") {
             let f = arg.after("META=");
             metas.push(f.to_string());
