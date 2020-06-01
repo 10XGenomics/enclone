@@ -848,7 +848,6 @@ fn test_help_output() {
         "input",
         "input_tech",
         "parseable",
-        "plot",
         "filter",
         "special",
         "lvars",
