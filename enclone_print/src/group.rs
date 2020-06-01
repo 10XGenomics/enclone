@@ -105,10 +105,14 @@ pub fn group_and_print_clonotypes(
 
     // Set up for clustal output.
 
-    let mut clustal = None;
-    if ctl.gen_opt.clustal.len() > 0 && ctl.gen_opt.clustal != "stdout".to_string() {
-        let file = File::create(&ctl.gen_opt.clustal).unwrap();
-        clustal = Some(Builder::new(file));
+    let (mut clustal_aa, mut clustal_dna) = (None, None);
+    if ctl.gen_opt.clustal_aa.len() > 0 && ctl.gen_opt.clustal_aa != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.clustal_aa).unwrap();
+        clustal_aa = Some(Builder::new(file));
+    }
+    if ctl.gen_opt.clustal_dna.len() > 0 && ctl.gen_opt.clustal_dna != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.clustal_dna).unwrap();
+        clustal_dna = Some(Builder::new(file));
     }
 
     // Group clonotypes and make output.
@@ -324,8 +328,8 @@ pub fn group_and_print_clonotypes(
             // 2. https://www.ebi.ac.uk/seqdb/confluence/display/THD/Help+-+Clustal+Omega+FAQ
             //    at "What do the consensus symbols mean in the alignment?".
 
-            if ctl.gen_opt.clustal.len() > 0 {
-                let stdout = ctl.gen_opt.clustal == "stdout".to_string();
+            if ctl.gen_opt.clustal_aa.len() > 0 {
+                let stdout = ctl.gen_opt.clustal_aa == "stdout".to_string();
                 let mut data = Vec::<u8>::new();
                 if stdout {
                     fwriteln!(logx, "");
@@ -474,7 +478,122 @@ pub fn group_and_print_clonotypes(
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
                     let filename = format!("{}.{}", groups, j + 1);
-                    clustal
+                    clustal_aa
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
+                }
+            }
+            if ctl.gen_opt.clustal_dna.len() > 0 {
+                let stdout = ctl.gen_opt.clustal_dna == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
+                if stdout {
+                    fwriteln!(logx, "");
+                    fwriteln!(logx, "CLUSTALW\n");
+                } else {
+                    fwriteln!(data, "CLUSTALW\n");
+                }
+                let mut dna = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let mut s = ex.share[r].seq_del_amino.clone();
+                            seq.append(&mut s);
+                        }
+                    }
+                    for l in 0..ex.ncells() {
+                        names.push(format!(
+                            "{}.{}.{}.{}.{}",
+                            groups,
+                            j + 1,
+                            k + 1,
+                            l + 1,
+                            ex.clones[l][0].barcode
+                        ));
+                    }
+                    dna.append(&mut vec![seq; ex.ncells()]);
+                }
+                const W: usize = 60;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..dna[0].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(data, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, dna[0].len());
+                    for i in 0..dna.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        } else {
+                            fwrite!(data, "{}", names[i]);
+                            fwrite!(
+                                data,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(data, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        }
+                    }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
+                    for p in start..stop {
+                        let mut res = Vec::<u8>::new();
+                        for i in 0..dna.len() {
+                            res.push(dna[i][p]);
+                        }
+                        unique_sort(&mut res);
+                        if res.solo() {
+                            if stdout {
+                                fwrite!(logx, "*");
+                            } else {
+                                fwrite!(data, "*");
+                            }
+                        } else {
+                            if stdout {
+                                fwrite!(logx, " ");
+                            } else {
+                                fwrite!(data, " ");
+                            }
+                        }
+                    }
+                    if stdout {
+                        fwriteln!(logx, "");
+                    } else {
+                        fwriteln!(data, "");
+                    }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0644);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    clustal_dna
                         .as_mut()
                         .unwrap()
                         .append_data(&mut header, &filename, &data[..])
@@ -762,8 +881,11 @@ pub fn group_and_print_clonotypes(
 
     // Finish CLUSTAL.
 
-    if clustal.is_some() {
-        clustal.unwrap().finish().unwrap();
+    if clustal_aa.is_some() {
+        clustal_aa.unwrap().finish().unwrap();
+    }
+    if clustal_dna.is_some() {
+        clustal_dna.unwrap().finish().unwrap();
     }
 
     // Compute two umi stats.
