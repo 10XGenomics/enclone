@@ -216,9 +216,6 @@ downloaded by:
 
 On a Mac, you may need to use <code>curl</code> instead.
 
-<p>If you want simultaneous access to both the small and large dataset collections, you can
-supply the argument <code>PRE=~/enclone/datasets,~/enclone/datasets2</code> to enclone.</p>
-
 <p><b>3.  Update your path.</b>  Edit your shell initialization file to prepend
 <code>~/bin:</code> to your <code>PATH</code>.  If you don't know how to do this, please see 
 <a href="pages/path.html">here</a>.
@@ -433,22 +430,25 @@ rather than showing all transcript positions, we only show "interesting" positio
 flexible concept, and what we show by default are all positions exhibiting a difference from the 
 reference and all positions in the CDR3.</p>
 <p>The same exact output would be obtained by typing</p>
-<pre><code>enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
+<pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
 </code></pre>
-<p>provided that you put test data in the location indicated under download instructions.  Otherwise
-you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in 
-the directory <code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, 
-obtained from a human ovarian cancer sample.</p>
+<p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
+contains some files from a Cell Ranger run, obtained from a human ovarian cancer sample.</p>
 
-<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 900px">
-<b>What does <code>PRE</code> do?</b>
-It provides a <i>search path</i> for all other paths that you provide to enclone.  But this is
-just a convenience and nothing
-fancy is going on -- enclone is just gluing together paths.  For example, all three of the following
-argument combinations do the same thing:
-<br>1. <code>PRE=~/enclone/datasets BCR=123085</code>
-<br>2. <code>PRE=~/enclone BCR=datasets/123085</code>
-<br>3. <code>BCR=~/enclone/datasets/123085</code>.
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 950px">
+<b>How does enclone find my data?</b>
+It uses a <i>search path</i> called <code>PRE</code> that is preset to 
+<code>~/enclone/datasets,~/enclone/datasets2</code>, and which you can set to any value, either
+by setting <code>PRE=...</code> on the command line, or by setting the environment variable
+<code>ENCLONE_PRE</code>.  To find your data, enclone prepends <code>PRE</code> to the value of 
+<code>BCR</code> or <code>TCR</code> given on the command line.
+For example, all of the following argument combinations do the same thing:
+<br>1. <code>BCR=123085</code> (using the default value of <code>PRE</code>)
+<br>2. <code>PRE=~/enclone/datasets BCR=123085</code>
+<br>3. <code>PRE=~/enclone BCR=datasets/123085</code>
+<br>4. <code>BCR=~/enclone/datasets/123085</code>.
+<br>There is also an argument <code>META</code> that is convenient for specifying multiple
+datasets.  See <a href="pages/auto/help.input.html">here</a> for how.
 </p>
 
 <p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 

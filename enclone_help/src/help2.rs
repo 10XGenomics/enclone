@@ -20,14 +20,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example1") || h.help_all {
         h.begin_doc("example1");
-        h.print(
-            "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:\n",
-        );
-        h.print(&format!(
-            "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
-            EXAMPLES[0]
-        ));
+        h.print("\nShown below is the output of the command:\n");
+        h.print(&format!("\n\\bold{{enclone {}}}\n", EXAMPLES[0]));
         if !h.plain {
             h.print_plain(&format!("{}", include_str!("example1")));
         } else {
@@ -81,9 +75,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.print(
             "The view you see here is configurable: see the documentation at \
-             \\bold{enclone help lvars} and \\bold{enclone help cvars}.  See also \
-             \\bold{enclone help command} for how to remove the \\bold{PRE} part of the \
-             command.\n\n",
+             \\bold{enclone help lvars} and \\bold{enclone help cvars}.\n\n",
         );
         h.end_doc();
     }
@@ -94,14 +86,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || h.help_all {
         h.begin_doc("example2");
-        h.print(
-            "\nSuppose you have placed the datasets that enclone comes with in the\n\
-             directory /users/jdoe/enclone_data.  Then you can run this command:\n",
-        );
-        h.print(&format!(
-            "\n% enclone PRE=/users/jdoe/enclone_data {}\n",
-            EXAMPLES[1]
-        ));
+        h.print("\nShown below is the output of the command:\n");
+        h.print(&format!("\n\\bold{{enclone {}}}\n", EXAMPLES[1]));
         if !h.plain {
             h.print_plain_unchecked(include_str!("example2"));
         } else {
@@ -290,7 +276,8 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              if all fail, the path is used without prepending anything.  Lastly, \
              (see \\bold{enclone help command}), you can avoid putting \
              \\bold{PRE} on the command line by setting the environment variable \
-             \\bold{ENCLONE_PRE} to the desired value.",
+             \\bold{ENCLONE_PRE} to the desired value.  The default value for \\bold{PRE} \
+             is\n\\bold{~/enclone/datasets,~/enclone/datasets2}.",
             true,
         );
         h.print(
