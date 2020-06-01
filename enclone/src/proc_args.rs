@@ -482,8 +482,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.binary = arg.after("BINARY=").to_string();
         } else if arg.starts_with("PROTO=") {
             ctl.gen_opt.proto = arg.after("PROTO=").to_string();
-        } else if arg.starts_with("CLUSTAL=") {
-            ctl.gen_opt.clustal = arg.after("CLUSTAL=").to_string();
+        } else if arg.starts_with("CLUSTAL_AA=") {
+            ctl.gen_opt.clustal_aa = arg.after("CLUSTAL_AA=").to_string();
+        } else if arg.starts_with("CLUSTAL_DNA=") {
+            ctl.gen_opt.clustal_dna = arg.after("CLUSTAL_DNA=").to_string();
         } else if arg.starts_with("BARCODE=") {
             let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
             let mut x = Vec::<String>::new();

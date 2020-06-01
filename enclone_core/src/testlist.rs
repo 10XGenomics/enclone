@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 85] = [
+pub const TESTS: [&str; 86] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -225,10 +225,12 @@ pub const TESTS: [&str; 85] = [
         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
     // 83. test COMPLETE
     r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE"###,
-    // 84. test CLUSTAL
-    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW CLUSTAL=stdout"###,
+    // 84. test CLUSTAL_AA
+    r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW CLUSTAL_AA=stdout"###,
     // 85. test NALL
     r###"BCR=86237 NALL CDR3=CARAPEDTSRWPQYNYSGLDVW SEG=IGKV3-15"###,
+    // 86. test CLUSTAL_DNA
+    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW CLUSTAL_DNA=stdout"###,
 ];
 
 // Test using the extended public dataset collection.
