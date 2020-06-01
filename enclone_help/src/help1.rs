@@ -63,10 +63,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "how to provide input to enclone (technical notes)",
         );
         h.doc("enclone help parseable", "parseable output (long)");
-        h.doc(
-            "enclone help plot",
-            "generate a honeycomb plot showing clonotypes",
-        );
         h.ldoc(
             "enclone help filter",
             "clonotype filtering options, scanning for feature enrichment (long)",
