@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::{env, time::Instant};
 use string_utils::*;
+use tilde_expand::*;
 use vector_utils::*;
 
 // Process arguments.
@@ -720,6 +721,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             eprintln!("\nUnrecognized argument {}.\n", arg);
             std::process::exit(1);
         }
+    }
+
+    // Expand ~ and ~user in output file names.
+
+    let mut files = [
+        &mut ctl.gen_opt.plot_file,
+        &mut ctl.gen_opt.fasta_filename,
+        &mut ctl.gen_opt.fasta_aa_filename,
+        &mut ctl.gen_opt.dref_file,
+        &mut ctl.parseable_opt.pout,
+    ];
+    for f in files.iter_mut() {
+        **f = stringme(&tilde_expand(&f.as_bytes()));
     }
 
     // Sanity check arguments.
