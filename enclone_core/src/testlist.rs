@@ -241,6 +241,13 @@ pub const EXTENDED_TESTS: [&str; 2] = [
      NO_PRE NFORCE"###,
 ];
 
+// Tests of internal features.
+
+pub const INTERNAL_TESTS: [&str; 1] = [
+    // 1. gave wrong result
+    r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
+];
+
 // List of examples in documentation.
 
 pub const EXAMPLES: [&str; 2] = [

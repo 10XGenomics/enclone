@@ -374,6 +374,50 @@ fn test_extended() {
 
 // NOT BASIC
 
+// Regression tests for internal features.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_internal() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+    //                       id     ok    output
+    let mut results = Vec::<(usize, bool, String)>::new();
+    for i in 0..INTERNAL_TESTS.len() {
+        results.push((i, false, String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let it = res.0;
+        let test = INTERNAL_TESTS[it].to_string();
+        let mut out = String::new();
+        run_test(
+            env!("CARGO_BIN_EXE_enclone"),
+            it,
+            &test,
+            "internal_test",
+            &mut res.1,
+            &mut res.2,
+            &mut out,
+        );
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if !results[i].1 {
+            std::process::exit(1);
+        }
+    }
+    println!(
+        "\ninternal tests total time for {} enclone subtests = {:.2} seconds\n",
+        INTERNAL_TESTS.len(),
+        elapsed(&t)
+    );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
 // Test site for broken links and spellcheck.
 //
 // Two approaches for checking broken links left in place for now, to delete one, and the
