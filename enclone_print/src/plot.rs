@@ -565,6 +565,9 @@ pub fn plot_clonotypes(
         let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
     } else {
-        println!("{}", svg);
+        print!("{}", svg);
+        if !ctl.gen_opt.noprint {
+            println!("");
+        }
     }
 }
