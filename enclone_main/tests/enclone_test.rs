@@ -634,7 +634,8 @@ fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
-        let in_stuff = read_to_string(&format!("../pages/auto/{}.html", example_name)).unwrap();
+        let in_file = format!("../{}", example_name);
+        let in_stuff = read_to_string(&in_file).expect(&format!("couldn't find {}", in_file));
         let args = parse_bsv(&test);
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
@@ -668,7 +669,7 @@ fn test_site_examples() {
                 extended dataset collection.  Possibly you should run \
                 \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
                 Otherwise, if you're satisfied with the new output, you can update using\n\n\
-                enclone {} > pages/auto/{}.html.\n",
+                enclone {} > {}.\n",
                 args.iter().format(" "),
                 example_name
             );
