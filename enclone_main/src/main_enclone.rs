@@ -1226,6 +1226,10 @@ pub fn main_enclone(args: &Vec<String>) {
     // Find and print clonotypes.
 
     let torb = Instant::now();
+    let mut pics = Vec::<String>::new();
+    let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
+    let mut rsi = Vec::<ColInfo>::new(); // ditto
+    let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     print_clonotypes(
         &tall,
         &refdata,
@@ -1240,6 +1244,10 @@ pub fn main_enclone(args: &Vec<String>) {
         &d_readers,
         &ind_readers,
         &h5_data,
+        &mut pics,
+        &mut exacts,
+        &mut rsi,
+        &mut out_datas,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {
