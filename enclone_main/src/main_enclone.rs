@@ -1230,6 +1230,8 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
     let mut rsi = Vec::<ColInfo>::new(); // ditto
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
+    let mut tests = Vec::<usize>::new();
+    let mut controls = Vec::<usize>::new();
     print_clonotypes(
         &tall,
         &refdata,
@@ -1248,6 +1250,8 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut exacts,
         &mut rsi,
         &mut out_datas,
+        &mut tests,
+        &mut controls,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {
