@@ -1179,13 +1179,13 @@ pub fn print_clonotypes(
                 }
 
                 // See if we're in the test and control sets for gene scan.
+                // uses: ctl, stats
 
                 if ctl.gen_opt.gene_scan_test.is_some() {
                     let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
-                        // let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
@@ -1193,16 +1193,6 @@ pub fn print_clonotypes(
                                 break;
                             }
                         }
-                        /*
-                        if !found {
-                            eprintln!(
-                                "\nFailed to find the variable {} used in a \
-                                 bound.  Please see \"enclone help filter\".\n",
-                                x.var[i]
-                            );
-                            std::process::exit(1);
-                        }
-                        */
                         let mut mean = 0.0;
                         for j in 0..vals.len() {
                             mean += vals[j];
@@ -1215,24 +1205,12 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
-                        // let mut found = false;
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                // found = true;
                                 break;
                             }
                         }
-                        /*
-                        if !found {
-                            eprintln!(
-                                "\nFailed to find the variable {} used in a \
-                                 bound.  Please see \"enclone help filter\".\n",
-                                x.var[i]
-                            );
-                            std::process::exit(1);
-                        }
-                        */
                         let mut mean = 0.0;
                         for j in 0..vals.len() {
                             mean += vals[j];
