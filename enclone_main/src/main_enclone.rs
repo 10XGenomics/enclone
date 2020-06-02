@@ -34,6 +34,7 @@ use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
+use rayon::prelude::*;
 use regex::Regex;
 use serde_json::Value;
 use stats_utils::*;
@@ -1194,6 +1195,34 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     orbits = orbits2;
 
+    // Load the GEX data.
+
+    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
+    for li in 0..ctl.sample_info.n() {
+        if ctl.sample_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+            d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+        } else {
+            d_readers.push(None);
+            ind_readers.push(None);
+        }
+    }
+    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
+    for li in 0..ctl.sample_info.n() {
+        h5_data.push((li, Vec::new(), Vec::new()));
+    }
+    h5_data.par_iter_mut().for_each(|res| {
+        let li = res.0;
+        if ctl.sample_info.gex_path[li].len() > 0
+            && !gex_info.gex_matrices[li].initialized()
+            && ctl.gen_opt.h5_pre
+        {
+            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
+        }
+    });
+
     // Find and print clonotypes.
 
     let torb = Instant::now();
@@ -1208,6 +1237,9 @@ pub fn main_enclone(args: &Vec<String>) {
         &gex_info,
         &join_info,
         &vdj_cells,
+        &d_readers,
+        &ind_readers,
+        &h5_data,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {
