@@ -2,7 +2,6 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
-use crate::print_utils5::*;
 use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
