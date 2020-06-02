@@ -154,7 +154,13 @@ fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
         ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0"];
     const A2: &str = "Apache-2.0";
-    const ACCEPTABLE_10X_PACKAGES: [&str; 4] = ["enclone", "enclone_print", "exons", "vdj_ann"];
+    const ACCEPTABLE_10X_PACKAGES: [&str; 5] = [
+        "enclone",
+        "enclone_print",
+        "enclone_tail",
+        "exons",
+        "vdj_ann",
+    ];
     const ACCEPTABLE_OTHER_PACKAGES: [&str; 5] =
         ["arrayref", "cloudabi", "fuchsia-cprng", "ring", "webpki"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
