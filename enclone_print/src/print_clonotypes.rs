@@ -59,6 +59,10 @@ pub fn print_clonotypes(
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
+    pics: &mut Vec<String>,
+    exacts: &mut Vec<Vec<usize>>,
+    rsi: &mut Vec<ColInfo>,
+    mut out_datas: &mut Vec<Vec<HashMap<String, String>>>,
 ) {
     // Make an abbreviation.
 
@@ -1514,10 +1518,6 @@ pub fn print_clonotypes(
 
     // Set up to group and print clonotypes.
 
-    let mut pics = Vec::<String>::new();
-    let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
-    let mut rsi = Vec::<ColInfo>::new(); // ditto
-    let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     for i in 0..orbits.len() {
         for j in 0..results[i].1.len() {
             pics.push(results[i].1[j].clone());
