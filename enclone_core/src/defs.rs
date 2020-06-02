@@ -331,6 +331,8 @@ pub struct GeneralOpt {
     pub fasta_aa_filename: String,
     pub clustal_aa: String,
     pub clustal_dna: String,
+    pub phylip_aa: String,
+    pub phylip_dna: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub chains_exact: usize,
