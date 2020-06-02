@@ -359,6 +359,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
         ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
         ("EXT", &mut ctl.gen_opt.ext),
+        ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
+        ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
         ("POUT", &mut ctl.parseable_opt.pout),
         ("PROTO", &mut ctl.gen_opt.proto),
         ("REF", &mut ctl.gen_opt.refname),

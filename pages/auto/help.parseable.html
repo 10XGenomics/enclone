@@ -57,17 +57,18 @@ command line.
 ┃Similarly, <span style="font-weight:bold;">FASTA_AA=filename</span> may be used to generate a matching amino acid FASTA file.            ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">CLUSTAL output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one line per ┃
-┃cell, use <span style="font-weight:bold;">CLUSTAL_AA=filename</span> or <span style="font-weight:bold;">CLUSTAL_AA=stdout</span>, for amino acid sequences, or similarly       ┃
-┃<span style="font-weight:bold;">CLUSTAL_DNA</span> to get DNA sequences.  Each sequence is the concatenation of the V..J sequences for a┃
-┃given cell's chains, with gap (-) characters shown if a chain is missing.  We recommend using    ┃
-┃appropriate filtering options to drop the exact subclonotypes having missing chains, e.g. using  ┃
-┃<span style="font-weight:bold;">COMPLETE</span>.  Also you should probably restrict the clonotypes in scope using <span style="font-weight:bold;">MIN_CELLS=...</span> or      ┃
-┃something else.  If one does not specify stdout, the output is a single file obtained by tarring ┃
-┃together one file per clonotype, without actually generating separate files.  To avoid confusion,┃
-┃we suggest that the filename end with ".tar".                                                    ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">CLUSTAL and PHYLIP output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one┃
+┃line per cell, use <span style="font-weight:bold;">CLUSTAL_AA=filename</span> or <span style="font-weight:bold;">CLUSTAL_AA=stdout</span>, for amino acid sequences, or         ┃
+┃similarly <span style="font-weight:bold;">CLUSTAL_DNA</span> to get DNA sequences.  For PHYLIP-type output, used <span style="font-weight:bold;">PHYLIP_AA</span> or <span style="font-weight:bold;">PHYLIP_DNA</span>.┃
+┃ For all of these, each sequence is the concatenation of the V..J sequences for a given cell's    ┃
+┃chains, with gap (-) characters shown if a chain is missing.  We recommend using appropriate      ┃
+┃filtering options to drop the exact subclonotypes having missing chains, e.g. using <span style="font-weight:bold;">COMPLETE</span>.     ┃
+┃Also you should probably restrict the clonotypes in scope using <span style="font-weight:bold;">MIN_CELLS=...</span> or something else.  ┃
+┃If one does not specify stdout, the output is a single file obtained by tarring together one file ┃
+┃per clonotype, without actually generating separate files.  To avoid confusion, we suggest that   ┃
+┃the filename end with ".tar".                                                                     ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>

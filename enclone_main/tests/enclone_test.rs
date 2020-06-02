@@ -454,7 +454,7 @@ fn test_for_broken_links_and_spellcheck() {
         germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
         indel indels json linux loh lvars macbook metadata mkdir moresies multiomic ncbi ncross \
-        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell plasmablast \
+        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
         preinstalled prepends screenshot spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding tracebacks trb twosie ubuntu \
         umi umis underperforming unicode vdj website wget wikimedia \
