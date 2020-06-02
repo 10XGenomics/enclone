@@ -32,7 +32,6 @@ pub fn group_and_print_clonotypes(
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
-    parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
@@ -47,6 +46,8 @@ pub fn group_and_print_clonotypes(
 
     // Set up for parseable output.
 
+    let mut parseable_fields = Vec::<String>::new();
+    set_speakers(&ctl, &mut parseable_fields);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
         "" => (Box::new(stdout()) as Box<Write>),
