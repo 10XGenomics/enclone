@@ -732,3 +732,38 @@ pub struct ColInfo {
     pub mat: Vec<Vec<Option<usize>>>,
     pub cvars: Vec<Vec<String>>,
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn justification(x: &str) -> u8 {
+    if x == "amino"
+        || x == "var"
+        || x == "const"
+        || x == "cdr3_dna"
+        || x == "cdiff"
+        || x == "notes"
+        || x == "edit"
+        || x == "datasets"
+        || x == "donors"
+        || x == "ext"
+        || x == "barcode"
+        || x == "barcodes"
+        || x.starts_with("v_name")
+        || x.starts_with("d_name")
+        || x.starts_with("j_name")
+        || x.starts_with("utr_name")
+        || x.starts_with("vj_seq")
+        || x.starts_with("seq")
+        || x.starts_with("q")
+        || x.starts_with("cdr3_aa")
+        || x.starts_with("var_aa")
+        || x.starts_with("var_indices")
+        || x.starts_with("share_indices")
+        || x.ends_with("_barcode")
+        || x.ends_with("_barcodes")
+    {
+        return b'l';
+    } else {
+        return b'r';
+    }
+}
