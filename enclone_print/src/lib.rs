@@ -14,4 +14,5 @@ pub mod print_utils4;
 pub mod print_utils5;
 pub mod proto_io;
 pub mod string_width;
+pub mod tail;
 pub mod types;
