@@ -63,6 +63,8 @@ pub fn print_clonotypes(
     exacts: &mut Vec<Vec<usize>>,
     rsi: &mut Vec<ColInfo>,
     mut out_datas: &mut Vec<Vec<HashMap<String, String>>>,
+    tests: &mut Vec<usize>,
+    controls: &mut Vec<usize>,
 ) {
     // Make an abbreviation.
 
@@ -1499,8 +1501,6 @@ pub fn print_clonotypes(
 
     // Gather some data for gene scan.
 
-    let mut tests = Vec::<usize>::new();
-    let mut controls = Vec::<usize>::new();
     if ctl.gen_opt.gene_scan_test.is_some() {
         let mut count = 0;
         for i in 0..orbits.len() {
