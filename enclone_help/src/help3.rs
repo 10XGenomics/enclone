@@ -110,14 +110,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             true,
         );
         h.print_with_box(
-            "\\bold{CLUSTAL output.}  This is a separate feature.  \
+            "\\bold{CLUSTAL and PHYLIP output.}  This is a separate feature.  \
              To generate CLUSTAL-type output, with one line per cell, use \
              \\bold{CLUSTAL_AA=filename} or \\bold{CLUSTAL_AA=stdout}, for amino acid sequences, \
-             or similarly\n\\bold{CLUSTAL_DNA} to get DNA sequences.  Each sequence is the \
+             or similarly \\bold{CLUSTAL_DNA} to get DNA sequences.  For PHYLIP-type output, \
+             used \\bold{PHYLIP_AA} or \\bold{PHYLIP_DNA}.  For all of these, each sequence is the \
              concatenation of the V..J sequences \
              for a given cell's chains, with gap (-) characters shown if a chain is missing.  We \
              recommend using appropriate filtering options to drop the exact subclonotypes having \
-             missing chains, e.g. using\n\\bold{COMPLETE}.  Also you should probably restrict the \
+             missing chains, e.g. using \\bold{COMPLETE}.  Also you should probably restrict the \
              clonotypes in scope using \\bold{MIN_CELLS=...} or something else.  If one does \
              not specify stdout, the output is a single file obtained by tarring together one \
              file per clonotype, without actually generating separate files.  To avoid confusion, \
