@@ -29,6 +29,7 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
+use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
@@ -1233,7 +1234,6 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut tests = Vec::<usize>::new();
     let mut controls = Vec::<usize>::new();
     print_clonotypes(
-        &tall,
         &refdata,
         &drefs,
         &ctl,
@@ -1241,7 +1241,6 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &orbits,
         &gex_info,
-        &join_info,
         &vdj_cells,
         &d_readers,
         &ind_readers,
@@ -1259,6 +1258,26 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         println!("used {:.2} seconds making orbits", elapsed(&torb));
     }
+
+    // Tail code.
+
+    tail_code(
+        &tall,
+        &refdata,
+        &pics,
+        &exacts,
+        &rsi,
+        &exact_clonotypes,
+        &ctl,
+        &mut out_datas,
+        &join_info,
+        &gex_info,
+        &tests,
+        &controls,
+        &h5_data,
+        &d_readers,
+        &ind_readers,
+    );
 
     // Report computational performance.
 

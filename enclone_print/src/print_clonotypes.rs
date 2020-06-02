@@ -14,11 +14,9 @@ use crate::print_utils4::*;
 use crate::print_utils5::*;
 use crate::types::*;
 use enclone_core::defs::*;
-use enclone_tail::tail::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -46,7 +44,6 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
-    tall: &Instant,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
@@ -54,7 +51,6 @@ pub fn print_clonotypes(
     info: &Vec<CloneInfo>,
     orbits: &Vec<Vec<i32>>,
     gex_info: &GexInfo,
-    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     vdj_cells: &Vec<Vec<String>>,
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
@@ -62,7 +58,7 @@ pub fn print_clonotypes(
     pics: &mut Vec<String>,
     exacts: &mut Vec<Vec<usize>>,
     rsi: &mut Vec<ColInfo>,
-    mut out_datas: &mut Vec<Vec<HashMap<String, String>>>,
+    out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
 ) {
@@ -1526,24 +1522,4 @@ pub fn print_clonotypes(
         }
         out_datas.append(&mut results[i].7);
     }
-
-    // Tail code.
-
-    tail_code(
-        &tall,
-        &refdata,
-        &pics,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &mut out_datas,
-        &join_info,
-        &gex_info,
-        &tests,
-        &controls,
-        &h5_data,
-        &d_readers,
-        &ind_readers,
-    );
 }
