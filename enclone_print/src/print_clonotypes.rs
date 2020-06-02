@@ -1537,7 +1537,6 @@ pub fn print_clonotypes(
         &rsi,
         &exact_clonotypes,
         &ctl,
-        &parseable_fields,
         &mut out_datas,
         &join_info,
         &gex_info,
