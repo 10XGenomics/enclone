@@ -6,7 +6,7 @@
 //
 // The input graph must be acyclic and connected.  Otherwise bad things may happen.  Not checked.
 //
-// Input data: 
+// Input data:
 // 1. vertex names = vnames
 // 2. index of root vertex = r
 // 3. undirected edges (v, w, edge-name) = edges, where v and w are zero-based indices of vertices.
@@ -18,7 +18,6 @@ use std::cmp::max;
 use std::mem::swap;
 
 pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)>) -> String {
-
     // First use the root to direct the edges.
 
     let mut edges = edges.clone();
@@ -33,7 +32,6 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
         index[edges[i].0].push(i);
         index[edges[i].1].push(i);
     }
-    assert_eq!(index[r].len(), 1);
     assert_eq!(n, vnames.len());
     let mut rooted = vec![false; n];
     rooted[r] = true;
@@ -42,8 +40,11 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
         let v = roots[i];
         for j in index[v].iter() {
             let e = &mut edges[*j];
+
             if e.1 == v && !rooted[e.0] {
                 swap(&mut e.0, &mut e.1);
+            }
+            if e.0 == v && !rooted[e.1] {
                 rooted[e.1] = true;
                 roots.push(e.1);
             }
@@ -90,7 +91,12 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
                         }
                     }
                     index[v] = vec![j];
-                    edges[j].2 = format!("({}){}", labels.iter().format(","), edges[j].2);
+                    let label = labels.iter().format(",");
+                    if v != r {
+                        edges[j].2 = format!("({}){}", label, edges[j].2);
+                    } else {
+                        edges[j].2 = format!("({}){};", label, vnames[edges[j].0]);
+                    }
                 }
             }
         }
