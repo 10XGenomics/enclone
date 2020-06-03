@@ -23,6 +23,7 @@ itertools = "^0.7"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ndarray = "0.13"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+pretty_trace = "0.3.0"
 rayon = "1.0.2"
 serde = "1.0.90"
 serde_derive = "1.0.102"
