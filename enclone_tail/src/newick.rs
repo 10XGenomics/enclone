@@ -1,0 +1,99 @@
+// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+
+// Convert a rooted three into Newick format, see https://en.wikipedia.org/wiki/Newick_format.
+//
+// This is not an efficient implementation.
+//
+// The input graph must be acyclic and connected.  Otherwise bad things may happen.  Not checked.
+//
+// Input data: 
+// 1. vertex names = vnames
+// 2. index of root vertex = r
+// 3. undirected edges (v, w, edge-name) = edges, where v and w are zero-based indices of vertices.
+//
+// Upon entry, the edge-names should be string representations of weights.
+
+use itertools::Itertools;
+use std::cmp::max;
+use std::mem::swap;
+
+pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)>) -> String {
+
+    // First use the root to direct the edges.
+
+    let mut edges = edges.clone();
+    let mut n = 0;
+    for i in 0..edges.len() {
+        n = max(n, edges[i].0 + 1);
+        n = max(n, edges[i].1 + 1);
+    }
+    assert!(r < n);
+    let mut index = vec![Vec::<usize>::new(); n];
+    for i in 0..edges.len() {
+        index[edges[i].0].push(i);
+        index[edges[i].1].push(i);
+    }
+    assert_eq!(index[r].len(), 1);
+    assert_eq!(n, vnames.len());
+    let mut rooted = vec![false; n];
+    rooted[r] = true;
+    let mut roots = vec![r];
+    for i in 0..n {
+        let v = roots[i];
+        for j in index[v].iter() {
+            let e = &mut edges[*j];
+            if e.1 == v && !rooted[e.0] {
+                swap(&mut e.0, &mut e.1);
+                rooted[e.1] = true;
+                roots.push(e.1);
+            }
+        }
+    }
+
+    // Incorporate the vertex names into the weights.
+
+    for i in 0..edges.len() {
+        edges[i].2 = format!("{}:{}", vnames[edges[i].1], edges[i].2);
+    }
+
+    // Gradually chew back the edges and roll up the labels as we go.
+
+    let mut used = vec![false; n];
+    let mut nused = 0;
+    while nused < n - 1 {
+        for v in 0..n {
+            if !used[v] && index[v].len() > 1 {
+                let mut subterminal = true;
+                for i in index[v].iter() {
+                    let e = &edges[*i];
+                    if e.0 == v {
+                        let w = e.1;
+                        if index[w].len() > 1 {
+                            subterminal = false;
+                            break;
+                        }
+                    }
+                }
+                if subterminal {
+                    let mut labels = Vec::<String>::new();
+                    let mut j = 0;
+                    for i in index[v].iter() {
+                        let e = &edges[*i];
+                        if e.0 == v {
+                            let w = e.1;
+                            assert!(!used[w]);
+                            used[w] = true;
+                            nused += 1;
+                            labels.push(e.2.clone());
+                        } else {
+                            j = *i;
+                        }
+                    }
+                    index[v] = vec![j];
+                    edges[j].2 = format!("({}){}", labels.iter().format(","), edges[j].2);
+                }
+            }
+        }
+    }
+    edges[index[r][0]].2.clone()
+}
