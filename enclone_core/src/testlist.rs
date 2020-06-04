@@ -223,8 +223,8 @@ pub const TESTS: [&str; 88] = [
     // 82. test entropy
     r###"BCR=123085 GEX=123749 LVARSP=entropy PER_CELL POUT=stdouth PCELL
         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
-    // 83. test COMPLETE
-    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE"###,
+    // 83. test COMPLETE and dref
+    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE LVARSP=dref"###,
     // 84. test CLUSTAL_AA
     r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW CLUSTAL_AA=stdout"###,
     // 85. test NALL

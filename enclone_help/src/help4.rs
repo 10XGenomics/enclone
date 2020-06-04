@@ -488,10 +488,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "dref",
             "Hamming distance of V..J DNA sequence to donor reference, excluding",
         );
-        h.doc(
-            "",
-            "region of recombination",
-        );
+        h.doc("", "region of recombination");
         h.ldoc(
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",
