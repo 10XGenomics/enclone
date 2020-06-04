@@ -559,6 +559,32 @@ pub fn row_fill(
             }
             lvar![i, x, format!("{}", count)];
             stats.push((x.to_string(), counts));
+        } else if x == "dref" {
+            let mut diffs = 0;
+            for m in 0..cols {
+                if mat[m][u].is_some() {
+                    let r = mat[m][u].unwrap();
+                    let seq = &ex.share[r].seq_del_amino;
+                    let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                    if rsi.vpids[m].is_some() {
+                        vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                    }
+                    let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                    let z = seq.len();
+                    for p in 0..z {
+                        let b = seq[p];
+                        if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                            diffs += 1;
+                        }
+                        if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                            && b != jref[jref.len() - (z - p)]
+                        {
+                            diffs += 1;
+                        }
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", diffs)];
         } else if x == "near" {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
