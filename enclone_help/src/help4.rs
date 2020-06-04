@@ -484,6 +484,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "with - shown if there is no other exact subclonotype to compare to",
         );
+        h.doc(
+            "dref",
+            "Hamming distance of V..J DNA sequence to donor reference, excluding",
+        );
+        h.doc(
+            "",
+            "region of recombination",
+        );
         h.ldoc(
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",

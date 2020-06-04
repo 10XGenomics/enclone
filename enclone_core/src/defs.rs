@@ -11,7 +11,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 
-pub const LVARS_ALLOWED: [&str; 22] = [
+pub const LVARS_ALLOWED: [&str; 23] = [
     "datasets",
     "samples",
     "donors",
@@ -32,6 +32,7 @@ pub const LVARS_ALLOWED: [&str; 22] = [
     "entropy_cell",
     "near",
     "far",
+    "dref",
     "ext",
     "mark",
 ];
@@ -229,6 +230,7 @@ impl LinearCondition {
             "donors",
             "near",
             "far",
+            "dref",
             "n_gex_cell",
             "n_gex",
             "clust",
