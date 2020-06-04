@@ -61,7 +61,9 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
 
     let mut used = vec![false; n];
     let mut nused = 0;
-    while nused < n - 1 {
+    // while nused < n - 1 {
+    loop {
+        let nused0 = nused;
         for v in 0..n {
             if !used[v] && index[v].len() > 1 {
                 let mut subterminal = true;
@@ -100,6 +102,11 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
                 }
             }
         }
+        if nused == nused0 { break; }
     }
-    edges[index[r][0]].2.clone()
+    if nused == n-1 {
+        edges[index[r][0]].2.clone()
+    } else {
+        format!("({}){};", edges[index[r][0]].2, vnames[r])
+    }
 }
