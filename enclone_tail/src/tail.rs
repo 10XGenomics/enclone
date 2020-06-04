@@ -5,6 +5,7 @@
 use crate::group::*;
 use crate::plot::*;
 use enclone_core::defs::*;
+use enclone_print::types::*;
 use io_utils::*;
 use ndarray::s;
 use rayon::prelude::*;
@@ -32,6 +33,7 @@ pub fn tail_code(
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     // Group and print clonotypes.
 
@@ -46,6 +48,7 @@ pub fn tail_code(
         &mut out_datas,
         &join_info,
         &gex_info,
+        &dref,
     );
 
     // Do gene scan.

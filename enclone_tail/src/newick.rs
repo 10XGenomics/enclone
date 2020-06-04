@@ -102,9 +102,11 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
                 }
             }
         }
-        if nused == nused0 { break; }
+        if nused == nused0 {
+            break;
+        }
     }
-    if nused == n-1 {
+    if nused == n - 1 {
         edges[index[r][0]].2.clone()
     } else {
         format!("({}){};", edges[index[r][0]].2, vnames[r])

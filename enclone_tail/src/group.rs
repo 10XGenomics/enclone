@@ -2,15 +2,19 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
+use crate::neighbor::*;
+use crate::newick::*;
 use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_print::types::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;
 use perf_stats::*;
 use stats_utils::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -35,6 +39,7 @@ pub fn group_and_print_clonotypes(
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     // Build index to join info.
 
@@ -818,6 +823,110 @@ pub fn group_and_print_clonotypes(
                         .append_data(&mut header, &filename, &data[..])
                         .unwrap();
                 }
+            }
+
+            // Generate experimental tree output (option NEWICK0).
+
+            if ctl.gen_opt.newick0 {
+                // Compute the n x n distance matrix for the exact subclonotypes.
+
+                let n = exacts[oo].len();
+                let cols = rsi[oo].mat.len();
+                let mut dist = vec![vec![0; n]; n];
+                for i1 in 0..n {
+                    for i2 in 0..n {
+                        let ex1 = &exact_clonotypes[exacts[oo][i1]];
+                        let ex2 = &exact_clonotypes[exacts[oo][i2]];
+                        for m in 0..cols {
+                            if rsi[oo].mat[m][i1].is_some() && rsi[oo].mat[m][i2].is_some() {
+                                let r1 = rsi[oo].mat[m][i1].unwrap();
+                                let r2 = rsi[oo].mat[m][i2].unwrap();
+                                let seq1 = &ex1.share[r1].seq_del_amino;
+                                let seq2 = &ex2.share[r2].seq_del_amino;
+                                for j in 0..seq1.len() {
+                                    if seq1[j] != seq2[j] {
+                                        dist[i1][i2] += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Add a zeroeth entry for a "root subclonotype" which is defined to have the
+                // donor reference away from the recombination region, and is undefined within it.
+                // Define its distance to actual exact subclonotypes by only computing away from
+                // the recombination region.  This yields an (n+1) x (n+1) matrix.
+
+                let mut droot = vec![0; n];
+                for i in 0..n {
+                    let ex = &exact_clonotypes[exacts[oo][i]];
+                    for m in 0..cols {
+                        if rsi[oo].mat[m][i].is_some() {
+                            let r = rsi[oo].mat[m][i].unwrap();
+                            let seq = &ex.share[r].seq_del_amino;
+                            let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
+                            if rsi[oo].vpids[m].is_some() {
+                                vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
+                            }
+                            let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                            let z = seq.len();
+                            for p in 0..z {
+                                let b = seq[p];
+                                if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                                    droot[i] += 1;
+                                }
+                                if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                                    && b != jref[jref.len() - (z - p)]
+                                {
+                                    droot[i] += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut distp = vec![vec![0.0; n + 1]; n + 1];
+                for i1 in 0..n {
+                    for i2 in 0..n {
+                        distp[i1 + 1][i2 + 1] = dist[i1][i2] as f64;
+                    }
+                }
+                for i in 0..n {
+                    distp[i + 1][0] = droot[i] as f64;
+                    distp[0][i + 1] = droot[i] as f64;
+                }
+
+                // Generate the neighborhood joining tree associated to these data.
+
+                let tree = neighbor_joining(&distp);
+
+                // Output in Newick format.
+
+                let mut vnames = Vec::<String>::new();
+                for i in 0..=n {
+                    vnames.push(format!("{}", i));
+                }
+                let mut edges = Vec::<(usize, usize, String)>::new();
+                let mut nvert = 0;
+                for i in 0..tree.len() {
+                    edges.push((tree[i].0, tree[i].1, format!("{:.1}", tree[i].2)));
+                    nvert = max(nvert, tree[i].0 + 1);
+                    nvert = max(nvert, tree[i].1 + 1);
+                }
+                for i in n + 1..nvert {
+                    vnames.push(format!("I{}", i - n));
+                }
+
+                /*
+                // XXX:
+                fwriteln!(logx, "calling newick with the following edges:");
+                for i in 0..edges.len() {
+                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
+                }
+                */
+
+                let nw = newick(&vnames, 0, &edges);
+                fwriteln!(logx, "\n{}", nw);
             }
 
             // Generate fasta output.

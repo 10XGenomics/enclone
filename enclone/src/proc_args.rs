@@ -286,6 +286,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MOUSE", &mut ctl.gen_opt.mouse),
         ("NCELL", &mut ctl.gen_opt.ncell),
         ("NCROSS", &mut ctl.clono_filt_opt.ncross),
+        ("NEWICK0", &mut ctl.gen_opt.newick0),
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
