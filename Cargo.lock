@@ -676,6 +676,7 @@ dependencies = [
  "ansi_escape 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "debruijn 0.3.0 (git+https://github.com/10XGenomics/rust-debruijn.git)",
  "enclone_core 0.3.0",
+ "enclone_print 0.3.0",
  "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "hdf5 0.6.0 (git+https://github.com/pmarks/hdf5-rs.git?rev=0c98e57b2af1f4247708c198b324ba3a8bc18dba)",
  "io_utils 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",

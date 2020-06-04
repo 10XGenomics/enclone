@@ -1277,6 +1277,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &h5_data,
         &d_readers,
         &ind_readers,
+        &drefs,
     );
 
     // Report computational performance.
