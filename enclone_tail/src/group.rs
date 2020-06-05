@@ -919,15 +919,6 @@ pub fn group_and_print_clonotypes(
                     for i in n + 1..nvert {
                         vnames.push(format!("I{}", i - n));
                     }
-
-                    /*
-                    // XXX:
-                    fwriteln!(logx, "calling newick with the following edges:");
-                    for i in 0..edges.len() {
-                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
-                    }
-                    */
-
                     let nw = newick(&vnames, 0, &edges);
                     fwriteln!(logx, "\n{}", nw);
                 }
@@ -969,14 +960,6 @@ pub fn group_and_print_clonotypes(
                             }
                         }
                     }
-
-                    /*
-                    // XXX:
-                    fwriteln!(logx, "calling newick with the following edges:");
-                    for i in 0..edges.len() {
-                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
-                    }
-                    */
 
                     // Make edge names.
 
