@@ -2,6 +2,7 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
+use crate::display_tree::*;
 use crate::neighbor::*;
 use crate::newick::*;
 use amino::*;
@@ -825,9 +826,9 @@ pub fn group_and_print_clonotypes(
                 }
             }
 
-            // Generate experimental tree output (option NEWICK0).
+            // Generate experimental tree output (options NEWICK0 and TREE).
 
-            if ctl.gen_opt.newick0 {
+            if ctl.gen_opt.newick0 || ctl.gen_opt.tree {
                 // Compute the n x n distance matrix for the exact subclonotypes.
 
                 let n = exacts[oo].len();
@@ -902,31 +903,63 @@ pub fn group_and_print_clonotypes(
 
                 // Output in Newick format.
 
-                let mut vnames = Vec::<String>::new();
-                for i in 0..=n {
-                    vnames.push(format!("{}", i));
-                }
-                let mut edges = Vec::<(usize, usize, String)>::new();
-                let mut nvert = 0;
-                for i in 0..tree.len() {
-                    edges.push((tree[i].0, tree[i].1, format!("{:.1}", tree[i].2)));
-                    nvert = max(nvert, tree[i].0 + 1);
-                    nvert = max(nvert, tree[i].1 + 1);
-                }
-                for i in n + 1..nvert {
-                    vnames.push(format!("I{}", i - n));
-                }
+                if ctl.gen_opt.newick0 {
+                    let mut vnames = Vec::<String>::new();
+                    for i in 0..=n {
+                        vnames.push(format!("{}", i));
+                    }
+                    let mut edges = Vec::<(usize, usize, String)>::new();
+                    let mut nvert = 0;
+                    for i in 0..tree.len() {
+                        edges.push((tree[i].0, tree[i].1, format!("{:.2}", tree[i].2)));
+                        nvert = max(nvert, tree[i].0 + 1);
+                        nvert = max(nvert, tree[i].1 + 1);
+                    }
+                    for i in n + 1..nvert {
+                        vnames.push(format!("I{}", i - n));
+                    }
 
-                /*
-                // XXX:
-                fwriteln!(logx, "calling newick with the following edges:");
-                for i in 0..edges.len() {
+                    /*
+                    // XXX:
+                    fwriteln!(logx, "calling newick with the following edges:");
+                    for i in 0..edges.len() {
                     fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
-                }
-                */
+                    }
+                    */
 
-                let nw = newick(&vnames, 0, &edges);
-                fwriteln!(logx, "\n{}", nw);
+                    let nw = newick(&vnames, 0, &edges);
+                    fwriteln!(logx, "\n{}", nw);
+                }
+
+                // Output as visual tree.
+
+                if ctl.gen_opt.tree {
+                    let mut vnames = Vec::<String>::new();
+                    for i in 0..=n {
+                        vnames.push(format!("{}", i));
+                    }
+                    let mut edges = Vec::<(usize, usize, f64)>::new();
+                    let mut nvert = 0;
+                    for i in 0..tree.len() {
+                        edges.push((tree[i].0, tree[i].1, tree[i].2));
+                        nvert = max(nvert, tree[i].0 + 1);
+                        nvert = max(nvert, tree[i].1 + 1);
+                    }
+                    for i in n + 1..nvert {
+                        vnames.push(format!("I{}", i - n));
+                    }
+
+                    /*
+                    // XXX:
+                    fwriteln!(logx, "calling newick with the following edges:");
+                    for i in 0..edges.len() {
+                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
+                    }
+                    */
+
+                    let nw = display_tree(&vnames, &edges, 0, 100);
+                    fwrite!(logx, "\n{}", nw);
+                }
             }
 
             // Generate fasta output.

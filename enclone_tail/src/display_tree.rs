@@ -24,7 +24,6 @@ pub fn display_tree(
 ) -> String {
     // Test input data and create an index.
 
-    let mut edges = edges.clone();
     let mut n = 0;
     for i in 0..edges.len() {
         n = max(n, edges[i].0 + 1);
