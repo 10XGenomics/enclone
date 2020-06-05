@@ -694,7 +694,7 @@ dependencies = [
  "tables 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "tar 0.4.28 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
- "vector_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -2237,6 +2237,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "vector_utils"
+version = "0.1.2"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#b4488d18e197bb68039ffb504719adfde3bf8a52"
+dependencies = [
+ "permutation 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "superslice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "version_check"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2645,6 +2654,7 @@ dependencies = [
 "checksum vdj_ann 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)" = "<none>"
 "checksum vec_map 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)" = "05c78687fb1a80548ae3250346c3db86a80a7cdd77bda190189f2d0a0987c81a"
 "checksum vector_utils 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "91b50c34c143930bd1c8ed79a84d023c5fcacb4033c82f234a592aa095484561"
+"checksum vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)" = "<none>"
 "checksum version_check 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)" = "078775d0255232fb988e6fccf26ddc9d1ac274299aaedcedce21c6f72cc533ce"
 "checksum void 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
 "checksum wait-timeout 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "9f200f5b12eb75f8c1ed65abd4b2db8a6e1b138a20de009dacee265a2498f3f6"

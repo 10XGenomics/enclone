@@ -1,0 +1,5 @@
+enclone includes software developed by the OpenSSL Project
+for use in the OpenSSL Toolkit (http://www.openssl.org/).
+
+Plain text tree visualization in enclone is based on
+https://gitlab.com/Noughmad/ptree, by Miha Čančula.
