@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Text display of a rooted tree, in which each vertex has a name and each edge has a
+// Text display of a rooted directed tree, in which each vertex has a name and each edge has a
 // floating point length.  A width parameter sets the approximate page width in characters,
 // with edge lengths scaled roughly to match this.
 //
@@ -8,11 +8,10 @@
 
 use itertools::Itertools;
 use std::cmp::max;
-use std::mem::swap;
 use vector_utils::*;
 
 // vnames: vertex names
-// edges: {(v, w, weight)}
+// directed edges: {(v, w, weight)}
 // r: index of the root vertex
 // max_width: max page width
 
@@ -24,6 +23,7 @@ pub fn display_tree(
 ) -> String {
     // Test input data and create an index.
 
+    let mut edges = edges.clone();
     let mut n = 0;
     for i in 0..edges.len() {
         n = max(n, edges[i].0 + 1);
@@ -36,28 +36,6 @@ pub fn display_tree(
         index[edges[i].1].push(i);
     }
     assert_eq!(n, vnames.len());
-
-    // Use the root to direct the edges.
-    // Seems bad that this is also in newick.rs.
-
-    let mut edges = edges.clone();
-    let mut rooted = vec![false; n];
-    rooted[r] = true;
-    let mut roots = vec![r];
-    for i in 0..n {
-        let v = roots[i];
-        for j in index[v].iter() {
-            let e = &mut edges[*j];
-
-            if e.1 == v && !rooted[e.0] {
-                swap(&mut e.0, &mut e.1);
-            }
-            if e.0 == v && !rooted[e.1] {
-                rooted[e.1] = true;
-                roots.push(e.1);
-            }
-        }
-    }
 
     // For each vertex, define a path, which is the sequence of edge indices from the root to it.
 
