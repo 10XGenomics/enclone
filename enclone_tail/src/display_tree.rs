@@ -8,6 +8,7 @@
 
 use itertools::Itertools;
 use std::cmp::max;
+use std::mem::swap;
 use vector_utils::*;
 
 // vnames: vertex names
@@ -37,6 +38,40 @@ pub fn display_tree(
     }
     assert_eq!(n, vnames.len());
 
+    // Use the root to direct the edges.
+    // Seems bad that this is also in newick.rs.
+
+    let mut edges = edges.clone();
+    let mut rooted = vec![false; n];
+    rooted[r] = true;
+    let mut roots = vec![r];
+    for i in 0..n {
+        let v = roots[i];
+        for j in index[v].iter() {
+            let e = &mut edges[*j];
+
+            if e.1 == v && !rooted[e.0] {
+                swap(&mut e.0, &mut e.1);
+            }
+            if e.0 == v && !rooted[e.1] {
+                rooted[e.1] = true;
+                roots.push(e.1);
+            }
+        }
+    }
+
+    /*
+    // XXX:
+    println!("\nvertices:\n");
+    for i in 0..n {
+        println!("{} = {}", i, vnames[i]);
+    }
+    println!("\ndirected edges:\n");
+    for i in 0..edges.len() {
+        println!("{}.  {} ==> {} [{}]", i, edges[i].0, edges[i].1, edges[i].2);
+    }
+    */
+
     // For each vertex, define a path, which is the sequence of edge indices from the root to it.
 
     let mut vpaths = vec![Vec::<usize>::new(); n];
@@ -60,6 +95,18 @@ pub fn display_tree(
     // Sort.  The output lines now correspond to the entries of this vector.
 
     sort_sync2(&mut vpaths, &mut vs);
+
+    // In the special case where every edge has length zero, change all to one.
+
+    let mut max_e = 0 as f64;
+    for e in edges.iter() {
+        max_e = max_e.max(e.2);
+    }
+    if max_e == 0.0 {
+        for i in 0..edges.len() {
+            edges[i].2 = 1.0;
+        }
+    }
 
     // For each path, define its constant and variable length components.
 
@@ -114,7 +161,7 @@ pub fn display_tree(
     // XXX:
     println!("");
     for i in 0..n {
-        println!("{} {}", vpaths[i].iter().format(", "), vnames[i]);
+        println!("{} {}", vpaths[i].iter().format(", "), vnames[vs[i]]);
     }
     println!("");
     */
@@ -151,7 +198,11 @@ pub fn display_tree(
             // 5. "     "
 
             if j >= vpaths[i - 1].len() {
-                x += &format!("╠{} ", hedge);
+                if !last_edge {
+                    x += &format!("╠{} ", hedge);
+                } else {
+                    x += &format!("╚{} ", hedge);
+                }
             } else if vpaths[i][j] != vpaths[i - 1][j] {
                 if !last_edge {
                     x += &format!("╠{} ", hedge);
@@ -166,7 +217,7 @@ pub fn display_tree(
                 }
             }
         }
-        x += &format!("{}\n", vnames[i]);
+        x += &format!("{}\n", vnames[vs[i]]);
     }
     x
 }
