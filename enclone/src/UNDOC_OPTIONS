@@ -169,7 +169,7 @@ recognizes S<xena_analysis_set_id>
 
 PLOT_BY_MARK
 
-NEWICK0:
+NEWICK:
 1. To the set of exact subclonotypes, add a "root" with reference non-CDR3 and undetermined CDR3.
 2. Compute Levenshtein distance matrix, where distance from root is computed using only non-CDR3.
 3. Use neighbor joining then convert to Newick format.

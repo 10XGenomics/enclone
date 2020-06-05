@@ -829,7 +829,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate experimental tree output (options NEWICK0 and TREE).
 
-            if ctl.gen_opt.newick0 || ctl.gen_opt.tree {
+            if ctl.gen_opt.newick || ctl.gen_opt.tree {
                 // Compute the n x n distance matrix for the exact subclonotypes.
 
                 let n = exacts[oo].len();
@@ -904,7 +904,7 @@ pub fn group_and_print_clonotypes(
 
                 // Output in Newick format.
 
-                if ctl.gen_opt.newick0 {
+                if ctl.gen_opt.newick {
                     let mut vnames = Vec::<String>::new();
                     for i in 0..=n {
                         vnames.push(format!("{}", i));
