@@ -21,6 +21,7 @@ use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+use std::mem::swap;
 use std::path::Path;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
@@ -934,10 +935,6 @@ pub fn group_and_print_clonotypes(
                 // Output as visual tree.
 
                 if ctl.gen_opt.tree {
-                    let mut vnames = Vec::<String>::new();
-                    for i in 0..=n {
-                        vnames.push(format!("{}", i));
-                    }
                     let mut edges = Vec::<(usize, usize, f64)>::new();
                     let mut nvert = 0;
                     for i in 0..tree.len() {
@@ -945,8 +942,54 @@ pub fn group_and_print_clonotypes(
                         nvert = max(nvert, tree[i].0 + 1);
                         nvert = max(nvert, tree[i].1 + 1);
                     }
-                    for _ in n + 1..nvert {
-                        vnames.push(format!("•"));
+
+                    // Use the root to direct the edges.
+                    // Seems bad that this is also in newick.rs and display_tree.rs.
+
+                    let mut index = vec![Vec::<usize>::new(); nvert];
+                    for i in 0..edges.len() {
+                        index[edges[i].0].push(i);
+                        index[edges[i].1].push(i);
+                    }
+                    let r = 0;
+                    let mut rooted = vec![false; nvert];
+                    rooted[r] = true;
+                    let mut roots = vec![r];
+                    for i in 0..n {
+                        let v = roots[i];
+                        for j in index[v].iter() {
+                            let e = &mut edges[*j];
+
+                            if e.1 == v && !rooted[e.0] {
+                                swap(&mut e.0, &mut e.1);
+                            }
+                            if e.0 == v && !rooted[e.1] {
+                                rooted[e.1] = true;
+                                roots.push(e.1);
+                            }
+                        }
+                    }
+
+                    // Make edge names.
+
+                    let mut vnames = Vec::<String>::new();
+                    for i in 0..=n {
+                        let mut len = 0.0;
+                        for j in 0..edges.len() {
+                            if edges[j].1 == i {
+                                len = edges[j].2;
+                            }
+                        }
+                        vnames.push(format!("{} [{:.2}]", i, len));
+                    }
+                    for i in n + 1..nvert {
+                        let mut len = 0.0;
+                        for j in 0..edges.len() {
+                            if edges[j].1 == i {
+                                len = edges[j].2;
+                            }
+                        }
+                        vnames.push(format!("• [{:.2}]", len));
                     }
 
                     /*
@@ -956,6 +999,8 @@ pub fn group_and_print_clonotypes(
                     fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
                     }
                     */
+
+                    // Display the tree.
 
                     let nw = display_tree(&vnames, &edges, 0, 100);
                     fwrite!(logx, "\n{}", nw);
