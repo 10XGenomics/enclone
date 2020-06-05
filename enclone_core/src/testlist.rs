@@ -235,8 +235,8 @@ pub const TESTS: [&str; 89] = [
     r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_AA=stdout"###,
     // 88. test PHYLIP_DNA
     r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_DNA=stdout"###,
-    // 89. test TREE
-    r###"BCR=123085 COMPLETE TREE CDR3=CARDLGGRYYGSKDPW"###,
+    // 89. test TREE and NEWICK
+    r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
 ];
 
 // Test using the extended public dataset collection.
