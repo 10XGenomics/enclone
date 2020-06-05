@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>making phylogenetic trees</title>
+<link rel="stylesheet" type="text/css" href="../enclone.css">
+</head>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>Making phylogenetic trees</h1>
+
+<p>enclone provides several mechanisms for creating and displaying a phylogenetic tree for each 
+clonotype.  These are initial mechanisms, which are likely to be expanded and/or improved over 
+time in response to feedback.  For all of these mechanisms, we recommend using the argument
+<code>COMPLETE</code> to remove exact subclonotypes that are missing some chains.</p>
+
+<hr>
+
+<p><b>Method 1.</b>
+This method is invoked using the argument <code>TREE</code>.  
+It first defines defines the distance between any two exact subclonotypes to be their
+Levenshtein distance.  Then we add a root "virtual" exact subclonotype which equals the donor 
+reference away from the recombination region and which is undefined within that region.  The 
+distance from the root to any actual exact subclonotype is the Levenshtein distance, away from
+the region of recombination.
+</p>
+
+<p>
+Next a tree is creating from these data using the
+<a href="https://en.wikipedia.org/wiki/Neighbor_joining">neighbor joining algorithm</a>.
+This sometimes yields negative distances, which we change to zero.  We have only observed such on
+the edge emanating from the root.
+</p>
+
+<p>Finally, the tree is visualized using plain text, as shown in the example below.</p>
+
+<code>enclone BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW</code>
+
+#include pages/auto/tree_example.html
+
+<hr>
+
+<p><b>Method 2.</b>
+This method is invoked using the argument <code>NEWICK</code>, and is exactly like
+method 1, except that it outputs the resulting tree in 
+<a href="https://en.wikipedia.org/wiki/Newick_format">Newick format</a>.</p>
+
+<hr>
+
+<p><b>Method 3.</b>
+This method is invoked using the argument <code>CLUSTAL_DNA=filename</code> or
+<code>CLUSTAL_AA=filename</code>, where 
+<code>filename</code> can be <code>stdout</code>.  It does not generate a tree, but instead
+generates a <code>CLUSTALW</code> alignment for each clonotype (using either bases or 
+amino acids), with one sequence for each
+cell.  This sequence is the concatenation of the per-chain sequences, with the appropriate number
+of gap (-) characters shown if a chain is missing.  As above, we recommend using the
+<code>COMPLETE</code> option to avoid this happening.</p>
+
+<p>If <code>filename</code> is <code>stdout</code>, then the alignments are printed out
+after each clonotype picture.  Otherwise, a tar file is generated, which if untarred yields
+one file per clonotype.  To avoid confusion, it would be best for <code>filename</code> to have
+the suffix <code>.tar</code>.  We also recommend using <code>MIN_CELLS=...</code> or some other 
+argument to restrict the number of files that would be generated upon untarring.</p>
+
+<p>This method can be used to provide input to another program that will generate a tree.</p>
+
+<hr>
+
+<p><b>Method 4.</b>
+This method is invoked using the argument <code>PHYLIP_DNA=filename</code> or
+<code>PHYLIP_AA=filename</code>, and is just like method 3, except for the output format.<p>
+
+</body>
+</html>

@@ -267,7 +267,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 8] = [
+pub const SITE_EXAMPLES: [(&str, &str); 9] = [
     // 1.
     (
         "pages/auto/clonotype_with_gex.html",
@@ -314,5 +314,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 8] = [
     (
         "img/iso.svg",
         "BCR=123085,123089 MIN_CELLS=5 MIN_CHAINS_EXACT=2 NOPRINT PLOT_BY_ISOTYPE=stdout",
+    ),
+    // 9.
+    (
+        "pages/auto/tree_example.html",
+        "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW HTML",
     ),
 ];
