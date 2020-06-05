@@ -955,7 +955,7 @@ pub fn group_and_print_clonotypes(
                     let mut rooted = vec![false; nvert];
                     rooted[r] = true;
                     let mut roots = vec![r];
-                    for i in 0..n {
+                    for i in 0..nvert {
                         let v = roots[i];
                         for j in index[v].iter() {
                             let e = &mut edges[*j];
@@ -970,10 +970,18 @@ pub fn group_and_print_clonotypes(
                         }
                     }
 
+                    /*
+                    // XXX:
+                    fwriteln!(logx, "calling newick with the following edges:");
+                    for i in 0..edges.len() {
+                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
+                    }
+                    */
+
                     // Make edge names.
 
                     let mut vnames = Vec::<String>::new();
-                    for i in 0..=n {
+                    for i in 0..nvert {
                         let mut len = 0.0;
                         for j in 0..edges.len() {
                             if edges[j].1 == i {
@@ -982,27 +990,12 @@ pub fn group_and_print_clonotypes(
                         }
                         if i == 0 {
                             vnames.push(format!("{}", i));
-                        } else {
+                        } else if i <= n {
                             vnames.push(format!("{} [{:.2}]", i, len));
+                        } else {
+                            vnames.push(format!("• [{:.2}]", len));
                         }
                     }
-                    for i in n + 1..nvert {
-                        let mut len = 0.0;
-                        for j in 0..edges.len() {
-                            if edges[j].1 == i {
-                                len = edges[j].2;
-                            }
-                        }
-                        vnames.push(format!("• [{:.2}]", len));
-                    }
-
-                    /*
-                    // XXX:
-                    fwriteln!(logx, "calling newick with the following edges:");
-                    for i in 0..edges.len() {
-                    fwriteln!(logx, "{}: {} =={}==> {}", i, edges[i].0, edges[i].2, edges[i].1);
-                    }
-                    */
 
                     // Display the tree.
 
