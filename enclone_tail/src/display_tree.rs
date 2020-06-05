@@ -59,18 +59,6 @@ pub fn display_tree(
         }
     }
 
-    /*
-    // XXX:
-    println!("\nvertices:\n");
-    for i in 0..n {
-        println!("{} = {}", i, vnames[i]);
-    }
-    println!("\ndirected edges:\n");
-    for i in 0..edges.len() {
-        println!("{}.  {} ==> {} [{}]", i, edges[i].0, edges[i].1, edges[i].2);
-    }
-    */
-
     // For each vertex, define a path, which is the sequence of edge indices from the root to it.
 
     let mut vpaths = vec![Vec::<usize>::new(); n];
@@ -155,15 +143,6 @@ pub fn display_tree(
     for i in 0..edges.len() {
         edges[i].2 = (edges[i].2 * mult).round().max(1.0);
     }
-
-    /*
-    // XXX:
-    println!("");
-    for i in 0..n {
-        println!("{} {}", vpaths[i].iter().format(", "), vnames[vs[i]]);
-    }
-    println!("");
-    */
 
     // Generate the lines.
 
