@@ -390,6 +390,7 @@ pub struct GeneralOpt {
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick0: bool,
+    pub tree: bool,
 }
 
 // Allele finding algorithmic options.
