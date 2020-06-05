@@ -446,19 +446,21 @@ fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
     use std::time::Duration;
 
-    // Set up dictionary exceptions.
+    // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
+    // places and reduce the dictionary exceptions accordingly.
 
     let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cred crispr \
         csv ctrlc cvars dejavusansmono dyiid enclone executables false foursie foursies genomics \
         germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
-        indel indels json linux loh lvars macbook metadata mkdir moresies multiomic ncbi ncross \
+        indel indels json levenshtein linux loh lvars macbook metadata mkdir \
+        moresies multiomic ncbi ncross \
         nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
         preinstalled prepends screenshot spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding tracebacks trb twosie ubuntu \
-        umi umis underperforming unicode vdj website wget wikimedia \
-        wikipedia workaround workflow xf xhtml xkcd zenodo zx";
+        umi umis underperforming unicode untarring vdj website wget wikimedia \
+        wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.

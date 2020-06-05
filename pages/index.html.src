@@ -406,6 +406,10 @@ For completeness, here are all the other pages on this site:
     <td align="left"><a href="pages/plot.html">honeycomb plots</a></td>
     <td align="left">everyone</td>
 </tr>
+<tr>
+    <td align="left"><a href="pages/auto/tree.html">making phylogenetic trees</a></td>
+    <td align="left">everyone</td>
+</tr>
 </tbody>
 </table>
 
@@ -522,6 +526,9 @@ antigen specificity to multiple antigens directly via feature barcoding
 vaccine or therapeutic development by picking large clonotypes with high antigen counts and single
 or multiple antigen specificities.</p>
 <p>We are actively working on further functionality that will make this process even more effective.</p>
+
+<p>See <a href="pages/auto/tree.html">this</a> for how to generate phylogenetic trees
+using enclone.</p>
 
 <p>Another example use of enclone shows how to <b><a href="pages/auto/expanded.html">detect illusory clonotypes</a></b>.</p>
 
