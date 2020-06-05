@@ -58,11 +58,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "provide an option to group clonotypes by distance",
         );
         h.ldoc("cloning", "package V..J region into a cloning vector");
-        h.ldoc(
-            "phylogeny",
-            "generate a phylogeny for the exact clonotypes within a clonotype",
-        );
-
         h.ldoc("windows", "make enclone work on windows computers");
         h.print_tab2();
         h.print(
