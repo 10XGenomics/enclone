@@ -707,19 +707,6 @@ command line.
 ┃Similarly, <span style="font-weight:bold;">FASTA_AA=filename</span> may be used to generate a matching amino acid FASTA file.            ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">CLUSTAL and PHYLIP output.</span>  This is a separate feature.  To generate CLUSTAL-type output, with one┃
-┃line per cell, use <span style="font-weight:bold;">CLUSTAL_AA=filename</span> or <span style="font-weight:bold;">CLUSTAL_AA=stdout</span>, for amino acid sequences, or         ┃
-┃similarly <span style="font-weight:bold;">CLUSTAL_DNA</span> to get DNA sequences.  For PHYLIP-type output, used <span style="font-weight:bold;">PHYLIP_AA</span> or <span style="font-weight:bold;">PHYLIP_DNA</span>.┃
-┃ For all of these, each sequence is the concatenation of the V..J sequences for a given cell's    ┃
-┃chains, with gap (-) characters shown if a chain is missing.  We recommend using appropriate      ┃
-┃filtering options to drop the exact subclonotypes having missing chains, e.g. using <span style="font-weight:bold;">COMPLETE</span>.     ┃
-┃Also you should probably restrict the clonotypes in scope using <span style="font-weight:bold;">MIN_CELLS=...</span> or something else.  ┃
-┃If one does not specify stdout, the output is a single file obtained by tarring together one file ┃
-┃per clonotype, without actually generating separate files.  To avoid confusion, we suggest that   ┃
-┃the filename end with ".tar".                                                                     ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
@@ -1306,19 +1293,17 @@ enclone help ideas
 
 <span style="font-weight:bold;">features that might be implemented in enclone</span>
 
-┌───────────────────┬──────────────────────────────────────────────────────────────────┐
-│speed              │  make enclone faster                                             │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│CDRn               │  make CDR1 and CDR2 viewable in the same way that CDR3 is now    │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│distance grouping  │  provide an option to group clonotypes by distance               │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│cloning            │  package V..J region into a cloning vector                       │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│phylogeny          │  generate a phylogeny for the exact clonotypes within a clonotype│
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│windows            │  make enclone work on windows computers                          │
-└───────────────────┴──────────────────────────────────────────────────────────────────┘
+┌───────────────────┬──────────────────────────────────────────────────────────────┐
+│speed              │  make enclone faster                                         │
+├───────────────────┼──────────────────────────────────────────────────────────────┤
+│CDRn               │  make CDR1 and CDR2 viewable in the same way that CDR3 is now│
+├───────────────────┼──────────────────────────────────────────────────────────────┤
+│distance grouping  │  provide an option to group clonotypes by distance           │
+├───────────────────┼──────────────────────────────────────────────────────────────┤
+│cloning            │  package V..J region into a cloning vector                   │
+├───────────────────┼──────────────────────────────────────────────────────────────┤
+│windows            │  make enclone work on windows computers                      │
+└───────────────────┴──────────────────────────────────────────────────────────────┘
 
 Please let us know if you are interested in these features, or if there are other features that
 you would like us to implement!

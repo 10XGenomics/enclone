@@ -10,4 +10,5 @@ fn main() {
 
     insert_html("pages/index.html.src", "index.html", false);
     insert_html("pages/expanded.html.src", "pages/auto/expanded.html", false);
+    insert_html("pages/tree.html.src", "pages/auto/tree.html", false);
 }
