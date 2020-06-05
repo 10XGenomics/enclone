@@ -1,11 +1,13 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Implement the phylogenetic tree neighbor joining algorithm.
+// Implement the phylogenetic tree neighbor joining algorithm, with one tweak (see below).
 //
 // Saitou N., Nei M. (1987). The neighbor-joining method: a new method for reconstructing
 // phylogenetic trees.  Molecular Biology and Evolution 4: 406–425. PMID 3447015.
 //
 // We follow https://en.wikipedia.org/wiki/Neighbor_joining.
+//
+// Tweak: negative edge lengths are replaced by zero.
 //
 // The single input argument should be a symmetric n x n matrix, n >= 1.
 // The output is a vector of 2n-3 edges, represented as (v, w, distance).
@@ -99,6 +101,9 @@ pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
         if n == 3 {
             edges[2 * n0 - 4] = (verts[0], verts[1], d[0][1]);
         }
+    }
+    for i in 0..edges.len() {
+        edges[i].2 = edges[i].2.max(0.0);
     }
     edges
 }
