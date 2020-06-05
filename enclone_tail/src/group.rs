@@ -980,7 +980,11 @@ pub fn group_and_print_clonotypes(
                                 len = edges[j].2;
                             }
                         }
-                        vnames.push(format!("{} [{:.2}]", i, len));
+                        if i == 0 {
+                            vnames.push(format!("{}", i));
+                        } else {
+                            vnames.push(format!("{} [{:.2}]", i, len));
+                        }
                     }
                     for i in n + 1..nvert {
                         let mut len = 0.0;
