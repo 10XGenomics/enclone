@@ -972,9 +972,13 @@ pub fn group_and_print_clonotypes(
                             }
                         }
                         if i == 0 {
-                            vnames.push(format!("{}", i));
+                            vnames.push("•".to_string());
                         } else if i <= n {
-                            vnames.push(format!("{} [{:.2}]", i, len));
+                            if ctl.pretty {
+                                vnames.push(format!("[01m[31m{}[0m [{:.2}]", i, len));
+                            } else {
+                                vnames.push(format!("{} [{:.2}]", i, len));
+                            }
                         } else {
                             vnames.push(format!("• [{:.2}]", len));
                         }
