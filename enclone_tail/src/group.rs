@@ -900,7 +900,38 @@ pub fn group_and_print_clonotypes(
 
                 // Generate the neighborhood joining tree associated to these data.
 
-                let tree = neighbor_joining(&distp);
+                let mut tree = neighbor_joining(&distp);
+                let mut nvert = 0;
+                for i in 0..tree.len() {
+                    nvert = max(nvert, tree[i].0 + 1);
+                    nvert = max(nvert, tree[i].1 + 1);
+                }
+
+                // Use the root to direct the edges.
+
+                let r = 0;
+                let mut index = vec![Vec::<usize>::new(); nvert];
+                for i in 0..tree.len() {
+                    index[tree[i].0].push(i);
+                    index[tree[i].1].push(i);
+                }
+                let mut rooted = vec![false; nvert];
+                rooted[r] = true;
+                let mut roots = vec![r];
+                for i in 0..nvert {
+                    let v = roots[i];
+                    for j in index[v].iter() {
+                        let e = &mut tree[*j];
+
+                        if e.1 == v && !rooted[e.0] {
+                            swap(&mut e.0, &mut e.1);
+                        }
+                        if e.0 == v && !rooted[e.1] {
+                            rooted[e.1] = true;
+                            roots.push(e.1);
+                        }
+                    }
+                }
 
                 // Output in Newick format.
 
@@ -910,11 +941,8 @@ pub fn group_and_print_clonotypes(
                         vnames.push(format!("{}", i));
                     }
                     let mut edges = Vec::<(usize, usize, String)>::new();
-                    let mut nvert = 0;
                     for i in 0..tree.len() {
                         edges.push((tree[i].0, tree[i].1, format!("{:.2}", tree[i].2)));
-                        nvert = max(nvert, tree[i].0 + 1);
-                        nvert = max(nvert, tree[i].1 + 1);
                     }
                     for i in n + 1..nvert {
                         vnames.push(format!("I{}", i - n));
@@ -932,33 +960,6 @@ pub fn group_and_print_clonotypes(
                         edges.push((tree[i].0, tree[i].1, tree[i].2));
                         nvert = max(nvert, tree[i].0 + 1);
                         nvert = max(nvert, tree[i].1 + 1);
-                    }
-
-                    // Use the root to direct the edges.
-                    // Seems bad that this is also in newick.rs and display_tree.rs.
-
-                    let mut index = vec![Vec::<usize>::new(); nvert];
-                    for i in 0..edges.len() {
-                        index[edges[i].0].push(i);
-                        index[edges[i].1].push(i);
-                    }
-                    let r = 0;
-                    let mut rooted = vec![false; nvert];
-                    rooted[r] = true;
-                    let mut roots = vec![r];
-                    for i in 0..nvert {
-                        let v = roots[i];
-                        for j in index[v].iter() {
-                            let e = &mut edges[*j];
-
-                            if e.1 == v && !rooted[e.0] {
-                                swap(&mut e.0, &mut e.1);
-                            }
-                            if e.0 == v && !rooted[e.1] {
-                                rooted[e.1] = true;
-                                roots.push(e.1);
-                            }
-                        }
                     }
 
                     // Make edge names.
