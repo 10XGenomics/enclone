@@ -945,8 +945,8 @@ pub fn group_and_print_clonotypes(
                         nvert = max(nvert, tree[i].0 + 1);
                         nvert = max(nvert, tree[i].1 + 1);
                     }
-                    for i in n + 1..nvert {
-                        vnames.push(format!("I{}", i - n));
+                    for _ in n + 1..nvert {
+                        vnames.push(format!("•"));
                     }
 
                     /*
