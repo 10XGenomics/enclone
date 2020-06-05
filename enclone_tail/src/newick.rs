@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Convert a rooted three into Newick format, see https://en.wikipedia.org/wiki/Newick_format.
+// Convert a rooted directed tree into Newick format,
+// see https://en.wikipedia.org/wiki/Newick_format.
 //
 // This is not an efficient implementation.
 //
@@ -9,16 +10,15 @@
 // Input data:
 // 1. vertex names = vnames
 // 2. index of root vertex = r
-// 3. undirected edges (v, w, edge-name) = edges, where v and w are zero-based indices of vertices.
+// 3. edges (v, w, edge-name) = edges, where v and w are zero-based indices of vertices.
 //
 // Upon entry, the edge-names should be string representations of weights.
 
 use itertools::Itertools;
 use std::cmp::max;
-use std::mem::swap;
 
 pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)>) -> String {
-    // First use the root to direct the edges.
+    // Set up.
 
     let mut edges = edges.clone();
     let mut n = 0;
@@ -33,23 +33,6 @@ pub fn newick(vnames: &Vec<String>, r: usize, edges: &Vec<(usize, usize, String)
         index[edges[i].1].push(i);
     }
     assert_eq!(n, vnames.len());
-    let mut rooted = vec![false; n];
-    rooted[r] = true;
-    let mut roots = vec![r];
-    for i in 0..n {
-        let v = roots[i];
-        for j in index[v].iter() {
-            let e = &mut edges[*j];
-
-            if e.1 == v && !rooted[e.0] {
-                swap(&mut e.0, &mut e.1);
-            }
-            if e.0 == v && !rooted[e.1] {
-                rooted[e.1] = true;
-                roots.push(e.1);
-            }
-        }
-    }
 
     // Incorporate the vertex names into the weights.
 
