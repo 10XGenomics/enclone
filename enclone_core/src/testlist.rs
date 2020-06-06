@@ -318,6 +318,6 @@ pub const SITE_EXAMPLES: [(&str, &str); 9] = [
     // 9.
     (
         "pages/auto/tree_example.html",
-        "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW HTML",
+        "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW LVARSP=dref HTML",
     ),
 ];
