@@ -75,10 +75,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "enclone help color",
             "how enclone uses color, and related things",
         );
-        h.doc(
-            "enclone help ideas",
-            "ideas for features that might be implemented",
-        );
         h.doc("enclone help faq", "frequently asked questions (long)");
         h.doc("enclone help developer", "a few things for developers");
         h.ldoc_greenish(

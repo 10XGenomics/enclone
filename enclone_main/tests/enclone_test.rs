@@ -909,7 +909,6 @@ fn test_help_output() {
         "display",
         "indels",
         "color",
-        "ideas",
         "faq",
         "developer",
         "all",
