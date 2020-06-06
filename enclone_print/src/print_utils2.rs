@@ -3,13 +3,13 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::types::*;
 use amino::*;
 use ansi_escape::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
+use enclone_core::types::*;
 use itertools::*;
 use ndarray::s;
 use stats_utils::*;

@@ -11,4 +11,3 @@ pub mod print_utils3;
 pub mod print_utils4;
 pub mod print_utils5;
 pub mod proto_io;
-pub mod types;
