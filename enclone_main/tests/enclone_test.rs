@@ -451,8 +451,8 @@ fn test_for_broken_links_and_spellcheck() {
 
     let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cred crispr \
-        csv ctrlc cvars dejavusansmono dyiid enclone executables false foursie foursies genomics \
-        germline github githubusercontent google grok gz html \
+        csv ctrlc cvars dejavusansmono dref dyiid enclone executables false foursie foursies \
+        genomics germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
         indel indels json levenshtein linux loh lvars macbook metadata mkdir \
         moresies multiomic ncbi ncross \
