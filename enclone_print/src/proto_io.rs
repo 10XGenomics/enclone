@@ -19,8 +19,8 @@
 //! - `Length` is an unsigned 32 bit integer stored in **Big endian** order.
 //! - If there are multiple messages, they are stored consecutively following the same format.
 
-use crate::types::EncloneOutputs;
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
+use enclone_core::types::EncloneOutputs;
 use failure::{format_err, Error};
 use prost::Message;
 use std::fs::File;

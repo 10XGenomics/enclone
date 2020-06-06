@@ -632,11 +632,18 @@ name = "enclone_core"
 version = "0.3.1"
 dependencies = [
  "ansi_escape",
+ "bio",
+ "bytes 0.4.12",
  "chrono",
  "debruijn",
  "hdf5",
  "mirror_sparse_matrix",
+ "prost",
+ "prost-build",
  "regex",
+ "serde",
+ "serde_derive",
+ "serde_json",
  "string_utils",
  "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -726,7 +733,6 @@ dependencies = [
  "ansi_escape",
  "debruijn",
  "enclone_core",
- "enclone_print",
  "equiv",
  "hdf5",
  "io_utils",
