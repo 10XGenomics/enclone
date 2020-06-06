@@ -43,32 +43,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Provide ideas help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "ideas") || h.help_all {
-        h.begin_doc("ideas");
-        h.print("\n\\bold{features that might be implemented in enclone}\n\n");
-        h.doc("speed", "make enclone faster");
-        h.ldoc(
-            "CDRn",
-            "make CDR1 and CDR2 viewable in the same way that CDR3 is now",
-        );
-        h.ldoc(
-            "distance grouping",
-            "provide an option to group clonotypes by distance",
-        );
-        h.ldoc("cloning", "package V..J region into a cloning vector");
-        h.ldoc("windows", "make enclone work on windows computers");
-        h.print_tab2();
-        h.print(
-            "\nPlease let us know if you are interested in these features, or if there are \
-             other features that you would like us to implement!\n\n",
-        );
-        h.end_doc();
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
     // Provide color help.
     //
     // Here, and in substitute_enclone_color in plot.rs, we swap the order of colors, placing the
