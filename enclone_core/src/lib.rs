@@ -3,6 +3,7 @@
 pub mod defs;
 pub mod print_tools;
 pub mod testlist;
+pub mod types;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 

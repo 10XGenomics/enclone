@@ -1,11 +1,11 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use crate::print_utils1::*;
-use crate::types::*;
 use amino::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
+use enclone_core::types::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::io::Write;

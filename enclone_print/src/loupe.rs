@@ -9,9 +9,9 @@ use self::refx::*;
 use amino::*;
 use bio::alignment::pairwise::*;
 
-use crate::types::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
+use enclone_core::types::*;
 use io_utils::*;
 use vector_utils::*;
 
