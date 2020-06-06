@@ -38,9 +38,11 @@ This sometimes yields negative distances, which we change to zero.  We have only
 the edge emanating from the root.
 </p>
 
-<p>Finally, the tree is visualized using plain text, as shown in the example below.</p>
+<p>Finally, the tree is visualized using plain text, as shown in the example below.  The
+added field <code>dref</code> shows the distance of each exact subclonotype from the 
+donor reference, away from the recombination region.</p>
 
-<code>enclone BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW</code>
+<code>enclone BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW LVARSP=dref</code>
 
 #include pages/auto/tree_example.html
 
