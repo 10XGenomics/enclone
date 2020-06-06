@@ -1,9 +1,9 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use crate::types::*;
 use amino::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
+use enclone_core::types::*;
 use equiv::EquivRel;
 use itertools::Itertools;
 use std::cmp::max;
