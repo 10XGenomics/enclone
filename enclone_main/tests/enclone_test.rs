@@ -169,7 +169,7 @@ fn test_licenses() {
             "\nFailed to execute cargo-license.  This means that either you have not \
             installed cargo-license,\nor that you have not added it to your PATH.  \
             To install it, type:\n\
-            rustup install cargo-license\n\
+            cargo install cargo-license\n\
             When it is done installing, it will tell you where it put the binary, and you\n\
             should add that path to your PATH.\n\
             You can also avoid this test entirely by running instead \
