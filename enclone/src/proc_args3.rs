@@ -105,7 +105,7 @@ fn expand_analysis_sets(x: &str) -> String {
                 let ids = ids.split(',').collect::<Vec<&str>>();
                 let mut ids2 = Vec::<String>::new();
 
-                // Remove wiped analysis ids.
+                // Remove wiped analysis IDs.
 
                 for j in 0..ids.len() {
                     // do not use xena.txgmesh.net, does not work from inside enclone
@@ -141,7 +141,7 @@ fn expand_analysis_sets(x: &str) -> String {
                 continue;
             } else {
                 eprintln!(
-                    "\nIt looks like you've provided an incorrect analysis set id {}.\n",
+                    "\nIt looks like you've provided an incorrect analysis set ID {}.\n",
                     setid
                 );
                 std::process::exit(1);
@@ -236,7 +236,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                     pp = format!("{}/outs", path);
                     if !path_exists(&pp) {
                         eprintln!(
-                            "\nIt looks like you've provided a xena analysis id for \
+                            "\nIt looks like you've provided an analysis ID for \
                             which the pipeline outs folder\n{}\nhas not yet been generated.\n\
                             This path did not exist:\n{}\n\n",
                             p, pp
@@ -246,7 +246,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                 } else {
                     eprintln!(
                         "\nIt looks like you've provided either an incorrect \
-                        xena id {} or else one for which\n\
+                        analysis ID {} or else one for which\n\
                         the pipeline outs folder has not yet been generated.\n\
                         This URL\n{}\ndid not provide a path.\n",
                         p, url
