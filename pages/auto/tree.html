@@ -58,7 +58,10 @@ the edge emanating from the root.
 <p>Note that for a given clonotype, the neighbor joining algorithm is 
 O(n<sup>3</sup>), where n is the
 number of exact subclonotypes in the clonotype.  Thus for sample types having highly complex
-clonotypes (e.g. with ~1000 subclonotypes), the algorithm will be very slow.</p>
+clonotypes (e.g. with ~1000 subclonotypes), the algorithm will be very slow.  We have only
+observed this in a lymphoma sample, and of course for such cases, the tree would be so large
+that it would be difficult to do anything with it.
+</p>
 
 <p>Finally, the tree is visualized using plain text, as shown in the example below.  The
 added field <code>dref</code> shows the distance of each exact subclonotype from the 
