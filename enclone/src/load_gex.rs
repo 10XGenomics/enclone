@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 //
-// Load gene expression and antibody data.
+// Load gene expression and feature barcoding (antibody, antigen) data from 
+// Cell Ranger outputs.
 
 use enclone_core::defs::*;
 use hdf5::types::FixedAscii;
@@ -395,7 +396,7 @@ pub fn load_gex(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Get gene expression and antibody counts.
+// Get gene expression and feature barcoding counts.
 
 pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_features = Vec::<Vec<String>>::new();
