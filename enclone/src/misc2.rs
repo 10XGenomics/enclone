@@ -19,7 +19,7 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Filter out putative gel bead contamination.  We look for cases where inside a
-// given exact subclonotype, the same first or last half barcode is reused, and one
+// given exact subclonotype, the same first or last half of the barcode is reused, and one
 // instance has at least 10-fold higher UMI count.  If the fraction of the "bad"
 // clones is at least 20%, delete them.
 
