@@ -55,7 +55,7 @@ pub fn find_alleles(
     let ta = Instant::now();
     let mut alt_refs = Vec::<(usize, usize, DnaString)>::new(); // (donor, ref id, alt seq)
 
-    // Organize data by reference id.  Note that we ignore exact subclonotypes having four chains.
+    // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
 
     let mut allxy =
         vec![Vec::<(usize, Vec<u8>, Vec<usize>, usize, usize)>::new(); refdata.refs.len()];
@@ -93,7 +93,7 @@ pub fn find_alleles(
         }
     }
 
-    // Process each reference id.
+    // Process each reference ID.
 
     let mut vs = Vec::<usize>::new();
     for id in 0..refdata.refs.len() {
@@ -129,16 +129,16 @@ pub fn find_alleles(
         for di in 0..alls.len() {
             // Data here are given by "all", the relevant entries of which are:
             // 1: V..J sequence for one chain of a given info entry
-            // 2: the reference id(s) of the partner chain(s) -- possibly not used
+            // 2: the reference ID(s) of the partner chain(s) -- possibly not used
             // 3: the index in exact_clonotypes
-            // 4: the dataset id.
+            // 4: the dataset ID.
 
             let mut all = alls[di].clone();
             let donor_id = all[0].0;
 
             // If two entries have
             // * the same length CDR3 sequence and
-            // * the same partner chain reference ids for both V and J  and
+            // * the same partner chain reference ids for both V and J and
             // * the same length partner chain CDR3 sequence,
             // arbitrarily delete one of them.
             //
@@ -154,7 +154,8 @@ pub fn find_alleles(
             // Note that a vulnerability of the algorithm is that if there is a very large
             // clonotype, then artifactual pairs arising from it could provide enough "evidence"
             // to create an alternate allele, which in fact should not exist.  This has not been
-            // observed, but we haven't looked carefully.
+            // observed, but we haven't looked carefully. Biological cases such as lymphomas 
+            // could provide helpful test cases in this area.
 
             let mut to_delete = vec![false; all.len()];
             {
