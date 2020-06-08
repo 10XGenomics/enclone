@@ -851,7 +851,7 @@ fn test_dejavu() {
             let cksum_stdout = cksum_output_child.wait_with_output().unwrap();
             head_output_child.wait().unwrap();
             let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
-            println!("cksum = {}", cksum);
+            // println!("cksum = {}", cksum);
             assert!(cksum == "2474276863 1467\n".to_string());
         }
     }
