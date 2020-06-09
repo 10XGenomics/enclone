@@ -10,7 +10,7 @@ use string_utils::*;
 use vector_utils::*;
 
 // Field (variable) names.
-
+// Lead variables for exact subclonotypes and cells.
 pub const LVARS_ALLOWED: [&str; 23] = [
     "datasets",
     "samples",
@@ -37,6 +37,7 @@ pub const LVARS_ALLOWED: [&str; 23] = [
     "mark",
 ];
 
+// Chain variables that can be used for contigs and chains
 pub const CVARS_ALLOWED: [&str; 24] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
     "r_μ", "const", "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes",
@@ -394,7 +395,7 @@ pub struct GeneralOpt {
     pub allow_inconsistent: bool,
 }
 
-// Allele finding algorithmic options.
+// Allele-finding algorithmic options.
 
 #[derive(Default)]
 pub struct AlleleAlgOpt {
@@ -402,7 +403,7 @@ pub struct AlleleAlgOpt {
     pub min_alt: usize,
 }
 
-// Allele finding print options.
+// Allele-finding print options.
 
 #[derive(Default)]
 pub struct AllelePrintOpt {
@@ -433,6 +434,7 @@ pub struct JoinAlgOpt {
 }
 
 // Clonotype filtering options.
+// These fall into 2 categories: 1) on by default and 2) user-specified.
 
 #[derive(Default)]
 pub struct ClonoFiltOpt {
@@ -695,7 +697,7 @@ pub struct CloneInfo {
     pub chain_types: Vec<String>, // chain types
 }
 
-// Gene expression stuff.
+// Gene expression and feature barcoding stuff.
 
 #[derive(Default)]
 pub struct GexInfo {
