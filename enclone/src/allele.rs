@@ -154,7 +154,7 @@ pub fn find_alleles(
             // Note that a vulnerability of the algorithm is that if there is a very large
             // clonotype, then artifactual pairs arising from it could provide enough "evidence"
             // to create an alternate allele, which in fact should not exist.  This has not been
-            // observed, but we haven't looked carefully. Biological cases such as lymphomas 
+            // observed, but we haven't looked carefully. Biological cases such as lymphomas
             // could provide helpful test cases in this area.
 
             let mut to_delete = vec![false; all.len()];
