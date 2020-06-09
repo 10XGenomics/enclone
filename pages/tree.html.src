@@ -17,7 +17,7 @@
 
 <p>enclone provides several mechanisms for creating and displaying a phylogenetic tree for each 
 clonotype.  These are initial mechanisms, which are likely to be expanded and/or improved over 
-time in response to feedback.  For all of these mechanisms, we recommend using the argument
+time in response to feedback.  The initial implementation is inspired by the Levenshtein-NJ method described by <a href="https://dx.doi.org/10.1093/bioinformatics/btx533">Yermanos <i>et al</i>. 2017</a>. For all of these mechanisms, we recommend using the argument
 <code>COMPLETE</code> to remove exact subclonotypes that are missing some chains.</p>
 
 <hr>
