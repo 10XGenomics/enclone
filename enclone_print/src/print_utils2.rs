@@ -57,7 +57,7 @@ pub fn get_gex_matrix_entry(
 // it generates a row of parseable output.  And it does some other things that are not described
 // here.
 //
-// Awful interface, should work to improve.
+// TODO: Awful interface, should work to improve.
 
 pub fn row_fill(
     pass: usize,
@@ -805,7 +805,7 @@ pub fn row_fill(
         }
     }
 
-    // Sanity check.  It's here because if it fails and that failue was not detected, something
+    // Sanity check.  It's here because if it fails and that failure was not detected, something
     // exceptionally cryptic would happen downstream.
 
     assert_eq!(row.len(), lvars.len() + 1);
@@ -1287,7 +1287,7 @@ pub fn row_fill(
                 // const entry per exact subclonotype.
                 cvar![j, var, format!("{}", constx.iter().format(","))];
 
-            // Compute potential whitelist contamination percent.  And filter.
+            // Compute potential whitelist contamination percent and filter.
             // This is an undocumented option.
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
