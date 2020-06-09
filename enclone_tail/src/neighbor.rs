@@ -7,7 +7,8 @@
 //
 // We follow https://en.wikipedia.org/wiki/Neighbor_joining.
 //
-// Tweak: negative edge lengths are replaced by zero.
+// Tweak: negative edge lengths are replaced by zero as suggested by Kuhner and Felsenstein (1994).
+// Kuhner M.K., Felsenstein J. (1994). A simulation comparison of phylogeny algorithms under equal and unequal evolutionary rates. Molecular Biology and Evolution 11(3): 459-468. PMID 8015439.
 //
 // The single input argument should be a symmetric n x n matrix, n >= 1.
 // The output is a vector of 2n-3 edges, represented as (v, w, distance).
