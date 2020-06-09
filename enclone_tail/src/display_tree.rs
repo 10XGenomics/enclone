@@ -4,7 +4,7 @@
 // floating point length.  A width parameter sets the approximate page width in characters,
 // with edge lengths scaled roughly to match this.
 //
-// The design is taken from https://gitlab.com/Noughmad/ptree, by Miha Čančula.
+// The design is adapted from https://gitlab.com/Noughmad/ptree, by Miha Čančula.
 
 use itertools::Itertools;
 use std::cmp::max;
