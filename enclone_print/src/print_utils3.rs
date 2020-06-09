@@ -416,10 +416,14 @@ pub fn insert_reference_rows(
                         refx += "◦";
                     } else {
                         let mut log = Vec::<u8>::new();
-                        emit_codon_color_escape(&refseq[3 * p..3 * p + 3], &mut log);
                         let aa = codon_to_aa(&refseq[3 * p..3 * p + 3]);
-                        log.push(aa);
-                        emit_end_escape(&mut log);
+                        if ctl.gen_opt.color == "codon".to_string() {
+                            emit_codon_color_escape(&refseq[3 * p..3 * p + 3], &mut log);
+                            log.push(aa);
+                            emit_end_escape(&mut log);
+                        } else {
+                            color_by_property(&vec![aa], &mut log);
+                        }
                         refx += strme(&log);
                     }
                     if k < show_aa[cz].len() - 1 && p == cs + n - 1 {

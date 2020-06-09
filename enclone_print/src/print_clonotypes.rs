@@ -21,15 +21,6 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
-// TO DO: provide alternate coloring by amino acid properties:
-// 1. Aliphatic: A, G, I, L, P, V
-// 2. Aromatic: F, W, Y
-// 3. Acidic: D, E
-// 4. Basic: R, H, K
-// 5. Hydroxylic: S, T
-// 6. Sulfurous: C, M
-// 7. Amidic: N, Q
-
 // Print clonotypes.  A key challenge here is to define the columns that represent shared
 // chains.  This is given below by the code that forms an equivalence relation on the CDR3_AAs.
 //

@@ -86,6 +86,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     ctl.gen_opt.full_counts = true;
+    ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -500,6 +501,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
         // Other.
+        } else if arg.starts_with("COLOR=") {
+            ctl.gen_opt.color = arg.after("COLOR=").to_string();
+            if ctl.gen_opt.color != "codon".to_string()
+                && ctl.gen_opt.color != "property".to_string()
+            {
+                eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
+                std::process::exit(1);
+            }
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
         } else if arg.starts_with("BI=") {

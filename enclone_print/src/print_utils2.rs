@@ -962,10 +962,14 @@ pub fn row_fill(
                         cx[col][j] += "*";
                     } else {
                         let mut log = Vec::<u8>::new();
-                        emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
                         let aa = codon_to_aa(&seq_amino[3 * p..3 * p + 3]);
-                        log.push(aa);
-                        emit_end_escape(&mut log);
+                        if ctl.gen_opt.color == "codon".to_string() {
+                            emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
+                            log.push(aa);
+                            emit_end_escape(&mut log);
+                        } else {
+                            color_by_property(&vec![aa], &mut log);
+                        }
                         cx[col][j] += strme(&log);
                     }
                     if k < show_aa[col].len() - 1 && p == cs + n - 1 {
