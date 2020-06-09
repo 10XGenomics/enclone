@@ -15,6 +15,7 @@ use enclone_core::types::*;
 use io_utils::*;
 use vector_utils::*;
 
+// Export donor reference/inferred alt allele sequences
 pub fn make_donor_refs(
     alt_refs: &Vec<(usize, usize, DnaString)>,
     refdata: &RefData,
