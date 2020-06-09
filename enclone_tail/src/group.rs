@@ -992,7 +992,7 @@ pub fn group_and_print_clonotypes(
                 }
             }
 
-            // Generate fasta output.
+            // Generate FASTA output.
 
             if ctl.gen_opt.fasta_filename.len() > 0 {
                 for (k, u) in exacts[oo].iter().enumerate() {
