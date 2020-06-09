@@ -44,8 +44,8 @@ pub const TESTS: [&str; 89] = [
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
-    // 9. tests PER_CELL
-    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
+    // 9. tests PER_CELL and unicode
+    r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,samples,donors,datasets AMINO=share
