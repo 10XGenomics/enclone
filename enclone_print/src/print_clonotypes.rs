@@ -80,7 +80,7 @@ pub fn print_clonotypes(
     set_speakers(&ctl, &mut parseable_fields);
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
 
-    // Test for presence of gex data.
+    // Test for presence of GEX/FB data.
 
     let mut have_gex = false;
     for i in 0..ctl.sample_info.gex_path.len() {
@@ -286,7 +286,7 @@ pub fn print_clonotypes(
                 continue;
             }
 
-            // Generate loupe data.
+            // Generate Loupe data.
 
             if (ctl.gen_opt.binary.len() > 0 || ctl.gen_opt.proto.len() > 0) && pass == 2 {
                 loupe_clonotypes.push(make_loupe_clonotype(
@@ -449,7 +449,6 @@ pub fn print_clonotypes(
                 let lvars = lvarsc.clone();
 
                 // Now build table content.
-                // sr: now pretty pointless
 
                 let mut sr = Vec::<(Vec<String>, Vec<Vec<String>>, Vec<Vec<u8>>, usize)>::new();
                 let mut groups = HashMap::<usize, Vec<usize>>::new();
@@ -506,7 +505,8 @@ pub fn print_clonotypes(
 
                 let mut stats = Vec::<(String, Vec<f64>)>::new();
 
-                // Compute "cred" stats.
+                // Compute "cred" stats (credibility/# of neighboring cells that are also 
+                // B cells).
 
                 let mut cred = vec![Vec::<String>::new(); lvars.len()];
                 for k in 0..lvars.len() {
@@ -545,7 +545,7 @@ pub fn print_clonotypes(
                     }
                 }
 
-                // Compute pe.
+                // Compute pe (PCA distance).
 
                 let mut pe = vec![Vec::<String>::new(); lvars.len()];
                 for k in 0..lvars.len() {
@@ -603,7 +603,7 @@ pub fn print_clonotypes(
                     }
                 }
 
-                // Compute ppe.
+                // Compute ppe (PCA distance).
 
                 let mut ppe = vec![Vec::<String>::new(); lvars.len()];
                 for k in 0..lvars.len() {
@@ -672,7 +672,7 @@ pub fn print_clonotypes(
                     }
                 }
 
-                // Compute npe.
+                // Compute npe (PCA distance).
 
                 let mut npe = vec![Vec::<String>::new(); lvars.len()];
                 for k in 0..lvars.len() {
@@ -936,7 +936,7 @@ pub fn print_clonotypes(
                                     row.push(format!("{:.2}", entropy));
                                 } else if have_gex {
                                     // this calc isn't needed except in _% case below
-                                    // ELIMINATE UNNEEDED CALC
+                                    // TODO: ELIMINATE UNNEEDED CALC
                                     let mut gex_count = 0.0;
                                     let p = bin_position(&gex_info.gex_barcodes[li], &bc);
                                     if p >= 0 {
@@ -1010,7 +1010,7 @@ pub fn print_clonotypes(
                                         }
                                         if computed {
                                             // note unneeded calculation above in certain cases
-                                            // ELIMINATE!
+                                            // TODO: ELIMINATE!
                                             if y0.ends_with("_min") {
                                             } else if y0.ends_with("_max") {
                                             } else if y0.ends_with("_μ") {
@@ -1390,7 +1390,7 @@ pub fn print_clonotypes(
                 let mut logz = String::new();
                 make_table(&ctl, &mut rows, &justify, &mlog, &mut logz);
 
-                // Add phyologeny.
+                // Add phylogeny.
 
                 if ctl.toy {
                     let mut vrefs = Vec::<Vec<u8>>::new();
