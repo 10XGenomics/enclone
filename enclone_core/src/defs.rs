@@ -393,6 +393,7 @@ pub struct GeneralOpt {
     pub newick: bool,
     pub tree: bool,
     pub allow_inconsistent: bool,
+    pub color: String,
 }
 
 // Allele-finding algorithmic options.

@@ -5,7 +5,10 @@
 use crate::help_utils::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_core::print_tools::*;
 use enclone_core::*;
+use io_utils::*;
+use std::io::Write;
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -45,15 +48,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     // Provide color help.
     //
-    // Here, and in substitute_enclone_color in plot.rs, we swap the order of colors, placing the
-    // last three before the first three.  This is because the last three seem to make a better
-    // three-color palette.
+    // Here, and in substitute_enclone_color in plot.rs, we swap the order of colors, so that the
+    // first three are as given, because they seem to make a better three-color palette.
 
     if (args.len() == 3 && args[1] == "help" && args[2] == "color") || h.help_all {
         h.begin_doc("color");
         h.print("\nHere is the color palette that enclone uses for amino acids:\n\n");
         let mut pal = String::new();
-        for i in 0..6 {
+        for i in 0..7 {
             let s = best_color_order(i);
             let mut log = Vec::<u8>::new();
             if !h.plain {
@@ -66,14 +68,15 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
                 emit_end_escape(&mut log);
                 pal += &stringme(&log);
             }
-            if i < 6 {
+            if i < 7 {
                 pal.push(' ');
             }
         }
         h.print_plain(&format!("{}\n", pal));
         h.print(
-            "\nWhen enclone shows amino acids, it colors each codon differently, via \
-             the following scheme:\n\n",
+            "\nWhen enclone shows amino acids, it uses one of two coloring schemes.  The first \
+             scheme (the default, or using the argument \\bold{COLOR=codon}), colors amino \
+             acids by codon, according to the following scheme:\n\n",
         );
         h.print_plain(&format!("{}\n\n", colored_codon_table(h.plain)));
         h.print(
@@ -81,8 +84,43 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              clonotype.\n\n",
         );
         h.print(
-            "The coloring is done using special characters, called ANSI escape characters.  \
-             Color is used occasionally elsewhere by enclone, and there is also some  \
+            "The second scheme for coloring amino acids, \\bold{COLOR=property}, colors amino \
+             acids by their properties, according to the following scheme:\n\n",
+        );
+        {
+            let mut log = Vec::<u8>::new();
+            if !h.plain {
+                fwrite!(log, "1. Aliphatic: ");
+                color_by_property(b"A G I L P V\n", &mut log);
+                fwrite!(log, "2. Aromatic: ");
+                color_by_property(b"F W Y\n", &mut log);
+                fwrite!(log, "3. Acidic: ");
+                color_by_property(b"D E\n", &mut log);
+                fwrite!(log, "4. Basic: ");
+                color_by_property(b"R H K\n", &mut log);
+                fwrite!(log, "5. Hydroxylic: ");
+                color_by_property(b"S T\n", &mut log);
+                fwrite!(log, "6. Sulfurous: ");
+                color_by_property(b"C M\n", &mut log);
+                fwrite!(log, "7. Amidic: ");
+                color_by_property(b"N Q\n", &mut log);
+                h.print_plain(&format!("{}\n", stringme(&log)));
+            } else {
+                h.print(
+                    "1. Aliphatic: A G I L P V\n\
+                    2. Aromatic: F W Y\n\
+                    3. Acidic: D E\n\
+                    4. Basic: R H K\n\
+                    5. Hydroxylic: S T\n\
+                    6. Sulfurous: C M\n\
+                    7. Amidic: N Q\n\n",
+                );
+            }
+        }
+        h.print(
+            "In both cases, \
+             the coloring is done using special characters, called ANSI escape characters.  \
+             Color is used occasionally elsewhere by enclone, and there is also some \
              bolding, accomplished using the same mechanism.\n\n\
              Correct display of colors and bolding depends on having a terminal window \
              that is properly set up.  As far as we know, this may always be the case, \
