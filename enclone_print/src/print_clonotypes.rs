@@ -505,7 +505,7 @@ pub fn print_clonotypes(
 
                 let mut stats = Vec::<(String, Vec<f64>)>::new();
 
-                // Compute "cred" stats (credibility/# of neighboring cells that are also 
+                // Compute "cred" stats (credibility/# of neighboring cells that are also
                 // B cells).
 
                 let mut cred = vec![Vec::<String>::new(); lvars.len()];
