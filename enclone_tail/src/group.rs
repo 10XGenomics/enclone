@@ -445,6 +445,7 @@ pub fn group_and_print_clonotypes(
                                         b"MILF", b"HY", b"FYW",
                                     ];
                                 } else {
+// Semi-conservative mutations
                                     x = vec![
                                         b"CSA", b"ATV", b"SAG", b"STNK", b"STPA", b"SGND",
                                         b"SNDEQK", b"NDEQHK", b"NEQHRK", b"FVLIM", b"HFY",
