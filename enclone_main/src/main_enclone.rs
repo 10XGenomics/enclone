@@ -1279,7 +1279,7 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     orbits = orbits2;
 
-    // Load the GEX data.
+    // Load the GEX and FB data.
 
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
