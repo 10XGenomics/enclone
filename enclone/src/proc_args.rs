@@ -249,6 +249,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut set_true = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
+        ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
