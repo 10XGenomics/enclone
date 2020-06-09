@@ -620,7 +620,7 @@ pub fn group_and_print_clonotypes(
                 }
             }
 
-            // Generate phylip output.  See:
+            // Generate sequential PHYLIP output.  See:
             // 1. http://www.atgc-montpellier.fr/phyml/usersguide.php?type=phylip
             // 2. http://evolution.genetics.washington.edu/phylip/doc/sequence.html.
             // We don't fold lines because it may not be necessary.  See giant value for W;
