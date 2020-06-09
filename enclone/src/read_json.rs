@@ -83,7 +83,9 @@ fn parse_vector_entry_from_json(
     if !ctl.gen_opt.ncell && !v["is_cell"].as_bool().unwrap_or(false) {
         return;
     }
-    vdj_cells.push(barcode.clone());
+    if v["is_cell"].as_bool().unwrap_or(false) {
+        vdj_cells.push(barcode.clone());
+    }
     if !v["productive"].as_bool().unwrap_or(false) {
         return;
     }

@@ -391,6 +391,7 @@ pub struct GeneralOpt {
     pub print_cpu_info: bool,
     pub newick: bool,
     pub tree: bool,
+    pub allow_inconsistent: bool,
 }
 
 // Allele finding algorithmic options.

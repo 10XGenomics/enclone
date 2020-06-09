@@ -40,7 +40,7 @@ use regex::Regex;
 use serde_json::Value;
 use stats_utils::*;
 use std::{
-    cmp::max,
+    cmp::{max, min},
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
@@ -687,6 +687,89 @@ pub fn main_enclone(args: &Vec<String>) {
         &to_ref_index,
         &mut vdj_cells,
     );
+
+    // Test for consistency between VDJ cells and GEX cells.  This is designed to work even if
+    // NCELL is used.  We take up to 100 VDJ cells having both heavy and light (or TRB and TRA)
+    // chains, and having the highest VDJ UMI count total, and find those that are GEX cells.
+    // If n cells were taken, and k of those are GEX cells, we require that
+    // binomial_sum(n, k, 0.7) >= 0.00002.  For n = 100, this is the same as requiring that
+    // k >= 50.  Using a binomial sum threshold allows the stringency of the requirement to be
+    // appropriately lower when n is small.  When we tested on 260 libraries, the lowest value
+    // observed for k/n was 0.65, and the vast majority of values were 0.9 or higher.
+    //
+    // This code is inefficient because for every dataset, it searches the entirety of tig_bc, but
+    // it doesn't matter much because not much time is spent here.
+
+    let mut fail = false;
+    for li in 0..ctl.sample_info.n() {
+        if ctl.sample_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
+            let vdj = &vdj_cells[li];
+            let gex = &gex_info.gex_cell_barcodes[li];
+            let (mut heavy, mut light) = (vec![false; vdj.len()], vec![false; vdj.len()]);
+            let mut numi = vec![0; vdj.len()];
+            for i in 0..tig_bc.len() {
+                if tig_bc[i][0].dataset_index == li {
+                    let p = bin_position(&vdj, &tig_bc[i][0].barcode);
+                    if p >= 0 {
+                        for j in 0..tig_bc[i].len() {
+                            numi[p as usize] += tig_bc[i][j].umi_count;
+                            if tig_bc[i][j].left {
+                                heavy[p as usize] = true;
+                            } else {
+                                light[p as usize] = true;
+                            }
+                        }
+                    }
+                }
+            }
+            let mut x = Vec::<(usize, bool)>::new();
+            for i in 0..vdj.len() {
+                if heavy[i] && light[i] {
+                    x.push((numi[i], bin_member(&gex, &vdj[i])));
+                }
+            }
+            reverse_sort(&mut x);
+            let (mut total, mut good) = (0, 0);
+            for i in 0..min(100, x.len()) {
+                total += 1;
+                if x[i].1 {
+                    good += 1;
+                }
+            }
+            if total >= 1 {
+                let bino = binomial_sum(total, good, 0.7);
+                if bino < 0.00002 {
+                    fail = true;
+                    eprint!(
+                        "\nThe VDJ dataset with path\n{}\nand the GEX dataset with path\n\
+                        {}\nshow insufficient sharing of barcodes.  ",
+                        ctl.sample_info.dataset_path[li], ctl.sample_info.gex_path[li],
+                    );
+                    if x.len() <= 100 {
+                        eprintln!(
+                            "Of the {} VDJ cells having both chain types,\n\
+                            only {} are GEX cells.",
+                            total, good
+                        );
+                    } else {
+                        eprintln!(
+                            "Of the 100 VDJ cells having both chain types and\nhaving \
+                            highest UMI counts, only {} are GEX cells.",
+                            good
+                        );
+                    }
+                }
+            }
+        }
+    }
+    if fail {
+        eprintln!(
+            "\nThis sugggests a laboratory or informatic mixup.  If you believe \
+            that this is not the case,\nyou can force enclone to run by adding \
+            the argument ALLOW_INCONSISTENT to the command line.\n"
+        );
+        std::process::exit(1);
+    }
 
     // Search for SHM indels.
 
