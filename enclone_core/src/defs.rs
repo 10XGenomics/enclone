@@ -779,7 +779,7 @@ pub fn justification(x: &str) -> u8 {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Define the set "parseable_fields" of fields that the could occur in parseable output.
+// Define the set "parseable_fields" of fields that could occur in parseable output.
 //
 // The overlap with code in proc_args_check.rs is not nice.
 
