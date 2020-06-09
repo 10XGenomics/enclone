@@ -438,14 +438,14 @@ pub fn group_and_print_clonotypes(
                             let mut con = false;
                             'pass: for pass in 1..=2 {
                                 let x: Vec<&[u8]>;
-// Conservative mutations
+                                // Conservative mutations
                                 if pass == 1 {
                                     x = vec![
                                         b"STA", b"NEQK", b"NHQK", b"NDEQ", b"QHRK", b"MILV",
                                         b"MILF", b"HY", b"FYW",
                                     ];
                                 } else {
-// Semi-conservative mutations
+                                    // Semi-conservative mutations
                                     x = vec![
                                         b"CSA", b"ATV", b"SAG", b"STNK", b"STPA", b"SGND",
                                         b"SNDEQK", b"NDEQHK", b"NEQHRK", b"FVLIM", b"HFY",
