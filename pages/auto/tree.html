@@ -34,7 +34,7 @@
 
 <p>enclone provides several mechanisms for creating and displaying a phylogenetic tree for each 
 clonotype.  These are initial mechanisms, which are likely to be expanded and/or improved over 
-time in response to feedback.  For all of these mechanisms, we recommend using the argument
+time in response to feedback.  The initial implementation is inspired by the Levenshtein-NJ method described by <a href="https://dx.doi.org/10.1093/bioinformatics/btx533">Yermanos <i>et al</i>. 2017</a>. For all of these mechanisms, we recommend using the argument
 <code>COMPLETE</code> to remove exact subclonotypes that are missing some chains.</p>
 
 <hr>
@@ -43,7 +43,7 @@ time in response to feedback.  For all of these mechanisms, we recommend using t
 This method is invoked using the argument <code>TREE</code>.  
 It first defines defines the distance between any two exact subclonotypes to be their
 Levenshtein distance.  Then we add a root "virtual" exact subclonotype which equals the donor 
-reference away from the recombination region and which is undefined within that region.  The 
+reference away from the recombination region and which is undefined within that region (i.e. a germline-reverted exact clonotype without the junction). The
 distance from the root to any actual exact subclonotype is the Levenshtein distance, away from
 the region of recombination.
 </p>
