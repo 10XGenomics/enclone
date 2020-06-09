@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 //
-// Load gene expression and feature barcoding (antibody, antigen) data from 
+// Load gene expression and feature barcoding (antibody, antigen) data from
 // Cell Ranger outputs.
 
 use enclone_core::defs::*;
