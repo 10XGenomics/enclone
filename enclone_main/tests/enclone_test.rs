@@ -63,8 +63,7 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_datasets_sha256() {
-    let sha_command1 =
-        "find -L ../datasets -type f -print0 | sort -z | xargs -0 shasum -a256 | shasum -a256";
+    let sha_command1 = "find -L ../datasets -type f -exec cat '{}' '+' | shasum -a256";
     let sha_command2 = "cat ../datasets_sha256";
     let sha1 = Command::new("csh")
         .arg("-c")
@@ -81,7 +80,9 @@ fn test_datasets_sha256() {
     if sha1 != sha2 {
         eprintln!(
             "\nThe file datasets_sha256 is not current.  You can update it by typing\n\
-            ./build plus\n"
+            ./build plus\ndatasets_sha256 = {}\ncomputed sha    = {}",
+            strme(&sha2),
+            strme(&sha1),
         );
         std::process::exit(1);
     }
@@ -490,7 +491,8 @@ fn test_for_broken_links_and_spellcheck() {
         indel indels json levenshtein linux loh lvars macbook metadata mkdir \
         moresies multiomic ncbi ncross \
         nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
-        preinstalled prepends screenshot spacebar stackexchange standalone stdout subclonotype \
+        preinstalled prepends screenshot sloooooooow \
+        spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding tracebacks trb twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
