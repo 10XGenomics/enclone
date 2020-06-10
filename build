@@ -30,5 +30,5 @@ target/debug/merge_html
 # update sha sum
 
 if ( $1 == "plus" ) then
-    find -L datasets -type f | sort | xargs cat | shasum -a256 > datasets_sha256
+    find datasets/ -type f | sort | xargs cat | shasum -a256 > datasets_sha256
 endif
