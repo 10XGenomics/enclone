@@ -7,6 +7,10 @@
 
 # WARNING: note harcoding of version14!
 
+# make outputs
+
+mkdir -p enclone_main/test/outputs
+
 # run rustfmt
 
 cargo fmt --all
