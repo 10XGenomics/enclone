@@ -64,15 +64,34 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 4. If this is an update, determine the checksums ...
+    # 4. Determine if datasets are current.
 
-    local _datasets_small_checksum _datasets_medium_checksum
-    if test -d "$HOME/enclone/datasets"; then
-        _datasets_small_checksum=$(curl -s \
+    local _datasets_small_current _datasets_medium_current _datasets_large_current
+    _datasets_small_current=false
+    _datasets_medium_current=false
+    _datasets_large_current=false
+    if test -f "$HOME/enclone/datasets_small_checksum"; then
+        local _datasets_small_checksum_master _datasets_small_checksum_local
+        _datasets_small_checksum_master=$(curl -s \
             https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
-        _datasets_medium_checksum=$(curl -s \
+        _datasets_small_checksum_local=$(cat $HOME/enclone/datasets_small_checksum)
+        if [ "$_datasets_small_checksum_local" == "$_datasets_medium_checksum_master" ]; then
+            _datasets_small_current=true
+        fi
+    fi
+    if test -f "$HOME/enclone/datasets_medium_checksum"; then
+        local _datasets_medium_checksum_master _datasets_medium_checksum_local
+        _datasets_medium_checksum_master=$(curl -s \
             https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
-        # ...
+        _datasets_medium_checksum_local=$(cat $HOME/enclone/datasets_medium_checksum)
+        if [ "$_datasets_medium_checksum_local" == "$_datasets_medium_checksum_master" ]; then
+            _datasets_medium_current=true
+        fi
+    fi
+    if test -d "$HOME/enclone/datasets2"; then
+        if [ "$_datasets_medium_current" == true ]; then
+            _datasets_large_current=true
+        fi
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
