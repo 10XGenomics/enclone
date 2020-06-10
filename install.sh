@@ -64,11 +64,12 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 4. If this is an update, determine the current size.
+    # 4. If this is an update, determine the checksums ...
 
-    local _current_size
+    local _datasets_small_checksum _datasets_medium_checksum
     if test -d "$HOME/enclone/datasets"; then
-        echo "do nothing"
+        _datasets_small_checksum=$(curl https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
+        _datasets_medium_checksum=$(curl https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
         # ...
     fi
 
