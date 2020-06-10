@@ -63,7 +63,7 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_datasets_sha256() {
-    let sha_command1 = "find -L ../datasets -type f | sort | xargs cat | shasum -a256";
+    let sha_command1 = "find ../datasets/ -type f | sort | xargs cat | shasum -a256";
     let sha_command2 = "cat ../datasets_sha256";
     let sha1 = Command::new("csh")
         .arg("-c")
