@@ -14,6 +14,8 @@
 #
 # The script assumes that curl is installed on your computer.  Some linux computers may not
 # have this.
+#
+# Note that version14 is hardcoded!
 
 size=$1
 
@@ -32,6 +34,8 @@ main() {
     need_cmd mkdir
     need_cmd chmod
     need_cmd awk
+    need_cmd svn
+    need_cmd zcat
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -65,6 +69,9 @@ main() {
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     # 4. Determine if datasets are current.
+    #
+    #    Because there has been only one release of the large dataset collection, if it
+    #    was downloaded, then it is current.
 
     local _datasets_small_current _datasets_medium_current _datasets_large_current
     _datasets_small_current=false
@@ -89,9 +96,7 @@ main() {
         fi
     fi
     if test -d "$HOME/enclone/datasets2"; then
-        if [ "$_datasets_medium_current" == true ]; then
-            _datasets_large_current=true
-        fi
+        _datasets_large_current=true
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -155,6 +160,42 @@ main() {
     fi
 
 }
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 8. Download data.
+
+    if [ "$size" = small ] && [ _datasets_small_current = false ]; then
+        echo "Downloading small version of datasets."
+        mkdir -p ~/enclone/datasets
+        cd ~/enclone/datasets
+        rm -rf ~/enclone/datasets/123085
+        svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
+    fi
+    if [ "$size" = medium ] || [ "$size" = large ]; then
+        if [ _datasets_medium_current = false ]; then
+            if [ "$size" = medium ]; then
+                echo "Downloading medium version of datasets."
+            fi
+            if [ "$size" = large ]; then
+                echo "Downloading medium version of datasets (as part of large)."
+            fi
+            mkdir -p ~/enclone
+            cd ~/enclone
+            rm -rf ~/enclone/datasets ~/enclone/version14
+            svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14
+            mv ~/enclone/version14 ~/enclone/datasets
+        fi
+    fi
+    if [ "$size" = large ] && [ _datasets_large_current = false ]; then
+        echo "Downloading large version of datasets."
+        mkdir -p ~/enclone
+        cd ~/enclone
+        rm -rf ~/enclone/datasets2
+        curl https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz \
+            -O enclone_data_1.0.tar.gz
+        zcat enclone_data_1.0.tar.gz | tar xf -
+        mv enclone_data_1.0 ~/enclone/datasets2
+    fi
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
