@@ -4,6 +4,8 @@
 # target/debug/build_html, however you should only need to do that rarely,
 # and if you do need to, "cargo t" will catch the problem and should tell you
 # what to do.
+#
+# add arg "plus" to get sha sum recomputation
 
 # run rustfmt
 
@@ -24,3 +26,10 @@ end
 # merge html pages
 
 target/debug/merge_html
+
+# update sha sum
+
+if ( $1 == "plus" ) then
+    find -L datasets -type f -print0 | sort -z | xargs -0 shasum -a256 | shasum -a256 \
+        > datasets_sha256
+endif
