@@ -4,8 +4,8 @@
 # target/debug/build_html, however you should only need to do that rarely,
 # and if you do need to, "cargo t" will catch the problem and should tell you
 # what to do.
-#
-# add arg "plus" to get sha sum recomputation
+
+# WARNING: note harcoding of version14!
 
 # run rustfmt
 
@@ -29,6 +29,5 @@ target/debug/merge_html
 
 # update sha sum
 
-if ( $1 == "plus" ) then
-    find datasets/ -type f | sort | xargs cat | shasum -a256 > datasets_sha256
-endif
+git write-tree --prefix=enclone_main/test/inputs/version14/123085 > datasets_small_checksum
+git write-tree --prefix=enclone_main/test/inputs/version14 > datasets_medium_checksum

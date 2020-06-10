@@ -63,8 +63,11 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_datasets_sha256() {
-    let sha_command1 = "find ../datasets/ -type f | sort | xargs cat | shasum -a256";
-    let sha_command2 = "cat ../datasets_sha256";
+    let sha_command1 = format!(
+        "git write-tree --prefix=enclone_main/test/inputs/version{}",
+        TEST_FILES_VERSION
+    );
+    let sha_command2 = "cat ../datasets_medium_checksum";
     let sha1 = Command::new("csh")
         .arg("-c")
         .arg(&sha_command1)
@@ -79,8 +82,34 @@ fn test_datasets_sha256() {
         .stdout;
     if sha1 != sha2 {
         eprintln!(
-            "\nThe file datasets_sha256 is not current.  You can update it by typing\n\
-            ./build plus\ndatasets_sha256 = {}\ncomputed sha    = {}",
+            "\nThe file datasets_medium_checksum is not current.  You can update it by typing\n\
+            ./build\ndatasets_medium_checksum = {}\ncomputed sha             = {}",
+            strme(&sha2),
+            strme(&sha1),
+        );
+        std::process::exit(1);
+    }
+    let sha_command1 = format!(
+        "git write-tree --prefix=enclone_main/test/inputs/version{}/123085",
+        TEST_FILES_VERSION
+    );
+    let sha_command2 = "cat ../datasets_small_checksum";
+    let sha1 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command1)
+        .output()
+        .unwrap()
+        .stdout;
+    let sha2 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command2)
+        .output()
+        .unwrap()
+        .stdout;
+    if sha1 != sha2 {
+        eprintln!(
+            "\nThe file datasets_small_checksum is not current.  You can update it by typing\n\
+            ./build\ndatasets_small_checksum = {}\ncomputed sha            = {}",
             strme(&sha2),
             strme(&sha1),
         );
