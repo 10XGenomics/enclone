@@ -56,6 +56,39 @@ fn valid_link(link: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// NOT BASIC
+
+// Make sure that the file datasets_sha256 is current
+
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_datasets_sha256() {
+    let sha_command1 =
+        "find -L ../datasets -type f -print0 | sort -z | xargs -0 shasum -a256 | shasum -a256";
+    let sha_command2 = "cat ../datasets_sha256";
+    let sha1 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command1)
+        .output()
+        .unwrap()
+        .stdout;
+    let sha2 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command2)
+        .output()
+        .unwrap()
+        .stdout;
+    if sha1 != sha2 {
+        eprintln!(
+            "\nThe file datasets_sha256 is not current.  You can update it by typing\n\
+            ./build plus\n"
+        );
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // SPEED (AND NOT BASIC)
 // calibrated for bespin1, and requires linux
 // cargo test --test enclone_test --features cpu -- --nocapture
