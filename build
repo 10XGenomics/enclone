@@ -27,7 +27,7 @@ end
 
 target/debug/merge_html
 
-# update sha sum
+# update dataset checksums
 
 git write-tree --prefix=enclone_main/test/inputs/version14/123085 > datasets_small_checksum
 git write-tree --prefix=enclone_main/test/inputs/version14 > datasets_medium_checksum
