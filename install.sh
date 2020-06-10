@@ -68,8 +68,10 @@ main() {
 
     local _datasets_small_checksum _datasets_medium_checksum
     if test -d "$HOME/enclone/datasets"; then
-        _datasets_small_checksum=$(curl https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
-        _datasets_medium_checksum=$(curl https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
+        _datasets_small_checksum=$(curl -s \
+            https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
+        _datasets_medium_checksum=$(curl -s \
+            https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
         # ...
     fi
 
