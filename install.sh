@@ -15,7 +15,7 @@
 # The script assumes that curl is installed on your computer.  Some linux computers may not
 # have this.
 
-first=$1
+size=$1
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -50,11 +50,11 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 3. Test input arguments.
+    # 3. Get requested size.
 
-    if [ "$first" != small ] && [ "$first" != medium ] && [ "$first" != large ]; then
+    if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ]; then
         echo
-        echo "enclone install script fails because the first argument to it is missing" \
+        echo "enclone install script fails because the argument to it is missing" \
             "or unrecognized."
         echo "The only allowed arguments are small, medium and large."
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
@@ -64,7 +64,17 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 4. Determine if the local enclone executable is current.
+    # 4. If this is an update, determine the current size.
+
+    local _current_size
+    if test -d "$HOME/enclone/datasets"; then
+        echo "do nothing"
+        # ...
+    fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 5. Determine if the local enclone executable is current.
 
     local _current_version _enclone_is_current
     _enclone_is_current=false
@@ -84,7 +94,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 5. Make directory ~/bin if needed and download the appropriate enclone executable into it.
+    # 6. Make directory ~/bin if needed and download the appropriate enclone executable into it.
 
     if [ "$_enclone_is_current" = false ]; then
         mkdir -p ~/bin
@@ -110,7 +120,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 6. Add ~/bin to path if needed.
+    # 7. Add ~/bin to path if needed.
     #
     #    This is complicated because some versions of Linux use the file .bash_profile,
     #    and some use .profile.
