@@ -31,7 +31,6 @@ main() {
     need_cmd curl
     need_cmd mkdir
     need_cmd chmod
-    need_cmd shasum
     need_cmd awk
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -62,40 +61,58 @@ main() {
         echo
         exit 1
     fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 4. Determine if the local enclone executable is current.
+
+    local _current_version _enclone_is_current
+    _enclone_is_current=false
+    if test -f "$HOME/bin/enclone"; then
+        local _local_version
+        if test -f "$HOME/enclone/version"; then
+            _local_version=$(cat $HOME/enclone/version)
+            _current_version=$(curl -sI \
+                https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux | \
+                grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
+            echo "local version = $_local_version"
+            echo "current version = $_current_version"
+            if [ "$_local_version" == "$_current_version" ]; then
+                echo "The local version of enclone is current so not downloading executable."
+                _enclone_is_current=true
+            fi
+        fi
+    fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 5. Make directory ~/bin if needed and download the appropriate enclone executable into it.
+
+    if [ "$_enclone_is_current" = false ]; then
+        mkdir -p ~/bin
+        cd ~/bin
+        if [ "$_ostype" = Linux ]; then
+            echo "Downloading the Linux version of the latest enclone executable."
+            curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
+                --output enclone
+        fi
+        if [ "$_ostype" = Darwin ]; then
+            echo "Downloading the Mac version of the latest enclone executable."
+            curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos \
+                --output enclone
+        fi
+        # set execute permission on the enclone executable
+        chmod +x enclone
+        # record local version
+        mkdir -p ~/enclone
+        echo "$_current_version" > ~/enclone/version
+    fi
+
     exit
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 4. Make directory ~/bin if needed and download the appropriate enclone executable into it.
-    #
-    #    TO DO
-    #    1. If enclone executable already exists, compute its SHA-256 checksum.
-    #    2. And then get the checksum for the current executable (ask Meryl?).
-    #    3. And only download if the checksum is different.
-
-    if test -f "~/bin/enclone"; then
-        local _sha_local
-        _sha_local="$(shasum -a 256 ~/bin/enclone | awk '{print $1}')"
-        # ...
-    fi
-    mkdir -p ~/bin
-    cd ~/bin
-    if [ "$_ostype" = Linux ]; then
-        echo "Downloading the Linux version of the latest enclone executuable."
-        curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
-            --output enclone
-    fi
-    if [ "$_ostype" = Darwin ]; then
-        echo "Downloading the Mac version of the latest enclone executuable."
-        curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos \
-            --output enclone
-    fi
-    # set execute permission on the enclone executable
-    chmod +x enclone
-
-    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    # 5. Add ~/bin to path if needed.
+    # 6. Add ~/bin to path if needed.
     #
     #    This is complicated because some versions of Linux use the file .bash_profile,
     #    and some use .profile.
@@ -114,7 +131,7 @@ main() {
 need_cmd() {
     if ! check_cmd "$1"; then
         echo
-        echo "echo enclone install script fails because the command "$1" was not found."
+        echo "enclone install script fails because the command $1 was not found."
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
