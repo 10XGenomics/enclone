@@ -124,87 +124,111 @@ stuck.</p>
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Installing enclone</h2>
 
-<p><b>1.  Download enclone.</b> 
-Open a terminal window and type the following to download the enclone executable:</p>
+<p>
+You can run enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see <a href="windows.html">here</a> for <b>Windows</b> options; see <a href="...">here</a> if you have a problem.
+</p>
+
+<table>
+<tr>
+<th align=left style="font-weight: normal">Type this&nbsp;</th>
+<th align=left style="padding: 3px; font-weight: normal; border: 2px solid black">
+<pre style="margin-top:3px; margin-bottom:3px"><code>curl -sSF -L bit.ly/enclone_install.sh | sh --</code><code style="color:red; font-weight: bold">SIZE</code></pre>
+</th>
+<th align=left style="font-weight: normal">
+&nbsp;where <code style="color:red; font-weight: bold">SIZE</code> is 
+<code>small</code>, <code>medium</code> or <code>large</code>, according to:
+</th>
+</tr>
+</table>
+
+<br>
 
 <table rules="all" cellpadding="3" style="border: 2px solid black">
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Linux
+       <code>small</code>
+       </p>
+  </th>
+
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       load small dataset collection (one dataset, 123085)
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
-<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+       <p style="margin: 4px">
+       30 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if your internet connection is sloooooooow as a 🐌
+       </p>
   </th>
   </tr>
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Mac
+       <code>medium</code>
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
-<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
+       <p style="margin: 4px">
+       load medium dataset collection
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       350 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if you're happy with a bunch of datasets
+       </p>
   </th>
   </tr>
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Windows
+       <code>large</code>
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       not currently supported, let us know if this is important to you, and see
-       <b><a href="pages/windows.html">this page</a></b>
+       load large dataset collection
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       2600 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if you want to play with a huge pile of datasets
        </p>
   </th>
   </tr>
 </table>
 
-<p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
-want to update.</p>
-<p>It is not necessary to compile enclone, unless you want to contribute
-to the enclone codebase.  
-Please see <b><a href="pages/compile.html">compilation</a></b>.</p>
-<p><b>2.  Download test data.</b>  Type the following to download the enclone test datasets
-(plus source code, because it's easier to fetch everything):</p>
-<pre><code>cd</code>
-<code>svn export https://github.com/10XGenomics/enclone/trunk enclone
-</code></pre>
-<p>(See <b><a href="pages/fetching_test_datasets.html">here</a></b> if this doesn't work for you.)  At this point
-<code>~/enclone/datasets</code> will contain the datasets that are prepackaged with enclone.  If you
-subsequently want to update this, delete the directory and repeat the command.</p>
+<p>The command does three things:</p>
+<ol>
+<li>Puts the enclone executable (for Linux or Mac as appropriate) in <code>~/bin</code>.</li>
+<li>If needed, adds a line to your bash initialization file so that <code>~/bin</code> is included.
+</li>
+<li>Puts the enclone datasets in <code>~/enclone</code>.</li>
+</ol>
+And the gory details are <a href="...">here</a>.
 
-<p>
-🐌 If you have a very slow internet connection, you may prefer to download
-just one dataset (<code>123085</code>), like this:</p>
-
-<pre><code>cd; mkdir -p enclone/datasets; cd enclone/datasets</code>
-<code>svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
-</code></pre>
-
-<p>The test datasets were selected because they happened to be useful as part of algorithmic 
-regression tests (included in the codebase).  
-
-A much larger collection of datasets (including most of those above) is also provided and can be 
-downloaded by:
-
-<pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz</code>
-<code>zcat enclone_data_1.0.tar.gz | tar xf -</code>
-<code>mv enclone_data_1.0 ~/enclone/datasets2</code></pre>
-
-On a Mac, you may need to use <code>curl</code> instead.
-
-<p><b>3.  Update your path.</b>  Edit your shell initialization file to prepend
-<code>~/bin:</code> to your <code>PATH</code>.  If you don't know how to do this, please see 
-<a href="pages/path.html">here</a>.
 Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
-<p><b>4. Periodically update or check the <a href="pages/history.html">history</a> to see if 
-anything has changed that might affect you.</b></p>
+
+<p><span style="color:red; font-weight:bold">To update, type the same command!</span>
+<span style="font-weight:bold">
+Only needed files will be downloaded.  
+See <a href="pages/history.html">history</a> for what has changed.</span></p>
+
 <hr>
 
 <h2>Running enclone</h2>
