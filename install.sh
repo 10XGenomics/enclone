@@ -75,8 +75,6 @@ main() {
             _current_version=$(curl -sI \
                 https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux | \
                 grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
-            echo "local version = $_local_version"
-            echo "current version = $_current_version"
             if [ "$_local_version" == "$_current_version" ]; then
                 echo "The local version of enclone is current so not downloading executable."
                 _enclone_is_current=true
