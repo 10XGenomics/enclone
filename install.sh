@@ -212,6 +212,7 @@ need_cmd() {
         echo
         echo "enclone install script fails because the command $1 was not found."
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
+        echo "It is possible that we can rewrite the script to not use $1."
         echo
         exit 1
     fi
