@@ -25,19 +25,31 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 1. Set up; test for existence of needed system commands.
+    # 1. Set up; test for existence of needed system commands.  
     #
-    #    [SHOULD WE MAKE THIS SCRIPT WORK WITH EITHER CURL OR WGET?]
+    #    We require only one of curl or wget.  The reason for not requiring curl is that at
+    #    the time of writing this script, the standard Ubuntu install did not include curl,
+    #    and so it is possible that someone would not have curl.
 
     need_cmd date
     STARTTIME=$(date +%s)
     need_cmd uname
-    need_cmd curl
     need_cmd mkdir
     need_cmd chmod
     need_cmd awk
     need_cmd svn
     need_cmd zcat
+    local _have_curl
+    _have_curl=false
+    if check_cmd curl; then
+        _have_curl=true
+    fi
+    if ! $_have_curl && ! check_cmd wget; then
+        printf "\nenclone installation failed because neither the command curl nor the\n"
+        printf "command wget could be found.  This is strange and unexpected.\n"
+        printf "If you're stuck please ask for help by emailing enclone@10xgenomics.com.\n\n"
+        exit 1
+    fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -80,9 +92,20 @@ main() {
     _datasets_small_current=false
     _datasets_medium_current=false
     _datasets_large_current=false
+    raw_repo=https://raw.githubusercontent.com/10XGenomics/enclone
     if [ "$size" = small ]; then
-        _datasets_small_checksum_master=$(curl -s \
-            https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
+        if $_have_curl; then
+            _datasets_small_checksum_master=$(curl -s $raw_repo/master/datasets_small_checksum)
+        else
+            _datasets_small_checksum_master=$(wget -q $raw_repo/master/datasets_small_checksum -O -)
+            if ! [ "$?" -eq "0" ]; then
+                printf "\nfailed: wget -q $raw_repo/master/datasets_small_checksum\n"
+                printf "This is strange and unexpected.\n"
+                echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
+                echo
+                exit 1
+            fi
+        fi
     fi
     if test -f "$HOME/enclone/datasets_small_checksum"; then
         _datasets_small_checksum_local=$(cat $HOME/enclone/datasets_small_checksum)
@@ -91,8 +114,18 @@ main() {
         fi
     fi
     if [ "$size" = medium ]; then
-        _datasets_medium_checksum_master=$(curl -s \
-            https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
+        if $_have_curl; then
+            _datasets_medium_checksum_master=$(curl -s $raw_repo/master/datasets_medium_checksum)
+        else
+            _datasets_medium_checksum_master=$(wget -q $raw_repo/master/datasets_medium_checksum -O -)
+            if ! [ "$?" -eq "0" ]; then
+                printf "\nfailed: wget -q $raw_repo/master/datasets_medium_checksum\n"
+                printf "This is strange and unexpected.\n"
+                echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
+                echo
+                exit 1
+            fi
+        fi
     fi
     if test -f "$HOME/enclone/datasets_medium_checksum"; then
         _datasets_medium_checksum_local=$(cat $HOME/enclone/datasets_medium_checksum)
@@ -110,8 +143,7 @@ main() {
 
     local _current_version _enclone_is_current _is_update
     repo=https://github.com/10XGenomics/enclone
-    _current_version=$(curl -sI \
-        $repo/releases/latest/download/enclone_linux | \
+    _current_version=$(curl -sI $repo/releases/latest/download/enclone_linux | \
         grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
     _enclone_is_current=false
     if test -f "$HOME/bin/enclone"; then
@@ -242,11 +274,9 @@ main() {
 
 need_cmd() {
     if ! check_cmd "$1"; then
-        echo
-        echo "enclone install script fails because the command $1 was not found."
-        echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
-        echo "It is possible that we can rewrite the script to not use $1."
-        echo
+        printf "\nenclone installation faileds because the command $1 was not found.\n"
+        printf "If you're stuck please ask for help by emailing enclone@10xgenomics.com.\n"
+        printf "It is possible that we can rewrite the script to not use $1.\n\n"
         exit 1
     fi
 }
