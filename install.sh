@@ -66,7 +66,7 @@ main() {
 
     local _ostype
     _ostype="$(uname -s)"
-    if [ "$_ostype" != Linux ] && [ "$_cputype" != Darwin ]; then
+    if [ "$_ostype" != Linux ] && [ "$_ostype" != Darwin ]; then
         echo
         echo "enclone install script fails because operating system type ${_ostype}" \
             "is unknown."
