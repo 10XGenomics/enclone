@@ -235,7 +235,8 @@ main() {
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
-            printf "Over a fast internet connection, this might take around five seconds.\n\n"
+            printf "This seems to take roughly five seconds, even over home wireless,\n"
+            printf "however, you might have a slower connection.\n\n"
             mkdir -p $HOME/enclone/datasets
             cd $HOME/enclone/datasets
             rm -rf $HOME/enclone/datasets/123085
@@ -255,7 +256,8 @@ main() {
             if [ "$size" = large ]; then
                 echo "Downloading medium version of datasets (as part of large)."
             fi
-            printf "Over a fast internet connection, this might take around thirty seconds.\n\n"
+            printf "This seems to take roughly one to three minutes, even over home wireless,\n"
+            printf "however, you might have a slower connection.\n\n"
             mkdir -p $HOME/enclone
             cd $HOME/enclone
             rm -rf $HOME/enclone/datasets $HOME/enclone/version14
@@ -273,7 +275,8 @@ main() {
     if [ "$size" = large ]; then
         if [ "$_datasets_large_current" = false ]; then
             printf "\nDownloading large version of datasets.\n"
-            printf "Over a fast internet connection, this might a minute or two.\n\n"
+            printf "Over a fast internet connection, this might take a minute or two.\n"
+            printf "Over home wireless to a Mac it took us about ten minutes.\n\n"
             mkdir -p $HOME/enclone
             cd $HOME/enclone
             rm -rf datasets2
@@ -283,7 +286,8 @@ main() {
             else
                 wget -q $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz
             fi
-            zcat enclone_data_1.0.tar.gz | tar xf -
+            cat enclone_data_1.0.tar.gz | zcat | tar xf -
+            rm enclone_data_1.0.tar.gz
             mv enclone_data_1.0 datasets2
             touch $HOME/enclone/datasets2/download_complete
             printf "Done with that download.\n"
