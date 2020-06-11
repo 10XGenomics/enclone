@@ -116,7 +116,7 @@ main() {
             _datasets_small_current=true
         fi
     fi
-    if [ "$size" = medium ]; then
+    if [ "$size" = medium ] || [ "$size" = large ]; then
         if $_have_curl; then
             _datasets_medium_checksum_master=$(curl -s $raw_repo/master/datasets_medium_checksum)
         else
