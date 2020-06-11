@@ -33,6 +33,8 @@ main() {
 
     need_cmd date
     STARTTIME=$(date +%s)
+    # force failure if error
+    set -e
     need_cmd uname
     need_cmd mkdir
     need_cmd chmod
@@ -140,12 +142,22 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 5. Determine if the local enclone executable is current.
+    # 5. Determine if the local enclone executable is current.  
+    #
+    #    This is quite hideous.  There must be a better way.
+
 
     local _current_version _enclone_is_current _is_update
     repo=https://github.com/10XGenomics/enclone
-    _current_version=$(curl -sI $repo/releases/latest/download/enclone_linux | \
-        grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
+    if $_have_curl; then
+        _current_version=$(curl -sI $repo/releases/latest/download/enclone_linux | \
+            grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
+    else
+        # This is hideously inefficient, because it actually downloads the file.  Not clear
+        # how to do it without that.
+        _current_version=$(wget --server-response $repo/releases/latest/download/enclone_linux | \
+            grep " location:" | grep releases | tr '/' ' ' | cut -d ' ' -f11)
+    fi
     _enclone_is_current=false
     if test -f "$HOME/bin/enclone"; then
         _is_update=true
@@ -168,11 +180,19 @@ main() {
         cd ~/bin
         if [ "$_ostype" = Linux ]; then
             printf "\nDownloading the Linux version of the latest enclone executable.\n\n"
-            curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
+            if $_have_curl; then
+                curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
+            else
+                wget -q $repo/releases/latest/download/enclone_linux -O enclone
+            fi
         fi
         if [ "$_ostype" = Darwin ]; then
             printf "\nDownloading the Mac version of the latest enclone executable.\n\n"
-            curl -s -L $repo/releases/latest/download/enclone_macos --output enclone
+            if $_have_curl; then
+                curl -s -L $repo/releases/latest/download/enclone_macos --output enclone
+            else
+                wget -q $repo/releases/latest/download/enclone_macos -O enclone
+            fi
         fi
         echo "Done downloading the enclone executable."
         # set execute permission on the enclone executable
@@ -251,7 +271,11 @@ main() {
             cd ~/enclone
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
-            curl -s $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O
+            if $_have_curl; then
+                curl -s $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O
+            else
+                wget -q $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz
+            fi
             zcat enclone_data_1.0.tar.gz | tar xf -
             mv enclone_data_1.0 datasets2
             touch $HOME/enclone/datasets2/download_complete
