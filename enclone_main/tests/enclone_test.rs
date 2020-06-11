@@ -520,7 +520,7 @@ fn test_for_broken_links_and_spellcheck() {
         indel indels json levenshtein linux loh lvars macbook metadata mkdir \
         moresies multiomic ncbi ncross \
         nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
-        preinstalled prepends screenshot sloooooooow \
+        preinstalled prepends redownloads screenshot sloooooooow \
         spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding tracebacks trb twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
