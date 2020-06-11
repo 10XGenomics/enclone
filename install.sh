@@ -117,10 +117,11 @@ main() {
         fi
     fi
     if [ "$size" = medium ] || [ "$size" = large ]; then
+        raw_master=$raw_repo/master
         if $_have_curl; then
-            _datasets_medium_checksum_master=$(curl -s $raw_repo/master/datasets_medium_checksum)
+            _datasets_medium_checksum_master=$(curl -s $raw_master/datasets_medium_checksum)
         else
-            _datasets_medium_checksum_master=$(wget -q $raw_repo/master/datasets_medium_checksum -O -)
+            _datasets_medium_checksum_master=$(wget -q $raw_master/datasets_medium_checksum -O -)
             if ! [ "$?" -eq "0" ]; then
                 printf "\nfailed: wget -q $raw_repo/master/datasets_medium_checksum\n"
                 printf "This is strange and unexpected.\n"
