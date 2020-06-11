@@ -59,11 +59,9 @@ main() {
     # 3. Get requested size.
 
     if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ]; then
-        echo
-        echo "To install or update enclone, please supply the single argument SIZE to the"
-        echo "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium"
-        echo "or large."
-        echo
+        printf "\nTo install or update enclone, please supply the single argument SIZE to the"
+        printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium"
+        printf "or large.\n"
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
@@ -122,8 +120,7 @@ main() {
         if test -f "$HOME/enclone/version"; then
             _local_version=$(cat $HOME/enclone/version)
             if [ "$_local_version" == "$_current_version" ]; then
-                echo
-                echo "The local version of enclone is current so not downloading executable."
+                printf "\nThe local version of enclone is current so not downloading executable.\n"
                 _enclone_is_current=true
             fi
         fi
@@ -137,15 +134,11 @@ main() {
         mkdir -p ~/bin
         cd ~/bin
         if [ "$_ostype" = Linux ]; then
-            echo
-            echo "Downloading the Linux version of the latest enclone executable."
-            echo
+            printf "\nDownloading the Linux version of the latest enclone executable.\n\n"
             curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
         fi
         if [ "$_ostype" = Darwin ]; then
-            echo
-            echo "Downloading the Mac version of the latest enclone executable."
-            echo
+            printf "\nDownloading the Mac version of the latest enclone executable.\n\n"
             curl -s -L $repo/releases/latest/download/enclone_macos --output enclone
         fi
         echo "Done downloading the enclone executable."
@@ -181,80 +174,66 @@ main() {
 
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
-            echo
-            echo "Downloading small version of datasets."
-            echo
+            printf "\nDownloading small version of datasets.\n"
+            printf "Over a fast internet connection, this might take around five seconds.\n\n"
             mkdir -p ~/enclone/datasets
             cd ~/enclone/datasets
             rm -rf ~/enclone/datasets/123085
             svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085
             echo "$_datasets_small_checksum_master" > ~/enclone/datasets_small_checksum
-            echo "Done with that download."
-            echo
+            printf "Done with that download.\n"
         else
-            echo
-            echo "Small version of datasets already current so not downloading."
-            echo
+            printf "\nSmall version of datasets already current so not downloading.\n"
         fi
     fi
     if [ "$size" = medium ] || [ "$size" = large ]; then
         if [ "$_datasets_medium_current" = false ]; then
+            echo
             if [ "$size" = medium ]; then
-                echo
                 echo "Downloading medium version of datasets."
-                echo
             fi
             if [ "$size" = large ]; then
-                echo
                 echo "Downloading medium version of datasets (as part of large)."
-                echo
             fi
+            printf "Over a fast internet connection, this might take around thirty seconds.\n\n"
             mkdir -p ~/enclone
             cd ~/enclone
             rm -rf ~/enclone/datasets ~/enclone/version14
             svn export -q $repo/trunk/enclone_main/test/inputs/version14
             echo "$_datasets_medium_checksum_master" > ~/enclone/datasets_medium_checksum
-            echo "Done with that download."
-            echo
+            printf "Done with that download.\n"
             mv ~/enclone/version14 ~/enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
             rm -rf ~/enclone/datasets/█≈ΠΠΠ≈█
         else
-            echo
-            echo "Medium version of datasets already current so not downloading them."
-            echo
+            printf "\nMedium version of datasets already current so not downloading them.\n"
         fi
     fi
     if [ "$size" = large ]; then
         if [ "$_datasets_large_current" = false ]; then
-            echo
-            echo "Downloading large version of datasets."
-            echo
+            printf "\nDownloading large version of datasets."
+            printf "Over a fast internet connection, this might a minute or two.\n\n"
             mkdir -p ~/enclone
             cd ~/enclone
-            rm -rf ~/enclone/datasets2
+            rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
-            curl $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O enclone_data_1.0.tar.gz
+            curl -s $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O
             zcat enclone_data_1.0.tar.gz | tar xf -
-            mv enclone_data_1.0 ~/enclone/datasets2
-            echo "Done with that download."
-            echo
+            mv enclone_data_1.0 datasets2
+            printf "Done with that download.\n"
         else
-            echo
-            echo "Large version of datasets already current so not downloading them."
-            echo
+            printf "\nLarge version of datasets already current so not downloading them.\n"
         fi
     fi
     ENDTIME=$(date +%s)
+    echo
     if [ "$is_update" = true ]; then
         echo "enclone update took $(($ENDTIME - $STARTTIME)) seconds."
     else
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
     fi
-    echo
-    echo "All done, have a lovely day!"
-    echo
+    printf "\nAll done, have a lovely day!\n\n"
 
 }
 
