@@ -100,7 +100,7 @@ main() {
             _datasets_medium_current=true
         fi
     fi
-    if test -d "$HOME/enclone/datasets2"; then
+    if test -d "$HOME/enclone/datasets2/download_complete"; then
         _datasets_large_current=true
     fi
 
@@ -212,7 +212,7 @@ main() {
     fi
     if [ "$size" = large ]; then
         if [ "$_datasets_large_current" = false ]; then
-            printf "\nDownloading large version of datasets."
+            printf "\nDownloading large version of datasets.\n"
             printf "Over a fast internet connection, this might a minute or two.\n\n"
             mkdir -p ~/enclone
             cd ~/enclone
@@ -221,6 +221,7 @@ main() {
             curl -s $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O
             zcat enclone_data_1.0.tar.gz | tar xf -
             mv enclone_data_1.0 datasets2
+            touch $HOME/enclone/datasets2/download_complete
             printf "Done with that download.\n"
         else
             printf "\nLarge version of datasets already current so not downloading them.\n"
