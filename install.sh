@@ -3,9 +3,11 @@
 # This is the installation and update script for enclone.  For instructions on how to
 # run it, please see bit.ly/enclone.  A few more details are here.
 
+#  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 # This reuses code from the installation script for the rust language.
 # [TO ACKNOWLEDGE ELSEWHERE.]
-
+#
 # This script expects a single argument, which is small, medium or large, depending on how much
 # data is to be downloaded.  
 #
@@ -14,7 +16,14 @@
 #
 # Note that version14 is hardcoded!
 
+#  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+# Get command line arguments.  The second argument is for testing.
+
 size=$1
+if ! [ -z "$2" ]; then
+    HOME=$2
+fi
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
