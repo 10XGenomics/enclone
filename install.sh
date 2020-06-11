@@ -39,6 +39,7 @@ main() {
     need_cmd awk
     need_cmd svn
     need_cmd zcat
+    need_cmd grep
     local _have_curl
     _have_curl=false
     if check_cmd curl; then
