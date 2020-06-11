@@ -189,6 +189,9 @@ main() {
             rm -rf ~/enclone/datasets ~/enclone/version14
             svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14
             mv ~/enclone/version14 ~/enclone/datasets
+            # Remove a funny-looking directory, which is used by enclone only to test if 
+            # weird unicode characters in a path will break it.
+            rm -rf ~/enclone/datasets/█≈ΠΠΠ≈█
         fi
     fi
     if [ "$size" = large ] && [ _datasets_large_current = false ]; then
