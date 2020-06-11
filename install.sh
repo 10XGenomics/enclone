@@ -149,6 +149,8 @@ main() {
 
     # 7. Add ~/bin to path if needed.
     #
+    #    This does nothing if you already have ~/bin in your path.
+    #
     #    This is complicated because some versions of Linux use the file .bash_profile,
     #    and some use .profile.
     #    If the instructions here don't work, this post may be helpful:
@@ -162,7 +164,10 @@ main() {
 }
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 8. Download data.
+    # 8. Download data.  
+    #
+    #    For the medium case, this is not optimal, because if anything changed, this is not
+    #    optimal, because if anything changed, all the files get re-downloaded.
 
     if [ "$size" = small ] && [ _datasets_small_current = false ]; then
         echo "Downloading small version of datasets."
