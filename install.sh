@@ -58,9 +58,10 @@ main() {
 
     if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ]; then
         echo
-        echo "enclone install script fails because the argument to it is missing" \
-            "or unrecognized."
-        echo "The only allowed arguments are small, medium and large."
+        echo "To install or update enclone, please supply the single argument SIZE to the"
+        echo "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium"
+        echo "or large."
+        echo
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
@@ -113,6 +114,7 @@ main() {
                 https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux | \
                 grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
             if [ "$_local_version" == "$_current_version" ]; then
+                echo
                 echo "The local version of enclone is current so not downloading executable."
                 _enclone_is_current=true
             fi
@@ -127,23 +129,28 @@ main() {
         mkdir -p ~/bin
         cd ~/bin
         if [ "$_ostype" = Linux ]; then
+            echo
             echo "Downloading the Linux version of the latest enclone executable."
-            curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
+            echo
+            curl -s -L \
+                https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
                 --output enclone
         fi
         if [ "$_ostype" = Darwin ]; then
+            echo
             echo "Downloading the Mac version of the latest enclone executable."
-            curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos \
+            echo
+            curl -s -L \
+                https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos \
                 --output enclone
         fi
+        echo "Done downloading the enclone executable."
         # set execute permission on the enclone executable
         chmod +x enclone
         # record local version
         mkdir -p ~/enclone
         echo "$_current_version" > ~/enclone/version
     fi
-
-    exit
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -161,7 +168,6 @@ main() {
             echo 'PATH=~/bin:$PATH' >> ~/.profile
     fi
 
-}
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     # 8. Download data.  
@@ -169,33 +175,46 @@ main() {
     #    For the medium case, this is not optimal, because if anything changed, this is not
     #    optimal, because if anything changed, all the files get re-downloaded.
 
-    if [ "$size" = small ] && [ _datasets_small_current = false ]; then
+    if [ "$size" = small ] && [ "$_datasets_small_current" = false ]; then
+        echo
         echo "Downloading small version of datasets."
+        echo
         mkdir -p ~/enclone/datasets
         cd ~/enclone/datasets
         rm -rf ~/enclone/datasets/123085
-        svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
+        svn export -q https://github.com/10XGenomics/enclone/trunk/enclone_main/test/inputs/version14/123085
+        echo "Done with that download."
+        echo
     fi
     if [ "$size" = medium ] || [ "$size" = large ]; then
-        if [ _datasets_medium_current = false ]; then
+        if [ "$_datasets_medium_current" = false ]; then
             if [ "$size" = medium ]; then
+                echo
                 echo "Downloading medium version of datasets."
+                echo
             fi
             if [ "$size" = large ]; then
+                echo
                 echo "Downloading medium version of datasets (as part of large)."
+                echo
             fi
             mkdir -p ~/enclone
             cd ~/enclone
             rm -rf ~/enclone/datasets ~/enclone/version14
-            svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14
+            svn export -q \
+                https://github.com/10XGenomics/enclone/trunk/enclone_main/test/inputs/version14
+            echo "Done with that download."
+            echo
             mv ~/enclone/version14 ~/enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
             rm -rf ~/enclone/datasets/█≈ΠΠΠ≈█
         fi
     fi
-    if [ "$size" = large ] && [ _datasets_large_current = false ]; then
+    if [ "$size" = large ] && [ "$_datasets_large_current" = false ]; then
+        echo
         echo "Downloading large version of datasets."
+        echo
         mkdir -p ~/enclone
         cd ~/enclone
         rm -rf ~/enclone/datasets2
@@ -203,7 +222,13 @@ main() {
             -O enclone_data_1.0.tar.gz
         zcat enclone_data_1.0.tar.gz | tar xf -
         mv enclone_data_1.0 ~/enclone/datasets2
+        echo "Done with that download."
+        echo
     fi
+    echo "enclone installation complete, have a lovely day!"
+    echo
+
+}
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
