@@ -177,8 +177,8 @@ main() {
     # 6. Make directory ~/bin if needed and download the appropriate enclone executable into it.
 
     if [ "$_enclone_is_current" = false ]; then
-        mkdir -p ~/bin
-        cd ~/bin
+        mkdir -p $HOME/bin
+        cd $HOME/bin
         if [ "$_ostype" = Linux ]; then
             printf "\nDownloading the Linux version of the latest enclone executable.\n\n"
             if $_have_curl; then
@@ -199,8 +199,8 @@ main() {
         # set execute permission on the enclone executable
         chmod +x enclone
         # record local version
-        mkdir -p ~/enclone
-        echo "$_current_version" > ~/enclone/version
+        mkdir -p $HOME/enclone
+        echo "$_current_version" > $HOME/enclone/version
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -215,8 +215,8 @@ main() {
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
 
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        test -r ~/.bash_profile && echo 'PATH=~/bin:$PATH' >> ~/.bash_profile || \
-            echo 'PATH=~/bin:$PATH' >> ~/.profile
+        test -r $HOME/.bash_profile && echo 'PATH=$HOME/bin:$PATH' >> $HOME/.bash_profile || \
+            echo 'PATH=$HOME/bin:$PATH' >> $HOME/.profile
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -230,11 +230,11 @@ main() {
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
             printf "Over a fast internet connection, this might take around five seconds.\n\n"
-            mkdir -p ~/enclone/datasets
-            cd ~/enclone/datasets
-            rm -rf ~/enclone/datasets/123085
+            mkdir -p $HOME/enclone/datasets
+            cd $HOME/enclone/datasets
+            rm -rf $HOME/enclone/datasets/123085
             svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085
-            echo "$_datasets_small_checksum_master" > ~/enclone/datasets_small_checksum
+            echo "$_datasets_small_checksum_master" > $HOME/enclone/datasets_small_checksum
             printf "Done with that download.\n"
         else
             printf "\nSmall version of datasets already current so not downloading.\n"
@@ -250,16 +250,16 @@ main() {
                 echo "Downloading medium version of datasets (as part of large)."
             fi
             printf "Over a fast internet connection, this might take around thirty seconds.\n\n"
-            mkdir -p ~/enclone
-            cd ~/enclone
-            rm -rf ~/enclone/datasets ~/enclone/version14
+            mkdir -p $HOME/enclone
+            cd $HOME/enclone
+            rm -rf $HOME/enclone/datasets $HOME/enclone/version14
             svn export -q $repo/trunk/enclone_main/test/inputs/version14
-            echo "$_datasets_medium_checksum_master" > ~/enclone/datasets_medium_checksum
+            echo "$_datasets_medium_checksum_master" > $HOME/enclone/datasets_medium_checksum
             printf "Done with that download.\n"
-            mv ~/enclone/version14 ~/enclone/datasets
+            mv $HOME/enclone/version14 $HOME/enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
-            rm -rf ~/enclone/datasets/█≈ΠΠΠ≈█
+            rm -rf $HOME/enclone/datasets/█≈ΠΠΠ≈█
         else
             printf "\nMedium version of datasets already current so not downloading them.\n"
         fi
@@ -268,8 +268,8 @@ main() {
         if [ "$_datasets_large_current" = false ]; then
             printf "\nDownloading large version of datasets.\n"
             printf "Over a fast internet connection, this might a minute or two.\n\n"
-            mkdir -p ~/enclone
-            cd ~/enclone
+            mkdir -p $HOME/enclone
+            cd $HOME/enclone
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
             if $_have_curl; then
