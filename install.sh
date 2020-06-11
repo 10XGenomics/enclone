@@ -12,9 +12,6 @@
 # If you run it a second time and forget the size, it will use the same size as last time,
 # and state that.
 #
-# The script assumes that curl is installed on your computer.  Some linux computers may not
-# have this.
-#
 # Note that version14 is hardcoded!
 
 size=$1
@@ -156,7 +153,7 @@ main() {
     else
         # This is hideously inefficient, because it actually downloads the file.  Not clear
         # how to do it without that.
-        _current_version=$(wget --server-response $repo/releases/latest/download/enclone_linux | \
+        _current_version=$(wget --server-response $repo/releases/latest/download/enclone_linux |& \
             grep " location:" | grep releases | tr '/' ' ' | cut -d ' ' -f11)
     fi
     _enclone_is_current=false
