@@ -25,10 +25,12 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 1. Test for existence of needed system commands.
+    # 1. Set up; test for existence of needed system commands.
     #
     #    [SHOULD WE MAKE THIS SCRIPT WORK WITH EITHER CURL OR WGET?]
 
+    need_cmd date
+    STARTTIME=$(date +%s)
     need_cmd uname
     need_cmd curl
     need_cmd mkdir
@@ -75,24 +77,28 @@ main() {
     #    was downloaded, then it is current.
 
     local _datasets_small_current _datasets_medium_current _datasets_large_current
+    local _datasets_small_checksum_master _datasets_small_checksum_local
+    local _datasets_medium_checksum_master _datasets_medium_checksum_local
     _datasets_small_current=false
     _datasets_medium_current=false
     _datasets_large_current=false
-    if test -f "$HOME/enclone/datasets_small_checksum"; then
-        local _datasets_small_checksum_master _datasets_small_checksum_local
+    if [ "$size" = small ]; then
         _datasets_small_checksum_master=$(curl -s \
             https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_small_checksum)
+    fi
+    if test -f "$HOME/enclone/datasets_small_checksum"; then
         _datasets_small_checksum_local=$(cat $HOME/enclone/datasets_small_checksum)
-        if [ "$_datasets_small_checksum_local" == "$_datasets_medium_checksum_master" ]; then
+        if [ "$_datasets_small_checksum_local" = "$_datasets_small_checksum_master" ]; then
             _datasets_small_current=true
         fi
     fi
-    if test -f "$HOME/enclone/datasets_medium_checksum"; then
-        local _datasets_medium_checksum_master _datasets_medium_checksum_local
+    if [ "$size" = medium ]; then
         _datasets_medium_checksum_master=$(curl -s \
             https://raw.githubusercontent.com/10XGenomics/enclone/master/datasets_medium_checksum)
+    fi
+    if test -f "$HOME/enclone/datasets_medium_checksum"; then
         _datasets_medium_checksum_local=$(cat $HOME/enclone/datasets_medium_checksum)
-        if [ "$_datasets_medium_checksum_local" == "$_datasets_medium_checksum_master" ]; then
+        if [ "$_datasets_medium_checksum_local" = "$_datasets_medium_checksum_master" ]; then
             _datasets_medium_current=true
         fi
     fi
@@ -104,12 +110,14 @@ main() {
 
     # 5. Determine if the local enclone executable is current.
 
-    local _current_version _enclone_is_current
+    local _current_version _enclone_is_current _is_update
+    repo=https://github.com/10XGenomics/enclone
     _current_version=$(curl -sI \
-        https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux | \
+        $repo/releases/latest/download/enclone_linux | \
         grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
     _enclone_is_current=false
     if test -f "$HOME/bin/enclone"; then
+        _is_update=true
         local _local_version
         if test -f "$HOME/enclone/version"; then
             _local_version=$(cat $HOME/enclone/version)
@@ -132,17 +140,13 @@ main() {
             echo
             echo "Downloading the Linux version of the latest enclone executable."
             echo
-            curl -s -L \
-                https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
-                --output enclone
+            curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
         fi
         if [ "$_ostype" = Darwin ]; then
             echo
             echo "Downloading the Mac version of the latest enclone executable."
             echo
-            curl -s -L \
-                https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos \
-                --output enclone
+            curl -s -L $repo/releases/latest/download/enclone_macos --output enclone
         fi
         echo "Done downloading the enclone executable."
         # set execute permission on the enclone executable
@@ -172,19 +176,26 @@ main() {
 
     # 8. Download data.  
     #
-    #    For the medium case, this is not optimal, because if anything changed, this is not
-    #    optimal, because if anything changed, all the files get re-downloaded.
+    #    For the medium case, this is not optimal, because if anything changed,
+    #    all the files get re-downloaded.
 
-    if [ "$size" = small ] && [ "$_datasets_small_current" = false ]; then
-        echo
-        echo "Downloading small version of datasets."
-        echo
-        mkdir -p ~/enclone/datasets
-        cd ~/enclone/datasets
-        rm -rf ~/enclone/datasets/123085
-        svn export -q https://github.com/10XGenomics/enclone/trunk/enclone_main/test/inputs/version14/123085
-        echo "Done with that download."
-        echo
+    if [ "$size" = small ]; then
+        if [ "$_datasets_small_current" = false ]; then
+            echo
+            echo "Downloading small version of datasets."
+            echo
+            mkdir -p ~/enclone/datasets
+            cd ~/enclone/datasets
+            rm -rf ~/enclone/datasets/123085
+            svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085
+            echo "$_datasets_small_checksum_master" > ~/enclone/datasets_small_checksum
+            echo "Done with that download."
+            echo
+        else
+            echo
+            echo "Small version of datasets already current so not downloading."
+            echo
+        fi
     fi
     if [ "$size" = medium ] || [ "$size" = large ]; then
         if [ "$_datasets_medium_current" = false ]; then
@@ -201,31 +212,48 @@ main() {
             mkdir -p ~/enclone
             cd ~/enclone
             rm -rf ~/enclone/datasets ~/enclone/version14
-            svn export -q \
-                https://github.com/10XGenomics/enclone/trunk/enclone_main/test/inputs/version14
+            svn export -q $repo/trunk/enclone_main/test/inputs/version14
+            echo "$_datasets_medium_checksum_master" > ~/enclone/datasets_medium_checksum
             echo "Done with that download."
             echo
             mv ~/enclone/version14 ~/enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
             rm -rf ~/enclone/datasets/█≈ΠΠΠ≈█
+        else
+            echo
+            echo "Medium version of datasets already current so not downloading them."
+            echo
         fi
     fi
-    if [ "$size" = large ] && [ "$_datasets_large_current" = false ]; then
-        echo
-        echo "Downloading large version of datasets."
-        echo
-        mkdir -p ~/enclone
-        cd ~/enclone
-        rm -rf ~/enclone/datasets2
-        curl https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz \
-            -O enclone_data_1.0.tar.gz
-        zcat enclone_data_1.0.tar.gz | tar xf -
-        mv enclone_data_1.0 ~/enclone/datasets2
-        echo "Done with that download."
-        echo
+    if [ "$size" = large ]; then
+        if [ "$_datasets_large_current" = false ]; then
+            echo
+            echo "Downloading large version of datasets."
+            echo
+            mkdir -p ~/enclone
+            cd ~/enclone
+            rm -rf ~/enclone/datasets2
+            aws=https://s3-us-west-2.amazonaws.com
+            curl $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O enclone_data_1.0.tar.gz
+            zcat enclone_data_1.0.tar.gz | tar xf -
+            mv enclone_data_1.0 ~/enclone/datasets2
+            echo "Done with that download."
+            echo
+        else
+            echo
+            echo "Large version of datasets already current so not downloading them."
+            echo
+        fi
     fi
-    echo "enclone installation complete, have a lovely day!"
+    ENDTIME=$(date +%s)
+    if [ "$is_update" = true ]; then
+        echo "enclone update took $(($ENDTIME - $STARTTIME)) seconds."
+    else
+        echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
+    fi
+    echo
+    echo "All done, have a lovely day!"
     echo
 
 }
