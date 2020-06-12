@@ -454,7 +454,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Process set_string args.
 
         for j in 0..set_string.len() {
-            if arg.starts_with(&format!("{}=", set_string[j].0)) {
+            if is_string_arg(&arg, &set_string[j].0) {
                 *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
                 continue 'args_loop;
             }
