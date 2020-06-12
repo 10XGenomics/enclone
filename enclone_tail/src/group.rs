@@ -371,17 +371,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut s);
                         }
                     }
-                    for l in 0..ex.ncells() {
-                        names.push(format!(
-                            "{}.{}.{}.{}.{}",
-                            groups,
-                            j + 1,
-                            k + 1,
-                            l + 1,
-                            ex.clones[l][0].barcode
-                        ));
-                    }
-                    aa.append(&mut vec![seq; ex.ncells()]);
+                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    aa.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 60;
                 const PAD: usize = 4;
@@ -529,17 +520,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut s);
                         }
                     }
-                    for l in 0..ex.ncells() {
-                        names.push(format!(
-                            "{}.{}.{}.{}.{}",
-                            groups,
-                            j + 1,
-                            k + 1,
-                            l + 1,
-                            ex.clones[l][0].barcode
-                        ));
-                    }
-                    dna.append(&mut vec![seq; ex.ncells()]);
+                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    dna.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 60;
                 const PAD: usize = 4;
@@ -632,20 +614,15 @@ pub fn group_and_print_clonotypes(
             if ctl.gen_opt.phylip_aa.len() > 0 {
                 let stdout = ctl.gen_opt.phylip_aa == "stdout".to_string();
                 let mut data = Vec::<u8>::new();
-                let mut ncells = 0;
-                for u in exacts[oo].iter() {
-                    let ex = &exact_clonotypes[*u];
-                    ncells += ex.ncells();
-                }
                 let mut nbases = 0;
                 for m in 0..rsi[oo].mat.len() {
                     nbases += rsi[oo].seq_del_lens[m];
                 }
                 if stdout {
                     fwriteln!(logx, "");
-                    fwriteln!(logx, "{} {}", ncells, nbases / 3);
+                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases / 3);
                 } else {
-                    fwriteln!(data, "{} {}", ncells, nbases / 3);
+                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases / 3);
                 }
                 let mut aa = Vec::<Vec<u8>>::new();
                 let mut names = Vec::<String>::new();
@@ -662,17 +639,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut s);
                         }
                     }
-                    for l in 0..ex.ncells() {
-                        names.push(format!(
-                            "{}.{}.{}.{}.{}",
-                            groups,
-                            j + 1,
-                            k + 1,
-                            l + 1,
-                            ex.clones[l][0].barcode
-                        ));
-                    }
-                    aa.append(&mut vec![seq; ex.ncells()]);
+                    names.push(format!("{}", k + 1,));
+                    aa.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 10000;
                 const PAD: usize = 4;
@@ -732,20 +700,15 @@ pub fn group_and_print_clonotypes(
             if ctl.gen_opt.phylip_dna.len() > 0 {
                 let stdout = ctl.gen_opt.phylip_dna == "stdout".to_string();
                 let mut data = Vec::<u8>::new();
-                let mut ncells = 0;
-                for u in exacts[oo].iter() {
-                    let ex = &exact_clonotypes[*u];
-                    ncells += ex.ncells();
-                }
                 let mut nbases = 0;
                 for m in 0..rsi[oo].mat.len() {
                     nbases += rsi[oo].seq_del_lens[m];
                 }
                 if stdout {
                     fwriteln!(logx, "");
-                    fwriteln!(logx, "{} {}", ncells, nbases);
+                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases);
                 } else {
-                    fwriteln!(data, "{} {}", ncells, nbases);
+                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases);
                 }
                 let mut dna = Vec::<Vec<u8>>::new();
                 let mut names = Vec::<String>::new();
@@ -761,17 +724,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut s);
                         }
                     }
-                    for l in 0..ex.ncells() {
-                        names.push(format!(
-                            "{}.{}.{}.{}.{}",
-                            groups,
-                            j + 1,
-                            k + 1,
-                            l + 1,
-                            ex.clones[l][0].barcode
-                        ));
-                    }
-                    dna.append(&mut vec![seq; ex.ncells()]);
+                    names.push(format!("{}", k + 1,));
+                    dna.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 10000;
                 const PAD: usize = 4;

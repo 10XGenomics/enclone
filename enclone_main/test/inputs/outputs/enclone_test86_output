@@ -20,73 +20,59 @@
 
 CLUSTALW
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    ATGAAACATCTGTGGTTCTTCCTTCTCCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAG  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    ATGAAACATCTGTGGTTCTTCCTTCTCCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAG  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGAGACCCTGTCCCTCACC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    GTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGAGACCCTGTCCCTCACC  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    TGCACTGTCTCTGGTGGCTCCATCAGTAGTTACTACTGGAGCTGGATCCGGCAGCCCCCA  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    TGCACTGTCTCTGGTGGCTCCATCAGTAGTTACTACTGGAGCTGGATCCGGCAGCCCCCA  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GGGAAGGGACTGGAGTGGATTGGGTATATCTATTACAGTGGGAGCACCAACTACAACCCC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    GGGAAGGGACTGGAGTGGATTGGGTATATCTATTACAGTGGGAGCACCAACTACAACCCC  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    TCCCTCAAGAGTCGAGTCACCATATCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAG  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    TCCCTCAAGAGTCGAGTCACCATATCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAG  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    CTGAGCTCTGTGACCGCTGCGGACACGGCCGTGTATTACTGTGCGAGGTCCTTTTTCGGG  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    CTGAGCTCTGTGACCGCTGCGGACACGGCCGTGTATTACTGTGCGAGGTCCTTTTTCGGG  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GATACAGCTATGGTTATGTTCCAGGCGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ------------------------------------------------------------  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ------------------------------------------------------------  60
-                                                                                          
+1.1.1    GATACAGCTATGGTTATGTTCCAGGCGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACC  60
+1.1.2    ------------------------------------------------------------  60
+                                                                     
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GTCTCCTCAGATGGCATGGATCCCTCTCTTCCTCGGCGTCCTTGCTTACTGCACAGGATC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    ----------ATGGCATGGATCCCTCTCTTCCTCGGCGTCCTTGCTTACTGCACAGGATC  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    ----------ATGGCATGGATCCCTCTCTTCCTCGGCGTCCTTGCTTACTGCACAGGATC  60
-                                        **************************************************
+1.1.1    GTCTCCTCAGATGGCATGGATCCCTCTCTTCCTCGGCGTCCTTGCTTACTGCACAGGATC  60
+1.1.2    ----------ATGGCATGGATCCCTCTCTTCCTCGGCGTCCTTGCTTACTGCACAGGATC  60
+                   **************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    CGTGGCCTCCTATGAGCTGACTCAGCCACCCTCAGTGTCCGTGTCCCCAGGACAGACAGC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    CGTGGCCTCCTATGAGCTGACTCAGCCACCCTCAGTGTCCGTGTCCCCAGGACAGACAGC  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    CGTGGCCTCCTATGAGCTGACTCAGCCACCCTCAGTGTCCGTGTCCCCAGGACAGACAGC  60
-                              ************************************************************
+1.1.1    CGTGGCCTCCTATGAGCTGACTCAGCCACCCTCAGTGTCCGTGTCCCCAGGACAGACAGC  60
+1.1.2    CGTGGCCTCCTATGAGCTGACTCAGCCACCCTCAGTGTCCGTGTCCCCAGGACAGACAGC  60
+         ************************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    CAGCATCACCTGCTCTGGAGATAAATTGGGGGATAAATATGCTTGCTGGTATCAGCAGAA  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    CAGCATCACCTGCTCTGGAGATAAATTGGGGGATAAATATGCTTGCTGGTATCAGCAGAA  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    CAGCATCACCTGCTCTGGAGATAAATTGGGGGATAAATATGCTTGCTGGTATCAGCAGAA  60
-                              ************************************************************
+1.1.1    CAGCATCACCTGCTCTGGAGATAAATTGGGGGATAAATATGCTTGCTGGTATCAGCAGAA  60
+1.1.2    CAGCATCACCTGCTCTGGAGATAAATTGGGGGATAAATATGCTTGCTGGTATCAGCAGAA  60
+         ************************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GCCAGGCCAGTCCCCTGTGCTGGTCATCTATCAAGATAGCAAGCGGCCCTCAGGGATCCC  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    GCCAGGCCAGTCCCCTGTGCTGGTCATCTATCAAGATAGCAAGCGGCCCTCAGGGATCCC  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    GCCAGGCCAGTCCCCTGTGCTGGTCATCTATCAAGATAGCAAGCGGCCCTCAGGGATCCC  60
-                              ************************************************************
+1.1.1    GCCAGGCCAGTCCCCTGTGCTGGTCATCTATCAAGATAGCAAGCGGCCCTCAGGGATCCC  60
+1.1.2    GCCAGGCCAGTCCCCTGTGCTGGTCATCTATCAAGATAGCAAGCGGCCCTCAGGGATCCC  60
+         ************************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    TGAGCGATTCTCTGGCTCCAACTCTGGGAACACAGCCACTCTGACCATCAGCGGGACCCA  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    TGAGCGATTCTCTGGCTCCAACTCTGGGAACACAGCCACTCTGACCATCAGCGGGACCCA  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    TGAGCGATTCTCTGGCTCCAACTCTGGGAACACAGCCACTCTGACCATCAGCGGGACCCA  60
-                              ************************************************************
+1.1.1    TGAGCGATTCTCTGGCTCCAACTCTGGGAACACAGCCACTCTGACCATCAGCGGGACCCA  60
+1.1.2    TGAGCGATTCTCTGGCTCCAACTCTGGGAACACAGCCACTCTGACCATCAGCGGGACCCA  60
+         ************************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    GGCTATGGATGAGGCTGACTATTACTGTCAGGCGTGGGACAGCAGCACTGTGGTATTCGG  60
-1.1.2.1.ACGTCAAAGTGGTAGC-1    GGCTATGGATGAGGCTGACTATTACTGTCAGGCGTGGGACAGCAGCACTGTGGTATTCGG  60
-1.1.2.2.ATGTGTGAGAGTACCG-1    GGCTATGGATGAGGCTGACTATTACTGTCAGGCGTGGGACAGCAGCACTGTGGTATTCGG  60
-                              ************************************************************
+1.1.1    GGCTATGGATGAGGCTGACTATTACTGTCAGGCGTGGGACAGCAGCACTGTGGTATTCGG  60
+1.1.2    GGCTATGGATGAGGCTGACTATTACTGTCAGGCGTGGGACAGCAGCACTGTGGTATTCGG  60
+         ************************************************************
 
-1.1.1.1.GCTGGGTTCAACCAAC-1    CGGAGGGACCAAGCTGACCGTCCTAG  26
-1.1.2.1.ACGTCAAAGTGGTAGC-1    CGGAGGGACCAAGCTGACCGTCCTAG  26
-1.1.2.2.ATGTGTGAGAGTACCG-1    CGGAGGGACCAAGCTGACCGTCCTAG  26
-                              **************************
+1.1.1    CGGAGGGACCAAGCTGACCGTCCTAG  26
+1.1.2    CGGAGGGACCAAGCTGACCGTCCTAG  26
+         **************************
 
