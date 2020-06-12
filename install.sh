@@ -222,7 +222,6 @@ main() {
     #    If the instructions here don't work, this post may be helpful:
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
 
-    pwd
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
         test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
             echo 'PATH=~/bin:$PATH' >> .profile
