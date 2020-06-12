@@ -785,17 +785,26 @@ dependencies = [
 name = "enclone_versions"
 version = "0.3.1"
 dependencies = [
+ "assert_cmd",
  "bio 0.29.0",
+ "byteorder",
  "bytes 0.4.12",
+ "dirs",
+ "failure",
  "io_utils",
  "ndarray",
+ "permutation",
+ "petgraph",
  "pretty_trace",
  "rayon",
  "regex",
  "serde",
+ "serde_derive",
  "stats_utils",
+ "stirling_numbers",
  "string_utils",
  "tar",
+ "tilde-expand",
 ]
 
 [[package]]
