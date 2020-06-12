@@ -25,7 +25,7 @@ use serde_json::Value;
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::HashSet;
-use std::fs::{read_dir, read_to_string, remove_file, File};
+use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
@@ -58,7 +58,98 @@ fn valid_link(link: &str) -> bool {
 
 // NOT BASIC
 
-// Make sure that the file datasets_sha256 is current
+// Run the download command on the landing page and make sure it works.
+//
+// Runs with "small", and passes second argument so we can put outputs in a defined place.
+//
+// There are two passes.  The first pass tests the copy of install.sh that is one master, and
+// the second pass tests the local version.  The second pass is not run if the files are identical.
+
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_curl_command() {
+    for pass in 1..=2 {
+        // TO DO: run pass 1
+        if pass == 1 {
+            continue;
+        }
+        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+            let g = format!("test/outputs/{}", f);
+            if path_exists(&g) {
+                if *f == ".profile" {
+                    remove_file(&g).unwrap();
+                } else {
+                    remove_dir_all(&g).unwrap();
+                }
+            }
+        }
+        let command;
+        let version;
+        if pass == 1 {
+            command = "curl -sSf -L bit.ly/enclone_install | sh -s -- small test/outputs";
+            version = "master";
+        } else {
+            command = "cat ../install.sh | sh -s -- small test/outputs";
+            version = "local";
+        }
+        let o = Command::new("csh")
+            .arg("-c")
+            .arg(&command)
+            .output()
+            .unwrap();
+        if o.status.code().unwrap() != 0 {
+            eprintln!(
+                "\nAttempt to run enclone install command using {} version of \
+                install.sh failed.\n",
+                version
+            );
+            eprint!("stdout:\n{}", strme(&o.stdout));
+            eprint!("stderr:\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        let req = [
+            "bin/enclone",
+            "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
+            "enclone/datasets_small_checksum",
+            "enclone/version",
+        ];
+        for f in req.iter() {
+            if !path_exists(&format!("test/outputs/{}", f)) {
+                eprintln!(
+                    "\nAttempt to run enclone install command using {} version of \
+                    install.sh failed to fetch {}.\n",
+                    version, f
+                );
+                std::process::exit(1);
+            }
+        }
+        // TO DO: remove pass == 2.
+        if pass == 2 && path_exists("test/outputs/.subversion") {
+            eprintln!(
+                "\nAttempt to run enclone install command using {} version of \
+                install.sh created .subversion.\n",
+                version
+            );
+            std::process::exit(1);
+        }
+        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+            let g = format!("test/outputs/{}", f);
+            if path_exists(&g) {
+                if *f == ".profile" {
+                    remove_file(&g).unwrap();
+                } else {
+                    remove_dir_all(&g).unwrap();
+                }
+            }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
+// Make sure that the dataset checksum files are current.
 
 #[cfg(not(feature = "basic"))]
 #[test]
