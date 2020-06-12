@@ -41,7 +41,7 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vector_utils = "*"
 
 [target.'cfg(not(windows))'.dependencies]
-pager = "0.15.0"
+pager = "*"
 
 [dependencies.hdf5]
 features = ["conda"]
