@@ -38,7 +38,7 @@ stirling_numbers = "*"
 string_utils = "*"
 tilde-expand = "*"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "0.1.0"
+vector_utils = "*"
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.15.0"
