@@ -262,7 +262,7 @@ main() {
             if [ "$size" = large ]; then
                 echo "Downloading medium version of datasets (as part of large)."
             fi
-            printf "This seems to take roughly one to three minutes, even over home wireless,\n"
+            printf "This seems to take roughly thirty seconds, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
             rm -rf enclone/datasets enclone/version14
             # Because svn always touches .svn, and we don't want to do that in the user's
@@ -284,8 +284,8 @@ main() {
     if [ "$size" = large ]; then
         if [ "$_datasets_large_current" = false ]; then
             printf "\nDownloading large version of datasets.\n"
-            printf "Over a fast internet connection, this might take a minute or two.\n"
-            printf "Over home wireless to a Mac it took us about ten minutes.\n\n"
+            printf "This seems to take roughly one to three minutes, even over home wireless,\n"
+            printf "however, you might have a slower connection.\n\n"
             cd enclone
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
