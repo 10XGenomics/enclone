@@ -80,6 +80,20 @@ pub fn is_f64_arg(arg: &str, x: &str) -> bool {
     return false;
 }
 
+pub fn is_string_arg(arg: &str, x: &str) -> bool {
+    if arg == x {
+        eprintln!(
+            "\nYour command line includes \"{}\", which is not a valid argument.\n\
+             Perhaps you meant \"{}=s\" for some string s.\n",
+            arg, x
+        );
+        std::process::exit(1);
+    } else if arg.starts_with(&format!("{}=", x)) {
+        return true;
+    }
+    return false;
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
