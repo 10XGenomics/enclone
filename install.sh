@@ -160,9 +160,8 @@ main() {
         _current_version=$(curl -sI $repo/releases/latest/download/enclone_linux | \
             grep "^location:" | tr '/' ' ' | cut -d ' ' -f9)
     else
-        # This is hideously inefficient, because it actually downloads the file.  Not clear
-        # how to do it without that.
-        _current_version=$(wget --server-response $repo/releases/latest/download/enclone_linux |& \
+        _current_version=$(wget --server-response --max-redirect=0 \
+            $repo/releases/latest/download/enclone_linux |& \
             grep " location:" | grep releases | tr '/' ' ' | cut -d ' ' -f11)
     fi
     _enclone_is_current=false
