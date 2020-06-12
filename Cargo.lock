@@ -799,6 +799,8 @@ dependencies = [
  "permutation",
  "petgraph",
  "pretty_trace",
+ "prost",
+ "prost-build",
  "rayon",
  "regex",
  "serde",
