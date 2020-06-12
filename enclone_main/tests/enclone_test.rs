@@ -63,16 +63,12 @@ fn valid_link(link: &str) -> bool {
 // Runs with "small", and passes second argument so we can put outputs in a defined place.
 //
 // There are two passes.  The first pass tests the copy of install.sh that is one master, and
-// the second pass tests the local version.  The second pass is not run if the files are identical.
+// the second pass tests the local version.
 
 #[cfg(not(feature = "basic"))]
 #[test]
 fn test_curl_command() {
     for pass in 1..=2 {
-        // TO DO: run pass 1
-        if pass == 1 {
-            continue;
-        }
         for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
             let g = format!("test/outputs/{}", f);
             if path_exists(&g) {
