@@ -119,8 +119,7 @@ fn test_curl_command() {
                 std::process::exit(1);
             }
         }
-        // TO DO: remove pass == 2.
-        if pass == 2 && path_exists("test/outputs/.subversion") {
+        if path_exists("test/outputs/.subversion") {
             eprintln!(
                 "\nAttempt to run enclone install command using {} version of \
                 install.sh created .subversion.\n",
