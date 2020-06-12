@@ -789,6 +789,7 @@ dependencies = [
  "bio 0.29.0",
  "byteorder",
  "bytes 0.4.12",
+ "chrono",
  "dirs",
  "failure",
  "flate2",
