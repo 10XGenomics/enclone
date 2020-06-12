@@ -143,7 +143,7 @@ main() {
             _datasets_medium_current=true
         fi
     fi
-    if test -d "$HOME/enclone/datasets2/download_complete"; then
+    if test -f "$HOME/enclone/datasets2/download_complete"; then
         _datasets_large_current=true
     fi
 
