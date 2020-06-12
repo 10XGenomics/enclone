@@ -20,7 +20,7 @@ enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "*"
-itertools = "^0.7"
+itertools = "*"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 pretty_trace = "*"
 rayon = "*"

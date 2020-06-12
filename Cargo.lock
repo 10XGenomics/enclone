@@ -792,6 +792,7 @@ dependencies = [
  "dirs",
  "failure",
  "io_utils",
+ "itertools 0.9.0",
  "ndarray",
  "permutation",
  "petgraph",

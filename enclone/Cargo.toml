@@ -23,7 +23,7 @@ enclone_core = { path = "../enclone_core" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "*"
-itertools = "^0.7"
+itertools = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 petgraph = "*"
