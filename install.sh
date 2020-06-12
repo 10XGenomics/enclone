@@ -240,7 +240,10 @@ main() {
             mkdir -p $HOME/enclone/datasets
             cd $HOME/enclone/datasets
             rm -rf $HOME/enclone/datasets/123085
-            svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085
+            # Because svn always touches .svn, and we don't want to do that in the user's
+            # home directory, we trick it to put the directory in a better place.
+            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085)
+            rm -rf $HOME/enclone/datasets/.subversion
             echo "$_datasets_small_checksum_master" > $HOME/enclone/datasets_small_checksum
             printf "Done with that download.\n"
         else
@@ -261,7 +264,10 @@ main() {
             mkdir -p $HOME/enclone
             cd $HOME/enclone
             rm -rf $HOME/enclone/datasets $HOME/enclone/version14
-            svn export -q $repo/trunk/enclone_main/test/inputs/version14
+            # Because svn always touches .svn, and we don't want to do that in the user's
+            # home directory, we trick it to put the directory in a better place.
+            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14)
+            rm -rf $HOME/enclone/.subversion
             echo "$_datasets_medium_checksum_master" > $HOME/enclone/datasets_medium_checksum
             printf "Done with that download.\n"
             mv $HOME/enclone/version14 $HOME/enclone/datasets
