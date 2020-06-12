@@ -19,7 +19,7 @@ bytes = "*"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 io_utils = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-prost = "0.5.0"
+prost = "*"
 regex = "*"
 serde = "*"
 serde_derive = "*"
@@ -34,5 +34,5 @@ rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 
 [build-dependencies]
 chrono = "0.4.11"
-prost-build = "0.5.0"
+prost-build = "*"
 string_utils = "*"
