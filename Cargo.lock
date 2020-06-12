@@ -792,6 +792,7 @@ dependencies = [
  "pretty_trace",
  "rayon",
  "regex",
+ "serde",
  "stats_utils",
  "string_utils",
  "tar",
