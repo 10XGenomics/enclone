@@ -82,10 +82,10 @@ fn test_curl_command() {
         let command;
         let version;
         if pass == 1 {
-            command = "curl -sSf -L bit.ly/enclone_install | sh -s -- small test/outputs";
+            command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
             version = "master";
         } else {
-            command = "cat ../install.sh | sh -s -- small test/outputs";
+            command = "cat ../install.sh | sh -s small test/outputs";
             version = "local";
         }
         let o = Command::new("csh")
