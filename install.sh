@@ -80,8 +80,8 @@ main() {
     # 3. Get requested size.
 
     if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ]; then
-        printf "\nTo install or update enclone, please supply the single argument SIZE to the"
-        printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium"
+        printf "\nTo install or update enclone, please supply the single argument SIZE to the\n"
+        printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium "
         printf "or large.\n"
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
@@ -182,9 +182,11 @@ main() {
 
     # 6. Make directory ~/bin if needed and download the appropriate enclone executable into it.
 
+    cd $HOME
+    mkdir -p bin
+    mkdir -p enclone
     if [ "$_enclone_is_current" = false ]; then
-        mkdir -p $HOME/bin
-        cd $HOME/bin
+        cd bin
         if [ "$_ostype" = Linux ]; then
             printf "\nDownloading the Linux version of the latest enclone executable.\n\n"
             if $_have_curl; then
@@ -204,9 +206,9 @@ main() {
         echo "Done downloading the enclone executable."
         # set execute permission on the enclone executable
         chmod +x enclone
+        cd ..
         # record local version
-        mkdir -p $HOME/enclone
-        echo "$_current_version" > $HOME/enclone/version
+        echo "$_current_version" > enclone/version
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -220,9 +222,10 @@ main() {
     #    If the instructions here don't work, this post may be helpful:
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
 
+    pwd
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        test -r $HOME/.bash_profile && echo 'PATH=$HOME/bin:$PATH' >> $HOME/.bash_profile || \
-            echo 'PATH=$HOME/bin:$PATH' >> $HOME/.profile
+        test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
+            echo 'PATH=~/bin:$PATH' >> .profile
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -237,11 +240,15 @@ main() {
             printf "\nDownloading small version of datasets.\n"
             printf "This seems to take roughly five seconds, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
-            mkdir -p $HOME/enclone/datasets
-            cd $HOME/enclone/datasets
-            rm -rf $HOME/enclone/datasets/123085
-            svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085
-            echo "$_datasets_small_checksum_master" > $HOME/enclone/datasets_small_checksum
+            mkdir -p enclone/datasets
+            rm -rf enclone/datasets/123085
+            # Because svn always touches .svn, and we don't want to do that in the user's
+            # home directory, we trick it to put the directory in a better place.
+            cd enclone/datasets
+            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085)
+            cd ../..
+            rm -rf enclone/datasets/.subversion
+            echo "$_datasets_small_checksum_master" > enclone/datasets_small_checksum
             printf "Done with that download.\n"
         else
             printf "\nSmall version of datasets already current so not downloading.\n"
@@ -258,16 +265,19 @@ main() {
             fi
             printf "This seems to take roughly one to three minutes, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
-            mkdir -p $HOME/enclone
-            cd $HOME/enclone
-            rm -rf $HOME/enclone/datasets $HOME/enclone/version14
-            svn export -q $repo/trunk/enclone_main/test/inputs/version14
-            echo "$_datasets_medium_checksum_master" > $HOME/enclone/datasets_medium_checksum
+            rm -rf enclone/datasets enclone/version14
+            # Because svn always touches .svn, and we don't want to do that in the user's
+            # home directory, we trick it to put the directory in a better place.
+            cd enclone
+            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14)
+            cd ..
+            rm -rf enclone/.subversion
+            echo "$_datasets_medium_checksum_master" > enclone/datasets_medium_checksum
             printf "Done with that download.\n"
-            mv $HOME/enclone/version14 $HOME/enclone/datasets
+            mv enclone/version14 enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
-            rm -rf $HOME/enclone/datasets/█≈ΠΠΠ≈█
+            rm -rf enclone/datasets/█≈ΠΠΠ≈█
         else
             printf "\nMedium version of datasets already current so not downloading them.\n"
         fi
@@ -277,8 +287,7 @@ main() {
             printf "\nDownloading large version of datasets.\n"
             printf "Over a fast internet connection, this might take a minute or two.\n"
             printf "Over home wireless to a Mac it took us about ten minutes.\n\n"
-            mkdir -p $HOME/enclone
-            cd $HOME/enclone
+            cd enclone
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
             if $_have_curl; then
@@ -289,7 +298,8 @@ main() {
             cat enclone_data_1.0.tar.gz | zcat | tar xf -
             rm enclone_data_1.0.tar.gz
             mv enclone_data_1.0 datasets2
-            touch $HOME/enclone/datasets2/download_complete
+            cd ..
+            touch enclone/datasets2/download_complete
             printf "Done with that download.\n"
         else
             printf "\nLarge version of datasets already current so not downloading them.\n"
