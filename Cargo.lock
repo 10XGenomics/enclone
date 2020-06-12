@@ -782,6 +782,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_versions"
+version = "0.3.1"
+dependencies = [
+ "bio 0.29.0",
+ "bytes 0.4.12",
+ "io_utils",
+ "pretty_trace",
+ "regex",
+]
+
+[[package]]
 name = "equiv"
 version = "0.1.0"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git#bf5e94482b396fb5577ad23bca78aa7b4677dabc"
