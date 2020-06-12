@@ -15,5 +15,5 @@ publish = false
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 enclone_core = { path = "../enclone_core" }
 io_utils = "*"
-string_utils = "0.1.1"
+string_utils = "*"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }

@@ -788,8 +788,13 @@ dependencies = [
  "bio 0.29.0",
  "bytes 0.4.12",
  "io_utils",
+ "ndarray",
  "pretty_trace",
+ "rayon",
  "regex",
+ "stats_utils",
+ "string_utils",
+ "tar",
 ]
 
 [[package]]

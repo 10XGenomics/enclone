@@ -25,17 +25,17 @@ failure = "0.1.5"
 io_utils = "*"
 itertools = "^0.7"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-ndarray = "0.13"
+ndarray = "*"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 permutation = "0.2.5"
 pretty_trace = "*"
 prost = "0.5.0"
-rayon = "1.0.2"
+rayon = "*"
 serde = "1.0.90"
 serde_derive = "1.0.102"
 serde_json = "*"
-stats_utils = "0.1.0"
-string_utils = "0.1.1"
+stats_utils = "*"
+string_utils = "*"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vector_utils = "0.1.0"
