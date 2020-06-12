@@ -221,8 +221,8 @@ main() {
     #    https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path.
 
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        test -r $HOME/.bash_profile && echo 'PATH=$HOME/bin:$PATH' >> $HOME/.bash_profile || \
-            echo 'PATH=$HOME/bin:$PATH' >> $HOME/.profile
+        test -r $HOME/.bash_profile && echo 'PATH=~/bin:$PATH' >> $HOME/.bash_profile || \
+            echo 'PATH=~/bin:$PATH' >> $HOME/.profile
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
