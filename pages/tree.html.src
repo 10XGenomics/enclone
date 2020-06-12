@@ -68,8 +68,8 @@ This method is invoked using the argument <code>CLUSTAL_DNA=filename</code> or
 <code>CLUSTAL_AA=filename</code>, where 
 <code>filename</code> can be <code>stdout</code>.  It does not generate a tree, but instead
 generates a <code>CLUSTALW</code> alignment for each clonotype (using either bases or 
-amino acids), with one sequence for each
-cell.  This sequence is the concatenation of the per-chain sequences, with the appropriate number
+amino acids), with one sequence for each exact subclonotype.
+This sequence is the concatenation of the per-chain sequences, with the appropriate number
 of gap (-) characters shown if a chain is missing.  As above, we recommend using the
 <code>COMPLETE</code> option to avoid this happening.</p>
 
