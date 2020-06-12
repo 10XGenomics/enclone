@@ -162,7 +162,7 @@ main() {
     else
         _current_version=$(wget --server-response --max-redirect=0 \
             $repo/releases/latest/download/enclone_linux |& \
-            grep " location:" | grep releases | tr '/' ' ' | cut -d ' ' -f11)
+            grep " location:" | tr '/' ' ' | cut -d ' ' -f11)
     fi
     _enclone_is_current=false
     if test -f "$HOME/bin/enclone"; then
