@@ -81,7 +81,7 @@ main() {
 
     if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ]; then
         printf "\nTo install or update enclone, please supply the single argument SIZE to the\n"
-        printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium\n"
+        printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium "
         printf "or large.\n"
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
