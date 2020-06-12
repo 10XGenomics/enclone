@@ -806,6 +806,7 @@ dependencies = [
  "string_utils",
  "tar",
  "tilde-expand",
+ "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

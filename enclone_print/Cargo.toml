@@ -38,7 +38,7 @@ stats_utils = "*"
 string_utils = "*"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "0.1.0"
+vector_utils = "*"
 
 [dependencies.hdf5]
 features = ["conda"]

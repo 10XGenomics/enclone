@@ -25,7 +25,7 @@ serde = "*"
 serde_derive = "*"
 serde_json = "*"
 string_utils = "*"
-vector_utils = "0.1.0"
+vector_utils = "*"
 
 [dependencies.hdf5]
 features = ["conda"]
