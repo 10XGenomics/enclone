@@ -375,6 +375,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_nothing = [
         "BC",
+        "BI",
         "CELLRANGER",
         "COMP",
         "COMP2",
@@ -384,8 +385,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "FORCE_EXTERNAL",
         "GEX",
         "HAPS",
+        "HTML",
         "LONG_HELP",
         "MARKED_B",
+        "MARK_STATS",
+        "NALL",
         "NOPAGER",
         "NOPRETTY",
         "PLAIN",
@@ -511,10 +515,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
-        } else if arg.starts_with("BI=") {
-            continue;
-        } else if is_simple_arg(&arg, "MARK_STATS") {
-        } else if arg == "HTML" || arg.starts_with("HTML=") {
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));
             if x.len() == 0 || x.len() % 2 != 0 {
@@ -540,7 +540,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
-        } else if is_simple_arg(&arg, "NALL") {
         } else if arg.starts_with("F=") {
             let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
