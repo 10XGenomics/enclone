@@ -69,6 +69,14 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_curl_command() {
+    if !path_exists("test/outputs") {
+        eprintln!(
+            "\ntest_curl_command:\n\
+            You need to create the directory enclone_main/test/outputs.\n\
+            If you run \"./build\" this will be done for you.\n"
+        );
+        std::process::exit(1);
+    }
     for pass in 1..=2 {
         for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
             let g = format!("test/outputs/{}", f);
