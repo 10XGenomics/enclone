@@ -66,6 +66,7 @@ fn valid_link(link: &str) -> bool {
 // the second pass tests the local version.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_curl_command() {
     for pass in 1..=2 {
@@ -147,6 +148,7 @@ fn test_curl_command() {
 // Make sure that the dataset checksum files are current.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
