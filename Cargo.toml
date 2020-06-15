@@ -21,3 +21,8 @@ codegen-units = 1
 
 [profile.test]
 opt-level = 3
+
+# Cautionary note.  We set package versions in enclone_versions, but it's not clear that
+# this is a sound practice, particularly in the case where a crate outside the enclone repo
+# depends on a crate in the enclone repo.  Such an external crate sees "*" and it's not clear
+# what is done with that.
