@@ -263,6 +263,27 @@ pub fn survives_filter(
     if lis.len() > ctl.clono_filt_opt.max_datasets {
         return false;
     }
+
+    // Implement MIN_DATASET_RATIO.
+
+    if ctl.clono_filt_opt.min_dataset_ratio > 0 {
+        let mut datasets = Vec::<usize>::new();
+        for i in 0..exacts.len() {
+            let ex = &exact_clonotypes[exacts[i]];
+            for j in 0..ex.ncells() {
+                datasets.push(ex.clones[j][0].dataset_index);
+            }
+        }
+        datasets.sort();
+        let mut freq = Vec::<(u32, usize)>::new();
+        make_freq(&datasets, &mut freq);
+        if freq.len() == 1
+            || freq[0].0 < ctl.clono_filt_opt.min_dataset_ratio as u32 * max(1, freq[1].0)
+        {
+            return false;
+        }
+    }
+
     // Clonotypes with no more and no less than min and max chains
     if cols < ctl.clono_filt_opt.min_chains || cols > ctl.clono_filt_opt.max_chains {
         return false;

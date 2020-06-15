@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 91] = [
+pub const TESTS: [&str; 93] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -243,6 +243,10 @@ pub const TESTS: [&str; 91] = [
     // 91. test FCELL with null value
     r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
         CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
+    // 92. test NALL_CELL
+    r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
+    // 93. test MIN_DATASET_RATIO
+    r###"BCR=123085,123089 MIN_DATASET_RATIO=10 LVARSP=nd2"###,
 ];
 
 // Test using the extended public dataset collection.
