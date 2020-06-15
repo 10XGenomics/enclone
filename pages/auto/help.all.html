@@ -18,35 +18,33 @@ The mission of <span style="color:#3e7dd1;font-weight:bold;">e</span><span style
 <span style="font-weight:bold;">  Find and display the clonotypes within single cell VDJ datasets:</span>
 <span style="font-weight:bold;">  groups of cells having the same fully rearranged common ancestor.</span>
 
-This help page catalogs all the enclone help pages.  We strongly recommend studying at least those
-in <span style="color:#c23621;">red</span> below.  Pages fit in 100 wide x 56 high windows, except those labeled "long" or "wide".
+<span style="color:#5833ff;font-weight:bold;">enclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe. 
+enclone uses output from Cell Ranger version ≥ 3.1.</span>
 
-<span style="color:#5833ff;font-weight:bold;">enclone is part of the 10x Genomics immune profiling tools, including Cell Ranger and Loupe,</span>
-enclone uses output from Cell Ranger version <span style="color:#c23621;font-weight:bold;">≥ 3.1.</span>
-
-Please also read the online documentation at <span style="color:#25bc24;">bit.ly/enclone</span>.
+The complete enclone documentation is at <span style="color:#25bc24;">bit.ly/enclone</span>.  This page catalogs the subset of those
+pages that are directly accessible from the enclone command line.  These pages can be viewed in a
+100 wide x 56 high window, except for those labeled "long" or "wide".
 
 ┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
 │<span style="font-weight:bold;">command</span>                  │  <span style="font-weight:bold;">what it provides</span>                                                   │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│<span style="color:#c23621;">enclone help</span>             │  <span style="color:#c23621;">help to test for correct setup</span>                                     │
-│<span style="color:#c23621;">enclone</span>                  │  <span style="color:#c23621;">what you see here: guide to all the doc</span>                            │
+│enclone help             │  help to test for correct setup                                     │
+│enclone                  │  what you see here: guide to all the doc                            │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│<span style="color:#c23621;">enclone help quick</span>       │  <span style="color:#c23621;">quick guide to getting started</span>                                     │
-│<span style="color:#c23621;">enclone help how</span>         │  <span style="color:#c23621;">how enclone works (long)</span>                                           │
-│<span style="color:#c23621;">enclone help command</span>     │  <span style="color:#c23621;">info about enclone command line argument processing</span>                │
+│enclone help quick       │  quick guide to getting started                                     │
+│enclone help how         │  how enclone works (long)                                           │
+│enclone help command     │  info about enclone command line argument processing                │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│<span style="color:#c23621;">enclone help glossary</span>    │  <span style="color:#c23621;">glossary of terms used by enclone, and conventions</span>                 │
+│enclone help glossary    │  glossary of terms used by enclone, and conventions                 │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│<span style="color:#c23621;">enclone help example1</span>    │  <span style="color:#c23621;">explanation of an example</span>                                          │
-│<span style="color:#c23621;">enclone help example2</span>    │  <span style="color:#c23621;">example showing gene expression and feature barcodes (wide)</span>        │
+│enclone help example1    │  explanation of an example                                          │
+│enclone help example2    │  example showing gene expression and feature barcodes (wide)        │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│<span style="color:#c23621;">enclone help support</span>     │  <span style="color:#c23621;">how we can help, enclone@10xgenomics.com</span>                           │
+│enclone help support     │  how we can help, enclone@10xgenomics.com                           │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help input       │  how to provide input to enclone (long)                             │
 │enclone help input_tech  │  how to provide input to enclone (technical notes)                  │
 │enclone help parseable   │  parseable output (long)                                            │
-│enclone help plot        │  generate a honeycomb plot showing clonotypes                       │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help filter      │  clonotype filtering options, scanning for feature enrichment (long)│
 │enclone help special     │  special filtering options (long)                                   │
@@ -59,7 +57,6 @@ Please also read the online documentation at <span style="color:#25bc24;">bit.ly
 │enclone help indels      │  insertion and deletion handling                                    │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help color       │  how enclone uses color, and related things                         │
-│enclone help ideas       │  ideas for features that might be implemented                       │
 │enclone help faq         │  frequently asked questions (long)                                  │
 │enclone help developer   │  a few things for developers                                        │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
@@ -387,10 +384,9 @@ chains within a clonotype, however DNA and amino-acid positions are numbered sta
 enclone help example1
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
-Suppose you have placed the datasets that enclone comes with in the
-directory /users/jdoe/enclone_data.  Then you can run this command:
+Shown below is the output of the command:
 
-% enclone PRE=/users/jdoe/enclone_data BCR=123089 CDR3=CARRYFGVVADAFDIW
+<span style="font-weight:bold;">enclone BCR=123089 CDR3=CARRYFGVVADAFDIW</span>
 
 <span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 12 CELLS</span>
 
@@ -437,17 +433,15 @@ There is a lot to explain about the compression, so please read carefully.
 • const = const region name for a chain in the exact subclonotype.
 
 The view you see here is configurable: see the documentation at <span style="font-weight:bold;">enclone help lvars</span> and <span style="font-weight:bold;">enclone
-help cvars</span>.  See also <span style="font-weight:bold;">enclone help command</span> for how to remove the <span style="font-weight:bold;">PRE</span> part of the command.
+help cvars</span>.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help example2
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
-Suppose you have placed the datasets that enclone comes with in the
-directory /users/jdoe/enclone_data.  Then you can run this command:
+Shown below is the output of the command:
 
-% enclone PRE=/users/jdoe/enclone_data BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ
-CDR3=CALMGTYCSGDNCYSWFDPW
+<span style="font-weight:bold;">enclone BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW</span>
 
 <span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 5 CELLS</span>
 
@@ -531,57 +525,6 @@ the site.
 <span style="color:#c23621;">Happy encloning!</span>
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-enclone help plot
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-
-<span style="font-weight:bold;">plotting clonotypes</span>
-
-enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
-You can see an example at <span style="color:#25bc24;">bit.ly/enclone</span>.
-
-enclone provides four ways to assign colors in such a plot.  We describe them in order of
-precedence, i.e. color data for the first will be used if provided, etc.
-
-<span style="color:#c23621;font-weight:bold;">1.</span> The first way is to use the argument
-<span style="font-weight:bold;">PLOT="filename,sample1->color1,...,samplen->colorn"</span>
-which creates an svg file of the given name, and assigns the given colors to the given samples. 
-Unspecified samples will be black.
-
-<span style="color:#c23621;font-weight:bold;">2.</span> The second way is to provide simply
-<span style="font-weight:bold;">PLOT=filename</span>
-on the command line, and then provide the <span style="font-weight:bold;">color</span> field in the CSV defined by the <span style="font-weight:bold;">META</span> option.  This
-assigns a color to each dataset.
-
-<span style="color:#c23621;font-weight:bold;">3.</span> The third way is to use the simple <span style="font-weight:bold;">PLOT</span> specification, and assign a color to each barcode using
-the <span style="font-weight:bold;">bc</span> field for <span style="font-weight:bold;">META</span>.
-
-<span style="color:#c23621;font-weight:bold;">4.</span> The fourth way is <span style="font-weight:bold;">PLOT_BY_ISOTYPE=filename</span>.  This plots by heavy chain constant region name and
-labels accordingly.  (This only makes sense for BCR.) Some cells may be labeled "unassigned", for
-one of three reasons: (1) no heavy chain was found; (2) no constant region was found; (3) two
-heavy chains were found and had conflicting constant region names.  Running with <span style="font-weight:bold;">MIN_CHAINS_EXACT=2</span>
-is usually a good idea to avoid noise coming from cells for which only a light chain was detected.
- Currently a maximum of 12 constant region names is allowed.  Let us know if you have more and we
-will fix this.  Note that <span style="font-weight:bold;">PLOT_BY_ISOTYPE</span> cannot be used with <span style="font-weight:bold;">PLOT</span> or <span style="font-weight:bold;">LEGEND</span>.
-
-The colors should be valid colors for use in an svg file.  They can be named colors like red or
-blue (see <span style="color:#25bc24;">https://www.w3.org/TR/SVG11/types.html#ColorKeywords</span> for a full list) or a hex
-specification like #00FFFF for aqua.  The full color description for svg is at
-<span style="color:#25bc24;">https://www.w3.org/TR/SVGColor12</span>.
-
-enclone also recognizes the color abbreviations @1, ..., @6, which refer to enclone's color blind
-friendly palette (see "enclone help color").
-
-Each cell is shown as a disk having the given color, and each clonotype is shown as a cluster of
-these disks, which are positioned at random.  We suggest using the <span style="font-weight:bold;">MIN_CELLS</span> option (see "enclone
-help filter") so that tiny clonotypes do not dominate.  The filename argument may be "stdout". 
-Note that plotting is potentially slow.
-
-To add a legend to the graph, add the argument <span style="font-weight:bold;">LEGEND</span> to your command line.  This will give you an
-auto-generated legend.  You can also customize the legend by adding an argument of the form
-<span style="font-weight:bold;">LEGEND=color1,"text1",...,colorn,"textn"</span>
-to the command line.
-
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help input
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
@@ -598,7 +541,8 @@ by typing <span style="font-weight:bold;">enclone help input_tech</span>.
 ┃list is also allowed <span style="font-weight:bold;">PRE=p1,...,pn</span>, in which case these directories are searched from left to    ┃
 ┃right, until one works, and if all fail, the path is used without prepending anything.  Lastly,  ┃
 ┃(see <span style="font-weight:bold;">enclone help command</span>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command line by setting the         ┃
-┃environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to the desired value.                                           ┃
+┃environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to the desired value.  The default value for <span style="font-weight:bold;">PRE</span> is             ┃
+┃<span style="font-weight:bold;">~/enclone/datasets,~/enclone/datasets2</span>.                                                          ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 Both input forms involve abbreviated names (discussed below), which should be as short as
@@ -752,7 +696,7 @@ If you want to completely suppress the generation of visual clonotypes, add <spa
 command line.
 
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">FASTA output.</span>  This is a separate feature. To generate nucleotide FASTA output for each chain in  ┃
+┃<span style="font-weight:bold;">FASTA output.</span>  This is a separate feature.  To generate nucleotide FASTA output for each chain in ┃
 ┃each exact subclonotype, use the argument <span style="font-weight:bold;">FASTA=filename</span>.  The special case <span style="font-weight:bold;">stdout</span> will cause the ┃
 ┃FASTA records to be shown as part of standard output.  The FASTA records that are generated are of┃
 ┃the form V(D)JC, where V is the full V segment (including the leader) and C is the full constant  ┃
@@ -852,8 +796,10 @@ enclone help filter
 
 <span style="font-weight:bold;">clonotype filtering options</span>
 
-These options cause only certain clonotypes to be printed.  Please see also "enclone help
-special".
+enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This page describes
+filtering by clonotype.  These options cause only certain clonotypes to be printed.  See also
+"enclone help special", which describes other filtering options.  This page also described
+scanning for feature enrichment.
 
 ┌─────────────────────┬───────────────────────────────────────────────────────────────────────┐
 │MIN_CELLS=n          │  only show clonotypes having at least n cells                         │
@@ -970,6 +916,8 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NALL                │  Turn off all the noise filters shown below.  This may yield quite a mess.  │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
 │                    │  or not called high confidence.                                             │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
@@ -1051,7 +999,16 @@ clonotype.
 │CHAINS_EXACT=n      │  Delete any exact subclonotype not having exactly n chains.                 │
 │MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
 │                    │  to use this if you have a very large and complex expanded clonotype,       │
+│COMPLETE            │  delete any exact subclonotype that has less chains than the clonotype      │
 │                    │  for which you would like to see a simplified view.                         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│FCELL=var=value     │  Supposing that var has been specified as a field using the BC option       │
+│                    │  (or equivalently, using bc, via META), see "enclone help input", this      │
+│                    │  option filters out all barcodes that do not satisfy the given constraint.  │
+│                    │  Note that for purposes of testing the constraint, if the value for a       │
+│                    │  particular barcode has not been specified via BC or bc, then its value is  │
+│                    │  taken to be null.  Also multiple instances of FCELL may be used to impose  │
+│                    │  multiple filters.                                                          │
 └────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -1065,47 +1022,55 @@ clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌───────────────┬────────────────────────────────────────────────────────────────────────────┐
-│datasets       │  dataset identifiers                                                       │
-│samples        │  sample identifiers                                                        │
-│donors         │  donor identifiers                                                         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│n              │  number of cells                                                           │
-│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset      │
-│               │  or sample or donor or tag short name; may name only one such category     │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                 │
-│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                │
-│               │  both compare to cells having chains in the same columns of the clonotype, │
-│               │  with - shown if there is no other exact subclonotype to compare to        │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are    │
-│               │  grouped according to the Hamming distance of their V..J sequences.  Those │
-│               │  within distance d are defined to be in the same group, and this is        │
-│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The     │
-│               │  ordering of these identifiers is arbitrary.  This option is best applied  │
-│               │  to cases where all exact subclonotypes have a complete set of chains.     │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                        │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type   │
-│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow   │
-│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;  │
-│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr│
-│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●│
-├───────────────┼────────────────────────────────────────────────────────────────────────────┤
-│cred           │  Short for credibility.  It is a measure of the extent to which cells      │
-│               │  having gene expression similar to a given putative B cell are themselves  │
-│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n   │
-│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,    │
-│               │  find the n GEX cells that are closest to it in PCA space, and report the  │
-│               │  percent of those that are also VDJ cells.  For multiple datasets, it would│
-│               │  be better to "aggr" the data, however that is not currently supported     │
-│               │  The computation is also inefficient, so let us know if it's causing       │
-│               │  problems for you.  And cred makes much better sense for samples that      │
-│               │  consist of mixed cell types, rather than consisting of pure B or T cells. │
-└───────────────┴────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬──────────────────────────────────────────────────────────────────────────────┐
+│datasets       │  dataset identifiers                                                         │
+│samples        │  sample identifiers                                                          │
+│donors         │  donor identifiers                                                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│n              │  number of cells                                                             │
+│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset        │
+│               │  or sample or donor or tag short name; may name only one such category       │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│nd&lt;k>          │  For k a positive integer, this creates k+1 fields, that are specific to each│
+│               │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset  │
+│               │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a        │
+│               │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however    │
+│               │  fields will be elided if they represent no cells.                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                   │
+│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                  │
+│               │  both compare to cells having chains in the same columns of the clonotype,   │
+│               │  with - shown if there is no other exact subclonotype to compare to          │
+│dref           │  Hamming distance of V..J DNA sequence to donor reference, excluding         │
+│               │  region of recombination                                                     │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are      │
+│               │  grouped according to the Hamming distance of their V..J sequences.  Those   │
+│               │  within distance d are defined to be in the same group, and this is          │
+│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The       │
+│               │  ordering of these identifiers is arbitrary.  This option is best applied    │
+│               │  to cases where all exact subclonotypes have a complete set of chains.       │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                          │
+│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                           │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type     │
+│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow     │
+│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;    │
+│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr  │
+│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●  │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cred           │  Short for credibility.  It is a measure of the extent to which cells        │
+│               │  having gene expression similar to a given putative B cell are themselves    │
+│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n     │
+│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,      │
+│               │  find the n GEX cells that are closest to it in PCA space, and report the    │
+│               │  percent of those that are also VDJ cells.  For multiple datasets, it would  │
+│               │  be better to "aggr" the data, however that is not currently supported       │
+│               │  The computation is also inefficient, so let us know if it's causing         │
+│               │  problems for you.  And cred makes much better sense for samples that        │
+│               │  consist of mixed cell types, rather than consisting of pure B or T cells.   │
+└───────────────┴──────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
 ● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
@@ -1332,37 +1297,16 @@ position of the insertion is shown.  The position is the position of the amino a
 the insertion appears, where the first amino acid (start codon) is numbered 0.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-enclone help ideas
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-
-<span style="font-weight:bold;">features that might be implemented in enclone</span>
-
-┌───────────────────┬──────────────────────────────────────────────────────────────────┐
-│speed              │  make enclone faster                                             │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│CDRn               │  make CDR1 and CDR2 viewable in the same way that CDR3 is now    │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│distance grouping  │  provide an option to group clonotypes by distance               │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│cloning            │  package V..J region into a cloning vector                       │
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│phylogeny          │  generate a phylogeny for the exact clonotypes within a clonotype│
-├───────────────────┼──────────────────────────────────────────────────────────────────┤
-│windows            │  make enclone work on windows computers                          │
-└───────────────────┴──────────────────────────────────────────────────────────────────┘
-
-Please let us know if you are interested in these features, or if there are other features that
-you would like us to implement!
-
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help color
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
 Here is the color palette that enclone uses for amino acids:
 
-<span style="color:#3e7dd1;font-weight:bold;">█</span> <span style="color:#eb99c2;font-weight:bold;">█</span> <span style="color:#31c39a;">█</span> <span style="color:#f37721;font-weight:bold;">█</span> <span style="color:#72c0ff;font-weight:bold;">█</span> <span style="color:#e7bd20;">█</span> 
+<span style="color:#3e7dd1;font-weight:bold;">█</span> <span style="color:#eb99c2;font-weight:bold;">█</span> <span style="color:#31c39a;">█</span> <span style="color:#f37721;font-weight:bold;">█</span> <span style="color:#72c0ff;font-weight:bold;">█</span> <span style="color:#e7bd20;">█</span> <span style="color:#eaec23;font-weight:bold;">█</span> 
 
-When enclone shows amino acids, it colors each codon differently, via the following scheme:
+When enclone shows amino acids, it uses one of two coloring schemes.  The first scheme (the
+default, or using the argument <span style="font-weight:bold;">COLOR=codon</span>), colors amino acids by codon, according to the
+following scheme:
 
 Alanine        A  <span style="color:#72c0ff;font-weight:bold;">GCT</span> <span style="color:#eb99c2;font-weight:bold;">GCC</span> <span style="color:#3e7dd1;font-weight:bold;">GCA</span> <span style="color:#31c39a;">GCG</span>
 Arginine       R  <span style="color:#72c0ff;font-weight:bold;">CGT</span> <span style="color:#eb99c2;font-weight:bold;">CGC</span> <span style="color:#3e7dd1;font-weight:bold;">CGA</span> <span style="color:#31c39a;">CGG</span> <span style="color:#e7bd20;">AGA</span> <span style="color:#f37721;font-weight:bold;">AGG</span>
@@ -1387,9 +1331,20 @@ Valine         V  <span style="color:#e7bd20;">GTT</span> <span style="color:#72
 
 Colored amino acids enable the compact display of all the information in a clonotype.
 
-The coloring is done using special characters, called ANSI escape characters.  Color is used
-occasionally elsewhere by enclone, and there is also some  bolding, accomplished using the same
-mechanism.
+The second scheme for coloring amino acids, <span style="font-weight:bold;">COLOR=property</span>, colors amino acids by their
+properties, according to the following scheme:
+
+1. Aliphatic: <span style="color:#72c0ff;font-weight:bold;">A</span> <span style="color:#72c0ff;font-weight:bold;">G</span> <span style="color:#72c0ff;font-weight:bold;">I</span> <span style="color:#72c0ff;font-weight:bold;">L</span> <span style="color:#72c0ff;font-weight:bold;">P</span> <span style="color:#72c0ff;font-weight:bold;">V</span>
+2. Aromatic: <span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">Y</span>
+3. Acidic: <span style="color:#e7bd20;">D</span> <span style="color:#e7bd20;">E</span>
+4. Basic: <span style="color:#3e7dd1;font-weight:bold;">R</span> <span style="color:#3e7dd1;font-weight:bold;">H</span> <span style="color:#3e7dd1;font-weight:bold;">K</span>
+5. Hydroxylic: <span style="color:#eb99c2;font-weight:bold;">S</span> <span style="color:#eb99c2;font-weight:bold;">T</span>
+6. Sulfurous: <span style="color:#31c39a;">C</span> <span style="color:#31c39a;">M</span>
+7. Amidic: <span style="color:#eaec23;font-weight:bold;">N</span> <span style="color:#eaec23;font-weight:bold;">Q</span>
+
+In both cases, the coloring is done using special characters, called ANSI escape characters. 
+Color is used occasionally elsewhere by enclone, and there is also some bolding, accomplished
+using the same mechanism.
 
 Correct display of colors and bolding depends on having a terminal window that is properly set up.
  As far as we know, this may always be the case, but it is possible that there are exceptions.  In
@@ -1460,7 +1415,21 @@ Runs where we combine several hundred datasets execute in a couple minutes (on a
 mileage could vary, and we are interested in cases where it is underperforming.  Let us know.  We
 are aware of several things that could be done to speed up enclone.
 
-<span style="color:#5833ff;font-weight:bold;">4. What platforms does enclone run on?</span>
+<span style="color:#5833ff;font-weight:bold;">4. How does enclone fit into the 10x Genomics software ecosystem?</span>
+
+There are several parts to the answer:
+• enclone is a standalone executable that by default produces human-readable output.
+• You can also run enclone to produce parseable output (see <span style="font-weight:bold;">enclone help parseable</span>), and that
+output can be digested using code that you write (for example, in R).
+• When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
+enclone with a special option that yields only an output file for the 10x visualization tool
+Loupe.
+• Clonotypes may then be viewed using Loupe.  The view of a clonotype provided by Loupe is
+different than the view provided by enclone.  Loupe shows a continuous expanse of bases across
+each chain, which you can scroll across, rather than the compressed view of "important" bases or
+amino acids that enclone shows.
+
+<span style="color:#5833ff;font-weight:bold;">5. What platforms does enclone run on?</span>
 
 1. Linux/x86-64 (that's most servers)
 2. Mac.
@@ -1468,12 +1437,12 @@ are aware of several things that could be done to speed up enclone.
 However, we have not and cannot test every possible configuration of these platforms.  Please let
 us know if you encounter problems!
 
-<span style="color:#5833ff;font-weight:bold;">5. How can I print out all the donor reference sequences?</span>
+<span style="color:#5833ff;font-weight:bold;">6. How can I print out all the donor reference sequences?</span>
 
 Add the argument <span style="font-weight:bold;">DONOR_REF_FILE=filename</span> to your enclone command, and fasta for the donor
 reference sequences will be dumped there.
 
-<span style="color:#5833ff;font-weight:bold;">6. How does enclone know what VDJ reference sequences I'm using?</span>
+<span style="color:#5833ff;font-weight:bold;">7. How does enclone know what VDJ reference sequences I'm using?</span>
 
 It does not!  It assumes that you have the <span style="font-weight:bold;">human</span> reference sequences that shipped with the latest
 version of Cell Ranger.  If instead your sequences are mouse, then you can specify that by adding
@@ -1481,7 +1450,7 @@ the argument <span style="font-weight:bold;">MOUSE</span> to your command line. 
 please specify that by adding <span style="font-weight:bold;">REF=f</span> to your command line, where <span style="font-weight:bold;">f</span> is the name of your VDJ
 reference fasta file.
 
-<span style="color:#5833ff;font-weight:bold;">7. Can I provide data from more than one donor?</span>
+<span style="color:#5833ff;font-weight:bold;">8. Can I provide data from more than one donor?</span>
 
 Yes.  Type <span style="font-weight:bold;">enclone help input</span> for details.  The default behavior of enclone is to prevent cells
 from different donors from being placed in the same clonotype.  The <span style="font-weight:bold;">MIX_DONORS</span> option may be used
@@ -1490,29 +1459,29 @@ than one donor will be flagged as errors, unless you use the <span style="font-w
 warnings.  The primary reason for allowing entry of data from multiple donors is to allow
 estimation of enclone's error rate.
 
-<span style="color:#5833ff;font-weight:bold;">8. What are some command line argument values quoted?</span>
+<span style="color:#5833ff;font-weight:bold;">9. What are some command line argument values quoted?</span>
 
 Command line argument values that contain any of these characters ;|* need to be quoted like so
 <span style="font-weight:bold;">TCR="a;b"</span>
 to prevent the shell from interpreting them for a purpose completely unrelated to enclone.  This
 is a trap, because forgetting to add the quotes can result in nonsensical and confusing behavior!
 
-<span style="color:#5833ff;font-weight:bold;">9. If enclone fails, does it return nonzero exit status?</span>
+<span style="color:#5833ff;font-weight:bold;">10. If enclone fails, does it return nonzero exit status?</span>
 
 Yes, unless output of enclone is going to a terminal.  In that case, you'll always get zero.
 
-<span style="color:#5833ff;font-weight:bold;">10. Could a cell be missing from an enclone clonotype?</span>
+<span style="color:#5833ff;font-weight:bold;">11. Could a cell be missing from an enclone clonotype?</span>
 
 Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
 described in <span style="font-weight:bold;">enclone help special</span>, and which you can turn off.  We also delete cells for which
 more than four chains were found.
 
-<span style="color:#5833ff;font-weight:bold;">11. Can enclone print summary stats?</span>
+<span style="color:#5833ff;font-weight:bold;">12. Can enclone print summary stats?</span>
 
 Yes, if you add the option <span style="font-weight:bold;">SUMMARY</span>, then some summary stats will be printed.  If you only want to
 see the summary stats, then also add the option <span style="font-weight:bold;">NOPRINT</span>.
 
-<span style="color:#5833ff;font-weight:bold;">12. What is the notes column?</span>
+<span style="color:#5833ff;font-weight:bold;">13. What is the notes column?</span>
 
 The notes column appears if one of two relatively rare events occurs:
 
@@ -1538,16 +1507,10 @@ option <span style="font-weight:bold;">JC1</span>.  The reason for this is that 
 those supplied with Cell Ranger 3.1) often have an extra base at the beginning of their C
 segments, resulting in annoying overlap notes for a large fraction of clonotypes.
 
-<span style="color:#5833ff;font-weight:bold;">13. Can I cap the number of threads used by enclone?</span>
+<span style="color:#5833ff;font-weight:bold;">14. Can I cap the number of threads used by enclone?</span>
 
 You can use the command-line argument <span style="font-weight:bold;">MAX_CORES=n</span> to cap the number of cores used in parallel
 loops.  The number of threads used is typically one higher.
-
-<span style="color:#5833ff;font-weight:bold;">14. Does enclone work under Windows?</span>
-
-No.  There are nontrivial technical problems with getting this to work.  If you're sufficiently
-curious, see the notes in the source code file misc1.rs.  Please let us know if you're interested
-in support for Windows.
 
 <span style="color:#5833ff;font-weight:bold;">15. Can I use enclone if I have only gene expression data?</span>
 

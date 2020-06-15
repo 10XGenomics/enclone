@@ -12,8 +12,8 @@ use enclone::html::insert_html;
 use enclone::misc3::parse_bsv;
 use enclone::run_test::*;
 use enclone_core::testlist::*;
+use enclone_core::types::EncloneOutputs;
 use enclone_print::proto_io::read_proto;
-use enclone_print::types::EncloneOutputs;
 use failure::Error;
 use flate2::read::GzDecoder;
 use io_utils::*;
@@ -25,7 +25,7 @@ use serde_json::Value;
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::HashSet;
-use std::fs::{read_dir, read_to_string, remove_file, File};
+use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::process::{Command, Stdio};
@@ -56,6 +56,165 @@ fn valid_link(link: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// NOT BASIC
+
+// Run the download command on the landing page and make sure it works.
+//
+// Runs with "small", and passes second argument so we can put outputs in a defined place.
+//
+// There are two passes.  The first pass tests the copy of install.sh that is one master, and
+// the second pass tests the local version.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_curl_command() {
+    if !path_exists("test/outputs") {
+        eprintln!(
+            "\ntest_curl_command:\n\
+            You need to create the directory enclone_main/test/outputs.\n\
+            If you run \"./build\" this will be done for you.\n"
+        );
+        std::process::exit(1);
+    }
+    for pass in 1..=2 {
+        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+            let g = format!("test/outputs/{}", f);
+            if path_exists(&g) {
+                if *f == ".profile" {
+                    remove_file(&g).unwrap();
+                } else {
+                    remove_dir_all(&g).unwrap();
+                }
+            }
+        }
+        let command;
+        let version;
+        if pass == 1 {
+            command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
+            version = "master";
+        } else {
+            command = "cat ../install.sh | sh -s small test/outputs";
+            version = "local";
+        }
+        let o = Command::new("csh")
+            .arg("-c")
+            .arg(&command)
+            .output()
+            .unwrap();
+        if o.status.code().unwrap() != 0 {
+            eprintln!(
+                "\nAttempt to run enclone install command using {} version of \
+                install.sh failed.\n",
+                version
+            );
+            eprint!("stdout:\n{}", strme(&o.stdout));
+            eprint!("stderr:\n{}", strme(&o.stderr));
+            std::process::exit(1);
+        }
+        let req = [
+            "bin/enclone",
+            "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
+            "enclone/datasets_small_checksum",
+            "enclone/version",
+        ];
+        for f in req.iter() {
+            if !path_exists(&format!("test/outputs/{}", f)) {
+                eprintln!(
+                    "\nAttempt to run enclone install command using {} version of \
+                    install.sh failed to fetch {}.\n",
+                    version, f
+                );
+                std::process::exit(1);
+            }
+        }
+        if path_exists("test/outputs/.subversion") {
+            eprintln!(
+                "\nAttempt to run enclone install command using {} version of \
+                install.sh created .subversion.\n",
+                version
+            );
+            std::process::exit(1);
+        }
+        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+            let g = format!("test/outputs/{}", f);
+            if path_exists(&g) {
+                if *f == ".profile" {
+                    remove_file(&g).unwrap();
+                } else {
+                    remove_dir_all(&g).unwrap();
+                }
+            }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
+// Make sure that the dataset checksum files are current.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_datasets_sha256() {
+    let sha_command1 = format!(
+        "git write-tree --prefix=enclone_main/test/inputs/version{}",
+        TEST_FILES_VERSION
+    );
+    let sha_command2 = "cat ../datasets_medium_checksum";
+    let sha1 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command1)
+        .output()
+        .unwrap()
+        .stdout;
+    let sha2 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command2)
+        .output()
+        .unwrap()
+        .stdout;
+    if sha1 != sha2 {
+        eprintln!(
+            "\nThe file datasets_medium_checksum is not current.  You can update it by typing\n\
+            ./build\ndatasets_medium_checksum = {}\ncomputed sha             = {}",
+            strme(&sha2),
+            strme(&sha1),
+        );
+        std::process::exit(1);
+    }
+    let sha_command1 = format!(
+        "git write-tree --prefix=enclone_main/test/inputs/version{}/123085",
+        TEST_FILES_VERSION
+    );
+    let sha_command2 = "cat ../datasets_small_checksum";
+    let sha1 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command1)
+        .output()
+        .unwrap()
+        .stdout;
+    let sha2 = Command::new("csh")
+        .arg("-c")
+        .arg(&sha_command2)
+        .output()
+        .unwrap()
+        .stdout;
+    if sha1 != sha2 {
+        eprintln!(
+            "\nThe file datasets_small_checksum is not current.  You can update it by typing\n\
+            ./build\ndatasets_small_checksum = {}\ncomputed sha            = {}",
+            strme(&sha2),
+            strme(&sha1),
+        );
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // SPEED (AND NOT BASIC)
 // calibrated for bespin1, and requires linux
 // cargo test --test enclone_test --features cpu -- --nocapture
@@ -68,7 +227,7 @@ fn valid_link(link: &str) -> bool {
 fn test_cpu() {
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 7900;
+    let expect = 7300;
     let percent_dev = 6.0;
     let mut out = String::new();
     let mut ok = false;
@@ -130,16 +289,16 @@ fn test_cpu() {
 // Test licenses of included packages and their dependencies.
 //
 // The following rules are applied:
-// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0,
-//    or is a logical
-//    expression for which one of those is sufficient, then there is no problem.  Note that for
-//    MPL-2.0, we inform people how to get the source code for dependent crates.
+// 1. If the license field in Cargo.toml is set to MIT or ISC or Zlib or WTFPL or MPL-2.0
+//    or CC0-1.0, or is a logical expression for which one of those is sufficient, then there is
+//    no problem.  Note that for MPL-2.0, we inform people how to get the source code for
+//    dependent crates.
 // 2. If both license and license_field are null, then there is no problem.
 // 3. If the license field is Apache-2.0, or a logical expression for which that is sufficient,
 //    and there is no NOTICE file, then there is no problem.  Note that we include the
 //    Apache-2.0 license as part of this repo in third_party.
 // 4. If the package is owned by 10x, then there is no problem.
-// 5. cloudabi OK because we've included the license for it.
+// 5. arrayref and cloudabi OK because we've included the license for it.
 // 6. fuchsia-cprng OK because Cargo.toml refers to a BSD-style license, in a file LICENSE,
 //    at https://fuchsia.googlesource.com/fuchsia/+/master/LICENSE, which we include in
 //    third_party under fuchsia.
@@ -151,17 +310,26 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
-    const ACCEPTABLE_LICENSE_TYPES: [&str; 5] = ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0"];
+    const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
+        ["MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0"];
     const A2: &str = "Apache-2.0";
-    const ACCEPTABLE_10X_PACKAGES: [&str; 4] = ["enclone", "enclone_print", "exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 4] = ["cloudabi", "fuchsia-cprng", "ring", "webpki"];
+    const ACCEPTABLE_10X_PACKAGES: [&str; 6] = [
+        "enclone",
+        "enclone_print",
+        "enclone_tail",
+        "enclone_versions",
+        "exons",
+        "vdj_ann",
+    ];
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 5] =
+        ["arrayref", "cloudabi", "fuchsia-cprng", "ring", "webpki"];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
         eprintln!(
             "\nFailed to execute cargo-license.  This means that either you have not \
             installed cargo-license,\nor that you have not added it to your PATH.  \
             To install it, type:\n\
-            rustup install cargo-license\n\
+            cargo install cargo-license\n\
             When it is done installing, it will tell you where it put the binary, and you\n\
             should add that path to your PATH.\n\
             You can also avoid this test entirely by running instead \
@@ -328,7 +496,7 @@ fn test_enclone() {
 
 // NOT BASIC
 
-// Regression tests using extended dataset collection.
+// Regression tests using the extended public dataset collection.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -372,6 +540,50 @@ fn test_extended() {
 
 // NOT BASIC
 
+// Regression tests for internal features.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_internal() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+    //                       id     ok    output
+    let mut results = Vec::<(usize, bool, String)>::new();
+    for i in 0..INTERNAL_TESTS.len() {
+        results.push((i, false, String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let it = res.0;
+        let test = INTERNAL_TESTS[it].to_string();
+        let mut out = String::new();
+        run_test(
+            env!("CARGO_BIN_EXE_enclone"),
+            it,
+            &test,
+            "internal_test",
+            &mut res.1,
+            &mut res.2,
+            &mut out,
+        );
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if !results[i].1 {
+            std::process::exit(1);
+        }
+    }
+    println!(
+        "\ninternal tests total time for {} enclone subtests = {:.2} seconds\n",
+        INTERNAL_TESTS.len(),
+        elapsed(&t)
+    );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
 // Test site for broken links and spellcheck.
 //
 // Two approaches for checking broken links left in place for now, to delete one, and the
@@ -394,19 +606,22 @@ fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
     use std::time::Duration;
 
-    // Set up dictionary exceptions.
+    // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
+    // places and reduce the dictionary exceptions accordingly.
 
     let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cred crispr \
-        csv ctrlc cvars dejavusansmono dyiid enclone executables false foursie foursies genomics \
-        germline github githubusercontent google grok gz html \
+        csv ctrlc cvars dejavusansmono dref dyiid enclone executables false fcell foursie foursies \
+        genomics germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
-        indel indels json linux loh lvars macbook metadata mkdir moresies multiomic ncbi ncross \
-        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell plasmablast \
-        screenshot spacebar stackexchange subclonotype \
-        subclonotypes svg thresholding tracebacks trb twosie \
-        umi umis underperforming unicode vdj website wget wikimedia \
-        wikipedia workaround workflow xf xhtml xkcd zenodo zx";
+        indel indels json levenshtein linux loh lvars macbook metadata mkdir \
+        moresies multiomic ncbi ncross \
+        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
+        preinstalled prepends redownloads screenshot sloooooooow \
+        spacebar stackexchange standalone stdout subclonotype \
+        subclonotypes svg thresholding tracebacks trb twosie ubuntu \
+        umi umis underperforming unicode untarring vdj website wget wikimedia \
+        wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.
@@ -567,6 +782,12 @@ fn test_for_broken_links_and_spellcheck() {
                 s = s.after("<a href=\"").to_string();
             }
             for link in links {
+                // Temporary workaround.
+
+                if link == "https://10xgenomics.github.io/enclone/install.sh" {
+                    continue;
+                }
+
                 // eprintln!("checking link \"{}\"", link);
 
                 // Approach 1 to testing if link works.  This seemed to hang once in spite of
@@ -632,7 +853,8 @@ fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
-        let in_stuff = read_to_string(&format!("../pages/auto/{}.html", example_name)).unwrap();
+        let in_file = format!("../{}", example_name);
+        let in_stuff = read_to_string(&in_file).expect(&format!("couldn't find {}", in_file));
         let args = parse_bsv(&test);
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
@@ -666,7 +888,7 @@ fn test_site_examples() {
                 extended dataset collection.  Possibly you should run \
                 \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
                 Otherwise, if you're satisfied with the new output, you can update using\n\n\
-                enclone {} > pages/auto/{}.html.\n",
+                enclone {} > {}.\n",
                 args.iter().format(" "),
                 example_name
             );
@@ -718,6 +940,14 @@ fn test_enclone_examples() {
             .output()
             .expect(&format!("failed to execute test_enclone_examples"));
         let new2 = stringme(&new.stdout);
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nenclone_test_examples: example{} failed to execute, stderr =\n{}",
+                t + 1,
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
         if old != new2 {
             eprintln!(
                 "\nenclone_test_examples: the file example{} is not up to date\n",
@@ -788,7 +1018,7 @@ fn test_dejavu() {
             let cksum_stdout = cksum_output_child.wait_with_output().unwrap();
             head_output_child.wait().unwrap();
             let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
-            println!("cksum = {}", cksum);
+            // println!("cksum = {}", cksum);
             assert!(cksum == "2474276863 1467\n".to_string());
         }
     }
@@ -838,7 +1068,6 @@ fn test_help_output() {
         "input",
         "input_tech",
         "parseable",
-        "plot",
         "filter",
         "special",
         "lvars",
@@ -847,7 +1076,6 @@ fn test_help_output() {
         "display",
         "indels",
         "color",
-        "ideas",
         "faq",
         "developer",
         "all",
@@ -885,7 +1113,7 @@ fn test_help_output() {
             eprintme!(old.len(), new2.len());
             eprintln!(
                 "\nHelp test failed on {}.\n\
-                 You need to update help output by typing \"./build_help\", \
+                 You need to update help output by typing \"./build\", \
                     assuming that the change is expected.\n",
                 p
             );

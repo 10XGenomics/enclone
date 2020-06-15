@@ -9,37 +9,36 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
-build = "build.rs"
 license = "LICENSE.txt"
 publish = false
 
 [dependencies]
 amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-bio = "0.29.0"
-bytes = "0.4"
-byteorder = "1.3.2"
+bio = "*"
+bytes = "*"
+byteorder = "*"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 enclone_core = { path = "../enclone_core" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-failure = "0.1.5"
-io_utils = "0.2.4"
-itertools = "^0.7"
+failure = "*"
+io_utils = "*"
+itertools = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-ndarray = "0.13"
+ndarray = "*"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-permutation = "0.2.5"
-pretty_trace = "0.3.0"
-prost = "0.5.0"
-rayon = "1.0.2"
-serde = "1.0.90"
-serde_derive = "1.0.102"
+permutation = "*"
+pretty_trace = "*"
+prost = "*"
+rayon = "*"
+serde = "*"
+serde_derive = "*"
 serde_json = "*"
-stats_utils = "0.1.0"
-string_utils = "0.1.1"
+stats_utils = "*"
+string_utils = "*"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "0.1.0"
+vector_utils = "*"
 
 [dependencies.hdf5]
 features = ["conda"]
@@ -47,5 +46,5 @@ git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 
 [build-dependencies]
-chrono = "0.4.11"
-prost-build = "0.5.0"
+chrono = "*"
+prost-build = "*"

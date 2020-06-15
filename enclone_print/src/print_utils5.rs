@@ -1,47 +1,12 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use crate::types::*;
 use enclone_core::defs::*;
+use enclone_core::types::*;
 use itertools::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use vdj_ann::refx::*;
 use vector_utils::*;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-pub fn justification(x: &str) -> u8 {
-    if x == "amino"
-        || x == "var"
-        || x == "const"
-        || x == "cdr3_dna"
-        || x == "cdiff"
-        || x == "notes"
-        || x == "edit"
-        || x == "datasets"
-        || x == "donors"
-        || x == "ext"
-        || x == "barcode"
-        || x == "barcodes"
-        || x.starts_with("v_name")
-        || x.starts_with("d_name")
-        || x.starts_with("j_name")
-        || x.starts_with("utr_name")
-        || x.starts_with("vj_seq")
-        || x.starts_with("seq")
-        || x.starts_with("q")
-        || x.starts_with("cdr3_aa")
-        || x.starts_with("var_aa")
-        || x.starts_with("var_indices")
-        || x.starts_with("share_indices")
-        || x.ends_with("_barcode")
-        || x.ends_with("_barcodes")
-    {
-        return b'l';
-    } else {
-        return b'r';
-    }
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -235,12 +200,12 @@ pub fn delete_weaks(
                     if ex.share[m].annv.len() > 1 {
                         continue;
                     }
+                    let n = ex.share[m].seq_del.len();
+                    let vref = &exact_clonotypes[exacts[u]].share[m].vs.to_ascii_vec();
+                    let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
                     for z in 0..vars[col].len() {
                         let p = vars[col][z];
                         let b = ex.share[m].seq_del[p];
-                        let n = ex.share[m].seq_del.len();
-                        let vref = &exact_clonotypes[exacts[u]].share[m].vs.to_ascii_vec();
-                        let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
                         let mut refdiff = false;
                         if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
                             refdiff = true;

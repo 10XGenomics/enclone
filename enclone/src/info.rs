@@ -209,7 +209,7 @@ pub fn build_info(
             cdr3_aa.push(x.cdr3_aa.clone());
             chain_types.push(x.chain_type.clone());
 
-            // Add to notes if there's a J/C delta.
+            // Add to notes if there's a J/C delta. This likely represents an error.
 
             let z = &p.clones[0][j];
             if z.c_start.is_some() {

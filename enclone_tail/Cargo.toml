@@ -1,0 +1,43 @@
+[package]
+name = "enclone_tail"
+version = "0.3.1"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+license = "LICENSE.txt"
+publish = false
+
+[dependencies]
+amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
+enclone_core = { path = "../enclone_core" }
+equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+io_utils = "*"
+itertools = "*"
+mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+ndarray = "*"
+perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+pretty_trace = "*"
+rayon = "*"
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+stats_utils = "*"
+string_utils = "*"
+tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+tar = "*"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+# to replace by this after bumping version
+# vector_utils = "0.1.0"
+
+[dependencies.hdf5]
+features = ["conda"]
+git = "https://github.com/pmarks/hdf5-rs.git"
+rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"

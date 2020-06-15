@@ -21,6 +21,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              two options can be used to simplify the view of a clonotype.\n\n",
         );
         h.doc(
+            "NALL",
+            "Turn off all the noise filters shown below.  This may yield quite a mess.",
+        );
+        h.ldoc(
             "NCELL",
             "Use contigs found by Cell Ranger even if they were not in a called cell, ",
         );
@@ -270,7 +274,36 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "to use this if you have a very large and complex expanded clonotype,",
         );
+        h.doc(
+            "COMPLETE",
+            "delete any exact subclonotype that has less chains than the clonotype",
+        );
         h.doc("", "for which you would like to see a simplified view.");
+        h.ldoc(
+            "FCELL=var=value",
+            "Supposing that var has been specified as a field using the BC option",
+        );
+        h.doc(
+            "",
+            "(or equivalently, using bc, via META), see \"enclone help input\", this",
+        );
+        h.doc(
+            "",
+            "option filters out all barcodes that do not satisfy the given constraint.",
+        );
+        h.doc(
+            "",
+            "Note that for purposes of testing the constraint, if the value for a",
+        );
+        h.doc(
+            "",
+            "particular barcode has not been specified via BC or bc, then its value is",
+        );
+        h.doc(
+            "",
+            "taken to be null.  Also multiple instances of FCELL may be used to impose",
+        );
+        h.doc("", "multiple filters.");
         h.print_tab2();
         h.print("\n");
         h.end_doc();
@@ -444,6 +477,23 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "or sample or donor or tag short name; may name only one such category",
         );
         h.ldoc(
+            "nd<k>",
+            "For k a positive integer, this creates k+1 fields, that are specific to each",
+        );
+        h.doc(
+            "",
+            "clonotype.  The first field is n_<d1>, where d1 is the name of the dataset",
+        );
+        h.doc(
+            "",
+            "having the most cells in the clonotype.  If k ≥ 2, then you'll get a",
+        );
+        h.doc(
+            "",
+            "\"runner-up\" field n_<d2>, etc.  Finally you get a field n_other, however",
+        );
+        h.doc("", "fields will be elided if they represent no cells.");
+        h.ldoc(
             "near",
             "Hamming distance of V..J DNA sequence to nearest neighbor",
         );
@@ -459,6 +509,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "with - shown if there is no other exact subclonotype to compare to",
         );
+        h.doc(
+            "dref",
+            "Hamming distance of V..J DNA sequence to donor reference, excluding",
+        );
+        h.doc("", "region of recombination");
         h.ldoc(
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",

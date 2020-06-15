@@ -16,6 +16,8 @@ normally should not be invoked.  The last two options can be used to simplify th
 clonotype.
 
 ┌────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│NALL                │  Turn off all the noise filters shown below.  This may yield quite a mess.  │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
 │                    │  or not called high confidence.                                             │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
@@ -97,7 +99,16 @@ clonotype.
 │CHAINS_EXACT=n      │  Delete any exact subclonotype not having exactly n chains.                 │
 │MIN_CELLS_EXACT=n   │  Delete any exact subclonotype having less than n cells.  You might want    │
 │                    │  to use this if you have a very large and complex expanded clonotype,       │
+│COMPLETE            │  delete any exact subclonotype that has less chains than the clonotype      │
 │                    │  for which you would like to see a simplified view.                         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│FCELL=var=value     │  Supposing that var has been specified as a field using the BC option       │
+│                    │  (or equivalently, using bc, via META), see "enclone help input", this      │
+│                    │  option filters out all barcodes that do not satisfy the given constraint.  │
+│                    │  Note that for purposes of testing the constraint, if the value for a       │
+│                    │  particular barcode has not been specified via BC or bc, then its value is  │
+│                    │  taken to be null.  Also multiple instances of FCELL may be used to impose  │
+│                    │  multiple filters.                                                          │
 └────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>

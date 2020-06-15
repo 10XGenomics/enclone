@@ -10,8 +10,8 @@ use string_utils::*;
 use vector_utils::*;
 
 // Field (variable) names.
-
-pub const LVARS_ALLOWED: [&str; 22] = [
+// Lead variables for exact subclonotypes and cells.
+pub const LVARS_ALLOWED: [&str; 23] = [
     "datasets",
     "samples",
     "donors",
@@ -32,10 +32,12 @@ pub const LVARS_ALLOWED: [&str; 22] = [
     "entropy_cell",
     "near",
     "far",
+    "dref",
     "ext",
     "mark",
 ];
 
+// Chain variables that can be used for contigs and chains
 pub const CVARS_ALLOWED: [&str; 24] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
     "r_μ", "const", "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes",
@@ -229,6 +231,7 @@ impl LinearCondition {
             "donors",
             "near",
             "far",
+            "dref",
             "n_gex_cell",
             "n_gex",
             "clust",
@@ -329,9 +332,14 @@ pub struct GeneralOpt {
     pub fasta: String,
     pub fasta_filename: String,
     pub fasta_aa_filename: String,
+    pub clustal_aa: String,
+    pub clustal_dna: String,
+    pub phylip_aa: String,
+    pub phylip_dna: String,
     pub min_cells_exact: usize,
     pub min_chains_exact: usize,
     pub chains_exact: usize,
+    pub complete: bool,
     pub exact: Option<usize>,
     pub binary: String,
     pub proto: String,
@@ -382,9 +390,13 @@ pub struct GeneralOpt {
     pub mark_stats: bool,
     pub print_cpu: bool,
     pub print_cpu_info: bool,
+    pub newick: bool,
+    pub tree: bool,
+    pub allow_inconsistent: bool,
+    pub color: String,
 }
 
-// Allele finding algorithmic options.
+// Allele-finding algorithmic options.
 
 #[derive(Default)]
 pub struct AlleleAlgOpt {
@@ -392,7 +404,7 @@ pub struct AlleleAlgOpt {
     pub min_alt: usize,
 }
 
-// Allele finding print options.
+// Allele-finding print options.
 
 #[derive(Default)]
 pub struct AllelePrintOpt {
@@ -423,6 +435,7 @@ pub struct JoinAlgOpt {
 }
 
 // Clonotype filtering options.
+// These fall into 2 categories: 1) on by default and 2) user-specified.
 
 #[derive(Default)]
 pub struct ClonoFiltOpt {
@@ -461,6 +474,7 @@ pub struct ClonoFiltOpt {
     pub marked_b: bool,      // only print clonotypes having a mark and which are typed as B cells
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
+    pub fcell: Vec<(String, String)>, // constaints from FCELL
 }
 
 // Clonotype printing options.
@@ -685,7 +699,7 @@ pub struct CloneInfo {
     pub chain_types: Vec<String>, // chain types
 }
 
-// Gene expression stuff.
+// Gene expression and feature barcoding stuff.
 
 #[derive(Default)]
 pub struct GexInfo {
@@ -711,7 +725,7 @@ pub struct GexInfo {
 // Every entry in a ColInfo is a vector whose number of entries is the number of chains
 // in a clonotype.
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ColInfo {
     pub uids: Vec<Option<usize>>,
     pub vids: Vec<usize>,
@@ -728,4 +742,161 @@ pub struct ColInfo {
     pub chain_descrip: Vec<String>,
     pub mat: Vec<Vec<Option<usize>>>,
     pub cvars: Vec<Vec<String>>,
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn justification(x: &str) -> u8 {
+    if x == "amino"
+        || x == "var"
+        || x == "const"
+        || x == "cdr3_dna"
+        || x == "cdiff"
+        || x == "notes"
+        || x == "edit"
+        || x == "datasets"
+        || x == "donors"
+        || x == "ext"
+        || x == "barcode"
+        || x == "barcodes"
+        || x.starts_with("v_name")
+        || x.starts_with("d_name")
+        || x.starts_with("j_name")
+        || x.starts_with("utr_name")
+        || x.starts_with("vj_seq")
+        || x.starts_with("seq")
+        || x.starts_with("q")
+        || x.starts_with("cdr3_aa")
+        || x.starts_with("var_aa")
+        || x.starts_with("var_indices")
+        || x.starts_with("share_indices")
+        || x.ends_with("_barcode")
+        || x.ends_with("_barcodes")
+    {
+        return b'l';
+    } else {
+        return b'r';
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Define the set "parseable_fields" of fields that could occur in parseable output.
+//
+// The overlap with code in proc_args_check.rs is not nice.
+
+pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
+    // Make some abbreviations.
+
+    let lvars = &ctl.clono_print_opt.lvars;
+
+    // Define parseable output columns.  The entire machinery for parseable output is controlled
+    // by macros that begin with "speak".
+
+    let pcols_sort = &ctl.parseable_opt.pcols_sort;
+    macro_rules! speaker {
+        ($var:expr) => {
+            if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &$var.to_string()) {
+                parseable_fields.push($var.to_string());
+            }
+        };
+    }
+    macro_rules! speakerc {
+        ($col:expr, $var:expr) => {
+            let varc = format!("{}{}", $var, $col + 1);
+            if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &varc) {
+                parseable_fields.push(format!("{}{}", $var, $col + 1));
+            }
+        };
+    }
+    let mut have_gex = false;
+    for i in 0..ctl.sample_info.gex_path.len() {
+        if ctl.sample_info.gex_path[i].len() > 0 {
+            have_gex = true;
+        }
+    }
+    let mut all_lvars = lvars.clone();
+    for i in 0..LVARS_ALLOWED.len() {
+        let x = &LVARS_ALLOWED[i];
+        if !have_gex {
+            if *x == "gex".to_string()
+                || x.starts_with("gex_")
+                || x.ends_with("_g")
+                || x.ends_with("_g_μ")
+                || *x == "n_gex_cell".to_string()
+                || *x == "n_gex".to_string()
+                || *x == "clust".to_string()
+                || *x == "type".to_string()
+                || *x == "entropy".to_string()
+                || *x == "cred".to_string()
+                || *x == "cred_cell".to_string()
+            {
+                continue;
+            }
+        }
+        if !lvars.contains(&x.to_string()) {
+            all_lvars.push(x.to_string());
+        }
+    }
+    for x in all_lvars.iter() {
+        speaker!(x);
+    }
+    for col in 0..ctl.parseable_opt.pchains {
+        for x in CVARS_ALLOWED.iter() {
+            speakerc!(col, x);
+        }
+        if ctl.parseable_opt.pbarcode {
+            for x in CVARS_ALLOWED_PCELL.iter() {
+                speakerc!(col, x);
+            }
+        }
+        for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
+            speakerc!(col, x);
+        }
+        for x in &[
+            "var_indices_dna",
+            "var_indices_aa",
+            "share_indices_dna",
+            "share_indices_aa",
+        ] {
+            speakerc!(col, x);
+        }
+        for x in &[
+            "v_start",
+            "const_id",
+            "utr_id",
+            "utr_name",
+            "cdr3_start",
+            "cdr3_aa",
+        ] {
+            speakerc!(col, x);
+        }
+        for x in &["seq", "vj_seq", "var_aa"] {
+            speakerc!(col, x);
+        }
+        for i in 0..pcols_sort.len() {
+            if pcols_sort[i].starts_with('q') && pcols_sort[i].ends_with(&format!("_{}", col + 1)) {
+                let x = pcols_sort[i].after("q").rev_before("_");
+                if x.parse::<usize>().is_ok() {
+                    parseable_fields.push(pcols_sort[i].clone());
+                }
+            }
+        }
+    }
+    speaker!("group_id");
+    speaker!("group_ncells");
+    speaker!("clonotype_id");
+    speaker!("clonotype_ncells");
+    speaker!("nchains");
+    speaker!("exact_subclonotype_id");
+    speaker!("barcodes");
+    for x in ctl.sample_info.dataset_list.iter() {
+        speaker!(&format!("{}_barcodes", x));
+    }
+    if ctl.parseable_opt.pbarcode {
+        speaker!("barcode");
+        for x in ctl.sample_info.dataset_list.iter() {
+            speaker!(&format!("{}_barcode", x));
+        }
+    }
 }

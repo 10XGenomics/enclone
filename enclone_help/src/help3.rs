@@ -96,7 +96,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{NOPRINT} to the enclone command line.\n\n",
         );
         h.print_with_box(
-            "\\bold{FASTA output.}  This is a separate feature. \
+            "\\bold{FASTA output.}  This is a separate feature.  \
              To generate nucleotide FASTA output for each chain in each exact subclonotype, \
              use the argument \\bold{FASTA=filename}.  The special case \\bold{stdout} will \
              cause the FASTA records to be shown as part of standard output.  The FASTA records \
@@ -258,8 +258,11 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
 
         h.print("\n\\bold{clonotype filtering options}\n\n");
         h.print(
-            "These options cause only certain clonotypes to be printed.  Please see \
-            also \"enclone help special\".\n\n",
+            "enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This \
+            page describes filtering by clonotype.  \
+            These options cause only certain clonotypes to be printed.  See also \
+            \"enclone help special\", which describes other filtering options.  This page \
+            also described scanning for feature enrichment.\n\n",
         );
 
         // doc *CELLS

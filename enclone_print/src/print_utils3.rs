@@ -1,12 +1,11 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use crate::print_utils1::*;
-use crate::print_utils5::*;
-use crate::types::*;
 use amino::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
+use enclone_core::types::*;
 use io_utils::*;
 use itertools::Itertools;
 use std::io::Write;
@@ -417,10 +416,14 @@ pub fn insert_reference_rows(
                         refx += "◦";
                     } else {
                         let mut log = Vec::<u8>::new();
-                        emit_codon_color_escape(&refseq[3 * p..3 * p + 3], &mut log);
                         let aa = codon_to_aa(&refseq[3 * p..3 * p + 3]);
-                        log.push(aa);
-                        emit_end_escape(&mut log);
+                        if ctl.gen_opt.color == "codon".to_string() {
+                            emit_codon_color_escape(&refseq[3 * p..3 * p + 3], &mut log);
+                            log.push(aa);
+                            emit_end_escape(&mut log);
+                        } else {
+                            color_by_property(&vec![aa], &mut log);
+                        }
                         refx += strme(&log);
                     }
                     if k < show_aa[cz].len() - 1 && p == cs + n - 1 {
@@ -450,10 +453,10 @@ pub fn build_table_stuff(
     justify: &mut Vec<u8>,
     drows: &mut Vec<Vec<String>>,
     rows: &mut Vec<Vec<String>>,
+    lvars: &Vec<String>,
 ) {
     // Build lead header row and justification to match.
 
-    let lvars = &ctl.clono_print_opt.lvars;
     let cols = rsi.vids.len();
     let nexacts = exacts.len();
     if !ctl.clono_print_opt.bu {

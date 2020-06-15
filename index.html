@@ -37,23 +37,6 @@ sequences for B and T cell receptors in single cells.  It organizes these cells 
 (clonotypes) arising from the same progenitor and compactly displays each clonotype along
 with its salient features, including mutated amino acids.</p>
 
-<table style="width:100%">
-  <tr>
-  <th>
-       <img width="80%" 
-       style="vertical-align: middle"
-       src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Construction_workers_not_wearing_fall_protection_equipment.jpg/320px-Construction_workers_not_wearing_fall_protection_equipment.jpg">
-  </th>
-  <th style="text-align: left; font-weight:normal">
-       Watch your step!  This site is under construction, undergoing initial testing, and your
-       experience may be rocky.
-       <br><br>
-       (Photo credit: NIOSH/Wikipedia)
-  </th>
-  </tr>
-
-</table>
-
 <p>enclone and this page are designed for immunologists, but anyone can download and experiment
 with it.</p>
 <p><b>Background:</b> when you get sick, your body mounts an immune response by selectively 
@@ -127,6 +110,19 @@ CRISPR guides, and other things.  You can see a list of publications that use 10
 
 <hr>
 
+<h2>Why use enclone?</h2>
+<p>
+enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
+features and improvements.  enclone is also very fast, allowing analysis of datasets in seconds.  
+You can install the software by typing one line and then see for yourself.  But most importantly, 
+enclone provides the 10x Genomics perspective on your data and has been tested on more 10x Genomics
+data than any other tool. We highly recommend using other tools as well, but we can guarantee you 
+that in many cases, enclone will provide a different answer, which may affect the biological 
+interpretation of your data.
+</p>
+
+<hr>
+
 <h2>The enclone software</h2>
 
 <p>enclone is beta software released under <a href="LICENSE.txt">this license</a>.  Binary 
@@ -138,108 +134,128 @@ get started.  You do not need to be able to program, or anything of that sort.</
 <p>enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended
 as an exploratory tool.  You can dynamically change your command line to select specific
 clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.</p>
-<p>enclone, in addition to <a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>,
+<p>enclone, in addition to 
+<a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>
+(and in which the core algorithm of enclone will be integrated at a later point in time),
 supports the analysis of VDJ and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
 solution</a>.</p>
 
-<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
-padding: 8px; width: 900px; font-size: 120%">
-Please be aware that <b>enclone</b> has features that we may generalize or otherwise change to
-improve usability.  This includes breaking syntax that previously worked, although we expect this
-to be quite infrequent and will try not to do so capriciously!  Any such change will be shown in
-<span style="color:red">red</span> on
-<a href="pages/history.html">this page</a>, and we are also happy to help if you find yourself 
-stuck.</p>
+<p>What does it mean that enclone is beta software?  It means that we are very actively 
+developing it!  Features are still being shaped, and we may on rare occasions break syntax
+that previously worked.  See <a href="pages/history.html">this page</a> for the history of
+changes.</p>
 
 <hr>
 
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Installing enclone</h2>
 
-<p><b>1.  Download enclone.</b> 
-Open a terminal window and type the following to download the enclone executable:</p>
+<p>
+You can run enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see <a href="pages/windows.html">here</a> for <b>Windows</b> options; 
+see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
+</p>
+
+<table>
+<tr>
+<th align=left style="font-weight: normal">Type this&nbsp;</th>
+<th align=left style="padding: 3px; font-weight: normal; border: 2px solid black">
+<pre style="margin-top:3px; margin-bottom:3px"><code>curl -sSf -L bit.ly/enclone_install | sh -s <span style="color:red; font-weight: bold">SIZE</span></code></pre>
+</th>
+<th align=left style="font-weight: normal">
+&nbsp;where <code style="color:red; font-weight: bold">SIZE</code> is 
+<code>small</code>, <code>medium</code> or <code>large</code>, according to:
+</th>
+</tr>
+</table>
+
+<br>
 
 <table rules="all" cellpadding="3" style="border: 2px solid black">
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Linux
+       <code>small</code>
+       </p>
+  </th>
+
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       load small dataset collection (one dataset, 123085)
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
-<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>wget https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux -O enclone; chmod +x enclone</code></pre>
+       <p style="margin: 4px">
+       30 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if your internet connection is sloooooooow as a 🐌
+       </p>
   </th>
   </tr>
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Mac
+       <code>medium</code>
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
-<pre style="margin: 4px"><code>mkdir -p ~/bin; cd ~/bin</code>
-<code>curl -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_macos --output enclone; chmod +x enclone</code></pre>
+       <p style="margin: 4px">
+       load medium dataset collection
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       350 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if you're happy with a bunch of datasets
+       </p>
   </th>
   </tr>
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       Windows
+       <code>large</code>
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       not currently supported, let us know if this is important to you, and see
-       <b><a href="pages/windows.html">this page</a></b>
+       load large dataset collection
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       2600 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       do this if you want to play with a huge pile of datasets
        </p>
   </th>
   </tr>
 </table>
 
-<p>This gets you the absolute latest version of enclone.  You can repeat this step if you ever
-want to update.</p>
-<p>It is not necessary to compile enclone, unless you want to contribute
-to the enclone codebase.  
-Please see <b><a href="pages/compile.html">compilation</a></b>.</p>
-<p><b>2.  Download test data.</b>  Type the following to download the enclone test datasets
-(plus source code, because it's easier to fetch everything):</p>
-<pre><code>cd</code>
-<code>svn export https://github.com/10XGenomics/enclone/trunk enclone
-</code></pre>
-<p>(See <b><a href="pages/fetching_test_datasets.html">here</a></b> if this doesn't work for you.)  At this point
-<code>~/enclone/datasets</code> will contain the datasets that are prepackaged with enclone.  If you
-subsequently want to update this, delete the directory and repeat the command.</p>
+<p>The command does three things:</p>
+<ol>
+<li>Puts the enclone executable (for Linux or Mac as appropriate) in <code>~/bin</code>.</li>
+<li>If needed, adds a line to your bash initialization file so that <code>~/bin</code> is included.
+</li>
+<li>Puts the enclone datasets in <code>~/enclone</code>.</li>
+</ol>
+And a bit more detail is <a href="pages/installation_details.html">here</a>.
 
-<p>
-🐌 If you have a very slow internet connection, you may prefer to download
-just one dataset (<code>123085</code>), like this:</p>
-
-<pre><code>cd; mkdir -p enclone/datasets; cd enclone/datasets</code>
-<code>svn export https://github.com/10XGenomics/enclone/trunk/test/inputs/version14/123085
-</code></pre>
-
-<p>The test datasets were selected because they happened to be useful as part of algorithmic 
-regression tests (included in the codebase).  
-
-A much larger collection of datasets (including most of those above) is also provided and can be 
-downloaded by:
-
-<pre><code>wget https://s3-us-west-2.amazonaws.com/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz</code>
-<code>zcat enclone_data_1.0.tar.gz | tar xf -</code>
-<code>mv enclone_data_1.0 ~/enclone/datasets2</code></pre>
-
-On a Mac, you may need to use <code>curl</code> instead.
-
-<p>If you want simultaneous access to both the small and large dataset collections, you can
-supply the argument <code>PRE=~/enclone/datasets,~/enclone/datasets2</code> to enclone.</p>
-
-<p><b>3.  Update your path.</b>  Edit your shell initialization file to prepend
-<code>~/bin:</code> to your <code>PATH</code>.  If you don't know how to do this, please see 
-<a href="pages/path.html">here</a>.
 Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
-<p><b>4. Periodically update or check the <a href="pages/history.html">history</a> to see if 
-anything has changed that might affect you.</b></p>
+
+<p><span style="color:red; font-weight:bold">To update, type the same command!</span>
+<span style="font-weight:bold">
+Only needed files will be downloaded.  
+See <a href="pages/history.html">history</a> for what has changed.</span></p>
+
 <hr>
 
 <h2>Running enclone</h2>
@@ -322,10 +338,6 @@ command line.  All the latter pages are also listed here:</p>
 <td align="left">parseable output</td>
 </tr>
 <tr>
-<td align="left"><a href="pages/auto/help.plot.html">enclone help plot</a></td>
-<td align="left">generate a honeycomb plot showing clonotypes</td>
-</tr>
-<tr>
 <td align="left"><a href="pages/auto/help.filter.html">enclone help filter</a></td>
 <td align="left">clonotype filtering options, scanning for feature enrichment</td>
 </tr>
@@ -356,11 +368,6 @@ command line.  All the latter pages are also listed here:</p>
 <tr>
 <td align="left"><a href="pages/auto/help.color.html">enclone help color</a></td>
 <td align="left">how enclone uses color, and related things</td>
-</tr>
-<tr>
-<td align="left"><a href="pages/auto/help.ideas.html">enclone help ideas</a></td>
-<td align="left">ideas for features that might be implemented</td>
-</tr>
 <tr>
 <td align="left"><a href="pages/auto/help.faq.html">enclone help faq</a></td>
 <td align="left">frequently asked questions</td>
@@ -403,10 +410,6 @@ For completeness, here are all the other pages on this site:
     <td align="left">people who want to contribute code</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/fetching_test_datasets.html">fetching test datasets</a></td>
-    <td align="left">anyone for whom direct instructions don't work</td>
-</tr>
-<tr>
     <td align="left"><a href="LICENSE.txt">license</a></td>
     <td align="left">everyone</td>
 </tr>
@@ -415,14 +418,25 @@ For completeness, here are all the other pages on this site:
     <td align="left">people using Windows computers</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/path.html">adding 
-        <span style="font-family: DejaVuSansMono">~/bin</span> to your path</a></td>
-    <td align="left">people who need help setting their path</td>
-</tr>
-<tr>
     <td align="left"><a href="pages/heuristics.html">notes on heuristics (only a little bit now)
          </a></td>
     <td align="left">people who want to know details on how the algorithm works</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/plot.html">honeycomb plots</a></td>
+    <td align="left">everyone</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/auto/tree.html">making phylogenetic trees</a></td>
+    <td align="left">everyone</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/dang_i_cannot_install.html">installation troubleshooting
+    </a></td> <td align="left">if you have trouble installing</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/installation_details.html">installation details
+    </a></td> <td align="left">if you're curious about what the install command does</td>
 </tr>
 </tbody>
 </table>
@@ -448,22 +462,25 @@ rather than showing all transcript positions, we only show "interesting" positio
 flexible concept, and what we show by default are all positions exhibiting a difference from the 
 reference and all positions in the CDR3.</p>
 <p>The same exact output would be obtained by typing</p>
-<pre><code>enclone PRE=~/enclone/datasets BCR=123085 CDR3=CQQRSNWPPSITF
+<pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
 </code></pre>
-<p>provided that you put test data in the location indicated under download instructions.  Otherwise
-you would need to change the value of <code>PRE</code>.  The directory <code>123085</code> is in 
-the directory <code>~/enclone/datasets</code> and contains some files from a Cell Ranger run, 
-obtained from a human ovarian cancer sample.</p>
+<p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
+contains some files from a Cell Ranger run, obtained from a human ovarian cancer sample.</p>
 
-<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 900px">
-<b>What does <code>PRE</code> do?</b>
-It provides a <i>search path</i> for all other paths that you provide to enclone.  But this is
-just a convenience and nothing
-fancy is going on -- enclone is just gluing together paths.  For example, all three of the following
-argument combinations do the same thing:
-<br>1. <code>PRE=~/enclone/datasets BCR=123085</code>
-<br>2. <code>PRE=~/enclone BCR=datasets/123085</code>
-<br>3. <code>BCR=~/enclone/datasets/123085</code>.
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 950px">
+<b>How does enclone find my data?</b>
+It uses a <i>search path</i> called <code>PRE</code> that is preset to 
+<code>~/enclone/datasets,~/enclone/datasets2</code>, and which you can set to any value, either
+by setting <code>PRE=...</code> on the command line, or by setting the environment variable
+<code>ENCLONE_PRE</code>.  To find your data, enclone prepends <code>PRE</code> to the value of 
+<code>BCR</code> or <code>TCR</code> given on the command line.
+For example, all of the following argument combinations do the same thing:
+<br>1. <code>BCR=123085</code> (using the default value of <code>PRE</code>)
+<br>2. <code>PRE=~/enclone/datasets BCR=123085</code>
+<br>3. <code>PRE=~/enclone BCR=datasets/123085</code>
+<br>4. <code>BCR=~/enclone/datasets/123085</code>.
+<br>There is also an argument <code>META</code> that is convenient for specifying multiple
+datasets.  See <a href="pages/auto/help.input.html">here</a> for how.
 </p>
 
 <p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 
@@ -524,8 +541,6 @@ and these data displayed as additional columns.</p>
   </th>
   <th></th>
   <th></th>
-  <th></th>
-  <th></th>
   <th style="text-align: left; font-weight:normal">
       <p>You can select clonotypes in enclone and then display them using a "honeycomb" plot.</p>
       <p>In this instance, pre- and post-vaccination samples were collected from four individuals,
@@ -537,6 +552,7 @@ and these data displayed as additional columns.</p>
 <code>       red,"post-vaccination cell"</code></pre>
       <p>to the enclone command line, yielding the image shown here as the file 
       <code>clono.svg</code>.</p>
+      <p>For more information about honeycomb plots, see <a href="pages/plot.html">here</a>.</p>
   </th>
   </tr>
 </table>
@@ -559,6 +575,9 @@ antigen specificity to multiple antigens directly via feature barcoding
 vaccine or therapeutic development by picking large clonotypes with high antigen counts and single
 or multiple antigen specificities.</p>
 <p>We are actively working on further functionality that will make this process even more effective.</p>
+
+<p>See <a href="pages/auto/tree.html">this</a> for how to generate phylogenetic trees
+using enclone.</p>
 
 <p>Another example use of enclone shows how to <b><a href="pages/auto/expanded.html">detect illusory clonotypes</a></b>.</p>
 

@@ -29,16 +29,18 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
+use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
 use pretty_trace::*;
+use rayon::prelude::*;
 use regex::Regex;
 use serde_json::Value;
 use stats_utils::*;
 use std::{
-    cmp::max,
+    cmp::{max, min},
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
@@ -686,6 +688,89 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut vdj_cells,
     );
 
+    // Test for consistency between VDJ cells and GEX cells.  This is designed to work even if
+    // NCELL is used.  We take up to 100 VDJ cells having both heavy and light (or TRB and TRA)
+    // chains, and having the highest VDJ UMI count total, and find those that are GEX cells.
+    // If n cells were taken, and k of those are GEX cells, we require that
+    // binomial_sum(n, k, 0.7) >= 0.00002.  For n = 100, this is the same as requiring that
+    // k >= 50.  Using a binomial sum threshold allows the stringency of the requirement to be
+    // appropriately lower when n is small.  When we tested on 260 libraries, the lowest value
+    // observed for k/n was 0.65, and the vast majority of values were 0.9 or higher.
+    //
+    // This code is inefficient because for every dataset, it searches the entirety of tig_bc, but
+    // it doesn't matter much because not much time is spent here.
+
+    let mut fail = false;
+    for li in 0..ctl.sample_info.n() {
+        if ctl.sample_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
+            let vdj = &vdj_cells[li];
+            let gex = &gex_info.gex_cell_barcodes[li];
+            let (mut heavy, mut light) = (vec![false; vdj.len()], vec![false; vdj.len()]);
+            let mut numi = vec![0; vdj.len()];
+            for i in 0..tig_bc.len() {
+                if tig_bc[i][0].dataset_index == li {
+                    let p = bin_position(&vdj, &tig_bc[i][0].barcode);
+                    if p >= 0 {
+                        for j in 0..tig_bc[i].len() {
+                            numi[p as usize] += tig_bc[i][j].umi_count;
+                            if tig_bc[i][j].left {
+                                heavy[p as usize] = true;
+                            } else {
+                                light[p as usize] = true;
+                            }
+                        }
+                    }
+                }
+            }
+            let mut x = Vec::<(usize, bool)>::new();
+            for i in 0..vdj.len() {
+                if heavy[i] && light[i] {
+                    x.push((numi[i], bin_member(&gex, &vdj[i])));
+                }
+            }
+            reverse_sort(&mut x);
+            let (mut total, mut good) = (0, 0);
+            for i in 0..min(100, x.len()) {
+                total += 1;
+                if x[i].1 {
+                    good += 1;
+                }
+            }
+            if total >= 1 {
+                let bino = binomial_sum(total, good, 0.7);
+                if bino < 0.00002 {
+                    fail = true;
+                    eprint!(
+                        "\nThe VDJ dataset with path\n{}\nand the GEX dataset with path\n\
+                        {}\nshow insufficient sharing of barcodes.  ",
+                        ctl.sample_info.dataset_path[li], ctl.sample_info.gex_path[li],
+                    );
+                    if x.len() <= 100 {
+                        eprintln!(
+                            "Of the {} VDJ cells having both chain types,\n\
+                            only {} are GEX cells.",
+                            total, good
+                        );
+                    } else {
+                        eprintln!(
+                            "Of the 100 VDJ cells having both chain types and\nhaving \
+                            highest UMI counts, only {} are GEX cells.",
+                            good
+                        );
+                    }
+                }
+            }
+        }
+    }
+    if fail {
+        eprintln!(
+            "\nThis sugggests a laboratory or informatic mixup.  If you believe \
+            that this is not the case,\nyou can force enclone to run by adding \
+            the argument ALLOW_INCONSISTENT to the command line.\n"
+        );
+        std::process::exit(1);
+    }
+
     // Search for SHM indels.
 
     let tproto = Instant::now();
@@ -851,7 +936,7 @@ pub fn main_enclone(args: &Vec<String>) {
             orbits.push(o);
         }
     }
-    if is_bcr
+    if !is_tcr
         && (ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark)
     {
         let mut umis = vec![Vec::<usize>::new(); ctl.sample_info.n()];
@@ -1142,6 +1227,61 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         orbits = orbits2;
     }
+
+    // Filter using constraints imposed by FCELL.
+
+    if !ctl.clono_filt_opt.fcell.is_empty() {
+        let mut orbits2 = Vec::<Vec<i32>>::new();
+        for i in 0..orbits.len() {
+            let mut o = orbits[i].clone();
+            let mut to_deletex = vec![false; o.len()];
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &mut exact_clonotypes[x.clonotype_index];
+                let mut to_delete = vec![false; ex.ncells()];
+                for k in 0..ex.ncells() {
+                    let li = ex.clones[k][0].dataset_index;
+                    let bc = &ex.clones[k][0].barcode;
+                    let mut keep = true;
+                    for x in ctl.clono_filt_opt.fcell.iter() {
+                        let (var, val) = (&x.0, &x.1);
+                        let mut ok = false;
+                        let alt = &ctl.sample_info.alt_bc_fields[li];
+                        let mut specified = false;
+                        for j in 0..alt.len() {
+                            if alt[j].0 == *var {
+                                if alt[j].1.contains_key(&bc.clone()) {
+                                    specified = true;
+                                    let given_val = &alt[j].1[&bc.clone()];
+                                    if given_val == val {
+                                        ok = true;
+                                    }
+                                }
+                            }
+                        }
+                        if !specified && val.len() == 0 {
+                            ok = true;
+                        }
+                        if !ok {
+                            keep = false;
+                        }
+                    }
+                    if !keep {
+                        to_delete[k] = true;
+                    }
+                }
+                erase_if(&mut ex.clones, &to_delete);
+                if ex.ncells() == 0 {
+                    to_deletex[j] = true;
+                }
+            }
+            erase_if(&mut o, &to_deletex);
+            if !o.is_empty() {
+                orbits2.push(o.clone());
+            }
+        }
+        orbits = orbits2;
+    }
     if ctl.comp {
         println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
     }
@@ -1194,11 +1334,44 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     orbits = orbits2;
 
+    // Load the GEX and FB data.
+
+    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
+    for li in 0..ctl.sample_info.n() {
+        if ctl.sample_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+            d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+        } else {
+            d_readers.push(None);
+            ind_readers.push(None);
+        }
+    }
+    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
+    for li in 0..ctl.sample_info.n() {
+        h5_data.push((li, Vec::new(), Vec::new()));
+    }
+    h5_data.par_iter_mut().for_each(|res| {
+        let li = res.0;
+        if ctl.sample_info.gex_path[li].len() > 0
+            && !gex_info.gex_matrices[li].initialized()
+            && ctl.gen_opt.h5_pre
+        {
+            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
+            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
+        }
+    });
+
     // Find and print clonotypes.
 
     let torb = Instant::now();
+    let mut pics = Vec::<String>::new();
+    let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
+    let mut rsi = Vec::<ColInfo>::new(); // ditto
+    let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
+    let mut tests = Vec::<usize>::new();
+    let mut controls = Vec::<usize>::new();
     print_clonotypes(
-        &tall,
         &refdata,
         &drefs,
         &ctl,
@@ -1206,8 +1379,16 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &orbits,
         &gex_info,
-        &join_info,
         &vdj_cells,
+        &d_readers,
+        &ind_readers,
+        &h5_data,
+        &mut pics,
+        &mut exacts,
+        &mut rsi,
+        &mut out_datas,
+        &mut tests,
+        &mut controls,
     );
     if ctl.comp {
         if !ctl.gen_opt.noprint {
@@ -1215,6 +1396,27 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         println!("used {:.2} seconds making orbits", elapsed(&torb));
     }
+
+    // Tail code.
+
+    tail_code(
+        &tall,
+        &refdata,
+        &pics,
+        &exacts,
+        &rsi,
+        &exact_clonotypes,
+        &ctl,
+        &mut out_datas,
+        &join_info,
+        &gex_info,
+        &tests,
+        &controls,
+        &h5_data,
+        &d_readers,
+        &ind_readers,
+        &drefs,
+    );
 
     // Report computational performance.
 
