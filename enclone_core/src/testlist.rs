@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 89] = [
+pub const TESTS: [&str; 91] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -237,6 +237,12 @@ pub const TESTS: [&str; 89] = [
     r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_DNA=stdout COLOR=property"###,
     // 89. test TREE and NEWICK
     r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
+    // 90. test FCELL with non-null value
+    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper=yes"###,
+    // 91. test FCELL with null value
+    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
 ];
 
 // Test using the extended public dataset collection.

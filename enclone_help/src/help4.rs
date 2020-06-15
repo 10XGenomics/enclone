@@ -279,6 +279,31 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "delete any exact subclonotype that has less chains than the clonotype",
         );
         h.doc("", "for which you would like to see a simplified view.");
+        h.ldoc(
+            "FCELL=var=value",
+            "Supposing that var has been specified as a field using the BC option",
+        );
+        h.doc(
+            "",
+            "(or equivalently, using bc, via META), see \"enclone help input\", this",
+        );
+        h.doc(
+            "",
+            "option filters out all barcodes that do not satisfy the given constraint.",
+        );
+        h.doc(
+            "",
+            "Note that for purposes of testing the constraint, if the value for a",
+        );
+        h.doc(
+            "",
+            "particular barcode has not been specified via BC or bc, then its value is",
+        );
+        h.doc(
+            "",
+            "taken to be null.  Also multiple instances of FCELL may be used to impose",
+        );
+        h.doc("", "multiple filters.");
         h.print_tab2();
         h.print("\n");
         h.end_doc();

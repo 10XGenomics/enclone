@@ -85,7 +85,7 @@ pub fn print_clonotypes(
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.sample_info.alt_bc_fields.len() {
         for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[i][i].0.clone());
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);

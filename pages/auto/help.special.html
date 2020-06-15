@@ -101,6 +101,14 @@ clonotype.
 │                    │  to use this if you have a very large and complex expanded clonotype,       │
 │COMPLETE            │  delete any exact subclonotype that has less chains than the clonotype      │
 │                    │  for which you would like to see a simplified view.                         │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│FCELL=var=value     │  Supposing that var has been specified as a field using the BC option       │
+│                    │  (or equivalently, using bc, via META), see "enclone help input", this      │
+│                    │  option filters out all barcodes that do not satisfy the given constraint.  │
+│                    │  Note that for purposes of testing the constraint, if the value for a       │
+│                    │  particular barcode has not been specified via BC or bc, then its value is  │
+│                    │  taken to be null.  Also multiple instances of FCELL may be used to impose  │
+│                    │  multiple filters.                                                          │
 └────────────────────┴─────────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>

@@ -513,6 +513,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
                 std::process::exit(1);
             }
+        } else if arg.starts_with("FCELL=") {
+            let body = arg.after("FCELL=");
+            if !body.contains('=') {
+                eprintln!("\nFCELL usage incorrect.\n");
+                std::process::exit(1);
+            }
+            let (var, val) = (body.before("=").to_string(), body.after("=").to_string());
+            ctl.clono_filt_opt.fcell.push((var, val));
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
         } else if arg.starts_with("LEGEND=") {
@@ -779,6 +787,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+    }
+    let mut alt_bcs = Vec::<String>::new();
+    for li in 0..ctl.sample_info.alt_bc_fields.len() {
+        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+        }
+    }
+    unique_sort(&mut alt_bcs);
+    for con in ctl.clono_filt_opt.fcell.iter() {
+        if !bin_member(&alt_bcs, &con.0) {
+            eprintln!(
+                "\nYou've used a variable as part of an FCELL argument that has not\n\
+                been specified using BC or bc (via META).\n"
+            );
+            std::process::exit(1);
+        }
     }
     for i in 0..ctl.sample_info.n() {
         let (mut cells_cr, mut rpc_cr) = (None, None);
