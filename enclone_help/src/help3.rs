@@ -335,7 +335,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc("", "(string in alphabet ACGT)");
 
-        // doc MIN_DATASETS and MAX_DATASETS
+        // doc MIN_DATASETS and MAX_DATASETS and MIN_DATASET_RATIO
 
         h.ldoc(
             "MIN_DATASETS=n",
@@ -345,6 +345,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "MAX_DATASETS=n",
             "only show clonotypes containing cells from at most n datasets",
         );
+        h.doc(
+            "MIN_DATASET_RATIO=n",
+            "only show clonotypes having at least n cells and for which the ratio",
+        );
+        h.doc(
+            "",
+            "of the number of cells in the must abundant dataset to the next most",
+        );
+        h.doc("", "abundant one is at least n");
 
         // doc CDIFF
 

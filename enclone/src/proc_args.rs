@@ -221,7 +221,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Preprocess NALL.
 
     for i in 1..args.len() {
-        if args[i] == "NALL".to_string() {
+        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" {
             let f = [
                 "NCELL",
                 "NGEX",
@@ -239,7 +239,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 "KEEP_IMPROPER",
             ];
             for j in 0..f.len() {
-                args.push(f[j].to_string());
+                if args[i] == "NALL" || f[j] != "NCELL" {
+                    args.push(f[j].to_string());
+                }
             }
             break;
         }
@@ -345,6 +347,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
         ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
         ("MIN_CHAINS_EXACT", &mut ctl.gen_opt.min_chains_exact),
+        (
+            "MIN_DATASET_RATIO",
+            &mut ctl.clono_filt_opt.min_dataset_ratio,
+        ),
         ("MIN_DATASETS", &mut ctl.clono_filt_opt.min_datasets),
         ("MIN_EXACTS", &mut ctl.clono_filt_opt.min_exacts),
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
@@ -390,6 +396,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "MARKED_B",
         "MARK_STATS",
         "NALL",
+        "NALL_CELL",
         "NOPAGER",
         "NOPRETTY",
         "PLAIN",

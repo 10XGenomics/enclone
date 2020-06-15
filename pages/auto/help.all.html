@@ -827,6 +827,9 @@ scanning for feature enrichment.
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets       │
 │MAX_DATASETS=n       │  only show clonotypes containing cells from at most n datasets        │
+│MIN_DATASET_RATIO=n  │  only show clonotypes having at least n cells and for which the ratio │
+│                     │  of the number of cells in the must abundant dataset to the next most │
+│                     │  abundant one is at least n                                           │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │CDIFF                │  only show clonotypes having a difference in constant region with the │
 │                     │  universal reference                                                  │
@@ -920,6 +923,7 @@ clonotype.
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NCELL               │  Use contigs found by Cell Ranger even if they were not in a called cell,   │
 │                    │  or not called high confidence.                                             │
+│NALL_CELL           │  turn off all the noise filters except for the cell filter                  │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NGEX                │  If gene expression and/or feature barcode data are provided, if a barcode  │
 │                    │  is called a cell by the VDJ part of the Cell Ranger pipeline, but not      │
