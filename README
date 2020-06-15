@@ -7,13 +7,16 @@ Notes on building and testing:
 
 3. Test other things with
    cargo t
-   assuming that the full set of datasets is available.  They would have to be in
-   the "right" place, and it's not entirely specified where that is.
-   (This automatically runs with -- --nocapture.)
-   Otherwise use instead:
+   assuming that you have installed enclone with the "large" option.
+   This automatically runs with -- --nocapture.
+   If you have only "medium" and not "large, you can use instead:
    cd enclone; cargo test --features basic -- --nocapture
 
-4. The code for NOPAGER accidentally broke at one point and we
+4. This does not include the very large test given by enclone/src/enclone.test.
+   That test can only be run at 10x Genomics because it includes datasets that we don't
+   distribute (for example because they're not unambiguously consented for public release).
+
+5. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
    enclone BCR=...
    enclone BCR=... NOPAGER
@@ -23,7 +26,7 @@ Notes on building and testing:
    enclone help faq NOPAGER.
    This seems to require manual testing.
 
-5. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
+6. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
    because the output was going to the alternate screen.  This seems to require manual testing.
 
-6. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
+7. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
