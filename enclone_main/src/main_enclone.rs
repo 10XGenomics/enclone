@@ -1227,6 +1227,61 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         orbits = orbits2;
     }
+
+    // Filter using constraints imposed by FCELL.
+
+    if !ctl.clono_filt_opt.fcell.is_empty() {
+        let mut orbits2 = Vec::<Vec<i32>>::new();
+        for i in 0..orbits.len() {
+            let mut o = orbits[i].clone();
+            let mut to_deletex = vec![false; o.len()];
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &mut exact_clonotypes[x.clonotype_index];
+                let mut to_delete = vec![false; ex.ncells()];
+                for k in 0..ex.ncells() {
+                    let li = ex.clones[k][0].dataset_index;
+                    let bc = &ex.clones[k][0].barcode;
+                    let mut keep = true;
+                    for x in ctl.clono_filt_opt.fcell.iter() {
+                        let (var, val) = (&x.0, &x.1);
+                        let mut ok = false;
+                        let alt = &ctl.sample_info.alt_bc_fields[li];
+                        let mut specified = false;
+                        for j in 0..alt.len() {
+                            if alt[j].0 == *var {
+                                if alt[j].1.contains_key(&bc.clone()) {
+                                    specified = true;
+                                    let given_val = &alt[j].1[&bc.clone()];
+                                    if given_val == val {
+                                        ok = true;
+                                    }
+                                }
+                            }
+                        }
+                        if !specified && val.len() == 0 {
+                            ok = true;
+                        }
+                        if !ok {
+                            keep = false;
+                        }
+                    }
+                    if !keep {
+                        to_delete[k] = true;
+                    }
+                }
+                erase_if(&mut ex.clones, &to_delete);
+                if ex.ncells() == 0 {
+                    to_deletex[j] = true;
+                }
+            }
+            erase_if(&mut o, &to_deletex);
+            if !o.is_empty() {
+                orbits2.push(o.clone());
+            }
+        }
+        orbits = orbits2;
+    }
     if ctl.comp {
         println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
     }

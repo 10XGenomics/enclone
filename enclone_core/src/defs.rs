@@ -474,6 +474,7 @@ pub struct ClonoFiltOpt {
     pub marked_b: bool,      // only print clonotypes having a mark and which are typed as B cells
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
+    pub fcell: Vec<(String, String)>, // constaints from FCELL
 }
 
 // Clonotype printing options.
