@@ -15,32 +15,33 @@ publish = false
 [dependencies]
 amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-assert_cmd = "0.12.0"
-bio = "0.29.0"
+assert_cmd = "*"
+bio = "*"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
+dirs = "*"
 enclone_core = { path = "../enclone_core" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-io_utils = "0.2.4"
-itertools = "^0.7"
+io_utils = "*"
+itertools = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-petgraph = "0.4.13"
-pretty_trace = "0.3.0"
-rayon = "1.0.2"
-regex = "1.3.1"
-serde = "1.0.90"
-serde_derive = "1.0.102"
+petgraph = "*"
+pretty_trace = "*"
+rayon = "*"
+regex = "*"
+serde = "*"
+serde_derive = "*"
 serde_json = "*"
-stats_utils = "0.1.0"
-stirling_numbers = "0.1.1"
-string_utils = "0.1.1"
-tilde-expand = "0.1.1"
+stats_utils = "*"
+stirling_numbers = "*"
+string_utils = "*"
+tilde-expand = "*"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "0.1.0"
+vector_utils = "*"
 
 [target.'cfg(not(windows))'.dependencies]
-pager = "0.15.0"
+pager = "*"
 
 [dependencies.hdf5]
 features = ["conda"]

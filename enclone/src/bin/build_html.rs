@@ -33,11 +33,12 @@ fn main() {
     });
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;
-        let out_file = format!("pages/auto/{}.html", example_name);
+        let out_file = format!("{}", example_name);
         let mut f = open_for_write_new![&out_file];
         fwrite!(&mut f, "{}", results[i].1);
     }
 
     insert_html("pages/index.html.src", "index.html", false);
     insert_html("pages/expanded.html.src", "pages/auto/expanded.html", false);
+    insert_html("pages/tree.html.src", "pages/auto/tree.html", false);
 }

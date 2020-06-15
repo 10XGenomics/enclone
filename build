@@ -5,6 +5,12 @@
 # and if you do need to, "cargo t" will catch the problem and should tell you
 # what to do.
 
+# WARNING: note harcoding of version14!
+
+# make outputs
+
+mkdir -p enclone_main/test/outputs
+
 # run rustfmt
 
 cargo fmt --all
@@ -17,10 +23,15 @@ cargo b
 
 target/debug/enclone HTML STABLE_DOC      > pages/auto/help.main.html
 target/debug/enclone HTML STABLE_DOC help > pages/auto/help.setup.html
-foreach x (quick how command glossary example1 example2 support input input_tech parseable plot filter special lvars cvars amino display indels color ideas faq developer all)
+foreach x (quick how command glossary example1 example2 support input input_tech parseable filter special lvars cvars amino display indels color faq developer all)
     target/debug/enclone help $x HTML STABLE_DOC > pages/auto/help.$x.html
 end
 
 # merge html pages
 
 target/debug/merge_html
+
+# update dataset checksums
+
+git write-tree --prefix=enclone_main/test/inputs/version14/123085 > datasets_small_checksum
+git write-tree --prefix=enclone_main/test/inputs/version14 > datasets_medium_checksum

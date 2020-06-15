@@ -2,25 +2,31 @@
 
 // Group and print clonotypes.  For now, limited grouping functionality.
 
-use crate::print_utils5::*;
+use crate::display_tree::*;
+use crate::neighbor::*;
+use crate::newick::*;
 use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_core::types::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;
 use perf_stats::*;
 use stats_utils::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+use std::mem::swap;
 use std::path::Path;
-use std::time::Instant;
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
 use tables::*;
+use tar::{Builder, Header};
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -29,13 +35,13 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
-    mat: &Vec<Vec<Vec<Option<usize>>>>,
+    rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
-    parseable_fields: &Vec<String>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     // Build index to join info.
 
@@ -47,6 +53,8 @@ pub fn group_and_print_clonotypes(
 
     // Set up for parseable output.
 
+    let mut parseable_fields = Vec::<String>::new();
+    set_speakers(&ctl, &mut parseable_fields);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
         "" => (Box::new(stdout()) as Box<Write>),
@@ -101,6 +109,30 @@ pub fn group_and_print_clonotypes(
             Box::new(File::create(&path).unwrap()) as Box<Write>
         }
     };
+
+    // Set up for clustal output.
+
+    let (mut clustal_aa, mut clustal_dna) = (None, None);
+    if ctl.gen_opt.clustal_aa.len() > 0 && ctl.gen_opt.clustal_aa != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.clustal_aa).unwrap();
+        clustal_aa = Some(Builder::new(file));
+    }
+    if ctl.gen_opt.clustal_dna.len() > 0 && ctl.gen_opt.clustal_dna != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.clustal_dna).unwrap();
+        clustal_dna = Some(Builder::new(file));
+    }
+
+    // Set up for phylip output.
+
+    let (mut phylip_aa, mut phylip_dna) = (None, None);
+    if ctl.gen_opt.phylip_aa.len() > 0 && ctl.gen_opt.phylip_aa != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.phylip_aa).unwrap();
+        phylip_aa = Some(Builder::new(file));
+    }
+    if ctl.gen_opt.phylip_dna.len() > 0 && ctl.gen_opt.phylip_dna != "stdout".to_string() {
+        let file = File::create(&ctl.gen_opt.phylip_dna).unwrap();
+        phylip_dna = Some(Builder::new(file));
+    }
 
     // Group clonotypes and make output.
 
@@ -310,13 +342,619 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
-            // Generate fasta output.
+            // Generate clustal output.  See:
+            // 1. http://meme-suite.org/doc/clustalw-format.html
+            // 2. https://www.ebi.ac.uk/seqdb/confluence/display/THD/Help+-+Clustal+Omega+FAQ
+            //    at "What do the consensus symbols mean in the alignment?".
+
+            if ctl.gen_opt.clustal_aa.len() > 0 {
+                let stdout = ctl.gen_opt.clustal_aa == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
+                if stdout {
+                    fwriteln!(logx, "");
+                    fwriteln!(logx, "CLUSTALW\n");
+                } else {
+                    fwriteln!(data, "CLUSTALW\n");
+                }
+                let mut aa = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let s = ex.share[r].seq_del_amino.clone();
+                            let mut s = aa_seq(&s, 0);
+                            seq.append(&mut s);
+                        }
+                    }
+                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    aa.append(&mut vec![seq; 1]);
+                }
+                const W: usize = 60;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..aa[0].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(data, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, aa[0].len());
+                    for i in 0..aa.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}  {}", strme(&aa[i][start..stop]), stop - start);
+                        } else {
+                            fwrite!(data, "{}", names[i]);
+                            fwrite!(
+                                data,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(data, "{}  {}", strme(&aa[i][start..stop]), stop - start);
+                        }
+                    }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
+                    for p in start..stop {
+                        let mut res = Vec::<u8>::new();
+                        for i in 0..aa.len() {
+                            res.push(aa[i][p]);
+                        }
+                        unique_sort(&mut res);
+                        if res.solo() {
+                            if stdout {
+                                fwrite!(logx, "*");
+                            } else {
+                                fwrite!(data, "*");
+                            }
+                        } else {
+                            let mut con = false;
+                            'pass: for pass in 1..=2 {
+                                let x: Vec<&[u8]>;
+                                // Conservative mutations
+                                if pass == 1 {
+                                    x = vec![
+                                        b"STA", b"NEQK", b"NHQK", b"NDEQ", b"QHRK", b"MILV",
+                                        b"MILF", b"HY", b"FYW",
+                                    ];
+                                } else {
+                                    // Semi-conservative mutations
+                                    x = vec![
+                                        b"CSA", b"ATV", b"SAG", b"STNK", b"STPA", b"SGND",
+                                        b"SNDEQK", b"NDEQHK", b"NEQHRK", b"FVLIM", b"HFY",
+                                    ];
+                                }
+                                for y in x.iter() {
+                                    let mut sub = true;
+                                    for c in res.iter() {
+                                        if !y.contains(c) {
+                                            sub = false;
+                                            break;
+                                        }
+                                    }
+                                    if sub {
+                                        let sym;
+                                        if pass == 1 {
+                                            sym = ":";
+                                        } else {
+                                            sym = ".";
+                                        }
+                                        if stdout {
+                                            fwrite!(logx, "{}", sym);
+                                        } else {
+                                            fwrite!(data, "{}", sym);
+                                        }
+                                        con = true;
+                                        break 'pass;
+                                    }
+                                }
+                            }
+                            if !con {
+                                if stdout {
+                                    fwrite!(logx, " ");
+                                } else {
+                                    fwrite!(data, " ");
+                                }
+                            }
+                        }
+                    }
+                    if stdout {
+                        fwriteln!(logx, "");
+                    } else {
+                        fwriteln!(data, "");
+                    }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0644);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    clustal_aa
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
+                }
+            }
+            if ctl.gen_opt.clustal_dna.len() > 0 {
+                let stdout = ctl.gen_opt.clustal_dna == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
+                if stdout {
+                    fwriteln!(logx, "");
+                    fwriteln!(logx, "CLUSTALW\n");
+                } else {
+                    fwriteln!(data, "CLUSTALW\n");
+                }
+                let mut dna = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let mut s = ex.share[r].seq_del_amino.clone();
+                            seq.append(&mut s);
+                        }
+                    }
+                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    dna.append(&mut vec![seq; 1]);
+                }
+                const W: usize = 60;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..dna[0].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(data, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, dna[0].len());
+                    for i in 0..dna.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        } else {
+                            fwrite!(data, "{}", names[i]);
+                            fwrite!(
+                                data,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(data, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        }
+                    }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
+                    for p in start..stop {
+                        let mut res = Vec::<u8>::new();
+                        for i in 0..dna.len() {
+                            res.push(dna[i][p]);
+                        }
+                        unique_sort(&mut res);
+                        if res.solo() {
+                            if stdout {
+                                fwrite!(logx, "*");
+                            } else {
+                                fwrite!(data, "*");
+                            }
+                        } else {
+                            if stdout {
+                                fwrite!(logx, " ");
+                            } else {
+                                fwrite!(data, " ");
+                            }
+                        }
+                    }
+                    if stdout {
+                        fwriteln!(logx, "");
+                    } else {
+                        fwriteln!(data, "");
+                    }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0644);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    clustal_dna
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
+                }
+            }
+
+            // Generate sequential PHYLIP output.  See:
+            // 1. http://www.atgc-montpellier.fr/phyml/usersguide.php?type=phylip
+            // 2. http://evolution.genetics.washington.edu/phylip/doc/sequence.html.
+            // We don't fold lines because it may not be necessary.  See giant value for W;
+            // code left in place in case it turns out that folding is needed.  This will involve
+            // a bit more than lowering W.
+
+            if ctl.gen_opt.phylip_aa.len() > 0 {
+                let stdout = ctl.gen_opt.phylip_aa == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
+                let mut nbases = 0;
+                for m in 0..rsi[oo].mat.len() {
+                    nbases += rsi[oo].seq_del_lens[m];
+                }
+                if stdout {
+                    fwriteln!(logx, "");
+                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases / 3);
+                } else {
+                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases / 3);
+                }
+                let mut aa = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let s = ex.share[r].seq_del_amino.clone();
+                            let mut s = aa_seq(&s, 0);
+                            seq.append(&mut s);
+                        }
+                    }
+                    names.push(format!("{}", k + 1,));
+                    aa.append(&mut vec![seq; 1]);
+                }
+                const W: usize = 10000;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..aa[0].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(data, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, aa[0].len());
+                    for i in 0..aa.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}", strme(&aa[i][start..stop]));
+                        } else {
+                            fwrite!(data, "{}", names[i]);
+                            fwrite!(
+                                data,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(data, "{}", strme(&aa[i][start..stop]));
+                        }
+                    }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0644);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    phylip_aa
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
+                }
+            }
+            if ctl.gen_opt.phylip_dna.len() > 0 {
+                let stdout = ctl.gen_opt.phylip_dna == "stdout".to_string();
+                let mut data = Vec::<u8>::new();
+                let mut nbases = 0;
+                for m in 0..rsi[oo].mat.len() {
+                    nbases += rsi[oo].seq_del_lens[m];
+                }
+                if stdout {
+                    fwriteln!(logx, "");
+                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases);
+                } else {
+                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases);
+                }
+                let mut dna = Vec::<Vec<u8>>::new();
+                let mut names = Vec::<String>::new();
+                for (k, u) in exacts[oo].iter().enumerate() {
+                    let ex = &exact_clonotypes[*u];
+                    let mut seq = Vec::<u8>::new();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_none() {
+                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
+                        } else {
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let mut s = ex.share[r].seq_del_amino.clone();
+                            seq.append(&mut s);
+                        }
+                    }
+                    names.push(format!("{}", k + 1,));
+                    dna.append(&mut vec![seq; 1]);
+                }
+                const W: usize = 10000;
+                const PAD: usize = 4;
+                let mut name_width = 0;
+                for i in 0..names.len() {
+                    name_width = std::cmp::max(name_width, names[i].len());
+                }
+                for start in (0..dna[0].len()).step_by(W) {
+                    if start > 0 {
+                        if stdout {
+                            fwriteln!(logx, "");
+                        } else {
+                            fwriteln!(data, "");
+                        }
+                    }
+                    let stop = std::cmp::min(start + W, dna[0].len());
+                    for i in 0..dna.len() {
+                        if stdout {
+                            fwrite!(logx, "{}", names[i]);
+                            fwrite!(
+                                logx,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(logx, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        } else {
+                            fwrite!(data, "{}", names[i]);
+                            fwrite!(
+                                data,
+                                "{}",
+                                strme(&vec![b' '; name_width + PAD - names[i].len()])
+                            );
+                            fwriteln!(data, "{}  {}", strme(&dna[i][start..stop]), stop - start);
+                        }
+                    }
+                    if stdout {
+                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
+                    } else {
+                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
+                    }
+                }
+                if !stdout {
+                    let mut header = Header::new_gnu();
+                    header.set_size(data.len() as u64);
+                    header.set_cksum();
+                    header.set_mode(0o0644);
+                    let now = SystemTime::now();
+                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
+                    let filename = format!("{}.{}", groups, j + 1);
+                    phylip_dna
+                        .as_mut()
+                        .unwrap()
+                        .append_data(&mut header, &filename, &data[..])
+                        .unwrap();
+                }
+            }
+
+            // Generate experimental tree output (options NEWICK0 and TREE).
+
+            if ctl.gen_opt.newick || ctl.gen_opt.tree {
+                // Compute the n x n distance matrix for the exact subclonotypes.
+
+                let n = exacts[oo].len();
+                let cols = rsi[oo].mat.len();
+                let mut dist = vec![vec![0; n]; n];
+                for i1 in 0..n {
+                    for i2 in 0..n {
+                        let ex1 = &exact_clonotypes[exacts[oo][i1]];
+                        let ex2 = &exact_clonotypes[exacts[oo][i2]];
+                        for m in 0..cols {
+                            if rsi[oo].mat[m][i1].is_some() && rsi[oo].mat[m][i2].is_some() {
+                                let r1 = rsi[oo].mat[m][i1].unwrap();
+                                let r2 = rsi[oo].mat[m][i2].unwrap();
+                                let seq1 = &ex1.share[r1].seq_del_amino;
+                                let seq2 = &ex2.share[r2].seq_del_amino;
+                                for j in 0..seq1.len() {
+                                    if seq1[j] != seq2[j] {
+                                        dist[i1][i2] += 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Add a zeroeth entry for a "root subclonotype" which is defined to have the
+                // donor reference away from the recombination region, and is undefined within it.
+                // Define its distance to actual exact subclonotypes by only computing away from
+                // the recombination region.  This yields an (n+1) x (n+1) matrix.
+
+                let mut droot = vec![0; n];
+                for i in 0..n {
+                    let ex = &exact_clonotypes[exacts[oo][i]];
+                    for m in 0..cols {
+                        if rsi[oo].mat[m][i].is_some() {
+                            let r = rsi[oo].mat[m][i].unwrap();
+                            let seq = &ex.share[r].seq_del_amino;
+                            let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
+                            if rsi[oo].vpids[m].is_some() {
+                                vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
+                            }
+                            let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                            let z = seq.len();
+                            for p in 0..z {
+                                let b = seq[p];
+                                if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                                    droot[i] += 1;
+                                }
+                                if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                                    && b != jref[jref.len() - (z - p)]
+                                {
+                                    droot[i] += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut distp = vec![vec![0.0; n + 1]; n + 1];
+                for i1 in 0..n {
+                    for i2 in 0..n {
+                        distp[i1 + 1][i2 + 1] = dist[i1][i2] as f64;
+                    }
+                }
+                for i in 0..n {
+                    distp[i + 1][0] = droot[i] as f64;
+                    distp[0][i + 1] = droot[i] as f64;
+                }
+
+                // Generate the neighborhood joining tree associated to these data.
+
+                let mut tree = neighbor_joining(&distp);
+                let mut nvert = 0;
+                for i in 0..tree.len() {
+                    nvert = max(nvert, tree[i].0 + 1);
+                    nvert = max(nvert, tree[i].1 + 1);
+                }
+
+                // Use the root to direct the edges.
+
+                let r = 0;
+                let mut index = vec![Vec::<usize>::new(); nvert];
+                for i in 0..tree.len() {
+                    index[tree[i].0].push(i);
+                    index[tree[i].1].push(i);
+                }
+                let mut rooted = vec![false; nvert];
+                rooted[r] = true;
+                let mut roots = vec![r];
+                for i in 0..nvert {
+                    let v = roots[i];
+                    for j in index[v].iter() {
+                        let e = &mut tree[*j];
+
+                        if e.1 == v && !rooted[e.0] {
+                            swap(&mut e.0, &mut e.1);
+                        }
+                        if e.0 == v && !rooted[e.1] {
+                            rooted[e.1] = true;
+                            roots.push(e.1);
+                        }
+                    }
+                }
+
+                // Output in Newick format.
+
+                if ctl.gen_opt.newick {
+                    let mut vnames = Vec::<String>::new();
+                    for i in 0..=n {
+                        vnames.push(format!("{}", i));
+                    }
+                    let mut edges = Vec::<(usize, usize, String)>::new();
+                    for i in 0..tree.len() {
+                        edges.push((tree[i].0, tree[i].1, format!("{:.2}", tree[i].2)));
+                    }
+                    for i in n + 1..nvert {
+                        vnames.push(format!("I{}", i - n));
+                    }
+                    let nw = newick(&vnames, 0, &edges);
+                    fwriteln!(logx, "\n{}", nw);
+                }
+
+                // Output as visual tree.
+
+                if ctl.gen_opt.tree {
+                    let mut edges = Vec::<(usize, usize, f64)>::new();
+                    let mut nvert = 0;
+                    for i in 0..tree.len() {
+                        edges.push((tree[i].0, tree[i].1, tree[i].2));
+                        nvert = max(nvert, tree[i].0 + 1);
+                        nvert = max(nvert, tree[i].1 + 1);
+                    }
+
+                    // Make edge names.
+
+                    let mut vnames = Vec::<String>::new();
+                    for i in 0..nvert {
+                        let mut len = 0.0;
+                        for j in 0..edges.len() {
+                            if edges[j].1 == i {
+                                len = edges[j].2;
+                            }
+                        }
+                        if i == 0 {
+                            vnames.push("•".to_string());
+                        } else if i <= n {
+                            if ctl.pretty {
+                                vnames.push(format!("[01m[31m{}[0m [{:.2}]", i, len));
+                            } else {
+                                vnames.push(format!("{} [{:.2}]", i, len));
+                            }
+                        } else {
+                            vnames.push(format!("• [{:.2}]", len));
+                        }
+                    }
+
+                    // Display the tree.
+
+                    let nw = display_tree(&vnames, &edges, 0, 100);
+                    fwrite!(logx, "\n{}", nw);
+                }
+            }
+
+            // Generate FASTA output.
 
             if ctl.gen_opt.fasta_filename.len() > 0 {
                 for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..mat[oo].len() {
-                        if mat[oo][m][k].is_some() {
-                            let r = mat[oo][m][k].unwrap();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_some() {
+                            let r = rsi[oo].mat[m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
                             if ctl.gen_opt.fasta_filename != "stdout".to_string() {
                                 fwriteln!(
@@ -341,8 +979,8 @@ pub fn group_and_print_clonotypes(
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
                                 for l in 0..exacts[oo].len() {
-                                    if mat[oo][m][l].is_some() {
-                                        let r2 = mat[oo][m][l].unwrap();
+                                    if rsi[oo].mat[m][l].is_some() {
+                                        let r2 = rsi[oo].mat[m][l].unwrap();
                                         let ex2 = &exact_clonotypes[exacts[oo][l]];
                                         let cid2 = ex2.share[r2].c_ref_id;
                                         if cid2.is_some() {
@@ -370,9 +1008,9 @@ pub fn group_and_print_clonotypes(
 
             if ctl.gen_opt.fasta_aa_filename.len() > 0 {
                 for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..mat[oo].len() {
-                        if mat[oo][m][k].is_some() {
-                            let r = mat[oo][m][k].unwrap();
+                    for m in 0..rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_some() {
+                            let r = rsi[oo].mat[m][k].unwrap();
                             let ex = &exact_clonotypes[*u];
                             if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
                                 fwriteln!(
@@ -397,8 +1035,8 @@ pub fn group_and_print_clonotypes(
                             let mut cid = ex.share[r].c_ref_id;
                             if cid.is_none() {
                                 for l in 0..exacts[oo].len() {
-                                    if mat[oo][m][l].is_some() {
-                                        let r2 = mat[oo][m][l].unwrap();
+                                    if rsi[oo].mat[m][l].is_some() {
+                                        let r2 = rsi[oo].mat[m][l].unwrap();
                                         let ex2 = &exact_clonotypes[exacts[oo][l]];
                                         let cid2 = ex2.share[r2].c_ref_id;
                                         if cid2.is_some() {
@@ -588,6 +1226,15 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    // Finish CLUSTAL.
+
+    if clustal_aa.is_some() {
+        clustal_aa.unwrap().finish().unwrap();
+    }
+    if clustal_dna.is_some() {
+        clustal_dna.unwrap().finish().unwrap();
+    }
+
     // Compute two umi stats.
 
     let nclono = exacts.len();
@@ -666,7 +1313,7 @@ pub fn group_and_print_clonotypes(
                 nclono2 += 1;
             }
             ncells += n;
-            ncc.push((mat[i].len(), n));
+            ncc.push((rsi[i].mat.len(), n));
         }
         sd.sort();
         let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();

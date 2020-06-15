@@ -83,7 +83,9 @@ fn parse_vector_entry_from_json(
     if !ctl.gen_opt.ncell && !v["is_cell"].as_bool().unwrap_or(false) {
         return;
     }
-    vdj_cells.push(barcode.clone());
+    if v["is_cell"].as_bool().unwrap_or(false) {
+        vdj_cells.push(barcode.clone());
+    }
     if !v["productive"].as_bool().unwrap_or(false) {
         return;
     }
@@ -461,14 +463,13 @@ fn parse_vector_entry_from_json(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Parse the json annotations file.
+// Parse the JSON annotations file.
 //
-// Should try using:
+// In the future could be converted to LazyWrite:
 // https://martian-lang.github.io/martian-rust/doc/martian_filetypes/json_file/
 // index.html#lazy-readwrite-example.
-// Tried at one point but was unable to compile.
 //
-// Tracking contigs using bc_cdr3_aa, which is a mess, should improve later.
+// Tracking contigs using bc_cdr3_aa; could improve later.
 //
 // This section requires 3.1.  If you want to avoid that, do something to make tig_start
 // and tig_stop always nonnegative.  Or use the RE option.
@@ -482,7 +483,7 @@ fn parse_vector_entry_from_json(
 //
 // and simply reading the file lines is several times faster.  So the way we parse the
 // files is suboptimal.  If we want to make this faster, one option would be to speed up
-// this code.  Another would be to write out a binary version of the json file that contains
+// this code.  Another would be to write out a binary version of the JSON file that contains
 // only the information that we need.
 
 pub fn read_json(
@@ -612,7 +613,7 @@ pub fn read_json(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Parse the json annotations files.
+// Parse the JSON annotations file(s).
 
 pub fn parse_json_annotations_files(
     mut ctl: &mut EncloneControl,
@@ -641,7 +642,7 @@ pub fn parse_json_annotations_files(
             Vec::<String>::new(),
         ));
     }
-    // note: only tracking truncated seq and quals initially
+    // Note: only tracking truncated seq and quals initially
     let ann;
     if !ctl.gen_opt.cellranger {
         ann = "all_contig_annotations.json";
@@ -695,6 +696,6 @@ pub fn parse_json_annotations_files(
         std::process::exit(1);
     }
     if ctl.comp {
-        println!("used {:.2} seconds loading from json", elapsed(&tl));
+        println!("used {:.2} seconds loading from JSON", elapsed(&tl));
     }
 }

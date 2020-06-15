@@ -22,7 +22,8 @@ use vector_utils::*;
 // 3. ANSI escape characters are not handled correctly, at least by default.
 // In addition, we have some concerns about what it would mean to properly test enclone on Windows,
 // given that some users might have older OS installs, and support for ANSI escape characters
-// appears to have been changed in 2018.
+// appears to have been changed in 2018. This is not made easier by the Windows Subsystem for
+// Linux.
 
 #[cfg(not(target_os = "windows"))]
 pub fn setup_pager(pager: bool) {
@@ -167,7 +168,7 @@ pub fn lookup_heavy_chain_reuse(
 // pairs for all datasets from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
 // that assuming even distribution, all instances of that V..J ended up in that one dataset,
 // delete all the productive pairs for that V..J segment that do not have at least 100
-// supporting UMIs.  (Note no attempt to do bonferroni correction.)
+// supporting UMIs.  (Note no attempt to do Bonferroni correction.)
 //
 // For the case of two datasets for one sample, with equal numbers of productive pairs in
 // each, this corresponds roughly to the case n = 20.
@@ -178,7 +179,7 @@ pub fn lookup_heavy_chain_reuse(
 //
 // 1. A cell (and particularly a plasma cell or plasmablast) bursts after drawing cells to
 //    make libraries, leaving behind cell fragments that seed separate GEMs
-// (probably most likely).
+//    (probably most likely).
 // 2. Multiple gel beads end up in one GEM.
 // 3. Something involving like cells sticking together and subsequently separating.
 // 4. Physical contamination of libraries.

@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Extract the entries in a given all_contig_annotations.json fle that corrrespond to barcodes
+// Extract the entries in a given all_contig_annotations.json file that corrrespond to barcodes
 // in a given sorted vector.
 
 use io_utils::*;

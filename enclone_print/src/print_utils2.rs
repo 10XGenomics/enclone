@@ -3,13 +3,13 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::types::*;
 use amino::*;
 use ansi_escape::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
+use enclone_core::types::*;
 use itertools::*;
 use ndarray::s;
 use stats_utils::*;
@@ -57,7 +57,7 @@ pub fn get_gex_matrix_entry(
 // it generates a row of parseable output.  And it does some other things that are not described
 // here.
 //
-// Awful interface, should work to improve.
+// TODO: Awful interface, should work to improve.
 
 pub fn row_fill(
     pass: usize,
@@ -69,6 +69,7 @@ pub fn row_fill(
     gex_info: &GexInfo,
     refdata: &RefData,
     varmat: &Vec<Vec<Vec<u8>>>,
+    fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
@@ -87,12 +88,14 @@ pub fn row_fill(
     stats: &mut Vec<(String, Vec<f64>)>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
+    lvarsc: &Vec<String>,
+    nd_fields: &Vec<String>,
 ) {
     // Redefine some things to reduce dependencies.
 
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
-    let lvars = &ctl.clono_print_opt.lvars;
+    let lvars = lvarsc.clone();
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     macro_rules! speak {
@@ -155,17 +158,6 @@ pub fn row_fill(
         };
     }
     let cols = varmat[0].len();
-
-    // Precompute for near and far.
-
-    let mut fp = vec![Vec::<usize>::new(); varmat.len()]; // footprints
-    for i in 0..varmat.len() {
-        for j in 0..varmat[i].len() {
-            if varmat[i][j] != vec![b'-'] {
-                fp[i].push(j);
-            }
-        }
-    }
 
     // Set up lead variable macro.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
@@ -375,7 +367,7 @@ pub fn row_fill(
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.sample_info.alt_bc_fields.len() {
         for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[i][i].0.clone());
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);
@@ -429,6 +421,22 @@ pub fn row_fill(
             }
             clust.sort();
             lvar![i, x, format!("{}", abbrev_list(&clust))];
+        } else if x == "n_other" {
+            let mut n = 0;
+            for j in 0..ex.clones.len() {
+                let mut found = false;
+                let di = ex.clones[j][0].dataset_index;
+                let f = format!("n_{}", ctl.sample_info.dataset_id[di]);
+                for i in 0..nd_fields.len() {
+                    if f == nd_fields[i] {
+                        found = true;
+                    }
+                }
+                if !found {
+                    n += 1;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
         } else if x == "type" {
             let mut cell_types = Vec::<String>::new();
             /*
@@ -445,7 +453,13 @@ pub fn row_fill(
             cell_types.sort();
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
         } else if x == "mark" {
-            lvar![i, x, format!("")];
+            let mut n = 0;
+            for j in 0..ex.clones.len() {
+                if ex.clones[j][0].marked {
+                    n += 1;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
         } else if x.starts_with("pe") {
             lvar![i, x, format!("")];
         } else if x.starts_with("npe") {
@@ -545,6 +559,32 @@ pub fn row_fill(
             }
             lvar![i, x, format!("{}", count)];
             stats.push((x.to_string(), counts));
+        } else if x == "dref" {
+            let mut diffs = 0;
+            for m in 0..cols {
+                if mat[m][u].is_some() {
+                    let r = mat[m][u].unwrap();
+                    let seq = &ex.share[r].seq_del_amino;
+                    let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                    if rsi.vpids[m].is_some() {
+                        vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                    }
+                    let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                    let z = seq.len();
+                    for p in 0..z {
+                        let b = seq[p];
+                        if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                            diffs += 1;
+                        }
+                        if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                            && b != jref[jref.len() - (z - p)]
+                        {
+                            diffs += 1;
+                        }
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", diffs)];
         } else if x == "near" {
             let mut dist = 1_000_000;
             for i2 in 0..varmat.len() {
@@ -765,7 +805,7 @@ pub fn row_fill(
         }
     }
 
-    // Sanity check.  It's here because if it fails and that failue was not detected, something
+    // Sanity check.  It's here because if it fails and that failure was not detected, something
     // exceptionally cryptic would happen downstream.
 
     assert_eq!(row.len(), lvars.len() + 1);
@@ -922,10 +962,14 @@ pub fn row_fill(
                         cx[col][j] += "*";
                     } else {
                         let mut log = Vec::<u8>::new();
-                        emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
                         let aa = codon_to_aa(&seq_amino[3 * p..3 * p + 3]);
-                        log.push(aa);
-                        emit_end_escape(&mut log);
+                        if ctl.gen_opt.color == "codon".to_string() {
+                            emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
+                            log.push(aa);
+                            emit_end_escape(&mut log);
+                        } else {
+                            color_by_property(&vec![aa], &mut log);
+                        }
                         cx[col][j] += strme(&log);
                     }
                     if k < show_aa[col].len() - 1 && p == cs + n - 1 {
@@ -1247,7 +1291,7 @@ pub fn row_fill(
                 // const entry per exact subclonotype.
                 cvar![j, var, format!("{}", constx.iter().format(","))];
 
-            // Compute potential whitelist contamination percent.  And filter.
+            // Compute potential whitelist contamination percent and filter.
             // This is an undocumented option.
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];

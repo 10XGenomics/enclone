@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::{env, time::Instant};
 use string_utils::*;
+use tilde_expand::*;
 use vector_utils::*;
 
 // Process arguments.
@@ -61,6 +62,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
             format!("enclone/test/inputs"),
         ];
+    } else {
+        let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+        ctl.gen_opt.pre = vec![
+            format!("{}/enclone/datasets", home),
+            format!("{}/enclone/datasets2", home),
+        ];
     }
 
     // Set up general options.
@@ -79,6 +86,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     ctl.gen_opt.full_counts = true;
+    ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
 
     // Set up clonotyping control parameters.
@@ -210,11 +218,39 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
+    // Preprocess NALL.
+
+    for i in 1..args.len() {
+        if args[i] == "NALL".to_string() {
+            let f = [
+                "NCELL",
+                "NGEX",
+                "NCROSS",
+                "NUMI",
+                "NUMI_RATIO",
+                "NGRAPH_FILTER",
+                "NQUAL",
+                "NWEAK_CHAINS",
+                "NWEAK_ONESIES",
+                "NFOURSIE_KILL",
+                "NWHITEF",
+                "NBC_DUP",
+                "MIX_DONORS",
+                "KEEP_IMPROPER",
+            ];
+            for j in 0..f.len() {
+                args.push(f[j].to_string());
+            }
+            break;
+        }
+    }
+
     // Define arguments that set something to true.
 
-    let mut simple_set = vec![
+    let mut set_true = vec![
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
+        ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
@@ -222,6 +258,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("BCJOIN", &mut ctl.join_alg_opt.bcjoin),
         ("CDIFF", &mut ctl.clono_filt_opt.cdiff),
         ("CHAIN_BRIEF", &mut ctl.clono_print_opt.chain_brief),
+        ("COMPLETE", &mut ctl.gen_opt.complete),
         ("CON", &mut ctl.allele_print_opt.con),
         ("CON_CON", &mut ctl.gen_opt.con_con),
         ("CON_TRACE", &mut ctl.allele_print_opt.con_trace),
@@ -251,6 +288,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MOUSE", &mut ctl.gen_opt.mouse),
         ("NCELL", &mut ctl.gen_opt.ncell),
         ("NCROSS", &mut ctl.clono_filt_opt.ncross),
+        ("NEWICK", &mut ctl.gen_opt.newick),
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
@@ -272,6 +310,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("SUMMARY_CLEAN", &mut ctl.gen_opt.summary_clean),
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         ("TOY", &mut ctl.toy),
+        ("TREE", &mut ctl.gen_opt.tree),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
@@ -283,9 +322,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("WHITEF", &mut ctl.clono_filt_opt.whitef),
     ];
 
+    // Define arguments that set something to false.
+
+    let mut set_false = vec![
+        ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
+        ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
+        ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
+        ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
+        ("NSILENT", &mut ctl.silent),
+        ("NUMI", &mut ctl.clono_filt_opt.umi_filt),
+        ("NUMI_RATIO", &mut ctl.clono_filt_opt.umi_ratio_filt),
+        ("NWEAK_CHAINS", &mut ctl.clono_filt_opt.weak_chains),
+        ("NWEAK_ONESIES", &mut ctl.clono_filt_opt.weak_onesies),
+        ("PRINT_FAILED_JOINS", &mut ctl.join_print_opt.quiet),
+    ];
+
     // Define arguments that set something to a usize.
 
-    let usize_set = [
+    let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
@@ -298,6 +352,51 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
         ("ONESIE_MULT", &mut ctl.onesie_mult),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
+        ("PFREQ", &mut ctl.join_print_opt.pfreq),
+    ];
+
+    // Define arguments that set something to a string.
+
+    let set_string = [
+        ("BINARY", &mut ctl.gen_opt.binary),
+        ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
+        ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
+        ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("EXT", &mut ctl.gen_opt.ext),
+        ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
+        ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
+        ("POUT", &mut ctl.parseable_opt.pout),
+        ("PROTO", &mut ctl.gen_opt.proto),
+        ("REF", &mut ctl.gen_opt.refname),
+        ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
+    ];
+
+    // Define arguments that do nothing (because already parsed).
+
+    let set_nothing = [
+        "BC",
+        "BI",
+        "CELLRANGER",
+        "COMP",
+        "COMP2",
+        "CTRLC",
+        "DUMP_INTERNAL_IDS",
+        "EMAIL",
+        "FORCE_EXTERNAL",
+        "GEX",
+        "HAPS",
+        "HTML",
+        "LONG_HELP",
+        "MARKED_B",
+        "MARK_STATS",
+        "NALL",
+        "NOPAGER",
+        "NOPRETTY",
+        "PLAIN",
+        "PRE",
+        "PRINT_CPU",
+        "PRINT_CPU_INFO",
+        "SVG",
     ];
 
     // Traverse arguments.
@@ -329,20 +428,47 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
 
-        // Process simple set arguments.
+        // Process set_true arguments.
 
-        for j in 0..simple_set.len() {
-            if arg == simple_set[j].0.to_string() {
-                *(simple_set[j].1) = true;
+        for j in 0..set_true.len() {
+            if arg == set_true[j].0.to_string() {
+                *(set_true[j].1) = true;
                 continue 'args_loop;
             }
         }
 
-        // Process usize args.
+        // Process set_false arguments.
 
-        for j in 0..usize_set.len() {
-            if is_usize_arg(&arg, &usize_set[j].0) {
-                *(usize_set[j].1) = arg.after(&format!("{}=", usize_set[j].0)).force_usize();
+        for j in 0..set_false.len() {
+            if arg == set_false[j].0.to_string() {
+                *(set_false[j].1) = false;
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_usize args.
+
+        for j in 0..set_usize.len() {
+            if is_usize_arg(&arg, &set_usize[j].0) {
+                *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_string args.
+
+        for j in 0..set_string.len() {
+            if is_string_arg(&arg, &set_string[j].0) {
+                *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_nothing args.
+
+        for j in 0..set_nothing.len() {
+            if arg == set_nothing[j].to_string() || arg.starts_with(&format!("{}=", set_nothing[j]))
+            {
                 continue 'args_loop;
             }
         }
@@ -355,6 +481,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         // Not movable.
         } else if is_simple_arg(&arg, "H5") {
             ctl.gen_opt.force_h5 = true;
+        } else if is_simple_arg(&arg, "NH5") {
+            ctl.gen_opt.force_h5 = false;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
         } else if is_usize_arg(&arg, "REQUIRED_FPS") {
@@ -365,21 +493,36 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
         } else if is_usize_arg(&arg, "MAX_CHAINS") {
             ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
-        } else if arg == "PRINT_CPU" {
-        } else if arg == "PRINT_CPU_INFO" {
+        } else if is_usize_arg(&arg, "MIN_CELLS") {
+            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
+        } else if is_usize_arg(&arg, "MAX_CELLS") {
+            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
+        } else if arg.starts_with("EXFASTA=") {
+            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
+        } else if arg.starts_with("FASTA=") {
+            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
+        } else if arg.starts_with("FASTA_AA=") {
+            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
-            // Other.
-        } else if is_simple_arg(&arg, "DUMP_INTERNAL_IDS") {
-        } else if is_simple_arg(&arg, "COMP") {
-        } else if is_simple_arg(&arg, "COMP2") {
-        } else if is_simple_arg(&arg, "LONG_HELP") {
+        // Other.
+        } else if arg.starts_with("COLOR=") {
+            ctl.gen_opt.color = arg.after("COLOR=").to_string();
+            if ctl.gen_opt.color != "codon".to_string()
+                && ctl.gen_opt.color != "property".to_string()
+            {
+                eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
+                std::process::exit(1);
+            }
+        } else if arg.starts_with("FCELL=") {
+            let body = arg.after("FCELL=");
+            if !body.contains('=') {
+                eprintln!("\nFCELL usage incorrect.\n");
+                std::process::exit(1);
+            }
+            let (var, val) = (body.before("=").to_string(), body.after("=").to_string());
+            ctl.clono_filt_opt.fcell.push((var, val));
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
-        } else if arg.starts_with("BI=") {
-            continue;
-        } else if is_simple_arg(&arg, "MARK_STATS") {
-        } else if arg == "HTML" || arg.starts_with("HTML=") {
-        } else if arg == "SVG" {
         } else if arg.starts_with("LEGEND=") {
             let x = parse_csv(&arg.after("LEGEND="));
             if x.len() == 0 || x.len() % 2 != 0 {
@@ -392,19 +535,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     .legend
                     .push((x[2 * i].clone(), x[2 * i + 1].clone()));
             }
-        } else if is_simple_arg(&arg, "NH5") {
-            ctl.gen_opt.force_h5 = false;
-        } else if is_simple_arg(&arg, "H5_SLICE") {
-            ctl.gen_opt.h5_pre = false;
-        } else if is_simple_arg(&arg, "CTRLC") {
-        } else if is_simple_arg(&arg, "CELLRANGER") {
-        } else if is_simple_arg(&arg, "FORCE_EXTERNAL") {
-        } else if arg.starts_with("BINARY=") {
-            ctl.gen_opt.binary = arg.after("BINARY=").to_string();
-        } else if arg.starts_with("PROTO=") {
-            ctl.gen_opt.proto = arg.after("PROTO=").to_string();
-        } else if is_simple_arg(&arg, "PRINT_FAILED_JOINS") {
-            ctl.join_print_opt.quiet = false;
         } else if arg.starts_with("BARCODE=") {
             let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
             let mut x = Vec::<String>::new();
@@ -418,19 +548,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 x.push(bcs[j].to_string());
             }
             ctl.clono_filt_opt.barcode = x;
-        } else if is_simple_arg(&arg, "NUMI") {
-            ctl.clono_filt_opt.umi_filt = false;
-        } else if is_simple_arg(&arg, "NUMI_RATIO") {
-            ctl.clono_filt_opt.umi_ratio_filt = false;
-        } else if is_simple_arg(&arg, "MARKED_B") {
-        } else if is_simple_arg(&arg, "NWEAK_CHAINS") {
-            ctl.clono_filt_opt.weak_chains = false;
-        } else if is_simple_arg(&arg, "NWEAK_ONESIES") {
-            ctl.clono_filt_opt.weak_onesies = false;
-        } else if is_simple_arg(&arg, "NFOURSIE_KILL") {
-            ctl.clono_filt_opt.weak_foursies = false;
-        } else if is_simple_arg(&arg, "NBC_DUP") {
-            ctl.clono_filt_opt.bc_dup = false;
         } else if arg.starts_with("F=") {
             let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
@@ -483,24 +600,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
                 std::process::exit(1);
             }
-        } else if arg.starts_with("EMAIL=") {
-        } else if arg.starts_with("REF=") {
-            ctl.gen_opt.refname = arg.after("REF=").to_string();
-        } else if is_simple_arg(&arg, "NSILENT") {
-            ctl.silent = false;
         } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
             ctl.clono_filt_opt.fail_only = false;
-        } else if is_simple_arg(&arg, "NQUAL") {
-            ctl.clono_filt_opt.qual_filter = false;
-        } else if is_simple_arg(&arg, "NOPAGER") {
-        } else if arg.starts_with("POUT=") {
-            ctl.parseable_opt.pout = arg.after("POUT=").to_string();
-        } else if arg.starts_with("DONOR_REF_FILE=") {
-            ctl.gen_opt.dref_file = arg.after("DONOR_REF_FILE=").to_string();
-        } else if arg.starts_with("EXT=") {
-            ctl.gen_opt.ext = arg.after("EXT=").to_string();
-        } else if arg.starts_with("TRACE_BARCODE=") {
-            ctl.gen_opt.trace_barcode = arg.after("TRACE_BARCODE=").to_string();
         } else if is_usize_arg(&arg, "MAX_CORES") {
             let nthreads = arg.after("MAX_CORES=").force_usize();
             let _ = rayon::ThreadPoolBuilder::new()
@@ -525,8 +626,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 unique_sort(&mut ctl.parseable_opt.pcols_sort);
                 unique_sort(&mut ctl.parseable_opt.pcols_sortx);
             }
-        } else if is_simple_arg(&arg, "PLAIN") {
-        } else if is_simple_arg(&arg, "NOPRETTY") {
         } else if arg.starts_with("VJ=") {
             ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();
             for c in ctl.clono_filt_opt.vj.iter() {
@@ -604,12 +703,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-        } else if arg.starts_with("EXFASTA=") {
-            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
-        } else if arg.starts_with("FASTA=") {
-            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
-        } else if arg.starts_with("FASTA_AA=") {
-            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
         } else if arg.starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
             if !reg.is_ok() {
@@ -620,8 +713,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 std::process::exit(1);
             }
             ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
-        } else if arg.starts_with("GEX=") {
-        } else if arg.starts_with("BC=") {
         } else if is_usize_arg(&arg, "CHAINS") {
             ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
@@ -641,18 +732,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 ctl.clono_filt_opt.segn.push(x.to_string());
             }
             ctl.clono_filt_opt.segn.sort();
-        } else if arg.starts_with("PRE=") {
-        } else if is_usize_arg(&arg, "MIN_CELLS") {
-            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_CELLS") {
-            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
         } else if is_usize_arg(&arg, "CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
-        } else if is_usize_arg(&arg, "PFREQ") {
-            ctl.join_print_opt.pfreq = arg.after("PFREQ=").force_usize();
-        } else if arg.starts_with("HAPS=") {
-            // done above
         } else if arg.starts_with("META=") {
             let f = arg.after("META=");
             metas.push(f.to_string());
@@ -666,6 +748,36 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+
+    // Expand ~ and ~user in output file names.
+
+    let mut files = [
+        &mut ctl.gen_opt.plot_file,
+        &mut ctl.gen_opt.fasta_filename,
+        &mut ctl.gen_opt.fasta_aa_filename,
+        &mut ctl.gen_opt.dref_file,
+        &mut ctl.parseable_opt.pout,
+    ];
+    for f in files.iter_mut() {
+        **f = stringme(&tilde_expand(&f.as_bytes()));
+    }
+
+    // Sanity check arguments.
+
+    if ctl.clono_filt_opt.umi_filt && ctl.clono_filt_opt.umi_filt_mark {
+        eprintln!(
+            "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \
+            the filter,\nas otherwise nothing will be marked.\n"
+        );
+        std::process::exit(1);
+    }
+    if ctl.clono_filt_opt.umi_ratio_filt && ctl.clono_filt_opt.umi_ratio_filt_mark {
+        eprintln!(
+            "\nIf you use UMI_RATIO_FILT_MARK, you should also use NUMI_RATIO, to turn off \
+            the filter,\nas otherwise nothing will be marked.\n"
+        );
+        std::process::exit(1);
+    }
     check_cvars(&ctl);
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
@@ -675,6 +787,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
+    }
+    let mut alt_bcs = Vec::<String>::new();
+    for li in 0..ctl.sample_info.alt_bc_fields.len() {
+        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+        }
+    }
+    unique_sort(&mut alt_bcs);
+    for con in ctl.clono_filt_opt.fcell.iter() {
+        if !bin_member(&alt_bcs, &con.0) {
+            eprintln!(
+                "\nYou've used a variable as part of an FCELL argument that has not\n\
+                been specified using BC or bc (via META).\n"
+            );
+            std::process::exit(1);
+        }
     }
     for i in 0..ctl.sample_info.n() {
         let (mut cells_cr, mut rpc_cr) = (None, None);

@@ -1,6 +1,8 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Test a clonotype to see if it passes the filters.
+// See also enclone_core src for a list of these filters and
+// the related struct.
 
 use vdj_ann::*;
 
@@ -26,9 +28,11 @@ pub fn survives_filter(
     if n == 0 {
         return false;
     }
+    // Clonotypes with at least n cells
     if n < ctl.clono_filt_opt.ncells_low {
         return false;
     }
+    // Clonotypes marked by heuristics
     if ctl.clono_filt_opt.marked {
         let mut marked = false;
         for s in exacts.iter() {
@@ -43,6 +47,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Marked clonotypes which are also B cells by annotation
     if ctl.clono_filt_opt.marked_b {
         let mut marked_b = false;
         for s in exacts.iter() {
@@ -64,6 +69,7 @@ pub fn survives_filter(
         }
     }
     let cols = rsi.vids.len();
+    // Barcode required
     if ctl.clono_filt_opt.barcode.len() > 0 {
         let mut ok = false;
         for s in exacts.iter() {
@@ -80,6 +86,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with deletions
     if ctl.clono_filt_opt.del {
         let mut ok = false;
         for s in exacts.iter() {
@@ -94,6 +101,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with same V gene in 2 chains
     if ctl.clono_filt_opt.vdup {
         let mut dup = false;
         let mut x = rsi.vids.clone();
@@ -110,6 +118,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with constant region differences
     if ctl.clono_filt_opt.cdiff {
         let mut cdiff = false;
         for s in exacts.iter() {
@@ -134,6 +143,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with onesie exact subclonotypes
     if ctl.clono_filt_opt.have_onesie {
         let mut have = false;
         for i in 0..exacts.len() {
@@ -145,6 +155,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with full length V..J
     if !ctl.clono_filt_opt.vj.is_empty() {
         let mut have_vj = false;
         for s in exacts.iter() {
@@ -159,12 +170,15 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with no more than n cells
     if n > ctl.clono_filt_opt.ncells_high {
         return false;
     }
+    // Clonotypes with at least n chains
     if exacts.len() < ctl.clono_filt_opt.min_exacts {
         return false;
     }
+    // Clonotypes with given V gene name
     if !ctl.clono_filt_opt.seg.is_empty() {
         let mut hit = false;
         for j in 0..ctl.clono_filt_opt.seg.len() {
@@ -193,6 +207,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with given V gene number/allele
     if !ctl.clono_filt_opt.segn.is_empty() {
         let mut hit = false;
         for j in 0..ctl.clono_filt_opt.segn.len() {
@@ -221,6 +236,7 @@ pub fn survives_filter(
             return false;
         }
     }
+    // Clonotypes with at least n cells
     if mults.iter().sum::<usize>() < ctl.clono_filt_opt.ncells_low {
         return false;
     }
@@ -229,6 +245,7 @@ pub fn survives_filter(
         let ex = &exact_clonotypes[exacts[i]];
         numi = max(numi, ex.max_umi_count());
     }
+    // Clonotypes with at least n UMIs for contig
     if numi < ctl.clono_filt_opt.min_umi {
         return false;
     }
@@ -238,15 +255,19 @@ pub fn survives_filter(
         lis.append(&mut z);
     }
     unique_sort(&mut lis);
+    // Clonotypes found in at least n datasets
     if lis.len() < ctl.clono_filt_opt.min_datasets {
         return false;
     }
+    // Clonotypes in no more than n datasets
     if lis.len() > ctl.clono_filt_opt.max_datasets {
         return false;
     }
+    // Clonotypes with no more and no less than min and max chains
     if cols < ctl.clono_filt_opt.min_chains || cols > ctl.clono_filt_opt.max_chains {
         return false;
     }
+    // Clonotypes with given junction AA sequence
     if ctl.clono_filt_opt.cdr3.is_some() {
         let mut ok = false;
         for s in exacts.iter() {

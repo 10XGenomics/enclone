@@ -3,12 +3,18 @@
 // Utility for inserting html files.
 
 use io_utils::*;
+use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
 
 pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
-    let f = open_for_read![&in_file];
+    let pwd = env::current_dir().unwrap();
+    let pwd = pwd.to_str().unwrap();
+    let f = BufReader::new(File::open(&in_file).expect(&format!(
+        "In directory {}, could not open file \"{}\"",
+        pwd, &in_file
+    )));
     let mut g = open_for_write_new![&out_file];
     for line in f.lines() {
         let s = line.unwrap();

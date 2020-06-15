@@ -206,7 +206,7 @@ pub fn explore(li: usize, tig_bc: &Vec<Vec<TigData>>, ctl: &EncloneControl) {
     }
 }
 
-// Look for insertions (experimental).
+// Look for insertions (initial exploration).
 
 pub fn find_insertions(ctl: &EncloneControl, exact_clonotypes: &Vec<ExactClonotype>) {
     if ctl.gen_opt.insertions {

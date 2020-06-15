@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 82] = [
+pub const TESTS: [&str; 91] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -44,8 +44,8 @@ pub const TESTS: [&str; 82] = [
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change, and test "/outs"
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
-    // 9. tests PER_CELL
-    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
+    // 9. tests PER_CELL and unicode
+    r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,samples,donors,datasets AMINO=share
@@ -223,11 +223,43 @@ pub const TESTS: [&str; 82] = [
     // 82. test entropy
     r###"BCR=123085 GEX=123749 LVARSP=entropy PER_CELL POUT=stdouth PCELL
         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
+    // 83. test COMPLETE and dref
+    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE LVARSP=dref"###,
+    // 84. test CLUSTAL_AA
+    r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW CLUSTAL_AA=stdout"###,
+    // 85. test NALL
+    r###"BCR=86237 NALL CDR3=CARAPEDTSRWPQYNYSGLDVW SEG=IGKV3-15"###,
+    // 86. test CLUSTAL_DNA
+    r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW CLUSTAL_DNA=stdout"###,
+    // 87. test PHYLIP_AA and COLOR=codon
+    r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_AA=stdout COLOR=codon"###,
+    // 88. test PHYLIP_DNA and COLOR=default
+    r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_DNA=stdout COLOR=property"###,
+    // 89. test TREE and NEWICK
+    r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
+    // 90. test FCELL with non-null value
+    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper=yes"###,
+    // 91. test FCELL with null value
+    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
 ];
 
-pub const EXTENDED_TESTS: [&str; 1] = [
+// Test using the extended public dataset collection.
+
+pub const EXTENDED_TESTS: [&str; 2] = [
     // 1. test that used to crash on a particular barcode
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
+    // 2. tests nd2
+    r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
+     NO_PRE NFORCE"###,
+];
+
+// Tests of internal features.
+
+pub const INTERNAL_TESTS: [&str; 1] = [
+    // 1. gave wrong result
+    r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
 ];
 
 // List of examples in documentation.
@@ -241,41 +273,57 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 6] = [
+pub const SITE_EXAMPLES: [(&str, &str); 9] = [
     // 1.
     (
-        "clonotype_with_gex",
+        "pages/auto/clonotype_with_gex.html",
         "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
          HTML=\"enclone example with gex\"",
     ),
     // 2.
     (
-        "illusory1",
+        "pages/auto/illusory1.html",
         "BCR=128037,128040 NCROSS CDR3=CARGGTTTYFISW NGROUP NUMI NUMI_RATIO \
          HTML=\"illusory clonotype expansion 1\"",
     ),
     // 3.
     (
-        "illusory2",
+        "pages/auto/illusory2.html",
         "BCR=128037,128040 CDR3=CARGGTTTYFISW NGROUP NUMI NUMI_RATIO \
       HTML=\"illusory clonotype expansion 2\"",
     ),
     // 4.
     (
-        "illusory3",
+        "pages/auto/illusory3.html",
         "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW NGROUP NUMI NUMI_RATIO \
             HTML=\"illusory clonotype expansion 3\"",
     ),
     // 5.
     (
-        "illusory4",
+        "pages/auto/illusory4.html",
         "BCR=128040 GEX=127801 CDR3=CARGGTTTYFISW PER_CELL LVARSP=gex,cred MIN_CHAINS_EXACT=2 NUMI \
          NUMI_RATIO NGROUP HTML=\"illusory clonotype expansion 4\"",
     ),
     // 6.
     (
-        "illusory5",
+        "pages/auto/illusory5.html",
         "BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL NUMI NUMI_RATIO \
          LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP HTML=\"illusory clonotype expansion 5\"",
+    ),
+    // 7.
+    (
+        "img/samples.svg",
+        "BCR=123085:123089 MIN_CELLS=10 PLOT=\"stdout,s1->blue,s2->red\" NOPRINT \
+         LEGEND=blue,123085,red,123089",
+    ),
+    // 8.
+    (
+        "img/iso.svg",
+        "BCR=123085,123089 MIN_CELLS=5 MIN_CHAINS_EXACT=2 NOPRINT PLOT_BY_ISOTYPE=stdout",
+    ),
+    // 9.
+    (
+        "pages/auto/tree_example.html",
+        "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW LVARSP=dref HTML",
     ),
 ];

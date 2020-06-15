@@ -16,5 +16,5 @@ impl From<&bio::alignment::Alignment> for Alignment {
     }
 }
 
-// TODO: Donor names?
+// TODO: Donor names
 // TODO: Aggr metadata structure

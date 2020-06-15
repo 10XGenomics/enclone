@@ -19,38 +19,33 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         h.print("\\bold{  Find and display the clonotypes within single cell VDJ datasets:}\n");
         h.print("\\bold{  groups of cells having the same fully rearranged common ancestor.}\n\n");
         h.print(
-            "This help page catalogs all the enclone help pages.  We strongly \
-             recommend studying at least those in \\red{red} below.  \
-             Pages fit in 100 wide x 56 high \
-             windows, except those labeled \"long\" or \"wide\".\n\n",
-        );
-        h.print(
             "\\boldblue{enclone is part of the 10x Genomics immune profiling tools, including \
-             Cell Ranger and Loupe,}\nenclone \
-             uses output from Cell Ranger version \\boldred{≥ 3.1.}\n\n",
+             Cell Ranger and Loupe.  enclone uses output from Cell Ranger version ≥ 3.1.}\n\n\
+             The complete enclone documentation is at \\green{bit.ly/enclone}.  This page \
+             catalogs the subset of those pages that are directly accessible from the enclone \
+             command line.  These pages can be viewed in a 100 wide x 56 high window, except for \
+             those labeled \"long\" or \"wide\".\n\n",
         );
-        h.print("Please also read the online documentation at \\green{bit.ly/enclone}.\n\n");
-
         h.docpr("\\bold{command}", "\\bold{what it provides}");
-        h.ldoc_red("enclone help", "help to test for correct setup");
-        h.doc_red("enclone", "what you see here: guide to all the doc");
-        h.ldoc_red("enclone help quick", "quick guide to getting started");
-        h.doc_red("enclone help how", "how enclone works (long)");
-        h.doc_red(
+        h.ldoc("enclone help", "help to test for correct setup");
+        h.doc("enclone", "what you see here: guide to all the doc");
+        h.ldoc("enclone help quick", "quick guide to getting started");
+        h.doc("enclone help how", "how enclone works (long)");
+        h.doc(
             "enclone help command",
             "info about enclone command line argument processing",
         );
-        h.ldoc_red(
+        h.ldoc(
             "enclone help glossary",
             "glossary of terms used by enclone, and conventions",
         );
-        h.ldoc_red("enclone help example1", "explanation of an example");
-        h.doc_red(
+        h.ldoc("enclone help example1", "explanation of an example");
+        h.doc(
             "enclone help example2",
             "example showing gene expression \
              and feature barcodes (wide)",
         );
-        h.ldoc_red(
+        h.ldoc(
             "enclone help support",
             "how we can help, enclone@10xgenomics.com",
         );
@@ -63,10 +58,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "how to provide input to enclone (technical notes)",
         );
         h.doc("enclone help parseable", "parseable output (long)");
-        h.doc(
-            "enclone help plot",
-            "generate a honeycomb plot showing clonotypes",
-        );
         h.ldoc(
             "enclone help filter",
             "clonotype filtering options, scanning for feature enrichment (long)",
@@ -83,10 +74,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         h.ldoc(
             "enclone help color",
             "how enclone uses color, and related things",
-        );
-        h.doc(
-            "enclone help ideas",
-            "ideas for features that might be implemented",
         );
         h.doc("enclone help faq", "frequently asked questions (long)");
         h.doc("enclone help developer", "a few things for developers");
