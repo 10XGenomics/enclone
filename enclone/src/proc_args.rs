@@ -788,9 +788,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+    ctl.perf_stats(&targs, "in main args loop");
 
     // Expand ~ and ~user in output file names.
 
+    let t = Instant::now();
     let mut files = [
         &mut ctl.gen_opt.plot_file,
         &mut ctl.gen_opt.fasta_filename,
@@ -957,7 +959,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    ctl.perf_stats(&targs, "processing args");
+    ctl.perf_stats(&t, "after main args loop");
     proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.
