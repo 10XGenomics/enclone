@@ -666,6 +666,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "mirror_sparse_matrix",
+ "perf_stats",
  "prost",
  "prost-build",
  "regex",

@@ -213,9 +213,6 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     // run of enclone.
 
     if ctl.comp {
-        if !ctl.comp2 {
-            println!("");
-        }
         println!("used {:.2} seconds in proc_args_tail", elapsed(&tall));
     }
 }

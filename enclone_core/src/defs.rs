@@ -3,9 +3,11 @@
 use debruijn::dna_string::*;
 use hdf5::Dataset;
 use mirror_sparse_matrix::*;
+use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -542,6 +544,19 @@ pub struct EncloneControl {
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
     pub parseable_opt: ParseableOpt,      // parseable output options
     pub toy: bool,                        // toy with phylogeny
+}
+
+impl EncloneControl {
+    pub fn perf_stats(&self, t: &Instant, msg: &str) {
+        if self.comp {
+            println!(
+                "used {:.2} seconds {}, peak mem = {:.2} GB",
+                elapsed(&t),
+                msg,
+                peak_mem_usage_gb()
+            );
+        }
+    }
 }
 
 // Set up data structure to track clonotype data.  A TigData is for one contig;

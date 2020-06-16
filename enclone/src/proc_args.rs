@@ -7,7 +7,6 @@ use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -21,6 +20,7 @@ use vector_utils::*;
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Knobs.
 
+    let targs = Instant::now();
     let heur = ClonotypeHeuristics {
         max_diffs: 50,
         ref_v_trim: 15,
@@ -31,7 +31,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Form the combined set of command-line arguments and "command-line" arguments
     // implied by environment variables.
 
-    let targs = Instant::now();
     let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
@@ -958,9 +957,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    if ctl.comp2 {
-        println!("\n-- used {:.2} seconds processing args", elapsed(&targs));
-    }
+    ctl.perf_stats(&targs, "processing args");
     proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.

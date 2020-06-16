@@ -33,7 +33,6 @@ use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use regex::Regex;
@@ -72,6 +71,7 @@ fn binomial_sum(n: usize, k: usize, p: f64) -> f64 {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
+    let t = Instant::now();
     // Provide help if requested.
 
     {
@@ -245,6 +245,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             setup_pager(!nopager);
         }
     }
+    ctl.perf_stats(&t, "in first part of setup");
 
     // Process args (and set defaults for them).
 
@@ -272,6 +273,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
+    let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
             print_cpu = true;
@@ -279,6 +281,15 @@ pub fn main_enclone(args: &Vec<String>) {
         if args[i] == "PRINT_CPU_INFO" {
             print_cpu_info = true;
         }
+        if args[i] == "COMP" {
+            comp = true;
+        }
+        if args[i] == "COMP2" {
+            comp2 = true;
+        }
+    }
+    if comp && !comp2 {
+        println!("");
     }
     let (mut cpu_all_start, mut cpu_this_start) = (0, 0);
     if print_cpu || print_cpu_info {
@@ -300,6 +311,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     let mut ctl = EncloneControl::default();
+    ctl.perf_stats(&tall, "before setup");
     setup(&mut ctl, &args);
 
     // Read external data.
@@ -330,7 +342,10 @@ pub fn main_enclone(args: &Vec<String>) {
     // has to occur after loading GEX data.  This could also occur after loading only
     // the feature list, which would be better.
 
+    let tgex = Instant::now();
     let gex_info = get_gex_info(&mut ctl);
+    ctl.perf_stats(&tgex, "getting gex info");
+    let twoof = Instant::now();
     check_lvars(&ctl, &gex_info);
     check_pcols(&ctl, &gex_info);
 
@@ -443,12 +458,14 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
+    ctl.perf_stats(&twoof, "doing miscellaneous stuff");
 
     // Determine the Cell Ranger version that was used.  To do this, we take the first dataset,
     // and if it has a version line in its annotations json file, we set the version from that.
     // In addition, for internal runs, or if either CURRENT_REF or CELLRANGER was specified on
     // the command line, we set the version to 4.0.
 
+    let tr = Instant::now();
     let ann;
     if !ctl.gen_opt.cellranger {
         ann = "all_contig_annotations.json";
@@ -506,7 +523,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Find the VDJ reference.
 
-    let tr = Instant::now();
     let mut refdata = RefData::new();
     let mut refx = String::new();
     if ctl.gen_opt.refname.len() > 0 {
@@ -665,19 +681,7 @@ pub fn main_enclone(args: &Vec<String>) {
     for i in 0..refdata.refs.len() {
         to_ref_index.insert(refdata.id[i] as usize, i);
     }
-    if ctl.comp {
-        println!(
-            "used {:.2} seconds building reference, peak mem = {:.2} GB",
-            elapsed(&tr),
-            peak_mem_usage_gb()
-        );
-    }
-    if ctl.comp {
-        println!(
-            "used {:.2} seconds up through building reference",
-            elapsed(&tall)
-        );
-    }
+    ctl.perf_stats(&tr, "building reference and other things");
 
     // Parse the json annotations file.
 
@@ -796,9 +800,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Look for barcode reuse.
 
     check_for_barcode_reuse(&ctl, &tig_bc);
-    if ctl.comp {
-        println!("used {:.2} seconds in proto stuff", elapsed(&tproto));
-    }
+    ctl.perf_stats(&tproto, "in proto stuff");
 
     // Find exact subclonotypes.
 
@@ -833,9 +835,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
         erase_if(&mut exact_clonotypes, &to_delete);
-        if ctl.comp {
-            println!("used {:.2} seconds filtering foursies", elapsed(&t));
-        }
+        ctl.perf_stats(&t, "filtering foursies");
     }
 
     // Look for insertions (experimental).
@@ -886,9 +886,7 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     let tdonor = Instant::now();
     let drefs = make_donor_refs(&alt_refs, &refdata);
-    if ctl.comp {
-        println!("used {:.2} seconds making donor refs", elapsed(&tdonor));
-    }
+    ctl.perf_stats(&tdonor, "making donor refs");
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 
@@ -1285,9 +1283,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         orbits = orbits2;
     }
-    if ctl.comp {
-        println!("used {:.2} seconds umi filtering and such", elapsed(&tumi));
-    }
+    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Check for disjoint orbits.  This is an incomplete test.
 
@@ -1393,12 +1389,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut tests,
         &mut controls,
     );
-    if ctl.comp {
-        if !ctl.gen_opt.noprint {
-            println!("");
-        }
-        println!("used {:.2} seconds making orbits", elapsed(&torb));
-    }
+    ctl.perf_stats(&torb, "making orbits");
 
     // Tail code.
 
@@ -1423,13 +1414,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Report computational performance.
 
-    if ctl.comp {
-        println!(
-            "\nused {:.2} seconds total, peak mem = {:.2} GB",
-            elapsed(&tall),
-            peak_mem_usage_gb()
-        );
-    }
+    ctl.perf_stats(&tall, "total");
 
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if print_cpu || print_cpu_info {

@@ -21,7 +21,6 @@ enclone = { path = "../enclone" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "*"
 itertools = "*"
-perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 pretty_trace = "*"
 rayon = "*"
 regex = "*"
@@ -43,6 +42,7 @@ ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 failure = "*"
 flate2 = "*"
+perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 rayon = "*"
 
 [features]
