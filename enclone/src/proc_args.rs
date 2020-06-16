@@ -6,6 +6,7 @@ use crate::proc_args_check::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
+use itertools::Itertools;
 use perf_stats::*;
 use regex::Regex;
 use std::fs::File;
@@ -178,11 +179,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if ctl.gen_opt.internal_run {
         for i in 1..args.len() {
             if args[i].starts_with("BI=") {
-                let n = args[i].after("BI=");
-                if n != "m1" {
-                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
-                        eprintln!("\nBI=n only works if 1 <= n <= 13, or n = m1.\n");
-                        std::process::exit(1);
+                let x = args[i].after("BI=").split(',').collect::<Vec<&str>>();
+                let mut y = Vec::<String>::new();
+                for j in 0..x.len() {
+                    if x[j].contains('-') {
+                        let (start, stop) = (x[j].before("-"), x[j].after("-"));
+                        if !start.parse::<usize>().is_ok()
+                            || !stop.parse::<usize>().is_ok()
+                            || start.force_usize() > stop.force_usize()
+                        {
+                            eprintln!("\nIllegal range in BI argument.\n");
+                            std::process::exit(1);
+                        }
+                        let (start, stop) = (start.force_usize(), stop.force_usize());
+                        for j in start..stop {
+                            y.push(format!("{}", j));
+                        }
+                    } else {
+                        y.push(x[j].to_string());
                     }
                 }
                 let mut args2 = Vec::<String>::new();
@@ -190,25 +204,45 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     args2.push(args[j].clone());
                 }
                 let f = include_str!["enclone.testdata.bcr.gex"];
-                let mut found = false;
-                for s in f.lines() {
-                    if s == format!("DONOR={}", n) {
-                        found = true;
-                    } else if found && s.starts_with("DONOR=") {
-                        break;
+                let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
+                for n in y.iter() {
+                    if *n != "m1" {
+                        if !n.parse::<usize>().is_ok()
+                            || n.force_usize() < 1
+                            || n.force_usize() > 13
+                        {
+                            eprintln!(
+                                "\nBI only works for values n with if 1 <= n <= 13, or n = m1.\n"
+                            );
+                            std::process::exit(1);
+                        }
+                    } else if y.len() > 1 {
+                        eprintln!("\nFor BI, if you specify m1, you can only specify m1.\n");
+                        std::process::exit(1);
                     }
-                    if found {
-                        if s.starts_with("BCR=") || s.starts_with("GEX=") {
-                            args2.push(s.to_string());
+                    let mut found = false;
+                    for s in f.lines() {
+                        if s == format!("DONOR={}", n) {
+                            found = true;
+                        } else if found && s.starts_with("DONOR=") {
+                            break;
                         }
-                        if s.starts_with("GEX=") {
-                            gex = s.after("GEX=").to_string();
-                        }
-                        if s == "SPECIES=mouse" {
-                            args2.push("MOUSE".to_string());
+                        if found {
+                            if s.starts_with("BCR=") {
+                                bcrv.push(s.after("BCR=").to_string());
+                            }
+                            if s.starts_with("GEX=") {
+                                gexv.push(s.after("GEX=").to_string());
+                            }
+                            if s == "SPECIES=mouse" {
+                                args2.push("MOUSE".to_string());
+                            }
                         }
                     }
                 }
+                args2.push(format!("BCR={}", bcrv.iter().format(";")));
+                args2.push(format!("GEX={}", gexv.iter().format(";")));
+                gex = format!("{}", gexv.iter().format(";"));
                 for j in i + 1..args.len() {
                     args2.push(args[j].clone());
                 }
