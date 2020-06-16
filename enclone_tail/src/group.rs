@@ -785,7 +785,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate experimental tree output (options NEWICK0 and TREE).
 
-            if ctl.gen_opt.newick || ctl.gen_opt.tree {
+            if ctl.gen_opt.newick || ctl.gen_opt.tree != "".to_string() {
                 // Compute the n x n distance matrix for the exact subclonotypes.
 
                 let n = exacts[oo].len();
@@ -909,7 +909,7 @@ pub fn group_and_print_clonotypes(
 
                 // Output as visual tree.
 
-                if ctl.gen_opt.tree {
+                if ctl.gen_opt.tree != "".to_string() {
                     let mut edges = Vec::<(usize, usize, f64)>::new();
                     let mut nvert = 0;
                     for i in 0..tree.len() {
@@ -928,16 +928,31 @@ pub fn group_and_print_clonotypes(
                                 len = edges[j].2;
                             }
                         }
+                        let mut c = String::new();
+                        if i > 0 && i <= n && ctl.gen_opt.tree == "const".to_string() {
+                            let ex = &exact_clonotypes[exacts[oo][i - 1]];
+                            let mut h = Vec::<String>::new();
+                            for m in 0..ex.share.len() {
+                                if ex.share[m].left {
+                                    if ex.share[m].c_ref_id.is_none() {
+                                        h.push("?".to_string());
+                                    } else {
+                                        h.push(refdata.name[ex.share[m].c_ref_id.unwrap()].clone());
+                                    }
+                                }
+                            }
+                            c = format!(",{}", h.iter().format("+"));
+                        }
                         if i == 0 {
                             vnames.push("•".to_string());
                         } else if i <= n {
                             if ctl.pretty {
-                                vnames.push(format!("[01m[31m{}[0m [{:.2}]", i, len));
+                                vnames.push(format!("[01m[31m{}[0m [{:.2}{}]", i, len, c));
                             } else {
-                                vnames.push(format!("{} [{:.2}]", i, len));
+                                vnames.push(format!("{} [{:.2}{}]", i, len, c));
                             }
                         } else {
-                            vnames.push(format!("• [{:.2}]", len));
+                            vnames.push(format!("• [{:.2}{}]", len, c));
                         }
                     }
 

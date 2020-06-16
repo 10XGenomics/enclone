@@ -345,7 +345,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("SUMMARY_CLEAN", &mut ctl.gen_opt.summary_clean),
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         ("TOY", &mut ctl.toy),
-        ("TREE", &mut ctl.gen_opt.tree),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
@@ -553,6 +552,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
                 std::process::exit(1);
             }
+        } else if arg == "TREE" {
+            ctl.gen_opt.tree = ".".to_string();
+        } else if arg == "TREE=const" {
+            ctl.gen_opt.tree = "const".to_string();
         } else if arg.starts_with("FCELL=") {
             let body = arg.after("FCELL=");
             if !body.contains('=') {

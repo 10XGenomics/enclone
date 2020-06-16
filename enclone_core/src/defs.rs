@@ -393,7 +393,7 @@ pub struct GeneralOpt {
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick: bool,
-    pub tree: bool,
+    pub tree: String,
     pub allow_inconsistent: bool,
     pub color: String,
 }
