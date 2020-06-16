@@ -192,7 +192,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                             std::process::exit(1);
                         }
                         let (start, stop) = (start.force_usize(), stop.force_usize());
-                        for j in start..stop {
+                        for j in start..=stop {
                             y.push(format!("{}", j));
                         }
                     } else {
