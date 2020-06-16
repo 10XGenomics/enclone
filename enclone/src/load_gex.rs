@@ -13,6 +13,7 @@ use std::{
     collections::HashMap,
     fs::{remove_file, File},
     io::{BufRead, BufReader},
+    time::Instant,
 };
 use string_utils::*;
 use vector_utils::*;
@@ -411,6 +412,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
     let mut have_gex = false;
     let mut have_fb = false;
+    let t = Instant::now();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -426,6 +428,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut have_gex,
         &mut have_fb,
     );
+    ctl.perf_stats(&t, "in load_gex");
+    let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
@@ -508,6 +512,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             }
         }
     }
+    ctl.perf_stats(&t, "after load_gex");
 
     // Answer.
 

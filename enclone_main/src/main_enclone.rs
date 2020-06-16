@@ -342,9 +342,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // has to occur after loading GEX data.  This could also occur after loading only
     // the feature list, which would be better.
 
-    let tgex = Instant::now();
     let gex_info = get_gex_info(&mut ctl);
-    ctl.perf_stats(&tgex, "getting gex info");
     let twoof = Instant::now();
     check_lvars(&ctl, &gex_info);
     check_pcols(&ctl, &gex_info);
