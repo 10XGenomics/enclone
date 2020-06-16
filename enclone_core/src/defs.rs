@@ -434,6 +434,7 @@ pub struct JoinAlgOpt {
     pub easy: bool,          // make joins even if core condition violated
     pub merge_onesies: bool, // create and merge onesies where completely unambiguous
     pub bcjoin: bool,        // join only by barcode identity
+    pub max_cdr3_diffs: usize,
 }
 
 // Clonotype filtering options.

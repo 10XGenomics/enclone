@@ -265,7 +265,8 @@ from the given CDR3 sequences by at most the number of observed differences".  M
 if cd is the number of differences between the given CDR3 nucleotide sequences, and n is the total
 length in nucleotides of the CDR3 sequences (for the two chains), we compute the total number N of
 strings of length n that are obtainable by perturbing a given string of length n, which is
-sum( choose(n,m), m = 0..=cd) ).
+sum( choose(n,m), m = 0..=cd) ).  We also require that cd is at most 10 (and this bound is
+adjustable via the command-line argument <span style="font-weight:bold;">MAX_CDR3_DIFFS</span>).
 
 <span style="color:#c23621;font-weight:bold;">10</span>.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
 few CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, and the

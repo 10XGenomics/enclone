@@ -120,6 +120,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.join_alg_opt.max_score = 1_000_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
+    ctl.join_alg_opt.max_cdr3_diffs = 10;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -375,6 +376,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
+        ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
         ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
