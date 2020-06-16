@@ -35,7 +35,7 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
 ) {
-    // let comp = ctl.comp;
+    let t = Instant::now();
     let mut results = Vec::<(
         usize,
         Vec<String>,
@@ -358,9 +358,11 @@ pub fn load_gex(
         }
         unique_sort(&mut r.6);
     });
+    ctl.perf_stats(&t, "in load_gex main loop");
 
     // Set have_gex and have_fb.
 
+    let t = Instant::now();
     for i in 0..results.len() {
         if results[i].4.is_some() {
             *have_gex = true;
@@ -393,6 +395,7 @@ pub fn load_gex(
         pca.push(results[i].9.clone());
         cell_type_specified.push(results[i].10);
     }
+    ctl.perf_stats(&t, "in load_gex tail");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -412,7 +415,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut gex_cell_barcodes = Vec::<Vec<String>>::new();
     let mut have_gex = false;
     let mut have_fb = false;
-    let t = Instant::now();
     load_gex(
         &mut ctl,
         &mut gex_features,
@@ -428,7 +430,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut have_gex,
         &mut have_fb,
     );
-    ctl.perf_stats(&t, "in load_gex");
     let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
