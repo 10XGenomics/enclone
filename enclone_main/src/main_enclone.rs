@@ -444,7 +444,10 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    // Determine the Cell Ranger version that was used.
+    // Determine the Cell Ranger version that was used.  To do this, we take the first dataset,
+    // and if it has a version line in its annotations json file, we set the version from that.
+    // In addition, for internal runs, or if either CURRENT_REF or CELLRANGER was specified on
+    // the command line, we set the version to 4.0.
 
     let ann;
     if !ctl.gen_opt.cellranger {
