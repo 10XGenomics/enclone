@@ -758,20 +758,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
         } else if arg.starts_with("SEG=") {
             let fields = arg.after("SEG=").split('|').collect::<Vec<&str>>();
+            let mut y = Vec::<String>::new();
             for x in fields.iter() {
-                ctl.clono_filt_opt.seg.push(x.to_string());
+                y.push(x.to_string());
             }
-            ctl.clono_filt_opt.seg.sort();
+            y.sort();
+            ctl.clono_filt_opt.seg.push(y);
         } else if arg.starts_with("SEGN=") {
             let fields = arg.after("SEGN=").split('|').collect::<Vec<&str>>();
+            let mut y = Vec::<String>::new();
             for x in fields.iter() {
                 if !x.parse::<i32>().is_ok() {
                     eprintln!("\nInvalid argument to SEGN.\n");
                     std::process::exit(1);
                 }
-                ctl.clono_filt_opt.segn.push(x.to_string());
+                y.push(x.to_string());
             }
-            ctl.clono_filt_opt.segn.sort();
+            y.sort();
+            ctl.clono_filt_opt.segn.push(y);
         } else if is_usize_arg(&arg, "CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
@@ -806,6 +810,31 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Sanity check arguments.
 
+    if ctl.gen_opt.clustal_aa != "".to_string() && ctl.gen_opt.clustal_aa != "stdout".to_string() {
+        if !ctl.gen_opt.clustal_aa.ends_with(".tar") {
+            eprintln!("\nIf the value of CLUSTAL_AA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.clustal_dna != "".to_string() && ctl.gen_opt.clustal_dna != "stdout".to_string()
+    {
+        if !ctl.gen_opt.clustal_dna.ends_with(".tar") {
+            eprintln!("\nIf the value of CLUSTAL_DNA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.phylip_aa != "".to_string() && ctl.gen_opt.phylip_aa != "stdout".to_string() {
+        if !ctl.gen_opt.phylip_aa.ends_with(".tar") {
+            eprintln!("\nIf the value of PHYLIP_AA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.phylip_dna != "".to_string() && ctl.gen_opt.phylip_dna != "stdout".to_string() {
+        if !ctl.gen_opt.phylip_dna.ends_with(".tar") {
+            eprintln!("\nIf the value of PHYLIP_DNA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
     if ctl.clono_filt_opt.umi_filt && ctl.clono_filt_opt.umi_filt_mark {
         eprintln!(
             "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \

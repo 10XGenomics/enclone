@@ -34,6 +34,8 @@ scanning for feature enrichment.
 │SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers│
 │                     │  both: looks for V, D, J and C segments; double quote only            │
 │                     │  needed if n > 1                                                      │
+│                     │  For both SEG and SEGN, multiple instances are allowed, and their     │
+│                     │  effects are cumulative.                                              │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes           │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────┤

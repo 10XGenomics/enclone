@@ -455,8 +455,8 @@ pub struct ClonoFiltOpt {
     pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
     pub protect_bads: bool,  // protect bads from deletion
     pub fail_only: bool,     // only print fails
-    pub seg: Vec<String>,    // only show clonotypes using one of these VDJ segment names
-    pub segn: Vec<String>,   // only show clonotypes using one of these VDJ segment numbers
+    pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
+    pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
     pub vj: Vec<u8>,         // only show clonotypes having exactly this full length V..J sequence
     pub vdup: bool,          // only show clonotypes having a same V segment in two chains

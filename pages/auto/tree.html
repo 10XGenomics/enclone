@@ -145,7 +145,8 @@ method 1, except that it outputs the resulting tree in
 <p><b>Method 3.</b>
 This method is invoked using the argument <code>CLUSTAL_DNA=filename</code> or
 <code>CLUSTAL_AA=filename</code>, where 
-<code>filename</code> can be <code>stdout</code>.  It does not generate a tree, but instead
+<code>filename</code> can be <code>stdout</code>, and otherwise must have the extension
+".tar".  It does not generate a tree, but instead
 generates a <code>CLUSTALW</code> alignment for each clonotype (using either bases or 
 amino acids), with one sequence for each exact subclonotype.
 This sequence is the concatenation of the per-chain sequences, with the appropriate number
