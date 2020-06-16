@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 97] = [
+pub const TESTS: [&str; 98] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -255,6 +255,9 @@ pub const TESTS: [&str; 97] = [
     r###"BCR=123085 CDR3=CARDQNFDESSGYDAFDIW MAX_SCORE=1"###,
     // 97. test MAX_CDR3_DIFFS
     r###"BCR=123085 CDR3=CARESVVGLLPIFDYW MAX_CDR3_DIFFS=1"###,
+    // 98. test reduced stringency D alignment
+    // (RE can be removed once cellranger rerun)
+    r###"TCR=101287 CDR3=CASSPAGTSGKVWGTDTQYF RE"###,
 ];
 
 // Test using the extended public dataset collection.
