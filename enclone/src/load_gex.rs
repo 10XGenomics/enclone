@@ -68,6 +68,11 @@ pub fn load_gex(
     // Here and in other places, where an error message can be printed in a parallel loop, it
     // would be better if the thread could use a global lock to prevent multiple threads from
     // issuing an error message.
+    //
+    // A lot of time is spent in this parallel loop.  Some things are known about this:
+    // 1. When running it over a large number of datasets, the observed load average is ~2, so
+    //    somehow the parallelism is not working.
+    // 2. We know where the time is spent in the loop, and this is marked below.
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
@@ -162,7 +167,8 @@ pub fn load_gex(
                 remove_file(&bin_file).unwrap();
             }
 
-            // Read barcodes and features from the h5 file.
+            // Read barcodes from the h5 file.  About half the total time for the parallel loop
+            // is spent here.
 
             let h = hdf5::File::open(&h5_path).unwrap();
             let barcode_loc = h.dataset("matrix/barcodes").unwrap();
@@ -170,6 +176,10 @@ pub fn load_gex(
             for i in 0..barcodes.len() {
                 r.2.push(barcodes[i].to_string());
             }
+
+            // Read features from the h5 file.  Roughly, the other half of the total time for the
+            // parallel loop is spent here.
+
             let feature_id_loc = h.dataset("matrix/features/id").unwrap();
             let feature_ids: Vec<FixedAscii<[u8; 256]>> =
                 feature_id_loc.as_reader().read_raw().unwrap();
