@@ -2,7 +2,7 @@
 // This set of functions writes a protobuf data structure that
 // Loupe uses to access clonotype data.
 
-use crate::proto_io::write_proto;
+use enclone_proto::proto_io::write_proto;
 use vdj_ann::*;
 
 use self::refx::*;
@@ -11,7 +11,7 @@ use bio::alignment::pairwise::*;
 
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use io_utils::*;
 use vector_utils::*;
 

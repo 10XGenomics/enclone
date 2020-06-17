@@ -9,7 +9,7 @@ use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
 use stats_utils::*;

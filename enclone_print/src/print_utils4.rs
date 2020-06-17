@@ -3,7 +3,7 @@
 use amino::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use equiv::EquivRel;
 use itertools::Itertools;
 use std::cmp::max;
