@@ -467,6 +467,9 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut h5_data = Vec::<Option<Dataset>>::new();
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
+
+    // About half the time for the ambient timed section is spent in this loop.
+
     if ctl.gen_opt.h5 {
         let gex_outs = &ctl.sample_info.gex_path;
         for i in 0..ctl.sample_info.dataset_path.len() {
@@ -492,26 +495,42 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             }
         }
     }
+
+    // About half the time for the ambient timed section is spent in the following code.
+    // Actually less than half after parallelizing it.
+    // This would be faster if we weren't copying data at the end.
+
     let mut feature_id = vec![HashMap::<String, usize>::new(); gex_features.len()];
+    let mut results = vec![(0, HashMap::<String, usize>::new()); gex_features.len()];
     for i in 0..gex_features.len() {
+        results[i].0 = i;
+    }
+    results.par_iter_mut().for_each(|r| {
+        let i = r.0;
         for j in 0..gex_features[i].len() {
             let f = &gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
             for z in 0..2 {
                 if ff[2].starts_with(&"Antibody") {
-                    feature_id[i].insert(format!("{}_ab", ff[z]), j);
+                    r.1.insert(format!("{}_ab", ff[z]), j);
                 } else if ff[2].starts_with(&"Antigen") {
-                    feature_id[i].insert(format!("{}_ag", ff[z]), j);
+                    r.1.insert(format!("{}_ag", ff[z]), j);
                 } else if ff[2].starts_with(&"CRISPR") {
-                    feature_id[i].insert(format!("{}_cr", ff[z]), j);
+                    r.1.insert(format!("{}_cr", ff[z]), j);
                 } else if ff[2].starts_with(&"CUSTOM") {
-                    feature_id[i].insert(format!("{}_cu", ff[z]), j);
+                    r.1.insert(format!("{}_cu", ff[z]), j);
                 } else if ff[2].starts_with(&"Gene") {
-                    feature_id[i].insert(format!("{}_g", ff[z]), j);
+                    r.1.insert(format!("{}_g", ff[z]), j);
                 }
             }
         }
+    });
+    for i in 0..gex_features.len() {
+        feature_id[i] = results[i].1.clone();
     }
+
+    // Last part: fast.
+
     let mut is_gex = Vec::<Vec<bool>>::new();
     for i in 0..gex_features.len() {
         is_gex.push(vec![false; gex_features[i].len()]);
