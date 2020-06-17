@@ -337,16 +337,7 @@ pub fn load_gex(
             // Read the binary matrix file if appropriate.
 
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
-                // let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
-            /*
-            if comp {
-                println!(
-                    "-- used {:.2} seconds reading feature_barcode_matrix.bin",
-                    elapsed(&t)
-                );
-            }
-            */
 
             // Or else construct it from the h5 if appropriate.
             } else if !ctl.gen_opt.h5 {
@@ -467,13 +458,11 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut h5_data = Vec::<Option<Dataset>>::new();
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
-
-    // Very roughly 80% for the ambient timed section is spent in this loop.
-
     if ctl.gen_opt.h5 {
         let gex_outs = &ctl.sample_info.gex_path;
         for i in 0..ctl.sample_info.dataset_path.len() {
-            if gex_outs[i].len() > 0 {
+            let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
+            if gex_outs[i].len() > 0 && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) {
                 let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
