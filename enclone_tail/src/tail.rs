@@ -5,7 +5,7 @@
 use crate::group::*;
 use crate::plot::*;
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use io_utils::*;
 use ndarray::s;
 use rayon::prelude::*;

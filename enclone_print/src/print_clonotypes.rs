@@ -13,7 +13,7 @@ use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::HashMap;

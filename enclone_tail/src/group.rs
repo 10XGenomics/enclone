@@ -9,7 +9,7 @@ use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::*;

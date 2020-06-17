@@ -667,8 +667,6 @@ dependencies = [
  "io_utils",
  "mirror_sparse_matrix",
  "perf_stats",
- "prost",
- "prost-build",
  "regex",
  "serde",
  "serde_derive",
@@ -699,6 +697,7 @@ dependencies = [
  "enclone_core",
  "enclone_help",
  "enclone_print",
+ "enclone_proto",
  "enclone_tail",
  "equiv",
  "failure",
@@ -728,9 +727,9 @@ dependencies = [
  "bio 0.29.0",
  "byteorder",
  "bytes 0.4.12",
- "chrono",
  "debruijn",
  "enclone_core",
+ "enclone_proto",
  "equiv",
  "failure",
  "hdf5",
@@ -741,8 +740,6 @@ dependencies = [
  "perf_stats",
  "permutation",
  "pretty_trace",
- "prost",
- "prost-build",
  "rayon",
  "serde",
  "serde_derive",
@@ -755,6 +752,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_proto"
+version = "0.4.0"
+dependencies = [
+ "bio 0.29.0",
+ "byteorder",
+ "bytes 0.4.12",
+ "enclone_core",
+ "failure",
+ "prost",
+ "prost-build",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
 name = "enclone_tail"
 version = "0.4.0"
 dependencies = [
@@ -762,6 +774,7 @@ dependencies = [
  "ansi_escape",
  "debruijn",
  "enclone_core",
+ "enclone_proto",
  "equiv",
  "hdf5",
  "io_utils",
