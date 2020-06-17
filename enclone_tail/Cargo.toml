@@ -17,6 +17,7 @@ amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 enclone_core = { path = "../enclone_core" }
+enclone_proto = { path = "../enclone_proto" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 io_utils = "*"
 itertools = "*"

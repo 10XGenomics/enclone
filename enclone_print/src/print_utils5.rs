@@ -1,7 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use enclone_core::defs::*;
-use enclone_core::types::*;
+use enclone_proto::types::*;
 use itertools::*;
 use std::cmp::max;
 use std::collections::HashMap;

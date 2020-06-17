@@ -8,7 +8,6 @@ extern crate chrono;
 extern crate string_utils;
 
 use chrono::prelude::*;
-use prost_build::Config;
 use std::env::consts::{ARCH, OS};
 use std::process::Command;
 use string_utils::*;
@@ -19,10 +18,6 @@ const BUILD_TYPE: &'static str = "debug";
 const BUILD_TYPE: &'static str = "release";
 
 fn main() {
-    let mut config = Config::new();
-    config.type_attribute(".", "#[derive(::serde::Serialize, ::serde::Deserialize)]");
-    config.compile_protos(&["types.proto"], &["."]).unwrap();
-
     let version_string = format!(
         "{} : {}{} : {} : {} : {} : {}",
         get_branch_name(),
