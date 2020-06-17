@@ -13,7 +13,6 @@ use std::{
     collections::HashMap,
     fs::{remove_file, File},
     io::{BufRead, BufReader},
-    mem::swap,
     time::Instant,
 };
 use string_utils::*;
@@ -374,57 +373,30 @@ pub fn load_gex(
         }
     }
 
-    // Save results.  We do this using swaps to avoid cloning.  This saves a lot of time.
+    // Save results.  This avoids cloning, which saves a lot of time.
 
-    for i in 0..results.len() {
-        // gex_features.push(results[i].1.clone()); // replaced by code that doesn't clone:
-        let mut x = Vec::<String>::new();
-        swap(&mut x, &mut results[i].1);
-        gex_features.push(x);
-
-        // gex_barcodes.push(results[i].2.clone()); // replaced by code that doesn't clone:
-        let mut x = Vec::<String>::new();
-        swap(&mut x, &mut results[i].2);
-        gex_barcodes.push(x);
-
-        // gex_matrices.push(results[i].3.clone()); // replaced by code that doesn't clone:
-        let mut x = MirrorSparseMatrix::new();
-        swap(&mut x, &mut results[i].3);
-        gex_matrices.push(x);
-
+    let n = results.len();
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)) in
+        results.into_iter().take(n).enumerate()
+    {
+        gex_features.push(x1);
+        gex_barcodes.push(x2);
+        gex_matrices.push(x3);
         let mut gex_mult = 1.0;
-        if results[i].4.is_some() {
-            gex_mult = results[i].4.unwrap();
+        if x4.is_some() {
+            gex_mult = x4.unwrap();
         }
-
         gex_mults.push(gex_mult);
         let mut fb_mult = 1.0;
-        if results[i].5.is_some() {
-            fb_mult = results[i].5.unwrap();
+        if x5.is_some() {
+            fb_mult = x5.unwrap();
         }
         fb_mults.push(fb_mult);
-
-        // gex_cell_barcodes.push(results[i].6.clone()); // replaced by code that doesn't clone:
-        let mut x = Vec::<String>::new();
-        swap(&mut x, &mut results[i].6);
-        gex_cell_barcodes.push(x);
-
-        // cluster.push(results[i].7.clone()); // replaced by code that doesn't clone:
-        let mut x = HashMap::<String, usize>::new();
-        swap(&mut x, &mut results[i].7);
-        cluster.push(x);
-
-        // cell_type.push(results[i].8.clone()); // replaced by code that doesn't clone:
-        let mut x = HashMap::<String, String>::new();
-        swap(&mut x, &mut results[i].8);
-        cell_type.push(x);
-
-        // pca.push(results[i].9.clone()); // replaced by code that doesn't clone:
-        let mut x = HashMap::<String, Vec<f64>>::new();
-        swap(&mut x, &mut results[i].9);
-        pca.push(x);
-
-        cell_type_specified.push(results[i].10);
+        gex_cell_barcodes.push(x6);
+        cluster.push(x7);
+        cell_type.push(x8);
+        pca.push(x9);
+        cell_type_specified.push(x10);
     }
     ctl.perf_stats(&t, "in load_gex tail");
 }
