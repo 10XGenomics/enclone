@@ -13,6 +13,7 @@ use std::{
     collections::HashMap,
     fs::{remove_file, File},
     io::{BufRead, BufReader},
+    time::Instant,
 };
 use string_utils::*;
 use vector_utils::*;
@@ -34,7 +35,7 @@ pub fn load_gex(
     have_gex: &mut bool,
     have_fb: &mut bool,
 ) {
-    // let comp = ctl.comp;
+    let t = Instant::now();
     let mut results = Vec::<(
         usize,
         Vec<String>,
@@ -67,6 +68,11 @@ pub fn load_gex(
     // Here and in other places, where an error message can be printed in a parallel loop, it
     // would be better if the thread could use a global lock to prevent multiple threads from
     // issuing an error message.
+    //
+    // A lot of time is spent in this parallel loop.  Some things are known about this:
+    // 1. When running it over a large number of datasets, the observed load average is ~2, so
+    //    somehow the parallelism is not working.
+    // 2. We know where the time is spent in the loop, and this is marked below.
     results.par_iter_mut().for_each(|r| {
         let i = r.0;
         if gex_outs[i].len() > 0 {
@@ -161,7 +167,8 @@ pub fn load_gex(
                 remove_file(&bin_file).unwrap();
             }
 
-            // Read barcodes and features from the h5 file.
+            // Read barcodes from the h5 file.  About half the total time for the parallel loop
+            // is spent here.
 
             let h = hdf5::File::open(&h5_path).unwrap();
             let barcode_loc = h.dataset("matrix/barcodes").unwrap();
@@ -169,6 +176,10 @@ pub fn load_gex(
             for i in 0..barcodes.len() {
                 r.2.push(barcodes[i].to_string());
             }
+
+            // Read features from the h5 file.  Roughly, the other half of the total time for the
+            // parallel loop is spent here.
+
             let feature_id_loc = h.dataset("matrix/features/id").unwrap();
             let feature_ids: Vec<FixedAscii<[u8; 256]>> =
                 feature_id_loc.as_reader().read_raw().unwrap();
@@ -326,16 +337,7 @@ pub fn load_gex(
             // Read the binary matrix file if appropriate.
 
             if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
-                // let t = Instant::now();
                 read_from_file(&mut r.3, &bin_file);
-            /*
-            if comp {
-                println!(
-                    "-- used {:.2} seconds reading feature_barcode_matrix.bin",
-                    elapsed(&t)
-                );
-            }
-            */
 
             // Or else construct it from the h5 if appropriate.
             } else if !ctl.gen_opt.h5 {
@@ -357,9 +359,11 @@ pub fn load_gex(
         }
         unique_sort(&mut r.6);
     });
+    ctl.perf_stats(&t, "in load_gex main loop");
 
     // Set have_gex and have_fb.
 
+    let t = Instant::now();
     for i in 0..results.len() {
         if results[i].4.is_some() {
             *have_gex = true;
@@ -369,29 +373,32 @@ pub fn load_gex(
         }
     }
 
-    // Save results.
+    // Save results.  This avoids cloning, which saves a lot of time.
 
-    for i in 0..results.len() {
-        // All this cloning seems pointless and inefficient.
-        gex_features.push(results[i].1.clone());
-        gex_barcodes.push(results[i].2.clone());
-        gex_matrices.push(results[i].3.clone());
+    let n = results.len();
+    for (_i, (_x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)) in
+        results.into_iter().take(n).enumerate()
+    {
+        gex_features.push(x1);
+        gex_barcodes.push(x2);
+        gex_matrices.push(x3);
         let mut gex_mult = 1.0;
-        if results[i].4.is_some() {
-            gex_mult = results[i].4.unwrap();
+        if x4.is_some() {
+            gex_mult = x4.unwrap();
         }
         gex_mults.push(gex_mult);
         let mut fb_mult = 1.0;
-        if results[i].5.is_some() {
-            fb_mult = results[i].5.unwrap();
+        if x5.is_some() {
+            fb_mult = x5.unwrap();
         }
         fb_mults.push(fb_mult);
-        gex_cell_barcodes.push(results[i].6.clone());
-        cluster.push(results[i].7.clone());
-        cell_type.push(results[i].8.clone());
-        pca.push(results[i].9.clone());
-        cell_type_specified.push(results[i].10);
+        gex_cell_barcodes.push(x6);
+        cluster.push(x7);
+        cell_type.push(x8);
+        pca.push(x9);
+        cell_type_specified.push(x10);
     }
+    ctl.perf_stats(&t, "in load_gex tail");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -426,6 +433,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
         &mut have_gex,
         &mut have_fb,
     );
+    let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.accept_inconsistent {
         let mut allf = gex_features.clone();
         unique_sort(&mut allf);
@@ -455,7 +463,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     if ctl.gen_opt.h5 {
         let gex_outs = &ctl.sample_info.gex_path;
         for i in 0..ctl.sample_info.dataset_path.len() {
-            if gex_outs[i].len() > 0 {
+            let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
+            if gex_outs[i].len() > 0 && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) {
                 let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
@@ -477,26 +486,32 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             }
         }
     }
-    let mut feature_id = vec![HashMap::<String, usize>::new(); gex_features.len()];
-    for i in 0..gex_features.len() {
-        for j in 0..gex_features[i].len() {
-            let f = &gex_features[i][j];
+    fn compute_feature_id(gex_features: &Vec<String>) -> HashMap<String, usize> {
+        let mut x = HashMap::<String, usize>::new();
+        for j in 0..gex_features.len() {
+            let f = &gex_features[j];
             let ff = f.split('\t').collect::<Vec<&str>>();
             for z in 0..2 {
                 if ff[2].starts_with(&"Antibody") {
-                    feature_id[i].insert(format!("{}_ab", ff[z]), j);
+                    x.insert(format!("{}_ab", ff[z]), j);
                 } else if ff[2].starts_with(&"Antigen") {
-                    feature_id[i].insert(format!("{}_ag", ff[z]), j);
+                    x.insert(format!("{}_ag", ff[z]), j);
                 } else if ff[2].starts_with(&"CRISPR") {
-                    feature_id[i].insert(format!("{}_cr", ff[z]), j);
+                    x.insert(format!("{}_cr", ff[z]), j);
                 } else if ff[2].starts_with(&"CUSTOM") {
-                    feature_id[i].insert(format!("{}_cu", ff[z]), j);
+                    x.insert(format!("{}_cu", ff[z]), j);
                 } else if ff[2].starts_with(&"Gene") {
-                    feature_id[i].insert(format!("{}_g", ff[z]), j);
+                    x.insert(format!("{}_g", ff[z]), j);
                 }
             }
         }
+        x
     }
+    let n = gex_features.len();
+    let pi = (0..n).into_par_iter();
+    let mut feature_id = Vec::<HashMap<String, usize>>::new();
+    pi.map(|i| compute_feature_id(&gex_features[i]))
+        .collect_into_vec(&mut feature_id);
     let mut is_gex = Vec::<Vec<bool>>::new();
     for i in 0..gex_features.len() {
         is_gex.push(vec![false; gex_features[i].len()]);
@@ -508,6 +523,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             }
         }
     }
+    ctl.perf_stats(&t, "after load_gex");
 
     // Answer.
 

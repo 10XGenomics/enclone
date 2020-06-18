@@ -179,25 +179,25 @@ pub fn survives_filter(
         return false;
     }
     // Clonotypes with given V gene name
-    if !ctl.clono_filt_opt.seg.is_empty() {
+    for i in 0..ctl.clono_filt_opt.seg.len() {
         let mut hit = false;
-        for j in 0..ctl.clono_filt_opt.seg.len() {
+        for j in 0..ctl.clono_filt_opt.seg[i].len() {
             for cx in 0..cols {
-                if refdata.name[rsi.vids[cx]] == ctl.clono_filt_opt.seg[j] {
+                if refdata.name[rsi.vids[cx]] == ctl.clono_filt_opt.seg[i][j] {
                     hit = true;
                 }
                 let did = rsi.dids[cx];
                 if did.is_some() {
                     let did = did.unwrap();
-                    if refdata.name[did] == ctl.clono_filt_opt.seg[j] {
+                    if refdata.name[did] == ctl.clono_filt_opt.seg[i][j] {
                         hit = true;
                     }
                 }
-                if refdata.name[rsi.jids[cx]] == ctl.clono_filt_opt.seg[j] {
+                if refdata.name[rsi.jids[cx]] == ctl.clono_filt_opt.seg[i][j] {
                     hit = true;
                 }
                 if rsi.cids[cx].is_some() {
-                    if refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.seg[j] {
+                    if refdata.name[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.seg[i][j] {
                         hit = true;
                     }
                 }
@@ -208,25 +208,27 @@ pub fn survives_filter(
         }
     }
     // Clonotypes with given V gene number/allele
-    if !ctl.clono_filt_opt.segn.is_empty() {
+    for i in 0..ctl.clono_filt_opt.segn.len() {
         let mut hit = false;
-        for j in 0..ctl.clono_filt_opt.segn.len() {
+        for j in 0..ctl.clono_filt_opt.segn[i].len() {
             for cx in 0..cols {
-                if refdata.id[rsi.vids[cx]] == ctl.clono_filt_opt.segn[j].force_i32() {
+                if refdata.id[rsi.vids[cx]] == ctl.clono_filt_opt.segn[i][j].force_i32() {
                     hit = true;
                 }
                 let did = rsi.dids[cx];
                 if did.is_some() {
                     let did = did.unwrap();
-                    if refdata.id[did] == ctl.clono_filt_opt.segn[j].force_i32() {
+                    if refdata.id[did] == ctl.clono_filt_opt.segn[i][j].force_i32() {
                         hit = true;
                     }
                 }
-                if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.segn[j].force_i32() {
+                if refdata.id[rsi.jids[cx]] == ctl.clono_filt_opt.segn[i][j].force_i32() {
                     hit = true;
                 }
                 if rsi.cids[cx].is_some() {
-                    if refdata.id[rsi.cids[cx].unwrap()] == ctl.clono_filt_opt.segn[j].force_i32() {
+                    if refdata.id[rsi.cids[cx].unwrap()]
+                        == ctl.clono_filt_opt.segn[i][j].force_i32()
+                    {
                         hit = true;
                     }
                 }

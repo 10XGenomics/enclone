@@ -30,7 +30,6 @@ Optional arguments controlling logging for alternate alleles:
 - CON_TRACE: tracing for CON.
 
 Optional arguments that control the joining algorithm:
-- MAX_SCORE: to document
 - MIN_MULT: to document
 - MIN_ALT: to document
 - EASY: do not impose special condition on two cell joins

@@ -3,9 +3,11 @@
 use debruijn::dna_string::*;
 use hdf5::Dataset;
 use mirror_sparse_matrix::*;
+use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -391,7 +393,7 @@ pub struct GeneralOpt {
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick: bool,
-    pub tree: bool,
+    pub tree: String,
     pub allow_inconsistent: bool,
     pub color: String,
 }
@@ -432,6 +434,7 @@ pub struct JoinAlgOpt {
     pub easy: bool,          // make joins even if core condition violated
     pub merge_onesies: bool, // create and merge onesies where completely unambiguous
     pub bcjoin: bool,        // join only by barcode identity
+    pub max_cdr3_diffs: usize,
 }
 
 // Clonotype filtering options.
@@ -453,8 +456,8 @@ pub struct ClonoFiltOpt {
     pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
     pub protect_bads: bool,  // protect bads from deletion
     pub fail_only: bool,     // only print fails
-    pub seg: Vec<String>,    // only show clonotypes using one of these VDJ segment names
-    pub segn: Vec<String>,   // only show clonotypes using one of these VDJ segment numbers
+    pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
+    pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
     pub vj: Vec<u8>,         // only show clonotypes having exactly this full length V..J sequence
     pub vdup: bool,          // only show clonotypes having a same V segment in two chains
@@ -542,6 +545,19 @@ pub struct EncloneControl {
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
     pub parseable_opt: ParseableOpt,      // parseable output options
     pub toy: bool,                        // toy with phylogeny
+}
+
+impl EncloneControl {
+    pub fn perf_stats(&self, t: &Instant, msg: &str) {
+        if self.comp {
+            println!(
+                "used {:.2} seconds {}, peak mem = {:.2} GB",
+                elapsed(&t),
+                msg,
+                peak_mem_usage_gb()
+            );
+        }
+    }
 }
 
 // Set up data structure to track clonotype data.  A TigData is for one contig;

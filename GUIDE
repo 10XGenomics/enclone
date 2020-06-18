@@ -6,6 +6,7 @@ enclone_core       core definitions, etc.
 enclone_help       help menus from the command line
 enclone            most of the code up to "printing"
 enclone_print      prints clonotypes in the sense of creating the "pictures" (much of core logic)
+enclone_proto      stuff for communicating with Loupe, and reused for other purposes
 enclone_tail       last part of the code
 enclone_versions   just set crate versions
 
