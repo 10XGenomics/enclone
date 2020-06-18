@@ -258,6 +258,8 @@ pub fn make_loupe_clonotype(
         chains: xchains,
         exact_clonotypes: ecl,
         frequency: n as u32,
+        // TODO: The iNKT/MAIT Annotation goes here
+        invariant_tcell: None,
     }
 }
 

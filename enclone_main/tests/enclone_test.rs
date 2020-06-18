@@ -1226,8 +1226,12 @@ fn test_enclone_prebuild() {
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
     let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
-    let binary_arg = format!("BINARY={}.bin", LOUPE_OUT_FILENAME);
-    let proto_arg = format!("PROTO={}.proto", LOUPE_OUT_FILENAME);
+
+    let bin_file = format!("{}.binary", LOUPE_OUT_FILENAME);
+    let proto_file = format!("{}.proto", LOUPE_OUT_FILENAME);
+
+    let binary_arg = format!("BINARY={}", bin_file);
+    let proto_arg = format!("PROTO={}", proto_file);
     for t in tests.iter() {
         // FIXME: It would be nicer to use the enclone API here
         std::process::Command::new(env!("CARGO_BIN_EXE_enclone"))
@@ -1238,14 +1242,13 @@ fn test_proto_write() -> Result<(), Error> {
         // Test to make sure output is unchanged.
 
         let oldx = format!("test/inputs/{}.binary.gz", t.after("="));
-        let newx = format!("{}.bin", LOUPE_OUT_FILENAME);
         let mut f = File::open(&oldx)?;
         let mut oldbufgz = Vec::<u8>::new();
         f.read_to_end(&mut oldbufgz)?;
         let mut gz = GzDecoder::new(&oldbufgz[..]);
         let mut oldbuf = Vec::<u8>::new();
         gz.read_to_end(&mut oldbuf)?;
-        let mut f = File::open(&newx)?;
+        let mut f = File::open(&bin_file)?;
         let mut newbuf = Vec::<u8>::new();
         f.read_to_end(&mut newbuf)?;
         if oldbuf != newbuf {
@@ -1259,10 +1262,10 @@ fn test_proto_write() -> Result<(), Error> {
 
         // Test to make sure proto and bin are consistent.
 
-        let outputs_proto = read_proto(format!("{}.proto", LOUPE_OUT_FILENAME))?;
-        let outputs_bin: EncloneOutputs = io_utils::read_obj(format!("{}.bin", LOUPE_OUT_FILENAME));
-        std::fs::remove_file(format!("{}.proto", LOUPE_OUT_FILENAME))?;
-        std::fs::remove_file(format!("{}.bin", LOUPE_OUT_FILENAME))?;
+        let outputs_proto = read_proto(&proto_file)?;
+        let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
+        std::fs::remove_file(&proto_file)?;
+        std::fs::remove_file(&bin_file)?;
         assert!(outputs_proto == outputs_bin);
     }
 
