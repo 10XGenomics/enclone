@@ -11,12 +11,39 @@ enum Region {
     C = 4; // Constant region
 }
 
+
+// iNKT and MAIT cell types
+enum InvariantTCellType {
+    INKT = 0; // invariant natural killer T cells
+    MAIT = 1; // mucosal associated invariant T cells
+}
+
+// The amount of evidence we have about a single chain on whether the cell is iNKT/MAIT
+enum InvariantTCellEvidence {
+    GeneMatch = 0; // Matches the expected V/J genes
+    JunctionMatch = 1; // Matches the V/J genes and the CDR3
+}
+
+// iNKT/MAIT annotation details
+message InvariantTCellAnnotation {
+    required InvariantTCellType cell_type = 1;
+    // What level of evidence do we have in the alpha chain. None indicates either the chain is
+    // missing or there is no match to the expected genes.
+    optional InvariantTCellEvidence alpha_chain_evidence = 2;
+    // What level of evidence do we have in the beta chain. None indicates either the chain is
+    // missing or there is no match to the expected genes.
+    optional InvariantTCellEvidence beta_chain_evidence = 3;
+    // Total score for the evidence across both chains with a score of 1 for GeneMatch
+    // and 2 for JunctionMatch
+    required uint32 evidence_score = 4;
+}
+
 // Representation of an alignment
 message Alignment {
-	// Start of the alignment in the reference
+    // Start of the alignment in the reference
     required uint32 ref_start = 1;
-	// Cigar string
-	required string cigar = 2;
+    // Cigar string
+    required string cigar = 2;
 }
 
 // Defines a chain within an exact subclonotype.
@@ -68,9 +95,9 @@ message ExactSubClonotypeChain {
 // in the clonotype. This structure stores the exact subclonotype chain along with the
 // `index` of the corresponding chain in the parent clonotype.
 message ExactSubClonotypeChainInfo {
-	// The index of this chain in the parent clonotype
-	required uint32 index = 1;
-	required ExactSubClonotypeChain chain = 2;
+    // The index of this chain in the parent clonotype
+    required uint32 index = 1;
+    required ExactSubClonotypeChain chain = 2;
 }
 
 // Define an exact subclonotype.
@@ -181,6 +208,10 @@ message Clonotype {
     // summing up the number of barcodes within each exact subclonotype, but it is stored here for
     // convenience.
     required uint32 frequency = 3;
+    // For a T cell, optionally annotate the clonotype as one of iNKT/MAIT. This data structure
+    // stores the details about the annotation as well as the evidence we have about the
+    // annotation.
+    optional InvariantTCellAnnotation invariant_tcell = 4;
 }
 
 // A single donor reference sequence and metadata packaged in a convenient struct. In the
