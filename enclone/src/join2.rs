@@ -59,7 +59,7 @@ pub fn finish_join(
     }
     if !ctl.silent {
         println!("{} joins", joins);
-        if ctl.sample_info.donors > 1 {
+        if ctl.origin_info.donors > 1 {
             println!("{} errors", errors);
         }
     }

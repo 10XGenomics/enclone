@@ -183,7 +183,7 @@ pub fn row_fill(
     unique_sort(&mut dataset_indices);
     let mut lenas = Vec::<String>::new();
     for l in dataset_indices.iter() {
-        lenas.push(ctl.sample_info.dataset_id[*l].clone());
+        lenas.push(ctl.origin_info.dataset_id[*l].clone());
     }
     row.push("".to_string()); // row number (#), filled in below
     let mut counts = Vec::<usize>::new();
@@ -365,9 +365,9 @@ pub fn row_fill(
         }
     }
     let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.sample_info.alt_bc_fields.len() {
-        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+    for li in 0..ctl.origin_info.alt_bc_fields.len() {
+        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);
@@ -376,19 +376,19 @@ pub fn row_fill(
         if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
             let d = x.after("g").force_usize();
             lvar![i, x, format!("{}", groups[&d][u] + 1)];
-        } else if x == "samples" {
-            let mut samples = Vec::<String>::new();
+        } else if x == "origins" {
+            let mut origins = Vec::<String>::new();
             for j in 0..ex.clones.len() {
-                if ex.clones[j][0].sample_index.is_some() {
-                    samples.push(
-                        ctl.sample_info.sample_id[ex.clones[j][0].sample_index.unwrap()].clone(),
+                if ex.clones[j][0].origin_index.is_some() {
+                    origins.push(
+                        ctl.origin_info.origin_id[ex.clones[j][0].origin_index.unwrap()].clone(),
                     );
                 } else {
-                    samples.push("?".to_string());
+                    origins.push("?".to_string());
                 }
             }
-            unique_sort(&mut samples);
-            lvar![i, x, format!("{}", samples.iter().format(","))];
+            unique_sort(&mut origins);
+            lvar![i, x, format!("{}", origins.iter().format(","))];
         } else if x == "datasets" {
             lvar![i, x, format!("{}", lenas.iter().format(","))];
         } else if x == "donors" {
@@ -396,7 +396,7 @@ pub fn row_fill(
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].donor_index.is_some() {
                     donors.push(
-                        ctl.sample_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone(),
+                        ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone(),
                     );
                 } else {
                     donors.push("?".to_string());
@@ -426,7 +426,7 @@ pub fn row_fill(
             for j in 0..ex.clones.len() {
                 let mut found = false;
                 let di = ex.clones[j][0].dataset_index;
-                let f = format!("n_{}", ctl.sample_info.dataset_id[di]);
+                let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
                 for i in 0..nd_fields.len() {
                     if f == nd_fields[i] {
                         found = true;
@@ -519,7 +519,7 @@ pub fn row_fill(
                     let li = ex.clones[l][0].dataset_index;
                     let bc = ex.clones[l][0].barcode.clone();
                     let mut val = String::new();
-                    let alt = &ctl.sample_info.alt_bc_fields[li];
+                    let alt = &ctl.origin_info.alt_bc_fields[li];
                     for j in 0..alt.len() {
                         if alt[j].0 == *x {
                             if alt[j].1.contains_key(&bc.clone()) {
@@ -537,21 +537,21 @@ pub fn row_fill(
             let mut counts = Vec::<f64>::new();
             for j in 0..ex.clones.len() {
                 let x = &ex.clones[j][0];
-                if ctl.sample_info.dataset_id[x.dataset_index] == name {
+                if ctl.origin_info.dataset_id[x.dataset_index] == name {
                     count += 1;
                     counts.push(1.0);
-                } else if x.sample_index.is_some()
-                    && ctl.sample_info.sample_list[x.sample_index.unwrap()] == name
+                } else if x.origin_index.is_some()
+                    && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
                 {
                     count += 1;
                     counts.push(1.0);
                 } else if x.donor_index.is_some()
-                    && ctl.sample_info.donor_list[x.donor_index.unwrap()] == name
+                    && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
                 {
                     count += 1;
                     counts.push(1.0);
                 } else if x.tag_index.is_some()
-                    && ctl.sample_info.tag_list[x.tag_index.unwrap()] == name
+                    && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
                 {
                     count += 1;
                     counts.push(1.0);
@@ -665,7 +665,7 @@ pub fn row_fill(
         } else if x == "ext" {
             let mut exts = Vec::<String>::new();
             for l in 0..ex.clones.len() {
-                let li = ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone();
+                let li = ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone();
                 let bc = ex.clones[l][0].barcode.clone();
                 if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
                     exts.push(ctl.gen_opt.extc[&(li, bc)].clone());

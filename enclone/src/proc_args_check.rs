@@ -182,37 +182,37 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             if x.starts_with("n_") {
                 n_var = true;
                 let mut is_dataset_name = false;
-                let mut is_sample_name = false;
+                let mut is_origin_name = false;
                 let mut is_donor_name = false;
                 let mut is_tag_name = false;
                 let name = x.after("n_").to_string();
-                let s = ctl.sample_info.n();
+                let s = ctl.origin_info.n();
                 for j in 0..s {
-                    if ctl.sample_info.dataset_id[j] == name {
+                    if ctl.origin_info.dataset_id[j] == name {
                         is_dataset_name = true;
                     }
                 }
-                for j in 0..ctl.sample_info.sample_list.len() {
-                    if ctl.sample_info.sample_list[j] == name {
-                        is_sample_name = true;
+                for j in 0..ctl.origin_info.origin_list.len() {
+                    if ctl.origin_info.origin_list[j] == name {
+                        is_origin_name = true;
                     }
                 }
-                for j in 0..ctl.sample_info.donor_list.len() {
-                    if ctl.sample_info.donor_list[j] == name {
+                for j in 0..ctl.origin_info.donor_list.len() {
+                    if ctl.origin_info.donor_list[j] == name {
                         is_donor_name = true;
                     }
                 }
-                for j in 0..ctl.sample_info.tag_list.len() {
-                    if ctl.sample_info.tag_list[j] == name {
+                for j in 0..ctl.origin_info.tag_list.len() {
+                    if ctl.origin_info.tag_list[j] == name {
                         is_tag_name = true;
                     }
                 }
                 let msg = "\nSuggested reading: \"enclone help input\" and \
                            \"enclone help glossary\".\n";
-                if !is_dataset_name && !is_sample_name && !is_donor_name && !is_tag_name {
+                if !is_dataset_name && !is_origin_name && !is_donor_name && !is_tag_name {
                     eprintln!(
                         "\nYou've used the {} variable {}, and yet {} \
-                         does not name a dataset, nor a sample,\nnor a donor, nor a tag.\n{}",
+                         does not name a dataset, nor an origin,\nnor a donor, nor a tag.\n{}",
                         category, x, name, msg
                     );
                     std::process::exit(1);
@@ -221,7 +221,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 if is_dataset_name {
                     types += 1;
                 }
-                if is_sample_name {
+                if is_origin_name {
                     types += 1;
                 }
                 if is_donor_name {
@@ -230,18 +230,18 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 if is_tag_name {
                     types += 1;
                 }
-                if is_dataset_name && is_sample_name && is_donor_name {
+                if is_dataset_name && is_origin_name && is_donor_name {
                     eprintln!(
                         "\nYou've used the {} variable {}, and yet {} \
-                         names a dataset, a sample, and a donor.  That's ambiguous.\n{}",
+                         names a dataset, an origin, and a donor.  That's ambiguous.\n{}",
                         category, x, name, msg
                     );
                     std::process::exit(1);
                 }
-                if is_dataset_name && is_sample_name {
+                if is_dataset_name && is_origin_name {
                     eprintln!(
                         "\nYou've used the {} variable {}, and yet {} \
-                         names a dataset and a sample.  That's ambiguous.\n{}",
+                         names a dataset and an origin.  That's ambiguous.\n{}",
                         category, x, name, msg
                     );
                     std::process::exit(1);
@@ -254,10 +254,10 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                     );
                     std::process::exit(1);
                 }
-                if is_sample_name && is_donor_name {
+                if is_origin_name && is_donor_name {
                     eprintln!(
                         "\nYou've used the {} variable {}, and yet {} \
-                         names a sample and a donor.  That's ambiguous.\n{}",
+                         names an origin and a donor.  That's ambiguous.\n{}",
                         category, x, name, msg
                     );
                     std::process::exit(1);
@@ -265,7 +265,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 if types != 1 {
                     eprintln!(
                         "\nYou've used the {} variable {}, and yet {} \
-                         names a tag and also a dataset, sample or donor.\n\
+                         names a tag and also a dataset, origin or donor.\n\
                          That's ambiguous.\n{}",
                         category, x, name, msg
                     );
@@ -298,9 +298,9 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
 
 pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.sample_info.alt_bc_fields.len() {
-        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+    for li in 0..ctl.origin_info.alt_bc_fields.len() {
+        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);
@@ -316,7 +316,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
                 ok = true;
             }
         }
-        for y in ctl.sample_info.dataset_list.iter() {
+        for y in ctl.origin_info.dataset_list.iter() {
             if *x == format!("{}_barcodes", y) {
                 ok = true;
             }
@@ -325,7 +325,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             if *x == "barcode" {
                 ok = true;
             }
-            for y in ctl.sample_info.dataset_list.iter() {
+            for y in ctl.origin_info.dataset_list.iter() {
                 if *x == format!("{}_barcode", y) {
                     ok = true;
                 }
@@ -458,9 +458,9 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
 
         // Check alt_bc_fields.
 
-        for li in 0..ctl.sample_info.alt_bc_fields.len() {
-            for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-                if ctl.sample_info.alt_bc_fields[li][i].0 == *x {
+        for li in 0..ctl.origin_info.alt_bc_fields.len() {
+            for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+                if ctl.origin_info.alt_bc_fields[li][i].0 == *x {
                     continue 'main_loop;
                 }
             }
