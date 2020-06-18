@@ -963,7 +963,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut origin_for_bc = Vec::<String>::new();
     let mut donor_for_bc = Vec::<String>::new();
     for i in 0..ctl.origin_info.n() {
-        for x in ctl.sample_info.origin_for_bc[i].iter() {
+        for x in ctl.origin_info.origin_for_bc[i].iter() {
             origins.push(x.1.clone());
             origin_for_bc.push(x.1.clone());
         }
