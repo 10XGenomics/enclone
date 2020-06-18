@@ -274,10 +274,10 @@ impl LinearCondition {
     }
 }
 
-// Sample info data structure.
+// Origin info data structure.
 
 #[derive(Default)]
-pub struct SampleInfo {
+pub struct OriginInfo {
     // parallel vectors
     pub descrips: Vec<String>,     // map dataset index to dataset long name
     pub dataset_path: Vec<String>, // map dataset index to vdj path
@@ -305,7 +305,7 @@ pub struct SampleInfo {
     pub mean_read_pairs_per_cell_cellranger: Vec<Option<usize>>,
 }
 
-impl SampleInfo {
+impl OriginInfo {
     // number of datasets
     pub fn n(&self) -> usize {
         self.dataset_path.len()
