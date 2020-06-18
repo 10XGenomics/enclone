@@ -425,7 +425,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              >= or ≥ or < or <= or ≤.  \
              Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
              represents a \
-             sample/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
+             origin/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
              condition, each vi is \
              replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \

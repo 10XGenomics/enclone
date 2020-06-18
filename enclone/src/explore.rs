@@ -37,7 +37,7 @@ pub fn explore(li: usize, tig_bc: &Vec<Vec<TigData>>, ctl: &EncloneControl) {
                 if s - r > 1 {
                     // if only one barcode, should save but not analyze
                     let mut log = Vec::<u8>::new();
-                    fwriteln!(log, "lena = {}", ctl.sample_info.dataset_id[li]);
+                    fwriteln!(log, "lena = {}", ctl.origin_info.dataset_id[li]);
                     fwriteln!(log, "there are {} barcodes", s - r);
 
                     // printme!( r, s ); // YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY

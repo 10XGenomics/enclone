@@ -275,7 +275,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
 // Parse barcode-level information file.
 
 fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
-    let mut sample_for_bc = HashMap::<String, String>::new();
+    let mut origin_for_bc = HashMap::<String, String>::new();
     let mut donor_for_bc = HashMap::<String, String>::new();
     let mut tag = HashMap::<String, String>::new();
     let mut barcode_color = HashMap::<String, String>::new();
@@ -286,7 +286,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
         let mut barcode_pos = 0;
-        let (mut sample_pos, mut donor_pos, mut tag_pos, mut color_pos) = (None, None, None, None);
+        let (mut origin_pos, mut donor_pos, mut tag_pos, mut color_pos) = (None, None, None, None);
         let mut to_alt = Vec::<isize>::new();
         for line in f.lines() {
             let s = line.unwrap();
@@ -310,8 +310,8 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                 for i in 0..fields.len() {
                     if fields[i] == "barcode" {
                         barcode_pos = i;
-                    } else if fields[i] == "sample" {
-                        sample_pos = Some(i);
+                    } else if fields[i] == "origin" {
+                        origin_pos = Some(i);
                     } else if fields[i] == "donor" {
                         donor_pos = Some(i);
                     } else if fields[i] == "tag" {
@@ -364,10 +364,10 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     );
                     std::process::exit(1);
                 }
-                if sample_pos.is_some() {
-                    sample_for_bc.insert(
+                if origin_pos.is_some() {
+                    origin_for_bc.insert(
                         fields[barcode_pos].to_string(),
-                        fields[sample_pos.unwrap()].to_string(),
+                        fields[origin_pos.unwrap()].to_string(),
                     );
                 }
                 if donor_pos.is_some() {
@@ -390,17 +390,17 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
             }
         }
     }
-    ctl.sample_info.sample_for_bc.push(sample_for_bc);
-    ctl.sample_info.donor_for_bc.push(donor_for_bc);
-    ctl.sample_info.tag.push(tag);
-    ctl.sample_info.barcode_color.push(barcode_color);
-    ctl.sample_info.alt_bc_fields.push(alt_bc_fields);
+    ctl.origin_info.origin_for_bc.push(origin_for_bc);
+    ctl.origin_info.donor_for_bc.push(donor_for_bc);
+    ctl.origin_info.tag.push(tag);
+    ctl.origin_info.barcode_color.push(barcode_color);
+    ctl.origin_info.alt_bc_fields.push(alt_bc_fields);
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut EncloneControl) {
-    ctl.sample_info = SampleInfo::default();
+    ctl.origin_info = OriginInfo::default();
     if (ctl.gen_opt.tcr && f.starts_with("BCR=")) || (ctl.gen_opt.bcr && f.starts_with("TCR=")) {
         eprintln!("\nOnly one of TCR or BCR can be specified.\n");
         std::process::exit(1);
@@ -459,28 +459,28 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         std::process::exit(1);
     }
     for (id, d) in donor_groups.iter().enumerate() {
-        let sample_groups = (*d).split(':').collect::<Vec<&str>>();
-        let mut sample_groups_gex = Vec::<&str>::new();
+        let origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        let mut origin_groups_gex = Vec::<&str>::new();
         if have_gex {
-            sample_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
-            if sample_groups_gex.len() != sample_groups.len() {
+            origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+            if origin_groups_gex.len() != origin_groups.len() {
                 eprintln!(
-                    "\nFor donor {}, there are {} {} sample groups and {} GEX sample groups, so \
+                    "\nFor donor {}, there are {} {} origin groups and {} GEX origin groups, so \
                      the {} and GEX arguments do not exactly mirror each \
                      other's structure.\n",
                     id + 1,
                     xcr,
-                    sample_groups.len(),
-                    sample_groups_gex.len(),
+                    origin_groups.len(),
+                    origin_groups_gex.len(),
                     xcr
                 );
                 std::process::exit(1);
             }
         }
-        let mut sample_groups_bc = Vec::<&str>::new();
+        let mut origin_groups_bc = Vec::<&str>::new();
         if !bc.is_empty() {
-            sample_groups_bc = donor_groups_bc[id].split(':').collect::<Vec<&str>>();
-            if sample_groups_bc.len() != sample_groups.len() {
+            origin_groups_bc = donor_groups_bc[id].split(':').collect::<Vec<&str>>();
+            if origin_groups_bc.len() != origin_groups.len() {
                 eprintln!(
                     "\nThe {} and BC arguments do not exactly mirror each \
                      other's structure.\n",
@@ -489,7 +489,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 std::process::exit(1);
             }
         }
-        for (is, s) in sample_groups.iter().enumerate() {
+        for (is, s) in origin_groups.iter().enumerate() {
             let datasets = (*s).split(',').collect::<Vec<&str>>();
             let mut datasets_gex = Vec::<&str>::new();
             let mut datasets_bc = Vec::<&str>::new();
@@ -499,7 +499,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 datasetsx.push(datasets[i].to_string());
             }
             if have_gex {
-                datasets_gex = sample_groups_gex[is].split(',').collect::<Vec<&str>>();
+                datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
                 if datasets_gex.len() != datasetsx.len() {
                     eprintln!(
                         "\nSee {} {} datasets and {} GEX datasets, so \
@@ -514,7 +514,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 }
             }
             if !bc.is_empty() {
-                datasets_bc = sample_groups_bc[is].split(',').collect::<Vec<&str>>();
+                datasets_bc = origin_groups_bc[is].split(',').collect::<Vec<&str>>();
                 if datasets_bc.len() != datasetsx.len() {
                     eprintln!(
                         "\nThe {} and BC arguments do not exactly mirror each \
@@ -553,19 +553,19 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 // OK everything worked, all set.
 
                 let donor_name = format!("d{}", id + 1);
-                let sample_name = format!("s{}", is + 1);
+                let origin_name = format!("s{}", is + 1);
                 let mut dataset_name = (*x).to_string();
                 if dataset_name.contains('/') {
                     dataset_name = dataset_name.rev_after("/").to_string();
                 }
-                ctl.sample_info.descrips.push(dataset_name.clone());
-                ctl.sample_info.dataset_path.push(p);
-                ctl.sample_info.gex_path.push(pg);
-                ctl.sample_info.dataset_id.push(dataset_name.clone());
-                ctl.sample_info.donor_id.push(donor_name);
-                ctl.sample_info.color.push("".to_string());
-                ctl.sample_info.sample_id.push(sample_name);
-                ctl.sample_info.tag.push(HashMap::<String, String>::new());
+                ctl.origin_info.descrips.push(dataset_name.clone());
+                ctl.origin_info.dataset_path.push(p);
+                ctl.origin_info.gex_path.push(pg);
+                ctl.origin_info.dataset_id.push(dataset_name.clone());
+                ctl.origin_info.donor_id.push(donor_name);
+                ctl.origin_info.color.push("".to_string());
+                ctl.origin_info.origin_id.push(origin_name);
+                ctl.origin_info.tag.push(HashMap::<String, String>::new());
             }
         }
     }
@@ -612,7 +612,7 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
                 "bcr".to_string(),
                 "donor".to_string(),
                 "gex".to_string(),
-                "sample".to_string(),
+                "origin".to_string(),
                 "tcr".to_string(),
                 "color".to_string(),
             ];
@@ -655,7 +655,7 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             let mut path = String::new();
             let mut abbr = String::new();
             let mut gpath = String::new();
-            let mut sample = "s1".to_string();
+            let mut origin = "s1".to_string();
             let mut donor = "d1".to_string();
             let mut color = "".to_string();
             let mut bc = "".to_string();
@@ -679,8 +679,8 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
                     }
                 } else if *x == "gex" {
                     gpath = y.to_string();
-                } else if *x == "sample" {
-                    sample = y.to_string();
+                } else if *x == "origin" {
+                    origin = y.to_string();
                 } else if *x == "donor" {
                     donor = y.to_string();
                 } else if *x == "color" {
@@ -707,13 +707,13 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             if dp.is_none() {
                 donors.push(donor.clone());
             }
-            ctl.sample_info.descrips.push(abbr.clone());
-            ctl.sample_info.dataset_path.push(path);
-            ctl.sample_info.gex_path.push(gpath);
-            ctl.sample_info.dataset_id.push(abbr);
-            ctl.sample_info.donor_id.push(donor);
-            ctl.sample_info.sample_id.push(sample);
-            ctl.sample_info.color.push(color);
+            ctl.origin_info.descrips.push(abbr.clone());
+            ctl.origin_info.dataset_path.push(path);
+            ctl.origin_info.gex_path.push(gpath);
+            ctl.origin_info.dataset_id.push(abbr);
+            ctl.origin_info.donor_id.push(donor);
+            ctl.origin_info.origin_id.push(origin);
+            ctl.origin_info.color.push(color);
         }
     }
 }
