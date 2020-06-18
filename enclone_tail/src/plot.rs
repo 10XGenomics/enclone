@@ -292,7 +292,7 @@ pub fn plot_clonotypes(
     let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
-    let mut samples = Vec::<String>::new();
+    let mut origins = Vec::<String>::new();
 
     // Go through the clonotypes.
 
@@ -364,27 +364,27 @@ pub fn plot_clonotypes(
 
                 // Determine color in other cases.
                 } else {
-                    if ex.clones[j][0].sample_index.is_some() {
-                        let s = &ctl.sample_info.sample_list[ex.clones[j][0].sample_index.unwrap()];
-                        samples.push(s.clone());
-                        if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
-                            color = ctl.gen_opt.sample_color_map[s].clone();
+                    if ex.clones[j][0].origin_index.is_some() {
+                        let s = &ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()];
+                        origins.push(s.clone());
+                        if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
+                            color = ctl.gen_opt.origin_color_map[s].clone();
                         }
                     }
-                    if ctl.gen_opt.sample_color_map.is_empty() {
+                    if ctl.gen_opt.origin_color_map.is_empty() {
                         let mut dataset_colors = false;
-                        for c in ctl.sample_info.color.iter() {
+                        for c in ctl.origin_info.color.iter() {
                             if !c.is_empty() {
                                 dataset_colors = true;
                             }
                         }
                         let di = ex.clones[j][0].dataset_index;
                         if dataset_colors {
-                            color = ctl.sample_info.color[di].clone();
+                            color = ctl.origin_info.color[di].clone();
                         } else {
                             let bc = &ex.clones[j][0].barcode;
-                            if ctl.sample_info.barcode_color[di].contains_key(bc) {
-                                color = ctl.sample_info.barcode_color[di][bc].clone();
+                            if ctl.origin_info.barcode_color[di].contains_key(bc) {
+                                color = ctl.origin_info.barcode_color[di][bc].clone();
                             }
                         }
                     }
@@ -394,7 +394,7 @@ pub fn plot_clonotypes(
                 n += 1;
             }
         }
-        unique_sort(&mut samples);
+        unique_sort(&mut origins);
 
         // Move the colors around to get vertical separation, e.g. blues on the left, reds
         // on the right.
@@ -473,24 +473,24 @@ pub fn plot_clonotypes(
             labels.push("not in most common dataset, marked".to_string());
         } else {
             if ctl.gen_opt.legend.len() == 0 {
-                for s in samples.iter() {
+                for s in origins.iter() {
                     let mut color = "black".to_string();
-                    if ctl.gen_opt.sample_color_map.contains_key(&s.clone()) {
-                        color = ctl.gen_opt.sample_color_map[s].clone();
+                    if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
+                        color = ctl.gen_opt.origin_color_map[s].clone();
                     }
                     colors.push(color);
                 }
             } else {
-                samples.clear();
+                origins.clear();
                 for i in 0..ctl.gen_opt.legend.len() {
                     colors.push(ctl.gen_opt.legend[i].0.clone());
-                    samples.push(ctl.gen_opt.legend[i].1.clone());
+                    origins.push(ctl.gen_opt.legend[i].1.clone());
                 }
             }
             for i in 0..colors.len() {
                 substitute_enclone_color(&mut colors[i]);
             }
-            labels = samples.clone();
+            labels = origins.clone();
         }
         for s in labels.iter() {
             max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));

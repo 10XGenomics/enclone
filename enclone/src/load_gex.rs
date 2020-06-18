@@ -49,7 +49,7 @@ pub fn load_gex(
         HashMap<String, Vec<f64>>,
         bool,
     )>::new();
-    for i in 0..ctl.sample_info.gex_path.len() {
+    for i in 0..ctl.origin_info.gex_path.len() {
         results.push((
             i,
             Vec::<String>::new(),
@@ -64,7 +64,7 @@ pub fn load_gex(
             false,
         ));
     }
-    let gex_outs = &ctl.sample_info.gex_path;
+    let gex_outs = &ctl.origin_info.gex_path;
     // Here and in other places, where an error message can be printed in a parallel loop, it
     // would be better if the thread could use a global lock to prevent multiple threads from
     // issuing an error message.
@@ -451,7 +451,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             eprintln!("Classification of features sets:\n");
             for i in 0..gex_features.len() {
                 let p = bin_position(&allf, &gex_features[i]);
-                eprintln!("{} ==> {}", ctl.sample_info.dataset_id[i], p);
+                eprintln!("{} ==> {}", ctl.origin_info.dataset_id[i], p);
             }
             eprintln!("");
             std::process::exit(1);
@@ -461,8 +461,8 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     let mut h5_indices = Vec::<Option<Dataset>>::new();
     let mut h5_indptr = Vec::<Vec<u32>>::new();
     if ctl.gen_opt.h5 {
-        let gex_outs = &ctl.sample_info.gex_path;
-        for i in 0..ctl.sample_info.dataset_path.len() {
+        let gex_outs = &ctl.origin_info.gex_path;
+        for i in 0..ctl.origin_info.dataset_path.len() {
             let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
             if gex_outs[i].len() > 0 && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) {
                 let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);

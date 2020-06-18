@@ -256,7 +256,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS") {
             let mut x = Vec::<usize>::new();
-            for y in ctl.sample_info.dataset_id.iter() {
+            for y in ctl.origin_info.dataset_id.iter() {
                 x.push(y.force_usize());
             }
             x.sort();
@@ -350,7 +350,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Find matching features for <regular expression>_g etc.
 
     ctl.clono_print_opt.regex_match =
-        vec![HashMap::<String, Vec<usize>>::new(); ctl.sample_info.n()];
+        vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
     let ends0 = [
         "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
@@ -400,7 +400,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                     if ok && px {
                         let reg = Regex::new(&format!("^{}$", p));
-                        for li in 0..ctl.sample_info.n() {
+                        for li in 0..ctl.origin_info.n() {
                             let mut js = Vec::<usize>::new();
                             for j in 0..gex_info.gex_features[li].len() {
                                 let f = &gex_info.gex_features[li][j];
@@ -437,7 +437,7 @@ pub fn main_enclone(args: &Vec<String>) {
                             }
                         }
                         let mut matches = false;
-                        for li in 0..ctl.sample_info.n() {
+                        for li in 0..ctl.origin_info.n() {
                             if ctl.clono_print_opt.regex_match[li].contains_key(&pp) {
                                 matches = true;
                             }
@@ -470,8 +470,8 @@ pub fn main_enclone(args: &Vec<String>) {
     } else {
         ann = "contig_annotations.json";
     }
-    let json = format!("{}/{}", ctl.sample_info.dataset_path[0], ann);
-    let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[0], ann);
+    let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
+    let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[0], ann);
     if !path_exists(&json) && !path_exists(&json_lz4) {
         eprintln!("\ncan't find {} or {}\n", json, json_lz4);
         std::process::exit(1);
@@ -706,8 +706,8 @@ pub fn main_enclone(args: &Vec<String>) {
     // it doesn't matter much because not much time is spent here.
 
     let mut fail = false;
-    for li in 0..ctl.sample_info.n() {
-        if ctl.sample_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
+    for li in 0..ctl.origin_info.n() {
+        if ctl.origin_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
             let vdj = &vdj_cells[li];
             let gex = &gex_info.gex_cell_barcodes[li];
             let (mut heavy, mut light) = (vec![false; vdj.len()], vec![false; vdj.len()]);
@@ -748,7 +748,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     eprint!(
                         "\nThe VDJ dataset with path\n{}\nand the GEX dataset with path\n\
                         {}\nshow insufficient sharing of barcodes.  ",
-                        ctl.sample_info.dataset_path[li], ctl.sample_info.gex_path[li],
+                        ctl.origin_info.dataset_path[li], ctl.origin_info.gex_path[li],
                     );
                     if x.len() <= 100 {
                         eprintln!(
@@ -938,7 +938,7 @@ pub fn main_enclone(args: &Vec<String>) {
     if !is_tcr
         && (ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark)
     {
-        let mut umis = vec![Vec::<usize>::new(); ctl.sample_info.n()];
+        let mut umis = vec![Vec::<usize>::new(); ctl.origin_info.n()];
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
             eq.orbit(reps[i], &mut o);
@@ -951,9 +951,9 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
             }
         }
-        let mut nu = vec![0; ctl.sample_info.n()];
-        let mut umin = vec![0.0; ctl.sample_info.n()];
-        for l in 0..ctl.sample_info.n() {
+        let mut nu = vec![0; ctl.origin_info.n()];
+        let mut umin = vec![0.0; ctl.origin_info.n()];
+        for l in 0..ctl.origin_info.n() {
             umis[l].sort();
             nu[l] = umis[l].len();
             if ctl.gen_opt.baseline {
@@ -961,7 +961,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     "\n{} umi counts for dataset {} = {}",
                     nu[l],
                     l + 1,
-                    ctl.sample_info.dataset_id[l]
+                    ctl.origin_info.dataset_id[l]
                 );
             }
             if nu[l] > 0 {
@@ -1207,7 +1207,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 for k in 0..ex.ncells() {
                     let li = ex.clones[k][0].dataset_index;
                     let bc = &ex.clones[k][0].barcode;
-                    if ctl.sample_info.gex_path[li].len() > 0 {
+                    if ctl.origin_info.gex_path[li].len() > 0 {
                         let gbc = &gex_info.gex_cell_barcodes[li];
                         if !bin_member(&gbc, &bc) {
                             to_delete[k] = true;
@@ -1245,7 +1245,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     for x in ctl.clono_filt_opt.fcell.iter() {
                         let (var, val) = (&x.0, &x.1);
                         let mut ok = false;
-                        let alt = &ctl.sample_info.alt_bc_fields[li];
+                        let alt = &ctl.origin_info.alt_bc_fields[li];
                         let mut specified = false;
                         for j in 0..alt.len() {
                             if alt[j].0 == *var {
@@ -1335,8 +1335,8 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
-    for li in 0..ctl.sample_info.n() {
-        if ctl.sample_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+    for li in 0..ctl.origin_info.n() {
+        if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
             d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
             ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
         } else {
@@ -1345,12 +1345,12 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
-    for li in 0..ctl.sample_info.n() {
+    for li in 0..ctl.origin_info.n() {
         h5_data.push((li, Vec::new(), Vec::new()));
     }
     h5_data.par_iter_mut().for_each(|res| {
         let li = res.0;
-        if ctl.sample_info.gex_path[li].len() > 0
+        if ctl.origin_info.gex_path[li].len() > 0
             && !gex_info.gex_matrices[li].initialized()
             && ctl.gen_opt.h5_pre
         {

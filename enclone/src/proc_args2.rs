@@ -117,7 +117,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Remove "datasets" from lvars if there is only one dataset and LVARS not specified.
 
-    if !lvars_specified && ctl.sample_info.dataset_path.len() == 1 {
+    if !lvars_specified && ctl.origin_info.dataset_path.len() == 1 {
         ctl.clono_print_opt.lvars.remove(0);
     }
 
@@ -138,14 +138,14 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         println!("");
         println!(
             "\nThere are {} datasets from {} donors.",
-            ctl.sample_info.dataset_path.len(),
-            ctl.sample_info.donors
+            ctl.origin_info.dataset_path.len(),
+            ctl.origin_info.donors
         );
     }
 
     // Check for duplicated directory paths.
 
-    let mut dp = ctl.sample_info.dataset_path.clone();
+    let mut dp = ctl.origin_info.dataset_path.clone();
     dp.sort();
     let mut i = 0;
     while i < dp.len() {
@@ -160,19 +160,19 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
         println!("");
     }
 
-    // Get sample descriptions.  Flaky and particularly flaky when internal sample args are paths,
+    // Get origin descriptions.  Flaky and particularly flaky when internal origin args are paths,
     // since it will look in outs for the file.
 
     if ctl.gen_opt.internal_run {
-        ctl.sample_info.descrips.clear();
-        let mut results = vec![(0, "".to_string()); ctl.sample_info.n()];
-        for i in 0..ctl.sample_info.n() {
+        ctl.origin_info.descrips.clear();
+        let mut results = vec![(0, "".to_string()); ctl.origin_info.n()];
+        for i in 0..ctl.origin_info.n() {
             results[i].0 = i;
         }
         results.par_iter_mut().for_each(|res| {
             let i = res.0;
-            let mut d = ctl.sample_info.dataset_id[i].clone();
-            let mut dir = ctl.sample_info.dataset_path[i].clone();
+            let mut d = ctl.origin_info.dataset_id[i].clone();
+            let mut dir = ctl.origin_info.dataset_path[i].clone();
             if dir.ends_with("/outs") {
                 dir = dir.rev_before("/outs").to_string();
             }
@@ -181,6 +181,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
                 let f = open_for_read![invo];
                 for line in f.lines() {
                     let s = line.unwrap();
+                    // Leave sample_desc alone for internal architecture!
                     if s.contains("sample_desc ") {
                         d = s.between("\"", "\"").to_string();
                     }
@@ -188,26 +189,26 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             res.1 = d;
         });
-        for i in 0..ctl.sample_info.dataset_path.len() {
-            ctl.sample_info.descrips.push(results[i].1.clone());
+        for i in 0..ctl.origin_info.dataset_path.len() {
+            ctl.origin_info.descrips.push(results[i].1.clone());
         }
         if ctl.gen_opt.descrip {
             println!("");
-            for i in 0..ctl.sample_info.n() {
+            for i in 0..ctl.origin_info.n() {
                 if i > 0 {
                     println!("");
                 }
                 println!(
-                    "dataset {} ==> sample {} ==> donor {} ==> dataset descrip = {}",
-                    ctl.sample_info.dataset_id[i],
-                    // sample_id and donor_id don't make sense if bc specified in META
-                    ctl.sample_info.sample_id[i],
-                    ctl.sample_info.donor_id[i],
-                    ctl.sample_info.descrips[i]
+                    "dataset {} ==> origin {} ==> donor {} ==> dataset descrip = {}",
+                    ctl.origin_info.dataset_id[i],
+                    // origin_id and donor_id don't make sense if bc specified in META
+                    ctl.origin_info.origin_id[i],
+                    ctl.origin_info.donor_id[i],
+                    ctl.origin_info.descrips[i]
                 );
-                println!("vdj path = {}", ctl.sample_info.dataset_path[i]);
-                if !ctl.sample_info.gex_path.is_empty() {
-                    println!("gex path = {}", ctl.sample_info.gex_path[i]);
+                println!("vdj path = {}", ctl.origin_info.dataset_path[i]);
+                if !ctl.origin_info.gex_path.is_empty() {
+                    println!("gex path = {}", ctl.origin_info.gex_path[i]);
                 }
             }
         }
