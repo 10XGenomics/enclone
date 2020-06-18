@@ -269,7 +269,7 @@ pub fn join_core(
 
             // Cap CDR3 diffs.
 
-            if cd > 10 || (!is_bcr && cd > 0) {
+            if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
                 continue;
             }
 

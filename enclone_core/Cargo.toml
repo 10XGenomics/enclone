@@ -19,6 +19,7 @@ bytes = "*"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 io_utils = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 regex = "*"
 serde = "*"
 serde_derive = "*"

@@ -684,16 +684,18 @@ pub fn parse_json_annotations_files(
         }
         vdj_cells.push(results[i].5.clone());
     }
-    unique_sort(&mut versions);
-    if versions.len() > 1
-        && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
-    {
-        eprintln!(
-            "\nYou're using output from multiple Cell Ranger versions = {},\n\
-             which is not allowed.\n",
-            versions.iter().format(", ")
-        );
-        std::process::exit(1);
+    if !ctl.gen_opt.internal_run {
+        unique_sort(&mut versions);
+        if versions.len() > 1
+            && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
+        {
+            eprintln!(
+                "\nYou're using output from multiple Cell Ranger versions = {},\n\
+                 which is not allowed.\n",
+                versions.iter().format(", ")
+            );
+            std::process::exit(1);
+        }
     }
     if ctl.comp {
         println!("used {:.2} seconds loading from JSON", elapsed(&tl));

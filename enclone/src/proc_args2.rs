@@ -2,7 +2,7 @@
 
 use enclone_core::defs::*;
 use io_utils::*;
-use perf_stats::*;
+use rayon::prelude::*;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -163,10 +163,14 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
     // Get sample descriptions.  Flaky and particularly flaky when internal sample args are paths,
     // since it will look in outs for the file.
 
-    let tinv = Instant::now();
     if ctl.gen_opt.internal_run {
         ctl.sample_info.descrips.clear();
-        for i in 0..ctl.sample_info.dataset_path.len() {
+        let mut results = vec![(0, "".to_string()); ctl.sample_info.n()];
+        for i in 0..ctl.sample_info.n() {
+            results[i].0 = i;
+        }
+        results.par_iter_mut().for_each(|res| {
+            let i = res.0;
             let mut d = ctl.sample_info.dataset_id[i].clone();
             let mut dir = ctl.sample_info.dataset_path[i].clone();
             if dir.ends_with("/outs") {
@@ -182,7 +186,10 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
                     }
                 }
             }
-            ctl.sample_info.descrips.push(d);
+            res.1 = d;
+        });
+        for i in 0..ctl.sample_info.dataset_path.len() {
+            ctl.sample_info.descrips.push(results[i].1.clone());
         }
         if ctl.gen_opt.descrip {
             println!("");
@@ -205,17 +212,5 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
     }
-    if ctl.comp2 {
-        println!("-- used {:.2} seconds reading invocation", elapsed(&tinv));
-    }
-
-    // Set up control datastructure (EncloneControl).  This is stuff that is constant for a given
-    // run of enclone.
-
-    if ctl.comp {
-        if !ctl.comp2 {
-            println!("");
-        }
-        println!("used {:.2} seconds in proc_args_tail", elapsed(&tall));
-    }
+    ctl.perf_stats(&tall, "in proc_args_tail");
 }

@@ -319,6 +319,11 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "both: looks for V, D, J and C segments; double quote only",
         );
         h.doc("", "needed if n > 1");
+        h.doc(
+            "",
+            "For both SEG and SEGN, multiple instances are allowed, and their",
+        );
+        h.doc("", "effects are cumulative.");
 
         // doc MIN_EXACTS
 

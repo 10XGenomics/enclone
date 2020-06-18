@@ -6,7 +6,7 @@ use crate::proc_args_check::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
-use perf_stats::*;
+use itertools::Itertools;
 use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -20,6 +20,7 @@ use vector_utils::*;
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Knobs.
 
+    let targs = Instant::now();
     let heur = ClonotypeHeuristics {
         max_diffs: 50,
         ref_v_trim: 15,
@@ -30,7 +31,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Form the combined set of command-line arguments and "command-line" arguments
     // implied by environment variables.
 
-    let targs = Instant::now();
     let mut args = args.clone();
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
@@ -120,6 +120,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.join_alg_opt.max_score = 1_000_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
+    ctl.join_alg_opt.max_cdr3_diffs = 10;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -178,11 +179,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     if ctl.gen_opt.internal_run {
         for i in 1..args.len() {
             if args[i].starts_with("BI=") {
-                let n = args[i].after("BI=");
-                if n != "m1" {
-                    if !n.parse::<usize>().is_ok() || n.force_usize() < 1 || n.force_usize() > 13 {
-                        eprintln!("\nBI=n only works if 1 <= n <= 13, or n = m1.\n");
-                        std::process::exit(1);
+                let x = args[i].after("BI=").split(',').collect::<Vec<&str>>();
+                let mut y = Vec::<String>::new();
+                for j in 0..x.len() {
+                    if x[j].contains('-') {
+                        let (start, stop) = (x[j].before("-"), x[j].after("-"));
+                        if !start.parse::<usize>().is_ok()
+                            || !stop.parse::<usize>().is_ok()
+                            || start.force_usize() > stop.force_usize()
+                        {
+                            eprintln!("\nIllegal range in BI argument.\n");
+                            std::process::exit(1);
+                        }
+                        let (start, stop) = (start.force_usize(), stop.force_usize());
+                        for j in start..=stop {
+                            y.push(format!("{}", j));
+                        }
+                    } else {
+                        y.push(x[j].to_string());
                     }
                 }
                 let mut args2 = Vec::<String>::new();
@@ -190,25 +204,45 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     args2.push(args[j].clone());
                 }
                 let f = include_str!["enclone.testdata.bcr.gex"];
-                let mut found = false;
-                for s in f.lines() {
-                    if s == format!("DONOR={}", n) {
-                        found = true;
-                    } else if found && s.starts_with("DONOR=") {
-                        break;
+                let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
+                for n in y.iter() {
+                    if *n != "m1" {
+                        if !n.parse::<usize>().is_ok()
+                            || n.force_usize() < 1
+                            || n.force_usize() > 13
+                        {
+                            eprintln!(
+                                "\nBI only works for values n with if 1 <= n <= 13, or n = m1.\n"
+                            );
+                            std::process::exit(1);
+                        }
+                    } else if y.len() > 1 {
+                        eprintln!("\nFor BI, if you specify m1, you can only specify m1.\n");
+                        std::process::exit(1);
                     }
-                    if found {
-                        if s.starts_with("BCR=") || s.starts_with("GEX=") {
-                            args2.push(s.to_string());
+                    let mut found = false;
+                    for s in f.lines() {
+                        if s == format!("DONOR={}", n) {
+                            found = true;
+                        } else if found && s.starts_with("DONOR=") {
+                            break;
                         }
-                        if s.starts_with("GEX=") {
-                            gex = s.after("GEX=").to_string();
-                        }
-                        if s == "SPECIES=mouse" {
-                            args2.push("MOUSE".to_string());
+                        if found {
+                            if s.starts_with("BCR=") {
+                                bcrv.push(s.after("BCR=").to_string());
+                            }
+                            if s.starts_with("GEX=") {
+                                gexv.push(s.after("GEX=").to_string());
+                            }
+                            if s == "SPECIES=mouse" {
+                                args2.push("MOUSE".to_string());
+                            }
                         }
                     }
                 }
+                args2.push(format!("BCR={}", bcrv.iter().format(";")));
+                args2.push(format!("GEX={}", gexv.iter().format(";")));
+                gex = format!("{}", gexv.iter().format(";"));
                 for j in i + 1..args.len() {
                     args2.push(args[j].clone());
                 }
@@ -312,7 +346,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("SUMMARY_CLEAN", &mut ctl.gen_opt.summary_clean),
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         ("TOY", &mut ctl.toy),
-        ("TREE", &mut ctl.gen_opt.tree),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
@@ -343,6 +376,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
+        ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
         ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
@@ -520,6 +554,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
                 std::process::exit(1);
             }
+        } else if arg == "TREE" {
+            ctl.gen_opt.tree = ".".to_string();
+        } else if arg == "TREE=const" {
+            ctl.gen_opt.tree = "const".to_string();
         } else if arg.starts_with("FCELL=") {
             let body = arg.after("FCELL=");
             if !body.contains('=') {
@@ -725,20 +763,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
         } else if arg.starts_with("SEG=") {
             let fields = arg.after("SEG=").split('|').collect::<Vec<&str>>();
+            let mut y = Vec::<String>::new();
             for x in fields.iter() {
-                ctl.clono_filt_opt.seg.push(x.to_string());
+                y.push(x.to_string());
             }
-            ctl.clono_filt_opt.seg.sort();
+            y.sort();
+            ctl.clono_filt_opt.seg.push(y);
         } else if arg.starts_with("SEGN=") {
             let fields = arg.after("SEGN=").split('|').collect::<Vec<&str>>();
+            let mut y = Vec::<String>::new();
             for x in fields.iter() {
                 if !x.parse::<i32>().is_ok() {
                     eprintln!("\nInvalid argument to SEGN.\n");
                     std::process::exit(1);
                 }
-                ctl.clono_filt_opt.segn.push(x.to_string());
+                y.push(x.to_string());
             }
-            ctl.clono_filt_opt.segn.sort();
+            y.sort();
+            ctl.clono_filt_opt.segn.push(y);
         } else if is_usize_arg(&arg, "CELLS") {
             ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
             ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
@@ -755,9 +797,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
+    ctl.perf_stats(&targs, "in main args loop");
 
     // Expand ~ and ~user in output file names.
 
+    let t = Instant::now();
     let mut files = [
         &mut ctl.gen_opt.plot_file,
         &mut ctl.gen_opt.fasta_filename,
@@ -771,6 +815,31 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Sanity check arguments.
 
+    if ctl.gen_opt.clustal_aa != "".to_string() && ctl.gen_opt.clustal_aa != "stdout".to_string() {
+        if !ctl.gen_opt.clustal_aa.ends_with(".tar") {
+            eprintln!("\nIf the value of CLUSTAL_AA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.clustal_dna != "".to_string() && ctl.gen_opt.clustal_dna != "stdout".to_string()
+    {
+        if !ctl.gen_opt.clustal_dna.ends_with(".tar") {
+            eprintln!("\nIf the value of CLUSTAL_DNA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.phylip_aa != "".to_string() && ctl.gen_opt.phylip_aa != "stdout".to_string() {
+        if !ctl.gen_opt.phylip_aa.ends_with(".tar") {
+            eprintln!("\nIf the value of PHYLIP_AA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
+    if ctl.gen_opt.phylip_dna != "".to_string() && ctl.gen_opt.phylip_dna != "stdout".to_string() {
+        if !ctl.gen_opt.phylip_dna.ends_with(".tar") {
+            eprintln!("\nIf the value of PHYLIP_DNA is not stdout, it must end in .tar.\n");
+            std::process::exit(1);
+        }
+    }
     if ctl.clono_filt_opt.umi_filt && ctl.clono_filt_opt.umi_filt_mark {
         eprintln!(
             "\nIf you use UMI_FILT_MARK, you should also use NUMI, to turn off \
@@ -924,9 +993,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    if ctl.comp2 {
-        println!("\n-- used {:.2} seconds processing args", elapsed(&targs));
-    }
+    ctl.perf_stats(&t, "after main args loop");
     proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.
