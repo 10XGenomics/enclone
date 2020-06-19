@@ -15,9 +15,9 @@ The goal of enclone is to find and display the clonotypes within single cell VDJ
 of cells having the same fully rearranged common ancestor.
 
 enclone provides the foundation for fully understanding each cell's antigen affinity and the
-evolutionary relationship between cells within a sample.  This starts with, for each cell, <span style="font-weight:bold;">the
-full length sequence of all its VDJ receptor chains</span>.  Such data may be obtained using the 10x
-Genomics immune profiling platform.
+evolutionary relationship between cells within one or more datasets.  This starts with, for each
+cell, <span style="font-weight:bold;">the full length sequence of all its VDJ receptor chains</span>.  Such data may be obtained using
+the 10x Genomics immune profiling platform.
 
 See also the heuristics page at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
@@ -48,7 +48,7 @@ output.
 the same number of chains, identical V..J sequences, identical C segment assignments, and the same
 distance between the J stop and the C start (which is usually zero).
 
-<span style="color:#c23621;font-weight:bold;">3</span>.  Finding the germline sequences.  For samples from a given donor, enclone derives "donor
+<span style="color:#c23621;font-weight:bold;">3</span>.  Finding the germline sequences.  For datasets from a given donor, enclone derives "donor
 reference sequences" for the V chains present in the donor's genome.  This is powerful, even
 though based on imperfect information.  V segments vary in their expression frequency and thus the
 more cells which are present, the more complete the information will be.  It is also not possible
@@ -92,7 +92,7 @@ the algorithm's success.
 
 <span style="color:#c23621;font-weight:bold;">8</span>.  Are there enough shared mutations?  We find the probability p that “the shared mutations occur
 by chance”.  More specifically, given d shared mutations, and k total mutations (across the two
-cells), we compute the probability p that an sample with replacement of k items from a set whose
+cells), we compute the probability p that a sample with replacement of k items from a set whose
 size is the total number of bases in the V..J segments, yields at most k – d distinct elements. 
 The probability is an approximation, for the method please see
 <span style="color:#25bc24;">https://docs.rs/stirling_numbers/0.1.0/stirling_numbers</span>.

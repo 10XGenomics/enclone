@@ -108,8 +108,8 @@ examine the test and control clonotypes to make sure that they make sense.
 
 <span style="font-weight:bold;">an example</span>
 
-Suppose that your data are comprised of two samples named pre and post, representing time points
-relative to some event.  Then
+Suppose that your data are comprised of two origins with datasets
+            named pre and post, representing time points relative to some event.  Then
 <span style="font-weight:bold;">SCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"</span>
 would define the test clonotypes to be those satisfying n_post >= 10*n_pre (so having far more
 post cells then pre cells), the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so
