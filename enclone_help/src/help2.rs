@@ -231,6 +231,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will \
              be written; then subsequent invocations will be faster.  Once the file has been \
              created, it will always be used, regardless of whether \\bold{NH5} is used.  \
+             However, we may occasionally change the format of the alternate file.  If do that, \
+             then if you have previously generated the file, then it will be rewritten when \
+             you invoke enclone for that dataset.  \
              Like with other enclone command-line options, if you want \\bold{NH5} on all the \
              time, you can set the environment variable \\bold{ENCLONE_NH5}.",
             true

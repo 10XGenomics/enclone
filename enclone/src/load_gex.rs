@@ -148,52 +148,48 @@ pub fn load_gex(
                 csv = csv2.clone();
             }
 
+            // Determine the state of affairs of the bin file.  We end with one of three outcomes:
+            //
+            // 1. We're not using the bin file at all.
+            // 2. We are reading the bin file.
+            // 3. We are writing the bin file.
+
+            let mut bin_file_state = 1;
+            if !ctl.gen_opt.force_h5 {
+                let bin_file_exists = path_exists(&bin_file);
+                if !bin_file_exists {
+                    if !ctl.gen_opt.h5 {
+                        bin_file_state = 3;
+                    }
+                } else {
+                    let v = get_code_version_from_file(&bin_file);
+                    if v == 1 {
+                        bin_file_state = 2;
+                    } else {
+                        bin_file_state = 3;
+                    }
+                }
+            }
+
             // If we need to write feature_barcode_matrix.bin, make sure that's possible, before
             // spending a lot of time reading other stuff.
 
-            if !path_exists(&bin_file) && !ctl.gen_opt.h5 {
+            if bin_file_state == 3 {
                 let f = File::create(&bin_file);
                 if !f.is_ok() {
                     eprintln!(
-                        "\nYou've specified NH5 on the command line, but this path\n{}\n\
-                        cannot be created.  Your options are\n\
+                        "\nenclone is trying to create the path\n{}\n\
+                        but that path cannot be created.  This path is for the binary GEX \
+                        matrix file that enclone can read\n\
+                        faster than the hdf5 file.  Your options are:\n\
                         1. Make that location writable (or fix the path, if it's wrong).\n\
                         2. Find a new location where you can write.\n\
-                        3. Don't specify NH5.\n",
+                        3. Don't specify NH5 (if you specified it).\n",
                         bin_file
                     );
                     std::process::exit(1);
                 }
                 remove_file(&bin_file).unwrap();
-            }
-
-            // Read barcodes from the h5 file.  About half the total time for the parallel loop
-            // is spent here.
-
-            let h = hdf5::File::open(&h5_path).unwrap();
-            let barcode_loc = h.dataset("matrix/barcodes").unwrap();
-            let barcodes: Vec<FixedAscii<[u8; 18]>> = barcode_loc.as_reader().read_raw().unwrap();
-            for i in 0..barcodes.len() {
-                r.2.push(barcodes[i].to_string());
-            }
-
-            // Read features from the h5 file.  Roughly, the other half of the total time for the
-            // parallel loop is spent here.
-
-            let feature_id_loc = h.dataset("matrix/features/id").unwrap();
-            let feature_ids: Vec<FixedAscii<[u8; 256]>> =
-                feature_id_loc.as_reader().read_raw().unwrap();
-            let feature_name_loc = h.dataset("matrix/features/name").unwrap();
-            let feature_names: Vec<FixedAscii<[u8; 256]>> =
-                feature_name_loc.as_reader().read_raw().unwrap();
-            let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
-            let feature_types: Vec<FixedAscii<[u8; 256]>> =
-                feature_type_loc.as_reader().read_raw().unwrap();
-            for i in 0..feature_ids.len() {
-                r.1.push(format!(
-                    "{}\t{}\t{}",
-                    feature_ids[i], feature_names[i], feature_types[i]
-                ));
             }
 
             // Read cell types.
@@ -336,25 +332,64 @@ pub fn load_gex(
 
             // Read the binary matrix file if appropriate.
 
-            if path_exists(&bin_file) && !ctl.gen_opt.force_h5 {
+            if bin_file_state == 2 {
                 read_from_file(&mut r.3, &bin_file);
-
-            // Or else construct it from the h5 if appropriate.
-            } else if !ctl.gen_opt.h5 {
-                let data_loc = h.dataset("matrix/data").unwrap();
-                let data: Vec<u32> = data_loc.as_reader().read_raw().unwrap();
-                let ind_loc = h.dataset("matrix/indices").unwrap();
-                let ind: Vec<u32> = ind_loc.as_reader().read_raw().unwrap();
-                let ind_ptr_loc = h.dataset("matrix/indptr").unwrap();
-                let ind_ptr: Vec<u32> = ind_ptr_loc.as_reader().read_raw().unwrap();
-                let mut matrix = vec![Vec::<(i32, i32)>::new(); r.2.len()];
-                for i in 0..matrix.len() {
-                    for j in ind_ptr[i]..ind_ptr[i + 1] {
-                        matrix[i].push((ind[j as usize] as i32, data[j as usize] as i32));
-                    }
+                let (n, k) = (r.3.nrows(), r.3.ncols());
+                for i in 0..n {
+                    r.2.push(r.3.row_label(i));
                 }
-                r.3 = MirrorSparseMatrix::build_from_vec(&matrix);
-                write_to_file(&r.3, &bin_file);
+                for j in 0..k {
+                    r.1.push(r.3.col_label(j));
+                }
+
+            // Otherwise we have to get stuff from the h5 file.
+            } else {
+                // Read barcodes from the h5 file.
+
+                let h = hdf5::File::open(&h5_path).unwrap();
+                let barcode_loc = h.dataset("matrix/barcodes").unwrap();
+                let barcodes: Vec<FixedAscii<[u8; 18]>> =
+                    barcode_loc.as_reader().read_raw().unwrap();
+                for i in 0..barcodes.len() {
+                    r.2.push(barcodes[i].to_string());
+                }
+
+                // Read features from the h5 file.
+
+                let feature_id_loc = h.dataset("matrix/features/id").unwrap();
+                let feature_ids: Vec<FixedAscii<[u8; 256]>> =
+                    feature_id_loc.as_reader().read_raw().unwrap();
+                let feature_name_loc = h.dataset("matrix/features/name").unwrap();
+                let feature_names: Vec<FixedAscii<[u8; 256]>> =
+                    feature_name_loc.as_reader().read_raw().unwrap();
+                let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
+                let feature_types: Vec<FixedAscii<[u8; 256]>> =
+                    feature_type_loc.as_reader().read_raw().unwrap();
+                for i in 0..feature_ids.len() {
+                    r.1.push(format!(
+                        "{}\t{}\t{}",
+                        feature_ids[i], feature_names[i], feature_types[i]
+                    ));
+                }
+
+                // If appropriate, construct the binary matrix file from the h5 file.
+
+                if bin_file_state == 3 {
+                    let data_loc = h.dataset("matrix/data").unwrap();
+                    let data: Vec<u32> = data_loc.as_reader().read_raw().unwrap();
+                    let ind_loc = h.dataset("matrix/indices").unwrap();
+                    let ind: Vec<u32> = ind_loc.as_reader().read_raw().unwrap();
+                    let ind_ptr_loc = h.dataset("matrix/indptr").unwrap();
+                    let ind_ptr: Vec<u32> = ind_ptr_loc.as_reader().read_raw().unwrap();
+                    let mut matrix = vec![Vec::<(i32, i32)>::new(); r.2.len()];
+                    for i in 0..matrix.len() {
+                        for j in ind_ptr[i]..ind_ptr[i + 1] {
+                            matrix[i].push((ind[j as usize] as i32, data[j as usize] as i32));
+                        }
+                    }
+                    r.3 = MirrorSparseMatrix::build_from_vec(&matrix, &r.2, &r.1);
+                    write_to_file(&r.3, &bin_file);
+                }
             }
         }
         unique_sort(&mut r.6);
