@@ -628,7 +628,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
                 ctl.gen_opt
-                    .sample_color_map
+                    .origin_color_map
                     .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
             }
         } else if arg.starts_with("PLOT_BY_ISOTYPE=") {
@@ -865,9 +865,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
     }
     let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.sample_info.alt_bc_fields.len() {
-        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+    for li in 0..ctl.origin_info.alt_bc_fields.len() {
+        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);
@@ -880,10 +880,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             std::process::exit(1);
         }
     }
-    for i in 0..ctl.sample_info.n() {
+    for i in 0..ctl.origin_info.n() {
         let (mut cells_cr, mut rpc_cr) = (None, None);
         if ctl.gen_opt.internal_run {
-            let p = &ctl.sample_info.dataset_path[i];
+            let p = &ctl.origin_info.dataset_path[i];
             let mut f = format!("{}/metrics_summary_csv.csv", p);
             if !path_exists(&f) {
                 f = format!("{}/metrics_summary.csv", p);
@@ -924,8 +924,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
         }
-        ctl.sample_info.cells_cellranger.push(cells_cr);
-        ctl.sample_info
+        ctl.origin_info.cells_cellranger.push(cells_cr);
+        ctl.origin_info
             .mean_read_pairs_per_cell_cellranger
             .push(rpc_cr);
     }
@@ -953,43 +953,43 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
         std::process::exit(1);
     }
-    if ctl.sample_info.n() == 0 {
+    if ctl.origin_info.n() == 0 {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
     }
     let mut donors = Vec::<String>::new();
-    let mut samples = Vec::<String>::new();
+    let mut origins = Vec::<String>::new();
     let mut tags = Vec::<String>::new();
-    let mut sample_for_bc = Vec::<String>::new();
+    let mut origin_for_bc = Vec::<String>::new();
     let mut donor_for_bc = Vec::<String>::new();
-    for i in 0..ctl.sample_info.n() {
-        for x in ctl.sample_info.sample_for_bc[i].iter() {
-            samples.push(x.1.clone());
-            sample_for_bc.push(x.1.clone());
+    for i in 0..ctl.origin_info.n() {
+        for x in ctl.origin_info.origin_for_bc[i].iter() {
+            origins.push(x.1.clone());
+            origin_for_bc.push(x.1.clone());
         }
-        for x in ctl.sample_info.donor_for_bc[i].iter() {
+        for x in ctl.origin_info.donor_for_bc[i].iter() {
             donors.push(x.1.clone());
             donor_for_bc.push(x.1.clone());
         }
-        for x in ctl.sample_info.tag[i].iter() {
+        for x in ctl.origin_info.tag[i].iter() {
             tags.push((x.1).clone());
         }
-        donors.push(ctl.sample_info.donor_id[i].clone());
-        samples.push(ctl.sample_info.sample_id[i].clone());
+        donors.push(ctl.origin_info.donor_id[i].clone());
+        origins.push(ctl.origin_info.origin_id[i].clone());
     }
     unique_sort(&mut donors);
-    unique_sort(&mut samples);
+    unique_sort(&mut origins);
     unique_sort(&mut tags);
-    unique_sort(&mut sample_for_bc);
+    unique_sort(&mut origin_for_bc);
     unique_sort(&mut donor_for_bc);
-    ctl.sample_info.donors = donors.len();
-    ctl.sample_info.dataset_list = ctl.sample_info.dataset_id.clone();
-    unique_sort(&mut ctl.sample_info.dataset_list);
-    ctl.sample_info.sample_list = samples.clone();
-    ctl.sample_info.donor_list = donors.clone();
-    ctl.sample_info.tag_list = tags;
-    for i in 0..ctl.sample_info.donor_for_bc.len() {
-        if ctl.sample_info.donor_for_bc[i].len() > 0 {
+    ctl.origin_info.donors = donors.len();
+    ctl.origin_info.dataset_list = ctl.origin_info.dataset_id.clone();
+    unique_sort(&mut ctl.origin_info.dataset_list);
+    ctl.origin_info.origin_list = origins.clone();
+    ctl.origin_info.donor_list = donors.clone();
+    ctl.origin_info.tag_list = tags;
+    for i in 0..ctl.origin_info.donor_for_bc.len() {
+        if ctl.origin_info.donor_for_bc[i].len() > 0 {
             ctl.clono_filt_opt.donor = true;
         }
     }

@@ -302,7 +302,7 @@ pub fn join_core(
             let d = *min_shares;
             let p1 =
                 p_at_most_m_distinct_in_sample_of_x_from_n((k - d) as usize, k as usize, n, &sr);
-            assert!(!p1.is_infinite()); // IS THIS SAFE??????????????????????????????????
+            assert!(!p1.is_infinite()); // TODO: IS THIS SAFE?
 
             // Multiply by the number of DNA sequences that differ from the given CDR3
             // sequences on <= cd bases.  This is sum( choose(3cn, m), m = 0..=cd ).
@@ -312,7 +312,7 @@ pub fn join_core(
                 cn += x1[l].len();
             }
             let mult = partial_bernoulli_sum(3 * cn, cd as usize);
-            assert!(!mult.is_infinite()); // IS THIS SAFE????????????????????????????????
+            assert!(!mult.is_infinite()); // TODO: IS THIS SAFE?
             let score = p1 * mult;
 
             // Threshold on score.

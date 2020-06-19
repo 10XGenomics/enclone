@@ -15,7 +15,7 @@ use vector_utils::*;
 // Lead variables for exact subclonotypes and cells.
 pub const LVARS_ALLOWED: [&str; 23] = [
     "datasets",
-    "samples",
+    "origins",
     "donors",
     "n",
     "gex",
@@ -274,26 +274,26 @@ impl LinearCondition {
     }
 }
 
-// Sample info data structure.
+// Origin info data structure.
 
 #[derive(Default)]
-pub struct SampleInfo {
+pub struct OriginInfo {
     // parallel vectors
     pub descrips: Vec<String>,     // map dataset index to dataset long name
     pub dataset_path: Vec<String>, // map dataset index to vdj path
     pub gex_path: Vec<String>,     // map dataset index to gex path
     pub dataset_id: Vec<String>,   // map dataset index to dataset short name
     pub donor_id: Vec<String>,     // map dataset index to donor short name
-    pub sample_id: Vec<String>,    // map dataset id to sample short name
+    pub origin_id: Vec<String>,    // map dataset id to origin (sample) short name
     pub color: Vec<String>,        // map dataset to color
     // other
     pub dataset_list: Vec<String>, // unique-sorted list of dataset short names
-    pub sample_list: Vec<String>,  // unique-sorted list of sample short names
+    pub origin_list: Vec<String>,  // unique-sorted list of origin (sample) short names
     pub donor_list: Vec<String>,   // unique-sorted list of donor short names
     pub tag_list: Vec<String>,     // unique-sorted list of tag short names
     pub donors: usize,             // number of donors
-    // map dataset index to map of barcode to sample:
-    pub sample_for_bc: Vec<HashMap<String, String>>,
+    // map dataset index to map of barcode to origin:
+    pub origin_for_bc: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to donor:
     pub donor_for_bc: Vec<HashMap<String, String>>,
     // map dataset index to map of barcode to tag:
@@ -305,7 +305,7 @@ pub struct SampleInfo {
     pub mean_read_pairs_per_cell_cellranger: Vec<Option<usize>>,
 }
 
-impl SampleInfo {
+impl OriginInfo {
     // number of datasets
     pub fn n(&self) -> usize {
         self.dataset_path.len()
@@ -369,7 +369,7 @@ pub struct GeneralOpt {
     pub plot_file: String,
     pub plot_by_isotype: bool,
     pub plot_by_mark: bool,
-    pub sample_color_map: HashMap<String, String>,
+    pub origin_color_map: HashMap<String, String>,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
     pub accept_inconsistent: bool, // TEMPORARY!
@@ -535,7 +535,7 @@ pub struct EncloneControl {
     pub onesie_mult: usize,               // see main.rs
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics
-    pub sample_info: SampleInfo,          // sample info
+    pub origin_info: OriginInfo,          // origin (sample) info
     pub allele_alg_opt: AlleleAlgOpt,     // algorithmic options for allele finding
     pub allele_print_opt: AllelePrintOpt, // print options for allele finding
     pub join_alg_opt: JoinAlgOpt,         // algorithmic options for join
@@ -589,7 +589,7 @@ pub struct TigData {
     pub tigname: String,                      // name of contig
     pub left: bool,                           // true if this is IGH or TRB
     pub dataset_index: usize,                 // index of dataset
-    pub sample_index: Option<usize>,          // index of sample
+    pub origin_index: Option<usize>,          // index of origin (sample)
     pub donor_index: Option<usize>,           // index of donor
     pub tag_index: Option<usize>,             // index of tag
     pub umi_count: usize,                     // number of UMIs supporting contig
@@ -614,7 +614,7 @@ pub struct TigData0 {
     pub barcode: String,             // barcode
     pub tigname: String,             // name of contig
     pub dataset_index: usize,        // index of dataset
-    pub sample_index: Option<usize>, // index of sample
+    pub origin_index: Option<usize>, // index of origin (sample)
     pub donor_index: Option<usize>,  // index of donor
     pub tag_index: Option<usize>,    // index of tag
     pub umi_count: usize,            // number of UMIs supporting contig
@@ -703,8 +703,8 @@ pub struct CloneInfo {
     pub orig_tigs: Vec<DnaString>, // untruncated contigs
     pub clonotype_id: usize,   // index into exact_clonotypes
     pub exact_cols: Vec<usize>, // the columns of the exact_clonotype that were extracted (used?)
-    pub clonotype_index: usize, // index into vector of all exact subclonotypes (across samples)
-    pub origin: Vec<usize>,    // sample indices
+    pub clonotype_index: usize, // index into vector of all exact subclonotypes (across origins)
+    pub origin: Vec<usize>,    // origin indices
     pub vs: Vec<DnaString>,    // reference V segments (possibly donor allele)
     pub dref: Vec<Option<usize>>, // indices into alt_refs
     pub vs_notesx: Vec<String>, // notes on reference V segments (probably to be replaced)
@@ -827,8 +827,8 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         };
     }
     let mut have_gex = false;
-    for i in 0..ctl.sample_info.gex_path.len() {
-        if ctl.sample_info.gex_path[i].len() > 0 {
+    for i in 0..ctl.origin_info.gex_path.len() {
+        if ctl.origin_info.gex_path[i].len() > 0 {
             have_gex = true;
         }
     }
@@ -907,12 +907,12 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     speaker!("nchains");
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
-    for x in ctl.sample_info.dataset_list.iter() {
+    for x in ctl.origin_info.dataset_list.iter() {
         speaker!(&format!("{}_barcodes", x));
     }
     if ctl.parseable_opt.pbarcode {
         speaker!("barcode");
-        for x in ctl.sample_info.dataset_list.iter() {
+        for x in ctl.origin_info.dataset_list.iter() {
             speaker!(&format!("{}_barcode", x));
         }
     }
