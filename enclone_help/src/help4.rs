@@ -52,11 +52,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "option disables that behavior.");
         h.ldoc(
             "NCROSS",
-            "If you specify that two or more libraries arose from the same sample (i.e.",
+            "If you specify that two or more libraries arose from the same origin (i.e.",
         );
         h.doc(
             "",
-            "from the same tube of cells), then the default behavior of enclone is to",
+            "from the same tube of cells, or the same tissue), then the default behavior of enclone is to",
         );
         h.doc(
             "",
@@ -102,8 +102,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "inputs are somehow mis-specified to enclone.  Note that for purposes of",
         );
-        h.doc("", "this option, enclone defines a sample by the pair");
-        h.doc("", "(sample name, donor name).");
+        h.doc("", "this option, enclone defines an origin by the pair");
+        h.doc("", "(origin name, donor name).");
         h.ldoc(
             "NUMI",
             "Filter out B cells based on low BCR UMI counts.  The heuristics for this",
@@ -469,7 +469,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              where each xi is one of:\n\n",
         );
         h.doc("datasets", "dataset identifiers");
-        h.doc("samples", "sample identifiers");
+        h.doc("origin", "origin identifiers");
         h.doc("donors", "donor identifiers");
         h.ldoc("n", "number of cells");
         h.doc(
@@ -478,7 +478,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "or sample or donor or tag short name; may name only one such category",
+            "or origin or donor or tag short name; may name only one such category",
         );
         h.ldoc(
             "nd<k>",
@@ -606,7 +606,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "problems for you.  And cred makes much better sense for samples that",
+            "problems for you.  And cred makes much better sense for datasets that",
         );
         h.doc(
             "",
