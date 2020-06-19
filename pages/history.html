@@ -37,6 +37,16 @@ command-line help that comes with your copy of enclone will always match its beh
 <hr>
 
 <p>
+<b>6/19/20</b>: Improve the alternate (faster) internal storage structure for the GEX matrix
+created using the option <code>NH5</code> as described using the command 
+<a href="../pages/auto/help.input.html"><code>enclone help input</code></a>.  
+This will speed things up, particularly for the case where several datasets are combined.  If 
+you have already used the <code>NH5</code> option for a given dataset, then the next time you
+run enclone on it, the file will be automatically rewritten.  This would also apply to some
+datasets obtained as part of the <code>large</code> download.
+</p>
+
+<p>
 <b>6/17/20</b>:
 <ol>
 <li>Now <code>TREE=const</code> can be used to show a tree with heavy chain constant region
