@@ -44,31 +44,31 @@ possible, as longer abbreviations will increase the width of the clonotype displ
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">█ 1 █</span> To point directly at input files on the command line, use e.g.
-<span style="font-weight:bold;">TCR=/home/jdoe/runs/sample345</span>
+<span style="font-weight:bold;">TCR=/home/jdoe/runs/dataset345</span>
 or likewise for <span style="font-weight:bold;">BCR</span>.  A more complicated syntax is allowed in which commas, colons and semicolons
-act as delimiters.  Commas go between datasets from the same sample, colons between datasets from
+act as delimiters.  Commas go between datasets from the same origin, colons between datasets from
 the same donor, and semicolons separate donors.  If semicolons are used, the value must be quoted.
 
-enclone uses the distinction between datasets, samples and donors in the following ways:
-1. If two datasets come from the same sample, then enclone can filter to remove certain artifacts,
+enclone uses the distinction between datasets, origins and donors in the following ways:
+1. If two datasets come from the same origin, then enclone can filter to remove certain artifacts,
 unless you specify the option <span style="font-weight:bold;">NCROSS</span>.
 See also illusory clonotype expansion page at <span style="color:#25bc24;">bit.ly/enclone</span>.
 2. If two cells came from different donors, then enclone will not put them in the same clonotype,
 unless you specify the option <span style="font-weight:bold;">MIX_DONORS</span>.
 More information may be found at `enclone help special`.  In addition, this is enclone's way of
-keeping datasets organized and affects the output of fields like sample, etc.
+keeping datasets organized and affects the output of fields like origin, etc.
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is        ┃
-┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">sample345</span> in the above example), or┃
-┃the entire name if there is no slash; samples and donors are assigned identifers s1,... and     ┃
-┃d1,..., respectively; numbering of samples restarts with each new donor.  <span style="font-weight:bold;">To specify samples</span>    ┃
-┃<span style="font-weight:bold;">and donors, use the second input form, and see in particular</span> <span style="color:#25bc24;">abbr:path</span><span style="font-weight:bold;">.</span>                         ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is         ┃
+┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">dataset345</span> in the above example), or┃
+┃the entire name if there is no slash; origins and donors are assigned identifers s1,... and      ┃
+┃d1,..., respectively; numbering of origins restarts with each new donor.  <span style="font-weight:bold;">To specify origins</span>     ┃
+┃<span style="font-weight:bold;">and donors, use the second input form, and see in particular</span> <span style="color:#25bc24;">abbr:path</span><span style="font-weight:bold;">.</span>                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 Examples:
-<span style="font-weight:bold;">TCR=p1,p2</span>   -- input data from two libraries from the same sample
-<span style="font-weight:bold;">TCR=p1,p2:q</span> -- input data as above plus another from a different sample from the same donor
+<span style="font-weight:bold;">TCR=p1,p2</span>   -- input data from two libraries from the same origin
+<span style="font-weight:bold;">TCR=p1,p2:q</span> -- input data as above plus another from a different origin from the same donor
 <span style="font-weight:bold;">TCR="a;b"</span>   -- input one library from each of two donors.
 
 Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
@@ -77,8 +77,8 @@ both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bol
 
 In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
 having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV file,
-which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">sample</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
-may also include arbitrary other fields.  The <span style="font-weight:bold;">sample</span> and <span style="font-weight:bold;">donor</span> fields allow a particular sample
+which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
+may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular origin
 and donor to be associated to a given barcode.  A use case for this is genetic demultiplexing. 
 The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is used by the <span style="font-weight:bold;">PLOT</span>
 option.  All other fields are treated as lead variables, but values are only displayed in <span style="font-weight:bold;">PER_CELL</span>
@@ -98,7 +98,7 @@ fields are allowed:
 │gex     │  null         │  path to GEX dataset, which may include or consist entirely  │
 │        │               │  of FB data                                                  │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
-│sample  │  s1           │  abbreviated name of sample                                  │
+│origin  │  s1           │  abbreviated name of origin                                  │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
 │donor   │  d1           │  abbreviated name of donor                                   │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤

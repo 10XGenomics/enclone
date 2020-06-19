@@ -18,12 +18,12 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 
 ┌───────────────┬──────────────────────────────────────────────────────────────────────────────┐
 │datasets       │  dataset identifiers                                                         │
-│samples        │  sample identifiers                                                          │
+│origin         │  origin identifiers                                                          │
 │donors         │  donor identifiers                                                           │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │n              │  number of cells                                                             │
 │n_&lt;name>       │  number of cells associated to the given name, which can be a dataset        │
-│               │  or sample or donor or tag short name; may name only one such category       │
+│               │  or origin or donor or tag short name; may name only one such category       │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │nd&lt;k>          │  For k a positive integer, this creates k+1 fields, that are specific to each│
 │               │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset  │
@@ -62,7 +62,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │               │  percent of those that are also VDJ cells.  For multiple datasets, it would  │
 │               │  be better to "aggr" the data, however that is not currently supported       │
 │               │  The computation is also inefficient, so let us know if it's causing         │
-│               │  problems for you.  And cred makes much better sense for samples that        │
+│               │  problems for you.  And cred makes much better sense for datasets that       │
 │               │  consist of mixed cell types, rather than consisting of pure B or T cells.   │
 └───────────────┴──────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
