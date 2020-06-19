@@ -56,7 +56,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "cells from the same tube or tissue), then by  enclone is to",
+            "cells from the same tube or tissue), then by default enclone will",
         );
         h.doc(
             "",
