@@ -209,10 +209,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     if *n != "m1" {
                         if !n.parse::<usize>().is_ok()
                             || n.force_usize() < 1
-                            || n.force_usize() > 13
+                            || n.force_usize() > 12
                         {
                             eprintln!(
-                                "\nBI only works for values n with if 1 <= n <= 13, or n = m1.\n"
+                                "\nBI only works for values n with if 1 <= n <= 12, or n = m1.\n"
                             );
                             std::process::exit(1);
                         }

@@ -549,17 +549,19 @@ by typing <span style="font-weight:bold;">enclone help input_tech</span>.
 Both input forms involve abbreviated names (discussed below), which should be as short as
 possible, as longer abbreviations will increase the width of the clonotype displays.
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.    ┃
-┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not     ┃
-┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which    ┃
-┃speeds up enclone overall by up to <span style="color:#c23621;font-weight:bold;">50%</span>.  To use this, add the argument <span style="font-weight:bold;">NH5</span> to the enclone command┃
-┃line.  This will work so long as you have write permission on input directories.  The first time ┃
-┃you run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will be       ┃
-┃written; then subsequent invocations will be faster.  Once the file has been created, it will    ┃
-┃always be used, regardless of whether <span style="font-weight:bold;">NH5</span> is used.  Like with other enclone command-line options,┃
-┃if you want <span style="font-weight:bold;">NH5</span> on all the time, you can set the environment variable <span style="font-weight:bold;">ENCLONE_NH5</span>.               ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃enclone can use gene expression and feature barcode data, as represented by a feature matrix.     ┃
+┃Cell Ranger stores this matrix in an hdf5 file, which while generally very efficient, is not      ┃
+┃optimized for interactive use.  Therefore enclone provides an alternate file structure, which     ┃
+┃speeds up enclone overall by up to <span style="color:#c23621;font-weight:bold;">50%</span>.  To use this, add the argument <span style="font-weight:bold;">NH5</span> to the enclone command ┃
+┃line.  This will work so long as you have write permission on input directories.  The first time  ┃
+┃you run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will be        ┃
+┃written; then subsequent invocations will be faster.  Once the file has been created, it will     ┃
+┃always be used, regardless of whether <span style="font-weight:bold;">NH5</span> is used.  However, we may occasionally change the format┃
+┃of the alternate file.  If do that, then if you have previously generated the file, then it will  ┃
+┃be rewritten when you invoke enclone for that dataset.  Like with other enclone command-line      ┃
+┃options, if you want <span style="font-weight:bold;">NH5</span> on all the time, you can set the environment variable <span style="font-weight:bold;">ENCLONE_NH5</span>.       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">█ 1 █</span> To point directly at input files on the command line, use e.g.
 <span style="font-weight:bold;">TCR=/home/jdoe/runs/sample345</span>
