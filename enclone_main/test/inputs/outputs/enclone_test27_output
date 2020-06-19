@@ -20,7 +20,7 @@ SUMMARY STATISTICS
    • mean over middle third of contig UMI counts (heavy chain / TRB) = 354.20
    • mean over middle third of contig UMI counts (light chain / TRA) = 2753.42
    ┌────────────────────┐
-   │sample  donor  cells│
+   │origin  donor  cells│
    ├────────────────────┤
    │s1      d1      1178│
    └────────────────────┘
