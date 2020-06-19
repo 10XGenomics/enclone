@@ -489,7 +489,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         // doc donor etc.
 
-        h.ldoc("donor", "an individual from whom datasets of an origin are obtained");
+        h.ldoc(
+            "donor",
+            "an individual from whom datasets of an origin are obtained",
+        );
         h.doc(
             "origin",
             "a tube of cells from a donor, from a particular tissue at a",
