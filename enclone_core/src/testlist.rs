@@ -46,9 +46,9 @@ pub const TESTS: [&str; 98] = [
     r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
     // 9. tests PER_CELL and unicode
     r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
-    // 10. tests multiple datasets and also LVARS=n,samples,donors,datasets, and share
+    // 10. tests multiple datasets and also LVARS=n,origins,donors,datasets, and share
     // Note that we have deliberately "faked" two donors.  In reality there is one.
-    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,samples,donors,datasets AMINO=share
+    r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,origins,donors,datasets AMINO=share
      MIX_DONORS"###,
     // 11. tests META
     r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
@@ -66,7 +66,7 @@ pub const TESTS: [&str; 98] = [
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
     r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL NH5"###,
-    // 18. makes sure cross filtering isn't applied to two samples from same donor
+    // 18. makes sure cross filtering isn't applied to two origins from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
     // There were also some cells that were lost due to a bug in graph filtering.

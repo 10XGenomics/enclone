@@ -1321,7 +1321,7 @@ pub fn group_and_print_clonotypes(
                 n += ex.ncells();
                 for k in 0..ex.clones.len() {
                     let x = &ex.clones[k][0];
-                    sd.push((x.sample_index, x.donor_index));
+                    sd.push((x.origin_index, x.donor_index));
                 }
             }
             if n >= 2 {
@@ -1338,24 +1338,24 @@ pub fn group_and_print_clonotypes(
             sdx.push((sd[i].0, sd[i].1, j - i));
             i = j;
         }
-        fwriteln!(logx, "   • number of datasets = {}", ctl.sample_info.n());
-        fwriteln!(logx, "   • number of donors = {}", ctl.sample_info.donors);
+        fwriteln!(logx, "   • number of datasets = {}", ctl.origin_info.n());
+        fwriteln!(logx, "   • number of donors = {}", ctl.origin_info.donors);
 
         // Print mean reads per cell if known.
 
         let mut known = true;
-        for i in 0..ctl.sample_info.n() {
-            if ctl.sample_info.cells_cellranger[i].is_none() {
+        for i in 0..ctl.origin_info.n() {
+            if ctl.origin_info.cells_cellranger[i].is_none() {
                 known = false;
-            } else if ctl.sample_info.mean_read_pairs_per_cell_cellranger[i].is_none() {
+            } else if ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].is_none() {
                 known = false;
             }
         }
         if known {
             let (mut cells, mut read_pairs) = (0, 0);
-            for i in 0..ctl.sample_info.n() {
-                let c = ctl.sample_info.cells_cellranger[i].unwrap();
-                let rpc = ctl.sample_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
+            for i in 0..ctl.origin_info.n() {
+                let c = ctl.origin_info.cells_cellranger[i].unwrap();
+                let rpc = ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
                 cells += c;
                 read_pairs += cells * rpc;
             }
@@ -1524,11 +1524,11 @@ pub fn group_and_print_clonotypes(
             fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
         }
 
-        // Print sample/donor table.
+        // Print origin (sample)/donor table.
 
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
-            "sample".to_string(),
+            "origin".to_string(),
             "donor".to_string(),
             "cells".to_string(),
         ];
@@ -1540,13 +1540,13 @@ pub fn group_and_print_clonotypes(
             if sdx[i].0.is_some() {
                 row.push(format!(
                     "{}",
-                    ctl.sample_info.sample_list[sdx[i].0.unwrap()]
+                    ctl.origin_info.origin_list[sdx[i].0.unwrap()]
                 ));
             } else {
                 row.push("?".to_string());
             }
             if sdx[i].1.is_some() {
-                row.push(format!("{}", ctl.sample_info.donor_list[sdx[i].1.unwrap()]));
+                row.push(format!("{}", ctl.origin_info.donor_list[sdx[i].1.unwrap()]));
             } else {
                 row.push("?".to_string());
             }

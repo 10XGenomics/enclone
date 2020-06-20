@@ -419,11 +419,11 @@ pub fn start_gen(
         }
         bc.sort();
         speak!(u, "barcodes", format!("{}", bc.iter().format(",")));
-        for d in ctl.sample_info.dataset_list.iter() {
+        for d in ctl.origin_info.dataset_list.iter() {
             let mut bc = Vec::<String>::new();
             for i in 0..exact_clonotypes[exacts[u]].clones.len() {
                 let q = &exact_clonotypes[exacts[u]].clones[i];
-                if ctl.sample_info.dataset_id[q[0].dataset_index] == *d {
+                if ctl.origin_info.dataset_id[q[0].dataset_index] == *d {
                     bc.push(q[0].barcode.clone());
                 }
             }
@@ -439,11 +439,11 @@ pub fn start_gen(
                 bc.push(x[0].barcode.clone());
             }
             speak!(u, "barcode", format!("{}", bc.iter().format(";")));
-            for d in ctl.sample_info.dataset_list.iter() {
+            for d in ctl.origin_info.dataset_list.iter() {
                 let mut bc = Vec::<String>::new();
                 for i in 0..exact_clonotypes[exacts[u]].clones.len() {
                     let q = &exact_clonotypes[exacts[u]].clones[i];
-                    if ctl.sample_info.dataset_id[q[0].dataset_index] == *d {
+                    if ctl.origin_info.dataset_id[q[0].dataset_index] == *d {
                         bc.push(q[0].barcode.clone());
                     } else {
                         bc.push("".to_string());
@@ -480,7 +480,7 @@ pub fn start_gen(
         for m in 0..ex.clones.len() {
             if ex.clones[m][0].donor_index.is_some() {
                 let d = ex.clones[m][0].donor_index.unwrap();
-                if ctl.sample_info.donor_list[d].len() > 0 {
+                if ctl.origin_info.donor_list[d].len() > 0 {
                     donors.push(d);
                 }
             }
@@ -504,7 +504,7 @@ pub fn start_gen(
         );
         let mut donor_names = Vec::<String>::new();
         for i in 0..donors.len() {
-            donor_names.push(ctl.sample_info.donor_list[donors[i]].clone());
+            donor_names.push(ctl.origin_info.donor_list[donors[i]].clone());
         }
         fwriteln!(&mut mlog, "donors = {}", donor_names.iter().format(","));
         fwriteln!(&mut mlog, "datasets in which these donors appear:");
@@ -516,7 +516,7 @@ pub fn start_gen(
                     if ex.clones[l][0].donor_index.is_some() {
                         if ex.clones[l][0].donor_index.unwrap() == donors[i] {
                             datasets.push(
-                                ctl.sample_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
+                                ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone(),
                             );
                         }
                     }

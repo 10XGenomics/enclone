@@ -165,12 +165,12 @@ pub fn lookup_heavy_chain_reuse(
 
 // If a V..J segment appears in exactly one dataset, with frequency n, let x be the total
 // number of productive pairs for that dataset, and let y be the total number of productive
-// pairs for all datasets from the same sample.  If (x/y)^n <= 10^-6, i.e. the probability
+// pairs for all datasets from the same origin.  If (x/y)^n <= 10^-6, i.e. the probability
 // that assuming even distribution, all instances of that V..J ended up in that one dataset,
 // delete all the productive pairs for that V..J segment that do not have at least 100
 // supporting UMIs.  (Note no attempt to do Bonferroni correction.)
 //
-// For the case of two datasets for one sample, with equal numbers of productive pairs in
+// For the case of two datasets for one origin, with equal numbers of productive pairs in
 // each, this corresponds roughly to the case n = 20.
 //
 // Note that we could modify this to allow *some* occurrences in other datasets.
@@ -192,45 +192,45 @@ pub fn lookup_heavy_chain_reuse(
 
 pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
     if !ctl.clono_filt_opt.ncross {
-        // Get the list of samples.  Here we allow the same sample name to have been used for
+        // Get the list of dataset origins.  Here we allow the same origin name to have been used for
         // more than one donor, as we haven't explicitly prohibited that.
 
-        let mut samples = Vec::<(String, String)>::new();
-        for i in 0..ctl.sample_info.n() {
-            samples.push((
-                ctl.sample_info.donor_id[i].clone(),
-                ctl.sample_info.sample_id[i].clone(),
+        let mut origins = Vec::<(String, String)>::new();
+        for i in 0..ctl.origin_info.n() {
+            origins.push((
+                ctl.origin_info.donor_id[i].clone(),
+                ctl.origin_info.origin_id[i].clone(),
             ));
         }
-        unique_sort(&mut samples);
-        let mut to_sample = vec![0; ctl.sample_info.n()];
-        for i in 0..ctl.sample_info.n() {
-            to_sample[i] = bin_position(
-                &samples,
+        unique_sort(&mut origins);
+        let mut to_origin = vec![0; ctl.origin_info.n()];
+        for i in 0..ctl.origin_info.n() {
+            to_origin[i] = bin_position(
+                &origins,
                 &(
-                    ctl.sample_info.donor_id[i].clone(),
-                    ctl.sample_info.sample_id[i].clone(),
+                    ctl.origin_info.donor_id[i].clone(),
+                    ctl.origin_info.origin_id[i].clone(),
                 ),
             ) as usize;
         }
 
-        // For each dataset index, and each sample, compute the total number of productive pairs.
+        // For each dataset index, and each origin, compute the total number of productive pairs.
 
-        let mut n_dataset_index = vec![0; ctl.sample_info.n()];
-        let mut n_sample = vec![0; samples.len()];
+        let mut n_dataset_index = vec![0; ctl.origin_info.n()];
+        let mut n_origin = vec![0; origins.len()];
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 let x = &tig_bc[i][j];
                 n_dataset_index[x.dataset_index] += 1;
-                n_sample[to_sample[x.dataset_index]] += 1;
+                n_origin[to_origin[x.dataset_index]] += 1;
             }
         }
 
         // Find all the V..J segments, and for each, the number of times it appears in each dataset ID.
         //
         // Note that there is no point running this unless we have at least two dataset IDs, and in
-        // fact unless there is a sample with at least two dataset IDs.  Better: just gather data for
-        // the sample for which there are at least two dataset IDs.  Also no point if NCROSS.
+        // fact unless there is an origin with at least two dataset IDs.  Better: just gather data for
+        // the origin for which there are at least two dataset IDs.  Also no point if NCROSS.
 
         let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, dataset index, count)
         {
@@ -264,7 +264,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
                 let dataset_index = vjx[i].1;
                 let n = vjx[i].2;
                 let x = n_dataset_index[dataset_index];
-                let y = n_sample[to_sample[dataset_index]];
+                let y = n_origin[to_origin[dataset_index]];
                 if y > 0 {
                     let p = (x as f64 / y as f64).powi(n as i32);
                     if p <= 1.0e-6 {

@@ -425,7 +425,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              >= or ≥ or < or <= or ≤.  \
              Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
              represents a \
-             sample/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
+             origin/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
              condition, each vi is \
              replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \
@@ -468,8 +468,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             and manually examine the test and control clonotypes to make sure that they make \
             sense.\n\n\
             \
-            \\bold{an example}\n\nSuppose that your data are comprised of two samples named pre \
-            and post, representing time points relative to some event.  Then\n\
+            \\bold{an example}\n\nSuppose that your data are comprised of two origins with datasets
+            named pre and post, representing time points relative to some event.  Then\n\
             \\bold{SCAN=\"n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1\"}\n\
             would define the test clonotypes to be those satisfying \
             n_post >= 10*n_pre (so having far more post cells then pre cells), \

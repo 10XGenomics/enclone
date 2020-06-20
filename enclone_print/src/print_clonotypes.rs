@@ -74,8 +74,8 @@ pub fn print_clonotypes(
     // Test for presence of GEX/FB data.
 
     let mut have_gex = false;
-    for i in 0..ctl.sample_info.gex_path.len() {
-        if ctl.sample_info.gex_path[i].len() > 0 {
+    for i in 0..ctl.origin_info.gex_path.len() {
+        if ctl.origin_info.gex_path[i].len() > 0 {
             have_gex = true;
         }
     }
@@ -83,9 +83,9 @@ pub fn print_clonotypes(
     // Gather alt_bcs_fields.
 
     let mut alt_bcs = Vec::<String>::new();
-    for li in 0..ctl.sample_info.alt_bc_fields.len() {
-        for i in 0..ctl.sample_info.alt_bc_fields[li].len() {
-            alt_bcs.push(ctl.sample_info.alt_bc_fields[li][i].0.clone());
+    for li in 0..ctl.origin_info.alt_bc_fields.len() {
+        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+            alt_bcs.push(ctl.origin_info.alt_bc_fields[li][i].0.clone());
         }
     }
     unique_sort(&mut alt_bcs);
@@ -93,7 +93,7 @@ pub fn print_clonotypes(
     // Compute number of vdj cells that are gex.
 
     let mut n_vdj_gex = Vec::<usize>::new();
-    for li in 0..ctl.sample_info.n() {
+    for li in 0..ctl.origin_info.n() {
         let mut n = 0;
         for y in gex_info.pca[li].iter() {
             if bin_member(&vdj_cells[li], &y.0) {
@@ -399,14 +399,14 @@ pub fn print_clonotypes(
                             lvarsc.push(lvars[m].clone());
                         }
                         let k = x.after("nd").force_usize();
-                        let mut n = vec![0 as usize; ctl.sample_info.n()];
+                        let mut n = vec![0 as usize; ctl.origin_info.n()];
                         for u in 0..nexacts {
                             let ex = &exact_clonotypes[exacts[u]];
                             for l in 0..ex.ncells() {
                                 n[ex.clones[l][0].dataset_index] += 1;
                             }
                         }
-                        let mut datasets = ctl.sample_info.dataset_id.clone();
+                        let mut datasets = ctl.origin_info.dataset_id.clone();
                         // does not work for unknown reason, so "manually" replaced
                         // sort_sync2(&mut n, &mut datasets);
                         let permutation = permutation::sort(&n[..]);
@@ -806,8 +806,8 @@ pub fn print_clonotypes(
                             for k in 0..lvars.len() {
                                 let nr = row.len();
                                 let mut filled = false;
-                                for l in 0..ctl.sample_info.n() {
-                                    if lvars[k] == format!("n_{}", ctl.sample_info.dataset_id[l]) {
+                                for l in 0..ctl.origin_info.n() {
+                                    if lvars[k] == format!("n_{}", ctl.origin_info.dataset_id[l]) {
                                         let mut n = 0;
                                         if di == l {
                                             n = 1;
@@ -820,7 +820,7 @@ pub fn print_clonotypes(
                                 } else if lvars[k] == "n_other".to_string() {
                                     let mut n = 0;
                                     let di = ex.clones[bcl.2][0].dataset_index;
-                                    let f = format!("n_{}", ctl.sample_info.dataset_id[di]);
+                                    let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
                                     let mut found = false;
                                     for i in 0..nd_fields.len() {
                                         if f == nd_fields[i] {
@@ -833,7 +833,7 @@ pub fn print_clonotypes(
                                     row.push(format!("{}", n));
                                 } else if bin_member(&alt_bcs, &lvars[k]) {
                                     let mut val = String::new();
-                                    let alt = &ctl.sample_info.alt_bc_fields[li];
+                                    let alt = &ctl.origin_info.alt_bc_fields[li];
                                     for j in 0..alt.len() {
                                         if alt[j].0 == lvars[k] {
                                             if alt[j].1.contains_key(&bc.clone()) {
@@ -843,7 +843,7 @@ pub fn print_clonotypes(
                                     }
                                     row.push(val);
                                 } else if lvars[k] == "datasets".to_string() {
-                                    row.push(format!("{}", ctl.sample_info.dataset_id[li].clone()));
+                                    row.push(format!("{}", ctl.origin_info.dataset_id[li].clone()));
                                 } else if lvars[k] == "clust".to_string() && have_gex {
                                     let mut cid = 0;
                                     if gex_info.cluster[li].contains_key(&bc.clone()) {

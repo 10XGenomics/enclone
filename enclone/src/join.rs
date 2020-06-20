@@ -253,10 +253,10 @@ pub fn join_exacts(
             }
             let (mut lena1, mut lena2) = (Vec::<String>::new(), Vec::<String>::new());
             for l1 in info[k1].origin.iter() {
-                lena1.push(ctl.sample_info.dataset_id[*l1].clone());
+                lena1.push(ctl.origin_info.dataset_id[*l1].clone());
             }
             for l2 in info[k2].origin.iter() {
-                lena2.push(ctl.sample_info.dataset_id[*l2].clone());
+                lena2.push(ctl.origin_info.dataset_id[*l2].clone());
             }
             fwriteln!(
                 log,
@@ -287,16 +287,16 @@ pub fn join_exacts(
                 fwriteln!(
                     log,
                     "{} = {}",
-                    ctl.sample_info.dataset_id[*l1],
-                    ctl.sample_info.descrips[*l1]
+                    ctl.origin_info.dataset_id[*l1],
+                    ctl.origin_info.descrips[*l1]
                 );
             }
             for l2 in info[k2].origin.iter() {
                 fwriteln!(
                     log,
                     "{} = {}",
-                    ctl.sample_info.dataset_id[*l2],
-                    ctl.sample_info.descrips[*l2]
+                    ctl.origin_info.dataset_id[*l2],
+                    ctl.origin_info.descrips[*l2]
                 );
             }
             let ci1 = info[k1].clonotype_index;
