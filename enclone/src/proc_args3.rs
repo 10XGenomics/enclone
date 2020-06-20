@@ -501,20 +501,15 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             let datasets = (*s).split(',').collect::<Vec<&str>>();
             let mut datasets_gex = Vec::<&str>::new();
             let mut datasets_bc = Vec::<&str>::new();
-            let mut datasetsx = Vec::<String>::new();
-            // presumably pointless now:
-            for i in 0..datasets.len() {
-                datasetsx.push(datasets[i].to_string());
-            }
             if have_gex {
                 datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
-                if datasets_gex.len() != datasetsx.len() {
+                if datasets_gex.len() != datasets.len() {
                     eprintln!(
                         "\nSee {} {} datasets and {} GEX datasets, so \
                          the {} and GEX arguments do not exactly mirror each \
                          other's structure.\n",
                         xcr,
-                        datasetsx.len(),
+                        datasets.len(),
                         datasets_gex.len(),
                         xcr
                     );
@@ -523,7 +518,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
             if !bc.is_empty() {
                 datasets_bc = origin_groups_bc[is].split(',').collect::<Vec<&str>>();
-                if datasets_bc.len() != datasetsx.len() {
+                if datasets_bc.len() != datasets.len() {
                     eprintln!(
                         "\nThe {} and BC arguments do not exactly mirror each \
                          other's structure.\n",
@@ -532,7 +527,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     std::process::exit(1);
                 }
             }
-            for (ix, x) in datasetsx.iter().enumerate() {
+            for (ix, x) in datasets.iter().enumerate() {
                 let mut p = (*x).to_string();
                 // ◼ In CR 4.0, the way we get to outs below will need to change.
 
