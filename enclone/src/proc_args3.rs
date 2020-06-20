@@ -528,14 +528,18 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                 }
             }
             for (ix, x) in datasets.iter().enumerate() {
-                let mut p = (*x).to_string();
-                // ◼ In CR 4.0, the way we get to outs below will need to change.
-
-                let mut source = f.clone();
-                if f.contains('=') {
-                    source = f.before("=");
+                ctl.origin_info.color.push("".to_string());
+                ctl.origin_info.tag.push(HashMap::<String, String>::new());
+                let donor_name = format!("d{}", id + 1);
+                let origin_name = format!("s{}", is + 1);
+                ctl.origin_info.donor_id.push(donor_name);
+                ctl.origin_info.origin_id.push(origin_name);
+                let mut dataset_name = (*x).to_string();
+                if dataset_name.contains('/') {
+                    dataset_name = dataset_name.rev_after("/").to_string();
                 }
-                p = get_path_or_internal_id(&p, &mut ctl, source);
+                ctl.origin_info.descrips.push(dataset_name.clone());
+                ctl.origin_info.dataset_id.push(dataset_name.clone());
 
                 // Now work on the BC path.
 
@@ -544,6 +548,16 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     bcx = datasets_bc[ix].to_string();
                 }
                 parse_bc(bcx, &mut ctl, "BC");
+            }
+            for (ix, x) in datasets.iter().enumerate() {
+                let mut p = (*x).to_string();
+                // ◼ In CR 4.0, the way we get to outs below will need to change.
+
+                let mut source = f.clone();
+                if f.contains('=') {
+                    source = f.before("=");
+                }
+                p = get_path_or_internal_id(&p, &mut ctl, source);
 
                 // Now work on the GEX path.
 
@@ -555,20 +569,8 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
 
                 // OK everything worked, all set.
 
-                let donor_name = format!("d{}", id + 1);
-                let origin_name = format!("s{}", is + 1);
-                let mut dataset_name = (*x).to_string();
-                if dataset_name.contains('/') {
-                    dataset_name = dataset_name.rev_after("/").to_string();
-                }
-                ctl.origin_info.descrips.push(dataset_name.clone());
                 ctl.origin_info.dataset_path.push(p);
                 ctl.origin_info.gex_path.push(pg);
-                ctl.origin_info.dataset_id.push(dataset_name.clone());
-                ctl.origin_info.donor_id.push(donor_name);
-                ctl.origin_info.color.push("".to_string());
-                ctl.origin_info.origin_id.push(origin_name);
-                ctl.origin_info.tag.push(HashMap::<String, String>::new());
             }
         }
     }
