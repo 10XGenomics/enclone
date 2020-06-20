@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
+use std::time::Instant;
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
@@ -405,6 +406,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         eprintln!("\nOnly one of TCR or BCR can be specified.\n");
         std::process::exit(1);
     }
+    let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
     ctl.gen_opt.bcr = f.starts_with("BCR=");
     let mut val: String;
@@ -458,6 +460,8 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         );
         std::process::exit(1);
     }
+    ctl.perf_stats(&t, "in proc_xcr 1");
+    let t = Instant::now();
     for (id, d) in donor_groups.iter().enumerate() {
         let origin_groups = (*d).split(':').collect::<Vec<&str>>();
         let mut origin_groups_gex = Vec::<&str>::new();
@@ -569,6 +573,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
         }
     }
+    ctl.perf_stats(&t, "in proc_xcr 2");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

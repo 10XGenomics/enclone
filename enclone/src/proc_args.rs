@@ -854,16 +854,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         );
         std::process::exit(1);
     }
+    ctl.perf_stats(&t, "after main args loop 1");
+    let t = Instant::now();
     check_cvars(&ctl);
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
         let f = get_path_fail(&f, &ctl, "META");
         proc_meta(&f, &mut ctl);
     }
+    ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
     }
+    let t = Instant::now();
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -993,7 +997,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    ctl.perf_stats(&t, "after main args loop");
+    ctl.perf_stats(&t, "after main args loop 2");
     proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.
