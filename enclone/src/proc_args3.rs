@@ -159,23 +159,6 @@ fn expand_analysis_sets(x: &str) -> String {
 
 // Functions to find the path to data.
 
-fn get_path(p: &str, ctl: &EncloneControl) -> String {
-    for x in ctl.gen_opt.pre.iter() {
-        let mut pp = format!("{}/{}", x, p);
-        if pp.starts_with("~") {
-            pp = stringme(&tilde_expand(&pp.as_bytes()));
-        }
-        if path_exists(&pp) {
-            return pp;
-        }
-    }
-    let mut pp = p.to_string();
-    if pp.starts_with("~") {
-        pp = stringme(&tilde_expand(&pp.as_bytes()));
-    }
-    pp
-}
-
 pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     for x in ctl.gen_opt.pre.iter() {
         let pp = format!("{}/{}", x, p);
@@ -203,9 +186,30 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     p.to_string()
 }
 
+fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
+    *ok = false;
+    for x in ctl.gen_opt.pre.iter() {
+        let mut pp = format!("{}/{}", x, p);
+        if pp.starts_with("~") {
+            pp = stringme(&tilde_expand(&pp.as_bytes()));
+        }
+        if path_exists(&pp) {
+            *ok = true;
+            return pp;
+        }
+    }
+    let mut pp = p.to_string();
+    if pp.starts_with("~") {
+        pp = stringme(&tilde_expand(&pp.as_bytes()));
+    }
+    *ok = path_exists(&pp);
+    pp
+}
+
 fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> String {
-    let mut pp = get_path(&p, &ctl);
-    if !path_exists(&pp) {
+    let mut ok = false;
+    let mut pp = get_path(&p, &ctl, &mut ok);
+    if !ok {
         if !ctl.gen_opt.internal_run {
             get_path_fail(&pp, &ctl, source);
         } else {
