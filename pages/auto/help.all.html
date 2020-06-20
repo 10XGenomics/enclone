@@ -178,9 +178,9 @@ The goal of enclone is to find and display the clonotypes within single cell VDJ
 of cells having the same fully rearranged common ancestor.
 
 enclone provides the foundation for fully understanding each cell's antigen affinity and the
-evolutionary relationship between cells within a sample.  This starts with, for each cell, <span style="font-weight:bold;">the
-full length sequence of all its VDJ receptor chains</span>.  Such data may be obtained using the 10x
-Genomics immune profiling platform.
+evolutionary relationship between cells within one or more datasets.  This starts with, for each
+cell, <span style="font-weight:bold;">the full length sequence of all its VDJ receptor chains</span>.  Such data may be obtained using
+the 10x Genomics immune profiling platform.
 
 See also the heuristics page at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
@@ -211,7 +211,7 @@ output.
 the same number of chains, identical V..J sequences, identical C segment assignments, and the same
 distance between the J stop and the C start (which is usually zero).
 
-<span style="color:#c23621;font-weight:bold;">3</span>.  Finding the germline sequences.  For samples from a given donor, enclone derives "donor
+<span style="color:#c23621;font-weight:bold;">3</span>.  Finding the germline sequences.  For datasets from a given donor, enclone derives "donor
 reference sequences" for the V chains present in the donor's genome.  This is powerful, even
 though based on imperfect information.  V segments vary in their expression frequency and thus the
 more cells which are present, the more complete the information will be.  It is also not possible
@@ -255,7 +255,7 @@ the algorithm's success.
 
 <span style="color:#c23621;font-weight:bold;">8</span>.  Are there enough shared mutations?  We find the probability p that “the shared mutations occur
 by chance”.  More specifically, given d shared mutations, and k total mutations (across the two
-cells), we compute the probability p that an sample with replacement of k items from a set whose
+cells), we compute the probability p that a sample with replacement of k items from a set whose
 size is the total number of bases in the V..J segments, yields at most k – d distinct elements. 
 The probability is an approximation, for the method please see
 <span style="color:#25bc24;">https://docs.rs/stirling_numbers/0.1.0/stirling_numbers</span>.
@@ -358,10 +358,10 @@ enclone help glossary
 │moresie             │  a clonotype having more than four chains;                                  │
 │                    │  these sad clonotypes do not represent true biological events               │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│donor               │  an individual from whom samples are obtained                               │
-│sample              │  a tube of cells from a donor, from a particular tissue at a                │
+│donor               │  an individual from whom datasets of an origin are obtained                 │
+│origin              │  a tube of cells from a donor, from a particular tissue at a                │
 │                    │  particular point in time, and possibly enriched for particular cells       │
-│cell group          │  an aliquot from a sample, presumed to be a random draw                     │
+│cell group          │  an aliquot from an origin, presumed to be a random draw                    │
 │dataset             │  all sequencing data obtained from a particular library type                │
 │                    │  (e.g. TCR or BCR or GEX or FB), from one cell group, processed by running  │
 │                    │  through the Cell Ranger pipeline                                           │
@@ -564,31 +564,31 @@ possible, as longer abbreviations will increase the width of the clonotype displ
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 <span style="color:#c23621;font-weight:bold;">█ 1 █</span> To point directly at input files on the command line, use e.g.
-<span style="font-weight:bold;">TCR=/home/jdoe/runs/sample345</span>
+<span style="font-weight:bold;">TCR=/home/jdoe/runs/dataset345</span>
 or likewise for <span style="font-weight:bold;">BCR</span>.  A more complicated syntax is allowed in which commas, colons and semicolons
-act as delimiters.  Commas go between datasets from the same sample, colons between datasets from
+act as delimiters.  Commas go between datasets from the same origin, colons between datasets from
 the same donor, and semicolons separate donors.  If semicolons are used, the value must be quoted.
 
-enclone uses the distinction between datasets, samples and donors in the following ways:
-1. If two datasets come from the same sample, then enclone can filter to remove certain artifacts,
+enclone uses the distinction between datasets, origins and donors in the following ways:
+1. If two datasets come from the same origin, then enclone can filter to remove certain artifacts,
 unless you specify the option <span style="font-weight:bold;">NCROSS</span>.
 See also illusory clonotype expansion page at <span style="color:#25bc24;">bit.ly/enclone</span>.
 2. If two cells came from different donors, then enclone will not put them in the same clonotype,
 unless you specify the option <span style="font-weight:bold;">MIX_DONORS</span>.
 More information may be found at `enclone help special`.  In addition, this is enclone's way of
-keeping datasets organized and affects the output of fields like sample, etc.
+keeping datasets organized and affects the output of fields like origin, etc.
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is        ┃
-┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">sample345</span> in the above example), or┃
-┃the entire name if there is no slash; samples and donors are assigned identifers s1,... and     ┃
-┃d1,..., respectively; numbering of samples restarts with each new donor.  <span style="font-weight:bold;">To specify samples</span>    ┃
-┃<span style="font-weight:bold;">and donors, use the second input form, and see in particular</span> <span style="color:#25bc24;">abbr:path</span><span style="font-weight:bold;">.</span>                         ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight:bold;">Naming.</span>  Using this input system, each dataset is assigned an abbreviated name, which is         ┃
+┃everything after the final slash in the directory name (e.g. <span style="font-weight:bold;">dataset345</span> in the above example), or┃
+┃the entire name if there is no slash; origins and donors are assigned identifers s1,... and      ┃
+┃d1,..., respectively; numbering of origins restarts with each new donor.  <span style="font-weight:bold;">To specify origins</span>     ┃
+┃<span style="font-weight:bold;">and donors, use the second input form, and see in particular</span> <span style="color:#25bc24;">abbr:path</span><span style="font-weight:bold;">.</span>                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 Examples:
-<span style="font-weight:bold;">TCR=p1,p2</span>   -- input data from two libraries from the same sample
-<span style="font-weight:bold;">TCR=p1,p2:q</span> -- input data as above plus another from a different sample from the same donor
+<span style="font-weight:bold;">TCR=p1,p2</span>   -- input data from two libraries from the same origin
+<span style="font-weight:bold;">TCR=p1,p2:q</span> -- input data as above plus another from a different origin from the same donor
 <span style="font-weight:bold;">TCR="a;b"</span>   -- input one library from each of two donors.
 
 Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
@@ -597,8 +597,8 @@ both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bol
 
 In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
 having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV file,
-which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">sample</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
-may also include arbitrary other fields.  The <span style="font-weight:bold;">sample</span> and <span style="font-weight:bold;">donor</span> fields allow a particular sample
+which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
+may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular origin
 and donor to be associated to a given barcode.  A use case for this is genetic demultiplexing. 
 The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is used by the <span style="font-weight:bold;">PLOT</span>
 option.  All other fields are treated as lead variables, but values are only displayed in <span style="font-weight:bold;">PER_CELL</span>
@@ -618,7 +618,7 @@ fields are allowed:
 │gex     │  null         │  path to GEX dataset, which may include or consist entirely  │
 │        │               │  of FB data                                                  │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
-│sample  │  s1           │  abbreviated name of sample                                  │
+│origin  │  s1           │  abbreviated name of origin                                  │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
 │donor   │  d1           │  abbreviated name of donor                                   │
 ├────────┼───────────────┼──────────────────────────────────────────────────────────────┤
@@ -865,7 +865,7 @@ enclone understands linear conditions of the form
 <span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
 where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
 Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  Each vi is a
-lead variable (see "<span style="font-weight:bold;">enclone help lvars</span>") that represents a sample/donor/tag count or gene/feature
+lead variable (see "<span style="font-weight:bold;">enclone help lvars</span>") that represents a origin/donor/tag count or gene/feature
 barcode UMI count.  In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values
 across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
 some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
@@ -896,8 +896,8 @@ examine the test and control clonotypes to make sure that they make sense.
 
 <span style="font-weight:bold;">an example</span>
 
-Suppose that your data are comprised of two samples named pre and post, representing time points
-relative to some event.  Then
+Suppose that your data are comprised of two origins with datasets
+            named pre and post, representing time points relative to some event.  Then
 <span style="font-weight:bold;">SCAN="n_post - 10*n_pre >= 0, n_pre - 0.5*n_post >= 0, t - 2*c >= 0.1"</span>
 would define the test clonotypes to be those satisfying n_post >= 10*n_pre (so having far more
 post cells then pre cells), the control clonotypes to be those satisfying n_pre >= 0.5*n_post (so
@@ -936,8 +936,8 @@ clonotype.
 │                    │  default behavior of enclone is to remove such cells from clonotypes.  This │
 │                    │  option disables that behavior.                                             │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│NCROSS              │  If you specify that two or more libraries arose from the same sample (i.e. │
-│                    │  from the same tube of cells), then the default behavior of enclone is to   │
+│NCROSS              │  If you specify that two or more libraries arose from the same origin (i.e. │
+│                    │  cells from the same tube or tissue), then by default enclone will          │
 │                    │  "cross filter" so as to remove expanded exact subclonotypes that are       │
 │                    │  present in one library but not another, in a fashion that would be highly  │
 │                    │  improbable, assuming random draws of cells from the tube.  These are       │
@@ -949,8 +949,8 @@ clonotype.
 │                    │  probably single cells.  There may also be other situations where the filter│
 │                    │  should be turned off, and in particular the filter can do weird things if  │
 │                    │  inputs are somehow mis-specified to enclone.  Note that for purposes of    │
-│                    │  this option, enclone defines a sample by the pair                          │
-│                    │  (sample name, donor name).                                                 │
+│                    │  this option, enclone defines an origin by the pair                         │
+│                    │  (origin name, donor name).                                                 │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NUMI                │  Filter out B cells based on low BCR UMI counts.  The heuristics for this   │
 │                    │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                       │
@@ -1033,12 +1033,12 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 
 ┌───────────────┬──────────────────────────────────────────────────────────────────────────────┐
 │datasets       │  dataset identifiers                                                         │
-│samples        │  sample identifiers                                                          │
+│origin         │  origin identifiers                                                          │
 │donors         │  donor identifiers                                                           │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │n              │  number of cells                                                             │
 │n_&lt;name>       │  number of cells associated to the given name, which can be a dataset        │
-│               │  or sample or donor or tag short name; may name only one such category       │
+│               │  or origin or donor or tag short name; may name only one such category       │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │nd&lt;k>          │  For k a positive integer, this creates k+1 fields, that are specific to each│
 │               │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset  │
@@ -1077,7 +1077,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │               │  percent of those that are also VDJ cells.  For multiple datasets, it would  │
 │               │  be better to "aggr" the data, however that is not currently supported       │
 │               │  The computation is also inefficient, so let us know if it's causing         │
-│               │  problems for you.  And cred makes much better sense for samples that        │
+│               │  problems for you.  And cred makes much better sense for datasets that       │
 │               │  consist of mixed cell types, rather than consisting of pure B or T cells.   │
 └───────────────┴──────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
@@ -1548,7 +1548,8 @@ Yes, type "enclone version".
 <span style="color:#5833ff;font-weight:bold;">18. Can enclone ingest multiple datasets from the same library?</span>
 
 If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  This
-behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.
+<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help developer
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 

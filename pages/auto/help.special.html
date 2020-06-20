@@ -28,8 +28,8 @@ clonotype.
 │                    │  default behavior of enclone is to remove such cells from clonotypes.  This │
 │                    │  option disables that behavior.                                             │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│NCROSS              │  If you specify that two or more libraries arose from the same sample (i.e. │
-│                    │  from the same tube of cells), then the default behavior of enclone is to   │
+│NCROSS              │  If you specify that two or more libraries arose from the same origin (i.e. │
+│                    │  cells from the same tube or tissue), then by default enclone will          │
 │                    │  "cross filter" so as to remove expanded exact subclonotypes that are       │
 │                    │  present in one library but not another, in a fashion that would be highly  │
 │                    │  improbable, assuming random draws of cells from the tube.  These are       │
@@ -41,8 +41,8 @@ clonotype.
 │                    │  probably single cells.  There may also be other situations where the filter│
 │                    │  should be turned off, and in particular the filter can do weird things if  │
 │                    │  inputs are somehow mis-specified to enclone.  Note that for purposes of    │
-│                    │  this option, enclone defines a sample by the pair                          │
-│                    │  (sample name, donor name).                                                 │
+│                    │  this option, enclone defines an origin by the pair                         │
+│                    │  (origin name, donor name).                                                 │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NUMI                │  Filter out B cells based on low BCR UMI counts.  The heuristics for this   │
 │                    │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                       │

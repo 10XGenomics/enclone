@@ -201,7 +201,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              VDJ datasets: groups of cells having the same fully rearranged common ancestor.\n\n\
              \
              enclone provides the foundation for fully understanding each cell's antigen \
-             affinity and the evolutionary relationship between cells within a sample.  \
+             affinity and the evolutionary relationship between cells within one or more datasets.  \
              This starts with, for each cell, \
              \\bold{the full length sequence of all its VDJ receptor chains}.  Such data may be \
              obtained using the 10x Genomics immune profiling platform.\n\n\
@@ -245,7 +245,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              number of chains, identical V..J sequences, identical C segment assignments, \
              and the same distance between the J stop and the C start (which is usually zero).\n\n\
              \
-             \\boldred{3}.  Finding the germline sequences.  For samples from a given donor, \
+             \\boldred{3}.  Finding the germline sequences.  For datasets from a given donor, \
              enclone derives \"donor reference sequences\" for the V chains present in the donor's \
              genome.  This is powerful, even though based on imperfect information.  V segments \
              vary in their expression frequency and thus the more cells which are present, the \
@@ -298,7 +298,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \\boldred{8}.  Are there enough shared mutations?  \
              We find the probability p that “the shared mutations occur by chance”.  More \
              specifically, given d shared mutations, and k total mutations (across the two cells), \
-             we compute the probability p that an sample with replacement of k items from a set \
+             we compute the probability p that a sample with replacement of k items from a set \
              whose size is the total number of bases in the V..J segments, yields at most k – d \
              distinct elements.  The probability is an approximation, for the method please see\n\
              \\green{https://docs.rs/stirling_numbers/0.1.0/stirling_numbers}.\n\n\
@@ -489,9 +489,12 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         // doc donor etc.
 
-        h.ldoc("donor", "an individual from whom samples are obtained");
+        h.ldoc(
+            "donor",
+            "an individual from whom datasets of an origin are obtained",
+        );
         h.doc(
-            "sample",
+            "origin",
             "a tube of cells from a donor, from a particular tissue at a",
         );
         h.doc(
@@ -500,7 +503,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc(
             "cell group",
-            "an aliquot from a sample, presumed to be a random draw",
+            "an aliquot from an origin, presumed to be a random draw",
         );
         h.doc(
             "dataset",

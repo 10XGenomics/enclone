@@ -240,40 +240,40 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\
-             \\bold{TCR=/home/jdoe/runs/sample345}\n\
+             \\bold{TCR=/home/jdoe/runs/dataset345}\n\
              or likewise for \\bold{BCR}.  A more complicated syntax is allowed in which commas, \
              colons and semicolons act as delimiters.  Commas go between datasets from the \
-             same sample, colons between datasets from the same donor, and semicolons separate \
+             same origin, colons between datasets from the same donor, and semicolons separate \
              donors.  If semicolons are used, the value must be quoted.\n\n",
         );
         h.print(
-            "enclone uses the distinction between datasets, samples and donors in the following \
+            "enclone uses the distinction between datasets, origins and donors in the following \
              ways:\n\
-             1. If two datasets come from the same sample, then enclone can filter to remove \
+             1. If two datasets come from the same origin, then enclone can filter to remove \
              certain artifacts, unless you specify the option \\bold{NCROSS}.\n\
              See also illusory clonotype expansion page at \\green{bit.ly/enclone}.\n\
              2. If two cells came from different donors, then enclone will not put them in the \
              same clonotype, unless you specify the option \\bold{MIX_DONORS}.\n\
              More information may be found at `enclone help special`.  In addition, this is \
              enclone's way of keeping datasets organized and affects the output of fields like \
-             sample, etc.\n\n",
+             origin, etc.\n\n",
         );
 
         h.print_with_box(
             "\\bold{Naming.}  Using this input system, each dataset is assigned an abbreviated \
              name, which is \
-             everything after the final slash in the directory name (e.g. \\bold{sample345} in the \
+             everything after the final slash in the directory name (e.g. \\bold{dataset345} in the \
              above example), or the entire name if there is no slash; \
-             samples and donors are assigned identifers s1,... and d1,..., respectively; \
-             numbering of samples restarts with each new donor.  \\bold{To specify samples}\n\
+             origins and donors are assigned identifers s1,... and d1,..., respectively; \
+             numbering of origins restarts with each new donor.  \\bold{To specify origins}\n\
              \\bold{and donors, use the second input form, and see in particular} \
              \\green{abbr:path}\\bold{.}",
             true,
         );
         h.print(
             "Examples:\n\
-             \\bold{TCR=p1,p2}   -- input data from two libraries from the same sample\n\
-             \\bold{TCR=p1,p2:q} -- input data as above plus another from a different sample \
+             \\bold{TCR=p1,p2}   -- input data from two libraries from the same origin\n\
+             \\bold{TCR=p1,p2:q} -- input data as above plus another from a different origin \
              from the same donor\n\
              \\bold{TCR=\"a;b\"}   -- input one library from each of two donors.\n\n",
         );
@@ -287,9 +287,9 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "In addition, barcode-level data may be specified using \\bold{BC=...}, whose right \
              side is a list of paths having the same structure as the \\bold{TCR} or \\bold{BCR} \
              argument.  Each such path must be for a CSV file, which must include the field \
-             \\bold{barcode}, may include special fields \\bold{sample}, \\bold{donor}, \
+             \\bold{barcode}, may include special fields \\bold{origin}, \\bold{donor}, \
              \\bold{tag} and \\bold{color}, and may also include arbitrary other fields.  The \
-             \\bold{sample} and \\bold{donor} fields allow a particular sample and donor to be \
+             \\bold{origin} and \\bold{donor} fields allow a particular origin and donor to be \
              associated to a given barcode.  A use case for this is genetic demultiplexing.  The \
              \\bold{tag} field is intended to be used with tag demultiplexing.  The \\bold{color} \
              field is used by the \\bold{PLOT} option.  All other fields are treated as lead \
@@ -321,7 +321,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "path to GEX dataset, which may include or consist entirely",
         );
         h.doc3("", "", "of FB data");
-        h.ldoc3("sample", "s1", "abbreviated name of sample");
+        h.ldoc3("origin", "s1", "abbreviated name of origin");
 
         h.ldoc3("donor", "d1", "abbreviated name of donor");
         h.ldoc3pr(

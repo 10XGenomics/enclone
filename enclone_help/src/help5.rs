@@ -373,7 +373,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\\boldblue{18. Can enclone ingest multiple datasets from the same library?}\n\n");
         h.print(
             "If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  \
-            This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}."
+            This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}.\n"
         );
 
         h.end_doc();

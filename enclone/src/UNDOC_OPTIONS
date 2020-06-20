@@ -63,8 +63,8 @@ Other optional arguments:
                  n = 10,000.  Lowering the value of this will increase the number of onesie
                  exact subclonotypes, but increase the fraction that are incorrect.
 - NPLAIN: reverses PLAIN
-- INDELS: search for SHM indels (exploratory)
-- INSERTIONS: search for SHM insertions (exploratory)
+- INDELS: search for and list CDR3s from clonotypes with possible SHM indels (exploratory)
+- INSERTIONS: search for and list CDR3s from clonotypes with possible SHM insertions (exploratory)
 - NOPRETTY: turn off pretty trace entirely
 - HEAVY_CHAIN_REUSE: look for instances of heavy chain reuse
 - BINARY=filename: generate binary output file

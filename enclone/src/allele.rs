@@ -382,7 +382,7 @@ pub fn find_alleles(
                     println!(
                         "\nDONOR {} ({})",
                         donor_id + 1,
-                        ctl.sample_info.donor_list[donor_id]
+                        ctl.origin_info.donor_list[donor_id]
                     );
                     println!("{} = |{}| = {}", id, refdata.id[id], refdata.name[id]);
                     println!("ps = {}", ps.iter().format(","));
@@ -429,7 +429,7 @@ pub fn find_alleles(
 
                 /*
                 let all = &alls[di];
-                let ll = &ctl.sample_info.dataset_list[donor_id];
+                let ll = &ctl.origin_info.dataset_list[donor_id];
                 let mut count = vec![vec![0; keep0.len()]; ll.len()];
                 for i in 0..all.len() {
                     let lid = all[i].4;
@@ -440,8 +440,8 @@ pub fn find_alleles(
                     let m = bin_position(&keep0, &allele);
                     if m >= 0 {
                         let l = bin_position(
-                            &ctl.sample_info.dataset_list[donor_id],
-                            // &ctl.sample_info.dataset_id[lid].force_usize());
+                            &ctl.origin_info.dataset_list[donor_id],
+                            // &ctl.origin_info.dataset_id[lid].force_usize());
                             &lid,
                         );
                         count[l as usize][m as usize] += 1;

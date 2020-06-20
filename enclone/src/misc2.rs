@@ -205,7 +205,7 @@ pub fn create_exact_subclonotype_core(
                     barcode: tig_bc[t][m].barcode.clone(),
                     tigname: tig_bc[t][m].tigname.clone(),
                     dataset_index: tig_bc[t][m].dataset_index,
-                    sample_index: tig_bc[t][m].sample_index,
+                    origin_index: tig_bc[t][m].origin_index,
                     donor_index: tig_bc[t][m].donor_index,
                     tag_index: tig_bc[t][m].tag_index,
                     umi_count: tig_bc[t][m].umi_count,
@@ -290,7 +290,7 @@ pub fn find_exact_subclonotypes(
                         println!("see reuse of barcode {}", tig_bc[t1][0].barcode);
                         print!(
                             "{}: numis =",
-                            ctl.sample_info.dataset_id[tig_bc[t1][0].dataset_index]
+                            ctl.origin_info.dataset_id[tig_bc[t1][0].dataset_index]
                         );
                         for m in 0..tig_bc[t1].len() {
                             print!(" {}", tig_bc[t1][m].umi_count);
@@ -298,7 +298,7 @@ pub fn find_exact_subclonotypes(
                         println!("");
                         print!(
                             "{}: numis =",
-                            ctl.sample_info.dataset_id[tig_bc[t2][0].dataset_index]
+                            ctl.origin_info.dataset_id[tig_bc[t2][0].dataset_index]
                         );
                         for m in 0..tig_bc[t2].len() {
                             print!(" {}", tig_bc[t2][m].umi_count);
@@ -416,7 +416,7 @@ pub fn find_exact_subclonotypes(
             println!(
                 "clone {} = {}.{}",
                 i + 1,
-                ctl.sample_info.dataset_id[x.dataset_index],
+                ctl.origin_info.dataset_id[x.dataset_index],
                 x.barcode
             );
         }
@@ -466,7 +466,7 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
     if !ctl.gen_opt.accept_reuse {
         const MIN_REUSE_FRAC_TO_SHOW: f64 = 0.25;
         let mut all = Vec::<(String, usize, usize)>::new();
-        let mut total = vec![0; ctl.sample_info.dataset_id.len()];
+        let mut total = vec![0; ctl.origin_info.dataset_id.len()];
         for i in 0..tig_bc.len() {
             all.push((tig_bc[i][0].barcode.clone(), tig_bc[i][0].dataset_index, i));
             total[tig_bc[i][0].dataset_index] += 1;
@@ -521,8 +521,8 @@ pub fn check_for_barcode_reuse(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>)
                 }
                 eprintln!(
                     "{}, {} ==> {} of {}, {} barcodes ({:.1}%)",
-                    ctl.sample_info.dataset_id[l1],
-                    ctl.sample_info.dataset_id[l2],
+                    ctl.origin_info.dataset_id[l1],
+                    ctl.origin_info.dataset_id[l2],
                     n,
                     n1,
                     n2,

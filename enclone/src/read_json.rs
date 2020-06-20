@@ -67,7 +67,7 @@ fn parse_vector_entry_from_json(
     x: &Vec<u8>,
     json: &String,
     accept_inconsistent: bool,
-    sample_info: &SampleInfo,
+    origin_info: &OriginInfo,
     li: usize,
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
@@ -384,47 +384,47 @@ fn parse_vector_entry_from_json(
     // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
     let umi_count = v["umi_count"].as_i64().unwrap() as usize;
     let read_count = v["read_count"].as_i64().unwrap() as usize;
-    let mut sample = None;
+    let mut origin = None;
     let mut donor = None;
     let mut tag = None;
-    if sample_info.sample_for_bc[li].contains_key(&barcode.clone()) {
-        sample = Some(sample_info.sample_for_bc[li][&barcode.clone()].clone());
+    if origin_info.origin_for_bc[li].contains_key(&barcode.clone()) {
+        origin = Some(origin_info.origin_for_bc[li][&barcode.clone()].clone());
     } else {
         // the way we use s1 here is flaky
-        if sample_info.sample_id[li].len() > 0
-            && (sample_info.sample_id[li] != "s1".to_string()
-                || sample_info.sample_for_bc[li].len() == 0)
+        if origin_info.origin_id[li].len() > 0
+            && (origin_info.origin_id[li] != "s1".to_string()
+                || origin_info.origin_for_bc[li].len() == 0)
         {
-            sample = Some(sample_info.sample_id[li].clone());
+            origin = Some(origin_info.origin_id[li].clone());
         }
     }
-    if sample_info.donor_for_bc[li].contains_key(&barcode.clone()) {
-        donor = Some(sample_info.donor_for_bc[li][&barcode.clone()].clone());
+    if origin_info.donor_for_bc[li].contains_key(&barcode.clone()) {
+        donor = Some(origin_info.donor_for_bc[li][&barcode.clone()].clone());
     } else {
         // the way we use d1 here is flaky
-        if sample_info.sample_id[li].len() > 0
-            && (sample_info.donor_id[li] != "d1".to_string()
-                || sample_info.donor_for_bc[li].len() == 0)
+        if origin_info.origin_id[li].len() > 0
+            && (origin_info.donor_id[li] != "d1".to_string()
+                || origin_info.donor_for_bc[li].len() == 0)
         {
-            donor = Some(sample_info.donor_id[li].clone());
+            donor = Some(origin_info.donor_id[li].clone());
         }
     }
-    if sample_info.tag[li].contains_key(&barcode.clone()) {
-        tag = Some(sample_info.tag[li][&barcode.clone()].clone());
+    if origin_info.tag[li].contains_key(&barcode.clone()) {
+        tag = Some(origin_info.tag[li][&barcode.clone()].clone());
     }
-    let mut sample_index = None;
+    let mut origin_index = None;
     let mut donor_index = None;
     let mut tag_index = None;
-    if sample.is_some() {
-        if sample.is_some() {
-            sample_index = Some(bin_position(&sample_info.sample_list, &sample.unwrap()) as usize);
+    if origin.is_some() {
+        if origin.is_some() {
+            origin_index = Some(bin_position(&origin_info.origin_list, &origin.unwrap()) as usize);
         }
         if donor.is_some() {
-            donor_index = Some(bin_position(&sample_info.donor_list, &donor.unwrap()) as usize);
+            donor_index = Some(bin_position(&origin_info.donor_list, &donor.unwrap()) as usize);
         }
     }
     if tag.is_some() {
-        tag_index = Some(bin_position(&sample_info.tag_list, &tag.unwrap()) as usize);
+        tag_index = Some(bin_position(&origin_info.tag_list, &tag.unwrap()) as usize);
     }
     tigs.push(TigData {
         cdr3_dna: cdr3_dna.to_string(),
@@ -451,7 +451,7 @@ fn parse_vector_entry_from_json(
         tigname: tigname.to_string(),
         left: left,
         dataset_index: li,
-        sample_index: sample_index,
+        origin_index: origin_index,
         donor_index: donor_index,
         tag_index: tag_index,
         umi_count: umi_count,
@@ -488,7 +488,7 @@ fn parse_vector_entry_from_json(
 
 pub fn read_json(
     accept_inconsistent: bool,
-    sample_info: &SampleInfo,
+    origin_info: &OriginInfo,
     li: usize,
     json: &String,
     refdata: &RefData,
@@ -553,7 +553,7 @@ pub fn read_json(
             &xs[i],
             &json,
             accept_inconsistent,
-            &sample_info,
+            &origin_info,
             li,
             &refdata,
             &to_ref_index,
@@ -623,7 +623,7 @@ pub fn parse_json_annotations_files(
     vdj_cells: &mut Vec<Vec<String>>,
 ) {
     let tl = Instant::now();
-    // (sample index, contig name, V..J length): (?)
+    // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
         usize,
         Vec<(String, usize)>,
@@ -632,7 +632,7 @@ pub fn parse_json_annotations_files(
         String,
         Vec<String>,
     )>::new();
-    for i in 0..ctl.sample_info.dataset_path.len() {
+    for i in 0..ctl.origin_info.dataset_path.len() {
         results.push((
             i,
             Vec::<(String, usize)>::new(),
@@ -651,15 +651,15 @@ pub fn parse_json_annotations_files(
     }
     results.par_iter_mut().for_each(|res| {
         let li = res.0;
-        let json = format!("{}/{}", ctl.sample_info.dataset_path[li], ann);
-        let json_lz4 = format!("{}/{}.lz4", ctl.sample_info.dataset_path[li], ann);
+        let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
+        let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[li], ann);
         if !path_exists(&json) && !path_exists(&json_lz4) {
             eprintln!("\ncan't find {} or {}\n", json, json_lz4);
             std::process::exit(1);
         }
         let tig_bc: Vec<Vec<TigData>> = read_json(
             ctl.gen_opt.accept_inconsistent,
-            &ctl.sample_info,
+            &ctl.origin_info,
             li,
             &json,
             &refdata,
