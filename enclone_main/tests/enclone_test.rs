@@ -225,6 +225,17 @@ fn test_datasets_sha256() {
 #[cfg(feature = "cpu")]
 #[test]
 fn test_cpu() {
+    println!(
+        "\nSpeed tests.  These are calibrated for a particular server, bespin1 at\n\
+        10x Genomics.  If this code is run using a different server, or if that server is\n\
+        changed, the results may change.  These tests also use 10x Genomics datasets that are\n\
+        not distributed publicly (although perhaps could be).  Finally note that the datasets\n\
+        themselves could be changed without changing this code, and that could affect results."
+    );
+    println!(
+        "\nThese tests are expected to fail intermittently simply because of stochastic variation\n\
+        in computational performance (or competing load on the server)."
+    );
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
     let expect = 7700;
