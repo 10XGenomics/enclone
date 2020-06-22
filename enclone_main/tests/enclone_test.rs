@@ -229,6 +229,11 @@ fn test_cpu() {
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
     let expect = 7700;
     let percent_dev = 6.0;
+    println!("\nSpeed test 1");
+    println!(
+        "\nThis tests cpu cycles.  If the code is parallelized better, this test may get \n\
+        slower.  Such changes should be accepted if they reduce wallclock."
+    );
     let mut out = String::new();
     let mut ok = false;
     let mut log = String::new();
