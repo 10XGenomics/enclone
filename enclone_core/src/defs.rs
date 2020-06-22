@@ -547,15 +547,21 @@ pub struct EncloneControl {
     pub toy: bool,                        // toy with phylogeny
 }
 
+pub static mut WALLCLOCK: f64 = 0.0;
+
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
+        let used = elapsed(&t);
         if self.comp {
             println!(
                 "used {:.2} seconds {}, peak mem = {:.2} GB",
-                elapsed(&t),
+                used,
                 msg,
                 peak_mem_usage_gb()
             );
+        }
+        unsafe {
+            WALLCLOCK += used;
         }
     }
 }

@@ -19,7 +19,6 @@ use enclone_core::defs::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::cmp::*;
 use std::collections::HashMap;
@@ -113,9 +112,7 @@ pub fn join_exacts(
     if !ctl.silent {
         println!("comparing {} simple clonotypes", info.len());
     }
-    if ctl.comp {
-        println!("used {:.2} seconds in join setup", elapsed(&timer1));
-    }
+    ctl.perf_stats(&timer1, "join setup");
     let timer2 = Instant::now();
     results.par_iter_mut().for_each(|r| {
         let (i, j) = (r.0, r.1);
@@ -444,8 +441,6 @@ pub fn join_exacts(
             logplus.push((info[k1].clonotype_index, info[k2].clonotype_index, err, log));
         }
     });
-    if ctl.comp {
-        println!("used {:.2} seconds in main part of join", elapsed(&timer2));
-    }
+    ctl.perf_stats(&timer2, "in main part of join");
     finish_join(&ctl, &exact_clonotypes, &info, &results, &mut join_info)
 }

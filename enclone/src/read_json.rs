@@ -10,7 +10,6 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::sync::atomic::AtomicBool;
@@ -697,7 +696,5 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
     }
-    if ctl.comp {
-        println!("used {:.2} seconds loading from JSON", elapsed(&tl));
-    }
+    ctl.perf_stats(&tl, "loading from json");
 }

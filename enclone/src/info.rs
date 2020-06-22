@@ -11,7 +11,6 @@ use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::sync::atomic::AtomicBool;
 use std::time::Instant;
@@ -341,8 +340,6 @@ pub fn build_info(
 
     // Done.
 
-    if ctl.comp {
-        println!("used {:.2} seconds building info", elapsed(&timer));
-    }
+    ctl.perf_stats(&timer, "building info");
     info
 }

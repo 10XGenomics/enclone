@@ -4,7 +4,6 @@
 
 use enclone_core::defs::*;
 use equiv::EquivRel;
-use perf_stats::*;
 use stats_utils::*;
 use std::time::Instant;
 use vector_utils::*;
@@ -168,8 +167,6 @@ pub fn finish_join(
         let bad_rate = percent_ratio(bads, denom);
         println!("whitelist contamination rate = {:.2}%", bad_rate);
     }
-    if ctl.comp {
-        println!("used {:.2} seconds in tail of join", elapsed(&timer3));
-    }
+    ctl.perf_stats(&timer3, "in tail of join");
     eq
 }

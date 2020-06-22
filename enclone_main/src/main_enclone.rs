@@ -33,6 +33,7 @@ use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
+use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use regex::Regex;
@@ -1414,7 +1415,14 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Report computational performance.
 
+    let delta;
+    unsafe {
+        delta = elapsed(&tall) - WALLCLOCK;
+    }
     ctl.perf_stats(&tall, "total");
+    if ctl.comp {
+        println!("used {:.1} seconds unaccounted for", delta);
+    }
 
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if print_cpu || print_cpu_info {
