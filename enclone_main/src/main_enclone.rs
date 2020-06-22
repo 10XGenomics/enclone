@@ -1421,7 +1421,7 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     ctl.perf_stats(&tall, "total");
     if ctl.comp {
-        println!("used {:.1} seconds unaccounted for", delta);
+        println!("used {:.2} seconds unaccounted for", delta);
     }
 
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
