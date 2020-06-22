@@ -225,17 +225,26 @@ fn test_datasets_sha256() {
 #[cfg(feature = "cpu")]
 #[test]
 fn test_cpu() {
+    // Introductory comments.
+
     println!(
-        "\nSpeed tests.  These are calibrated for a particular server, bespin1 at\n\
-        10x Genomics.  If this code is run using a different server, or if that server is\n\
-        changed, the results may change.  These tests also use 10x Genomics datasets that are\n\
-        not distributed publicly (although perhaps could be).  Finally note that the datasets\n\
-        themselves could be changed without changing this code, and that could affect results."
+        "\nSPEED TESTS\n\n\
+        • These are calibrated for a particular server, bespin1 at \
+        10x Genomics.  If this code is run\nusing a different server, or if that server is \
+        changed, the tests will need to be recalibrated.\n\
+        • These tests also use 10x Genomics datasets that are not distributed publicly\n\
+        (although perhaps could be).\n\
+        • Finally note that the datasets \
+        themselves could be changed without changing this code,\nand that could affect results."
     );
     println!(
         "\nThese tests are expected to fail intermittently simply because of stochastic variation\n\
-        in computational performance (or competing load on the server)."
+        in computational performance (or competing load on the server).  Note also that they\n\
+        depend on files being in a cached state."
     );
+
+    // Speed test 1.
+
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
     let expect = 7700;
@@ -291,6 +300,43 @@ fn test_cpu() {
         this_used,
         percent_ratio(this_used, all_used),
         dev
+    );
+    if dev.abs() > percent_dev {
+        eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
+        std::process::exit(1);
+    }
+
+    // Speed test 2.
+
+    let it = 2;
+    let test =
+        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 59.0;
+    let percent_dev = 6.0;
+    println!("Speed test 2");
+    println!(
+        "\nThis tests wall clock.  It is thus particularly susceptible to competing load \
+        on the server.\nThis test takes about a minute and may trigger a warning from cargo \
+        after 60 seconds.\n"
+    );
+    let t = Instant::now();
+    let mut out = String::new();
+    let mut ok = false;
+    let mut log = String::new();
+    run_test(
+        env!("CARGO_BIN_EXE_enclone"),
+        it,
+        &test,
+        "cpu",
+        &mut ok,
+        &mut log,
+        &mut out,
+    );
+    let this_used = elapsed(&t);
+    let dev = 100.0 * (this_used as f64 - expect as f64) / (expect as f64);
+    println!(
+        "\nused wallclock = {:.1} seconds, dev = {:.1}%\n",
+        this_used, dev
     );
     if dev.abs() > percent_dev {
         eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
