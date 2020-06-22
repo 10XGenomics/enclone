@@ -227,7 +227,7 @@ fn test_datasets_sha256() {
 fn test_cpu() {
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 7300;
+    let expect = 7700;
     let percent_dev = 6.0;
     let mut out = String::new();
     let mut ok = false;
