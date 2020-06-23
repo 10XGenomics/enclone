@@ -44,7 +44,7 @@ pub fn species(refdata: &RefData) -> String {
             if line.starts_with(">") && line.contains("|TRAC") {
                 in_trac = true;
                 continue;
-            } else if line.starts_with(">") {
+            } else if in_trac && line.starts_with(">") {
                 break;
             }
             if in_trac {
