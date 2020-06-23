@@ -233,6 +233,9 @@ pub fn make_loupe_clonotype(
         for l in 0..ex.clones.len() {
             cell_barcodes.push(ex.clones[l][0].barcode.clone());
         }
+        let inkt_evidence = InvariantTCellAnnotation::default();
+        let mait_evidence = InvariantTCellAnnotation::default();
+        // to fill in ...........................................................................
         ecl.push(ExactSubClonotype {
             chains: chains
                 .into_iter()
@@ -245,6 +248,8 @@ pub fn make_loupe_clonotype(
                 })
                 .collect(),
             cell_barcodes: cell_barcodes,
+            inkt_evidence: inkt_evidence,
+            mait_evidence: mait_evidence,
         });
     }
 
@@ -258,8 +263,6 @@ pub fn make_loupe_clonotype(
         chains: xchains,
         exact_clonotypes: ecl,
         frequency: n as u32,
-        // TODO: The iNKT/MAIT Annotation goes here
-        invariant_tcell: None,
     }
 }
 

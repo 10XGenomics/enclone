@@ -657,6 +657,14 @@ pub struct TigData1 {
     pub vs: DnaString,                        // reference V segment (possibly donor allele)
     pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
     pub js: DnaString,     // reference J segment
+    pub inkt_alpha_chain_gene_match: bool,
+    pub inkt_alpha_chain_junction_match: bool,
+    pub inkt_beta_chain_gene_match: bool,
+    pub inkt_beta_chain_junction_match: bool,
+    pub mait_alpha_chain_gene_match: bool,
+    pub mait_alpha_chain_junction_match: bool,
+    pub mait_beta_chain_gene_match: bool,
+    pub mait_beta_chain_junction_match: bool,
 }
 
 #[derive(Clone)]

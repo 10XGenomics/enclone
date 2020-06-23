@@ -1,7 +1,6 @@
 // Copyright (c) 2020 10x Genomics, Inc. All rights reserved.
 
 pub mod filter;
-pub mod innate;
 pub mod loupe;
 pub mod print_clonotypes;
 pub mod print_utils1;

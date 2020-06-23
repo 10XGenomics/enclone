@@ -11,31 +11,13 @@ enum Region {
     C = 4; // Constant region
 }
 
-
-// iNKT and MAIT cell types
-enum InvariantTCellType {
-    INKT = 0; // invariant natural killer T cells
-    MAIT = 1; // mucosal associated invariant T cells
-}
-
-// The amount of evidence we have about a single chain on whether the cell is iNKT/MAIT
-enum InvariantTCellEvidence {
-    GeneMatch = 0; // Matches the expected V/J genes
-    JunctionMatch = 1; // Matches the V/J genes and the CDR3
-}
-
-// iNKT/MAIT annotation details
+// Evidence that a given cell is iNKT or MAIT.   Each ExactSubclonotype has one instantiation of
+// this structure for iNKT and one for MAIT.
 message InvariantTCellAnnotation {
-    required InvariantTCellType cell_type = 1;
-    // What level of evidence do we have in the alpha chain. None indicates either the chain is
-    // missing or there is no match to the expected genes.
-    optional InvariantTCellEvidence alpha_chain_evidence = 2;
-    // What level of evidence do we have in the beta chain. None indicates either the chain is
-    // missing or there is no match to the expected genes.
-    optional InvariantTCellEvidence beta_chain_evidence = 3;
-    // Total score for the evidence across both chains with a score of 1 for GeneMatch
-    // and 2 for JunctionMatch
-    required uint32 evidence_score = 4;
+    required bool AlphaChainGeneMatch = 1;
+    required bool AlphaChainJunctionMatch = 2;
+    required bool BetaChainGeneMatch = 3;
+    required bool BetaChainJunctionMatch = 4;
 }
 
 // Representation of an alignment
@@ -116,6 +98,11 @@ message ExactSubClonotype {
     // equal to the number of elements in the `umi_counts` and `contig_ids` vector in an
     // `ExactSubClonotypeChain`. The barcodes have the appropriate gem group as the suffix.
     repeated string cell_barcodes = 2;
+    // For a T cell, optionally annotate the exact subclonotype as one or both of iNKT/MAIT. This
+    // data structure stores the evidence we have about the annotation.  The evidence can be zero,
+    // and indeed this will be the case for all B cells.
+    required InvariantTCellAnnotation inkt_evidence = 3;
+    required InvariantTCellAnnotation mait_evidence = 4;
 }
 
 // Define a clonotype chain
@@ -208,10 +195,6 @@ message Clonotype {
     // summing up the number of barcodes within each exact subclonotype, but it is stored here for
     // convenience.
     required uint32 frequency = 3;
-    // For a T cell, optionally annotate the clonotype as one of iNKT/MAIT. This data structure
-    // stores the details about the annotation as well as the evidence we have about the
-    // annotation.
-    optional InvariantTCellAnnotation invariant_tcell = 4;
 }
 
 // A single donor reference sequence and metadata packaged in a convenient struct. In the

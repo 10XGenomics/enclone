@@ -6,7 +6,7 @@
 // the TRAC sequence in the provided reference sequences, and the internally provided reference
 // sequences for human and mouse.
 
-// use enclone_core::defs::*;
+use enclone_core::defs::*;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -51,6 +51,9 @@ pub fn species(refdata: &RefData) -> String {
                 trac.append(&mut line.as_bytes().to_vec());
             }
         }
+        if trac.len() < K {
+            return "unknown".to_string();
+        }
         for i in 0..=trac.len() - K {
             let kmer = trac[i..i + K].to_vec();
             if bin_member(&kmers, &kmer) {
@@ -87,30 +90,25 @@ pub fn innate_cdr3(species: &str, class: &str) -> Vec<String> {
     cdr3
 }
 
-// mark_innate: for each exact subclonotype, return "iNKT" or "MAIT" or "".
+// mark_innate: for each exact subclonotype, fill in iNKT and MAIT fields.
 
-/*
-
-pub fn mark_innate(refdata: &RefData, ex: &Vec<ExactClonotype>) -> Vec<String> {
+pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
     let species = species(&refdata);
     let inkt_cdr3 = innate_cdr3(&species, "iNKT");
-    iet mait_cdr3 = innate_cdr3(&species, "MAIT");
-    let innate = vec![String::new(); ex.len()];
+    let mait_cdr3 = innate_cdr3(&species, "MAIT");
     for i in 0..ex.len() {
         let (mut have_mait_tra, mut have_mait_trb) = (false, false);
         let (mut have_mait_tra_cdr3, mut have_mait_trb_cdr3) = (false, false);
-        let mut vname = refdata.name[ex.share[j].v_ref_id].clone();
-        if vname.contain('*') {
-            vname = vname.before("*").to_string();
-        }
-        for j in 0..ex.share.len() {
-            let mut vname = &refdata.name[ex.share[j].v_ref_id];
-            if vname.contain('*') {
-                vname = vname.before("*");
+        let (mut have_inkt_tra, mut have_inkt_trb) = (false, false);
+        let (mut have_inkt_tra_cdr3, mut have_inkt_trb_cdr3) = (false, false);
+        for j in 0..ex[i].share.len() {
+            let mut vname = refdata.name[ex[i].share[j].v_ref_id].clone();
+            if vname.contains('*') {
+                vname = vname.before("*").to_string();
             }
-            let mut jname = &refdata.name[ex.share[j].j_ref_id];
-            if jname.contain('*') {
-                jname = jname.before("*");
+            let mut jname = refdata.name[ex[i].share[j].j_ref_id].clone();
+            if jname.contains('*') {
+                jname = jname.before("*").to_string();
             }
             if species == "human".to_string() {
                 if vname == "TRAV10" && jname == "TRAJ18" {
@@ -118,9 +116,10 @@ pub fn mark_innate(refdata: &RefData, ex: &Vec<ExactClonotype>) -> Vec<String> {
                 } else if vname == "TRBV25-1" {
                     have_inkt_trb = true;
                 } else if vname == "TRAV1-2"
-                    && (jname == "TRAJ33" || jname == "TRAJ20" || jname == "TRAJ12") {
+                    && (jname == "TRAJ33" || jname == "TRAJ20" || jname == "TRAJ12")
+                {
                     have_mait_tra = true;
-                } else if vname == "TRBV20" || vname == TRBV6" {
+                } else if vname == "TRBV20" || vname == "TRBV6" {
                     have_mait_trb = true;
                 }
             } else if species == "mouse".to_string() {
@@ -129,56 +128,44 @@ pub fn mark_innate(refdata: &RefData, ex: &Vec<ExactClonotype>) -> Vec<String> {
                 } else if vname == "TRBV19" || vname == "TRBV13" {
                     have_mait_trb = true;
                 } else if vname == "TRAV11" && jname == "TRAJ18" {
-                    have inkt_tra = true;
+                    have_inkt_tra = true;
                 } else if vname == "TRBV13-2" || vname == "TRBV1" || vname == "TRBV29" {
                     have_inkt_trb = true;
                 }
             }
-            if ex.share[j].left {
-                if bin_member(&inkt_cdr3, &ex.share[j].cdr3_aa) {
+            if ex[i].share[j].left {
+                if bin_member(&inkt_cdr3, &ex[i].share[j].cdr3_aa) {
                     have_inkt_trb_cdr3 = true;
                 }
-                if bin_member(&mait_cdr3, &ex.share[j].cdr3_aa) {
+                if bin_member(&mait_cdr3, &ex[i].share[j].cdr3_aa) {
                     have_mait_trb_cdr3 = true;
                 }
             } else {
-                if bin_member(&inkt_cdr3, &ex.share[j].cdr3_aa) {
+                if bin_member(&inkt_cdr3, &ex[i].share[j].cdr3_aa) {
                     have_inkt_tra_cdr3 = true;
                 }
-                if bin_member(&mait_cdr3, &ex.share[j].cdr3_aa) {
+                if bin_member(&mait_cdr3, &ex[i].share[j].cdr3_aa) {
                     have_mait_tra_cdr3 = true;
                 }
             }
         }
-        let have_inkt = have_inkt_tra && have_inkt_trb;
-        let have_mait = have_mait_tra && have_mait_trb;
-
-*/
-
-/*
-
-// iNKT and MAIT cell types
-enum InvariantTCellType {
-    INKT = 0; // invariant natural killer T cells
-    MAIT = 1; // mucosal associated invariant T cells
+        for j in 0..ex[i].share.len() {
+            ex[i].share[j].inkt_alpha_chain_gene_match = have_inkt_tra;
+            ex[i].share[j].inkt_alpha_chain_junction_match = have_inkt_tra_cdr3;
+            ex[i].share[j].inkt_alpha_chain_gene_match = have_inkt_tra;
+            ex[i].share[j].inkt_alpha_chain_junction_match = have_inkt_tra_cdr3;
+            ex[i].share[j].inkt_beta_chain_gene_match = have_inkt_trb;
+            ex[i].share[j].inkt_beta_chain_junction_match = have_inkt_trb_cdr3;
+            ex[i].share[j].inkt_beta_chain_gene_match = have_inkt_trb;
+            ex[i].share[j].inkt_beta_chain_junction_match = have_inkt_trb_cdr3;
+            ex[i].share[j].mait_alpha_chain_gene_match = have_mait_tra;
+            ex[i].share[j].mait_alpha_chain_junction_match = have_mait_tra_cdr3;
+            ex[i].share[j].mait_alpha_chain_gene_match = have_mait_tra;
+            ex[i].share[j].mait_alpha_chain_junction_match = have_mait_tra_cdr3;
+            ex[i].share[j].mait_beta_chain_gene_match = have_mait_trb;
+            ex[i].share[j].mait_beta_chain_junction_match = have_mait_trb_cdr3;
+            ex[i].share[j].mait_beta_chain_gene_match = have_mait_trb;
+            ex[i].share[j].mait_beta_chain_junction_match = have_mait_trb_cdr3;
+        }
+    }
 }
-// The amount of evidence we have about a single chain on whether the cell is iNKT/MAIT
-enum InvariantTCellEvidence {
-    GeneMatch = 0; // Matches the expected V/J genes
-    JunctionMatch = 1; // Matches the V/J genes and the CDR3
-}
-// iNKT/MAIT annotation details
-message InvariantTCellAnnotation {
-    required InvariantTCellType cell_type = 1;
-    // What level of evidence do we have in the alpha chain. None indicates either the chain is
-    // missing or there is no match to the expected genes.
-    optional InvariantTCellEvidence alpha_chain_evidence = 2;
-    // What level of evidence do we have in the beta chain. None indicates either the chain is
-    // missing or there is no match to the expected genes.
-    optional InvariantTCellEvidence beta_chain_evidence = 3;
-    // Total score for the evidence across both chains with a score of 1 for GeneMatch
-    // and 2 for JunctionMatch
-    required uint32 evidence_score = 4;
-}
-
-*/
