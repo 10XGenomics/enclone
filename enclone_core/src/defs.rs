@@ -481,6 +481,8 @@ pub struct ClonoFiltOpt {
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
     pub fcell: Vec<(String, String)>, // constaints from FCELL
+    pub inkt: bool,
+    pub mait: bool,
 }
 
 // Clonotype printing options.

@@ -379,6 +379,19 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "only show clonotypes that use one of the given barcodes",
         );
 
+        // doc INKT and MAIT
+
+        h.ldoc(
+            "INKT",
+            "only show clonotypes for which some exact subclonotype is annotated as",
+        );
+        h.doc("", "having some iNKT evidence, see \\green{bit.ly/enclone} for details");
+        h.ldoc(
+            "MAIT",
+            "only show clonotypes for which some exact subclonotype is annotated as",
+        );
+        h.doc("", "having some MAIT evidence, see \\green{bit.ly/enclone} for details");
+
         // print main table
 
         h.print_tab2();
