@@ -534,10 +534,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "both chains.  See \\green{bit.ly/enclone} for details on the requirements.",
         );
-        h.doc(
-            "mait",
-            "Same as with inkt but for MAIT cells instead.",
-        );
+        h.doc("mait", "Same as with inkt but for MAIT cells instead.");
         h.ldoc(
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",

@@ -130,10 +130,14 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
                 if vname == "TRAV1" && jname == "TRAJ33" {
                     have_mait_tra = true;
                 }
-                if vname == "TRBV19" || vname == "TRBV13" {
+                if vname == "TRBV19"
+                    || vname == "TRBV13-1"
+                    || vname == "TRBV13-2"
+                    || vname == "TRBV13-3"
+                {
                     have_mait_trb = true;
                 }
-                if vname == "TRAV11" && jname == "TRAJ18" {
+                if (vname == "TRAV11" || vname == "TRAV11D") && jname == "TRAJ18" {
                     have_inkt_tra = true;
                 }
                 if vname == "TRBV13-2" || vname == "TRBV1" || vname == "TRBV29" {

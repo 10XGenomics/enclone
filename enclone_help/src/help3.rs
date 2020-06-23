@@ -385,12 +385,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "INKT",
             "only show clonotypes for which some exact subclonotype is annotated as",
         );
-        h.docpr("", "having some iNKT evidence, see \\green{bit.ly/enclone} for details");
+        h.docpr(
+            "",
+            "having some iNKT evidence, see \\green{bit.ly/enclone} for details",
+        );
         h.ldoc(
             "MAIT",
             "only show clonotypes for which some exact subclonotype is annotated as",
         );
-        h.docpr("", "having some MAIT evidence, see \\green{bit.ly/enclone} for details");
+        h.docpr(
+            "",
+            "having some MAIT evidence, see \\green{bit.ly/enclone} for details",
+        );
 
         // print main table
 
