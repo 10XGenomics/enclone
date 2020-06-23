@@ -530,7 +530,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "representing both gene name and junction sequence (CDR3) requirements for",
         );
-        h.doc(
+        h.docpr(
             "",
             "both chains.  See \\green{bit.ly/enclone} for details on the requirements.",
         );

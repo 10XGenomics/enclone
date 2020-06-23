@@ -114,23 +114,29 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
             if species == "human".to_string() {
                 if vname == "TRAV10" && jname == "TRAJ18" {
                     have_inkt_tra = true;
-                } else if vname == "TRBV25-1" {
+                }
+                if vname == "TRBV25-1" {
                     have_inkt_trb = true;
-                } else if vname == "TRAV1-2"
+                }
+                if vname == "TRAV1-2"
                     && (jname == "TRAJ33" || jname == "TRAJ20" || jname == "TRAJ12")
                 {
                     have_mait_tra = true;
-                } else if vname == "TRBV20" || vname == "TRBV6" {
+                }
+                if vname == "TRBV20-1" || vname == "TRBV6" {
                     have_mait_trb = true;
                 }
             } else if species == "mouse".to_string() {
                 if vname == "TRAV1" && jname == "TRAJ33" {
                     have_mait_tra = true;
-                } else if vname == "TRBV19" || vname == "TRBV13" {
+                }
+                if vname == "TRBV19" || vname == "TRBV13" {
                     have_mait_trb = true;
-                } else if vname == "TRAV11" && jname == "TRAJ18" {
+                }
+                if vname == "TRAV11" && jname == "TRAJ18" {
                     have_inkt_tra = true;
-                } else if vname == "TRBV13-2" || vname == "TRBV1" || vname == "TRBV29" {
+                }
+                if vname == "TRBV13-2" || vname == "TRBV1" || vname == "TRBV29" {
                     have_inkt_trb = true;
                 }
             }
@@ -153,18 +159,10 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
         for j in 0..ex[i].share.len() {
             ex[i].share[j].inkt_alpha_chain_gene_match = have_inkt_tra;
             ex[i].share[j].inkt_alpha_chain_junction_match = have_inkt_tra_cdr3;
-            ex[i].share[j].inkt_alpha_chain_gene_match = have_inkt_tra;
-            ex[i].share[j].inkt_alpha_chain_junction_match = have_inkt_tra_cdr3;
-            ex[i].share[j].inkt_beta_chain_gene_match = have_inkt_trb;
-            ex[i].share[j].inkt_beta_chain_junction_match = have_inkt_trb_cdr3;
             ex[i].share[j].inkt_beta_chain_gene_match = have_inkt_trb;
             ex[i].share[j].inkt_beta_chain_junction_match = have_inkt_trb_cdr3;
             ex[i].share[j].mait_alpha_chain_gene_match = have_mait_tra;
             ex[i].share[j].mait_alpha_chain_junction_match = have_mait_tra_cdr3;
-            ex[i].share[j].mait_alpha_chain_gene_match = have_mait_tra;
-            ex[i].share[j].mait_alpha_chain_junction_match = have_mait_tra_cdr3;
-            ex[i].share[j].mait_beta_chain_gene_match = have_mait_trb;
-            ex[i].share[j].mait_beta_chain_junction_match = have_mait_trb_cdr3;
             ex[i].share[j].mait_beta_chain_gene_match = have_mait_trb;
             ex[i].share[j].mait_beta_chain_junction_match = have_mait_trb_cdr3;
         }

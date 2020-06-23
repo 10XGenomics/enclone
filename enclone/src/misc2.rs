@@ -189,7 +189,7 @@ pub fn create_exact_subclonotype_core(
             vs: DnaString::new(),
             vs_notesx: String::new(),
             js: DnaString::new(),
-            // iNKT and MAIT annotations (to fill in later)
+            // iNKT and MAIT annotations
             inkt_alpha_chain_gene_match: false,
             inkt_alpha_chain_junction_match: false,
             inkt_beta_chain_gene_match: false,

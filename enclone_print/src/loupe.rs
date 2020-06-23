@@ -235,7 +235,6 @@ pub fn make_loupe_clonotype(
         }
         let inkt_evidence = InvariantTCellAnnotation::default();
         let mait_evidence = InvariantTCellAnnotation::default();
-        // to fill in ...........................................................................
         ecl.push(ExactSubClonotype {
             chains: chains
                 .into_iter()
