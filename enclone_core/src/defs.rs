@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 23] = [
+pub const LVARS_ALLOWED: [&str; 25] = [
     "datasets",
     "origins",
     "donors",
@@ -37,6 +37,8 @@ pub const LVARS_ALLOWED: [&str; 23] = [
     "dref",
     "ext",
     "mark",
+    "inkt",
+    "mait",
 ];
 
 // Chain variables that can be used for contigs and chains
