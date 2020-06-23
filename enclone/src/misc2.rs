@@ -10,7 +10,6 @@ use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -226,7 +225,6 @@ pub fn find_exact_subclonotypes(
     tig_bc: &Vec<Vec<TigData>>,
     refdata: &RefData,
 ) -> Vec<ExactClonotype> {
-    let texact = Instant::now();
     let mut exact_clonotypes = Vec::<ExactClonotype>::new();
     let mut r = 0;
     let mut groups = Vec::<(usize, usize)>::new();
@@ -374,7 +372,6 @@ pub fn find_exact_subclonotypes(
         );
         println!("max exact subclonotype size = {}", max_exact);
     }
-    ctl.perf_stats(&texact, "finding exact subclonotypes");
     if ctl.gen_opt.fasta.len() > 0 {
         let mut f = open_for_write_new![&ctl.gen_opt.fasta];
         for i in 0..exact_clonotypes.len() {

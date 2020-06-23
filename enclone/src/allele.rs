@@ -51,7 +51,6 @@ pub fn find_alleles(
     // 3. Make alt_refs into a more efficient data structure.
     // 4. Speed up.
 
-    let ta = Instant::now();
     let mut alt_refs = Vec::<(usize, usize, DnaString)>::new(); // (donor, ref id, alt seq)
 
     // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
@@ -459,7 +458,6 @@ pub fn find_alleles(
     for i in 0..results.len() {
         alt_refs.append(&mut results[i].1);
     }
-    ctl.perf_stats(&ta, "finding alt alleles");
     alt_refs.sort();
     alt_refs
 }

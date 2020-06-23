@@ -686,6 +686,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut vdj_cells = Vec::<Vec<String>>::new();
+    let tparse = Instant::now();
     parse_json_annotations_files(
         &mut ctl,
         &mut tig_bc,
@@ -693,6 +694,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &to_ref_index,
         &mut vdj_cells,
     );
+    ctl.perf_stats(&tparse, "loading from json");
 
     // Test for consistency between VDJ cells and GEX cells.  This is designed to work even if
     // NCELL is used.  We take up to 100 VDJ cells having both heavy and light (or TRB and TRA)
@@ -706,6 +708,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // This code is inefficient because for every dataset, it searches the entirety of tig_bc, but
     // it doesn't matter much because not much time is spent here.
 
+    let tinc = Instant::now();
     let mut fail = false;
     for li in 0..ctl.origin_info.n() {
         if ctl.origin_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
@@ -776,6 +779,7 @@ pub fn main_enclone(args: &Vec<String>) {
         );
         std::process::exit(1);
     }
+    ctl.perf_stats(&tinc, "testing for inconsistency");
 
     // Search for SHM indels.
 
@@ -803,7 +807,9 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Find exact subclonotypes.
 
+    let texact = Instant::now();
     let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata);
+    ctl.perf_stats(&texact, "finding exact subclonotypes");
 
     // Filter out some foursie artifacts.
 
@@ -844,13 +850,17 @@ pub fn main_enclone(args: &Vec<String>) {
     // Build info about clonotypes.  Note that this edits the V reference sequence to perform
     // an indel in some cases.
 
+    let tinfo = Instant::now();
     let mut info: Vec<CloneInfo> = build_info(&refdata, &ctl, &mut exact_clonotypes);
+    ctl.perf_stats(&tinfo, "building info");
 
     // Derive consensus sequences for alternate alleles of V segments.  Then create donor
     // reference sequences for Loupe.
 
+    let talt = Instant::now();
     let alt_refs : Vec<(usize,usize,DnaString)>  // {(donor, ref id, alt seq)}
         = find_alleles( &refdata, &ctl, &exact_clonotypes );
+    ctl.perf_stats(&talt, "finding alt alleles");
     if ctl.gen_opt.dref_file.len() > 0 {
         let f = File::create(&ctl.gen_opt.dref_file);
         if f.is_err() {
@@ -1282,7 +1292,6 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         orbits = orbits2;
     }
-    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Check for disjoint orbits.  This is an incomplete test.
 
@@ -1331,9 +1340,11 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     orbits = orbits2;
+    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Load the GEX and FB data.
 
+    let tdi = Instant::now();
     let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     for li in 0..ctl.origin_info.n() {
@@ -1359,6 +1370,7 @@ pub fn main_enclone(args: &Vec<String>) {
             res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
         }
     });
+    ctl.perf_stats(&tdi, "setting up readers");
 
     // Find and print clonotypes.
 
