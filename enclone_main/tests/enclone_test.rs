@@ -676,7 +676,7 @@ fn test_for_broken_links_and_spellcheck() {
         csv ctrlc cvars dejavusansmono dref dyiid enclone executables false fcell foursie foursies \
         genomics germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
-        indel indels json levenshtein linux loh lvars macbook metadata mkdir \
+        indel indels inkt json levenshtein linux loh lvars macbook mait metadata mkdir \
         moresies multiomic ncbi ncross \
         nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
         preinstalled prepends redownloads screenshot segn sloooooooow \
