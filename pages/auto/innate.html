@@ -36,21 +36,21 @@
 enclone can look for evidence that T cells are iNKT or MAIT cells.  This evidence may be
 displayed e.g. with <code>LVARSP=inkt</code> or <code>LVARSP=mait</code>, see
 <a href="../../pages/auto/help.lvars.html">enclone help lvars</a>.  One may also filter to show
-only cells having some evidence, using the <code>INKT</code> and <code>MAIT</code> options, see
+only cells with some evidence, using the <code>INKT</code> and <code>MAIT</code> options, see
 <a href="../../pages/auto/help.filter.html">enclone help filter</a>.
 </p>
 
 <hr>
 
 <p>
-enclone looks for both <i>gene</i> and <i>junction</i> evidence.  The rules for this are likely
+enclone looks for both <i>gene</i> and <i>junction (CDR3)</i> evidence.  The rules for this are likely
 to be tweaked over time.  Junction evidence is discussed later.  For gene evidence, the following 
 rules are used currently:
 <ul>
-<li>Human iNKT: TRAV10, TRAJ18, TRBV25-1</li>
-<li>Human MAIT: TRAV1-2, any of TRAJ33/TRAJ20/TRAJ12, TRBV20 or TRBV6</li>
-<li>Mouse MAIT: TRAV1, TRAJ33, TRBV19 or TRBV13</li>
-<li>Mouse iNKT: TRAV11, TRAJ18, TRBV13-2 or TRBV1 or TRBV29.</li>
+<li>Human iNKT: <i>TRAV10</i>, <i>TRAJ18</i>, <i>TRBV25-1</i></li>
+<li>Human MAIT: <i>TRAV1-2</i>, any of <i>TRAJ33</i>/<i>TRAJ20</i>/<i>TRAJ12</i>, members of the <i>TRBV20</i> or <i>TRBV6</i> families</li>
+<li>Mouse MAIT: <i>TRAV1</i>, <i>TRAJ33</i>, <i>TRBV19</i> or <i>TRBV13</i></li>
+<li>Mouse iNKT: <i>TRAV11</i>, <i>TRAJ18</i>, <i>TRBV13-2</i> or <i>TRBV1</i> or <i>TRBV29</i>.</li>
 </ul>
 </p>
 
@@ -78,10 +78,11 @@ rules are used currently:
 
 displays a single cell showing evidence for the cell being a MAIT cell, encoded using
 the string <code>𝝰gj𝝱g</code>.  This stands for "gene and junction evidence on the alpha
-chain, and gene evidence on the beta chain".
+chain, and gene evidence on the beta chain" (<i>i.e.</i> 𝝰gj = alpha gene and junction).
 
 <p><b>Please we aware that detection of junction evidence is limited by the completeness of
-the lists on which they are based (see below), and these lists are incomplete!</b></p>
+the lists on which they are based (see below), and these lists are incomplete! They are also
+likely to change over time as more data studying iNKT and MAIT cells emerge.</b></p>
 
 <hr>
 
@@ -172,7 +173,7 @@ and here is the list for human MAIT:
 <li>CAVRDSNYQLIW</li>
 <li>CAVSDSNYQLIW</li>
 <li>CAVSLQDYKLSF</li>
-<li>CSARQGAESREQYF.</li>
+<li>CSARQGAESREQYF</li>
 </ul>
 At present we do not have lists for mouse.
 </p>
