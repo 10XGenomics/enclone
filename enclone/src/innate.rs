@@ -87,7 +87,7 @@ pub fn innate_cdr3(species: &str, class: &str) -> Vec<String> {
             cdr3.push(line.after("\"cdr3\": ").between("\"", "\"").to_string());
         }
     }
-    cdr3.sort();
+    unique_sort(&mut cdr3);
     cdr3
 }
 
