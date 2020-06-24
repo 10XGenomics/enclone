@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 98] = [
+pub const TESTS: [&str; 102] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -265,6 +265,14 @@ pub const TESTS: [&str; 98] = [
     // 98. test reduced stringency D alignment
     // (RE can be removed once cellranger rerun)
     r###"TCR=101287 CDR3=CASSPAGTSGKVWGTDTQYF RE"###,
+    // 99. test mait (redundant with mait_example.html below, so could delete)
+    r###"TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF"###,
+    // 100. test inkt and INKT
+    r###"TCR=101287 LVARSP=inkt INKT MIN_CELLS=2"###,
+    // 101. test MAIT
+    r###"TCR=101287 LVARSP=mait MAIT MIN_CELLS=50"###,
+    // 102. test BINARY with unwriteable path
+    r###"BCR=123085 BINARY=/gerbilspam/bumblebee EXPECT_FAIL"###,
 ];
 
 // Test using the extended public dataset collection.
@@ -296,7 +304,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 9] = [
+pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -349,5 +357,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 9] = [
     (
         "pages/auto/tree_example.html",
         "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW LVARSP=dref HTML",
+    ),
+    // 10.
+    (
+        "pages/auto/mait_example.html",
+        "TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF HTML",
     ),
 ];

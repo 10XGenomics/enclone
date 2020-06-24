@@ -38,6 +38,12 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │dref           │  Hamming distance of V..J DNA sequence to donor reference, excluding         │
 │               │  region of recombination                                                     │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│inkt           │  A string showing the extent to which the T cells in an exact subclonotype   │
+│               │  have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj, │
+│               │  representing both gene name and junction sequence (CDR3) requirements for   │
+│               │  both chains.  See <span style="color:#25bc24;">bit.ly/enclone</span> for details on the requirements.           │
+│mait           │  Same as with inkt but for MAIT cells instead.                               │
+├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are      │
 │               │  grouped according to the Hamming distance of their V..J sequences.  Those   │
 │               │  within distance d are defined to be in the same group, and this is          │

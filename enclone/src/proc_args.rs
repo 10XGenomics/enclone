@@ -8,7 +8,7 @@ use enclone_core::testlist::*;
 use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
-use std::fs::File;
+use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::{env, time::Instant};
 use string_utils::*;
@@ -315,9 +315,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("IMGT", &mut ctl.gen_opt.imgt),
         ("IMGT_FIX", &mut ctl.gen_opt.imgt_fix),
         ("INDELS", &mut ctl.gen_opt.indels),
+        ("INKT", &mut ctl.clono_filt_opt.inkt),
         ("INSERTIONS", &mut ctl.gen_opt.insertions),
         ("JC1", &mut ctl.gen_opt.jc1),
         ("KEEP_IMPROPER", &mut ctl.merge_all_impropers),
+        ("MAIT", &mut ctl.clono_filt_opt.mait),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
         ("MEAN", &mut ctl.clono_print_opt.mean),
         ("MIX_DONORS", &mut ctl.clono_filt_opt.donor),
@@ -398,17 +400,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that set something to a string.
 
     let set_string = [
-        ("BINARY", &mut ctl.gen_opt.binary),
         ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
-        ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
         ("EXT", &mut ctl.gen_opt.ext),
         ("PHYLIP_AA", &mut ctl.gen_opt.phylip_aa),
         ("PHYLIP_DNA", &mut ctl.gen_opt.phylip_dna),
         ("POUT", &mut ctl.parseable_opt.pout),
-        ("PROTO", &mut ctl.gen_opt.proto),
         ("REF", &mut ctl.gen_opt.refname),
         ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
+    ];
+
+    // Define arguments that set something to a string that is an output file name.
+
+    let set_string_writeable = [
+        ("BINARY", &mut ctl.gen_opt.binary),
+        ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("PROTO", &mut ctl.gen_opt.proto),
     ];
 
     // Define arguments that do nothing (because already parsed).
@@ -501,6 +508,26 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_string.len() {
             if is_string_arg(&arg, &set_string[j].0) {
                 *(set_string[j].1) = arg.after(&format!("{}=", set_string[j].0)).to_string();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_string_writeable args.
+
+        for j in 0..set_string_writeable.len() {
+            let var = &set_string_writeable[j].0;
+            if is_string_arg(&arg, var) {
+                *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
+                let val = &set_string_writeable[j].1;
+                let f = File::create(&val);
+                if f.is_err() {
+                    eprintln!(
+                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+                        val
+                    );
+                    std::process::exit(1);
+                }
+                remove_file(&val).unwrap();
                 continue 'args_loop;
             }
         }
@@ -854,16 +881,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         );
         std::process::exit(1);
     }
+    ctl.perf_stats(&t, "after main args loop 1");
+    let t = Instant::now();
     check_cvars(&ctl);
     if metas.len() > 0 {
         let f = &metas[metas.len() - 1];
         let f = get_path_fail(&f, &ctl, "META");
         proc_meta(&f, &mut ctl);
     }
+    ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
     }
+    let t = Instant::now();
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -993,7 +1024,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.clono_filt_opt.donor = true;
         }
     }
-    ctl.perf_stats(&t, "after main args loop");
+    ctl.perf_stats(&t, "after main args loop 2");
     proc_args_tail(&mut ctl, &args);
 
     // Check for invalid variables in linear conditions.

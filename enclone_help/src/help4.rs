@@ -519,6 +519,23 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "region of recombination");
         h.ldoc(
+            "inkt",
+            "A string showing the extent to which the T cells in an exact subclonotype",
+        );
+        h.doc(
+            "",
+            "have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,",
+        );
+        h.doc(
+            "",
+            "representing both gene name and junction sequence (CDR3) requirements for",
+        );
+        h.docpr(
+            "",
+            "both chains.  See \\green{bit.ly/enclone} for details on the requirements.",
+        );
+        h.doc("mait", "Same as with inkt but for MAIT cells instead.");
+        h.ldoc(
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",
         );

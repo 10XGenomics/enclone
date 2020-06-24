@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 23] = [
+pub const LVARS_ALLOWED: [&str; 25] = [
     "datasets",
     "origins",
     "donors",
@@ -37,6 +37,8 @@ pub const LVARS_ALLOWED: [&str; 23] = [
     "dref",
     "ext",
     "mark",
+    "inkt",
+    "mait",
 ];
 
 // Chain variables that can be used for contigs and chains
@@ -479,6 +481,8 @@ pub struct ClonoFiltOpt {
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
     pub fcell: Vec<(String, String)>, // constaints from FCELL
+    pub inkt: bool,
+    pub mait: bool,
 }
 
 // Clonotype printing options.
@@ -547,15 +551,21 @@ pub struct EncloneControl {
     pub toy: bool,                        // toy with phylogeny
 }
 
+pub static mut WALLCLOCK: f64 = 0.0;
+
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
+        let used = elapsed(&t);
         if self.comp {
             println!(
                 "used {:.2} seconds {}, peak mem = {:.2} GB",
-                elapsed(&t),
+                used,
                 msg,
                 peak_mem_usage_gb()
             );
+        }
+        unsafe {
+            WALLCLOCK += used;
         }
     }
 }
@@ -651,6 +661,14 @@ pub struct TigData1 {
     pub vs: DnaString,                        // reference V segment (possibly donor allele)
     pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
     pub js: DnaString,     // reference J segment
+    pub inkt_alpha_chain_gene_match: bool,
+    pub inkt_alpha_chain_junction_match: bool,
+    pub inkt_beta_chain_gene_match: bool,
+    pub inkt_beta_chain_junction_match: bool,
+    pub mait_alpha_chain_gene_match: bool,
+    pub mait_alpha_chain_junction_match: bool,
+    pub mait_beta_chain_gene_match: bool,
+    pub mait_beta_chain_junction_match: bool,
 }
 
 #[derive(Clone)]

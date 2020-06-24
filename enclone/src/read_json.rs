@@ -10,12 +10,11 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 use rayon::prelude::*;
 use serde_json::Value;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
-use std::{collections::HashMap, io::BufReader, time::Instant};
+use std::{collections::HashMap, io::BufReader};
 use string_utils::*;
 use vector_utils::*;
 
@@ -622,7 +621,6 @@ pub fn parse_json_annotations_files(
     to_ref_index: &HashMap<usize, usize>,
     vdj_cells: &mut Vec<Vec<String>>,
 ) {
-    let tl = Instant::now();
     // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
         usize,
@@ -696,8 +694,5 @@ pub fn parse_json_annotations_files(
             );
             std::process::exit(1);
         }
-    }
-    if ctl.comp {
-        println!("used {:.2} seconds loading from JSON", elapsed(&tl));
     }
 }

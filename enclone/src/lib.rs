@@ -7,6 +7,7 @@ pub mod explore;
 pub mod graph_filter;
 pub mod html;
 pub mod info;
+pub mod innate;
 pub mod join;
 pub mod join2;
 pub mod join_core;

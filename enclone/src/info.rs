@@ -11,10 +11,8 @@ use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::sync::atomic::AtomicBool;
-use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -29,7 +27,6 @@ pub fn build_info(
     // Much of the information in a CloneInfo object is redundant.  So we could probably
     // improve both time and space computational performance by reducing that redundancy.
 
-    let timer = Instant::now();
     let exiting = AtomicBool::new(false);
     let mut total_clones = 0;
     for i in 0..exact_clonotypes.len() {
@@ -341,8 +338,5 @@ pub fn build_info(
 
     // Done.
 
-    if ctl.comp {
-        println!("used {:.2} seconds building info", elapsed(&timer));
-    }
     info
 }

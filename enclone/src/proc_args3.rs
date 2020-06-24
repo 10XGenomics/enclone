@@ -5,10 +5,12 @@
 use enclone_core::defs::*;
 use io_utils::*;
 use itertools::Itertools;
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
+use std::time::Instant;
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
@@ -158,23 +160,6 @@ fn expand_analysis_sets(x: &str) -> String {
 
 // Functions to find the path to data.
 
-fn get_path(p: &str, ctl: &EncloneControl) -> String {
-    for x in ctl.gen_opt.pre.iter() {
-        let mut pp = format!("{}/{}", x, p);
-        if pp.starts_with("~") {
-            pp = stringme(&tilde_expand(&pp.as_bytes()));
-        }
-        if path_exists(&pp) {
-            return pp;
-        }
-    }
-    let mut pp = p.to_string();
-    if pp.starts_with("~") {
-        pp = stringme(&tilde_expand(&pp.as_bytes()));
-    }
-    pp
-}
-
 pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     for x in ctl.gen_opt.pre.iter() {
         let pp = format!("{}/{}", x, p);
@@ -202,9 +187,35 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     p.to_string()
 }
 
-fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> String {
-    let mut pp = get_path(&p, &ctl);
-    if !path_exists(&pp) {
+fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
+    *ok = false;
+    for x in ctl.gen_opt.pre.iter() {
+        let mut pp = format!("{}/{}", x, p);
+        if pp.starts_with("~") {
+            pp = stringme(&tilde_expand(&pp.as_bytes()));
+        }
+        if path_exists(&pp) {
+            *ok = true;
+            return pp;
+        }
+    }
+    let mut pp = p.to_string();
+    if pp.starts_with("~") {
+        pp = stringme(&tilde_expand(&pp.as_bytes()));
+    }
+    *ok = path_exists(&pp);
+    pp
+}
+
+fn get_path_or_internal_id(
+    p: &str,
+    ctl: &EncloneControl,
+    source: &str,
+    current_ref: &mut bool,
+) -> String {
+    let mut ok = false;
+    let mut pp = get_path(&p, &ctl, &mut ok);
+    if !ok {
         if !ctl.gen_opt.internal_run {
             get_path_fail(&pp, &ctl, source);
         } else {
@@ -232,7 +243,7 @@ fn get_path_or_internal_id(p: &str, ctl: &mut EncloneControl, source: &str) -> S
                 }
                 if m.contains("\"path\":\"") {
                     let path = m.between("\"path\":\"", "\"").to_string();
-                    ctl.gen_opt.current_ref = true;
+                    *current_ref = true;
                     pp = format!("{}/outs", path);
                     if !path_exists(&pp) {
                         eprintln!(
@@ -405,6 +416,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         eprintln!("\nOnly one of TCR or BCR can be specified.\n");
         std::process::exit(1);
     }
+    let t = Instant::now();
     ctl.gen_opt.tcr = f.starts_with("TCR=");
     ctl.gen_opt.bcr = f.starts_with("BCR=");
     let mut val: String;
@@ -458,6 +470,8 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         );
         std::process::exit(1);
     }
+    ctl.perf_stats(&t, "in proc_xcr 1");
+    let t = Instant::now();
     for (id, d) in donor_groups.iter().enumerate() {
         let origin_groups = (*d).split(':').collect::<Vec<&str>>();
         let mut origin_groups_gex = Vec::<&str>::new();
@@ -491,22 +505,17 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         }
         for (is, s) in origin_groups.iter().enumerate() {
             let datasets = (*s).split(',').collect::<Vec<&str>>();
-            let mut datasets_gex = Vec::<&str>::new();
+            let datasets_gex: Vec<&str>;
             let mut datasets_bc = Vec::<&str>::new();
-            let mut datasetsx = Vec::<String>::new();
-            // presumably pointless now:
-            for i in 0..datasets.len() {
-                datasetsx.push(datasets[i].to_string());
-            }
             if have_gex {
                 datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
-                if datasets_gex.len() != datasetsx.len() {
+                if datasets_gex.len() != datasets.len() {
                     eprintln!(
                         "\nSee {} {} datasets and {} GEX datasets, so \
                          the {} and GEX arguments do not exactly mirror each \
                          other's structure.\n",
                         xcr,
-                        datasetsx.len(),
+                        datasets.len(),
                         datasets_gex.len(),
                         xcr
                     );
@@ -515,7 +524,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
             if !bc.is_empty() {
                 datasets_bc = origin_groups_bc[is].split(',').collect::<Vec<&str>>();
-                if datasets_bc.len() != datasetsx.len() {
+                if datasets_bc.len() != datasets.len() {
                     eprintln!(
                         "\nThe {} and BC arguments do not exactly mirror each \
                          other's structure.\n",
@@ -524,15 +533,19 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     std::process::exit(1);
                 }
             }
-            for (ix, x) in datasetsx.iter().enumerate() {
-                let mut p = (*x).to_string();
-                // ◼ In CR 4.0, the way we get to outs below will need to change.
-
-                let mut source = f.clone();
-                if f.contains('=') {
-                    source = f.before("=");
+            for (ix, x) in datasets.iter().enumerate() {
+                ctl.origin_info.color.push("".to_string());
+                ctl.origin_info.tag.push(HashMap::<String, String>::new());
+                let donor_name = format!("d{}", id + 1);
+                let origin_name = format!("s{}", is + 1);
+                ctl.origin_info.donor_id.push(donor_name);
+                ctl.origin_info.origin_id.push(origin_name);
+                let mut dataset_name = (*x).to_string();
+                if dataset_name.contains('/') {
+                    dataset_name = dataset_name.rev_after("/").to_string();
                 }
-                p = get_path_or_internal_id(&p, &mut ctl, source);
+                ctl.origin_info.descrips.push(dataset_name.clone());
+                ctl.origin_info.dataset_id.push(dataset_name.clone());
 
                 // Now work on the BC path.
 
@@ -541,34 +554,58 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
                     bcx = datasets_bc[ix].to_string();
                 }
                 parse_bc(bcx, &mut ctl, "BC");
-
-                // Now work on the GEX path.
-
-                let mut pg = String::new();
-                if have_gex {
-                    pg = datasets_gex[ix].to_string();
-                    pg = get_path_or_internal_id(&pg, &mut ctl, "GEX");
-                }
-
-                // OK everything worked, all set.
-
-                let donor_name = format!("d{}", id + 1);
-                let origin_name = format!("s{}", is + 1);
-                let mut dataset_name = (*x).to_string();
-                if dataset_name.contains('/') {
-                    dataset_name = dataset_name.rev_after("/").to_string();
-                }
-                ctl.origin_info.descrips.push(dataset_name.clone());
-                ctl.origin_info.dataset_path.push(p);
-                ctl.origin_info.gex_path.push(pg);
-                ctl.origin_info.dataset_id.push(dataset_name.clone());
-                ctl.origin_info.donor_id.push(donor_name);
-                ctl.origin_info.color.push("".to_string());
-                ctl.origin_info.origin_id.push(origin_name);
-                ctl.origin_info.tag.push(HashMap::<String, String>::new());
             }
         }
     }
+
+    // Get paths.  This will need to change when cellranger switches to multi.  This code is
+    // parallelized because this code can indirectly make many calls to path_exists, and the wall
+    // clock time for these can add up.  There should be a way to do this that does not involve
+    // multithreading.
+
+    let mut source = f.clone();
+    if f.contains('=') {
+        source = f.before("=");
+    }
+    let mut results = Vec::<(String, String, bool)>::new();
+    for (id, d) in donor_groups.iter().enumerate() {
+        let origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        let mut origin_groups_gex = Vec::<&str>::new();
+        if have_gex {
+            origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+        }
+        for (is, s) in origin_groups.iter().enumerate() {
+            let datasets = (*s).split(',').collect::<Vec<&str>>();
+            let mut datasets_gex = Vec::<&str>::new();
+            if have_gex {
+                datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
+            }
+            for (ix, x) in datasets.iter().enumerate() {
+                let p = (*x).to_string();
+                let mut pg = String::new();
+                if have_gex {
+                    pg = datasets_gex[ix].to_string();
+                }
+                results.push((p, pg, false));
+            }
+        }
+    }
+    results.par_iter_mut().for_each(|res| {
+        let (p, pg) = (&mut res.0, &mut res.1);
+        let mut current_ref = &mut res.2;
+        *p = get_path_or_internal_id(&p, &ctl, source, &mut current_ref);
+        if have_gex {
+            *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &mut current_ref);
+        }
+    });
+    for i in 0..results.len() {
+        ctl.origin_info.dataset_path.push(results[i].0.clone());
+        ctl.origin_info.gex_path.push(results[i].1.clone());
+        if results[i].2 {
+            ctl.gen_opt.current_ref = true;
+        }
+    }
+    ctl.perf_stats(&t, "in proc_xcr 2");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -693,9 +730,13 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             // Parse bc and finish up.
 
             parse_bc(bc.clone(), &mut ctl, "META");
-            path = get_path_or_internal_id(&path, &mut ctl, "META");
+            let mut current_ref = false;
+            path = get_path_or_internal_id(&path, &ctl, "META", &mut current_ref);
             if gpath.len() > 0 {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &mut current_ref);
+            }
+            if current_ref {
+                ctl.gen_opt.current_ref = true;
             }
             let mut dp = None;
             for j in 0..donors.len() {
