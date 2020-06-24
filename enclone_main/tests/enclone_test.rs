@@ -1317,8 +1317,14 @@ fn test_proto_write() -> Result<(), Error> {
         if oldbuf != newbuf {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
-                please regenerate the file {}\n",
-                t, oldx
+                please regenerate the file {} using the command\n\
+                enclone {} BINARY=enclone_main/test/inputs/{}.binary NOPRINT; \
+                gzip -f enclone_main/test/inputs/{}.binary",
+                t,
+                oldx,
+                t,
+                t.after("="),
+                t.after("=")
             );
             std::process::exit(1);
         }
