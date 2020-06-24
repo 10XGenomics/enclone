@@ -863,15 +863,6 @@ pub fn main_enclone(args: &Vec<String>) {
     ctl.perf_stats(&talt, "finding alt alleles");
     if ctl.gen_opt.dref_file.len() > 0 {
         let f = File::create(&ctl.gen_opt.dref_file);
-        if f.is_err() {
-            eprintln!(
-                "\nProblem with DONOR_REF_FILE: unable to write to the file\n\
-                 \"{}\".\nPlease check that that path makes sense and that you have write \
-                 permission for it.\n",
-                ctl.gen_opt.dref_file
-            );
-            std::process::exit(1);
-        }
         let mut f = BufWriter::new(f.unwrap());
         let mut count = 0;
         for i in 0..alt_refs.len() {

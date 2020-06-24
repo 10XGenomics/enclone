@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 101] = [
+pub const TESTS: [&str; 102] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -271,6 +271,8 @@ pub const TESTS: [&str; 101] = [
     r###"TCR=101287 LVARSP=inkt INKT MIN_CELLS=2"###,
     // 101. test MAIT
     r###"TCR=101287 LVARSP=mait MAIT MIN_CELLS=50"###,
+    // 102. test BINARY with unwriteable path
+    r###"BCR=123085 BINARY=/gerbilspam/bumblebee EXPECT_FAIL"###,
 ];
 
 // Test using the extended public dataset collection.
