@@ -123,7 +123,7 @@ pub fn mark_innate(refdata: &RefData, ex: &mut Vec<ExactClonotype>) {
                 {
                     have_mait_tra = true;
                 }
-                if vname == "TRBV20-1" || vname == "TRBV6" {
+                if vname.starts_with("TRBV20") || vname.starts_with("TRBV6") {
                     have_mait_trb = true;
                 }
             } else if species == "mouse".to_string() {
