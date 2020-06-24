@@ -32,6 +32,39 @@ pub fn survives_filter(
     if n < ctl.clono_filt_opt.ncells_low {
         return false;
     }
+    // Clonotypes having iNKT or MAIT evidence
+    if ctl.clono_filt_opt.inkt {
+        let mut evidence = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            if ex.share[0].inkt_alpha_chain_gene_match
+                || ex.share[0].inkt_alpha_chain_junction_match
+                || ex.share[0].inkt_beta_chain_gene_match
+                || ex.share[0].inkt_beta_chain_junction_match
+            {
+                evidence = true;
+            }
+        }
+        if !evidence {
+            return false;
+        }
+    }
+    if ctl.clono_filt_opt.mait {
+        let mut evidence = false;
+        for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            if ex.share[0].mait_alpha_chain_gene_match
+                || ex.share[0].mait_alpha_chain_junction_match
+                || ex.share[0].mait_beta_chain_gene_match
+                || ex.share[0].mait_beta_chain_junction_match
+            {
+                evidence = true;
+            }
+        }
+        if !evidence {
+            return false;
+        }
+    }
     // Clonotypes marked by heuristics
     if ctl.clono_filt_opt.marked {
         let mut marked = false;

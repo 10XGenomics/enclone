@@ -13,8 +13,8 @@
 <br>
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
-<p><b>enclone</b> is a computational tool for studying the adaptive immune system in humans and
-other vertebrate species.  It takes as input data from
+<p><b>enclone</b> (beta) is a computational tool for studying the adaptive immune system in 
+humans and other vertebrate species.  It takes as input data from
 <b><a href="https://10xgenomics.com/">10x Genomics</a></b>, providing captured RNA
 sequences for B and T cell receptors in single cells.  It organizes these cells into groups
 (clonotypes) arising from the same progenitor and compactly displays each clonotype along
@@ -28,8 +28,53 @@ immune cells and mutations within these selected cells.  enclone allows you to s
 single immune cells within a biological sample (such as a blood draw or biopsy).  This history
 reflects how the cognate receptors of these cells evolved in response to antigens, including
 viruses, bacteria, and tumors.</p>
+
+<table rules="all" cellpadding="3" style="border: 1px solid black">
+<tbody>
+
+<tr>
+<td align="left"><a href="#mission">&nbsp;1. The mission of enclone&nbsp;</a></td>
+<td align="left"><a href="#output">&nbsp;8. Understanding enclone output&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#inputs">&nbsp;2. Inputs to enclone&nbsp;</a></td>
+<td align="left"><a href="#multiomic">&nbsp;9. Combining multiomic data&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#why">&nbsp;3. Why use enclone&nbsp;</a></td>
+<td align="left"><a href="#honeycomb">&nbsp;10. Visualizing many clonotypes at once&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#software">&nbsp;4. The enclone software&nbsp;</a></td>
+<td align="left"><a href="#sowhat">&nbsp;11. So what is enclone good for?&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#download">&nbsp;5. Installing enclone&nbsp;</a></td>
+<td align="left"><a href="#questions">&nbsp;12. Questions&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#running">&nbsp;6. Running enclone&nbsp;</a></td>
+<td align="left"><a href="#whereami">&nbsp;13. Where am I?&nbsp;</a></td>
+</tr>
+
+<tr>
+<td align="left"><a href="#help">&nbsp;7. Help me!&nbsp;</a></td>
+<td align="left"></td>
+</tr>
+
+</tbody>
+</table>
+
+<br>
+
 <hr>
 
+<p><a name="mission" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>The mission of enclone</h2>
 
 <p>If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
@@ -81,6 +126,7 @@ chain data and the algorithm.
 
 <hr>
 
+<p><a name="inputs" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Inputs to enclone</h2>
 
 <p>
@@ -93,6 +139,7 @@ CRISPR guides, and other things.  You can see a list of publications that use 10
 
 <hr>
 
+<p><a name="why" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Why use enclone?</h2>
 <p>
 enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
@@ -106,6 +153,7 @@ interpretation of your data.
 
 <hr>
 
+<p><a name="software" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>The enclone software</h2>
 
 <p>enclone is beta software released under <a href="LICENSE.txt">this license</a>.  Binary 
@@ -241,6 +289,7 @@ See <a href="pages/history.html">history</a> for what has changed.</span></p>
 
 <hr>
 
+<p><a name="running" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Running enclone</h2>
 
 <p>Running enclone can be as simple as typing e.g.</p>
@@ -260,6 +309,7 @@ documentation within its online menus.  To get started you should:</p>
 </ol>
 <hr>
 
+<p><a name="help" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Help me!</h2>
 
 <p>enclone help is split between material on this site and pages that are invocable from the enclone
@@ -421,6 +471,10 @@ For completeness, here are all the other pages on this site:
     <td align="left"><a href="pages/installation_details.html">installation details
     </a></td> <td align="left">if you're curious about what the install command does</td>
 </tr>
+<tr>
+    <td align="left"><a href="pages/auto/innate.html">iNKT and MAIT cells
+    </a></td> <td align="left">people interested in iNKT and MAIT cells</td>
+</tr>
 </tbody>
 </table>
 
@@ -428,6 +482,7 @@ For completeness, here are all the other pages on this site:
 
 <hr>
 
+<p><a name="output" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Understanding enclone output</h2>
 
 <p>The example below shows how enclone prints out clonotypes.  This is something you'll need
@@ -474,6 +529,7 @@ automatically paged, so you can scroll through it.</p>
 to print clonotypes in machine-readable forms that are suitable for input to other programs.</p>
 <hr>
 
+<p><a name="multiomic" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Combining multiomic data</h2>
 
 <p>Gene expression and feature barcode data can be displayed simultaneously with VDJ data.  For
@@ -522,6 +578,7 @@ and these data displayed as additional columns.</p>
 <br>
 <hr>
 
+<p><a name="sowhat" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>So what is enclone good for?</h2>
 
 <p>There are many ways to use 10x data to study immune biology.  Thus in the previous section, the
@@ -545,6 +602,7 @@ using enclone.</p>
 
 <hr>
 
+<p><a name="questions" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Questions</h2>
 
 <p>
@@ -565,6 +623,7 @@ be unable to respond promptly to your particular request.
 
 <hr>
 
+<p><a name="whereami" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Where am I?</h2>
 
 <!-- dunno why negative left margin needed to line things up on left: -->

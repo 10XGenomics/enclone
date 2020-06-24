@@ -37,13 +37,29 @@ command-line help that comes with your copy of enclone will always match its beh
 <hr>
 
 <p>
-<b>6/19/20</b>: Improve the alternate (faster) internal storage structure for the GEX matrix
+<b>6/24/20</b>:
+<ol>
+<li>Add <a href="../pages/auto/innate.html">support for iNKT and MAIT cells</a>.</li>
+<li>Make enclone faster.  This is most noticeable in cases where many GEX datasets are
+    provided as input.</li>
+</ol>
+</p>
+
+<p>
+<b>6/19/20</b>: 
+<ol>
+<li>We now use a data hierarchy of donor (top), origin, dataset (bottom), where an 
+origin is a set of 1 or more datasets from the same source (tube of cells, tissue, timepoint, etc.).
+</li>
+<li> Improve the alternate (faster) internal storage structure for the GEX matrix
 created using the option <code>NH5</code> as described using the command 
 <a href="../pages/auto/help.input.html"><code>enclone help input</code></a>.  
 This will speed things up, particularly for the case where several datasets are combined.  If 
 you have already used the <code>NH5</code> option for a given dataset, then the next time you
 run enclone on it, the file will be automatically rewritten.  This would also apply to some
 datasets obtained as part of the <code>large</code> download.
+</li>
+</ol>
 </p>
 
 <p>
@@ -55,9 +71,6 @@ datasets obtained as part of the <code>large</code> download.
     be used to progressively filter.</li>
 <li>The clonotype joining heuristic parameters <code>MAX_SCORE</code> and
     <code>MAX_CDR3_DIFFS</code> are now accessible.</li>
-<li>We now use a data hierarchy of donor (top), origin, dataset (bottom), where an origin is
-	a set of 1 or more datasets from the same source (tube of cells, tissue, timepoint,
-	etc.).</li>
 </ol>
 </p>
 

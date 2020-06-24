@@ -32,37 +32,36 @@
 
 <h1>Making phylogenetic trees</h1>
 
-<p>enclone provides several mechanisms for creating and displaying a phylogenetic tree for each 
+<p>enclone provides several mechanisms for creating, displaying, and exporting a phylogenetic tree for each 
 clonotype.  These are initial mechanisms, which are likely to be expanded and/or improved over 
 time in response to feedback.  The initial implementation is inspired by the Levenshtein-NJ method described by <a href="https://dx.doi.org/10.1093/bioinformatics/btx533">Yermanos <i>et al</i>. 2017</a>. For all of these mechanisms, we recommend using the argument
-<code>COMPLETE</code> to remove exact subclonotypes that are missing some chains.</p>
+<code>COMPLETE</code> to remove exact subclonotypes that are missing 1 or more chains.</p>
 
 <hr>
 
 <p><b>Method 1.</b>
 This method is invoked using the argument <code>TREE</code>, or <code>TREE=const</code>, to
-label leaves by heavy chain constant region names.  (If more than one heavy chain is present,
-we separate their constant region names by "+".)
+label leaves by heavy chain constant region names (<i>N.B.</i>If more than one heavy chain is present,
+we separate their constant region names by "+").
 The method first defines defines the distance between any two exact subclonotypes to be their
-Levenshtein distance.  Then we add a root "virtual" exact subclonotype which equals the donor 
-reference away from the recombination region and which is undefined within that region (i.e. a germline-reverted exact clonotype without the junction). The
-distance from the root to any actual exact subclonotype is the Levenshtein distance, away from
-the region of recombination.
+Levenshtein distance. We then add a root "virtual" exact subclonotype which equals the donor 
+reference away from the recombination region and which is undefined within that region (i.e. a 
+germline-reverted exact clonotype without the junction). The distance from the root to any 
+actual exact subclonotype is the Levenshtein distance, away from the region of recombination.
 </p>
 
 <p>
 Next a tree is creating from these data using the
 <a href="https://en.wikipedia.org/wiki/Neighbor_joining">neighbor joining algorithm</a>.
-This sometimes yields negative distances, which we change to zero.  We have only observed such on
-the edge emanating from the root.
+This sometimes yields negative distances, which we change to zero. We have only observed 
+such negative distances on the edge emanating from the root.
 </p>
 
 <p>Note that for a given clonotype, the neighbor joining algorithm is 
-O(n<sup>3</sup>), where n is the
-number of exact subclonotypes in the clonotype.  Thus for sample types having highly complex
-clonotypes (e.g. with ~1000 subclonotypes), the algorithm will be very slow.  We have only
-observed this in a lymphoma sample, and of course for such cases, the tree would be so large
-that it would be difficult to do anything with it.
+O(n<sup>3</sup>), where n is the number of exact subclonotypes in the clonotype.  Thus 
+for sample types having highly complex clonotypes (e.g. with ~1000 subclonotypes), the 
+algorithm will be very slow.  We have only observed this in a lymphoma sample, and of 
+course for such cases, the tree would be so large that it would be difficult to do anything with it.
 </p>
 
 <p>Finally, the tree is visualized using plain text, as shown in the example below.  The
@@ -141,6 +140,14 @@ donor reference, away from the recombination region.</p>
 This method is invoked using the argument <code>NEWICK</code>, and is exactly like
 method 1, except that it outputs the resulting tree in 
 <a href="https://en.wikipedia.org/wiki/Newick_format">Newick format</a>.</p>
+
+<p>For example, running <code>enclone BCR=123085 NEWICK COMPLETE CDR3=CARDSWYSSGRNTPNWFDPW</code>
+will generate the following Newick tree for the largest clonotype:</p>
+
+<p><code>((((3:0.00,20:4.00)I5:1.00,11:0.00)I7:0.69,(5:0.82,((13:0.00,14:3.00)I4:4.89,(((((((2:0.00,19:0.00)I1:0.95,4:0.05)I2:0.50,18:0.50)I3:5.96,(7:0.00,12:0.00)I8:0.54)I12:0.32,((6:0.83,9:0.17)I6:0.94,10:0.06)I9:0.80)
+I15:0.13,((16:0.95,17:0.05)I10:0.03,21:2.98)I11:0.93)I17:0.04,(1:0.00,(8:1.00,15:0.00)I20:0.00)I19:0.02)I18:0.10)I16:0.11)I14:0.18)I13:0.00)0;</code></p>
+
+<p>This tree can be copied and pasted or otherwise exported to be viewed in tools such as <a href="https://itol.embl.de">iTOL</a>.</p> 
 
 <hr>
 

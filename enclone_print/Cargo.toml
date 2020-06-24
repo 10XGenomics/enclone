@@ -27,7 +27,6 @@ io_utils = "*"
 itertools = "*"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ndarray = "*"
-perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 permutation = "*"
 pretty_trace = "*"
 rayon = "*"

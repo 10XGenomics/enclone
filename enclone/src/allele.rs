@@ -8,7 +8,6 @@ use self::refx::*;
 use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use itertools::Itertools;
-use perf_stats::*;
 use rayon::prelude::*;
 use stats_utils::*;
 use std::cmp::*;
@@ -52,7 +51,6 @@ pub fn find_alleles(
     // 3. Make alt_refs into a more efficient data structure.
     // 4. Speed up.
 
-    let ta = Instant::now();
     let mut alt_refs = Vec::<(usize, usize, DnaString)>::new(); // (donor, ref id, alt seq)
 
     // Organize data by reference ID.  Note that we ignore exact subclonotypes having four chains.
@@ -460,13 +458,6 @@ pub fn find_alleles(
     for i in 0..results.len() {
         alt_refs.append(&mut results[i].1);
     }
-    if ctl.comp {
-        println!(
-            "used {:.2} seconds used finding alt alleles, peak mem = {:.2} GB",
-            elapsed(&ta),
-            peak_mem_usage_gb()
-        );
-    }
     alt_refs.sort();
     alt_refs
 }
@@ -562,11 +553,5 @@ pub fn sub_alts(
             }
         }
     }
-    if ctl.comp {
-        println!(
-            "used {:.2} seconds used substituting alt alleles, peak mem = {:.2} GB",
-            elapsed(&t),
-            peak_mem_usage_gb()
-        );
-    }
+    ctl.perf_stats(&t, "substituting alt alleles");
 }

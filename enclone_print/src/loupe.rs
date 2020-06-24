@@ -233,6 +233,18 @@ pub fn make_loupe_clonotype(
         for l in 0..ex.clones.len() {
             cell_barcodes.push(ex.clones[l][0].barcode.clone());
         }
+        let inkt_evidence = InvariantTCellAnnotation {
+            alpha_chain_gene_match: ex.share[0].inkt_alpha_chain_gene_match,
+            alpha_chain_junction_match: ex.share[0].inkt_alpha_chain_junction_match,
+            beta_chain_gene_match: ex.share[0].inkt_beta_chain_gene_match,
+            beta_chain_junction_match: ex.share[0].inkt_beta_chain_junction_match,
+        };
+        let mait_evidence = InvariantTCellAnnotation {
+            alpha_chain_gene_match: ex.share[0].mait_alpha_chain_gene_match,
+            alpha_chain_junction_match: ex.share[0].mait_alpha_chain_junction_match,
+            beta_chain_gene_match: ex.share[0].mait_beta_chain_gene_match,
+            beta_chain_junction_match: ex.share[0].mait_beta_chain_junction_match,
+        };
         ecl.push(ExactSubClonotype {
             chains: chains
                 .into_iter()
@@ -245,6 +257,8 @@ pub fn make_loupe_clonotype(
                 })
                 .collect(),
             cell_barcodes: cell_barcodes,
+            inkt_evidence: inkt_evidence,
+            mait_evidence: mait_evidence,
         });
     }
 
@@ -258,8 +272,6 @@ pub fn make_loupe_clonotype(
         chains: xchains,
         exact_clonotypes: ecl,
         frequency: n as u32,
-        // TODO: The iNKT/MAIT Annotation goes here
-        invariant_tcell: None,
     }
 }
 

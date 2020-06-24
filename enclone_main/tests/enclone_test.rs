@@ -225,10 +225,35 @@ fn test_datasets_sha256() {
 #[cfg(feature = "cpu")]
 #[test]
 fn test_cpu() {
+    // Introductory comments.
+
+    println!(
+        "\nSPEED TESTS\n\n\
+        • These are calibrated for a particular server, bespin1 at \
+        10x Genomics.  If this code is run\nusing a different server, or if that server is \
+        changed, the tests will need to be recalibrated.\n\
+        • These tests also use 10x Genomics datasets that are not distributed publicly\n\
+        (although perhaps could be).\n\
+        • Finally note that the datasets \
+        themselves could be changed without changing this code,\nand that could affect results."
+    );
+    println!(
+        "\nThese tests are expected to fail intermittently simply because of stochastic variation\n\
+        in computational performance (or competing load on the server).  Note also that they\n\
+        depend on files being in a cached state."
+    );
+
+    // Speed test 1.
+
     let it = 1;
     let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 7300;
+    let expect = 7700;
     let percent_dev = 6.0;
+    println!("\nSpeed test 1");
+    println!(
+        "\nThis tests cpu cycles.  If the code is parallelized better, this test may get \n\
+        slower.  Such changes should be accepted if they reduce wallclock."
+    );
     let mut out = String::new();
     let mut ok = false;
     let mut log = String::new();
@@ -275,6 +300,44 @@ fn test_cpu() {
         this_used,
         percent_ratio(this_used, all_used),
         dev
+    );
+    if dev.abs() > percent_dev {
+        eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
+        std::process::exit(1);
+    }
+
+    // Speed test 2.
+
+    let it = 2;
+    let test =
+        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 59.0;
+    let percent_dev = 6.0;
+    println!("Speed test 2");
+    println!(
+        "\nThis tests wall clock.  It is thus particularly susceptible to competing load \
+        on the server.\nIt will also be very slow unless it has been run recently so files \
+        are in cache.\nThis test takes about a minute and may trigger a warning from cargo \
+        after 60 seconds.\n"
+    );
+    let t = Instant::now();
+    let mut out = String::new();
+    let mut ok = false;
+    let mut log = String::new();
+    run_test(
+        env!("CARGO_BIN_EXE_enclone"),
+        it,
+        &test,
+        "cpu",
+        &mut ok,
+        &mut log,
+        &mut out,
+    );
+    let this_used = elapsed(&t);
+    let dev = 100.0 * (this_used as f64 - expect as f64) / (expect as f64);
+    println!(
+        "\nused wallclock = {:.1} seconds, dev = {:.1}%\n",
+        this_used, dev
     );
     if dev.abs() > percent_dev {
         eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
@@ -614,8 +677,8 @@ fn test_for_broken_links_and_spellcheck() {
         csv ctrlc cvars dejavusansmono dref dyiid enclone executables false fcell foursie foursies \
         genomics germline github githubusercontent google grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
-        indel indels json levenshtein linux loh lvars macbook metadata mkdir \
-        moresies multiomic ncbi ncross \
+        indel indels inkt json levenshtein linux loh lvars macbook mait metadata mkdir \
+        moresies multiomic ncbi ncross NEWICK Newick \
         nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
         preinstalled prepends redownloads screenshot segn sloooooooow \
         spacebar stackexchange standalone stdout subclonotype \
@@ -1254,8 +1317,14 @@ fn test_proto_write() -> Result<(), Error> {
         if oldbuf != newbuf {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
-                please regenerate the file {}\n",
-                t, oldx
+                please regenerate the file {} using the command\n\
+                enclone {} BINARY=enclone_main/test/inputs/{}.binary NOPRINT; \
+                gzip -f enclone_main/test/inputs/{}.binary",
+                t,
+                oldx,
+                t,
+                t.after("="),
+                t.after("=")
             );
             std::process::exit(1);
         }

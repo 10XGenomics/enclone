@@ -737,7 +737,6 @@ dependencies = [
  "itertools 0.8.2",
  "mirror_sparse_matrix",
  "ndarray",
- "perf_stats",
  "permutation",
  "pretty_trace",
  "rayon",

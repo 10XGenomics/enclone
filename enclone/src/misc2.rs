@@ -2,16 +2,15 @@
 
 // Miscellaneous functions.
 
+use crate::innate::*;
 use crate::misc3::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
-use perf_stats::*;
 use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -190,6 +189,15 @@ pub fn create_exact_subclonotype_core(
             vs: DnaString::new(),
             vs_notesx: String::new(),
             js: DnaString::new(),
+            // iNKT and MAIT annotations
+            inkt_alpha_chain_gene_match: false,
+            inkt_alpha_chain_junction_match: false,
+            inkt_beta_chain_gene_match: false,
+            inkt_beta_chain_junction_match: false,
+            mait_alpha_chain_gene_match: false,
+            mait_alpha_chain_junction_match: false,
+            mait_beta_chain_gene_match: false,
+            mait_beta_chain_junction_match: false,
         });
     }
     for t in r..s {
@@ -227,7 +235,6 @@ pub fn find_exact_subclonotypes(
     tig_bc: &Vec<Vec<TigData>>,
     refdata: &RefData,
 ) -> Vec<ExactClonotype> {
-    let texact = Instant::now();
     let mut exact_clonotypes = Vec::<ExactClonotype>::new();
     let mut r = 0;
     let mut groups = Vec::<(usize, usize)>::new();
@@ -375,13 +382,13 @@ pub fn find_exact_subclonotypes(
         );
         println!("max exact subclonotype size = {}", max_exact);
     }
-    if ctl.comp {
-        println!(
-            "used {:.2} seconds finding exact subclonotypes, peak mem = {:.2} GB",
-            elapsed(&texact),
-            peak_mem_usage_gb()
-        );
-    }
+
+    // Fill in iNKT and MAIT annotations.
+
+    mark_innate(&refdata, &mut exact_clonotypes);
+
+    // Do other stuff.
+
     if ctl.gen_opt.fasta.len() > 0 {
         let mut f = open_for_write_new![&ctl.gen_opt.fasta];
         for i in 0..exact_clonotypes.len() {
