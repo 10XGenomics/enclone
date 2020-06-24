@@ -316,7 +316,8 @@ fn test_cpu() {
     println!("Speed test 2");
     println!(
         "\nThis tests wall clock.  It is thus particularly susceptible to competing load \
-        on the server.\nThis test takes about a minute and may trigger a warning from cargo \
+        on the server.\nIt will also be very slow unless it has been run recently so files \
+        are in cache.\nThis test takes about a minute and may trigger a warning from cargo \
         after 60 seconds.\n"
     );
     let t = Instant::now();
