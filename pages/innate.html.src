@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>iNKT and MAIT cells</title>
+<link rel="stylesheet" type="text/css" href="../enclone.css">
+</head>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>iNKT and MAIT cells</h1>
+
+<p>
+enclone can look for evidence that T cells are iNKT or MAIT cells.  This evidence may be
+displayed e.g. with <code>LVARSP=inkt</code> or <code>LVARSP=mait</code>, see
+<a href="../pages/auto/help.lvars.html">enclone help lvars</a>.  One may also filter to show
+only cells having some evidence, using the <code>INKT</code> and <code>MAIT</code> options, see
+<a href="../pages/auto/help.lvars.html">enclone help filter</a>.
+</p>
+
+<hr>
+
+<p>
+enclone looks for both <i>gene</i> and <i>junction</i> evidence.  The rules for this are likely
+to be tweaked over time.  Junction evidence is discussed later.  For gene evidence, the following 
+rules are used currently:
+<ul>
+<li>Human iNKT: TRAV10, TRAJ18, TRBV25-1</li>
+<li>Human MAIT: TRAV1-2, any of TRAJ33/TRAJ20/TRAJ12, TRBV20 or TRBV6</li>
+<li>Mouse MAIT: TRAV1, TRAJ33, TRBV19 or TRBV13</li>
+<li>Mouse iNKT: TRAV11, TRAJ18, TRBV13-2 or TRBV1 or TRBV29.</li>
+</ul>
+</p>
+
+<p>As an example,
+<pre><code>enclone TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF</code></pre>
+
+#include pages/auto/mait_example.html
+
+displays a single cell showing evidence for the cell being a MAIT cell, encoded using
+the string <code>𝝰gj𝝱g</code>.  This stands for "gene and junction evidence on the alpha
+chain, and gene evidence on the beta chain".
+
+<p><b>Please we aware that detection of junction evidence is limited by the completeness of
+the lists on which they are based (see below), and these lists are incomplete!</b></p>
+
+<hr>
+
+<p>For junction evidence, enclone tests for presence of a given chain's CDR3 amino acid
+sequence in a fixed list.  Here is the list for human iNKT:
+<ul>
+<li>CASARGVNEQYF</li>
+<li>CASRGQGLGEQYF</li>
+<li>CASRYYSVQGRTDTQYF</li>
+<li>CASSAMDTEAFF</li>
+<li>CASSAPLAGHYEQYF</li>
+<li>CASSAWDGYEQYF</li>
+<li>CASSDGFTDTQYF</li>
+<li>CASSDLGLAGVIEQFF</li>
+<li>CASSDLMGPDNYEQYF</li>
+<li>CASSDLPETQYF</li>
+<li>CASSDQNTEAFF</li>
+<li>CASSDRANEQFF</li>
+<li>CASSDRLAGDTQYF</li>
+<li>CASSDRRQGAHQPQHF</li>
+<li>CASSEAGSGEKLFF</li>
+<li>CASSEALILFF</li>
+<li>CASSEAPWRDSGNTIYF</li>
+<li>CASSEEGALKESVGTQYF</li>
+<li>CASSEFDGGQETQYF</li>
+<li>CASSEFGGTERTQETQYF</li>
+<li>CASSEFGQSADEQFF</li>
+<li>CASSEGGQDYEQYF</li>
+<li>CASSEGTAGTDTQYF</li>
+<li>CASSEGTGPNSPLHF</li>
+<li>CASSEGWEQYF</li>
+<li>CASSELLRGQGRTGELFF</li>
+<li>CASSELTDTQYF</li>
+<li>CASSELYTGGDEQFF</li>
+<li>CASSEMGQGVYTF</li>
+<li>CASSENSGTGRIYEQYF</li>
+<li>CASSEPSSGNTIYF</li>
+<li>CASSEPTGLGTDTQYF</li>
+<li>CASSESATGFSPLHF</li>
+<li>CASSESGGSTEAFF</li>
+<li>CASSESLAGGYNEQFF</li>
+<li>CASSESVETQYF</li>
+<li>CASSEWAGGQETQYF</li>
+<li>CASSEWEDITDTQYF</li>
+<li>CASSEWGRTQETQYF</li>
+<li>CASSEWGTNEKLFF</li>
+<li>CASSEYESTNEKLFF</li>
+<li>CASSEYFAGFNEQYF</li>
+<li>CASSEYGTLQETYF</li>
+<li>CASSEYMEAGIPTDTQYF</li>
+<li>CASSEYMEGGEKLFF</li>
+<li>CASSEYRLQETQYF</li>
+<li>CASSEYRRRSGEKLFF</li>
+<li>CASSFGGETQYF</li>
+<li>CASSGDRRQGAHQPQHF</li>
+<li>CASSGLLTGPDTQYF</li>
+<li>CASSGLRDRGLYEQYF</li>
+<li>CASSGTGGAFDEQFF</li>
+<li>CASSGTVTEAFF</li>
+<li>CASSGYQGGGETQYF</li>
+<li>CASSPIGGHGYEQYF</li>
+<li>CASSPRDRWHEQYF</li>
+<li>CASSRGGFDEQYF</li>
+<li>CASSRGGGTEAFF</li>
+<li>CASSRGGYTEAFF</li>
+<li>CASSTGGADEKLFF</li>
+<li>CASSVPLRDYEQYF</li>
+<li>CASTGASGTYEQYF</li>
+<li>CASTPRKGTDVGNTIYF</li>
+<li>CASTPSGGWSSDTQYF</li>
+<li>CASTSLETSQYF.</li>
+</ul>
+and here is the list for human MAIT:
+<ul>
+<li>CAALDSNYQLIW</li>
+<li>CAAMDSNYQLIW</li>
+<li>CARSDSNYQLIW</li>
+<li>CASMDSNYQLIW</li>
+<li>CASSDSGESGTEAFF</li>
+<li>CASSPSGGDYNEQFF</li>
+<li>CASSQIAGGQQETQYF</li>
+<li>CAVLDSNYQLIW</li>
+<li>CAVMDSNYQLIW</li>
+<li>CAVNGDDYKLSF</li>
+<li>CAVRDGDYKLSF</li>
+<li>CAVRDSDYKLSF</li>
+<li>CAVRDSNYQLIQW</li>
+<li>CAVRDSNYQLIW</li>
+<li>CAVSDSNYQLIW</li>
+<li>CAVSLQDYKLSF</li>
+<li>CSARQGAESREQYF.</li>
+</ul>
+At present we do not have lists for mouse.
+</p>
+
+</body>
+</html>

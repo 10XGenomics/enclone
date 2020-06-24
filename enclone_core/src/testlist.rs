@@ -265,7 +265,7 @@ pub const TESTS: [&str; 101] = [
     // 98. test reduced stringency D alignment
     // (RE can be removed once cellranger rerun)
     r###"TCR=101287 CDR3=CASSPAGTSGKVWGTDTQYF RE"###,
-    // 99. test mait
+    // 99. test mait (redundant with mait_example.html below, so could delete)
     r###"TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF"###,
     // 100. test inkt and INKT
     r###"TCR=101287 LVARSP=inkt INKT MIN_CELLS=2"###,
@@ -302,7 +302,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 9] = [
+pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -355,5 +355,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 9] = [
     (
         "pages/auto/tree_example.html",
         "BCR=123085 TREE COMPLETE CDR3=CARDQNFDESSGYDAFDIW LVARSP=dref HTML",
+    ),
+    // 10.
+    (
+        "pages/auto/mait_example.html",
+        "TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF HTML",
     ),
 ];
