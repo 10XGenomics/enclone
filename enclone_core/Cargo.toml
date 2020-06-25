@@ -1,6 +1,6 @@
 [package]
 name = "enclone_core"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
@@ -38,6 +38,5 @@ rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 [build-dependencies]
 chrono = "0.4.11"
 string_utils = "0.1.1"
-
 
 
