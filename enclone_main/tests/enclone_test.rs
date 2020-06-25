@@ -87,7 +87,8 @@ fn test_sync_master() {
                     if version.contains_key(&cratex) {
                         let t = format!("{} = {}", cratex, version[&cratex]);
                         if t != s {
-                            eprintln!("\nFound change in {}.\nold: {}\nnew: {}\n", toml, s, t);
+                            eprintln!("\nFound change in {}.\nold: {}\nnew: {}", toml, s, t);
+                            eprintln!("You probably need to run sync_to_master\n");
                             std::process::exit(1);
                         }
                     }
