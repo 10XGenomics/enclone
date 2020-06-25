@@ -212,8 +212,16 @@ fn test_datasets_sha256() {
         .arg("-c")
         .arg(&sha_command1)
         .output()
-        .unwrap()
-        .stdout;
+        .unwrap();
+    let sha1_status = sha1.status.code().unwrap();
+    if sha1_status != 0 {
+        eprintln!(
+            "\nsha_command1 = {}\nfailed for datasets_medium_checksum\n",
+            sha_command1
+        );
+        std::process::exit(1);
+    }
+    let sha1 = sha1.stdout;
     let sha2 = Command::new("csh")
         .arg("-c")
         .arg(&sha_command2)
