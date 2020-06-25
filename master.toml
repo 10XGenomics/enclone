@@ -43,5 +43,7 @@ tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 tar = "0.4.28"
 tilde-expand = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "0.1.0"
+# to change to 0.1.1:
+vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+# vector_utils = "0.1.0"
 version = "0.4.2"
