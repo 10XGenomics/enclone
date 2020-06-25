@@ -926,7 +926,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
     for x in ctl.origin_info.dataset_list.iter() {
-        speaker!(&format!("{}_barcodes", x));
+        if x.len() > 0 {
+            speaker!(&format!("{}_barcodes", x));
+        }
     }
     if ctl.parseable_opt.pbarcode {
         speaker!("barcode");

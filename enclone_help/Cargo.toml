@@ -11,9 +11,14 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
 edition = "2018"
 publish = false
 
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
 [dependencies]
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 enclone_core = { path = "../enclone_core" }
-io_utils = "*"
-string_utils = "*"
+io_utils = "0.2.4"
+string_utils = "0.1.1"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+
+

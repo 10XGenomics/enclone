@@ -545,8 +545,8 @@ checksum = "ef8ae57c4978a2acd8b869ce6b9ca1dfe817bff704c220209fdef2c0b75a01b9"
 
 [[package]]
 name = "debruijn"
-version = "0.3.0"
-source = "git+https://github.com/10XGenomics/rust-debruijn.git#2e16852f20aac47175120b73fa36ae29b9147d0f"
+version = "0.3.1"
+source = "git+https://github.com/10XGenomics/rust-debruijn.git#6d4b21e5fbaa7c169523229aa26a9966f49a4191"
 dependencies = [
  "bit-set",
  "boomphf",
@@ -635,7 +635,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -651,7 +651,7 @@ dependencies = [
  "string_utils",
  "tilde-expand",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -672,7 +672,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "string_utils",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -704,7 +704,7 @@ dependencies = [
  "flate2",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -715,7 +715,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -734,7 +734,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -747,12 +747,12 @@ dependencies = [
  "string_utils",
  "tables",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
 name = "enclone_proto"
-version = "0.4.3"
+version = "0.4.2"
 dependencies = [
  "bio 0.29.0",
  "byteorder",
@@ -777,7 +777,7 @@ dependencies = [
  "equiv",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
@@ -792,39 +792,6 @@ dependencies = [
  "tar",
  "vdj_ann",
  "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
-]
-
-[[package]]
-name = "enclone_versions"
-version = "0.4.3"
-dependencies = [
- "assert_cmd",
- "bio 0.29.0",
- "byteorder",
- "bytes 0.4.12",
- "chrono",
- "dirs",
- "failure",
- "flate2",
- "io_utils",
- "itertools 0.9.0",
- "ndarray",
- "pager",
- "permutation",
- "petgraph",
- "pretty_trace",
- "prost",
- "prost-build",
- "rayon",
- "regex",
- "serde",
- "serde_derive",
- "stats_utils",
- "stirling_numbers",
- "string_utils",
- "tar",
- "tilde-expand",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -2312,9 +2279,9 @@ dependencies = [
 
 [[package]]
 name = "tar"
-version = "0.4.28"
+version = "0.4.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c058ad0bd6ccb84faa24cc44d4fc99bee8a5d7ba9ff33aa4d993122d1aeeac2"
+checksum = "c8a4c1d0bee3230179544336c15eefb563cf0302955d962e456542323e8c2e8a"
 dependencies = [
  "filetime",
  "libc",
