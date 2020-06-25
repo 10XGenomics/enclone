@@ -1,4 +1,8 @@
 # This file contains master definitions for Cargo.toml files in this workspace.
+#
+# If you want to change the version of a crate that's used, edit this file, and not one
+# of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
+# is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
 amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }

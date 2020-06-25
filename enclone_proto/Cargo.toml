@@ -11,6 +11,9 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
 edition = "2018"
 publish = false
 
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
 [dependencies]
 bio = "0.29.0"
 bytes = "0.4"

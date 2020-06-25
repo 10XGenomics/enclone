@@ -12,6 +12,9 @@ edition = "2018"
 build = "build.rs"
 publish = false
 
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
 [dependencies]
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 bio = "0.29.0"
