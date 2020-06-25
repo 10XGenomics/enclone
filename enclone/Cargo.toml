@@ -12,38 +12,43 @@ edition = "2018"
 license = "LICENSE.txt"
 publish = false
 
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
 [dependencies]
 amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-assert_cmd = "*"
-bio = "*"
+assert_cmd = "0.12.0"
+bio = "0.29.0"
 debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
-dirs = "*"
+dirs = "2.0.2"
 enclone_core = { path = "../enclone_core" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-io_utils = "*"
-itertools = "*"
+io_utils = "0.2.4"
+itertools = "0.9.0"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-petgraph = "*"
-pretty_trace = "*"
-rayon = "*"
-regex = "*"
-serde = "*"
-serde_derive = "*"
+petgraph = "0.4.13"
+pretty_trace = "0.3.0"
+rayon = "1.0.2"
+regex = "1.3.1"
+serde = "1.0.90"
+serde_derive = "1.0.102"
 serde_json = "*"
-stats_utils = "*"
-stirling_numbers = "*"
-string_utils = "*"
-tilde-expand = "*"
+stats_utils = "0.1.0"
+stirling_numbers = "0.1.1"
+string_utils = "0.1.1"
+tilde-expand = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "*"
+vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 
 [target.'cfg(not(windows))'.dependencies]
-pager = "*"
+pager = "0.15.0"
 
 [dependencies.hdf5]
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
+
+
