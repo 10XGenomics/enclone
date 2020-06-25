@@ -24,7 +24,7 @@ use rayon::prelude::*;
 use serde_json::Value;
 use stats_utils::*;
 use std::cmp::min;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -51,6 +51,49 @@ fn valid_link(link: &str) -> bool {
             return true;
         }
         return false;
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
+// Make sure that if sync_master was run, nothing would change.
+//
+// A bit ugly because of duplicated code.
+
+#[cfg(not(feature = "basic"))]
+#[test]
+fn test_sync_master() {
+    let mut version = HashMap::<String, String>::new();
+    let f = open_for_read!["../master.toml"];
+    for line in f.lines() {
+        let s = line.unwrap();
+        if !s.starts_with('#') && s.contains("=") {
+            version.insert(s.before(" = ").to_string(), s.after(" = ").to_string());
+        }
+    }
+    let all = read_dir("..").unwrap();
+    for f in all {
+        let f = f.unwrap().path();
+        let f = f.to_str().unwrap();
+        let toml = format!("{}/Cargo.toml", f);
+        if path_exists(&toml) {
+            let g = open_for_read![&toml];
+            for line in g.lines() {
+                let s = line.unwrap();
+                if s.contains(" =") {
+                    let cratex = s.before(" =").to_string();
+                    if version.contains_key(&cratex) {
+                        let t = format!("{} = {}", cratex, version[&cratex]);
+                        if t != s {
+                            eprintln!("\nFound change in {}.\nold: {}\nnew: {}\n", toml, s, t);
+                            std::process::exit(1);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -7,7 +7,7 @@ use io_utils::*;
 use itertools::Itertools;
 use pretty_trace::*;
 use std::collections::HashMap;
-use std::fs::{File, read_dir};
+use std::fs::{read_dir, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
 
