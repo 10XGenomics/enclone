@@ -545,8 +545,8 @@ checksum = "ef8ae57c4978a2acd8b869ce6b9ca1dfe817bff704c220209fdef2c0b75a01b9"
 
 [[package]]
 name = "debruijn"
-version = "0.3.0"
-source = "git+https://github.com/10XGenomics/rust-debruijn.git#2e16852f20aac47175120b73fa36ae29b9147d0f"
+version = "0.3.1"
+source = "git+https://github.com/10XGenomics/rust-debruijn.git#6d4b21e5fbaa7c169523229aa26a9966f49a4191"
 dependencies = [
  "bit-set",
  "boomphf",
@@ -635,7 +635,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -704,7 +704,7 @@ dependencies = [
  "flate2",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -734,7 +734,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -777,7 +777,7 @@ dependencies = [
  "equiv",
  "hdf5",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
