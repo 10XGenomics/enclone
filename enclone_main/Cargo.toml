@@ -20,19 +20,19 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-io_utils = "*"
-itertools = "*"
+io_utils = "0.2.4"
+itertools = "0.9.0"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-pretty_trace = "*"
-rayon = "*"
-regex = "*"
-serde = "*"
-serde_derive = "*"
+pretty_trace = "0.3.0"
+rayon = "1.0.2"
+regex = "1.3.1"
+serde = "1.0.90"
+serde_derive = "1.0.102"
 serde_json = "*"
-stats_utils = "*"
-string_utils = "*"
+stats_utils = "0.1.0"
+string_utils = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vector_utils = "*"
+vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 
 [dependencies.hdf5]
 features = ["conda"]
@@ -42,11 +42,12 @@ rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 [dev-dependencies]
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-failure = "*"
-flate2 = "*"
+failure = "0.1.5"
+flate2 = "1.0.12"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-rayon = "*"
+rayon = "1.0.2"
 
 [features]
 basic = []
 cpu = []
+

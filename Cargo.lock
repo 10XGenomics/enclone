@@ -651,7 +651,7 @@ dependencies = [
  "string_utils",
  "tilde-expand",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -672,7 +672,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "string_utils",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -715,7 +715,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -747,7 +747,7 @@ dependencies = [
  "string_utils",
  "tables",
  "vdj_ann",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
@@ -824,7 +824,7 @@ dependencies = [
  "string_utils",
  "tar",
  "tilde-expand",
- "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
 ]
 
 [[package]]
