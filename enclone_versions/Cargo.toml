@@ -1,6 +1,6 @@
 [package]
 name = "enclone_versions"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
@@ -40,4 +40,3 @@ string_utils = "0.1.1"
 tar = "0.4.29"
 tilde-expand = "0.1.1"
 vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-
