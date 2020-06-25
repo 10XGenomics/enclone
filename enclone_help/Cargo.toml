@@ -1,6 +1,6 @@
 [package]
 name = "enclone_help"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
@@ -20,6 +20,5 @@ enclone_core = { path = "../enclone_core" }
 io_utils = "0.2.4"
 string_utils = "0.1.1"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-
 
 
