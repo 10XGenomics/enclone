@@ -795,39 +795,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "enclone_versions"
-version = "0.4.2"
-dependencies = [
- "assert_cmd",
- "bio 0.29.0",
- "byteorder",
- "bytes 0.4.12",
- "chrono",
- "dirs",
- "failure",
- "flate2",
- "io_utils",
- "itertools 0.9.0",
- "ndarray",
- "pager",
- "permutation",
- "petgraph",
- "pretty_trace",
- "prost",
- "prost-build",
- "rayon",
- "regex",
- "serde",
- "serde_derive",
- "stats_utils",
- "stirling_numbers",
- "string_utils",
- "tar",
- "tilde-expand",
- "vector_utils 0.1.2 (git+https://github.com/10XGenomics/rust-toolbox.git)",
-]
-
-[[package]]
 name = "equiv"
 version = "0.1.0"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git#9368477d9a7a3dd64081658c9628e107b406d566"

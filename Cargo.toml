@@ -8,7 +8,6 @@ members = [
     "enclone_print",
     "enclone_proto",
     "enclone_tail",
-    "enclone_versions",
 ]
 
 [profile.dev]
