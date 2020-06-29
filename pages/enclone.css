@@ -100,18 +100,19 @@ li {
     margin: 5px 0;
 }
 
+/* Links are shown in the same blue color, whether visited or not.  There is no underlining at all.
+   We agreed that this was optimal.  Don't know if the second link definition is redundant.
+*/
+
 a:link {
     text-decoration: none;
-    color: rgb(3, 102, 214);
+    color: #0071D9;
 }
 
 a:link {
-    color: #feb236; /* univisited links are in a lighter orange */
-    font-weight: bold;
+    color: #0071D9;
 }
 
-/* visited link */
 a:visited {
-    color: #ff7b25; /* visited links are in a darker orange */
-    font-weight: bold;
+    color: #0071D9;
 }
