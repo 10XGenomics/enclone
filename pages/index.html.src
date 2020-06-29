@@ -71,7 +71,7 @@ viruses, bacteria, and tumors.</p>
 </tr>
 
 <tr>
-<td align="left"><a href="#help">&nbsp;7. Help me!&nbsp;</a></td>
+<td align="left"><a href="#help">&nbsp;7. Help&nbsp;</a></td>
 <td align="left"></td>
 </tr>
 
@@ -318,7 +318,7 @@ documentation within its online menus.  To get started you should:</p>
 <hr>
 
 <p><a name="help" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Help me!</h2>
+<h2>Help</h2>
 
 <p>enclone help is split between material on this site and pages that are invocable from the enclone
 command line.  All the latter pages are also listed here:</p>
