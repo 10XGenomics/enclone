@@ -298,8 +298,15 @@ pub fn loupe_out(
                 nt_sequence: refdata.refs[i].to_ascii_vec(),
             });
         }
+        let metadata = match &ctl.gen_opt.proto_metadata {
+            Some(fname) => serde_json::from_reader(
+                std::fs::File::open(fname).expect(&format!("Error while reading {}", fname)),
+            )
+            .expect(&format!("Unable to deserialize Metadata from {}", fname)),
+            None => Metadata::default(),
+        };
         let enclone_outputs = EncloneOutputs {
-            metadata: Metadata::default(),
+            metadata,
             clonotypes: all_loupe_clonotypes,
             universal_reference: UniversalReference { items: uref },
             donor_reference: DonorReference {
