@@ -14,7 +14,7 @@
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
 <header>
-<h1><b>enclone</b>(beta)</h1>
+<h1><b>enclone</b> (beta)</h1>
 <p>Accurate and user-friendly computational tool for clonal grouping to study the adaptive immune system in humans
 	and other vertebrates</P
 </header>
@@ -165,7 +165,7 @@ the biological interpretation of the data.
 <u>Speed</u>: <b>enclone</b> is very fast, allowing analysis of datasets in seconds.
 </p>
 <p>
-<u>Easy installation</u>: The software is i<a href="#download">easy to install</a> and to test.
+<u>Easy installation</u>: The software is <a href="#download">easy to install</a> and to test.
 </p>
 
 <hr>
@@ -174,7 +174,7 @@ the biological interpretation of the data.
 <h2>Inputs to enclone</h2>
 
 <p>
-BCR or TCR RNA sequences generated using the <a>href="https://www.10xgenomics.com>10x Genomics</a>
+BCR or TCR RNA sequences generated using the <a href="https://www.10xgenomics.com">10x Genomics</a>
 Chromium Single Cell Immune Profiling Solution and Cell Ranger 3.1 or higher are the input to
 <b>enclone</b>. <b>enclone</b> can also process and display gene expression and Feature Barcode data
 from the same cells. The latter can be used to quantify cell surface proteins, antigen binding, CRISPR
