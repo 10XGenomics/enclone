@@ -98,11 +98,12 @@ cognate receptors of these cells evolved in response to various antigens.</p>
 <p><a name="objective" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Objective</h2>
 
-<p>If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
-have the power to fully understand the nature of the receptors for those cells, because you have
-in hand the sequences for each of their chains.</p>
-<p>You should be able to directly see this biology, without aid from a computational expert.  To
-that end, we start with this simple goal:</p>
+
+<p>Using <b>enclone</b> to profile B and T cell receptors for any sample using Chromium Single Cell
+V(D)J as input enables you to make the best use of your data. You can explore the biology of these
+cells without help from a computational expert!</p>	
+
+<p>The objective of <b>enclone</b> is to:</p>
 
 <table style="width:100%; margin-top: -17px">
   <tr>
@@ -114,35 +115,37 @@ that end, we start with this simple goal:</p>
        </p>
   </th>
   <th style="padding-left: 20px; text-align: left; font-weight:normal">
-       The <i>finding</i> part is
-       algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same
-       clonotype, or to "pollute" a clonotype with chains that do not belong in it.
-       The <i>displaying</i> part is also challenging, in part because it is hard to compactly 
-       represent the wealth of available information.
+       <span style="color:red">Find:</span> It is easy to mistakenly put unrelated cells in the same
+	clonotype, or to "pollute" a clonotype with chains that do not belong in it.<br> 
+       <b>enclone's algorithms make <i>finding</i> accurate.</b>	       
+       <span style="color:red">Display:</span> It is challenging to compactly represent a large
+	repertoire of data.<br>
+	<b>enclone enables compact, easy-to-grasp data <i>display</i>.</b>
   </th>
   </tr>
 </table>
 
-To make sure we are using terminology in the same way, the following diagram shows what a
-<em>clonotype</em> is for B cells.  The same applies for T cells, but things are simpler because 
-T cells do not have somatic hypermutation.
+<p>The diversity of BCR and TCR chains, containing various combinations of V, D, and/or J segments,
+broadens the immune repertoire to protect against a wide variety of pathogens. The figure below
+illustrates the concept of a <em>BCR clonotype</em>. A similar concept applies to TCRs but without somatic
+hypermutations.</p>
 
+<!-- TODO: update from Tech Comm (Keri) -->
 <img src="img/what_is_a_clonotype.svg" alt="what is a clonotype" title="what is a clonotype" style="max-width:80%;"></a>
 
-<p>Each cell in a clonotype is typically represented by two or three chains.  Such information can
-only be obtained from <em>single cell</em> data!  From such data, clonotypes can be computationally
-approximated, with high accuracy (see below).  The method we use for this is described 
-<a href="pages/auto/help.how.html">briefly in the online documentation for enclone</a>, 
-and will be described separately in more detail.</p>
-
+<p>Each cell in a clonotype is typically represented by two or three chains, and this information is
+present and directly observable in single cell V(D)J data. <b>enclone</b> computationally approximates the clonotypes
+from the data with high accuracy (see below). The methods of <b>enclone</b> are described
+<a href="pages/auto/help.how.html">briefly in the online documentation for enclone</a>, and will
+also be described separately in more detail.
+</p>
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
 <b>Clonotyping performance.</b>  To test the performance of enclone, we combined data from 443 BCR 
-libraries from 30 donors.  This yielded <span style="color:red">381506</span> clonotypes, of which
-<span style="color:red">9573</span> contained at least two cells each.  Of these,
-<span style="color:red">15 (0.16%)</span> contained data from multiple donors.  These multi-donor 
-clonotypes are errors.  The fact that there are few of them suggests that the rate at which enclone
-places unrelated cells in the same clonotype is low.  This is a consequence of both the paired 
-chain data and the algorithm.
+enriched libraries from 30 donors. <b>enclone</b> detected a total of <span style="color:red">381506</span>
+clonotypes. <span style="color:red">9,573</span> of the detected clonotypes contained at least two cells,
+of which <span style="color:red">15 (0.16%)</span> clonotypes were errors with data from multiple donors.
+The low error rate observed is a consequence of the paired chain data and the enclone algorithm, which
+minimizes the placement of unrelated cells in the same clonotype.
 </p>
 
 <hr>
