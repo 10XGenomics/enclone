@@ -311,7 +311,7 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
 </ol>
 Additional details can be found <a href="pages/installation_details.html">here</a>.
 
-Close and reopen your terminal window to refresh the path and proceed with running <b>enclone</b>.</p>
+Restart your terminal session; you can now run <b>enclone</b>.</p>
 
 <p><span style="color:red; font-weight:bold">To update, type the same command!</span>
 <span style="font-weight:bold">
