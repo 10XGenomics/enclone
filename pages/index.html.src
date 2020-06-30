@@ -51,26 +51,26 @@ viruses, bacteria, and tumors.</p>
 
 <tr>
 <td align="left"><a href="#objective">&nbsp;2. Objective&nbsp;</a></td>
-<td align="left"><a href="#multiomic">&nbsp;9. Understanding enclone output&nbsp;</a></td>
+<td align="left"><a href="#output">&nbsp;9. Understanding enclone output&nbsp;</a></td>
 </tr>
 
 <tr>
 <td align="left"><a href="#why">&nbsp;3. Why enclone?&nbsp;</a></td>
-<td align="left"><a href="#honeycomb">&nbsp;10. Combining multiomic data&nbsp;</a></td>
+<td align="left"><a href="#multiomic">&nbsp;10. Combining multiomic data&nbsp;</a></td>
 </tr>
 
 <tr>
 <td align="left"><a href="#inputs">&nbsp;4. Data input&nbsp;</a></td>
-<td align="left"><a href="#sowhat">&nbsp;11. Visualizing multiple clonotypes at once&nbsp;</a></td>
+<td align="left"><a href="#honeycomb">&nbsp;11. Visualizing multiple clonotypes at once&nbsp;</a></td>
 </tr>
 
 <tr>
 <td align="left"><a href="#software">&nbsp;5. Software&nbsp;</a></td>
-<td align="left"><a href="#sowhat">&nbsp;12. The power of enclone&nbsp;</a></td>
+<td align="left"><a href="#powerunlimitedpower">&nbsp;12. The power of enclone&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#running">&nbsp;6. Installing enclone&nbsp;</a></td>
+<td align="left"><a href="#download">&nbsp;6. Installing enclone&nbsp;</a></td>
 <td align="left"><a href="#questions">&nbsp;13. Questions&nbsp;</a></td>
 </tr>
 
@@ -599,7 +599,7 @@ and these data displayed as additional columns.</p>
 <br>
 <hr>
 
-<p><a name="sowhat" style="display:block; position:relative; top:-20px;"></a></p>
+<p><a name="powerunlimitedpower" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>The power of enclone</h2>
 
 <p>There are many ways to use 10x Genomics data to study immunobiology.</p>
