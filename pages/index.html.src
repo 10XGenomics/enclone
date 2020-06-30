@@ -531,6 +531,7 @@ the sample datasets to understand <b>enclone</b> features and output.</p>
 	<li><u>Horizontally</u>, a flexible concept, to show by default all positions exhibiting a
 		difference from the reference and all positions in the CDR3 (instead of showing
 		all transcript positions, only "interesting" positions are shown).</li>
+</ol>
 </p>
 
 <p>The same exact output would be obtained by typing:</p>
