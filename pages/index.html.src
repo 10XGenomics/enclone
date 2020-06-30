@@ -15,13 +15,13 @@
 
 <header>
 <h1><b>enclone</b> (beta)</h1>
-<p>Accurate and user-friendly computational tool for clonal grouping to study the adaptive immune system in humans
-	and other vertebrates</p>
+<h3>Accurate and user-friendly computational tool for clonal grouping to study the adaptive immune system in humans
+	and other vertebrates<h3>
 </header>
 
 <p><b><a href="https://10xgenomics.com/">10x Genomics</a></b> Chromium Single Cell V(D)J data containing B cell 
 	receptor (BCR) and T cell receptor (TCR) RNA sequences are entered as input data to enclone. Based on the
-	input, enclone finds and organizes cells arising from the same progenitors into groups (clonotypes) and
+	input, <b>enclone</b> finds and organizes cells arising from the same progenitors into groups (clonotypes) and
 	compactly displays each clonotype along with its salient features, including mutated amino acids.</p>
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
 padding: 8px; width: 875px; font-size: 120%">
@@ -30,17 +30,11 @@ supported via
 <a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.
 The clonotype assignment algorithm that is part of enclone will be integrated into a future release of Cell Ranger.
 </p>
-enclone (beta) is provided as a tool for use by the community to accelerate immunology research.  enclone is only 
-supported via 
-<a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.
-The clonotype assignment algorithm that is part of enclone will be integrated into a future release of Cell Ranger. 
-</p>
 
-<p>enclone has been designed for immunologists but anyone can download and experiment with it.</p>
+<p><b>enclone</b> has been designed for immunologists but anyone can download and experiment with it.</p>
 
 <p><b>Background:</b> when you get sick, your body mounts an immune response by selectively 
-amplifying
-immune cells and mutations within these selected cells.  enclone allows you to see the history of
+amplifying immune cells and mutations within these selected cells.  <b>enclone</b> allows you to see the history of
 single immune cells within a biological sample (such as a blood draw or biopsy).  This history
 reflects how the cognate receptors of these cells evolved in response to antigens, including
 viruses, bacteria, and tumors.</p>
