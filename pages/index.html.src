@@ -546,7 +546,7 @@ contains some files from a Cell Ranger run, obtained from a human ovarian cancer
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 950px">
 <b>How does enclone find my data?</b>
 It uses a <i>search path</i> called <code>PRE</code> that is preset to 
-<code>~/enclone/datasets,~/enclone/datasets2</code>, and which you can set to any value, either
+<code>~/enclone/datasets,~/enclone/datasets2</code>, and which can be set to any value, either
 by setting <code>PRE=...</code> on the command line, or by setting the environment variable
 <code>ENCLONE_PRE</code>.  To find your data, enclone prepends <code>PRE</code> to the value of 
 <code>BCR</code> or <code>TCR</code> given on the command line.
