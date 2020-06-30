@@ -100,7 +100,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
         edges1.push((edges0[i].0, edges0[i].1, (weight, j - i)));
         i = j;
     }
-    let mut g = Graph::<u32, (usize, usize), Directed>::new();
+    let mut g = Graph::<u32, (usize, usize), Directed, u32>::new();
     g.reserve_exact_nodes(seqs.len());
     g.reserve_exact_edges(edges1.len());
     for i in 0..seqs.len() {
