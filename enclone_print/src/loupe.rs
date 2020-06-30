@@ -299,6 +299,7 @@ pub fn loupe_out(
             });
         }
         let enclone_outputs = EncloneOutputs {
+            metadata: Metadata::default(),
             clonotypes: all_loupe_clonotypes,
             universal_reference: UniversalReference { items: uref },
             donor_reference: DonorReference {
