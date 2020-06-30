@@ -575,7 +575,7 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 <p><a name="multiomic" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Combining multiomic data</h2>
 
-<p>Gene expression and Feature Barcode data can be displayed simultaneously alongisde VDJ data.  For
+<p>Gene expression and Feature Barcode data can be displayed simultaneously alongside VDJ data.  For
 example, here we add columns for the same clonotype, showing the median number of UMIs detected
 for all genes, a particular gene, and a particular antibody:</p>
 
