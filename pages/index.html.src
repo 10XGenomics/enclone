@@ -153,13 +153,19 @@ minimizes the placement of unrelated cells in the same clonotype.
 <p><a name="why" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Why use enclone?</h2>
 <p>
-enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
-features and improvements.  enclone is also very fast, allowing analysis of datasets in seconds.
-You can install the software by typing one line and then see for yourself.  But most importantly,
-enclone provides the 10x Genomics perspective on your data and has been tested on more 10x Genomics
-data than any other tool. We highly recommend using other tools as well, but we can guarantee you
-that in many cases, enclone will provide a different answer, which may affect the biological
-interpretation of your data.
+<b>enclone</b> has unique features!
+</p>
+<p>
+<u>10x Genomics data insight</u>: <b>enclone</b> is an excellent tool designed and tested extensively to
+gain in-depth insight and perspective regarding 10x Genomics single cell V(D)J datasets. Other similar tools
+may be used, but in many cases, <b>enclone</b> may provide a different answer, which in turn may affect
+the biological interpretation of the data.	
+</p>
+<p>
+<u>Speed</u>: <b>enclone</b> is very fast, allowing analysis of datasets in seconds.
+</p>
+<p>
+<u>Easy installation</u>: The software is i<a href="#download">easy to install</a> and to test.
 </p>
 
 <hr>
