@@ -541,16 +541,16 @@ the sample datasets to understand <b>enclone</b> features and output.</p>
 <img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" style="max-width:100%;"></a>
 </p> 
 
-<p>Notice the compression in two directions:
+<p><u>Notice the compression in two directions</u>:
 <ol>
-	<li>Vertically to group cells into a single line if they have identical V(D)J transcripts
+	<li><u>Vertically</u> to group cells into a single line if they have identical V(D)J transcripts
 		(instead of showing one line for every cell).</li>
-	<li>Horizontally, a flexible concept, to show by default all positions exhibiting a
+	<li><u>Horizontally</u>, a flexible concept, to show by default all positions exhibiting a
 		difference from the reference and all positions in the CDR3 (instead of showing
 		all transcript positions, only "interesting" positions are shown).</li>
 </p>
 
-<p>The same exact output would be obtained by typing</p>
+<p>The same exact output would be obtained by typing:</p>
 <pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
 </code></pre>
 <p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
@@ -576,7 +576,7 @@ datasets.  See <a href="pages/auto/help.input.html">here</a> for how.
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
 automatically paged, so you can scroll through it.</p>
-<p>By default, enclone prints clonotypes in this human-readable form.  You can also instruct enclone
+<p>By default, <b>enclone</b> prints clonotypes in this human-readable form.  You can also instruct <b>enclone</b>
 to print clonotypes in machine-readable forms that are suitable for input to other programs.</p>
 <hr>
 
