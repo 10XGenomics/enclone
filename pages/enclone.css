@@ -57,6 +57,7 @@ h1 {
 }
 
 body {
+    max-width: 1080px;
     color: rgb(36, 41, 46);
     margin-left: 25px;
     margin-right: 25px;
