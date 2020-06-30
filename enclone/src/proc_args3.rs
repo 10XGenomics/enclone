@@ -10,6 +10,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
+use std::thread;
+use std::time;
 use std::time::Instant;
 use string_utils::*;
 use tilde_expand::*;
@@ -246,12 +248,25 @@ fn get_path_or_internal_id(
                     *current_ref = true;
                     pp = format!("{}/outs", path);
                     if !path_exists(&pp) {
-                        eprintln!(
-                            "\nIt looks like you've provided an analysis ID for \
-                            which the pipeline outs folder\n{}\nhas not yet been generated.\n\
-                            This path did not exist:\n{}\n\n",
-                            p, pp
-                        );
+                        thread::sleep(time::Duration::from_millis(100));
+                        if path_exists(&pp) {
+                            eprintln!(
+                                "\nYou are experiencing unstable filesystem access: 100 milliseconds ago, \
+                                the path\n\
+                                {}\nwas not visible, but now it is.  You might consider posting this problem on \
+                                the slack channel #seqops-bespin.\nOr retry again.  enclone is giving up because \
+                                if filesystem access blinks in and out of existence,\n\
+                                other more cryptic events are likely to occur.\n",
+                                pp
+                            );
+                        } else {
+                            eprintln!(
+                                "\nIt looks like you've provided an analysis ID for \
+                                which the pipeline outs folder\n{}\nhas not yet been generated.\n\
+                                This path did not exist:\n{}\n\n",
+                                p, pp
+                            );
+                        }
                         std::process::exit(1);
                     }
                 } else {
