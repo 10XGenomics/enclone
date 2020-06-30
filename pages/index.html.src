@@ -13,23 +13,27 @@
 <br>
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
-<p><b>enclone</b> (beta) is a computational tool for studying the adaptive immune system in 
-humans and other vertebrate species.  It takes as input data from
-<b><a href="https://10xgenomics.com/">10x Genomics</a></b>, providing captured RNA
-sequences for B and T cell receptors in single cells.  It organizes these cells into groups
-(clonotypes) arising from the same progenitor and compactly displays each clonotype along
-with its salient features, including mutated amino acids.</p>
+<header>
+<h1><b>enclone</b>(beta)</h1>
+<p>Accurate and user-friendly computational tool for clonal grouping to study the adaptive immune system in humans
+	and other vertebrates</P
+</header>
 
-<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
-padding: 8px; width: 875px; font-size: 120%">
+<p><b><a href="https://10xgenomics.com/">10x Genomics</a></b> Chromium Single Cell V(D)J data containing B cell 
+	receptor (BCR) and T cell receptor (TCR) RNA sequences are entered as input data to enclone. Based on the
+	input, enclone finds and organizes cells arising from the same progenitors into groups (clonotypes) and
+	compactly displays each clonotype along with its salient features, including mutated amino acids.</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; background-color: DodgerBlue; 
+padding: 8px; width: 875px; font-size: 120%; color:white">
 enclone (beta) is provided as a tool for use by the community to accelerate immunology research.  enclone is only 
 supported via 
 <a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.
 The clonotype assignment algorithm that is part of enclone will be integrated into a future release of Cell Ranger. 
 </p>
 
-<p>enclone and this page are designed for immunologists, but anyone can download and experiment
-with it.</p>
+<p>enclone has been designed for immunologists but anyone can download and experiment with it.</p>
+
 <p><b>Background:</b> when you get sick, your body mounts an immune response by selectively 
 amplifying
 immune cells and mutations within these selected cells.  enclone allows you to see the history of
@@ -41,38 +45,38 @@ viruses, bacteria, and tumors.</p>
 <tbody>
 
 <tr>
-<td align="left"><a href="#mission">&nbsp;1. The mission of enclone&nbsp;</a></td>
-<td align="left"><a href="#output">&nbsp;8. Understanding enclone output&nbsp;</a></td>
+<td align="left"><a href="#intro">&nbsp;1. Introduction&nbsp;</a></td>
+<td align="left"><a href="#help">&nbsp;8. Help&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#inputs">&nbsp;2. Inputs to enclone&nbsp;</a></td>
-<td align="left"><a href="#multiomic">&nbsp;9. Combining multiomic data&nbsp;</a></td>
+<td align="left"><a href="#objective">&nbsp;2. Objective&nbsp;</a></td>
+<td align="left"><a href="#multiomic">&nbsp;9. Understanding enclone output&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#why">&nbsp;3. Why use enclone&nbsp;</a></td>
-<td align="left"><a href="#honeycomb">&nbsp;10. Visualizing many clonotypes at once&nbsp;</a></td>
+<td align="left"><a href="#why">&nbsp;3. Why enclone?&nbsp;</a></td>
+<td align="left"><a href="#honeycomb">&nbsp;10. Combining multiomic data&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#software">&nbsp;4. The enclone software&nbsp;</a></td>
-<td align="left"><a href="#sowhat">&nbsp;11. So what is enclone good for?&nbsp;</a></td>
+<td align="left"><a href="#inputs">&nbsp;4. Data input&nbsp;</a></td>
+<td align="left"><a href="#sowhat">&nbsp;11. Visualizing multiple clonotypes at once&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#download">&nbsp;5. Installing enclone&nbsp;</a></td>
-<td align="left"><a href="#questions">&nbsp;12. Questions&nbsp;</a></td>
+<td align="left"><a href="#software">&nbsp;5. Software&nbsp;</a></td>
+<td align="left"><a href="#sowhat">&nbsp;12. The power of enclone&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#running">&nbsp;6. Running enclone&nbsp;</a></td>
-<td align="left"><a href="#whereami">&nbsp;13. Where am I?&nbsp;</a></td>
+<td align="left"><a href="#running">&nbsp;6. Installing enclone&nbsp;</a></td>
+<td align="left"><a href="#questions">&nbsp;13. Questions&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#help">&nbsp;7. Help&nbsp;</a></td>
-<td align="left"></td>
+<td align="left"><a href="#running">&nbsp;7. Running enclone&nbsp;</a></td>
+<td align="left"><a href="#whereami">&nbsp;14. Where am I?&nbsp;</a></td>
 </tr>
 
 </tbody>
@@ -82,8 +86,17 @@ viruses, bacteria, and tumors.</p>
 
 <hr>
 
-<p><a name="mission" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>The mission of enclone</h2>
+<p><a name="intro" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Introduction</h2>
+<p>The body defends itself from antigens, like viruses, bacteria, and tumors, by recognizing the
+antigens and mounting an immune response through selective amplification of immune cells and
+mutations within selected cells. <b>enclone</b> enables profiling of the history of single immune
+cells within a biological sample (such as a blood draw or a biopsy) by mapping the evolution of the
+cognate BCRs and TCRs of those cells responding to antigen exposure. This history reflects how the
+cognate receptors of these cells evolved in response to various antigens.</p>
+
+<p><a name="objective" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Objective</h2>
 
 <p>If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
 have the power to fully understand the nature of the receptors for those cells, because you have
@@ -134,6 +147,20 @@ chain data and the algorithm.
 
 <hr>
 
+<p><a name="why" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Why use enclone?</h2>
+<p>
+enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
+features and improvements.  enclone is also very fast, allowing analysis of datasets in seconds.
+You can install the software by typing one line and then see for yourself.  But most importantly,
+enclone provides the 10x Genomics perspective on your data and has been tested on more 10x Genomics
+data than any other tool. We highly recommend using other tools as well, but we can guarantee you
+that in many cases, enclone will provide a different answer, which may affect the biological
+interpretation of your data.
+</p>
+
+<hr>
+
 <p><a name="inputs" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Inputs to enclone</h2>
 
@@ -143,20 +170,6 @@ single cells.  enclone can also make use of and display gene expression and feat
 from the same cells.  The latter can be used to quantify cell surface proteins, antigen binding, 
 CRISPR guides, and other things.  You can see a list of publications that use 10x VDJ data
 <a href="https://www.10xgenomics.com/resources/publications?sortBy=publications-relevance&refinementList%5BproductGroups%5D%5B0%5D=Single%20Cell%20Immune%20Profiling&page=1">here</a>.
-</p>
-
-<hr>
-
-<p><a name="why" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Why use enclone?</h2>
-<p>
-enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
-features and improvements.  enclone is also very fast, allowing analysis of datasets in seconds.  
-You can install the software by typing one line and then see for yourself.  But most importantly, 
-enclone provides the 10x Genomics perspective on your data and has been tested on more 10x Genomics
-data than any other tool. We highly recommend using other tools as well, but we can guarantee you 
-that in many cases, enclone will provide a different answer, which may affect the biological 
-interpretation of your data.
 </p>
 
 <hr>
@@ -587,26 +600,25 @@ and these data displayed as additional columns.</p>
 <hr>
 
 <p><a name="sowhat" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>So what is enclone good for?</h2>
+<h2>The power of enclone</h2>
 
-<p>There are many ways to use 10x data to study immune biology.  Thus in the previous section, the
-red clonotypes may represent responses to antigens in the vaccine.  But for a given
-disease <i>e.g.</i> COVID-19, one may not yet have a vaccine, and indeed the vaccine may be
-the goal!  A different approach is needed.</p>
-<p>One such approach is to <b> identify patient and survivor B cell
-clonotypes that expand in response to infectious disease</b>. These define antibodies that can be
-used to design passive or active vaccines.  Additional power is added by mapping
-antigen specificity to multiple antigens directly via feature barcoding
-(<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>).</p>
-<p>These data are easy to display in enclone!  You can directly select candidates for
-vaccine or therapeutic development by picking large clonotypes with high antigen counts and single
-or multiple antigen specificities.</p>
-<p>We are actively working on further functionality that will make this process even more effective.</p>
-
-<p>See <a href="pages/auto/tree.html">this</a> for how to generate phylogenetic trees
-using enclone.</p>
-
-<p>Another example use of enclone shows how to <b><a href="pages/auto/expanded.html">detect illusory clonotypes</a></b>.</p>
+<p>There are many ways to use 10x Genomics data to study immunobiology.</p>
+<p><u>Response to an antigen or vaccine</u>: <b>enclone</b> is a great tool for studying responses to a
+vaccine. For example, in the previous section, the red clonotypes may represent responses to 
+antigens in the vaccine.</p>
+<p><u>Vaccine and therapeutic antibody development</u>: For certain infectious agents <i>e.g.</i> COVID-19,
+a vaccine does not currently exist; different approaches may be employed in pursuit of this goal. One such
+approach is to <b>identify patient and survivor B cell clonotypes that expand in response to the infectious
+disease.</b> These define antibodies that can be used to design passive or active vaccines.</p>
+<p>Additional power is added by mapping antigen specificity to multiple antigens directly via Feature 
+Barcoding (<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>). These data
+are easy to display in <b>enclone</b>. Candidates can be selected directly for vaccine or therapeutic 
+development by picking large clonotypes with high antigen counts and single or multiple antigen specificities.</p>
+<p>We are actively working on further functionality that will make this process even more effective.</p> 
+<p>See <a href="pages/auto/tree.html">this vignette</a> to learn how to generate phylogenetic trees using
+<b>enclone</b>.
+<p>Another example use of <b>enclone</b> is the <b><a href="pages/auto/expanded.html">detection of
+illusory clonotypes</a></b>.</p>
 
 <hr>
 
@@ -614,8 +626,8 @@ using enclone.</p>
 <h2>Questions</h2>
 
 <p>
-Please ask us questions! We are greatly interested in your feedback and ideas you may have to
-make enclone as useful as possible.
+Please contact us with your questions and comments! We look forward to hearing your feedback and ideas to
+further evolve <b>enclone</b>.
 </p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
