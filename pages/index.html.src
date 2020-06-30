@@ -187,25 +187,29 @@ sgRNA, and other cellular features. You can see a list of publications that use 
 <p><a name="software" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>The enclone software</h2>
 
-<p>enclone is beta software released under <a href="LICENSE.txt">this license</a>.  Binary 
-executables for Linux and Mac can be
-directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
-running!  To use enclone, you need to know how to run command-line tools.  This is something that
-can be learned easily, particularly if you have a friend or colleague who can help you
-get started.  You do not need to be able to program, or anything of that sort.</p>
-<p>enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended
-as an exploratory tool.  You can dynamically change your command line to select specific
-clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.</p>
-<p>enclone, in addition to 
-<a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>
-(and in which the core algorithm of enclone will be integrated at a later point in time),
-supports the analysis of VDJ and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
-solution</a>.</p>
+<p><b>enclone</b> is beta software<sup>*</sup> released under <a href="LICENSE.txt">this license</a>.  Binary 
+executables for Linux and Mac can be directly downloaded from this page, as can sample 10x Genomics datasets.
+<b>enclone</b> can be run on a laptop, desktop, or server.
+</p>
+<p>
+To use <b>enclone</b>, use of the command line is necessary. The command line is easy to learn, and a
+colleague may be able to help you if you are unfamiliar. Additional skills, like programming, are not
+required. The command line can be dynamically changed to select specific clonotypes and fields you wish to
+see. <b>enclone</b> is fast, typically responding in seconds (if run on a single dataset).
+</p>
 
-<p>What does it mean that enclone is beta software?  It means that we are very actively 
-developing it!  Features are still being shaped, and we may on rare occasions break syntax
-that previously worked.  See <a href="pages/history.html">this page</a> for the history of
-changes.</p>
+<p>
+<b>enclone</b>, in addition to <a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>
+(and in which the core algorithm of <b>enclone</b> will be integrated at a later point in time), supports the
+analysis of V(D)J and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
+solution</a>.
+</p>
+
+<p>
+<sup>*</sup>beta software implies that it is still being actively developed, with features being added/modified,
+and on rare occasions may involve breaking syntax that previously worked. See See <a href="pages/history.html">this page</a>
+for the history of changes.
+</p>
 
 <hr>
 
