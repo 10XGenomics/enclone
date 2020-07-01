@@ -349,11 +349,11 @@ need to provide a metadata file that describes the datasets.  You can find most 
 documentation within its online menus.  To get started you should:</p>
 <ol>
 <li>
-<p>Type <code>#enclone help</code>, to make sure your terminal window works for 
-<code>#enclone</code>.</p>
+<p>Type <code>enclone help</code>, to make sure your terminal window works for 
+#enclone.</p>
 </li>
 <li>
-<p>Type <code>#enclone</code> to get to the main #enclone help menu.</p>
+<p>Type <code>enclone</code> to get to the main #enclone help menu.</p>
 </li>
 </ol>
 <hr>
