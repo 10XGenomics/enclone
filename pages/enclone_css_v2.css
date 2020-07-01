@@ -61,6 +61,7 @@ body {
     color: rgb(36, 41, 46);
     margin: 0 auto 50px;
     padding: 0 25px;
+    box-sizing: border-box;
 }
 
 hr {
