@@ -11,7 +11,7 @@ use string_utils::*;
 
 pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
     const ENCLONE_FORMATTED: &str =
-        "<span style=\"color:rgb(120,123,175);font-weight:900;font-size:120%\">enclone</span>";
+        "<span style=\"color:rgb(120,123,175);font-weight:900\">enclone</span>";
     // const ENCLONE_FORMATTED: &str = "<span style=\"color:#707B7C;font-weight:600\">enclone</span>";
     // const ENCLONE_FORMATTED: &str = "<span style=\"color:#2ECC71\">enclone</span>";
     let pwd = env::current_dir().unwrap();
