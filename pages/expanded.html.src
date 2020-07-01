@@ -15,8 +15,8 @@
 
 <h1>Detecting illusory clonotype expansions</h1>
 
-<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
-padding: 8px; width: 900px; font-size: 120%">
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
+padding: 8px; width: 900px; font-size: 110%">
 <b>Please read this!</b>  This page was written before we added two major filtering steps, based on
 UMI counts, which completely annihilate the particular illusory expansion described here.  The
 reason we left the page here is that the approach used to analyze the expansion may have
