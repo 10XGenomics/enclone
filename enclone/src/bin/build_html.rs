@@ -44,4 +44,9 @@ fn main() {
     insert_html("pages/innate.html.src", "pages/auto/innate.html", false);
     insert_html("pages/plot.html.src", "pages/auto/plot.html", false);
     insert_html("pages/windows.html.src", "pages/auto/windows.html", false);
+    insert_html(
+        "pages/heuristics.html.src",
+        "pages/auto/heuristics.html",
+        false,
+    );
 }
