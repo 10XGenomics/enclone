@@ -27,7 +27,7 @@
 	compactly displays each clonotype along with its salient features, including mutated amino 
         acids.</p>
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
-padding: 8px; width: 875px; font-size: 110%">
+padding: 8px; font-size: 110%">
 #enclone (beta) is provided as a tool for use by the community to accelerate immunology research.  
 #enclone is only supported via
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.
@@ -671,7 +671,7 @@ further evolve #enclone.
 </p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
-padding: 8px; width: 875px; font-size: 110%">
+padding: 8px; font-size: 110%">
 #enclone is provided as a tool for use by the community.  Although we cannot
 guarantee full support for the software, please email us at 
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>
