@@ -25,8 +25,8 @@ log starts with with initial public availability.  The complete history may be s
 
 <p><span style="color:red">Breaking changes are shown in red.</span></p>
 
-<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0;
-padding: 8px; width: 900px; font-size: 120%">
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
+padding: 8px; width: 900px; font-size: 110%">
 Please be aware that our workflow when we make changes is to automatically update the GitHub
 site, including all the website pages and this page too.  This happens <i>in advance</i> of 
 actually making a release (which might follow in a couple days).  This means that the website
