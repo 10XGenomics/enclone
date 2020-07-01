@@ -418,6 +418,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PROTO", &mut ctl.gen_opt.proto),
     ];
 
+    // Define arguments that set something to a string that is an input file name.
+    let set_string_readable = [("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata)];
+
     // Define arguments that do nothing (because already parsed).
 
     let set_nothing = [
@@ -528,6 +531,28 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
                 remove_file(&val).unwrap();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_string_readable args.
+
+        for j in 0..set_string_readable.len() {
+            let var = &set_string_readable[j].0;
+            if is_string_arg(&arg, var) {
+                let val = arg.after(&format!("{}=", var));
+                if val.is_empty() {
+                    eprintln!("\nFilename input in {} cannot be empty\n", val);
+                    std::process::exit(1);
+                }
+                *(set_string_readable[j].1) = Some(val.to_string());
+                if let Err(e) = File::open(&val) {
+                    eprintln!(
+                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
+                        val, e
+                    );
+                    std::process::exit(1);
+                }
                 continue 'args_loop;
             }
         }

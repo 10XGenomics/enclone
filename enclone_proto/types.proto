@@ -251,15 +251,38 @@ message DonorReference {
     repeated DonorReferenceItem items = 1; 
 }
 
+message GemWellInfo {
+    required string donor = 1;
+    required string origin = 2;
+    // Data for all the additional columns. For convenience, we are storing it as a map, rather than
+    // an array with the order defined by `additional_columns` in Metadata
+    map<string, string> additional_data = 8;
+}
+
+message Metadata {
+    // The additional metadata columns specified by the user
+    repeated string additional_columns = 1;
+    // List of all the donors. The `donor_idx` in the `DonorReference` is an index into this array.
+    // This will be empty for a single sample case
+    repeated string donors = 2;
+    // Key: Gem well
+    // Value: Metadata for each gem well
+    // This will be empty for a single sample case
+    map<uint32, GemWellInfo> per_gem_well_info = 3;
+}
+
 // Outputs from a single enclone run.
 //
 // TODO: It might be easier to store the three vectors as three different files if we want to
 // stream through it.
 message EncloneOutputs {
-    // List of all clonotypes computed in this enclone run.
-    repeated Clonotype clonotypes = 1;
+    // Metadata associated with this run. For single sample runs, there is no useful metadata.
+    // In the context of aggr, this will be populated from the user input
+    required Metadata metadata = 1;
     // The universal reference used.
     required UniversalReference universal_reference = 2;
     // The inferred donor reference.
     required DonorReference donor_reference = 3;
+    // List of all clonotypes computed in this enclone run.
+    repeated Clonotype clonotypes = 10;
 }

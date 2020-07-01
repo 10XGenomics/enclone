@@ -106,6 +106,11 @@ impl<R: Read> ProtoReader<R> {
 
 /// The enclone outputs are stored in the protobuf file as follows:
 /// ```text
+/// +------------+----------------------------+
+/// | Length     |      Metadata (aggr)       |....
+/// | [4 bytes]  |      [Length Bytes]        |....
+/// +------------+----------------------------+
+///
 /// +------------+----------------------------+------------+------------------------+
 /// | Length     |      Universal Reference   | Length     |      Donor Reference   |....
 /// | [4 bytes]  |      [Length Bytes]        | [4 bytes]  |      [Length Bytes]    |....
@@ -126,6 +131,8 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
     let writer = BufWriter::new(File::create(path)?);
     let mut proto_writer = ProtoWriter::with_writer(writer);
 
+    // Write the metadata
+    proto_writer.encode_and_write(enclone_outputs.metadata)?;
     // Write the universal reference
     proto_writer.encode_and_write(enclone_outputs.universal_reference)?;
     // Write the donor reference
@@ -144,6 +151,8 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let reader = BufReader::new(File::open(path)?);
     let mut proto_reader = ProtoReader::with_reader(reader);
 
+    // Read the metadata
+    let metadata = proto_reader.read_and_decode()?;
     // Read the universal reference
     let universal_reference = proto_reader.read_and_decode()?;
     // Read the donor reference
@@ -156,6 +165,7 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     }
 
     Ok(EncloneOutputs {
+        metadata,
         universal_reference,
         donor_reference,
         clonotypes,
