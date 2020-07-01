@@ -112,17 +112,17 @@ cells without help from a computational expert!</p>
   <tr>
   <th>
        <p style="text-align: left; font-weight:normal; border: 2px; border-style: solid;
-          padding: 8px; font-size: 130%; line-height:120%">
+          padding: 8px; font-size: 130%; line-height:130%">
        <span style="color:red">Find</span> and <span style="color:red">display</span> clonotypes:
        groups of T and B cells sharing the same fully rearranged common ancestor.
        </p>
   </th>
   <th style="padding-left: 20px; text-align: left; font-weight:normal">
-	  <p style="margin-bottom:10px"><span style="color:red">Find:</span> 
+	  <p style="margin-bottom:5px"><span style="color:red">Find:</span> 
           It is easy to mistakenly put unrelated cells in 
           the same clonotype, or "pollute" a clonotype with extraneous chains. 
           <b>#enclone's algorithms make <i>finding</i> accurate.</b></p> 
-	  <p style="margin-top:10px"><span style="color:red">Display:</span> 
+	  <p style="margin-top:5px"><span style="color:red">Display:</span> 
           It is challenging to compactly represent a 
           large repertoire of data. <b>#enclone enables compact, easy-to-grasp data 
   <i>display</i>.</b></p>
