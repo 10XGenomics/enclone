@@ -5,13 +5,13 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>honeycomb plots</title>
-<link rel="stylesheet" type="text/css" href="enclone_css_v2.css">
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
 </head>
 
 <body>
 
 <br>
-<img src="../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
 <h1>honeycomb plots</h1>
 
