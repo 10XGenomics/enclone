@@ -39,7 +39,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <p>
 <b>6/24/20</b>:
 <ol>
-<li>Add <a href="../pages/auto/innate.html">support for iNKT and MAIT cells</a>.</li>
+<li>Add <a href="../../pages/auto/innate.html">support for iNKT and MAIT cells</a>.</li>
 <li>Make #enclone faster.  This is most noticeable in cases where many GEX datasets are
     provided as input.</li>
 </ol>
@@ -53,7 +53,7 @@ origin is a set of 1 or more datasets from the same source (tube of cells, tissu
 </li>
 <li> Improve the alternate (faster) internal storage structure for the GEX matrix
 created using the option <code>NH5</code> as described using the command 
-<a href="../pages/auto/help.input.html"><code>enclone help input</code></a>.  
+<a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>.  
 This will speed things up, particularly for the case where several datasets are combined.  If 
 you have already used the <code>NH5</code> option for a given dataset, then the next time you
 run #enclone on it, the file will be automatically rewritten.  This would also apply to some
@@ -78,7 +78,7 @@ datasets obtained as part of the <code>large</code> download.
 <b>6/10/20</b>:
 <ol>
 <li>Add a complex of features for generating phylogenetic trees from clonotypes, see
-    <a href="../pages/auto/tree.html">here</a>.</li>
+    <a href="../../pages/auto/tree.html">here</a>.</li>
 <li>New "single button" installation procedure.</li>
 <li>Change the default value for <code>PRE</code> 
     to <code>~/enclone/datasets,~/enclone/datasets2</code>.</li>
