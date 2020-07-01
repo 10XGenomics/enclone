@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Utility for inserting html files.
+// Utility for inserting html files.  It also changes all instance of #enclone to
+// a preset format for that.
 
 use io_utils::*;
 use std::env;
@@ -9,6 +10,10 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
 
 pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
+    const ENCLONE_FORMATTED: &str =
+        "<span style=\"color:rgb(145,123,124);font-weight:600\">enclone</span>";
+    // const ENCLONE_FORMATTED: &str = "<span style=\"color:#707B7C;font-weight:600\">enclone</span>";
+    // const ENCLONE_FORMATTED: &str = "<span style=\"color:#2ECC71\">enclone</span>";
     let pwd = env::current_dir().unwrap();
     let pwd = pwd.to_str().unwrap();
     let f = BufReader::new(File::open(&in_file).expect(&format!(
@@ -17,7 +22,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
     )));
     let mut g = open_for_write_new![&out_file];
     for line in f.lines() {
-        let s = line.unwrap();
+        let mut s = line.unwrap();
         if s.starts_with("#include ") {
             let mut f = format!("../{}", s.after("#include "));
             if !up {
@@ -36,6 +41,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool) {
                 }
             }
         } else {
+            s = s.replace("#enclone", ENCLONE_FORMATTED);
             fwriteln!(g, "{}", s);
         }
         if s == "</head>" {
