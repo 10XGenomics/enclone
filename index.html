@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>enclone (bit.ly/enclone)</title>
-<link rel="stylesheet" type="text/css" href="pages/enclone.css">
+<link rel="stylesheet" type="text/css" href="pages/enclone_css_v2.css">
 </head>
 
                 
@@ -30,26 +30,33 @@
 <br>
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
-<p><b>enclone</b> (beta) is a computational tool for studying the adaptive immune system in 
-humans and other vertebrate species.  It takes as input data from
-<b><a href="https://10xgenomics.com/">10x Genomics</a></b>, providing captured RNA
-sequences for B and T cell receptors in single cells.  It organizes these cells into groups
-(clonotypes) arising from the same progenitor and compactly displays each clonotype along
-with its salient features, including mutated amino acids.</p>
+<header>
+<h1><b><span style="color:rgb(120,123,175);font-weight:900">enclone</span></b> (beta)</h1>
+<h3>Accurate and user-friendly computational tool for clonal grouping to study the adaptive immune system<h3>
+</header>
 
+<p><b><a href="https://10xgenomics.com/">10x Genomics</a></b> Chromium Single Cell V(D)J data 
+        containing B cell 
+	receptor (BCR) and T cell receptor (TCR) RNA sequences are entered as input data to 
+        <span style="color:rgb(120,123,175);font-weight:900">enclone</span>. Based on the
+	input, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> finds and organizes cells arising from the same progenitors into groups 
+        (clonotypes) and
+	compactly displays each clonotype along with its salient features, including mutated amino 
+        acids.</p>
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
-padding: 8px; width: 875px; font-size: 120%">
-enclone (beta) is provided as a tool for use by the community to accelerate immunology research.  enclone is only 
-supported via 
-<a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>.
-The clonotype assignment algorithm that is part of enclone will be integrated into a future release of Cell Ranger. 
+padding: 8px; font-size: 110%">
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> (beta) is provided as a tool for use by the community to accelerate immunology research.  
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> is only supported via
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>.
+The clonotype assignment algorithm that is part of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> will be integrated into a future 
+release of Cell Ranger.
 </p>
 
-<p>enclone and this page are designed for immunologists, but anyone can download and experiment
-with it.</p>
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has been designed for immunologists but anyone can download and experiment with it.</p>
+
 <p><b>Background:</b> when you get sick, your body mounts an immune response by selectively 
-amplifying
-immune cells and mutations within these selected cells.  enclone allows you to see the history of
+amplifying immune cells and mutations within these selected cells.  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> allows you to see the 
+history of
 single immune cells within a biological sample (such as a blood draw or biopsy).  This history
 reflects how the cognate receptors of these cells evolved in response to antigens, including
 viruses, bacteria, and tumors.</p>
@@ -58,38 +65,38 @@ viruses, bacteria, and tumors.</p>
 <tbody>
 
 <tr>
-<td align="left"><a href="#mission">&nbsp;1. The mission of enclone&nbsp;</a></td>
-<td align="left"><a href="#output">&nbsp;8. Understanding enclone output&nbsp;</a></td>
+<td align="left"><a href="#intro">&nbsp;1. Introduction&nbsp;</a></td>
+<td align="left"><a href="#help">&nbsp;8. Help&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#inputs">&nbsp;2. Inputs to enclone&nbsp;</a></td>
-<td align="left"><a href="#multiomic">&nbsp;9. Combining multiomic data&nbsp;</a></td>
+<td align="left"><a href="#objective">&nbsp;2. Objective&nbsp;</a></td>
+<td align="left"><a href="#output">&nbsp;9. Understanding <span style="color:rgb(120,123,175);font-weight:900">enclone</span> output&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#why">&nbsp;3. Why use enclone&nbsp;</a></td>
-<td align="left"><a href="#honeycomb">&nbsp;10. Visualizing many clonotypes at once&nbsp;</a></td>
+<td align="left"><a href="#why">&nbsp;3. Why <span style="color:rgb(120,123,175);font-weight:900">enclone</span>?&nbsp;</a></td>
+<td align="left"><a href="#multiomic">&nbsp;10. Combining multiomic data&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#software">&nbsp;4. The enclone software&nbsp;</a></td>
-<td align="left"><a href="#sowhat">&nbsp;11. So what is enclone good for?&nbsp;</a></td>
+<td align="left"><a href="#inputs">&nbsp;4. Data input&nbsp;</a></td>
+<td align="left"><a href="#honeycomb">&nbsp;11. Visualizing multiple clonotypes at once&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#download">&nbsp;5. Installing enclone&nbsp;</a></td>
-<td align="left"><a href="#questions">&nbsp;12. Questions&nbsp;</a></td>
+<td align="left"><a href="#software">&nbsp;5. Software&nbsp;</a></td>
+<td align="left"><a href="#powerunlimitedpower">&nbsp;12. The power of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#running">&nbsp;6. Running enclone&nbsp;</a></td>
-<td align="left"><a href="#whereami">&nbsp;13. Where am I?&nbsp;</a></td>
+<td align="left"><a href="#download">&nbsp;6. Installing <span style="color:rgb(120,123,175);font-weight:900">enclone</span>&nbsp;</a></td>
+<td align="left"><a href="#questions">&nbsp;13. Questions&nbsp;</a></td>
 </tr>
 
 <tr>
-<td align="left"><a href="#help">&nbsp;7. Help&nbsp;</a></td>
-<td align="left"></td>
+<td align="left"><a href="#running">&nbsp;7. Running <span style="color:rgb(120,123,175);font-weight:900">enclone</span>&nbsp;</a></td>
+<td align="left"><a href="#whereami">&nbsp;14. Where am I?&nbsp;</a></td>
 </tr>
 
 </tbody>
@@ -99,116 +106,158 @@ viruses, bacteria, and tumors.</p>
 
 <hr>
 
-<p><a name="mission" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>The mission of enclone</h2>
+<p><a name="intro" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Introduction</h2>
+<p>The body defends itself from antigens, like viruses, bacteria, and tumors, by recognizing the
+antigens and mounting an immune response through selective amplification of immune cells and
+mutations within selected cells. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> enables profiling of the history of single immune
+cells within a biological sample (such as a blood draw or a biopsy) by mapping the evolution of the
+cognate BCRs and TCRs of those cells responding to antigen exposure. This history reflects how the
+cognate receptors of these cells evolved in response to various antigens.</p>
 
-<p>If you have a sample and have generated single-cell VDJ data from the B or T cells within it, you
-have the power to fully understand the nature of the receptors for those cells, because you have
-in hand the sequences for each of their chains.</p>
-<p>You should be able to directly see this biology, without aid from a computational expert.  To
-that end, we start with this simple goal:</p>
+<p><a name="objective" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Objective</h2>
 
-<table style="width:100%; margin-top: -17px">
+
+<p>Using <span style="color:rgb(120,123,175);font-weight:900">enclone</span> to profile B and T cell receptors for any sample using Chromium Single Cell
+V(D)J as input enables you to make the best use of your data. You can explore the biology of these
+cells without help from a computational expert!</p>	
+
+<p>The objective of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is to:</p>
+
+<table style="width:100%; margin-top: -25px; margin-bottom: -25px">
   <tr>
   <th>
        <p style="text-align: left; font-weight:normal; border: 2px; border-style: solid;
-          padding: 8px; font-size: 120%">
+          padding: 8px; font-size: 130%; line-height:130%">
        <span style="color:red">Find</span> and <span style="color:red">display</span> clonotypes:
        groups of T and B cells sharing the same fully rearranged common ancestor.
        </p>
   </th>
   <th style="padding-left: 20px; text-align: left; font-weight:normal">
-       The <i>finding</i> part is
-       algorithmically challenging: it is very easy to mistakenly put unrelated cells in the same
-       clonotype, or to "pollute" a clonotype with chains that do not belong in it.
-       The <i>displaying</i> part is also challenging, in part because it is hard to compactly 
-       represent the wealth of available information.
+	  <p style="margin-bottom:5px"><span style="color:red">Find:</span> 
+          It is easy to mistakenly put unrelated cells in 
+          the same clonotype, or "pollute" a clonotype with extraneous chains. 
+          <b><span style="color:rgb(120,123,175);font-weight:900">enclone</span>'s algorithms make <i>finding</i> accurate.</b></p> 
+	  <p style="margin-top:5px"><span style="color:red">Display:</span> 
+          It is challenging to compactly represent a 
+          large repertoire of data. <b><span style="color:rgb(120,123,175);font-weight:900">enclone</span> enables compact, easy-to-grasp data 
+  <i>display</i>.</b></p>
   </th>
   </tr>
 </table>
 
-To make sure we are using terminology in the same way, the following diagram shows what a
-<em>clonotype</em> is for B cells.  The same applies for T cells, but things are simpler because 
-T cells do not have somatic hypermutation.
+<p>The diversity of BCR and TCR chains, containing various combinations of V, D, and/or J segments,
+broadens the immune repertoire to protect against a wide variety of pathogens. The figure below
+illustrates the concept of a <em>BCR clonotype</em>. A similar concept applies to TCRs but without 
+somatic hypermutations.</p>
 
+<!-- TODO: update from Tech Comm (Keri) -->
 <img src="img/what_is_a_clonotype.svg" alt="what is a clonotype" title="what is a clonotype" style="max-width:80%;"></a>
 
-<p>Each cell in a clonotype is typically represented by two or three chains.  Such information can
-only be obtained from <em>single cell</em> data!  From such data, clonotypes can be computationally
-approximated, with high accuracy (see below).  The method we use for this is described 
-<a href="pages/auto/help.how.html">briefly in the online documentation for enclone</a>, 
-and will be described separately in more detail.</p>
-
-<p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
-<b>Clonotyping performance.</b>  To test the performance of enclone, we combined data from 443 BCR 
-libraries from 30 donors.  This yielded <span style="color:red">381506</span> clonotypes, of which
-<span style="color:red">9573</span> contained at least two cells each.  Of these,
-<span style="color:red">15 (0.16%)</span> contained data from multiple donors.  These multi-donor 
-clonotypes are errors.  The fact that there are few of them suggests that the rate at which enclone
-places unrelated cells in the same clonotype is low.  This is a consequence of both the paired 
-chain data and the algorithm.
+<p>Each cell in a clonotype is typically represented by two or three chains, and this information is
+present and directly observable in single cell V(D)J data. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> computationally approximates 
+the clonotypes
+from the data with high accuracy (see below). The methods of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> are described
+<a href="pages/auto/help.how.html">briefly in the online documentation for <span style="color:rgb(120,123,175);font-weight:900">enclone</span></a>, and will
+also be described separately in more detail.
 </p>
-
-<hr>
-
-<p><a name="inputs" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Inputs to enclone</h2>
-
-<p>
-The minimal required inputs to enclone are single cell 5' data from 10x Genomics that read VDJ for 
-single cells.  enclone can also make use of and display gene expression and feature barcode data 
-from the same cells.  The latter can be used to quantify cell surface proteins, antigen binding, 
-CRISPR guides, and other things.  You can see a list of publications that use 10x VDJ data
-<a href="https://www.10xgenomics.com/resources/publications?sortBy=publications-relevance&refinementList%5BproductGroups%5D%5B0%5D=Single%20Cell%20Immune%20Profiling&page=1">here</a>.
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
+<b>Clonotyping performance.</b>  To test the performance of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, we combined data from 443 BCR 
+enriched libraries from 30 donors. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> detected a total of 
+<span style="color:red">381,506</span>
+clonotypes.  Of the detected clonotypes, <span style="color:red">9,573</span> contained at least 
+two cells,
+of which <span style="color:red">15 (0.16%)</span> of the clonotypes 
+contained receptors from multiple donors, and thus were erroneous.
+The low error rate is a consequence of the paired chain data and the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> 
+algorithm, which minimizes the placement of unrelated cells in the same clonotype.
 </p>
 
 <hr>
 
 <p><a name="why" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Why use enclone?</h2>
+<h2>Why use <span style="color:rgb(120,123,175);font-weight:900">enclone</span>?</h2>
 <p>
-enclone has features you can't get elsewhere, and we are eager to hear your ideas for other
-features and improvements.  enclone is also very fast, allowing analysis of datasets in seconds.  
-You can install the software by typing one line and then see for yourself.  But most importantly, 
-enclone provides the 10x Genomics perspective on your data and has been tested on more 10x Genomics
-data than any other tool. We highly recommend using other tools as well, but we can guarantee you 
-that in many cases, enclone will provide a different answer, which may affect the biological 
-interpretation of your data.
+<b><span style="color:rgb(120,123,175);font-weight:900">enclone</span></b> has unique features!
+</p>
+<p>
+<b>Unique insights into 10x Genomics data</b>: <span style="color:rgb(120,123,175);font-weight:900">enclone</span> has been designed and tested 
+extensively to
+gain in-depth insight and perspective regarding 10x Genomics single cell V(D)J datasets. Other 
+similar tools
+may be used, but frequently, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> will provide a different answer, which in turn may affect
+the biological interpretation of the data.	
+</p>
+<p>
+<b>Speed</b>: <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is very fast, allowing analysis of datasets in seconds.
+</p>
+<p>
+<b>Easy installation</b>: The software is <a href="#download">easy to install</a> and to use.
+</p>
+
+<hr>
+
+<p><a name="inputs" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>Inputs to <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+
+<p>10x Genomics single cell 5' data<sup>†</sup></p>
+
+<p><sup>†</sup><i>
+BCR or TCR RNA sequences generated using the <a href="https://www.10xgenomics.com">10x Genomics</a>
+Chromium Single Cell Immune Profiling Solution and Cell Ranger 3.1 or higher are the inputs to
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span>. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can also process and display gene expression and Feature Barcode data
+from the same cells. The latter can be used to quantify cell surface proteins, antigen binding, CRISPR
+sgRNA, and other cellular features. You can see a list of publications that use 10x VDJ data
+<a href="https://www.10xgenomics.com/resources/publications?sortBy=publications-relevance&refinementList%5BproductGroups%5D%5B0%5D=Single%20Cell%20Immune%20Profiling&page=1">here</a>.
+</i>
 </p>
 
 <hr>
 
 <p><a name="software" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>The enclone software</h2>
+<h2>The <span style="color:rgb(120,123,175);font-weight:900">enclone</span> software</h2>
 
-<p>enclone is beta software released under <a href="LICENSE.txt">this license</a>.  Binary 
-executables for Linux and Mac can be
-directly downloaded from this page, as can sample 10x Genomics datasets.  And then you're off and
-running!  To use enclone, you need to know how to run command-line tools.  This is something that
-can be learned easily, particularly if you have a friend or colleague who can help you
-get started.  You do not need to be able to program, or anything of that sort.</p>
-<p>enclone is fast, typically responding in seconds (if run on a single dataset).  It is intended
-as an exploratory tool.  You can dynamically change your command line to select specific
-clonotypes and fields you wish to see.  You can run enclone on a laptop or a desktop or a server.</p>
-<p>enclone, in addition to 
-<a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and Loupe</a>
-(and in which the core algorithm of enclone will be integrated at a later point in time),
-supports the analysis of VDJ and other data from the <a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
-solution</a>.</p>
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> is beta software<sup>††</sup> released under <a href="LICENSE.txt">this license</a>.  
+Binary executables for Linux and Mac can be directly downloaded from this page, as can sample 10x 
+Genomics datasets.
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be run on a laptop, desktop, or server.
+</p>
+<p>
+To use <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, basic knowledge of the command line is necessary. The command line is easy to 
+learn, and a
+colleague may be able to help you if you are unfamiliar. Additional skills, like programming, 
+are not required. The command line can be dynamically changed to select specific clonotypes and 
+fields you wish to
+see.  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is fast, typically responding in seconds (if run on a single dataset).
+</p>
 
-<p>What does it mean that enclone is beta software?  It means that we are very actively 
-developing it!  Features are still being shaped, and we may on rare occasions break syntax
-that previously worked.  See <a href="pages/history.html">this page</a> for the history of
-changes.</p>
+<p>
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span>, in addition to <a href="https://support.10xgenomics.com/single-cell-vdj">Cell Ranger and 
+Loupe</a>
+(and in which the core algorithm of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> will be integrated at a later point in time), 
+supports the
+analysis of V(D)J and other data from the 
+<a href="https://10xgenomics.com/solutions/vdj/">Chromium Single Cell Immune Profiling
+solution</a>.
+</p>
+
+<p>
+	<sup>††</sup><i>beta software implies that it is still being actively developed, with 
+features being added/modified,
+and on rare occasions may involve breaking syntax that previously worked. See 
+<a href="pages/auto/history.html">this page</a> for the history of changes.</i>
+</p>
 
 <hr>
 
 <p><a name="download" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Installing enclone</h2>
+<h2>Installing <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
 
 <p>
-You can run enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see <a href="pages/windows.html">here</a> for <b>Windows</b> options; 
-see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
+You can run <span style="color:rgb(120,123,175);font-weight:900">enclone</span> directly from a <b>Linux</b> or <b>Mac</b> terminal window; see 
+<a href="pages/auto/windows.html">here</a> for <b>Windows</b> options; 
+see <a href="pages/auto/dang_i_cannot_install.html">here</a> if you have a problem.
 </p>
 
 <table>
@@ -246,7 +295,7 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       do this if your internet connection is sloooooooow as a 🐌
+       do this if your internet connection is very slow
        </p>
   </th>
   </tr>
@@ -268,7 +317,7 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       do this if you're happy with a bunch of datasets
+       do this for a moderate number of datasets (~15)
        </p>
   </th>
   </tr>
@@ -290,7 +339,7 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       do this if you want to play with a huge pile of datasets
+	do this for a large number of datasets (~120)
        </p>
   </th>
   </tr>
@@ -298,38 +347,39 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
 
 <p>The command does three things:</p>
 <ol>
-<li>Puts the enclone executable (for Linux or Mac as appropriate) in <code>~/bin</code>.</li>
+<li>Puts the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> executable (for Linux or Mac as appropriate) in <code>~/bin</code>.</li>
 <li>If needed, adds a line to your bash initialization file so that <code>~/bin</code> is included.
 </li>
-<li>Puts the enclone datasets in <code>~/enclone</code>.</li>
+<li>Puts <span style="color:rgb(120,123,175);font-weight:900">enclone</span> datasets in <code>~/enclone</code>.</li>
 </ol>
-And a bit more detail is <a href="pages/installation_details.html">here</a>.
+Additional details can be found <a href="pages/auto/installation_details.html">here</a>.
 
-Close and reopen your terminal window to refresh your path.  Then you're good to go!</p>
+Restart your terminal session; you can now run <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.</p>
 
 <p><span style="color:red; font-weight:bold">To update, type the same command!</span>
 <span style="font-weight:bold">
-Only needed files will be downloaded.  
-See <a href="pages/history.html">history</a> for what has changed.</span></p>
+Only required files will be downloaded.  
+See <a href="pages/auto/history.html">history</a> for what has changed.</span></p>
 
 <hr>
 
 <p><a name="running" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Running enclone</h2>
+<h2>Running <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
 
-<p>Running enclone can be as simple as typing e.g.</p>
+<p>Running <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be as simple as typing e.g.</p>
 <pre><code>enclone BCR=/home/my_name/experiment_123
 </code></pre>
 <p>where the path is where your Cell Ranger outputs live, but there are many options to learn
 about.  For example, if you want to combine many datasets, you can do that, but you probably
-need to provide a metadata file that describes the datasets.  You can find most of the enclone
+need to provide a metadata file that describes the datasets.  You can find most of the <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
 documentation within its online menus.  To get started you should:</p>
 <ol>
 <li>
-<p>Type <code>enclone help</code>, to make sure your terminal window works for <code>enclone</code>.</p>
+<p>Type <code>enclone help</code>, to make sure your terminal window works for 
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span>.</p>
 </li>
 <li>
-<p>Type <code>enclone</code> to get to the main enclone help menu.</p>
+<p>Type <code>enclone</code> to get to the main <span style="color:rgb(120,123,175);font-weight:900">enclone</span> help menu.</p>
 </li>
 </ol>
 <hr>
@@ -337,8 +387,8 @@ documentation within its online menus.  To get started you should:</p>
 <p><a name="help" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Help</h2>
 
-<p>enclone help is split between material on this site and pages that are invocable from the enclone
-command line.  All the latter pages are also listed here:</p>
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> help is split between material on this site and pages that are invocable from the 
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line.  All the latter pages are also listed here:</p>
 <table rules="all" cellpadding="3" style="border: 1px solid black">
 <thead>
 <tr>
@@ -353,7 +403,7 @@ command line.  All the latter pages are also listed here:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.main.html">enclone</a></td>
-<td align="left">what you see here; guide to all the doc</td>
+<td align="left">what you see here; guide to all the docs</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.quick.html">enclone help quick</a></td>
@@ -361,15 +411,15 @@ command line.  All the latter pages are also listed here:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.how.html">enclone help how</a></td>
-<td align="left">outline of how enclone works, see also heuristics page, below</td>
+<td align="left">outline of how <span style="color:rgb(120,123,175);font-weight:900">enclone</span> works, see also heuristics page, below</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.command.html">enclone help command</a></td>
-<td align="left">info about enclone command line argument processing</td>
+<td align="left">info about <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line argument processing</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.glossary.html">enclone help glossary</a></td>
-<td align="left">glossary of terms used by enclone, and conventions</td>
+<td align="left">glossary of terms used by <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and conventions</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.example1.html">enclone help example1</a></td>
@@ -385,11 +435,11 @@ command line.  All the latter pages are also listed here:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.input.html">enclone help input</a></td>
-<td align="left">how to provide input to enclone</td>
+<td align="left">how to provide input to <span style="color:rgb(120,123,175);font-weight:900">enclone</span></td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.input_tech.html">enclone help input_tech</a></td>
-<td align="left">how to provide input to enclone (technical notes)</td>
+<td align="left">how to provide input to <span style="color:rgb(120,123,175);font-weight:900">enclone</span> (technical notes)</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.parseable.html">enclone help parseable</a></td>
@@ -425,7 +475,7 @@ command line.  All the latter pages are also listed here:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.color.html">enclone help color</a></td>
-<td align="left">how enclone uses color, and related things</td>
+<td align="left">how <span style="color:rgb(120,123,175);font-weight:900">enclone</span> uses color, and related things</td>
 <tr>
 <td align="left"><a href="pages/auto/help.faq.html">enclone help faq</a></td>
 <td align="left">frequently asked questions</td>
@@ -456,7 +506,7 @@ For completeness, here are all the other pages on this site:
 </thead>
 <tbody>
 <tr>
-    <td align="left"><a href="pages/history.html">history of changes</a></td>
+    <td align="left"><a href="pages/auto/history.html">history of changes</a></td>
     <td align="left">everyone</td>
 </tr>
 <tr>
@@ -464,7 +514,7 @@ For completeness, here are all the other pages on this site:
     <td align="left">everyone</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/compile.html">how to compile enclone</a></td>
+    <td align="left"><a href="pages/auto/compile.html">how to compile <span style="color:rgb(120,123,175);font-weight:900">enclone</span></a></td>
     <td align="left">people who want to contribute code</td>
 </tr>
 <tr>
@@ -472,16 +522,17 @@ For completeness, here are all the other pages on this site:
     <td align="left">everyone</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/windows.html">Windows</a></td>
+    <td align="left"><a href="pages/auto/windows.html">Windows</a></td>
     <td align="left">people using Windows computers</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/heuristics.html">notes on heuristics (only a little bit now)
+    <td align="left"><a href="pages/auto/heuristics.html">notes on heuristics 
+         (only a little bit now)
          </a></td>
     <td align="left">people who want to know details on how the algorithm works</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/plot.html">honeycomb plots</a></td>
+    <td align="left"><a href="pages/auto/plot.html">honeycomb plots</a></td>
     <td align="left">everyone</td>
 </tr>
 <tr>
@@ -489,11 +540,11 @@ For completeness, here are all the other pages on this site:
     <td align="left">everyone</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/dang_i_cannot_install.html">installation troubleshooting
+    <td align="left"><a href="pages/auto/dang_i_cannot_install.html">installation troubleshooting
     </a></td> <td align="left">if you have trouble installing</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/installation_details.html">installation details
+    <td align="left"><a href="pages/auto/installation_details.html">installation details
     </a></td> <td align="left">if you're curious about what the install command does</td>
 </tr>
 <tr>
@@ -508,34 +559,37 @@ For completeness, here are all the other pages on this site:
 <hr>
 
 <p><a name="output" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Understanding enclone output</h2>
+<h2>Understanding <span style="color:rgb(120,123,175);font-weight:900">enclone</span> output</h2>
 
-<p>The example below shows how enclone prints out clonotypes.  This is something you'll need
-to study in order to use enclone successfully.  enclone comes with extensive online
-documentation, and because you can easily play with the sample datasets, you can gradually
-figure out how it all works.</p>
+<p>The example below shows how <span style="color:rgb(120,123,175);font-weight:900">enclone</span> displays clonotypes. Understanding this display is
+important for using <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Consult the available <span style="color:rgb(120,123,175);font-weight:900">enclone</span> documentation and use
+the sample datasets to understand <span style="color:rgb(120,123,175);font-weight:900">enclone</span> features and output.</p>	
 
-<p>
-<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" title="enclone annotated example" style="max-width:100%;"></a>
-</p> 
+<img src="img/enclone_annotated_example.svg" alt="enclone annotated example" 
+title="enclone annotated example" style="max-width:100%;"></a>
 
-<p>Notice the compression in two directions.  Vertically, rather than showing one line for every 
-cell, we group cells into a single line if they have identical VDJ transcripts.  Horizontally, 
-rather than showing all transcript positions, we only show "interesting" positions.  This is a 
-flexible concept, and what we show by default are all positions exhibiting a difference from the 
-reference and all positions in the CDR3.</p>
-<p>The same exact output would be obtained by typing</p>
+<b>Notice the compression in two directions</b>:
+<ol>
+	<li><b>Vertically</b> to group cells into a single line if they have identical V(D)J 
+                transcripts
+		(instead of showing one line for every cell).</li>
+	<li><b>Horizontally</b>, a flexible concept, to show by default all positions exhibiting a
+		difference from the reference and all positions in the CDR3 (instead of showing
+		all transcript positions, only "interesting" positions are shown).</li>
+</ol>
+
+<p>The same exact output would be obtained by typing:</p>
 <pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
 </code></pre>
 <p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
 contains some files from a Cell Ranger run, obtained from a human ovarian cancer sample.</p>
 
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 950px">
-<b>How does enclone find my data?</b>
+<b>How does <span style="color:rgb(120,123,175);font-weight:900">enclone</span> find my data?</b>
 It uses a <i>search path</i> called <code>PRE</code> that is preset to 
-<code>~/enclone/datasets,~/enclone/datasets2</code>, and which you can set to any value, either
+<code>~/enclone/datasets,~/enclone/datasets2</code>, and which can be set to any value, either
 by setting <code>PRE=...</code> on the command line, or by setting the environment variable
-<code>ENCLONE_PRE</code>.  To find your data, enclone prepends <code>PRE</code> to the value of 
+<code>ENCLONE_PRE</code>.  To find your data, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> prepends <code>PRE</code> to the value of 
 <code>BCR</code> or <code>TCR</code> given on the command line.
 For example, all of the following argument combinations do the same thing:
 <br>1. <code>BCR=123085</code> (using the default value of <code>PRE</code>)
@@ -546,20 +600,21 @@ For example, all of the following argument combinations do the same thing:
 datasets.  See <a href="pages/auto/help.input.html">here</a> for how.
 </p>
 
-<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes enclone to display only clonotypes in which 
+<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes <span style="color:rgb(120,123,175);font-weight:900">enclone</span> to display only clonotypes in which 
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
 automatically paged, so you can scroll through it.</p>
-<p>By default, enclone prints clonotypes in this human-readable form.  You can also instruct enclone
+<p>By default, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> prints clonotypes in this human-readable form.  You can also instruct 
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span>
 to print clonotypes in machine-readable forms that are suitable for input to other programs.</p>
 <hr>
 
 <p><a name="multiomic" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Combining multiomic data</h2>
 
-<p>Gene expression and feature barcode data can be displayed simultaneously with VDJ data.  For
+<p>Gene expression and Feature Barcode data can be displayed simultaneously alongside VDJ data.  For
 example, here we add columns for the same clonotype, showing the median number of UMIs detected
-for, all genes, a particular gene, and a particular antibody:</p>
+for all genes, a particular gene, and a particular antibody:</p>
 
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 54 CELLS</span>
 
@@ -589,14 +644,14 @@ for, all genes, a particular gene, and a particular antibody:</p>
 to the previous command.  The <code>GEX</code> part points to the directory containing gene 
 expression and feature barcode data.  The <code>LVARSP</code> part defines the additional columns 
 to be displayed.</p>
-<p>Other types of data can be brought in via featuring barcoding.  For example, response to
+<p>Other types of data can be brought in via Feature Barcoding.  For example, the response to
 multiple antigens can be measured using 
 <a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
-and these data displayed as additional columns.</p>
+and these data can be displayed as additional columns.</p>
 <hr>
 
 <p><a name="honeycomb" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>Visualizing many clonotypes at once</h2>
+<h2>Visualizing multiple clonotypes</h2>
 
 <table style="width:100%">
   <tr>
@@ -606,17 +661,19 @@ and these data displayed as additional columns.</p>
   <th></th>
   <th></th>
   <th style="text-align: left; font-weight:normal">
-      <p>You can select clonotypes in enclone and then display them using a "honeycomb" plot.</p>
+	  <p>After selecting multiple clonotypes in <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, you can display them using
+		  a "honeycomb" plot.</p>
       <p>In this instance, pre- and post-vaccination samples were collected from four individuals,
       many datasets were generated for each sample, and these were combined in a single call
-      to enclone.  Clonotypes containing at least ten cells are shown.  
+      to <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Clonotypes containing at least ten cells are shown.  
       The plot was generated by adding</p>
 <pre><code>MIN_CELLS=10 PLOT="clono.svg,pre-&gt;blue,post-&gt;red</code>
 <code>LEGEND=blue,"pre-vaccination cell",</code>
 <code>       red,"post-vaccination cell"</code></pre>
-      <p>to the enclone command line, yielding the image shown here as the file 
+      <p>to the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line, yielding the image shown here as the file 
       <code>clono.svg</code>.</p>
-      <p>For more information about honeycomb plots, see <a href="pages/plot.html">here</a>.</p>
+      <p>For more information about honeycomb plots, 
+         see <a href="pages/auto/plot.html">here</a>.</p>
   </th>
   </tr>
 </table>
@@ -624,27 +681,26 @@ and these data displayed as additional columns.</p>
 <br>
 <hr>
 
-<p><a name="sowhat" style="display:block; position:relative; top:-20px;"></a></p>
-<h2>So what is enclone good for?</h2>
+<p><a name="powerunlimitedpower" style="display:block; position:relative; top:-20px;"></a></p>
+<h2>The power of <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
 
-<p>There are many ways to use 10x data to study immune biology.  Thus in the previous section, the
-red clonotypes may represent responses to antigens in the vaccine.  But for a given
-disease <i>e.g.</i> COVID-19, one may not yet have a vaccine, and indeed the vaccine may be
-the goal!  A different approach is needed.</p>
-<p>One such approach is to <b> identify patient and survivor B cell
-clonotypes that expand in response to infectious disease</b>. These define antibodies that can be
-used to design passive or active vaccines.  Additional power is added by mapping
-antigen specificity to multiple antigens directly via feature barcoding
-(<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>).</p>
-<p>These data are easy to display in enclone!  You can directly select candidates for
-vaccine or therapeutic development by picking large clonotypes with high antigen counts and single
-or multiple antigen specificities.</p>
-<p>We are actively working on further functionality that will make this process even more effective.</p>
-
-<p>See <a href="pages/auto/tree.html">this</a> for how to generate phylogenetic trees
-using enclone.</p>
-
-<p>Another example use of enclone shows how to <b><a href="pages/auto/expanded.html">detect illusory clonotypes</a></b>.</p>
+<p>There are many ways to use 10x Genomics data to study immunobiology.</p>
+<p><b>Response to an antigen or vaccine</b>: <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is a great tool for studying responses to a
+vaccine. For example, in the previous section, the red clonotypes may represent responses to 
+antigens in the vaccine.</p>
+<p><b>Vaccine and therapeutic antibody development</b>: For certain infectious agents <i>e.g.</i> COVID-19,
+a vaccine does not currently exist; different approaches may be employed in pursuit of this goal. One such
+approach is to <b>identify patient and survivor B cell clonotypes that expand in response to the infectious
+disease.</b> These define antibodies that can be used to design passive or active vaccines.</p>
+<p>Additional power is added by mapping antigen specificity to multiple antigens directly via Feature 
+Barcoding (<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>). These data
+are easy to display in <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Candidates can be selected directly for vaccine or therapeutic 
+development by picking large clonotypes with high antigen counts and single or multiple antigen specificities.</p>
+<p>We are actively working on further functionality that will make this process even more effective.</p> 
+<p>See <a href="pages/auto/tree.html">this vignette</a> to learn how to generate phylogenetic trees using
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span>.
+<p>Another example use of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is the <b><a href="pages/auto/expanded.html">detection of
+illusory clonotypes</a></b>.</p>
 
 <hr>
 
@@ -652,18 +708,18 @@ using enclone.</p>
 <h2>Questions</h2>
 
 <p>
-Please ask us questions! We are greatly interested in your feedback and ideas you may have to
-make enclone as useful as possible.
+Please contact us with your questions and comments! We look forward to hearing your feedback and ideas to
+further evolve <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.
 </p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
-padding: 8px; width: 875px; font-size: 120%">
-<b>enclone</b> is provided as an tool for use by the community.  Although we cannot
+padding: 8px; font-size: 110%">
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> is provided as a tool for use by the community.  Although we cannot
 guarantee full support for the software, please email us at 
-<a href="mailto:enclone@10xgenomics.com">enclone@10xgenomics.com</a>
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>
 if you have problems, questions or comments 
 (see <b><a href="pages/auto/help.support.html">enclone support</a></b>).
-enclone is beta software and thus a work in progress.  We are actively making many changes and may 
+<span style="color:rgb(120,123,175);font-weight:900">enclone</span> is beta software and thus a work in progress.  We are actively making many changes and may 
 be unable to respond promptly to your particular request.
 </p>
 
@@ -673,7 +729,7 @@ be unable to respond promptly to your particular request.
 <h2>Where am I?</h2>
 
 <!-- dunno why negative left margin needed to line things up on left: -->
-<p style="margin-left: -1.5px; margin-top: 30px; font-family: DejaVuSansMono; font-size: 200%; color: blue">bit.ly/enclone</p>
+<p style="margin-left: -1.5px; margin-top: 30px; font-family: DejaVuSansMono; font-size: 200%; color: blue">bit.ly/<span style="color:rgb(120,123,175);font-weight:900">enclone</span></p>
 
 </body>
 </html>

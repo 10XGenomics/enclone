@@ -1,0 +1,118 @@
+/*
+   DejaVuSansMono font (see https://dejavu-fonts.github.io)
+   We use this font because it works well for our clonotype box character diagrams and it's free.
+   The name is a bit of a misnomer because we try to use Menlo first.
+   Fallback scheme:
+   1. Menlo as local; pretty but likely available only on Macs
+   2. woff2 from CDN; good because woff2 is compact; why is it stored in deathbeds?
+   3. truetype from CDN
+   4. truetype as part of site; LGC is a subset but includes all that we use
+   5. Courier New as local; poorly suited but widely available
+*/
+
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+
+code {
+    font-family: "DejaVuSansMono";
+    font-size: 90%;
+    background: rgb(92%,92%,92%);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+html { 
+    font-size: 95%; 
+    font-family: "Arial";
+    line-height: 140%;
+} 
+
+h1 {
+    color: black;
+    line-height: 30px;
+}
+
+body {
+    max-width: 1080px;
+    color: rgb(36, 41, 46);
+    margin: 0 auto 50px;
+    padding: 0 25px;
+}
+
+hr {
+    height: .25em;
+    padding: 0;
+    margin: 0px 0;
+    background-color: #e1e4e8;
+    border: 0;
+}
+
+p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 20px;
+}
+
+ol {
+    display: block;
+    list-style-type: decimal;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 20px;
+}
+
+li {
+    margin: 5px 0;
+}
+
+/* Links are shown in the same blue color, whether visited or not.  There is no underlining at all.
+   We agreed that this was optimal.  Don't know if the second link definition is redundant.
+*/
+
+a:link {
+    text-decoration: none;
+    color: #0071D9;
+}
+
+a:link {
+    color: #0071D9;
+}
+
+a:visited {
+    color: #0071D9;
+}

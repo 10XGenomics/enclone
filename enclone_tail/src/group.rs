@@ -1575,7 +1575,7 @@ pub fn group_and_print_clonotypes(
             strme(&logx),
             "", // source
             &ctl.gen_opt.html_title,
-            "<link href='https://10xgenomics.github.io/enclone/pages/enclone.css' \
+            "<link href='https://10xgenomics.github.io/enclone/pages/enclone_css_v2.css' \
              rel='stylesheet' type='text/css'>",
             "DejaVuSansMono",
             14,

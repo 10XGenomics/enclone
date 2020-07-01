@@ -162,6 +162,12 @@ pub fn load_gex(
                         bin_file_state = 3;
                     }
                 } else {
+                    // THE FOLLOWING LINE HAS BEEN OBSERVED TO FAIL SPORADICALLY.  THIS HAS
+                    // HAPPENED AT LEAST ONCE.  THE FAIL WAS IN
+                    // binary_read_to_ref::<u32>(&mut ff, &mut x[0], 11).unwrap();
+                    // WHERE THE unwrap() FAILED ON
+                    // UnexpectedEof, error: "failed to fill whole buffer".
+
                     let v = get_code_version_from_file(&bin_file);
                     if v == 1 {
                         bin_file_state = 2;

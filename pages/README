@@ -1,0 +1,3 @@
+NOTES
+1. Files here should end with .html.src, not .html.
+2. Use #enclone for most instances of enclone.  But not in enclone commands.
