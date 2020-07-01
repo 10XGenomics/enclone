@@ -326,7 +326,7 @@ see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
 </li>
 <li>Puts #enclone datasets in <code>~/enclone</code>.</li>
 </ol>
-Additional details can be found <a href="pages/installation_details.html">here</a>.
+Additional details can be found <a href="pages/auto/installation_details.html">here</a>.
 
 Restart your terminal session; you can now run #enclone.</p>
 
@@ -518,7 +518,7 @@ For completeness, here are all the other pages on this site:
     </a></td> <td align="left">if you have trouble installing</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/installation_details.html">installation details
+    <td align="left"><a href="pages/auto/installation_details.html">installation details
     </a></td> <td align="left">if you're curious about what the install command does</td>
 </tr>
 <tr>
