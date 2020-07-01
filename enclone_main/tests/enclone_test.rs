@@ -63,6 +63,7 @@ fn valid_link(link: &str) -> bool {
 // A bit ugly because of duplicated code.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_sync_master() {
     let mut version = HashMap::<String, String>::new();
