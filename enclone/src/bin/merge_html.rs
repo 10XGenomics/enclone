@@ -12,4 +12,5 @@ fn main() {
     insert_html("pages/expanded.html.src", "pages/auto/expanded.html", false);
     insert_html("pages/tree.html.src", "pages/auto/tree.html", false);
     insert_html("pages/plot.html.src", "pages/auto/plot.html", false);
+    insert_html("pages/windows.html.src", "pages/auto/windows.html", false);
 }
