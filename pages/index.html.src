@@ -107,20 +107,20 @@ cells without help from a computational expert!</p>
 
 <p>The objective of #enclone is to:</p>
 
-<table style="width:100%; margin-top: -17px">
+<table style="width:100%; margin-top: -25px; margin-bottom: -25px">
   <tr>
   <th>
        <p style="text-align: left; font-weight:normal; border: 2px; border-style: solid;
-          padding: 8px; font-size: 120%">
+          padding: 8px; font-size: 130%; line-height:120%">
        <span style="color:red">Find</span> and <span style="color:red">display</span> clonotypes:
        groups of T and B cells sharing the same fully rearranged common ancestor.
        </p>
   </th>
   <th style="padding-left: 20px; text-align: left; font-weight:normal">
-	  <p><span style="color:red">Find:</span> It is easy to mistakenly put unrelated cells in 
-          the same clonotype, or to "pollute" a clonotype with chains that do not belong in it. 
+	  <p style="margin-bottom:10px"><span style="color:red">Find:</span> It is easy to mistakenly put unrelated cells in 
+          the same clonotype, or "pollute" a clonotype with extraneous chains. 
           <b>#enclone's algorithms make <i>finding</i> accurate.</b></p> 
-	  <p><span style="color:red">Display:</span> It is challenging to compactly represent a 
+	  <p style="margin-top:10px"><span style="color:red">Display:</span> It is challenging to compactly represent a 
           large repertoire of data. <b>#enclone enables compact, easy-to-grasp data 
   <i>display</i>.</b></p>
   </th>
