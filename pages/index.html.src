@@ -219,7 +219,7 @@ solution</a>.
 
 <p>
 	<sup>†</sup><i>beta software implies that it is still being actively developed, with features being added/modified,
-and on rare occasions may involve breaking syntax that previously worked. See <a href="pages/history.html">this page</a>
+and on rare occasions may involve breaking syntax that previously worked. See <a href="pages/auto/history.html">this page</a>
 	for the history of changes.</i>
 </p>
 
@@ -231,7 +231,7 @@ and on rare occasions may involve breaking syntax that previously worked. See <a
 <p>
 You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see 
 <a href="pages/auto/windows.html">here</a> for <b>Windows</b> options; 
-see <a href="pages/dang_i_cannot_install.html">here</a> if you have a problem.
+see <a href="pages/auto/dang_i_cannot_install.html">here</a> if you have a problem.
 </p>
 
 <table>
@@ -333,7 +333,7 @@ Restart your terminal session; you can now run #enclone.</p>
 <p><span style="color:red; font-weight:bold">To update, type the same command!</span>
 <span style="font-weight:bold">
 Only required files will be downloaded.  
-See <a href="pages/history.html">history</a> for what has changed.</span></p>
+See <a href="pages/auto/history.html">history</a> for what has changed.</span></p>
 
 <hr>
 
@@ -480,7 +480,7 @@ For completeness, here are all the other pages on this site:
 </thead>
 <tbody>
 <tr>
-    <td align="left"><a href="pages/history.html">history of changes</a></td>
+    <td align="left"><a href="pages/auto/history.html">history of changes</a></td>
     <td align="left">everyone</td>
 </tr>
 <tr>
@@ -488,7 +488,7 @@ For completeness, here are all the other pages on this site:
     <td align="left">everyone</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/compile.html">how to compile #enclone</a></td>
+    <td align="left"><a href="pages/auto/compile.html">how to compile #enclone</a></td>
     <td align="left">people who want to contribute code</td>
 </tr>
 <tr>
@@ -514,7 +514,7 @@ For completeness, here are all the other pages on this site:
     <td align="left">everyone</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/dang_i_cannot_install.html">installation troubleshooting
+    <td align="left"><a href="pages/auto/dang_i_cannot_install.html">installation troubleshooting
     </a></td> <td align="left">if you have trouble installing</td>
 </tr>
 <tr>
