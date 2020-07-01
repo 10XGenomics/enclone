@@ -238,7 +238,7 @@ impl HelpDesk {
                 strme(&self.log),
                 "", // source
                 &self.title,
-                "<link href='../enclone.css' rel='stylesheet' type='text/css'>",
+                "<link href='../enclone_css_v2.css' rel='stylesheet' type='text/css'>",
                 "DejaVuSansMono",
                 14,
             );

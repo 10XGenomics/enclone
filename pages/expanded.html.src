@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>illusory clonotype expansions</title>
-<link rel="stylesheet" type="text/css" href="../enclone.css">
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
 </head>
 
 <body>
@@ -21,7 +21,7 @@ padding: 8px; width: 900px; font-size: 120%">
 UMI counts, which completely annihilate the particular illusory expansion described here.  The
 reason we left the page here is that the approach used to analyze the expansion may have
 utility for other datasets.  <b>To reproduce the actual results shown here, you will need to add
-to each enclone command the arguments <code>NUMI</code> and <code>NUMI_RATIO</code> that turn off 
+to each #enclone command the arguments <code>NUMI</code> and <code>NUMI_RATIO</code> that turn off 
 the added filter.</b></p>
 
 <p>This page explains the origin of certain illusory clonotype expansions, and exhibits one example
@@ -53,11 +53,11 @@ To that end, we show an example, using two libraries obtained from a single tube
 obtained from a healthy human donor.  The two libraries contain 7287 and 9559 cells, respectively,
 of which ~12% are B cells.  All the data shown here are part of the large dataset
 package described in the 
-<a href="../../index.html#download">download section of the main enclone page</a>.</p>
+<a href="../../index.html#download">download section of the main #enclone page</a>.</p>
 
 <pre><code>enclone BCR=128037,128040 NCROSS
 </code></pre>
-<p>The <code>NCROSS</code> option instructs enclone to <i>not</i> filter out expanded clonotypes 
+<p>The <code>NCROSS</code> option instructs #enclone to <i>not</i> filter out expanded clonotypes 
 that appear in only one dataset arising from the same sample (and which based on their sizes are 
 highly improbable).  Normally one would want this filtering, but these clonotypes are exactly what 
 we wish to see now!  Here is the top clonotype:</p>
@@ -79,7 +79,7 @@ we henceforth ignore the data made from the other draw of cells, useful though i
 
 #include pages/auto/illusory3.html
 
-<p>Now we see less cells.  This is because the default behavior of enclone is to filter out
+<p>Now we see less cells.  This is because the default behavior of #enclone is to filter out
 cells called by the VDJ pipeline that are not also called by the GEX pipeline.  Most of these
 would have consisted of "nearly empty drops", GEMs containing just a B cell fragment.</p>
 <p>Now we add the option <code>PER_CELL</code>, causing data for each cell to be displayed, and we 

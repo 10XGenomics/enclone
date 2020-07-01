@@ -63,6 +63,7 @@ fn valid_link(link: &str) -> bool {
 // A bit ugly because of duplicated code.
 
 #[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
 #[test]
 fn test_sync_master() {
     let mut version = HashMap::<String, String>::new();
@@ -1098,12 +1099,12 @@ fn test_version_number_in_readme() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that the DejaVuSansMono definition in enclone.css has not changed.  We put this here
+// Test that the DejaVuSansMono definition in enclone_css_v2.css has not changed.  We put this here
 // because that definition has to be manually tested, and we don't want it accidentally changed
 // and broken.  This is really gross, but it's not clear how to do it better.
 //
 // Absolutely hideous implementation to verify that
-// cat ../pages/enclone.css | head -36 = "2474276863 1467".
+// cat ../pages/enclone_css_v2.css | head -36 = "2474276863 1467".
 //
 // Only works with high probability.
 
@@ -1112,7 +1113,7 @@ fn test_version_number_in_readme() {
 fn test_dejavu() {
     PrettyTrace::new().on();
     let mut cat_output_child = Command::new("cat")
-        .arg("../pages/enclone.css")
+        .arg("../pages/enclone_css_v2.css")
         .stdout(Stdio::piped())
         .spawn()
         .unwrap();

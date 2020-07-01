@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>enclone heuristics</title>
-<link rel="stylesheet" type="text/css" href="enclone.css">
+<link rel="stylesheet" type="text/css" href="enclone_css_v2.css">
 </head>
 
 <body>
@@ -15,14 +15,14 @@
 
 <h1>enclone heuristics</h1>
 
-<p>This page is a start in describing the heuristics that enclone uses.  It will be gradually
-expanded.  See also <a href="../pages/auto/help.how.html">enclone help how</a>.  The content here
+<p>This page is a start in describing the heuristics that #enclone uses.  It will be gradually
+expanded.  See also <a href="../../pages/auto/help.how.html">enclone help how</a>.  The content here
 is geeky and technical.
 </p>
 
 <hr>
 
-<p><b>UMI filtering.</b>  enclone filters out B cells having low UMI counts, relative to a baseline
+<p><b>UMI filtering.</b>  #enclone filters out B cells having low UMI counts, relative to a baseline
 that is determined for each dataset, according to a
 heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
 filter.</code>
@@ -73,7 +73,7 @@ only considers the number of counts that fall below a threshold, and not their p
 
 <hr>
 
-<p><b>UMI ratio filtering.</b>  enclone filters out B cells having low UMI counts, relative to
+<p><b>UMI ratio filtering.</b>  #enclone filters out B cells having low UMI counts, relative to
 other UMI counts in a given clonotype, according to a 
 heuristic described here, unless the argument <code>NUMI_RATIO</code> is supplied, to turn off that
 filter.</code>

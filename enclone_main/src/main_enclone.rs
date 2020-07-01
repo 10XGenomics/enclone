@@ -1340,6 +1340,10 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     for li in 0..ctl.origin_info.n() {
         if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
+            // THE FOLLOWING LINE HAS BEEN OBSERVED TO FAIL SPORADICALLY.  THIS HAS BEEN
+            // OBSERVED ONCE.  THE FAIL WAS THAT
+            // called `Option::unwrap()` on a `None` value.
+
             d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
             ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
         } else {

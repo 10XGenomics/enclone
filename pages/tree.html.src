@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>making phylogenetic trees</title>
-<link rel="stylesheet" type="text/css" href="../enclone.css">
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
 </head>
 
 <body>
@@ -15,7 +15,8 @@
 
 <h1>Making phylogenetic trees</h1>
 
-<p>enclone provides several mechanisms for creating, displaying, and exporting a phylogenetic tree for each 
+<p>#enclone provides several mechanisms for creating, displaying, and exporting a phylogenetic 
+tree for each 
 clonotype.  These are initial mechanisms, which are likely to be expanded and/or improved over 
 time in response to feedback.  The initial implementation is inspired by the Levenshtein-NJ method described by <a href="https://dx.doi.org/10.1093/bioinformatics/btx533">Yermanos <i>et al</i>. 2017</a>. For all of these mechanisms, we recommend using the argument
 <code>COMPLETE</code> to remove exact subclonotypes that are missing 1 or more chains.</p>

@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>iNKT and MAIT cells</title>
-<link rel="stylesheet" type="text/css" href="../enclone.css">
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 <h1>iNKT and MAIT cells</h1>
 
 <p>
-enclone can look for evidence that T cells are iNKT or MAIT cells.  This evidence may be
+#enclone can look for evidence that T cells are iNKT or MAIT cells.  This evidence may be
 displayed e.g. with <code>LVARSP=inkt</code> or <code>LVARSP=mait</code>, see
 <a href="../../pages/auto/help.lvars.html">enclone help lvars</a>.  One may also filter to show
 only cells with some evidence, using the <code>INKT</code> and <code>MAIT</code> options, see
@@ -26,7 +26,8 @@ only cells with some evidence, using the <code>INKT</code> and <code>MAIT</code>
 <hr>
 
 <p>
-enclone looks for both <i>gene</i> and <i>junction (CDR3)</i> evidence.  The rules for this are likely
+#enclone looks for both <i>gene</i> and <i>junction (CDR3)</i> evidence.  The rules for this are 
+likely
 to be tweaked over time.  Junction evidence is discussed later.  For gene evidence, the following 
 rules are used currently:
 <ul>
@@ -56,7 +57,7 @@ generate considerable nucleotide and amino acid diversity within the CDR3.</b></
 
 <hr>
 
-<p>For junction evidence, enclone tests for presence of a given chain's CDR3 amino acid
+<p>For junction evidence, #enclone tests for presence of a given chain's CDR3 amino acid
 sequence in a fixed list.  Here is the list for human iNKT:
 <ul>
 <li>CASARGVNEQYF</li>
