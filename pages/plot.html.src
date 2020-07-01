@@ -16,10 +16,10 @@
 <h1>honeycomb plots</h1>
 
 <p>
-enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
+#enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
 </p>
 
-<p>enclone provides four ways to assign colors in such a plot.  We describe them in order of
+<p>#enclone provides four ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.</p>
 
 <hr>
@@ -33,7 +33,7 @@ Unspecified samples will be black.
 enclone BCR=123085:123089 MIN_CELLS=10 PLOT="plot.svg,s1->blue,s2->red" NOPRINT 
 LEGEND=blue,123085,red,123089</code></p>
 
-<p>Note the colon between <code>123085</code> and <code>123089</code>.  This tells enclone
+<p>Note the colon between <code>123085</code> and <code>123089</code>.  This tells #enclone
 that the two datasets are different samples from the same donor.  This is not actually true, as
 the two datasets are from the same sample, but is needed to plot in this way.</p>
 
@@ -41,7 +41,7 @@ the two datasets are from the same sample, but is needed to plot in this way.</p
 
 <br><br>
 
-There is another example on the main enclone page, based on pre- and post-vaccination
+There is another example on the main #enclone page, based on pre- and post-vaccination
 samples.
 
 <br><br>
@@ -94,8 +94,8 @@ or a hex specification like <code>#00FFFF</code> for aqua.  The full color descr
 </p>
 
 <p>
-enclone also recognizes the color abbreviations <code>@1</code>, ..., <code>@6</code>, which refer 
-to enclone's color blind friendly palette 
+#enclone also recognizes the color abbreviations <code>@1</code>, ..., <code>@6</code>, which refer 
+to #enclone's color blind friendly palette 
 (see <a href="../pages/auto/help.color.html">enclone help color</a>).
 </p>
 

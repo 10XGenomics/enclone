@@ -505,7 +505,7 @@ For completeness, here are all the other pages on this site:
     <td align="left">people who want to know details on how the algorithm works</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/plot.html">honeycomb plots</a></td>
+    <td align="left"><a href="pages/auto/plot.html">honeycomb plots</a></td>
     <td align="left">everyone</td>
 </tr>
 <tr>
@@ -627,7 +627,8 @@ and these data can be displayed as additional columns.</p>
 <code>       red,"post-vaccination cell"</code></pre>
       <p>to the #enclone command line, yielding the image shown here as the file 
       <code>clono.svg</code>.</p>
-      <p>For more information about honeycomb plots, see <a href="pages/plot.html">here</a>.</p>
+      <p>For more information about honeycomb plots, 
+         see <a href="pages/auto/plot.html">here</a>.</p>
   </th>
   </tr>
 </table>
