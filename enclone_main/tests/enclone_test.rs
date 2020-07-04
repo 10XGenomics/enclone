@@ -58,6 +58,22 @@ fn valid_link(link: &str) -> bool {
 
 // NOT BASIC
 
+// Make sure that two css files still exist.  These can never be deleted because they are
+// accessed by certain html output of enclone.  These files could be out in the wild and we
+// don't want to break them.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_css_existence() {
+    let _ = include_str!["../../pages/enclone.css"];
+    let _ = include_str!["../../pages/enclone_css_v2.css"];
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
 // Make sure that if sync_master was run, nothing would change.
 //
 // A bit ugly because of duplicated code.
