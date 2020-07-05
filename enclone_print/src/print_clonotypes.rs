@@ -52,6 +52,7 @@ pub fn print_clonotypes(
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
+    to_ref_index_orig: &HashMap<usize, usize>,
 ) {
     // Make an abbreviation.
 
@@ -286,6 +287,7 @@ pub fn print_clonotypes(
                     &rsi,
                     &refdata,
                     &dref,
+                    &to_ref_index_orig,
                 ));
             }
 

@@ -13,6 +13,7 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use io_utils::*;
+use std::collections::HashMap;
 use vector_utils::*;
 
 // Export donor reference/inferred alt allele sequences
@@ -75,6 +76,7 @@ pub fn make_loupe_clonotype(
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
+    to_ref_index_orig: &HashMap<usize, usize>,
 ) -> Clonotype {
     // Define concatenated universal and donor reference sequences.
 
@@ -125,11 +127,22 @@ pub fn make_loupe_clonotype(
         }
         let ex = &exact_clonotypes[exacts[u0]];
         let nt_sequence = ex.share[m0].full_seq.clone();
-        let u_idx = rsi.uids[cx];
-        let v_idx = rsi.vids[cx];
-        let d_idx = rsi.dids[cx];
-        let j_idx = rsi.jids[cx];
-        let c_idx = rsi.cids[cx];
+        let mut u_idx = rsi.uids[cx];
+        let mut v_idx = rsi.vids[cx];
+        let mut d_idx = rsi.dids[cx];
+        let mut j_idx = rsi.jids[cx];
+        let mut c_idx = rsi.cids[cx];
+        if u_idx.is_some() {
+            u_idx = Some(to_ref_index_orig[&u_idx.unwrap()]);
+        }
+        v_idx = to_ref_index_orig[&v_idx];
+        if d_idx.is_some() {
+            d_idx = Some(to_ref_index_orig[&d_idx.unwrap()]);
+        }
+        j_idx = to_ref_index_orig[&j_idx];
+        if c_idx.is_some() {
+            c_idx = Some(to_ref_index_orig[&c_idx.unwrap()]);
+        }
         let donor_v_idx = rsi.vpids[cx];
         let donor_j_idx = None;
         let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
