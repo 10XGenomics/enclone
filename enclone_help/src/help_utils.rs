@@ -234,11 +234,15 @@ impl HelpDesk {
         if !self.html {
             print!("{}", strme(&self.log));
         } else {
+            // Note that we do not link to the css file, because it is less fragile then including
+            // the font face information directly.  In particular, the css file could be
+            // accidentally deleted or renamed, which would break previously generated user html
+            // files.  This actually happened!
             let s = convert_text_with_ansi_escapes_to_html(
                 strme(&self.log),
                 "", // source
                 &self.title,
-                "<link href='../enclone_css_v2.css' rel='stylesheet' type='text/css'>",
+                &format!("<style type=\"text/css\">\n{}</style>", font_face_in_css()),
                 "DejaVuSansMono",
                 14,
             );

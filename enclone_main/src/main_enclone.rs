@@ -673,6 +673,29 @@ pub fn main_enclone(args: &Vec<String>) {
     */
     let refx2 = &refx;
 
+    // When we call make_vdj_ref_data_core, below, we delete the records that we're not using
+    // (tcr or bcr).  Create an index that maps the index after that back to the index of
+    // the record in the undeleted reference file.  We need this for loupe output.
+
+    let mut to_ref_index_orig = HashMap::<usize, usize>::new();
+    let (mut count, mut full_count) = (0, 0);
+    for line in refx2.lines() {
+        if line.starts_with('>') {
+            let mut to_delete = false;
+            if !is_tcr && line.contains("|TR|") {
+                to_delete = true;
+            }
+            if !is_bcr && line.contains("|IG|") {
+                to_delete = true;
+            }
+            if !to_delete {
+                to_ref_index_orig.insert(count, full_count);
+                count += 1;
+            }
+            full_count += 1;
+        }
+    }
+
     // Build reference data.
 
     make_vdj_ref_data_core(&mut refdata, &refx2, &ext_refx, is_tcr, is_bcr, None);
@@ -1394,6 +1417,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut out_datas,
         &mut tests,
         &mut controls,
+        &to_ref_index_orig,
     );
     ctl.perf_stats(&torb, "making orbits");
 
