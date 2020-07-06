@@ -9,6 +9,7 @@ use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use io_utils::*;
@@ -1571,12 +1572,15 @@ pub fn group_and_print_clonotypes(
     if !ctl.gen_opt.html {
         print!("{}", compress_ansi_escapes(&strme(&logx)));
     } else {
+        // Note that we do not link to the css file, because it is less fragile then including
+        // the font face information directly.  In particular, the css file could be accidentally
+        // deleted or renamed, which would break previously generated user html files.  This
+        // actually happened!
         let s = convert_text_with_ansi_escapes_to_html(
             strme(&logx),
             "", // source
             &ctl.gen_opt.html_title,
-            "<link href='https://10xgenomics.github.io/enclone/pages/enclone_css_v2.css' \
-             rel='stylesheet' type='text/css'>",
+            &format!("<style type=\"text/css\">\n{}</style>", font_face_in_css()),
             "DejaVuSansMono",
             14,
         );
