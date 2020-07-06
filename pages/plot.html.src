@@ -37,7 +37,7 @@ LEGEND=blue,123085,red,123089</code></p>
 that the two datasets are different samples from the same donor.  This is not actually true, as
 the two datasets are from the same sample, but is needed to plot in this way.</p>
 
-<img src="../img/samples.svg" alt="samples honeycomb plot" title="samples honeycomb plot">
+<img src="../../img/samples.svg" alt="samples honeycomb plot" title="samples honeycomb plot">
 
 <br><br>
 
@@ -80,7 +80,7 @@ will fix this.  Note that <code>PLOT_BY_ISOTYPE</code> cannot be used with <code
 <p><b>Example:</b> <code>enclone BCR=123085,123089 MIN_CELLS=5 MIN_CHAINS_EXACT=2 NOPRINT 
 PLOT_BY_ISOTYPE=plot.svg</code></p>
 
-<img src="../img/iso.svg" alt="isotype honeycomb plot" title="isotype honeycomb plot">
+<img src="../../img/iso.svg" alt="isotype honeycomb plot" title="isotype honeycomb plot">
 
 <br><br>
 
