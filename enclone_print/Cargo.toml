@@ -39,14 +39,12 @@ serde_json = "*"
 stats_utils = "0.1.0"
 string_utils = "0.1.1"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="ddc3aec18154f3e78a574bf1f4d2a34c55feea4a"}
 vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 
 [dependencies.hdf5]
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
-
-
 
 
