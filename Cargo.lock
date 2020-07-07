@@ -33,7 +33,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "bio 0.31.0",
  "debruijn",
@@ -45,6 +45,14 @@ dependencies = [
 name = "amino"
 version = "0.1.0"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+dependencies = [
+ "debruijn",
+]
+
+[[package]]
+name = "amino"
+version = "0.1.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "debruijn",
 ]
@@ -614,15 +622,15 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 name = "enclone"
 version = "0.4.33"
 dependencies = [
- "amino",
+ "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "ansi_escape",
  "assert_cmd",
  "bio 0.29.0",
  "debruijn",
  "dirs",
  "enclone_core",
- "equiv",
- "graph_simple",
+ "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
+ "graph_simple 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "hdf5",
  "io_utils",
  "itertools 0.9.0",
@@ -689,7 +697,7 @@ dependencies = [
  "enclone_print",
  "enclone_proto",
  "enclone_tail",
- "equiv",
+ "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "failure",
  "flate2",
  "hdf5",
@@ -712,7 +720,7 @@ dependencies = [
 name = "enclone_print"
 version = "0.4.33"
 dependencies = [
- "amino",
+ "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "ansi_escape",
  "bio 0.29.0",
  "byteorder",
@@ -720,7 +728,7 @@ dependencies = [
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "failure",
  "hdf5",
  "io_utils",
@@ -759,12 +767,12 @@ dependencies = [
 name = "enclone_tail"
 version = "0.4.33"
 dependencies = [
- "amino",
+ "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "ansi_escape",
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git)",
  "hdf5",
  "io_utils",
  "itertools 0.9.0",
@@ -788,6 +796,11 @@ dependencies = [
 name = "equiv"
 version = "0.1.0"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+
+[[package]]
+name = "equiv"
+version = "0.1.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 
 [[package]]
 name = "errno"
@@ -825,7 +838,7 @@ dependencies = [
 [[package]]
 name = "exons"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -863,7 +876,7 @@ checksum = "e88a8acf291dafb59c2d96e8f59828f3838bb1a70398823ade51a84de6a6deed"
 [[package]]
 name = "fasta"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "debruijn",
  "flate2",
@@ -994,6 +1007,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "graph_simple"
+version = "0.1.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
+dependencies = [
+ "petgraph",
+ "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "hdf5"
 version = "0.6.0"
 source = "git+https://github.com/pmarks/hdf5-rs.git?rev=0c98e57b2af1f4247708c198b324ba3a8bc18dba#0c98e57b2af1f4247708c198b324ba3a8bc18dba"
@@ -1079,11 +1101,11 @@ dependencies = [
 [[package]]
 name = "hyper"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "debruijn",
- "equiv",
- "graph_simple",
+ "equiv 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6)",
+ "graph_simple 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6)",
  "kmer_lookup",
  "petgraph",
  "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1168,7 +1190,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "debruijn",
  "rayon",
@@ -2459,10 +2481,10 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6#fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"
 dependencies = [
  "align_tools",
- "amino",
+ "amino 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=fa5ab0dc8322325c918d2deda06a3ca5ee5807e6)",
  "bio 0.31.0",
  "debruijn",
  "exons",
@@ -2478,6 +2500,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
+ "strum 0.18.0",
+ "strum_macros 0.18.0",
  "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

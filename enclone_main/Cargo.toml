@@ -34,7 +34,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 stats_utils = "0.1.0"
 string_utils = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"}
 vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 
 [dependencies.hdf5]
@@ -53,7 +53,4 @@ rayon = "1.0.2"
 [features]
 basic = []
 cpu = []
-
-
-
 

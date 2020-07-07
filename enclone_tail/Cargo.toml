@@ -36,7 +36,7 @@ stats_utils = "0.1.0"
 string_utils = "0.1.1"
 tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 tar = "0.4.29"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"}
 vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
@@ -45,7 +45,4 @@ vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
-
-
-
 

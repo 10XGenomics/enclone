@@ -40,7 +40,7 @@ stats_utils = "0.1.0"
 stirling_numbers = "0.1.1"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fa5ab0dc8322325c918d2deda06a3ca5ee5807e6"}
 vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 
 [target.'cfg(not(windows))'.dependencies]
@@ -50,7 +50,4 @@ pager = "0.15.0"
 features = ["conda"]
 git = "https://github.com/pmarks/hdf5-rs.git"
 rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
-
-
-
 
