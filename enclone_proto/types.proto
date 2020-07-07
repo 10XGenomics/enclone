@@ -175,8 +175,8 @@ message ClonotypeChain {
     // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The end of the
     // CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
     required uint32 cdr3_end = 20;
-    // Index in "IGH", "IGK", "IGL", "TRA", "TRB", "TRD", "TRG".  (None if not in there.)
-    optional uint32 chain_type = 21;
+    // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
+    required string chain_type = 21;
 }
 
 // Definition of a clonotype.
