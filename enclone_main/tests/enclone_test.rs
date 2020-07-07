@@ -724,12 +724,12 @@ fn test_internal() {
 // This looks for
 // ▓<a href="..."▓
 // ▓http:...[, '")}<#\n]▓
-// ▓https:...[, '")}<#\n]▓.
+// ▓https:...[, '")}<#\n]▓
+// ▓<img src="..."▓.
 // (These also test termination by ". ".)
-// Should also look for at least:
+// SHOULD also look for at least:
 // ▓ href="..."▓
-// ▓ href='...'▓
-// ▓ src="..."▓.
+// ▓ href='...'▓.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -870,6 +870,7 @@ fn test_for_broken_links_and_spellcheck() {
                 }
                 i += 1;
             }
+            let s2 = s.clone();
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
                 if tested.contains(&link.to_string()) {
@@ -913,6 +914,30 @@ fn test_for_broken_links_and_spellcheck() {
 
                 links.push(link.to_string());
                 s = s.after("<a href=\"").to_string();
+            }
+            s = s2;
+            while s.contains("<img src=\"") {
+                let path = s.between("<img src=\"", "\"");
+                if tested.contains(&path.to_string()) {
+                    s = s.after("<img src=\"").to_string();
+                    continue;
+                }
+                tested.insert(path.to_string());
+                let path = path.to_string();
+                let mut z = path.clone();
+                for _ in 0..depth - 1 {
+                    if !path.starts_with("../") {
+                        eprintln!("something wrong with file {} on page {}", path, x);
+                        std::process::exit(1);
+                    }
+                    z = z.after("../").to_string();
+                }
+                z = format!("../{}", z);
+                if !path_exists(&z) {
+                    eprintln!("failed to find file {} on page {}", path, x);
+                    std::process::exit(1);
+                }
+                s = s.after("<img src=\"").to_string();
             }
             for link in links {
                 // Temporary workaround.
