@@ -1,12 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--  -->
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
 <title>honeycomb plots</title>
-<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
-</head>
 
 <body>
 
@@ -104,7 +96,7 @@ Each cell is shown as a disk having the given color, and each clonotype is shown
 these disks, which are positioned at random.  The filename argument may be "stdout". 
 </p>
 
-<p style="border: 2px; border-style: solid; border-color: black; background-color: #FFFDD0; 
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
           padding: 8px; width: 950px">
 <b>Hint.</b>
 Use the <code>MIN_CELLS</code> option (see 

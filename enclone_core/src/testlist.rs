@@ -341,7 +341,8 @@ pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     // 6.
     (
         "pages/auto/illusory5.html",
-        "BCR=128040 GEX=127801 BC=128024_cells.csv CDR3=CARGGTTTYFISW PER_CELL NUMI NUMI_RATIO \
+        "BCR=128040 GEX=127801 BC=test/inputs/128024_cells.csv \
+         CDR3=CARGGTTTYFISW PER_CELL NUMI NUMI_RATIO \
          LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP HTML=\"illusory clonotype expansion 5\"",
     ),
     // 7.
