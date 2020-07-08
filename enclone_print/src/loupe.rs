@@ -132,10 +132,7 @@ pub fn make_loupe_clonotype(
         let mut d_idx = rsi.dids[cx];
         let mut j_idx = rsi.jids[cx];
         let mut c_idx = rsi.cids[cx];
-        let mut chain_type = None;
-        if refdata.rtype[v_idx] >= 0 {
-            chain_type = Some(refdata.rtype[v_idx] as u32);
-        }
+        let chain_type = ex.share[m0].chain_type.clone();
         if u_idx.is_some() {
             u_idx = Some(to_ref_index_orig[&u_idx.unwrap()]);
         }

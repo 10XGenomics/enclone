@@ -8,7 +8,7 @@
 // 3. speed test (feature = cpu), requires non-public datasets.
 
 use ansi_escape::*;
-use enclone::html::insert_html;
+use enclone::html::*;
 use enclone::misc3::parse_bsv;
 use enclone::run_test::*;
 use enclone_core::testlist::*;
@@ -27,7 +27,7 @@ use std::cmp::min;
 use std::collections::{HashMap, HashSet};
 use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
-use std::io::{BufRead, BufReader, Read, Write};
+use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time;
@@ -51,6 +51,40 @@ fn valid_link(link: &str) -> bool {
             return true;
         }
         return false;
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// NOT BASIC
+
+// Make sure all help pages have been edited.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_help_pages_edited() {
+    let all = read_dir("../pages/auto").unwrap();
+    for f in all {
+        let f = f.unwrap().path();
+        let f = f.to_str().unwrap();
+        if f.contains(".help.") {
+            let mut edited = false;
+            let h = open_for_read![&format!("{}", f)];
+            for line in h.lines() {
+                let s = line.unwrap();
+                if s.contains("googletag") {
+                    edited = true;
+                }
+            }
+            if !edited {
+                eprintln!(
+                    "\nThe page {} has not been edited.  Please run ./build.\n",
+                    f
+                );
+                std::process::exit(1);
+            }
+        }
     }
 }
 
@@ -724,12 +758,12 @@ fn test_internal() {
 // This looks for
 // ▓<a href="..."▓
 // ▓http:...[, '")}<#\n]▓
-// ▓https:...[, '")}<#\n]▓.
+// ▓https:...[, '")}<#\n]▓
+// ▓<img src="..."▓.
 // (These also test termination by ". ".)
-// Should also look for at least:
+// SHOULD also look for at least:
 // ▓ href="..."▓
-// ▓ href='...'▓
-// ▓ src="..."▓.
+// ▓ href='...'▓.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -870,6 +904,7 @@ fn test_for_broken_links_and_spellcheck() {
                 }
                 i += 1;
             }
+            let s2 = s.clone();
             while s.contains("<a href=\"") {
                 let link = s.between("<a href=\"", "\"");
                 if tested.contains(&link.to_string()) {
@@ -913,6 +948,30 @@ fn test_for_broken_links_and_spellcheck() {
 
                 links.push(link.to_string());
                 s = s.after("<a href=\"").to_string();
+            }
+            s = s2;
+            while s.contains("<img src=\"") {
+                let path = s.between("<img src=\"", "\"");
+                if tested.contains(&path.to_string()) {
+                    s = s.after("<img src=\"").to_string();
+                    continue;
+                }
+                tested.insert(path.to_string());
+                let path = path.to_string();
+                let mut z = path.clone();
+                for _ in 0..depth - 1 {
+                    if !path.starts_with("../") {
+                        eprintln!("something wrong with file {} on page {}", path, x);
+                        std::process::exit(1);
+                    }
+                    z = z.after("../").to_string();
+                }
+                z = format!("../{}", z);
+                if !path_exists(&z) {
+                    eprintln!("failed to find file {} on page {}", path, x);
+                    std::process::exit(1);
+                }
+                s = s.after("<img src=\"").to_string();
             }
             for link in links {
                 // Temporary workaround.
@@ -993,7 +1052,15 @@ fn test_site_examples() {
             .args(&args)
             .output()
             .expect(&format!("failed to execute test_site_examples"));
-        let out_stuff = stringme(&new.stdout);
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
+                i + 1,
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
+        let out_stuff = strme(&new.stdout);
         if in_stuff != out_stuff {
             eprintln!("\nThe output for site example {} has changed.\n", i + 1);
             eprintln!("stderr:\n{}", strme(&new.stderr));
@@ -1015,6 +1082,16 @@ fn test_site_examples() {
                     break;
                 }
             }
+            let save = format!("test/outputs/{}", example_name.rev_after("/"));
+            {
+                let mut f = open_for_write_new![&save];
+                fwrite!(f, "{}", out_stuff);
+            }
+            let mut in_filex = in_file.clone();
+            if in_filex.starts_with("../") {
+                in_filex = in_filex.after("../").to_string();
+            }
+            eprintln!("\nPlease diff {} enclone_main/{}.", in_filex, save);
             eprintln!(
                 "\nPossibly this could be because you're running \"cargo t\" in an \
                 environment without the\n\
@@ -1029,19 +1106,32 @@ fn test_site_examples() {
         }
     }
 
-    insert_html("../pages/index.html.src", "test/outputs/index.html", true);
+    insert_html(
+        "../pages/index.html.src",
+        "test/outputs/index.html",
+        true,
+        0,
+    );
     insert_html(
         "../pages/expanded.html.src",
         "test/outputs/expanded.html",
         true,
+        2,
     );
-
-    if read_to_string("../index.html").unwrap()
-        != read_to_string("test/outputs/index.html").unwrap()
-    {
-        eprintln!("\nContent of index.html has changed.\n");
+    let new_index = read_to_string("test/outputs/index.html").unwrap();
+    if read_to_string("../index.html").unwrap() != new_index {
+        eprintln!("\nContent of index.html has changed.");
+        {
+            let mut f = open_for_write_new!["test/outputs/index.html.new"];
+            fwrite!(f, "{}", new_index);
+        }
+        eprintln!("Please diff index.html enclone_main/test/outputs/index.html.new.\n");
         std::process::exit(1);
     }
+    /*
+    if read_to_string("../pages/auto/expanded.html").unwrap()
+        != edit_html(&read_to_string("test/outputs/expanded.html").unwrap())
+    */
     if read_to_string("../pages/auto/expanded.html").unwrap()
         != read_to_string("test/outputs/expanded.html").unwrap()
     {
@@ -1159,29 +1249,6 @@ fn test_dejavu() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that enclone help all HTML works (without STABLE_DOC).
-
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_help_no_stable() {
-    PrettyTrace::new().on();
-    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-    let mut new = new.arg("help");
-    new = new.arg("all");
-    new = new.arg("HTML");
-    new = new.arg("NOPAGER");
-    let new = new
-        .arg("FORCE_EXTERNAL")
-        .output()
-        .expect(&format!("failed to execute test_help_output"));
-    if new.status.code() != Some(0) {
-        eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
-        std::process::exit(1);
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
@@ -1241,7 +1308,7 @@ fn test_help_output() {
             eprintln!("Attempt to run {} failed.\n", command);
             std::process::exit(1);
         }
-        let new2 = stringme(&new.stdout);
+        let new2 = edit_html(&stringme(&new.stdout));
         if old != new2 {
             eprintme!(old.len(), new2.len());
             eprintln!(
@@ -1252,6 +1319,29 @@ fn test_help_output() {
             );
             std::process::exit(1);
         }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Test that enclone help all HTML works (without STABLE_DOC).
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_help_no_stable() {
+    PrettyTrace::new().on();
+    let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
+    let mut new = new.arg("help");
+    new = new.arg("all");
+    new = new.arg("HTML");
+    new = new.arg("NOPAGER");
+    let new = new
+        .arg("FORCE_EXTERNAL")
+        .output()
+        .expect(&format!("failed to execute test_help_output"));
+    if new.status.code() != Some(0) {
+        eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
+        std::process::exit(1);
     }
 }
 
