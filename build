@@ -1,7 +1,8 @@
 #!/bin/csh -e
 
 # Build script for enclone.  The only thing missing from this is to run
-# target/debug/build_html, however you should only need to do that rarely,
+# target/debug/merge_html BUILD, 
+# however you should only need to do that rarely,
 # and if you do need to, "cargo t" will catch the problem and should tell you
 # what to do.
 
