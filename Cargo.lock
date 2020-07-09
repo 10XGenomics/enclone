@@ -2,9 +2,9 @@
 # It is not intended for manual editing.
 [[package]]
 name = "addr2line"
-version = "0.12.2"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "602d785912f476e480434627e8732e6766b760c045bbf897d9dfaa9f4fbd399c"
+checksum = "1b6a2d3371669ab3ca9797670853d61402b03d0b4b9ebf33d677dfa720203072"
 dependencies = [
  "gimli",
 ]
@@ -14,12 +14,6 @@ name = "adler"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccc9a9dd069569f212bc4330af9f17c4afb5e8ce185e83dbb14f1349dda18b10"
-
-[[package]]
-name = "adler32"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "567b077b825e468cc974f0020d4082ee6e03132512f207ef1a02fd5d00d1f32d"
 
 [[package]]
 name = "aho-corasick"
@@ -44,7 +38,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "debruijn",
 ]
@@ -60,7 +54,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "string_utils",
  "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -136,14 +130,14 @@ checksum = "f8aac770f1885fd7e387acedd76065302551364496e46b3dd00860b2f8359b9d"
 
 [[package]]
 name = "backtrace"
-version = "0.3.49"
+version = "0.3.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05100821de9e028f12ae3d189176b41ee198341eb8f369956407fea2f5cc666c"
+checksum = "46254cf2fdcdf1badb5934448c1bcbe046a56537b3987d96c51a7afc5d03f293"
 dependencies = [
  "addr2line",
  "cfg-if",
  "libc",
- "miniz_oxide 0.3.7",
+ "miniz_oxide",
  "object",
  "rustc-demangle",
 ]
@@ -166,7 +160,7 @@ checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
 [[package]]
 name = "binary_vec_io"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "failure",
 ]
@@ -256,9 +250,9 @@ dependencies = [
 
 [[package]]
 name = "bio-types"
-version = "0.6.0"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fff2d34cf375fe6e66400b3669e6d10d154aece39ac4898523b2e65abc0b38c"
+checksum = "9d4011aaa9f8bfece367ef7d23f23279710eacf7df462d92c5135eabeb82799b"
 dependencies = [
  "derive-new",
  "lazy_static",
@@ -422,9 +416,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.56"
+version = "1.0.58"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77c1f1d60091c1b73e2b1f4560ab419204b178e625fa945ded7b660becd2bd46"
+checksum = "f9a06fb2e53271d7c279ec1efea6ab691c35a2ae67ec0d91d7acec0caf13b518"
 
 [[package]]
 name = "cfg-if"
@@ -434,9 +428,9 @@ checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
 name = "chrono"
-version = "0.4.11"
+version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80094f509cf8b5ae86a4966a39b3ff66cd7e2a3e594accec3743ff3fabeab5b2"
+checksum = "c74d84029116787153e02106bf53e66828452a4b325cc8652b788b5967c0a0b6"
 dependencies = [
  "num-integer",
  "num-traits",
@@ -795,7 +789,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 
 [[package]]
 name = "equiv"
@@ -917,7 +911,7 @@ dependencies = [
  "cfg-if",
  "crc32fast",
  "libc",
- "miniz_oxide 0.4.0",
+ "miniz_oxide",
 ]
 
 [[package]]
@@ -993,14 +987,14 @@ dependencies = [
 
 [[package]]
 name = "gimli"
-version = "0.21.0"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bcc8e0c9bce37868955864dbecd2b1ab2bdf967e6f28066d65aaac620444b65c"
+checksum = "aaf91faf136cb47367fa430cd46e37a788775e7fa104f8b4bcb3861dc389b724"
 
 [[package]]
 name = "graph_simple"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "petgraph",
  "vector_utils 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1080,9 +1074,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.1.14"
+version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9586eedd4ce6b3c498bc3b4dd92fc9f11166aa908a914071953768066c67909"
+checksum = "3deed196b6e7f9e44a2ae8d94225d80302d81208b1bb673fd21fe634645c85a9"
 dependencies = [
  "libc",
 ]
@@ -1205,9 +1199,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.71"
+version = "0.2.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9457b06509d27052635f90d6466700c65095fdf75409b3fbdd903e988b886f49"
+checksum = "a9f8082297d534141b30c8d39e9b1773713ab50fdbe4ff30f750d063b3bfd701"
 
 [[package]]
 name = "libloading"
@@ -1303,20 +1297,11 @@ checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
 name = "memoffset"
-version = "0.5.4"
+version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4fc2c02a7e374099d4ee95a193111f72d2110197fe200272371758f6c3643d8"
+checksum = "c198b026e1bbf08a937e94c6c60f9ec4a2267f5b0d2eec9c1b21b061ce2be55f"
 dependencies = [
  "autocfg 1.0.0",
-]
-
-[[package]]
-name = "miniz_oxide"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "791daaae1ed6889560f8c4359194f56648355540573244a5448a83ba1ecc7435"
-dependencies = [
- "adler32",
 ]
 
 [[package]]
@@ -1331,7 +1316,7 @@ dependencies = [
 [[package]]
 name = "mirror_sparse_matrix"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "binary_vec_io",
  "io_utils",
@@ -1583,7 +1568,7 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 [[package]]
 name = "perf_stats"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "io_utils",
  "libc",
@@ -2167,9 +2152,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.4.0"
+version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7cb5678e1615754284ec264d9bb5b4c27d2018577fd90ac0ceb578591ed5ee4"
+checksum = "3757cb9d89161a2f24e1cf78efa0c1fcff485d18e3f55e0aa3480824ddaa0f3f"
 
 [[package]]
 name = "snafu"
@@ -2346,7 +2331,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "io_utils",
  "itertools 0.8.2",
@@ -2517,7 +2502,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#4cd77e0c4a88981229b617448f0daa11601e5839"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#e99c5e4baf624f2c55d2bb63ea349e55980d5ca9"
 dependencies = [
  "permutation",
  "superslice",

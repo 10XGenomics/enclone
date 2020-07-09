@@ -69,6 +69,7 @@ Other optional arguments:
 - HEAVY_CHAIN_REUSE: look for instances of heavy chain reuse
 - BINARY=filename: generate binary output file
 - PROTO=filename: generate proto output file
+- PROTO_METADATA=filename: pass JSON metadata file for proto generation (origin,donor)
 - DUMP_INTERNAL_IDS: special option to dump the list of internal ids and exit.
 - TOY: toy with phylogeny
 
