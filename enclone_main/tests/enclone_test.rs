@@ -25,6 +25,7 @@ use serde_json::Value;
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::{HashMap, HashSet};
+use std::env;
 use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
@@ -159,85 +160,96 @@ fn test_sync_master() {
 //
 // There are two passes.  The first pass tests the copy of install.sh that is one master, and
 // the second pass tests the local version.
+//
+// This only runs internally because running this test bumps the download count that GitHub
+// tracks, and we need to track the correction for our own "downloads" via this test.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_curl_command() {
-    if !path_exists("test/outputs") {
-        eprintln!(
-            "\ntest_curl_command:\n\
-            You need to create the directory enclone_main/test/outputs.\n\
-            If you run \"./build\" this will be done for you.\n"
-        );
-        std::process::exit(1);
+    let mut internal_run = false;
+    for (key, value) in env::vars() {
+        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+            internal_run = true;
+        }
     }
-    for pass in 1..=2 {
-        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-            let g = format!("test/outputs/{}", f);
-            if path_exists(&g) {
-                if *f == ".profile" {
-                    remove_file(&g).unwrap();
-                } else {
-                    remove_dir_all(&g).unwrap();
-                }
-            }
-        }
-        let command;
-        let version;
-        if pass == 1 {
-            command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
-            version = "master";
-        } else {
-            command = "cat ../install.sh | sh -s small test/outputs";
-            version = "local";
-        }
-        let o = Command::new("csh")
-            .arg("-c")
-            .arg(&command)
-            .output()
-            .unwrap();
-        if o.status.code().unwrap() != 0 {
+    if internal_run {
+        if !path_exists("test/outputs") {
             eprintln!(
-                "\nAttempt to run enclone install command using {} version of \
-                install.sh failed.\n",
-                version
+                "\ntest_curl_command:\n\
+                You need to create the directory enclone_main/test/outputs.\n\
+                If you run \"./build\" this will be done for you.\n"
             );
-            eprint!("stdout:\n{}", strme(&o.stdout));
-            eprint!("stderr:\n{}", strme(&o.stderr));
             std::process::exit(1);
         }
-        let req = [
-            "bin/enclone",
-            "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
-            "enclone/datasets_small_checksum",
-            "enclone/version",
-        ];
-        for f in req.iter() {
-            if !path_exists(&format!("test/outputs/{}", f)) {
+        for pass in 1..=2 {
+            for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+                let g = format!("test/outputs/{}", f);
+                if path_exists(&g) {
+                    if *f == ".profile" {
+                        remove_file(&g).unwrap();
+                    } else {
+                        remove_dir_all(&g).unwrap();
+                    }
+                }
+            }
+            let command;
+            let version;
+            if pass == 1 {
+                command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
+                version = "master";
+            } else {
+                command = "cat ../install.sh | sh -s small test/outputs";
+                version = "local";
+            }
+            let o = Command::new("csh")
+                .arg("-c")
+                .arg(&command)
+                .output()
+                .unwrap();
+            if o.status.code().unwrap() != 0 {
                 eprintln!(
                     "\nAttempt to run enclone install command using {} version of \
-                    install.sh failed to fetch {}.\n",
-                    version, f
+                    install.sh failed.\n",
+                    version
+                );
+                eprint!("stdout:\n{}", strme(&o.stdout));
+                eprint!("stderr:\n{}", strme(&o.stderr));
+                std::process::exit(1);
+            }
+            let req = [
+                "bin/enclone",
+                "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
+                "enclone/datasets_small_checksum",
+                "enclone/version",
+            ];
+            for f in req.iter() {
+                if !path_exists(&format!("test/outputs/{}", f)) {
+                    eprintln!(
+                        "\nAttempt to run enclone install command using {} version of \
+                        install.sh failed to fetch {}.\n",
+                        version, f
+                    );
+                    std::process::exit(1);
+                }
+            }
+            if path_exists("test/outputs/.subversion") {
+                eprintln!(
+                    "\nAttempt to run enclone install command using {} version of \
+                    install.sh created .subversion.\n",
+                    version
                 );
                 std::process::exit(1);
             }
-        }
-        if path_exists("test/outputs/.subversion") {
-            eprintln!(
-                "\nAttempt to run enclone install command using {} version of \
-                install.sh created .subversion.\n",
-                version
-            );
-            std::process::exit(1);
-        }
-        for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-            let g = format!("test/outputs/{}", f);
-            if path_exists(&g) {
-                if *f == ".profile" {
-                    remove_file(&g).unwrap();
-                } else {
-                    remove_dir_all(&g).unwrap();
+            for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
+                let g = format!("test/outputs/{}", f);
+                if path_exists(&g) {
+                    if *f == ".profile" {
+                        remove_file(&g).unwrap();
+                    } else {
+                        remove_dir_all(&g).unwrap();
+                    }
                 }
             }
         }
