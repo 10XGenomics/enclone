@@ -6,6 +6,8 @@ pub mod testlist;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
+// Return the code version string.
+
 pub fn version_string() -> String {
     VERSION_STRING.to_string()
 }
