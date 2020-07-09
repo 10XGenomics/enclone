@@ -15,6 +15,7 @@ use enclone_core::testlist::*;
 use enclone_proto::proto_io::read_proto;
 use enclone_proto::types::EncloneOutputs;
 use failure::Error;
+use file_lock::FileLock;
 use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
@@ -28,6 +29,7 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
+use std::io::prelude::*;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::process::{Command, Stdio};
 use std::thread;
@@ -163,6 +165,8 @@ fn test_sync_master() {
 //
 // This only runs internally because running this test bumps the download count that GitHub
 // tracks, and we need to track the correction for our own "downloads" via this test.
+//
+// Increments an internal counter.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -242,6 +246,11 @@ fn test_curl_command() {
                 );
                 std::process::exit(1);
             }
+            let z = open_for_read!["test/outputs/enclone/version"];
+            let mut version = String::new();
+            for line in z.lines() {
+                version = line.unwrap();
+            }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("test/outputs/{}", f);
                 if path_exists(&g) {
@@ -252,6 +261,40 @@ fn test_curl_command() {
                     }
                 }
             }
+
+            // Increment download count.  Not absolutely sure the locking mechanism used
+            // here is correct.
+
+            let count_file = "/mnt/assembly/vdj/internal_download_count";
+            if !path_exists(&count_file) {
+                eprintln!(
+                    "\nCan't find the file {}.  Has something been moved?\n",
+                    count_file
+                );
+                std::process::exit(1);
+            }
+            let mut filelock = match FileLock::lock(&count_file, true, true) {
+                Ok(lock) => lock,
+                Err(err) => panic!("Error getting write lock: {}", err),
+            };
+            let mut log = Vec::<u8>::new();
+            let mut found = false;
+            {
+                let f = open_for_read![&count_file];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with(&format!("{} = ", version)) {
+                        fwriteln!(log, "{} = {}", version, s.after("= ").force_usize() + 1);
+                        found = true;
+                    } else {
+                        fwriteln!(log, "{}", s);
+                    }
+                }
+            }
+            if !found {
+                fwriteln!(log, "{} = 1", version);
+            }
+            filelock.file.write_all(&log).unwrap();
         }
     }
 }
