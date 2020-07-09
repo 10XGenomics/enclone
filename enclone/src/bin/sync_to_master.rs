@@ -43,7 +43,7 @@ fn main() {
                 }
             }
             let mut g = open_for_write_new![&toml];
-            fwriteln!(g, "{}\n", newg.iter().format("\n"));
+            fwrite!(g, "{}\n", newg.iter().format("\n"));
         }
     }
 }
