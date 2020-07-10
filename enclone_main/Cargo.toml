@@ -46,6 +46,7 @@ rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 failure = "0.1.5"
+file-lock = "1.1.20"
 flate2 = "1.0.12"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 rayon = "1.0.2"
@@ -53,4 +54,3 @@ rayon = "1.0.2"
 [features]
 basic = []
 cpu = []
-
