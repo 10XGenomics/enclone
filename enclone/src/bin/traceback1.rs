@@ -24,7 +24,11 @@ fn test_traceback1() {
     use assert_cmd::prelude::*;
     use enclone_core::*;
     use std::{env, process::Command};
-    let mut cmd = Command::cargo_bin("traceback1").unwrap();
+    let mut cmd = Command::cargo_bin("traceback1").expect(
+        "\nAttempt to run traceback1 failed.  The most likely explanation for this is that\n\
+        somehow you did not run \"cargo b\".  Please try that now, and be sure you are doing\n\
+        it from the top-level enclone directory.\n",
+    );
     let cmd = cmd
         .output()
         .expect(&format!("very strange, failed to execute test_traceback1"));
