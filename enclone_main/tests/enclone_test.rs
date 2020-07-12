@@ -262,39 +262,45 @@ fn test_curl_command() {
                 }
             }
 
-            // Increment download count.  Not absolutely sure the locking mechanism used
-            // here is correct.
+            // Increment download count.
+            //
+            // Not absolutely sure the locking mechanism used here is correct.
+            //
+            // It seems like this should be done on both passes but we only do it on pass 2
+            // because that seems to work.
 
-            let count_file = "/mnt/assembly/vdj/internal_download_count";
-            if !path_exists(&count_file) {
-                eprintln!(
-                    "\nCan't find the file {}.  Has something been moved?\n",
-                    count_file
-                );
-                std::process::exit(1);
-            }
-            let mut filelock = match FileLock::lock(&count_file, true, true) {
-                Ok(lock) => lock,
-                Err(err) => panic!("Error getting write lock: {}", err),
-            };
-            let mut log = Vec::<u8>::new();
-            let mut found = false;
-            {
-                let f = open_for_read![&count_file];
-                for line in f.lines() {
-                    let s = line.unwrap();
-                    if s.starts_with(&format!("{} = ", version)) {
-                        fwriteln!(log, "{} = {}", version, s.after("= ").force_usize() + 1);
-                        found = true;
-                    } else {
-                        fwriteln!(log, "{}", s);
+            if pass == 2 {
+                let count_file = "/mnt/assembly/vdj/internal_download_count";
+                if !path_exists(&count_file) {
+                    eprintln!(
+                        "\nCan't find the file {}.  Has something been moved?\n",
+                        count_file
+                    );
+                    std::process::exit(1);
+                }
+                let mut filelock = match FileLock::lock(&count_file, true, true) {
+                    Ok(lock) => lock,
+                    Err(err) => panic!("Error getting write lock: {}", err),
+                };
+                let mut log = Vec::<u8>::new();
+                let mut found = false;
+                {
+                    let f = open_for_read![&count_file];
+                    for line in f.lines() {
+                        let s = line.unwrap();
+                        if s.starts_with(&format!("{} = ", version)) {
+                            fwriteln!(log, "{} = {}", version, s.after("= ").force_usize() + 1);
+                            found = true;
+                        } else {
+                            fwriteln!(log, "{}", s);
+                        }
                     }
                 }
+                if !found {
+                    fwriteln!(log, "{} = 1", version);
+                }
+                filelock.file.write_all(&log).unwrap();
             }
-            if !found {
-                fwriteln!(log, "{} = 1", version);
-            }
-            filelock.file.write_all(&log).unwrap();
         }
     }
 }
