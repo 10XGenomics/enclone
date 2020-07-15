@@ -1425,7 +1425,11 @@ pub fn group_and_print_clonotypes(
                             if ex.clones[l][0].dataset_index as isize == di || !b {
                                 ndubious += 1;
                             }
-                            if !fake && ncells >= 10 && b && (ex.share.len() == 2 || ex.share.len() == 3) {
+                            if !fake
+                                && ncells >= 10
+                                && b
+                                && (ex.share.len() == 2 || ex.share.len() == 3)
+                            {
                                 ngood += 1;
                                 if ex.clones[l][0].marked {
                                     ngood_marked += 1;
@@ -1565,6 +1569,7 @@ pub fn group_and_print_clonotypes(
                 "   • number of these that are marked = {}",
                 nfake_marked
             );
+            fwriteln!(logx, "   • residual = {}", nfake - nfake_marked);
             fwriteln!(
                 logx,
                 "   • number of good expanded clonotype cells = {}",
