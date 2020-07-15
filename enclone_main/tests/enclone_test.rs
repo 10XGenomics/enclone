@@ -179,6 +179,24 @@ fn test_curl_command() {
         }
     }
     if internal_run {
+        fn get_github_release_counts() -> HashMap<String, isize> {
+            let mut m = HashMap::<String, isize>::new();
+            let o = Command::new("curl")
+                .arg("https://api.github.com/repos/10XGenomics/enclone/releases")
+                .output()
+                .expect("failed to execute github http");
+            let mut tag_name = String::new();
+            let mx = String::from_utf8(o.stdout).unwrap();
+            for s in mx.lines() {
+                if s.contains("tag_name") {
+                    tag_name = s.between("v", "\"").to_string();
+                } else if s.contains("download_count") {
+                    let count = s.between(": ", ",").force_i64();
+                    m.insert(tag_name.clone(), count as isize);
+                }
+            }
+            m
+        }
         if !path_exists("test/outputs") {
             eprintln!(
                 "\ntest_curl_command:\n\
@@ -198,6 +216,7 @@ fn test_curl_command() {
                     }
                 }
             }
+            // let counts1 = get_github_release_counts();
             let command;
             let version;
             if pass == 1 {
@@ -250,6 +269,7 @@ fn test_curl_command() {
             let mut version = String::new();
             for line in z.lines() {
                 version = line.unwrap();
+                version = version.after("v").to_string();
             }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("test/outputs/{}", f);
@@ -262,9 +282,22 @@ fn test_curl_command() {
                 }
             }
 
-            // Increment download count.  Not absolutely sure the locking mechanism used
-            // here is correct.
+            // Increment download count.
+            //
+            // Not absolutely sure the locking mechanism used here is correct.
+            //
+            // The sleep time here was empirically determined to be enough so that GitHub has
+            // time to increment the release count.
 
+            // thread::sleep(time::Duration::from_millis(1000));
+            // let counts2 = get_github_release_counts();
+            // if counts1.contains_key(&version) && counts2.contains_key(&version) {
+            // Test to see if the count on GitHub was incremented.  If not, there is nothing
+            // to do.  It seems that GitHub is erratic in incrementing the count.  Or maybe
+            // this is not the case.  It's not clear because we decided it was erratic before
+            // we fixed a bug.
+            // let delta = counts2[&version] - counts1[&version];
+            // if delta >= 1 {
             let count_file = "/mnt/assembly/vdj/internal_download_count";
             if !path_exists(&count_file) {
                 eprintln!(
@@ -295,6 +328,8 @@ fn test_curl_command() {
                 fwriteln!(log, "{} = 1", version);
             }
             filelock.file.write_all(&log).unwrap();
+            // }
+            // }
         }
     }
 }
