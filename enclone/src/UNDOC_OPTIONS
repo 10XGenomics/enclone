@@ -145,6 +145,8 @@ Do not use UMI_FILT_MARK without NUMI.
 
 UMI_RATIO_FILT_MARK
 
+NON_CELL_MARK (only makes sense if you run NCELL)
+
 ECHO: echo command
 
 ---------------------------------------------------------------------------------------------------

@@ -334,6 +334,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
         ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
         ("NPLAIN", &mut ctl.pretty),
