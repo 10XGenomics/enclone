@@ -33,7 +33,7 @@ fn main() {
                 for line in g.lines() {
                     let s = line.unwrap();
                     let mut t = s.clone();
-                    if s.contains(" =") {
+                    if s.contains(" =") && !s.contains(" = [") {
                         let cratex = s.before(" =").to_string();
                         if version.contains_key(&cratex) {
                             t = format!("{} = {}", cratex, version[&cratex]);

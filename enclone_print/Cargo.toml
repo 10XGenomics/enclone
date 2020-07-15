@@ -16,31 +16,31 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-amino = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-ansi_escape = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+amino = "0.1.1"
+ansi_escape = "0.1.0"
 bio = "0.29.0"
 bytes = "0.4"
 byteorder = "1.3.2"
-debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
+debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
-equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+equiv = "0.1.1"
 failure = "0.1.5"
-io_utils = "0.2.4"
+io_utils = "0.2"
 itertools = "0.9.0"
-mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+mirror_sparse_matrix = "0.1.4"
 ndarray = "0.13"
 permutation = "0.2.5"
-pretty_trace = "0.3.0"
+pretty_trace = "0.3.2"
 rayon = "1.0.2"
 serde = "1.0.90"
 serde_derive = "1.0.102"
 serde_json = "*"
-stats_utils = "0.1.0"
+stats_utils = "0.1.1"
 string_utils = "0.1.1"
-tables = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="ddc3aec18154f3e78a574bf1f4d2a34c55feea4a"}
-vector_utils = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+tables = "0.1.2"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="255762608adfb42fee707a85ab9e22872941efb2" }
+vector_utils = "0.1.3"
 
 [dependencies.hdf5]
 features = ["conda"]
