@@ -2326,7 +2326,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=380914b889475ca97c2698d4605dee656ba6896e#380914b889475ca97c2698d4605dee656ba6896e"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=7aa7e33cdcf902e7c3ed42ea23686680251ae127#7aa7e33cdcf902e7c3ed42ea23686680251ae127"
 dependencies = [
  "align_tools",
  "amino",
@@ -2337,7 +2337,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2354,7 +2354,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=380914b889475ca97c2698d4605dee656ba6896e#380914b889475ca97c2698d4605dee656ba6896e"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=7aa7e33cdcf902e7c3ed42ea23686680251ae127#7aa7e33cdcf902e7c3ed42ea23686680251ae127"
 dependencies = [
  "serde",
  "serde_json",
