@@ -18,8 +18,8 @@ publish = false
 [dependencies]
 amino = "0.1.1"
 ansi_escape = "0.1.0"
-bio = "0.29.0"
-bytes = "0.4"
+bio = "0.31.0"
+bytes = "0.5.5"
 byteorder = "1.3.2"
 debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
@@ -39,7 +39,7 @@ serde_json = "*"
 stats_utils = "0.1.1"
 string_utils = "0.1.1"
 tables = "0.1.2"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="255762608adfb42fee707a85ab9e22872941efb2" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="380914b889475ca97c2698d4605dee656ba6896e" }
 vector_utils = "0.1.3"
 
 [dependencies.hdf5]

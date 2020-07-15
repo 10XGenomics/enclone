@@ -98,7 +98,7 @@ impl<R: Read> ProtoReader<R> {
             .by_ref()
             .take(decoded_len as u64)
             .read_to_end(&mut self.decode_buffer)?;
-        let decoded_message = M::decode(&self.decode_buffer)?;
+        let decoded_message = M::decode(self.decode_buffer.as_slice())?;
         self.decode_buffer.clear();
         Ok(decoded_message)
     }
