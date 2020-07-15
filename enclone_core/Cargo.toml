@@ -17,8 +17,8 @@ publish = false
 
 [dependencies]
 ansi_escape = "0.1.0"
-bio = "0.29.0"
-bytes = "0.4"
+bio = "0.31.0"
+bytes = "0.5.5"
 debruijn = "0.3.2"
 io_utils = "0.2"
 mirror_sparse_matrix = "0.1.4"
