@@ -214,10 +214,13 @@ pub fn load_gex(
                     r.8.insert(barcode.to_string(), cell_type.to_string());
                     r.10 = true;
                 }
-            } else if ctl.gen_opt.mark_stats || ctl.clono_filt_opt.marked_b {
+            } else if ctl.gen_opt.mark_stats
+                || ctl.gen_opt.mark_stats2
+                || ctl.clono_filt_opt.marked_b
+            {
                 eprintln!(
-                    "\nIf you use MARK_STATS or MARKED_B, celltypes.csv has to exist, \
-                    and this file\n{}\ndoes not exist.\n",
+                    "\nIf you use MARK_STATS or MARK_STATS2 or MARKED_B, celltypes.csv has to \
+                    exist, and this file\n{}\ndoes not exist.\n",
                     types_file
                 );
                 std::process::exit(1);

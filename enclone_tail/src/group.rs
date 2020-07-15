@@ -1380,7 +1380,8 @@ pub fn group_and_print_clonotypes(
         // Compute marking stats.
 
         let (mut nmarked, mut nmarked_good, mut ndubious) = (0, 0, 0);
-        if ctl.gen_opt.mark_stats {
+        let (mut nfake, mut nfake_marked, mut ngood, mut ngood_marked) = (0, 0, 0, 0);
+        if ctl.gen_opt.mark_stats || ctl.gen_opt.mark_stats2 {
             for i in 0..nclono {
                 let mut datasets = Vec::<usize>::new();
                 let mut ncells = 0;
@@ -1394,13 +1395,21 @@ pub fn group_and_print_clonotypes(
                 datasets.sort();
                 let mut freq = Vec::<(u32, usize)>::new();
                 make_freq(&datasets, &mut freq);
+                let mut fake = false;
+                let mut di = -1;
+                if freq.len() == 1 || freq[0].0 >= 10 * freq[1].0 {
+                    di = freq[0].1 as isize;
+                }
+                if ncells >= 10 && di >= 0 {
+                    nfake += ncells - 1;
+                    fake = true;
+                }
                 if ncells >= 2 {
-                    let mut di = -1;
-                    if freq.len() == 1 || freq[0].0 >= 10 * freq[1].0 {
-                        di = freq[0].1 as isize;
-                    }
                     for j in 0..exacts[i].len() {
                         let ex = &exact_clonotypes[exacts[i][j]];
+
+                        // Determine if cell is called a B cell.
+
                         for l in 0..ex.ncells() {
                             let mut b = false;
                             let li = ex.clones[l][0].dataset_index;
@@ -1410,17 +1419,32 @@ pub fn group_and_print_clonotypes(
                                     b = true;
                                 }
                             }
+
+                            // Record accordingly.
+
                             if ex.clones[l][0].dataset_index as isize == di || !b {
                                 ndubious += 1;
                             }
+                            if !fake && b && (ex.share.len() == 2 || ex.share.len() == 3) {
+                                ngood += 1;
+                                if ex.clones[l][0].marked {
+                                    ngood_marked += 1;
+                                }
+                            }
                         }
                     }
+                }
+                if fake {
+                    ngood += 1;
                 }
                 for j in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][j]];
                     for l in 0..ex.ncells() {
                         if ex.clones[l][0].marked {
                             nmarked += 1;
+                            if fake {
+                                nfake_marked += 1;
+                            }
                             let chains_ok = ex.nchains() >= 2 && ex.nchains() <= 3;
                             let mut b = false;
                             let li = ex.clones[l][0].dataset_index;
@@ -1523,6 +1547,29 @@ pub fn group_and_print_clonotypes(
             fwriteln!(logx, "   • number of dubious cells = {}", ndubious);
             fwriteln!(logx, "   • number of marked cells = {}", nmarked);
             fwriteln!(logx, "   • number of good marked cells = {}", nmarked_good);
+        }
+        if ctl.gen_opt.mark_stats2 {
+            fwriteln!(logx, "   --------------------------------");
+            fwriteln!(
+                logx,
+                "   • number of fake expanded clonotype cells = {}",
+                nfake
+            );
+            fwriteln!(
+                logx,
+                "   • number of these that are marked = {}",
+                nfake_marked
+            );
+            fwriteln!(
+                logx,
+                "   • number of good expanded clonotype cells = {}",
+                ngood
+            );
+            fwriteln!(
+                logx,
+                "   • number of these that are marked = {}",
+                ngood_marked
+            );
         }
 
         // Print origin (sample)/donor table.

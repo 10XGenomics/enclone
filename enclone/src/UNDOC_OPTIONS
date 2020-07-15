@@ -147,7 +147,9 @@ UMI_RATIO_FILT_MARK
 
 ECHO: echo command
 
-MARK_STATS: generate three statistics (assumes GEX data included)
+---------------------------------------------------------------------------------------------------
+
+MARK_STATS: generate three statistics (assumes GEX data included):
 1. number of dubious cells, where dubious means not classified as a B cell, or in a clonotype for 
    which the ratio of the top dataset cells to the runner up dataset cells is at least 10 
    (e.g. 3:0 works as does 10:1)
@@ -156,6 +158,20 @@ MARK_STATS: generate three statistics (assumes GEX data included)
    - that are in a clonotype having cells from >= 2 datasets
    - and which GEX classifies as B cell
    - and which have 2 or 3 chains.
+
+MARK_STATS2: generate four statistics (assumes GEX data included):
+1. number of fake expanded clonotype cells, defined as all but one cell in clonotypes for
+   which the ratio of the top dataset cells to the runner up dataset cells is at least 10
+2. number of these cells that are marked by the filter (ADVANTAGE)
+3. number of good expanded clonotype cells, defined as cells in clonotypes having at least 10 
+   cells, called a B cell by GEX, having 2 or 3 chains, and not fake as above
+2. number of these cells that are marked by the filter (DISADVANTAGE)
+[The motivation for this, as distinct from MARK_STATS, is that (1) now consists of just cells in
+fake expanded clonotypes, and not just all dubious cells, would could be a substantially larger
+set.  This allows the analysis of the effect of a filter on fake expanded clonotypes.]
+*** THIS SHOULD BE RUN WITH NGEX AND NCROSS. ***
+
+---------------------------------------------------------------------------------------------------
 
 BI=n, where 1 <= n <= 13 (for now):
 load BCR and GEX from datasets described in enclone.testdata.bcr.gex

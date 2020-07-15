@@ -394,6 +394,7 @@ pub struct GeneralOpt {
     pub baseline: bool,
     pub echo: bool,
     pub mark_stats: bool,
+    pub mark_stats2: bool,
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick: bool,
