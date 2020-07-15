@@ -1437,6 +1437,7 @@ pub fn group_and_print_clonotypes(
                 if fake {
                     ngood += 1;
                 }
+                let mut fake_marks = 0;
                 for j in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][j]];
                     for l in 0..ex.ncells() {
@@ -1444,6 +1445,7 @@ pub fn group_and_print_clonotypes(
                             nmarked += 1;
                             if fake {
                                 nfake_marked += 1;
+                                fake_marks += 1;
                             }
                             let chains_ok = ex.nchains() >= 2 && ex.nchains() <= 3;
                             let mut b = false;
@@ -1459,6 +1461,9 @@ pub fn group_and_print_clonotypes(
                             }
                         }
                     }
+                }
+                if fake_marks == ncells {
+                    nfake_marked -= 1;
                 }
             }
         }
