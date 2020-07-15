@@ -819,6 +819,15 @@ pub fn print_clonotypes(
                                     }
                                 }
                                 if filled {
+                                } else if lvars[k] == "n_b".to_string() {
+                                    let mut n = 0;
+                                    let li = ex.clones[bcl.2][0].dataset_index;
+                                    if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                                        if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                                            n = 1;
+                                        }
+                                    }
+                                    row.push(format!("{}", n));
                                 } else if lvars[k] == "n_other".to_string() {
                                     let mut n = 0;
                                     let di = ex.clones[bcl.2][0].dataset_index;

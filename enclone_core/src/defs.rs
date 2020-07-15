@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 25] = [
+pub const LVARS_ALLOWED: [&str; 26] = [
     "datasets",
     "origins",
     "donors",
@@ -26,6 +26,7 @@ pub const LVARS_ALLOWED: [&str; 25] = [
     "gex_cell",
     "n_gex_cell",
     "n_gex",
+    "n_b",
     "clust",
     "cred",
     "cred_cell",
@@ -238,6 +239,7 @@ impl LinearCondition {
             "dref",
             "n_gex_cell",
             "n_gex",
+            "n_b",
             "clust",
             "cred",
             "type",
@@ -864,6 +866,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
                 || x.ends_with("_g_μ")
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
+                || *x == "n_b".to_string()
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()

@@ -186,3 +186,5 @@ PRINT_CPU_INFO: print info about cpu usage
 recognizes S<xena_analysis_set_id>
 
 PLOT_BY_MARK
+
+n_b as LVAR = number of B cells
