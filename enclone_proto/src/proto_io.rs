@@ -59,6 +59,11 @@ impl<W: Write> ProtoWriter<W> {
         self.encode_buffer.clear();
         Ok(encoded_len + 4) // +4 because of the u32
     }
+
+    /// Consume self and return the inner writer
+    pub fn finish(self) -> W {
+        self.writer
+    }
 }
 
 /// A helper struct to read a length delimited protobuf encoded message from the inner `reader`.
