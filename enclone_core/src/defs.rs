@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 25] = [
+pub const LVARS_ALLOWED: [&str; 26] = [
     "datasets",
     "origins",
     "donors",
@@ -26,6 +26,7 @@ pub const LVARS_ALLOWED: [&str; 25] = [
     "gex_cell",
     "n_gex_cell",
     "n_gex",
+    "n_b",
     "clust",
     "cred",
     "cred_cell",
@@ -238,6 +239,7 @@ impl LinearCondition {
             "dref",
             "n_gex_cell",
             "n_gex",
+            "n_b",
             "clust",
             "cred",
             "type",
@@ -394,6 +396,7 @@ pub struct GeneralOpt {
     pub baseline: bool,
     pub echo: bool,
     pub mark_stats: bool,
+    pub mark_stats2: bool,
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick: bool,
@@ -478,8 +481,9 @@ pub struct ClonoFiltOpt {
     pub barcode: Vec<String>, // requires one of these barcodes
     pub umi_filt: bool,      // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
-    pub marked: bool,        // only print clonotypes having a mark
-    pub marked_b: bool,      // only print clonotypes having a mark and which are typed as B cells
+    pub non_cell_mark: bool,
+    pub marked: bool,                 // only print clonotypes having a mark
+    pub marked_b: bool, // only print clonotypes having a mark and which are typed as B cells
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
     pub fcell: Vec<(String, String)>, // constaints from FCELL
@@ -862,6 +866,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
                 || x.ends_with("_g_μ")
                 || *x == "n_gex_cell".to_string()
                 || *x == "n_gex".to_string()
+                || *x == "n_b".to_string()
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()

@@ -1,0 +1,24 @@
+#!/bin/csh
+
+# Test speed of current enclone versus the latest release.  Note that the latest release
+# would have been compiled in release mode.
+
+
+echo
+echo "expect:  7700"
+
+foreach j (1 2 3 4 5)
+    touch enclone_main/src/main_enclone.rs
+    cargo b
+    cp target/debug/enclone target/debug/enclone{$j}
+end
+
+foreach i (1 2 3 4 5)
+    echo
+    foreach j (1 2 3 4 5)
+        set current = `target/debug/enclone{$j} BI=10 NCROSS NGEX NOPRINT PRINT_CPU`
+        echo "$j = $current"
+    end
+end
+
+echo

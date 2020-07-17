@@ -37,7 +37,7 @@ serde = "1.0.90"
 serde_derive = "1.0.102"
 serde_json = "*"
 stats_utils = "0.1.1"
-stirling_numbers = "0.1.1"
+stirling_numbers = "0.1.2"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="7aa7e33cdcf902e7c3ed42ea23686680251ae127" }

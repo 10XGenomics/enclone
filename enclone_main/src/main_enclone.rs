@@ -1375,6 +1375,21 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     orbits = orbits2;
+
+    // Mark VDJ noncells.
+
+    if ctl.clono_filt_opt.non_cell_mark {
+        for i in 0..exact_clonotypes.len() {
+            let ex = &mut exact_clonotypes[i];
+            for j in 0..ex.clones.len() {
+                let di = ex.clones[j][0].dataset_index;
+                if !bin_member(&vdj_cells[di], &ex.clones[j][0].barcode) {
+                    ex.clones[j][0].marked = true;
+                }
+            }
+        }
+    }
+
     ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Load the GEX and FB data.
