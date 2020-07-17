@@ -238,7 +238,8 @@ pub fn load_gex(
                 let s = line.unwrap();
                 let barcode = s.before(",");
                 let x = s.after(",").split(',').collect::<Vec<&str>>();
-                assert_eq!(x.len(), 10);
+                // This assert is turned off because in fact there are not always 10 components.
+                // assert_eq!(x.len(), 10);
                 let mut y = Vec::<f64>::new();
                 for i in 0..x.len() {
                     y.push(x[i].force_f64());
