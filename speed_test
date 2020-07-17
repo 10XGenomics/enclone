@@ -1,0 +1,23 @@
+#!/bin/csh
+
+# Test speed of current enclone versus the latest release.  Note that the latest release
+# would have been compiled in release mode.
+
+curl -s -L https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux \
+    --output enclone_main/test/outputs/enclone
+chmod 775 enclone_main/test/outputs/enclone
+
+echo
+echo "expect:  7700"
+
+foreach i (1 2 3 4 5)
+
+    set current = `enclone BI=10 NCROSS NGEX NOPRINT PRINT_CPU`
+    echo "current: $current"
+
+    set latest = `enclone_main/test/outputs/enclone BI=10 NCROSS NGEX NOPRINT PRINT_CPU`
+    echo "latest:  $latest"
+
+end
+
+echo

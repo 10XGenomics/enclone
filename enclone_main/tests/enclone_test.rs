@@ -27,7 +27,7 @@ use stats_utils::*;
 use std::cmp::min;
 use std::collections::{HashMap, HashSet};
 use std::env;
-use std::fs::{read_dir, read_to_string, remove_dir_all, remove_file, File};
+use std::fs::{metadata, read_dir, read_to_string, remove_dir_all, remove_file, File};
 use std::io;
 use std::io::prelude::*;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
@@ -209,7 +209,7 @@ fn test_curl_command() {
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("test/outputs/{}", f);
                 if path_exists(&g) {
-                    if *f == ".profile" {
+                    if !metadata(&g).unwrap().is_dir() {
                         remove_file(&g).unwrap();
                     } else {
                         remove_dir_all(&g).unwrap();

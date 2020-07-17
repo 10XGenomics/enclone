@@ -437,6 +437,18 @@ pub fn row_fill(
                 }
             }
             lvar![i, x, format!("{}", n)];
+        } else if x == "n_b" {
+            let mut n_b = 0;
+            for j in 0..ex.clones.len() {
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if gex_info.cell_type[li].contains_key(&bc.clone()) {
+                    if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
+                        n_b += 1;
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n_b)];
         } else if x == "type" {
             let mut cell_types = Vec::<String>::new();
             /*

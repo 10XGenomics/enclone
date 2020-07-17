@@ -161,6 +161,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if is_simple_arg(&args[i], "MARK_STATS") {
             ctl.gen_opt.mark_stats = true;
         }
+        if is_simple_arg(&args[i], "MARK_STATS2") {
+            ctl.gen_opt.mark_stats2 = true;
+        }
         if is_simple_arg(&args[i], "MARKED_B") {
             ctl.clono_filt_opt.marked_b = true;
         }
@@ -331,6 +334,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
         ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
         ("NPLAIN", &mut ctl.pretty),
@@ -420,6 +424,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ];
 
     // Define arguments that set something to a string that is an input file name.
+
     let set_string_readable = [("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata)];
 
     // Define arguments that do nothing (because already parsed).
@@ -440,6 +445,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "LONG_HELP",
         "MARKED_B",
         "MARK_STATS",
+        "MARK_STATS2",
         "NALL",
         "NALL_CELL",
         "NOPAGER",
