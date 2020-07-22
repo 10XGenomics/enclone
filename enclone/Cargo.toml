@@ -11,6 +11,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
 edition = "2018"
 license = "LICENSE.txt"
 publish = false
+include = ["src/**/*", "!**/*_test.*", "!**/*_tests.*"]
 
 # Please do not edit crate versions within this file.  Instead edit the file master.toml
 # in the root of the enclone repo.
