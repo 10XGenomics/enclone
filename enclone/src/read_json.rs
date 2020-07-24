@@ -79,12 +79,27 @@ fn parse_vector_entry_from_json(
 ) {
     let v: Value = serde_json::from_str(strme(&x)).unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-    if !ctl.gen_opt.ncell && !v["is_cell"].as_bool().unwrap_or(false) {
+
+    // Get cell status.  Sometime after CR 4.0 was released, and before 4.1 was released,
+    // we added new fields is_asm_cell and is_gex_cell to the json file.  The value of
+    // is_asm_cell is the original determination of "cell" in the VDJ pipeline, whereas the
+    // value of is_gex_cell is that for the GEX pipeline.
+
+    let mut is_cell = v["is_cell"].as_bool().unwrap_or(false);
+    let is_asm_cell = v["is_asm_cell"].as_bool().unwrap_or(false);
+    if is_asm_cell {
+        is_cell = true;
+    }
+    let _is_gex_cell = v["is_asm_cell"].as_bool().unwrap_or(false);
+    if !ctl.gen_opt.ncell && !is_cell {
         return;
     }
-    if v["is_cell"].as_bool().unwrap_or(false) {
+    if is_cell {
         vdj_cells.push(barcode.clone());
     }
+
+    // Proceed.
+
     if !v["productive"].as_bool().unwrap_or(false) {
         return;
     }

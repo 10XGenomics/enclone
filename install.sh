@@ -36,6 +36,8 @@ main() {
     #    We require only one of curl or wget.  The reason for not requiring curl is that at
     #    the time of writing this script, the standard Ubuntu install did not include curl,
     #    and so it is possible that someone would not have curl.
+    #
+    #    We do not use svn, because it is no longer available by default on MacOS.
 
     need_cmd date
     STARTTIME=$(date +%s)
@@ -45,7 +47,6 @@ main() {
     need_cmd mkdir
     need_cmd chmod
     need_cmd awk
-    need_cmd svn
     need_cmd zcat
     need_cmd grep
     local _have_curl
@@ -240,12 +241,17 @@ main() {
             printf "however, you might have a slower connection.\n\n"
             mkdir -p enclone/datasets
             rm -rf enclone/datasets/123085
-            # Because svn always touches .svn, and we don't want to do that in the user's
-            # home directory, we trick it to put the directory in a better place.
             cd enclone/datasets
-            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14/123085)
-            cd ../..
-            rm -rf enclone/datasets/.subversion
+            mkdir -p 123085/outs
+            cd 123085/outs
+            json="all_contig_annotations.json.lz4"
+            url="$raw_repo/enclone_main/test/inputs/version14/123085/outs/$json"
+            if $_have_curl; then
+                curl -s $url -O
+            else
+                wget -q $url
+            fi
+            cd ../../../..
             echo "$_datasets_small_checksum_master" > enclone/datasets_small_checksum
             printf "Done with that download.\n"
         else
@@ -264,15 +270,13 @@ main() {
             printf "This seems to take roughly thirty seconds, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
             rm -rf enclone/datasets enclone/version14
-            # Because svn always touches .svn, and we don't want to do that in the user's
-            # home directory, we trick it to put the directory in a better place.
             cd enclone
-            (HOME=.; svn export -q $repo/trunk/enclone_main/test/inputs/version14)
+            git clone --depth=1 https://github.com/10XGenomics/enclone.git
+            mv enclone/enclone_main/test/inputs/version14 datasets
+            rm -rf enclone
             cd ..
-            rm -rf enclone/.subversion
             echo "$_datasets_medium_checksum_master" > enclone/datasets_medium_checksum
             printf "Done with that download.\n"
-            mv enclone/version14 enclone/datasets
             # Remove a funny-looking directory, which is used by enclone only to test if 
             # weird unicode characters in a path will break it.
             rm -rf enclone/datasets/█≈ΠΠΠ≈█
