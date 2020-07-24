@@ -315,7 +315,7 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "",
             "name for the dataset; exactly one of tcr or bcr must be used",
         );
-        h.doc3(
+        h.ldoc3(
             "gex",
             "null",
             "path to GEX dataset, which may include or consist entirely",
