@@ -90,7 +90,7 @@ fn parse_vector_entry_from_json(
     if is_asm_cell {
         is_cell = true;
     }
-    let _is_gex_cell = v["is_asm_cell"].as_bool().unwrap_or(false);
+    let _is_gex_cell = v["is_gex_cell"].as_bool().unwrap_or(false);
     if !ctl.gen_opt.ncell && !is_cell {
         return;
     }
