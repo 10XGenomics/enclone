@@ -573,6 +573,11 @@ For example, all of the following argument combinations do the same thing:
 <br>4. <code>BCR=~/enclone/datasets/123085</code>.
 <br>There is also an argument <code>META</code> that is convenient for specifying multiple
 datasets.  See <a href="pages/auto/help.input.html">here</a> for how.
+<br>
+<br>
+Please note that while paths can have non-Latin characters, best practice is to <b>not have 
+blanks, tabs, etc. in path names</b>.  #enclone can be made to work with such characters by double
+quoting the paths, but it makes things harder, and other programs you might use may break.
 </p>
 
 <p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes #enclone to display only clonotypes in which 
