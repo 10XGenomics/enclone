@@ -40,7 +40,7 @@ stats_utils = "0.1.1"
 stirling_numbers = "0.1.2"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="36b50db2f0cdc58051a3a233306e10b3c541bc7b" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="841893afa30a4b0c9dcb20ddc26b9d5209ed57cb" }
 vector_utils = "0.1.3"
 
 [target.'cfg(not(windows))'.dependencies]
