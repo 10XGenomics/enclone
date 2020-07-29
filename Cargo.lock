@@ -550,7 +550,7 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 
 [[package]]
 name = "enclone"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -584,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "ansi_escape",
  "bio",
@@ -605,7 +605,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -616,7 +616,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -649,7 +649,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -681,7 +681,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "bio",
  "byteorder",
@@ -696,7 +696,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.4.41"
+version = "0.4.42"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -2212,7 +2212,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=36b50db2f0cdc58051a3a233306e10b3c541bc7b#36b50db2f0cdc58051a3a233306e10b3c541bc7b"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=841893afa30a4b0c9dcb20ddc26b9d5209ed57cb#841893afa30a4b0c9dcb20ddc26b9d5209ed57cb"
 dependencies = [
  "align_tools",
  "amino",
@@ -2240,7 +2240,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=36b50db2f0cdc58051a3a233306e10b3c541bc7b#36b50db2f0cdc58051a3a233306e10b3c541bc7b"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=841893afa30a4b0c9dcb20ddc26b9d5209ed57cb#841893afa30a4b0c9dcb20ddc26b9d5209ed57cb"
 dependencies = [
  "serde",
  "serde_json",
