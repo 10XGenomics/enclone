@@ -12,7 +12,7 @@ build:
 test: enclone_main/test/.gitignore
 	git -C $(<D) fetch --depth=1 origin tag v0.4.45
 	git -C $(<D) switch --detach FETCH_HEAD
-	cargo test
+	cargo test --features=basic
 
 # Download the test data.
 enclone_main/test/.gitignore:

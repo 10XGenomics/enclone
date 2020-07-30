@@ -24,10 +24,10 @@ jobs:
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
-      - name: build-enclone
-        run: cargo build
-      - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture
+      - name: Build Enclone
+        run: make build
+      - name: Test Enclone
+        run: make test
 
   test-linux:
     # This job runs on Linux
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
-      - name: build-enclone
-        run: cargo build
-      - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture
+      - name: Build Enclone
+        run: make build
+      - name: Test Enclone
+        run: make test
