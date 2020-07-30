@@ -16,16 +16,18 @@ jobs:
     steps:
       - name: rust version
         run: rustup default 1.43.0
-      - name: add rustfmt 
+      - name: add rustfmt
         run: rustup component add rustfmt
+      - name: install cargo-license
+        run: cargo install cargo-license
       - name: Checkout enclone master
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
-        run: cargo build --release
+        run: cargo build
       - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture 
+        run: cargo test
 
   test-linux:
     # This job runs on Linux
@@ -35,11 +37,13 @@ jobs:
         run: rustup default 1.43.0
       - name: add rustfmt
         run: rustup component add rustfmt
+      - name: install cargo-license
+        run: cargo install cargo-license
       - name: Checkout enclone master
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
-        run: cargo build --release
+        run: cargo build
       - name: unit tests
-        run: cd enclone_main; cargo test --release --features basic -- --nocapture
+        run: cargo test
