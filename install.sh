@@ -226,6 +226,9 @@ main() {
         test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
             echo 'PATH=~/bin:$PATH' >> .profile
     fi
+    if test -f .zshrc; then
+        echo -n 'export PATH=~/bin:$PATH' >> .zshrc
+    fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

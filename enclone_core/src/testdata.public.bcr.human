@@ -1,5 +1,4 @@
-# These are human BCR data that are consented for public release and will be made public at some 
-# point.
+# These are human BCR data that are consented for public release.
 #
 # There is probably still some combining to be done, either within this list or with the other one.
 
@@ -12,8 +11,6 @@
 # above matches preexisting
 
 # 40939,40940,42817
-
-# donor 9571 lot CR0230
 
 44933,44934,44935,44936,44979,44980,44981,44982,44987,44988,43892,43893,43894,43895,43896,43897,43898,43899
 
@@ -39,15 +36,15 @@
 
 42787,42788,42789 
 
-# D224 (commented out because probably cell line)
+# (commented out because probably cell line)
 
 # 43886,43887 
 
-# D213 (commented out because probably cell line)
+# (commented out because probably cell line)
 
 # 43888,43889 
 
-# CLL (commented out because probably cell line)
+# commented out because probably cell line)
 
 # 43890,43891 
 
@@ -66,7 +63,7 @@
 
 86231
 
-# CR0365 PBMCs (and these have matching gex = 127798,127801, respectively)
+# PBMCs (and these have matching gex = 127798,127801, respectively)
 # also TCR 128024 matches BCR 128040
 # not checked for overlap with any of the lists
 

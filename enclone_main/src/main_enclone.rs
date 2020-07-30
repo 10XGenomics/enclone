@@ -709,6 +709,8 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut vdj_cells = Vec::<Vec<String>>::new();
+    let mut gex_cells = Vec::<Vec<String>>::new();
+    let mut gex_cells_specified = Vec::<bool>::new();
     let tparse = Instant::now();
     parse_json_annotations_files(
         &mut ctl,
@@ -716,6 +718,8 @@ pub fn main_enclone(args: &Vec<String>) {
         &refdata,
         &to_ref_index,
         &mut vdj_cells,
+        &mut gex_cells,
+        &mut gex_cells_specified,
     );
     ctl.perf_stats(&tparse, "loading from json");
 
@@ -1241,37 +1245,39 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Remove cells that are not called cells by GEX or feature barcodes.
 
-    if !ctl.clono_filt_opt.ngex {
-        let mut orbits2 = Vec::<Vec<i32>>::new();
-        for i in 0..orbits.len() {
-            let mut o = orbits[i].clone();
-            let mut to_deletex = vec![false; o.len()];
-            for j in 0..o.len() {
-                let x: &CloneInfo = &info[o[j] as usize];
-                let ex = &mut exact_clonotypes[x.clonotype_index];
-                let mut to_delete = vec![false; ex.ncells()];
-                for k in 0..ex.ncells() {
-                    let li = ex.clones[k][0].dataset_index;
-                    let bc = &ex.clones[k][0].barcode;
-                    if ctl.origin_info.gex_path[li].len() > 0 {
-                        let gbc = &gex_info.gex_cell_barcodes[li];
-                        if !bin_member(&gbc, &bc) {
-                            to_delete[k] = true;
-                        }
+    let mut orbits2 = Vec::<Vec<i32>>::new();
+    for i in 0..orbits.len() {
+        let mut o = orbits[i].clone();
+        let mut to_deletex = vec![false; o.len()];
+        for j in 0..o.len() {
+            let x: &CloneInfo = &info[o[j] as usize];
+            let ex = &mut exact_clonotypes[x.clonotype_index];
+            let mut to_delete = vec![false; ex.ncells()];
+            for k in 0..ex.ncells() {
+                let li = ex.clones[k][0].dataset_index;
+                let bc = &ex.clones[k][0].barcode;
+                if ctl.gen_opt.cellranger {
+                    if gex_cells_specified[li] && !bin_member(&gex_cells[li], &bc) {
+                        to_delete[k] = true;
+                    }
+                } else if !ctl.clono_filt_opt.ngex && ctl.origin_info.gex_path[li].len() > 0 {
+                    let gbc = &gex_info.gex_cell_barcodes[li];
+                    if !bin_member(&gbc, &bc) {
+                        to_delete[k] = true;
                     }
                 }
-                erase_if(&mut ex.clones, &to_delete);
-                if ex.ncells() == 0 {
-                    to_deletex[j] = true;
-                }
             }
-            erase_if(&mut o, &to_deletex);
-            if !o.is_empty() {
-                orbits2.push(o.clone());
+            erase_if(&mut ex.clones, &to_delete);
+            if ex.ncells() == 0 {
+                to_deletex[j] = true;
             }
         }
-        orbits = orbits2;
+        erase_if(&mut o, &to_deletex);
+        if !o.is_empty() {
+            orbits2.push(o.clone());
+        }
     }
+    orbits = orbits2;
 
     // Filter using constraints imposed by FCELL.
 

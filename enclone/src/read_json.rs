@@ -73,6 +73,8 @@ fn parse_vector_entry_from_json(
     reannotate: bool,
     ctl: &EncloneControl,
     vdj_cells: &mut Vec<String>,
+    gex_cells: &mut Vec<String>,
+    gex_cells_specified: &mut bool,
     cr_version: &mut String,
     tigs: &mut Vec<TigData>,
     exiting: &AtomicBool,
@@ -90,7 +92,15 @@ fn parse_vector_entry_from_json(
     if is_asm_cell {
         is_cell = true;
     }
-    let _is_gex_cell = v["is_asm_cell"].as_bool().unwrap_or(false);
+
+    let is_gex_cell = v["is_gex_cell"].as_bool();
+    if is_gex_cell.is_some() {
+        *gex_cells_specified = true;
+    }
+    if is_gex_cell == Some(true) {
+        gex_cells.push(barcode.clone());
+    }
+
     if !ctl.gen_opt.ncell && !is_cell {
         return;
     }
@@ -511,7 +521,10 @@ pub fn read_json(
     cr_version: &mut String,
     ctl: &EncloneControl,
     mut vdj_cells: &mut Vec<String>,
+    mut gex_cells: &mut Vec<String>,
+    gex_cells_specified: &mut bool,
 ) -> Vec<Vec<TigData>> {
+    *gex_cells_specified = false;
     let mut tigs = Vec::<TigData>::new();
     let mut jsonx = json.clone();
     if !path_exists(&json) {
@@ -551,11 +564,13 @@ pub fn read_json(
             }
         }
     }
-    let mut results = Vec::<(usize, Vec<String>, String, Vec<TigData>)>::new();
+    let mut results = Vec::<(usize, Vec<String>, Vec<String>, bool, String, Vec<TigData>)>::new();
     for i in 0..xs.len() {
         results.push((
             i,
             Vec::<String>::new(),
+            Vec::<String>::new(),
+            false,
             String::new(),
             Vec::<TigData>::new(),
         ));
@@ -576,16 +591,23 @@ pub fn read_json(
             &mut res.1,
             &mut res.2,
             &mut res.3,
+            &mut res.4,
+            &mut res.5,
             &exiting,
         );
     });
     for i in 0..xs.len() {
         vdj_cells.append(&mut results[i].1);
-        if results[i].2.len() > 0 {
-            *cr_version = results[i].2.clone();
+        gex_cells.append(&mut results[i].2);
+        if results[i].3 {
+            *gex_cells_specified = true;
         }
-        tigs.append(&mut results[i].3);
+        if results[i].4.len() > 0 {
+            *cr_version = results[i].4.clone();
+        }
+        tigs.append(&mut results[i].5);
     }
+    unique_sort(&mut gex_cells);
     let mut tig_bc = Vec::<Vec<TigData>>::new();
     let mut r = 0;
     while r < tigs.len() {
@@ -635,6 +657,8 @@ pub fn parse_json_annotations_files(
     refdata: &RefData,
     to_ref_index: &HashMap<usize, usize>,
     vdj_cells: &mut Vec<Vec<String>>,
+    gex_cells: &mut Vec<Vec<String>>,
+    gex_cells_specified: &mut Vec<bool>,
 ) {
     // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
@@ -644,6 +668,8 @@ pub fn parse_json_annotations_files(
         Vec<Vec<u8>>, // logs
         String,
         Vec<String>,
+        Vec<String>,
+        bool,
     )>::new();
     for i in 0..ctl.origin_info.dataset_path.len() {
         results.push((
@@ -653,6 +679,8 @@ pub fn parse_json_annotations_files(
             Vec::<Vec<u8>>::new(),
             String::new(),
             Vec::<String>::new(),
+            Vec::<String>::new(),
+            false,
         ));
     }
     // Note: only tracking truncated seq and quals initially
@@ -681,6 +709,8 @@ pub fn parse_json_annotations_files(
             &mut res.4,
             &ctl,
             &mut res.5,
+            &mut res.6,
+            &mut res.7,
         );
         res.5.sort();
         explore(li, &tig_bc, &ctl);
@@ -696,6 +726,8 @@ pub fn parse_json_annotations_files(
             versions.push(results[i].4.clone());
         }
         vdj_cells.push(results[i].5.clone());
+        gex_cells.push(results[i].6.clone());
+        gex_cells_specified.push(results[i].7.clone());
     }
     if !ctl.gen_opt.internal_run {
         unique_sort(&mut versions);
