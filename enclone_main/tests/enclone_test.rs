@@ -226,11 +226,7 @@ fn test_curl_command() {
                 command = "cat ../install.sh | sh -s small test/outputs";
                 version = "local";
             }
-            let o = Command::new("csh")
-                .arg("-c")
-                .arg(&command)
-                .output()
-                .unwrap();
+            let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
             if o.status.code().unwrap() != 0 {
                 eprintln!(
                     "\nAttempt to run enclone install command using {} version of \
@@ -349,7 +345,7 @@ fn test_datasets_sha256() {
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_medium_checksum";
-    let sha1 = Command::new("csh")
+    let sha1 = Command::new("sh")
         .arg("-c")
         .arg(&sha_command1)
         .output()
@@ -363,7 +359,7 @@ fn test_datasets_sha256() {
         std::process::exit(1);
     }
     let sha1 = sha1.stdout;
-    let sha2 = Command::new("csh")
+    let sha2 = Command::new("sh")
         .arg("-c")
         .arg(&sha_command2)
         .output()
@@ -383,13 +379,13 @@ fn test_datasets_sha256() {
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_small_checksum";
-    let sha1 = Command::new("csh")
+    let sha1 = Command::new("sh")
         .arg("-c")
         .arg(&sha_command1)
         .output()
         .unwrap()
         .stdout;
-    let sha2 = Command::new("csh")
+    let sha2 = Command::new("sh")
         .arg("-c")
         .arg(&sha_command2)
         .output()
