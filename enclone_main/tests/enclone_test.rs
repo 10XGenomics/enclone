@@ -341,7 +341,7 @@ fn test_curl_command() {
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}",
+        "git -C test write-tree --prefix=inputs/version{}",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_medium_checksum";
@@ -375,7 +375,7 @@ fn test_datasets_sha256() {
         std::process::exit(1);
     }
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}/123085",
+        "git -C test write-tree --prefix=inputs/version{}/123085",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_small_checksum";
@@ -879,7 +879,7 @@ fn test_for_broken_links_and_spellcheck() {
 
     // Set up dictionary.
 
-    let dictionary0 = read_to_string("../enclone/src/english_wordlist").unwrap();
+    let dictionary0 = read_to_string("test/inputs/english_wordlist").unwrap();
     let dictionary0 = dictionary0.split('\n').collect::<Vec<&str>>();
     let mut dictionary = Vec::<String>::new();
     for w in dictionary0.iter() {

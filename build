@@ -34,5 +34,5 @@ target/debug/merge_html
 
 # update dataset checksums
 
-git write-tree --prefix=enclone_main/test/inputs/version14/123085 > datasets_small_checksum
-git write-tree --prefix=enclone_main/test/inputs/version14 > datasets_medium_checksum
+git -C enclone_main/test write-tree --prefix=inputs/version14/123085 > datasets_small_checksum
+git -C enclone_main/test write-tree --prefix=inputs/version14 > datasets_medium_checksum
