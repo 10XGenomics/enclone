@@ -63,7 +63,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("enclone/test/inputs"),
             format!("enclone_main"),
         ];
-    } else {
+    } else if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
             format!("{}/enclone/datasets", home),
