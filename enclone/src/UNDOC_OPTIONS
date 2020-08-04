@@ -188,3 +188,5 @@ recognizes S<xena_analysis_set_id>
 PLOT_BY_MARK
 
 n_b as LVAR = number of B cells
+
+MAX_SCORE: was public, now deprecated, do not remove

@@ -63,7 +63,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("enclone/test/inputs"),
             format!("enclone_main"),
         ];
-    } else {
+    } else if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
             format!("{}/enclone/datasets", home),
@@ -807,6 +807,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         } else if is_f64_arg(&arg, "MAX_SCORE") {
             ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
+        } else if is_f64_arg(&arg, "MAX_LOG_SCORE") {
+            let x = arg.after("MAX_LOG_SCORE=").force_f64();
+            ctl.join_alg_opt.max_score = 10.0_f64.powf(x);
         } else if arg.starts_with("CDR3=") {
             let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
             if !reg.is_ok() {
