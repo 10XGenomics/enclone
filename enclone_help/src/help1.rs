@@ -46,10 +46,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              and feature barcodes (wide)",
         );
         h.ldoc(
-            "enclone help support",
-            "how we can help, enclone@10xgenomics.com",
-        );
-        h.ldoc(
             "enclone help input",
             "how to provide input to enclone (long)",
         );
