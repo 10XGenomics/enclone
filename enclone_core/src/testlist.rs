@@ -258,8 +258,8 @@ pub const TESTS: [&str; 103] = [
     r###"BCR=123085 SEG=IGHV5-51 SEG=IGKV1D-39"###,
     // 95. test TREE=const
     r###"BCR=123085 TREE=const CDR3=CARPKSDYIIDAFDIW MIN_CELLS=2"###,
-    // 96. test MAX_SCORE
-    r###"BCR=123085 CDR3=CARDQNFDESSGYDAFDIW MAX_SCORE=1"###,
+    // 96. test MAX_LOG_SCORE
+    r###"BCR=123085 CDR3=CARDQNFDESSGYDAFDIW MAX_LOG_SCORE=0.0"###,
     // 97. test MAX_CDR3_DIFFS
     r###"BCR=123085 CDR3=CARESVVGLLPIFDYW MAX_CDR3_DIFFS=1"###,
     // 98. test reduced stringency D alignment

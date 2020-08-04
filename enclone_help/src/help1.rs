@@ -321,7 +321,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              two cells lie in the same true clonotype.  To join two cells into the same \
              clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
              constant 1,000,000 (and adjustable via the command-line argument\n\
-             \\bold{MAX_SCORE}).  This constant was arrived at by empirically balancing \
+             \\bold{MAX_LOG_SCORE}, the log10 of this, with default value 6).  This constant was \
+             arrived at by empirically balancing \
              sensitivity and specificity across a large collection of datasets.  See discussion \
              of performance below.\n\n\
              \
