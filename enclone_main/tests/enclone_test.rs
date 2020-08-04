@@ -1352,7 +1352,6 @@ fn test_help_output() {
         "glossary",
         "example1",
         "example2",
-        "support",
         "input",
         "input_tech",
         "parseable",

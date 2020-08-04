@@ -5,13 +5,11 @@
 use crate::help_utils::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
-use enclone_core::*;
-use std::env;
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
+pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
     // Set up.
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -115,77 +113,6 @@ pub fn help2(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              hand-selected gene and one antibody.  You can use any gene(s) you like and any \
              antibodies for which you have feature barcodes.\n\n",
         );
-        h.end_doc();
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Provide support help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "support") || h.help_all {
-        h.begin_doc("support");
-        h.print(
-            "\n\\red{enclone (beta) is provided as a tool for use by the community.  \
-             Although we cannot guarantee full support for the software, please email us at \
-             enclone@10xgenomics.com if you have problems, questions or comments (see below).  \
-             If you prefer you may submit a GitHub issue.}\n\n\
-             \\blue{Please note that syntax and features in enclone will change over time.  See}\n\
-             history page at \\green{bit.ly/enclone} \
-             \\blue{for the history of what was changed}\n\
-             \\blue{and when.  We will try not to break} \
-             \\blue{things, but when we first introduce a feature, it may}\n\
-             \\blue{not be just right, and we may have to to perturb it later.}\n\n\
-             \\bold{Critical things we want to hear from you}\n\n\
-             1. If you have trouble understanding the documentation.\n\n\
-             2. If enclone crashes.  We always need to see the output you got.  Often we will \
-             need data to reproduce the problem.  Please also send this version information:\n",
-        );
-        if !ctl.gen_opt.stable_doc {
-            h.print(&format!(
-                "{} : {}.\n\n",
-                env!("CARGO_PKG_VERSION"),
-                version_string()
-            ));
-        } else {
-            h.print("(your enclone version information will be printed here).\n\n");
-        }
-        h.print(
-            "3. If you're sure that enclone made a mistake.  Usually an actionable mistake is \
-             exhibited via a single clonotype or two, along with your explanation as to why it's \
-             wrong!  And we may need the enclone input \
-             files to reproduce the problem.\n\n\
-             4. Your ideas about how to make enclone better.\n\n\
-             \\bold{Things where we may have trouble}\n\n\
-             1. If you can't get your terminal window to work or need help working from the \
-             command line.  Please tell us, but probably \
-             you'll need help from someone who can interact with you on site.\n\n\
-             2. If you get different results by two methods or observe suspicious statistics.  \
-             Feel free to tell us, but we are much more likely to be able to respond if you have \
-             specific data as in point 3 above.\n\n\
-             3. Details about the algorithms.  We can answer some questions but may need to \
-             point you to the source code to read yourself.\n\n\
-             4. If for whatever reason, we get stuck.  We may not be able to fix every problem, \
-             even if it's our fault.  And sometimes the right solution will take time.  We'll do \
-             our best!\n\n",
-        );
-        h.print(
-            "\\red{Please communicate with us by writing to} \
-             \\boldred{enclone@10xgenomics.com.}\n\n\
-             We use only this email address for enclone questions.  Support from 10x Genomics \
-             for enclone needs to go through this point of access (or the next one).\n\n",
-        );
-        h.print(
-            "If you are GitHub-savvy, we also welcome GitHub issues if applicable and you \
-             prefer that route.  If you can make the enclone code better, go for it!  Make sure \
-             the internal tests are successful, submit a \
-             pull request, and if we can use your code (no guarantees), we'll add you as an \
-             author on the site.\n\n",
-        );
-        h.print(
-            "\\blue{Before writing to us, please check our faq by typing} \
-             \\boldblue{enclone help faq}\\blue{.}\n\n",
-        );
-        h.print("\\red{Happy encloning!}\n\n");
         h.end_doc();
     }
 
