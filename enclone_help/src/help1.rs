@@ -334,7 +334,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \"enclone help special\" for a description of the filters.\n\n",
         );
 
-        // Finish.
+        // Finish.  Note that the numbers here also appear on the landing page.
 
         h.print(
             "We are actively working to improve the algorithm.  To test the performance of the \
