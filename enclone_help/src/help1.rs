@@ -322,7 +322,14 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              sensitivity and specificity across a large collection of datasets.  See discussion \
              of performance below.\n\n\
              \
-             \\boldred{11}.  Junk.  \
+             \\boldred{11}.  Other join criteria.  We do not join two clonotypes which were \
+             assigned different reference sequences unless those reference sequences differ by \
+             at most \\bold{3} positions.  This value can be controlled using the \
+             command-line argument \\bold{MAX_DEGRADATION}.  There are also additional \
+             restrictions imposed when creating two-cell clonotypes and this may be turned off \
+             using the command-line argument \\bold{EASY}.\n\n\
+             \
+             \\boldred{12}.  Junk.  \
              Spurious chains are filtered out based on frequency and connections. See \
              \"enclone help special\" for a description of the filters.\n\n",
         );

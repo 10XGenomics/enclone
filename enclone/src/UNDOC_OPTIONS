@@ -32,7 +32,6 @@ Optional arguments controlling logging for alternate alleles:
 Optional arguments that control the joining algorithm:
 - MIN_MULT: to document
 - MIN_ALT: to document
-- EASY: do not impose special condition on two cell joins
 - BCJOIN: substitute an algorithm that joins by barcode identity and ignores everything
           else -- only useful for studying two datasets from the same GEM well that used
           different enrichment protocols.
