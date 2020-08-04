@@ -280,8 +280,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \
              \\boldred{6}.  Error bounding.  \
              To proceed, as a minimum requirement, there must be at most 50 total \
-             mismatches \
-             between the two exact subclonotypes, within the given two V..J segments.\n\n\
+             mismatches between the two exact subclonotypes, within the given two V..J segments.\n\
+             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.\n\n\
              \
              \\boldred{7}.  Shared mutations.  \
              enclone next finds shared mutations betweens exact subclonotypes, that is, for \
