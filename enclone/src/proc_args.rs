@@ -315,6 +315,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("GRAPH", &mut ctl.gen_opt.graph),
         ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
         ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
+        ("GROUP_VJ_REFNAME_STRONG", &mut ctl.clono_group_opt.vj_refname_strong),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),

@@ -924,6 +924,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "GROUP_VJ_REFNAME",
             "group by sharing identical V and J reference gene names,",
         );
+        h.doc(
+            "GROUP_VJ_REFNAME_STRONG",
+            "same but also require identical length V..J sequences and likewise for CDR3 sequences,",
+        );
         h.doc("", "but ignores foursies and moresies");
         h.ldoc(
             "MIN_GROUP",
