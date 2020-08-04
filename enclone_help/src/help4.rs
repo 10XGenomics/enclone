@@ -732,6 +732,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "symbols in \"edit\" as defined above");
         h.ldoc("cdr3_dna", "the CDR3_DNA sequence");
+        h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",

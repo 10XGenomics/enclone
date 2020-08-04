@@ -43,10 +43,10 @@ pub const LVARS_ALLOWED: [&str; 26] = [
 ];
 
 // Chain variables that can be used for contigs and chains
-pub const CVARS_ALLOWED: [&str; 24] = [
+pub const CVARS_ALLOWED: [&str; 25] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
-    "r_μ", "const", "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes",
-    "d_univ", "d_donor",
+    "r_μ", "const", "white", "cdr3_dna", "cdr3_len", "ulen", "vjlen", "clen", "cdiff", "udiff",
+    "notes", "d_univ", "d_donor",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];

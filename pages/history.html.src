@@ -31,6 +31,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <p>
 <b>8/5/20</b>: deprecated <code>MAX_SCORE</code> and replaced by <code>MAX_LOG_SCORE</code>, the
 base 10 logarithm of it.
+<b>8/5/20</b>: add cvar `cdr3_len`
 </p>
 
 <p>

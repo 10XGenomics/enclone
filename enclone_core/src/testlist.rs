@@ -38,8 +38,8 @@ pub const TESTS: [&str; 103] = [
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
-    // 6. tests AMINO= and vjlen
-    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,vjlen"###,
+    // 6. tests AMINO= and vjlen and other things
+    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,cdr3_len,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change, and test "/outs"
