@@ -88,6 +88,7 @@ pub const PCVARS_ALLOWED: [&str; 19] = [
 #[derive(Default)]
 pub struct ClonotypeHeuristics {
     pub max_diffs: usize,
+    pub max_degradation: usize,
     pub ref_v_trim: usize,
     pub ref_j_trim: usize,
 }
