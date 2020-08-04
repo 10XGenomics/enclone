@@ -198,7 +198,7 @@ pub fn group_and_print_clonotypes(
                         continue;
                     }
                 }
-                e.join(m1, m2 as i32);
+                e.join(m1 as i32, m2 as i32);
             }
             i = j;
         }
