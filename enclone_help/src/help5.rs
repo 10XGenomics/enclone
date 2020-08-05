@@ -376,6 +376,20 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}.\n"
         );
 
+        h.print("\\boldblue{19. Can I turn off all the filters used in joining clonotypes?}\n\n");
+        h.print(
+            "Pretty much.  You can run with the following arguments:\n\
+            MAX_CDR3_DIFFS=100\n\
+            MAX_LOG_SCORE=100\n\
+            EASY\n\
+            MAX_DIFFS=200\n\
+            MAX_DEGRADATION=150,\n\
+            however this will in general be very slow and not produce useful results.  Depending \
+            on what your goal is, you may find it helpful to use some of these arguments, and \
+            with lower values.  You can see the meaning of the arguments and their default values \
+            by typing \"enclone help how\".\n"
+        );
+
         h.end_doc();
     }
 
