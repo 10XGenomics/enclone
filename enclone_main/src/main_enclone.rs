@@ -520,10 +520,47 @@ pub fn main_enclone(args: &Vec<String>) {
         ctl.gen_opt.cr_version = "4.0".to_string();
     }
 
+    // Test for presence of a reference file in the VDJ directories.
+
+    let mut refx = String::new();
+    if ctl.gen_opt.refname.len() == 0 {
+        let rpaths = [
+            "outs/vdj_reference/fasta/regions.fa",
+            "vdj_reference/fasta/regions.fa",
+            "regions.fa",
+        ];
+        let mut refs = Vec::<String>::new();
+        for li in 0..ctl.origin_info.n() {
+            for r in rpaths.iter() {
+                let fasta = format!("{}/{}", ctl.origin_info.dataset_path[li], r);
+                if path_exists(&fasta) {
+                    refs.push(std::fs::read_to_string(&fasta).unwrap());
+                    break;
+                }
+            }
+        }
+        if refs.len() > 0 {
+            unique_sort(&mut refs);
+            if refs.len() > 1 {
+                eprintln!(
+                    "The VDJ reference sequences that were supplied to Cell Ranger are not \
+                    identical with each other.\nAs a consequence, the VDJ output files are not \
+                    compatible with each other, so enclone can't run.\nYou have some options as \
+                    to how to proceed:\n\
+                    1. You can rerun Cell Ranger using the same reference.\n\
+                    2. You can select one of the references, and supply that to enclone using the \
+                    REF option.\n   You will also need to supply the argument RE to get enclone to \
+                    recompute annotations,\n   and that will make it somewhat slower.\n\n"
+                );
+                std::process::exit(1);
+            }
+            refx = refs[0].clone();
+        }
+    }
+
     // Find the VDJ reference.
 
     let mut refdata = RefData::new();
-    let mut refx = String::new();
     if ctl.gen_opt.refname.len() > 0 {
         if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
             eprintln!(
@@ -577,7 +614,7 @@ pub fn main_enclone(args: &Vec<String>) {
             eprintln!("\nProblem with REF: it is not a FASTA file.\n");
             std::process::exit(1);
         }
-    } else if ctl.gen_opt.mouse {
+    } else if ctl.gen_opt.mouse && refx.len() == 0 {
         if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
             if ctl.gen_opt.descrip {
                 println!("using old mouse reference");
@@ -589,7 +626,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             refx = mouse_ref();
         }
-    } else {
+    } else if refx.len() == 0 {
         if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
             let imgt =
                 "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
