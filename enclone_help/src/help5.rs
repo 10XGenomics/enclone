@@ -245,12 +245,18 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
         h.print("\\boldblue{7. How does enclone know what VDJ reference sequences I'm using?}\n\n");
         h.print(
-            "It does not!  It assumes that you have the \\bold{human} reference sequences that \
-             shipped with the latest version of Cell Ranger.  If instead your sequences are mouse, \
-             then you can specify that by adding the argument \\bold{MOUSE} to your command \
-             line.  If you are simply using another reference sequence, please specify that \
+            "If you used Cell Ranger version 4.0 or greater, then the VDJ reference file was \
+             included in the outs directory, and so enclone knows the reference sequence from \
+             that.\n\n\
+             For outs from older Cell Ranger versions, enclone has to guess which VDJ \
+             reference sequences were used, and may or may not do so correctly.  As part of this, \
+             if you have mouse data from older Cell Ranger versions, you need to supply the \
+             argument \\bold{MOUSE} on the command line.\n\n\
+             It is also possible to set the reference sequence directly by adding \
              by adding \\bold{REF=f} to your command line, where \\bold{f} is the name of your \
-             VDJ reference fasta file.\n\n",
+             VDJ reference fasta file, but if that is different than the reference \
+             supplied to Cell Ranger, then you will have to add the additional argument \
+             \\bold{RE} to recompute annotations, and that will slow down enclone somewhat.\n\n",
         );
 
         h.print("\\boldblue{8. Can I provide data from more than one donor?}\n\n");

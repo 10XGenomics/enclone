@@ -554,6 +554,15 @@ pub fn main_enclone(args: &Vec<String>) {
                 );
                 std::process::exit(1);
             }
+            if ctl.gen_opt.mouse {
+                eprintln!(
+                    "\nSince the reference sequence is already in the VDJ input directories that\n\
+                    you supplied to enclone, it is not necessary to supply the MOUSE argument.\n\
+                    Please remove that argument.  Exiting now because of possible unintended\n\
+                    consequences.\n\n"
+                );
+                std::process::exit(1);
+            }
             refx = refs[0].clone();
         }
     }
