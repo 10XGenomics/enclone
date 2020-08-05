@@ -184,8 +184,8 @@ pub fn group_and_print_clonotypes(
                 if ctl.clono_group_opt.vj_refname_strong {
                     let ex1 = &exact_clonotypes[exacts[m1][0]];
                     let ex2 = &exact_clonotypes[exacts[m2][0]];
-                    let mut lens1 = Vec::<(usize,usize)>::new();
-                    let mut lens2 = Vec::<(usize,usize)>::new();
+                    let mut lens1 = Vec::<(usize, usize)>::new();
+                    let mut lens2 = Vec::<(usize, usize)>::new();
                     for j in 0..ex1.share.len() {
                         lens1.push((ex1.share[j].seq_del.len(), ex1.share[j].cdr3_aa.len()));
                     }

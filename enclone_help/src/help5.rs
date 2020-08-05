@@ -387,7 +387,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             however this will in general be very slow and not produce useful results.  Depending \
             on what your goal is, you may find it helpful to use some of these arguments, and \
             with lower values.  You can see the meaning of the arguments and their default values \
-            by typing \"enclone help how\".\n"
+            by typing \"enclone help how\".\n",
         );
 
         h.end_doc();

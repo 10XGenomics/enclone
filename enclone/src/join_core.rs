@@ -246,7 +246,7 @@ pub fn join_core(
 
             if nrefs == 2 {
                 for m in 0..2 {
-                    if abs_diff(total[0][m], total[1][m]) > ctl.heur.max_degradation  {
+                    if abs_diff(total[0][m], total[1][m]) > ctl.heur.max_degradation {
                         fail = true;
                     }
                 }
