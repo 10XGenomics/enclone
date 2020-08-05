@@ -278,6 +278,7 @@ the exact subclonotypes into the same clonotype.
 
 <span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most 50 total
 mismatches between the two exact subclonotypes, within the given two V..J segments.
+This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.
 
 <span style="color:#c23621;font-weight:bold;">7</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
 for two exact subclonotypes, common mutations from the reference sequence, using the donor
@@ -311,7 +312,14 @@ satisfied, where C is the constant 1,000,000 (and adjustable via the command-lin
 empirically balancing sensitivity and specificity across a large collection of datasets.  See
 discussion of performance below.
 
-<span style="color:#c23621;font-weight:bold;">11</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
+<span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.  We do not join two clonotypes which were assigned different reference
+sequences unless those reference sequences differ by at most <span style="font-weight:bold;">3</span> positions.  This value can be
+controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  There is an additional restriction
+imposed when creating two-cell clonotypes: we require that that cd ≤ d, where cd is the number of
+CDR3 differences and d is the number of shared mutations, as above.  This filter may be turned off
+using the command-line argument <span style="font-weight:bold;">EASY</span>.
+
+<span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.
 
 We are actively working to improve the algorithm.  To test the performance of the current version,
@@ -1147,6 +1155,7 @@ where each xi is one of:
 │            │  symbols in "edit" as defined above                                          │
 ├────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │cdr3_dna    │  the CDR3_DNA sequence                                                       │
+│cdr3_len    │  number of amino acids in the CDR3 sequence                                  │
 ├────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen       │  number of bases from the start of the V region to the end of the J region   │
 │clen        │  length of observed constant region (usually truncated at primer start)      │
@@ -1264,13 +1273,15 @@ to the enclone command line.  We intend to add useful versions of grouping to a 
 enclone, that are reflective of functional (antigen-binding) differences.  For now there are the
 following "toy" options:
 
-┌──────────────────┬─────────────────────────────────────────────────────────────────────┐
-│GROUP_HEAVY_CDR3  │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
-│GROUP_VJ_REFNAME  │  group by sharing identical V and J reference gene names,           │
-│                  │  but ignores foursies and moresies                                  │
-├──────────────────┼─────────────────────────────────────────────────────────────────────┤
-│MIN_GROUP         │  minimum number of clonotypes in group to print (default = 1)       │
-└──────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
+│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names,           │
+│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences              │
+│                         │  (after correction for indels) and identical length CDR3 sequences, │
+│                         │  but ignores foursies and moresies                                  │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)       │
+└─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help indels
@@ -1541,6 +1552,17 @@ Yes, type "enclone version".
 
 If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  This
 behavior can be overridden using the argument <span style="font-weight:bold;">ACCEPT_REUSE</span>.
+<span style="color:#5833ff;font-weight:bold;">19. Can I turn off all the filters used in joining clonotypes?</span>
+
+Pretty much.  You can run with the following arguments:
+MAX_CDR3_DIFFS=100
+MAX_LOG_SCORE=100
+EASY
+MAX_DIFFS=200
+MAX_DEGRADATION=150,
+however this will in general be very slow and not produce useful results.  Depending on what your
+goal is, you may find it helpful to use some of these arguments, and with lower values.  You can
+see the meaning of the arguments and their default values by typing "enclone help how".
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help developer
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>

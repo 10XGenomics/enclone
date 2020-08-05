@@ -23,6 +23,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
         max_diffs: 50,
+        max_degradation: 3,
         ref_v_trim: 15,
         ref_j_trim: 15,
     };
@@ -314,6 +315,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("GRAPH", &mut ctl.gen_opt.graph),
         ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
         ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
+        (
+            "GROUP_VJ_REFNAME_STRONG",
+            &mut ctl.clono_group_opt.vj_refname_strong,
+        ),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),
@@ -385,6 +390,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
+        ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),
+        ("MAX_DIFFS", &mut ctl.heur.max_diffs),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
         ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
         ("MIN_CHAINS_EXACT", &mut ctl.gen_opt.min_chains_exact),

@@ -732,6 +732,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "symbols in \"edit\" as defined above");
         h.ldoc("cdr3_dna", "the CDR3_DNA sequence");
+        h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
@@ -922,6 +923,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc(
             "GROUP_VJ_REFNAME",
             "group by sharing identical V and J reference gene names,",
+        );
+        h.doc(
+            "GROUP_VJ_REFNAME_STRONG",
+            "same but also require identical length V..J sequences",
+        );
+        h.doc(
+            "",
+            "(after correction for indels) and identical length CDR3 sequences,",
         );
         h.doc("", "but ignores foursies and moresies");
         h.ldoc(

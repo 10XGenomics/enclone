@@ -1138,6 +1138,8 @@ pub fn row_fill(
                 }
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
+            } else if *var == "cdr3_len".to_string() {
+                cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
             } else if *var == "ulen".to_string() {
                 cvar![j, *var, format!("{}", ex.share[mid].v_start)];
             } else if *var == "clen".to_string() {

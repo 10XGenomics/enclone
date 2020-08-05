@@ -137,6 +137,9 @@ from the data with high accuracy (see below). The methods of #enclone are descri
 <a href="pages/auto/help.how.html">briefly in the online documentation for #enclone</a>, and will
 also be described separately in more detail.
 </p>
+
+<!-- Note that the numbers below also appear in help1.rs. -->
+
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
 <b>Clonotyping performance.</b>  To test the performance of #enclone, we combined data from 443 BCR 
 enriched libraries from 30 donors. #enclone detected a total of 
