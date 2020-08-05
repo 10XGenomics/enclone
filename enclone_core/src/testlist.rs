@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 103] = [
+pub const TESTS: [&str; 105] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -275,6 +275,12 @@ pub const TESTS: [&str; 103] = [
     r###"BCR=123085 BINARY=/gerbilspam/bumblebee EXPECT_FAIL"###,
     // 103. test POUT without PCOLS (somewhat annoying, because easily triggered to change)
     r###"BCR=85333 POUT=stdout CDR3=CQSADSSGTYKVF"###,
+    // 104. test EASY
+    r###"BCR=123085 CDR3="CARVIVGPKKLEGRLYSSSLHFDCW|CARVIVGPEKQEGRLYSSSLHFDYW" EASY
+        MAX_LOG_SCORE=100"###,
+    // 105. test MAX_DEGRADATION and MAX_DIFFS
+    r###"BCR=123085,123089 MAX_LOG_SCORE=100 MAX_DEGRADATION=150 MAX_DIFFS=200
+        MAX_CDR3_DIFFS=100 CDR3=CVRILGRALTVRVYFYYGIDVW"###,
 ];
 
 // Test using the extended public dataset collection.
