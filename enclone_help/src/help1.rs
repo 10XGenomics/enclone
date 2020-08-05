@@ -325,8 +325,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \\boldred{11}.  Other join criteria.  We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
              at most \\bold{3} positions.  This value can be controlled using the \
-             command-line argument \\bold{MAX_DEGRADATION}.  There are also additional \
-             restrictions imposed when creating two-cell clonotypes and this may be turned off \
+             command-line argument \\bold{MAX_DEGRADATION}.  There is an additional restriction \
+             imposed when creating two-cell clonotypes: we require that that \
+             cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
+             mutations, as above.  This filter may be turned off \
              using the command-line argument \\bold{EASY}.\n\n\
              \
              \\boldred{12}.  Junk.  \

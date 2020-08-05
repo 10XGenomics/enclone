@@ -153,9 +153,10 @@ discussion of performance below.
 
 <span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.  We do not join two clonotypes which were assigned different reference
 sequences unless those reference sequences differ by at most <span style="font-weight:bold;">3</span> positions.  This value can be
-controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  There are also additional
-restrictions imposed when creating two-cell clonotypes and this may be turned off using the
-command-line argument <span style="font-weight:bold;">EASY</span>.
+controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  There is an additional restriction
+imposed when creating two-cell clonotypes: we require that that cd ≤ d, where cd is the number of
+CDR3 differences and d is the number of shared mutations, as above.  This filter may be turned off
+using the command-line argument <span style="font-weight:bold;">EASY</span>.
 
 <span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.
