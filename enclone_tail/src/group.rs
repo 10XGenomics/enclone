@@ -187,10 +187,10 @@ pub fn group_and_print_clonotypes(
                     let mut lens1 = Vec::<(usize,usize)>::new();
                     let mut lens2 = Vec::<(usize,usize)>::new();
                     for j in 0..ex1.share.len() {
-                        lens1.push((ex1.share[j].seq.len(), ex1.share[j].cdr3_aa.len()));
+                        lens1.push((ex1.share[j].seq_del.len(), ex1.share[j].cdr3_aa.len()));
                     }
                     for j in 0..ex2.share.len() {
-                        lens2.push((ex2.share[j].seq.len(), ex2.share[j].cdr3_aa.len()));
+                        lens2.push((ex2.share[j].seq_del.len(), ex2.share[j].cdr3_aa.len()));
                     }
                     lens1.sort();
                     lens2.sort();

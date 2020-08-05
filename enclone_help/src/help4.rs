@@ -926,7 +926,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "GROUP_VJ_REFNAME_STRONG",
-            "same but also require identical length V..J sequences and likewise for CDR3 sequences,",
+            "same but also require identical length V..J sequences",
+        );
+        h.doc(
+            "",
+            "(after correction for indels) and identical length CDR3 sequences,",
         );
         h.doc("", "but ignores foursies and moresies");
         h.ldoc(
