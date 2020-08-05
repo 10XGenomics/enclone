@@ -21,13 +21,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.docpr("\\bold{file}", "\\bold{pipeline}");
         h.ldoc("all_contig_annotations.json", "VDJ");
+        h.ldoc("vdj_reference/fasta/regions.fa", "VDJ");
         h.ldoc("metrics_summary.csv", "GEX");
         h.ldoc("raw_feature_bc_matrix.h5", "GEX");
         h.ldoc("analysis/clustering/graphclust/clusters.csv", "GEX");
         h.ldoc("analysis/pca/10_components/projection.csv", "GEX");
         h.print_tab2();
         h.print(
-            "\nThe first file is required, and the others are required, in the indicated \
+            "\nThe first file is required, and the second should be supplied if Cell Ranger \
+            version 4.0 or greater was used.  The others are required, in the indicated \
             structure, if GEX or META/gex arguments are provided.  The exact files \
             that are used could be changed in the future.\n\n",
         );
