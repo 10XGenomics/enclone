@@ -959,9 +959,9 @@ pub fn main_enclone(args: &Vec<String>) {
             let alt_seq = &alt_refs[i].2;
             fwriteln!(
                 f,
-                ">{}.{}.{}, {}\n{}",
+                ">{}:{}:{}:{} (reference record id : donor name : allele number : gene name)\n{}",
                 refdata.id[ref_id],
-                donor + 1,
+                ctl.origin_info.donor_id[donor],
                 count + 1,
                 refdata.name[ref_id],
                 alt_seq.to_string()
