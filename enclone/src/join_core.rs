@@ -244,10 +244,9 @@ pub fn join_core(
             // Don't allow different references if one is strongly favored.
             // (not documented)
 
-            const MAX_DEGRADATION: usize = 3;
             if nrefs == 2 {
                 for m in 0..2 {
-                    if abs_diff(total[0][m], total[1][m]) > MAX_DEGRADATION {
+                    if abs_diff(total[0][m], total[1][m]) > ctl.heur.max_degradation  {
                         fail = true;
                     }
                 }
