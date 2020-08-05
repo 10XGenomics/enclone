@@ -6,7 +6,7 @@
    version.
 4. Edit README.md to reflect the upcoming version change (do this via GitHub.com so that it's an 
    officially signed commit).
-5. git tag vX.Y.Z , for instance git tag v0.4.4.43
+5. git tag vX.Y.Z , for instance git tag v0.4.43
 6. git push origin --tags (this triggers the release build and upload process)
 7. When the release is done, change the title of the release to beta release vX.Y.Z, download the 
    binaries, and calculate the SHA-256 checksums for the binaries and include those in the release notes.
