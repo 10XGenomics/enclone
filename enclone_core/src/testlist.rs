@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 103] = [
+pub const TESTS: [&str; 105] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -38,8 +38,8 @@ pub const TESTS: [&str; 103] = [
      CVARSP=ulen,udiff"###,
     // 5. tests TCR and correct grouping of onesies on AGBT Donor 2 dataset
     r###"TCR=101287 MIN_CELLS=100"###,
-    // 6. tests AMINO= and vjlen
-    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,vjlen"###,
+    // 6. tests AMINO= and vjlen and other things
+    r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,cdr3_len,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 8. this clonotype included a junk chain before we made a change, and test "/outs"
@@ -275,6 +275,12 @@ pub const TESTS: [&str; 103] = [
     r###"BCR=123085 BINARY=/gerbilspam/bumblebee EXPECT_FAIL"###,
     // 103. test POUT without PCOLS (somewhat annoying, because easily triggered to change)
     r###"BCR=85333 POUT=stdout CDR3=CQSADSSGTYKVF"###,
+    // 104. test EASY
+    r###"BCR=123085 CDR3="CARVIVGPKKLEGRLYSSSLHFDCW|CARVIVGPEKQEGRLYSSSLHFDYW" EASY
+        MAX_LOG_SCORE=100"###,
+    // 105. test MAX_DEGRADATION and MAX_DIFFS
+    r###"BCR=123085,123089 MAX_LOG_SCORE=100 MAX_DEGRADATION=150 MAX_DIFFS=200
+        MAX_CDR3_DIFFS=100 CDR3=CVRILGRALTVRVYFYYGIDVW"###,
 ];
 
 // Test using the extended public dataset collection.

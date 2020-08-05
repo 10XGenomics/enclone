@@ -72,13 +72,15 @@ to the enclone command line.  We intend to add useful versions of grouping to a 
 enclone, that are reflective of functional (antigen-binding) differences.  For now there are the
 following "toy" options:
 
-┌──────────────────┬─────────────────────────────────────────────────────────────────────┐
-│GROUP_HEAVY_CDR3  │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
-│GROUP_VJ_REFNAME  │  group by sharing identical V and J reference gene names,           │
-│                  │  but ignores foursies and moresies                                  │
-├──────────────────┼─────────────────────────────────────────────────────────────────────┤
-│MIN_GROUP         │  minimum number of clonotypes in group to print (default = 1)       │
-└──────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
+│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names,           │
+│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences              │
+│                         │  (after correction for indels) and identical length CDR3 sequences, │
+│                         │  but ignores foursies and moresies                                  │
+├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)       │
+└─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
 
 </span></pre>
 </body>

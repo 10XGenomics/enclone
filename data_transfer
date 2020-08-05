@@ -1,0 +1,11 @@
+Instructions for transferring customer data to 10x genomics (for enclone support):
+
+1. The customer-facing instructions are here
+https://support.10xgenomics.com/docs/transfers.  The instructions do not explain what to do
+with the typical file types customers would transfer
+(especially all_contig_annotations.json) but they should just do the obvious thing, which
+is to tar and gzip a directory containing these files, and proceed by analogy with the
+published instructions.  They should substitute enclone@10xgenomics.com for support@10xgenomics.com.
+
+2. There are internal-facing instructions here (only readable at 10x Genomics):
+https://10xtech.atlassian.net/wiki/spaces/SFO/pages/938475641/How+to+work+with+customer+s+large+data+via+Redstone.

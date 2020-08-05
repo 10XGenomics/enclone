@@ -43,10 +43,10 @@ pub const LVARS_ALLOWED: [&str; 26] = [
 ];
 
 // Chain variables that can be used for contigs and chains
-pub const CVARS_ALLOWED: [&str; 24] = [
+pub const CVARS_ALLOWED: [&str; 25] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
-    "r_μ", "const", "white", "cdr3_dna", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes",
-    "d_univ", "d_donor",
+    "r_μ", "const", "white", "cdr3_dna", "cdr3_len", "ulen", "vjlen", "clen", "cdiff", "udiff",
+    "notes", "d_univ", "d_donor",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -88,6 +88,7 @@ pub const PCVARS_ALLOWED: [&str; 19] = [
 #[derive(Default)]
 pub struct ClonotypeHeuristics {
     pub max_diffs: usize,
+    pub max_degradation: usize,
     pub ref_v_trim: usize,
     pub ref_j_trim: usize,
 }
@@ -515,6 +516,7 @@ pub struct ClonoPrintOpt {
 pub struct ClonoGroupOpt {
     pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
     pub vj_refname: bool,    // group by having the same VJ reference names
+    pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
     pub min_group: usize,    // minimum number of clonotypes in group to print
 }
 
