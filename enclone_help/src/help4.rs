@@ -599,21 +599,21 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "For both of these, the algorithm looks for reads that go through the end of",
+            "For both of these, the algorithm looks for reads that are aligned through the",
         );
         h.doc(
             "",
-            "a constant region CH3 exon, and then read into a CH3-CHS or CH4-CHS exon, in",
+            "right end of a constant region CH3 exon, and then read into a CH3-CHS or",
         );
         h.doc(
             "",
-            "the secreted case, or a M, M1 or M2 exon, in the membrane case.  This choice is",
+            "CH4-CHS exon, in the secreted case, or a M, M1 or M2 exon, in the membrane case.",
         );
         h.doc(
             "",
-            "determined by sequence tables in the code, and we cannot be absolutely certain",
+            "This choice is determined by sequence tables in the code, and we cannot be",
         );
-        h.doc("", "that these tables are complete.");
+        h.doc("", "absolutely certain that these tables are complete.");
         h.docpr(
             "",
             "\\bold{These fields require the presence of the file possorted_genome_bam.bam.}",
