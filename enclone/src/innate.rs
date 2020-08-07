@@ -14,7 +14,7 @@ use vector_utils::*;
 pub fn species(refdata: &RefData) -> String {
     let mut my_trac = Vec::<Vec<u8>>::new();
     for i in 0..refdata.refs.len() {
-        if refdata.name[i].starts_with("TRAC") {
+        if refdata.name[i].starts_with("TRAC") || refdata.name[i].starts_with("IGHM") {
             my_trac.push(refdata.refs[i].to_ascii_vec());
         }
     }
@@ -41,14 +41,14 @@ pub fn species(refdata: &RefData) -> String {
         let mut trac = Vec::<u8>::new();
         let mut in_trac = false;
         for line in refx.lines() {
-            if line.starts_with(">") && line.contains("|TRAC") {
+            if line.starts_with(">") && (line.contains("|TRAC") || line.contains("|IGHM")) {
                 in_trac = true;
                 continue;
-            } else if in_trac && line.starts_with(">") {
-                break;
             }
             if in_trac {
                 trac.append(&mut line.as_bytes().to_vec());
+                trac.push(b' ');
+                in_trac = false;
             }
         }
         if trac.len() < K {
@@ -63,7 +63,7 @@ pub fn species(refdata: &RefData) -> String {
         counts.push((count, species));
     }
     reverse_sort(&mut counts);
-    if counts[0] == counts[1] {
+    if counts[0].0 == counts[1].0 {
         return "unknown".to_string();
     } else {
         return counts[0].1.clone();

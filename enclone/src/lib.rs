@@ -22,4 +22,5 @@ pub mod proc_args3;
 pub mod proc_args_check;
 pub mod read_json;
 pub mod run_test;
+pub mod secret;
 pub mod subset_json;

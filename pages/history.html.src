@@ -29,13 +29,16 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
-<b>8/7/20</b></b>: a reference file is now required as part of the Cell Ranger outs directory,
-if Cell Ranger version 4.0 or greater was used.
+<b>8/7/20</b></b>: add the ability to analyze alternate splicing using GEX data to characterize
+UMIs as secreted or membrane, and display this information using lvars "sec" and "mem".   See
+\code{enclone help lvars} for limitations.
 </p>
 
 <p>
 <b>8/5/20</b></b>:
 <ol>
+<li>A reference file is now required as part of the Cell Ranger outs directory,
+if Cell Ranger version 4.0 or greater was used.</li>
 <li>Deprecate <code>MAX_SCORE</code> and replace by <code>MAX_LOG_SCORE</code>, the
     base 10 logarithm of it.</li>
 <li>Add cvar <code>cdr3_len</code></li>

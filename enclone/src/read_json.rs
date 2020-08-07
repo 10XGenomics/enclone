@@ -274,9 +274,13 @@ fn parse_vector_entry_from_json(
                     eprintln!(
                         "\nThere is an inconsistency between the reference \
                          file used to create the Cell Ranger output files in\n{}\nand the \
-                         reference that enclone is using.  For example, the feature \
-                         numbered {} is\nthe gene {} in one and the gene {} in the other.\n\
-                         You should be able to remedy this by supplying\n\
+                         reference that enclone is using.\n\nFor example, the feature \
+                         numbered {} is\nthe gene {} in one and the gene {} in the other.\n\n\
+                         As far as we know, this type of error can only occur with Cell Ranger \
+                         versions before 4.0.\n\n\
+                         If this is mouse data, please use the argument MOUSE, and that may \
+                         solve the problem.\n\n\
+                         A solution that should always work is to supply\n\
                          REF=vdj_reference_fasta_filename as an argument to enclone.\n",
                         json.rev_before("/"),
                         feature_id,

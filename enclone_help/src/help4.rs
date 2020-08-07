@@ -590,6 +590,40 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "or cu; this represents a sum of UMI counts across the matching features. ●",
         );
         h.ldoc(
+            "sec",
+            "for human or mouse BCR, number of GEX UMIs that are characterized as secreted",
+        );
+        h.doc(
+            "mem",
+            "for human or mouse BCR, number of GEX UMIs that are characterized as membrane",
+        );
+        h.doc(
+            "",
+            "For both of these, the algorithm looks for reads that go through the end of",
+        );
+        h.doc(
+            "",
+            "a constant region CH3 exon, and then read into a CH3-CHS or CH4-CHS exon, in",
+        );
+        h.doc(
+            "",
+            "the secreted case, or a M, M1 or M2 exon, in the membrane case.  This choice is",
+        );
+        h.doc(
+            "",
+            "determined by sequence tables in the code, and we cannot be absolutely certain",
+        );
+        h.doc("", "that these tables are complete.");
+        h.docpr(
+            "",
+            "\\bold{These fields require the presence of the file possorted_genome_bam.bam.}",
+        );
+        h.docpr(
+            "",
+            "\\bold{These fields also require that you have samtools in your path.}",
+        );
+        h.doc("", "Note that these counts tend to be low.");
+        h.ldoc(
             "cred",
             "Short for credibility.  It is a measure of the extent to which cells",
         );

@@ -842,6 +842,18 @@ pub fn print_clonotypes(
                                         n = 1;
                                     }
                                     row.push(format!("{}", n));
+                                } else if lvars[k] == "sec".to_string() {
+                                    let mut n = 0;
+                                    if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                                        n = ctl.origin_info.secmem[li][&bc.clone()].0;
+                                    }
+                                    row.push(format!("{}", n));
+                                } else if lvars[k] == "mem".to_string() {
+                                    let mut n = 0;
+                                    if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                                        n = ctl.origin_info.secmem[li][&bc.clone()].1;
+                                    }
+                                    row.push(format!("{}", n));
                                 } else if bin_member(&alt_bcs, &lvars[k]) {
                                     let mut val = String::new();
                                     let alt = &ctl.origin_info.alt_bc_fields[li];
