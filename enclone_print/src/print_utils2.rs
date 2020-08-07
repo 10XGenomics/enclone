@@ -621,6 +621,26 @@ pub fn row_fill(
             }
             lvar![i, x, format!("{}", count)];
             stats.push((x.to_string(), counts));
+        } else if x == "sec" {
+            let mut n = 0;
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    n += ctl.origin_info.secmem[li][&bc.clone()].0;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+        } else if x == "mem" {
+            let mut n = 0;
+            for l in 0..ex.clones.len() {
+                let li = ex.clones[l][0].dataset_index;
+                let bc = &ex.clones[l][0].barcode;
+                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
+                    n += ctl.origin_info.secmem[li][&bc.clone()].1;
+                }
+            }
+            lvar![i, x, format!("{}", n)];
         } else if x == "dref" {
             let mut diffs = 0;
             for m in 0..cols {

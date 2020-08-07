@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 26] = [
+pub const LVARS_ALLOWED: [&str; 28] = [
     "datasets",
     "origins",
     "donors",
@@ -40,6 +40,8 @@ pub const LVARS_ALLOWED: [&str; 26] = [
     "mark",
     "inkt",
     "mait",
+    "sec",
+    "mem",
 ];
 
 // Chain variables that can be used for contigs and chains
@@ -308,6 +310,8 @@ pub struct OriginInfo {
     pub alt_bc_fields: Vec<Vec<(String, HashMap<String, String>)>>,
     pub cells_cellranger: Vec<Option<usize>>,
     pub mean_read_pairs_per_cell_cellranger: Vec<Option<usize>>,
+    // map dataset index to a map of barcode to (secreted, membrane) UMI counts
+    pub secmem: Vec<HashMap<String, (usize, usize)>>,
 }
 
 impl OriginInfo {
@@ -404,6 +408,7 @@ pub struct GeneralOpt {
     pub tree: String,
     pub allow_inconsistent: bool,
     pub color: String,
+    pub species: String, // human or mouse or unknown, determined from the reference sequence
 }
 
 // Allele-finding algorithmic options.
