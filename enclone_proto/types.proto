@@ -1,3 +1,20 @@
+//
+// This file defines the contents in the protobuf file produced by enclone that contains 
+// some metadata about the sample, the reference sequences and the clonotypes computed by enclone
+// 
+// The protobuf file contains a series of length delimited messages in the order defined by 
+// the order of fields in the `EncloneOutputs` message. 
+// We use the following format to write a single protobuf message:
+// ```
+// +------------+----------------------------+
+// | Length     |      Message               |
+// | [4 bytes]  |      [Length Bytes]        |
+// +------------+----------------------------+
+// ```
+// In the above diagram,
+// - `Length` is an unsigned 32 bit integer stored in **Big endian** order.
+// - Multiple messages are stored consecutively following the same format.
+
 syntax = "proto2";
 
 package enclone.types;
@@ -275,16 +292,20 @@ message Metadata {
 
 // Outputs from a single enclone run.
 //
-// TODO: It might be easier to store the three vectors as three different files if we want to
-// stream through it.
+// This message itself is not written in the proto file, but the order of messages follow
+// the order of fields in this message
 message EncloneOutputs {
+    required string version = 1;
     // Metadata associated with this run. For single sample runs, there is no useful metadata.
     // In the context of aggr, this will be populated from the user input
-    required Metadata metadata = 1;
+    required Metadata metadata = 10;
     // The universal reference used.
-    required UniversalReference universal_reference = 2;
+    required UniversalReference universal_reference = 20;
     // The inferred donor reference.
-    required DonorReference donor_reference = 3;
-    // List of all clonotypes computed in this enclone run.
-    repeated Clonotype clonotypes = 10;
+    required DonorReference donor_reference = 30;
+    // The total number of clonotypes
+    required uint32 num_clonotypes = 100;
+    // List of all clonotypes computed in this enclone run. Each clonotype is stored as an
+    // individual message in order to enable streaming.
+    repeated Clonotype clonotypes = 110;
 }

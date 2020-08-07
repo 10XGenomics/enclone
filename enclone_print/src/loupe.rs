@@ -3,6 +3,7 @@
 // Loupe uses to access clonotype data.
 
 use enclone_proto::proto_io::write_proto;
+use enclone_proto::PROTO_VERSION;
 use vdj_ann::*;
 
 use self::refx::*;
@@ -321,7 +322,9 @@ pub fn loupe_out(
             None => Metadata::default(),
         };
         let enclone_outputs = EncloneOutputs {
+            version: PROTO_VERSION.into(),
             metadata,
+            num_clonotypes: all_loupe_clonotypes.len() as u32,
             clonotypes: all_loupe_clonotypes,
             universal_reference: UniversalReference { items: uref },
             donor_reference: DonorReference {

@@ -4,3 +4,5 @@
 
 pub mod proto_io;
 pub mod types;
+
+pub const PROTO_VERSION: &str = "1.0.0";
