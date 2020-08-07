@@ -621,7 +621,7 @@ pub fn row_fill(
             }
             lvar![i, x, format!("{}", count)];
             stats.push((x.to_string(), counts));
-        } else if x == "sec" {
+        } else if x == "sec" && ctl.gen_opt.using_secmem {
             let mut n = 0;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
@@ -631,7 +631,7 @@ pub fn row_fill(
                 }
             }
             lvar![i, x, format!("{}", n)];
-        } else if x == "mem" {
+        } else if x == "mem" && ctl.gen_opt.using_secmem {
             let mut n = 0;
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;

@@ -409,6 +409,7 @@ pub struct GeneralOpt {
     pub allow_inconsistent: bool,
     pub color: String,
     pub species: String, // human or mouse or unknown, determined from the reference sequence
+    pub using_secmem: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -888,6 +889,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         }
     }
     for x in all_lvars.iter() {
+        if (*x == "sec" || *x == "mem") && !ctl.gen_opt.using_secmem {
+            continue;
+        }
         speaker!(x);
     }
     for col in 0..ctl.parseable_opt.pchains {

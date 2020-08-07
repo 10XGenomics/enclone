@@ -762,6 +762,39 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut vars = ctl.parseable_opt.pcols.clone();
     vars.append(&mut ctl.clono_print_opt.lvars.clone());
     unique_sort(&mut vars);
+    ctl.gen_opt.using_secmem =
+        bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string());
+    if !ctl.gen_opt.using_secmem
+        && ctl.parseable_opt.pout.len() > 0
+        && ctl.parseable_opt.pcols.len() == 0
+    {
+        if ctl.gen_opt.species == "human" || ctl.gen_opt.species == "mouse" {
+            if is_bcr {
+                let mut have_bam = true;
+                for g in ctl.origin_info.gex_path.iter() {
+                    if g.len() == 0 {
+                        have_bam = false;
+                        break;
+                    }
+                    let bam = format!("{}/possorted_genome_bam.bam", g);
+                    if !path_exists(&bam) {
+                        have_bam = false;
+                        break;
+                    }
+                }
+                if have_bam {
+                    let o = Command::new("samtools")
+                        .arg("--help")
+                        .output()
+                        .expect("failed to execute samtools");
+                    let status = o.status.code().unwrap();
+                    if status == 0 {
+                        ctl.gen_opt.using_secmem = true;
+                    }
+                }
+            }
+        }
+    }
     if bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string()) {
         if ctl.gen_opt.species != "human" && ctl.gen_opt.species != "mouse" {
             eprintln!("\nThe lvars sec and mem can only be used for data from human and mouse.\n");
@@ -804,7 +837,9 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // If sec (secreted) or mem (membrane) lvars have been specified, gather those data.
 
-    fetch_secmem(&mut ctl);
+    if ctl.gen_opt.using_secmem {
+        fetch_secmem(&mut ctl);
+    }
 
     // Parse the json annotations file.
 
