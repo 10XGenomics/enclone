@@ -616,8 +616,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "absolutely certain that these tables are complete.");
         h.docpr(
             "",
-            "\\bold{These fields require the presence of the file possorted_genome_bam.bam.}",
+            "\\bold{These fields require the presence of the files possorted_genome_bam.bam}",
         );
+        h.docpr("", "\\bold{and possorted_genome_bam.bam.bai.}");
         h.docpr(
             "",
             "\\bold{These fields also require that you have samtools in your path.}",
