@@ -870,8 +870,8 @@ fn test_for_broken_links_and_spellcheck() {
         hypermutation hypermutations igh ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
         moresies multiomic ncbi ncross NEWICK Newick \
-        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
-        preinstalled prepends redownloads samtools screenshot segn sloooooooow \
+        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell phylip \
+        plasmablast preinstalled prepends redownloads samtools screenshot segn sloooooooow \
         spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
