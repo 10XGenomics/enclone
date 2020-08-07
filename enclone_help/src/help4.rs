@@ -166,6 +166,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
         );
+
         h.ldoc(
             "NWEAK_ONESIES",
             "By default, enclone filters out onesie clonotypes having a single exact",
@@ -176,8 +177,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.",
+            "greater than one but less than 0.1% of the total number of cells.",
         );
+        h.doc(
+            "",
+            "This filter reduces the likelihood of creating clonotypes containing cells",
+        );
+        h.doc("", "that arose from different recombination events.");
+        h.doc("", "NWEAK_ONESIES turns this filter off.");
+
         h.ldoc(
             "NFOURSIE_KILL",
             "By default, if enclone finds a foursie exact subclonotype that",

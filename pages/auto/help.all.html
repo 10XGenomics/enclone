@@ -972,7 +972,10 @@ clonotype.
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NWEAK_ONESIES       │  By default, enclone filters out onesie clonotypes having a single exact    │
 │                    │  subclonotype, and that are light chain or TRA, and whose number of cells is│
-│                    │  less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.│
+│                    │  greater than one but less than 0.1% of the total number of cells.          │
+│                    │  This filter reduces the likelihood of creating clonotypes containing cells │
+│                    │  that arose from different recombination events.                            │
+│                    │  NWEAK_ONESIES turns this filter off.                                       │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NFOURSIE_KILL       │  By default, if enclone finds a foursie exact subclonotype that             │
 │                    │  contains a twosie exact subclonotype having at least ten cells, it kills   │
