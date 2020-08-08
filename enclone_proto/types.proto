@@ -194,6 +194,8 @@ message ClonotypeChain {
     required uint32 cdr3_end = 20;
     // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
     required string chain_type = 21;
+    // AA sequence of the clonotype chain consensus
+    required bytes aa_sequence = 22;
 }
 
 // Definition of a clonotype.

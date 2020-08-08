@@ -155,8 +155,16 @@ pub fn make_loupe_clonotype(
         let universal_reference_aln = Alignment::from(&al);
         let al = aligner.semiglobal(&nt_sequence, &donor_reference);
         let donor_reference_aln = Alignment::from(&al);
+
+        let mut aa_sequence = Vec::new();
+        let mut p = ex.share[m0].v_start;
+        while p + 3 <= nt_sequence.len() {
+            aa_sequence.push(codon_to_aa(&nt_sequence[p..p + 3]));
+            p += 3;
+        }
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
+            aa_sequence: aa_sequence,
             u_idx: u_idx.map(|idx| idx as u32),
             v_idx: v_idx as u32,
             d_idx: d_idx.map(|idx| idx as u32),
