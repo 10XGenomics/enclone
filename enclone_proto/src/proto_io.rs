@@ -19,7 +19,7 @@
 //! - `Length` is an unsigned 32 bit integer stored in **Big endian** order.
 //! - If there are multiple messages, they are stored consecutively following the same format.
 
-use crate::types::EncloneOutputs;
+use crate::types::{Clonotype, EncloneOutputs};
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use failure::{format_err, Error};
 use prost::Message;
@@ -73,7 +73,7 @@ pub struct ProtoReader<R: Read> {
 }
 
 impl<R: Read> ProtoReader<R> {
-    pub fn with_reader(reader: R) -> Self {
+    pub fn from_reader(reader: R) -> Self {
         ProtoReader {
             decode_buffer: Vec::with_capacity(BUFFER_CAPACITY),
             reader,
@@ -170,7 +170,7 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
 /// clonotypes instead of loading everything into memory.
 pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let reader = BufReader::new(File::open(path)?);
-    let mut proto_reader = ProtoReader::with_reader(reader);
+    let mut proto_reader = ProtoReader::from_reader(reader);
 
     // Read the version
     let version = proto_reader.read_and_decode()?;
@@ -195,4 +195,44 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
         num_clonotypes,
         clonotypes,
     })
+}
+
+/// Iterator over clonotypes
+pub struct ClonotypeIter<R: Read> {
+    index: u32,
+    num_clonotypes: u32,
+    proto_reader: ProtoReader<R>,
+}
+
+impl<R: Read> ClonotypeIter<R> {
+    pub fn from_reader(reader: R) -> Result<Self, Error> {
+        let mut proto_reader = ProtoReader::from_reader(reader);
+        // Skip version, metadata, universal reference, donor reference
+        for _ in 0..4 {
+            proto_reader.skip()?;
+        }
+        let num_clonotypes: u32 = proto_reader.read_and_decode()?;
+        Ok(ClonotypeIter {
+            index: 0,
+            num_clonotypes,
+            proto_reader,
+        })
+    }
+}
+
+impl<R: Read> Iterator for ClonotypeIter<R> {
+    type Item = Clonotype;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index < self.num_clonotypes {
+            let cl = match self.proto_reader.read_and_decode() {
+                Ok(c) => c,
+                Err(e) => panic!("Failed to decode clonotype due to {}", e),
+            };
+            self.index += 1;
+            Some(cl)
+        } else {
+            None
+        }
+    }
 }

@@ -12,7 +12,7 @@ use enclone::html::*;
 use enclone::misc3::parse_bsv;
 use enclone::run_test::*;
 use enclone_core::testlist::*;
-use enclone_proto::proto_io::read_proto;
+use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
 use failure::Error;
 use file_lock::FileLock;
@@ -1580,9 +1580,16 @@ fn test_proto_write() -> Result<(), Error> {
 
         let outputs_proto = read_proto(&proto_file)?;
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
+        assert!(outputs_proto == outputs_bin);
+
+        // Test to make sure that the clonotype iterator works
+        let clonotypes: Vec<_> = ClonotypeIter::from_reader(File::open(&proto_file).unwrap())
+            .unwrap()
+            .collect();
+        assert!(clonotypes == outputs_proto.clonotypes);
+
         std::fs::remove_file(&proto_file)?;
         std::fs::remove_file(&bin_file)?;
-        assert!(outputs_proto == outputs_bin);
     }
 
     Ok(())
