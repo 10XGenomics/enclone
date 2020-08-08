@@ -1,10 +1,11 @@
 //
-// This file defines the contents in the protobuf file produced by enclone that contains 
-// some metadata about the sample, the reference sequences and the clonotypes computed by enclone
-// 
-// The protobuf file contains a series of length delimited messages in the order defined by 
-// the order of fields in the `EncloneOutputs` message. 
-// We use the following format to write a single protobuf message:
+// This file defines the contents in the protobuf file produced by enclone that
+// contains some metadata about the sample, the reference sequences and the
+// clonotypes computed by enclone
+//
+// The protobuf file contains a series of length delimited messages in the order
+// defined by the order of fields in the `EncloneOutputs` message. We use the
+// following format to write a single protobuf message:
 // ```
 // +------------+----------------------------+
 // | Length     |      Message               |
@@ -21,297 +22,324 @@ package enclone.types;
 
 // Various regions within a VDJ transcript
 enum Region {
-    U = 0; // 5' untranslated region
-    V = 1; // Variable region
-    D = 2; // Diversity region
-    J = 3; // Joining region
-    C = 4; // Constant region
+  U = 0; // 5' untranslated region
+  V = 1; // Variable region
+  D = 2; // Diversity region
+  J = 3; // Joining region
+  C = 4; // Constant region
 }
 
-// Evidence that a given cell is iNKT or MAIT.   Each ExactSubclonotype has one instantiation of
-// this structure for iNKT and one for MAIT.
+// Evidence that a given cell is iNKT or MAIT.   Each ExactSubclonotype has one
+// instantiation of this structure for iNKT and one for MAIT.
 message InvariantTCellAnnotation {
-    required bool AlphaChainGeneMatch = 1;
-    required bool AlphaChainJunctionMatch = 2;
-    required bool BetaChainGeneMatch = 3;
-    required bool BetaChainJunctionMatch = 4;
+  required bool AlphaChainGeneMatch = 1;
+  required bool AlphaChainJunctionMatch = 2;
+  required bool BetaChainGeneMatch = 3;
+  required bool BetaChainJunctionMatch = 4;
 }
 
 // Representation of an alignment
 message Alignment {
-    // Start of the alignment in the reference
-    required uint32 ref_start = 1;
-    // Cigar string
-    required string cigar = 2;
+  // Start of the alignment in the reference
+  required uint32 ref_start = 1;
+  // Cigar string
+  required string cigar = 2;
 }
 
 // Defines a chain within an exact subclonotype.
 message ExactSubClonotypeChain {
-    // Nucleotide sequence of the chain. This will only contain ACGT alphabets
-    required bytes nt_sequence = 1;
-    // Amino acid sequence from the start codon at the beginning of the V-REGION.
-    // This can be inferred from the `nt_sequence` and `v_start`, but stored for convenience
-    required bytes aa_sequence = 2;
-    // Index of the start of the V-REGION in the `nt_sequence`.
-    required uint32 v_start = 3;
-    // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
-    required uint32 j_end = 4;
-    // Index of the C-REGION of this chain in the universal reference.
-    // TODO: Should we store UVDJ regions here for convenience? The reason why it is not
-    // stored at this level is because all exact subclonotypes share the same UVDJ regions.
-    optional uint32 c_region_idx = 5;
-    // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of the CDR3
-    // amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
-    required uint32 cdr3_start = 6;
-    // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The end of the
-    // CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
-    required uint32 cdr3_end = 7;
-    // UMI counts of contigs associated with this exact subclonotype chain. The number of elements
-    // in this vector is equal to the number of barcodes associated with this exact subclonotype.
-    repeated uint32 umi_counts = 8;
-    // Read counts of contigs associated with this exact subclonotype chain. The number of elements
-    // in this vector is equal to the number of barcodes associated with this exact subclonotype.
-    repeated uint32 read_counts = 9;
-    // Names of contigs associated with this exact subclonotype chain. The number of elements
-    // in this vector is equal to the number of barcodes associated with this exact subclonotype.
-    // The contig name would be of the form `{barcode}_contig_{id}`.
-    repeated string contig_ids = 10;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the clonotype consensus
-    // of this chain.
-    // TODO: Do we need amino acid alignment info?
-    required Alignment clonotype_consensus_aln = 11;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
-    // reference of this chain (defined elsewhere in this file).
-    // TODO: Default donor reference to universal reference?
-    required Alignment donor_reference_aln = 12;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
-    // reference of this chain (defined elsewhere in this file).
-    required Alignment universal_reference_aln = 13;
+  // Nucleotide sequence of the chain. This will only contain ACGT alphabets
+  required bytes nt_sequence = 1;
+  // Amino acid sequence from the start codon at the beginning of the V-REGION.
+  // This can be inferred from the `nt_sequence` and `v_start`, but stored for
+  // convenience
+  required bytes aa_sequence = 2;
+  // Index of the start of the V-REGION in the `nt_sequence`.
+  required uint32 v_start = 3;
+  // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
+  required uint32 j_end = 4;
+  // Index of the C-REGION of this chain in the universal reference.
+  // TODO: Should we store UVDJ regions here for convenience? The reason why it
+  // is not stored at this level is because all exact subclonotypes share the
+  // same UVDJ regions.
+  optional uint32 c_region_idx = 5;
+  // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
+  // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
+  required uint32 cdr3_start = 6;
+  // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
+  // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
+  required uint32 cdr3_end = 7;
+  // UMI counts of contigs associated with this exact subclonotype chain. The
+  // number of elements in this vector is equal to the number of barcodes
+  // associated with this exact subclonotype.
+  repeated uint32 umi_counts = 8;
+  // Read counts of contigs associated with this exact subclonotype chain. The
+  // number of elements in this vector is equal to the number of barcodes
+  // associated with this exact subclonotype.
+  repeated uint32 read_counts = 9;
+  // Names of contigs associated with this exact subclonotype chain. The number
+  // of elements in this vector is equal to the number of barcodes associated
+  // with this exact subclonotype. The contig name would be of the form
+  // `{barcode}_contig_{id}`.
+  repeated string contig_ids = 10;
+  // Alignment of the `nt_sequence` to the nucleotide sequence of the clonotype
+  // consensus of this chain.
+  // TODO: Do we need amino acid alignment info?
+  required Alignment clonotype_consensus_aln = 11;
+  // Alignment of the `nt_sequence` to the nucleotide sequence of the
+  // concatenated donor reference of this chain (defined elsewhere in this
+  // file).
+  // TODO: Default donor reference to universal reference?
+  required Alignment donor_reference_aln = 12;
+  // Alignment of the `nt_sequence` to the nucleotide sequence of the
+  // concatenated universal reference of this chain (defined elsewhere in this
+  // file).
+  required Alignment universal_reference_aln = 13;
 }
 
 // The chains in a clonotype are ordered an hence they have a unique index.
-// An exact subclonotype within a clonotype might not have all the chains that are present 
-// in the clonotype. This structure stores the exact subclonotype chain along with the
-// `index` of the corresponding chain in the parent clonotype.
+// An exact subclonotype within a clonotype might not have all the chains that
+// are present in the clonotype. This structure stores the exact subclonotype
+// chain along with the `index` of the corresponding chain in the parent
+// clonotype.
 message ExactSubClonotypeChainInfo {
-    // The index of this chain in the parent clonotype
-    required uint32 index = 1;
-    required ExactSubClonotypeChain chain = 2;
+  // The index of this chain in the parent clonotype
+  required uint32 index = 1;
+  required ExactSubClonotypeChain chain = 2;
 }
 
 // Define an exact subclonotype.
 //
-// All the barcodes within an exact subclonotype have the same number of productive chains,
-// the same sequence from the start of the V-REGION to the end of the J-REGION
-// as well as the same C-REGION annotation for each chain.
+// All the barcodes within an exact subclonotype have the same number of
+// productive chains, the same sequence from the start of the V-REGION to the
+// end of the J-REGION as well as the same C-REGION annotation for each chain.
 // TODO: Maybe mutations outside V-J?
 message ExactSubClonotype {
-    // The chains in an exact subclonotype. The number of elements in this vector is
-    // equal to the total number of chains in the parent clonotype. The order of chains
-    // is consistent with the order in the parent clonotype and at least one element in this
-    // vector is not a `None`.
-    repeated ExactSubClonotypeChainInfo chains = 1;
-    // List of cell barcodes in this exact subclonotype. The number of elements in this list is
-    // equal to the number of elements in the `umi_counts` and `contig_ids` vector in an
-    // `ExactSubClonotypeChain`. The barcodes have the appropriate gem group as the suffix.
-    repeated string cell_barcodes = 2;
-    // For a T cell, optionally annotate the exact subclonotype as one or both of iNKT/MAIT. This
-    // data structure stores the evidence we have about the annotation.  The evidence can be zero,
-    // and indeed this will be the case for all B cells.
-    required InvariantTCellAnnotation inkt_evidence = 3;
-    required InvariantTCellAnnotation mait_evidence = 4;
+  // The chains in an exact subclonotype. The number of elements in this vector
+  // is equal to the total number of chains in the parent clonotype. The order
+  // of chains is consistent with the order in the parent clonotype and at least
+  // one element in this vector is not a `None`.
+  repeated ExactSubClonotypeChainInfo chains = 1;
+  // List of cell barcodes in this exact subclonotype. The number of elements in
+  // this list is equal to the number of elements in the `umi_counts` and
+  // `contig_ids` vector in an `ExactSubClonotypeChain`. The barcodes have the
+  // appropriate gem group as the suffix.
+  repeated string cell_barcodes = 2;
+  // For a T cell, optionally annotate the exact subclonotype as one or both of
+  // iNKT/MAIT. This data structure stores the evidence we have about the
+  // annotation.  The evidence can be zero, and indeed this will be the case for
+  // all B cells.
+  required InvariantTCellAnnotation inkt_evidence = 3;
+  required InvariantTCellAnnotation mait_evidence = 4;
 }
 
 // Define a clonotype chain
 message ClonotypeChain {
-    // The nucleotide sequence of this clonotype chain consensus
-    // What we actually compute here is not the consensus across the clonotype (whose
-    // biological meaning is questionable), but rather the sequence of the first exact
-    // subclonotype which has an entry for the given chain.  Over 99% of the time, this
-    // will be the first exact subclonotype.
-    required bytes nt_sequence = 1;
-    // Index of the 5' UTR region in the universal reference. The region in the universal
-    // reference is guaranteed to be `Region::U`
-    optional uint32 u_idx = 2;
-    // Index of the Variable region in the universal reference. The region in the universal
-    // reference is guaranteed to be `Region::V`
-    required uint32 v_idx = 3;
-    // Index of the Diversity region in the universal reference. The region in the universal
-    // reference is guaranteed to be `Region::D`. D-REGION is not present for light/alpha
-    // chains. Even for heavy/beta chains, this might be `None` if there is ambiguity in the
-    // annotation.
-    optional uint32 d_idx = 4;
-    // Index of the Joining region in the universal reference. The region in the universal
-    // reference is guaranteed to be `Region::J`
-    required uint32 j_idx = 5;
-    // Index of the Constant region in the universal reference. The region in the universal
-    // reference is guaranteed to be `Region::C`
-    optional uint32 c_idx = 6;
-    // Index of the Variable region in the donor reference. The region in the donor
-    // reference is guaranteed to be `Region::V` and the `universal_idx` in the donor reference
-    // item will be equal to the `v_idx`
-    optional uint32 donor_v_idx = 7;
-    /// Index of the Joining region in the donor reference. The region in the donor
-    /// reference is guaranteed to be `Region::J` and the `universal_idx` in the donor reference
-    /// item will be equal to the `j_idx`
-    optional uint32 donor_j_idx = 8;
-    // Concatenated universal reference =
-    //     `nt_sequence` of universal_reference[u_idx] if u_idx is not None +
-    //     `nt_sequence` of universal_reference[v_idx] +
-    //     `nt_sequence` of universal_reference[d_idx] if d_idx is not None +
-    //     `nt_sequence` of universal_reference[j_idx] +
-    //     `nt_sequence` of universal_reference[c_idx] if c_idx is not None.
-    required bytes universal_reference = 9;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated universal
-    // reference of this chain.
-    required Alignment universal_reference_aln = 10;
-    // The concatenated donor reference is the same as the concatenated universal reference,
-    // however with substitutions:
-    //     `nt_sequence` of donor_reference[donor_v_idx] if donor_v_idx is not None
-    // and
-    //     `nt_sequence` of donor_reference[donor_j_idx] if donor_j_idx is not None.
-    required bytes donor_reference = 11;
-    // Alignment of the `nt_sequence` to the nucleotide sequence of the concatenated donor
-    // reference of this chain.
-    required Alignment donor_reference_aln = 12;
-    // Index of the start of the V-REGION in the `nt_sequence`.
-    required uint32 v_start = 13;
-    // Index of the stop of the aligned part of the V-REGION in the `nt-sequence` (exclusive).
-    required uint32 v_end = 14;
-    // Index of the stop of the aligned part of the V-REGION in universal reference V (exclusive).
-    required uint32 v_end_ref = 15;
-    // Index of the start of the aligned part of the J-REGION in the `nt_sequence`.
-    required uint32 j_start = 16;
-    // Index of the start of the aligned part of the J-REGION in universal reference J.
-    required uint32 j_start_ref = 17;
-    // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
-    required uint32 j_end = 18;
-    // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of the CDR3
-    // amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
-    required uint32 cdr3_start = 19;
-    // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The end of the
-    // CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
-    required uint32 cdr3_end = 20;
-    // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
-    required string chain_type = 21;
-    // AA sequence of the clonotype chain consensus
-    required bytes aa_sequence = 22;
-    // AA sequence of the concatenated universal reference starting from the V regions
-    required bytes aa_sequence_universal = 23;
-    // AA sequence of the concatenated donor reference starting from the V regions
-    required bytes aa_sequence_donor = 24;
+  // The nucleotide sequence of this clonotype chain consensus
+  // What we actually compute here is not the consensus across the clonotype
+  // (whose biological meaning is questionable), but rather the sequence of the
+  // first exact subclonotype which has an entry for the given chain.  Over 99%
+  // of the time, this will be the first exact subclonotype.
+  required bytes nt_sequence = 1;
+  // Index of the 5' UTR region in the universal reference. The region in the
+  // universal reference is guaranteed to be `Region::U`
+  optional uint32 u_idx = 2;
+  // Index of the Variable region in the universal reference. The region in the
+  // universal reference is guaranteed to be `Region::V`
+  required uint32 v_idx = 3;
+  // Index of the Diversity region in the universal reference. The region in the
+  // universal reference is guaranteed to be `Region::D`. D-REGION is not
+  // present for light/alpha chains. Even for heavy/beta chains, this might be
+  // `None` if there is ambiguity in the annotation.
+  optional uint32 d_idx = 4;
+  // Index of the Joining region in the universal reference. The region in the
+  // universal reference is guaranteed to be `Region::J`
+  required uint32 j_idx = 5;
+  // Index of the Constant region in the universal reference. The region in the
+  // universal reference is guaranteed to be `Region::C`
+  optional uint32 c_idx = 6;
+  // Index of the Variable region in the donor reference. The region in the
+  // donor reference is guaranteed to be `Region::V` and the `universal_idx` in
+  // the donor reference item will be equal to the `v_idx`
+  optional uint32 donor_v_idx = 7;
+  /// Index of the Joining region in the donor reference. The region in the
+  /// donor reference is guaranteed to be `Region::J` and the `universal_idx` in
+  /// the donor reference item will be equal to the `j_idx`
+  optional uint32 donor_j_idx = 8;
+  // Concatenated universal reference =
+  //     `nt_sequence` of universal_reference[u_idx] if u_idx is not None +
+  //     `nt_sequence` of universal_reference[v_idx] +
+  //     `nt_sequence` of universal_reference[d_idx] if d_idx is not None +
+  //     `nt_sequence` of universal_reference[j_idx] +
+  //     `nt_sequence` of universal_reference[c_idx] if c_idx is not None.
+  required bytes universal_reference = 9;
+  // Alignment of the `nt_sequence` to the nucleotide sequence of the
+  // concatenated universal reference of this chain.
+  required Alignment universal_reference_aln = 10;
+  // The concatenated donor reference is the same as the concatenated universal
+  // reference, however with substitutions:
+  //     `nt_sequence` of donor_reference[donor_v_idx] if donor_v_idx is not
+  //     None
+  // and
+  //     `nt_sequence` of donor_reference[donor_j_idx] if donor_j_idx is not
+  //     None.
+  required bytes donor_reference = 11;
+  // Alignment of the `nt_sequence` to the nucleotide sequence of the
+  // concatenated donor reference of this chain.
+  required Alignment donor_reference_aln = 12;
+  // Index of the start of the V-REGION in the `nt_sequence`.
+  required uint32 v_start = 13;
+  // Index of the stop of the aligned part of the V-REGION in the `nt-sequence`
+  // (exclusive).
+  required uint32 v_end = 14;
+  // Index of the stop of the aligned part of the V-REGION in universal
+  // reference V (exclusive).
+  required uint32 v_end_ref = 15;
+  // Index of the start of the aligned part of the J-REGION in the
+  // `nt_sequence`.
+  required uint32 j_start = 16;
+  // Index of the start of the aligned part of the J-REGION in universal
+  // reference J.
+  required uint32 j_start_ref = 17;
+  // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
+  required uint32 j_end = 18;
+  // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
+  // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
+  required uint32 cdr3_start = 19;
+  // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
+  // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
+  required uint32 cdr3_end = 20;
+  // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
+  required string chain_type = 21;
+  // AA sequence of the clonotype chain consensus
+  required bytes aa_sequence = 22;
+  // AA sequence of the concatenated universal reference starting from the V
+  // regions
+  required bytes aa_sequence_universal = 23;
+  // AA sequence of the concatenated donor reference starting from the V regions
+  required bytes aa_sequence_donor = 24;
 }
 
 // Definition of a clonotype.
 //
 // A clonotype is composed of a list of exact subclonotypes
 message Clonotype {
-    // The list of chains associated with this clonotype. The ordering of the chains is important
-    // as this order is preserved in the list of chains specified under each exact subclonotype. By
-    // convention heavy chain/beta chain comes ahead of light chain/alpha chain.
-    // TODO: What is the ordering when multiple chains of same kind are present?
-    repeated ClonotypeChain chains = 1;
-    // The list of exact subclonotypes in this clonotype ordered by the number of cell barcodes in
-    // the exact subclonotype in descending order (TODO: Verify sort order). The number of chains
-    // listed under each exact subclonotype will be equal to the number of chains in this clonotype
-    // in the same order. However, some of the exact subclonotype chains could be `None`.
-    repeated ExactSubClonotype exact_clonotypes = 2;
-    // The total number of cell barcodes associated with this clonotype. This can be inferred by
-    // summing up the number of barcodes within each exact subclonotype, but it is stored here for
-    // convenience.
-    required uint32 frequency = 3;
+  // The list of chains associated with this clonotype. The ordering of the
+  // chains is important as this order is preserved in the list of chains
+  // specified under each exact subclonotype. By convention heavy chain/beta
+  // chain comes ahead of light chain/alpha chain.
+  // TODO: What is the ordering when multiple chains of same kind are present?
+  repeated ClonotypeChain chains = 1;
+  // The list of exact subclonotypes in this clonotype ordered by the number of
+  // cell barcodes in the exact subclonotype in descending order (TODO: Verify
+  // sort order). The number of chains listed under each exact subclonotype will
+  // be equal to the number of chains in this clonotype in the same order.
+  // However, some of the exact subclonotype chains could be `None`.
+  repeated ExactSubClonotype exact_clonotypes = 2;
+  // The total number of cell barcodes associated with this clonotype. This can
+  // be inferred by summing up the number of barcodes within each exact
+  // subclonotype, but it is stored here for convenience.
+  required uint32 frequency = 3;
 }
 
-// A single donor reference sequence and metadata packaged in a convenient struct. In the
-// current version of enclone, the donor reference is only inferred for the V-REGIONs. But we could
-// extend it to J-REGIONs in the future.
+// A single donor reference sequence and metadata packaged in a convenient
+// struct. In the current version of enclone, the donor reference is only
+// inferred for the V-REGIONs. But we could extend it to J-REGIONs in the
+// future.
 message UniversalReferenceItem {
-    // A unique identifier for this reference sequence that traces back to the reference fasta.
-    // Need not be ordered or continuous
-    required uint32 ref_idx = 1;
-    // The display name of this gene which will be shown in Loupe (optional allele information)
-    required string display_name = 2;
-    // One of the U/V/D/J/C regions
-    required Region region = 3;
-    // Nucleotide sequence associated with this reference item
-    required bytes nt_sequence = 4;
+  // A unique identifier for this reference sequence that traces back to the
+  // reference fasta. Need not be ordered or continuous
+  required uint32 ref_idx = 1;
+  // The display name of this gene which will be shown in Loupe (optional allele
+  // information)
+  required string display_name = 2;
+  // One of the U/V/D/J/C regions
+  required Region region = 3;
+  // Nucleotide sequence associated with this reference item
+  required bytes nt_sequence = 4;
 }
 
-
-// List of all universal reference sequences and metadata packaged in a convenient struct.
-// Currently just a list of items. Could add metadata like species etc.
+// List of all universal reference sequences and metadata packaged in a
+// convenient struct. Currently just a list of items. Could add metadata like
+// species etc.
 message UniversalReference {
-    // UV(D)JC regions associated with a clonotype chain or an exact subclonotype chain are stored
-    // as indices into this vector
-    repeated UniversalReferenceItem items = 1; 
+  // UV(D)JC regions associated with a clonotype chain or an exact subclonotype
+  // chain are stored as indices into this vector
+  repeated UniversalReferenceItem items = 1;
 }
 
-// A single donor reference sequence and metadata packaged in a convenient struct. In the
-// current version of enclone, the donor reference is only inferred for the V-REGIONs. But we could
-// extend it to J-REGIONs in the future.
+// A single donor reference sequence and metadata packaged in a convenient
+// struct. In the current version of enclone, the donor reference is only
+// inferred for the V-REGIONs. But we could extend it to J-REGIONs in the
+// future.
 message DonorReferenceItem {
-    // Index of the parent sequence in the universal reference
-    required uint32 universal_idx = 1;
-    // Index of the donor associated with this reference. If there are no donors specified, this
-    // will be `0` by default.
-    required uint32 donor_idx = 2;
-    // The display name of this gene which will be shown in Loupe (optional allele information)
-    // TODO: Should this be modified to explicitly point out the donor? e.g TRAV-1 [Donor 0]?
-    // for now, like this: "TRAV-1, donor 1, alt allele 1", etc.
-    required string display_name = 3;
-    // Currently, the donor reference region will only be the V-REGION
-    required Region region = 4;
-    // The nucleotide sequence associated with this reference item
-    required bytes nt_sequence = 5;
-    // Alignment of the `nt-sequence` with the nucleotide sequence of the corresponding universal
-    // reference item.
-    required Alignment universal_aln = 6;
+  // Index of the parent sequence in the universal reference
+  required uint32 universal_idx = 1;
+  // Index of the donor associated with this reference. If there are no donors
+  // specified, this will be `0` by default.
+  required uint32 donor_idx = 2;
+  // The display name of this gene which will be shown in Loupe (optional allele
+  // information)
+  // TODO: Should this be modified to explicitly point out the donor? e.g TRAV-1
+  // [Donor 0]? for now, like this: "TRAV-1, donor 1, alt allele 1", etc.
+  required string display_name = 3;
+  // Currently, the donor reference region will only be the V-REGION
+  required Region region = 4;
+  // The nucleotide sequence associated with this reference item
+  required bytes nt_sequence = 5;
+  // Alignment of the `nt-sequence` with the nucleotide sequence of the
+  // corresponding universal reference item.
+  required Alignment universal_aln = 6;
 }
 
-// List of all donor reference sequences and metadata packaged in a convenient struct.
-// Currently just a list of items. Could add metadata like all donor names etc.
+// List of all donor reference sequences and metadata packaged in a convenient
+// struct. Currently just a list of items. Could add metadata like all donor
+// names etc.
 message DonorReference {
-    // All the entries in this reference
-    // The donor V-REGION associated with a clonotype chain is stored as an index to this vector.
-    repeated DonorReferenceItem items = 1; 
+  // All the entries in this reference
+  // The donor V-REGION associated with a clonotype chain is stored as an index
+  // to this vector.
+  repeated DonorReferenceItem items = 1;
 }
 
 message GemWellInfo {
-    required string donor = 1;
-    required string origin = 2;
-    // Data for all the additional columns. For convenience, we are storing it as a map, rather than
-    // an array with the order defined by `additional_columns` in Metadata
-    map<string, string> additional_data = 8;
+  required string donor = 1;
+  required string origin = 2;
+  // Data for all the additional columns. For convenience, we are storing it as
+  // a map, rather than an array with the order defined by `additional_columns`
+  // in Metadata
+  map<string, string> additional_data = 8;
 }
 
 message Metadata {
-    // The additional metadata columns specified by the user
-    repeated string additional_columns = 1;
-    // List of all the donors. The `donor_idx` in the `DonorReference` is an index into this array.
-    // This will be empty for a single sample case
-    repeated string donors = 2;
-    // Key: Gem well
-    // Value: Metadata for each gem well
-    // This will be empty for a single sample case
-    map<uint32, GemWellInfo> per_gem_well_info = 3;
+  // The additional metadata columns specified by the user
+  repeated string additional_columns = 1;
+  // List of all the donors. The `donor_idx` in the `DonorReference` is an index
+  // into this array. This will be empty for a single sample case
+  repeated string donors = 2;
+  // Key: Gem well
+  // Value: Metadata for each gem well
+  // This will be empty for a single sample case
+  map<uint32, GemWellInfo> per_gem_well_info = 3;
 }
 
 // Outputs from a single enclone run.
 //
-// This message itself is not written in the proto file, but the order of messages follow
-// the order of fields in this message
+// This message itself is not written in the proto file, but the order of
+// messages follow the order of fields in this message
 message EncloneOutputs {
-    required string version = 1;
-    // Metadata associated with this run. For single sample runs, there is no useful metadata.
-    // In the context of aggr, this will be populated from the user input
-    required Metadata metadata = 10;
-    // The universal reference used.
-    required UniversalReference universal_reference = 20;
-    // The inferred donor reference.
-    required DonorReference donor_reference = 30;
-    // The total number of clonotypes
-    required uint32 num_clonotypes = 100;
-    // List of all clonotypes computed in this enclone run. Each clonotype is stored as an
-    // individual message in order to enable streaming.
-    repeated Clonotype clonotypes = 110;
+  required string version = 1;
+  // Metadata associated with this run. For single sample runs, there is no
+  // useful metadata. In the context of aggr, this will be populated from the
+  // user input
+  required Metadata metadata = 10;
+  // The universal reference used.
+  required UniversalReference universal_reference = 20;
+  // The inferred donor reference.
+  required DonorReference donor_reference = 30;
+  // The total number of clonotypes
+  required uint32 num_clonotypes = 100;
+  // List of all clonotypes computed in this enclone run. Each clonotype is
+  // stored as an individual message in order to enable streaming.
+  repeated Clonotype clonotypes = 110;
 }

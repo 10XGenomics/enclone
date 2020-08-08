@@ -2212,7 +2212,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=841893afa30a4b0c9dcb20ddc26b9d5209ed57cb#841893afa30a4b0c9dcb20ddc26b9d5209ed57cb"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=183e2d657e6436494072a32cf8da4f7b753d1e69#183e2d657e6436494072a32cf8da4f7b753d1e69"
 dependencies = [
  "align_tools",
  "amino",
@@ -2240,7 +2240,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=841893afa30a4b0c9dcb20ddc26b9d5209ed57cb#841893afa30a4b0c9dcb20ddc26b9d5209ed57cb"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=183e2d657e6436494072a32cf8da4f7b753d1e69#183e2d657e6436494072a32cf8da4f7b753d1e69"
 dependencies = [
  "serde",
  "serde_json",
