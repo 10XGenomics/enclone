@@ -196,6 +196,10 @@ message ClonotypeChain {
     required string chain_type = 21;
     // AA sequence of the clonotype chain consensus
     required bytes aa_sequence = 22;
+    // AA sequence of the concatenated universal reference starting from the V regions
+    required bytes aa_sequence_universal = 23;
+    // AA sequence of the concatenated donor reference starting from the V regions
+    required bytes aa_sequence_donor = 24;
 }
 
 // Definition of a clonotype.

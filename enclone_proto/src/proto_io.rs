@@ -79,32 +79,41 @@ impl<R: Read> ProtoReader<R> {
             reader,
         }
     }
+    // Clear the decode_buffer and fill it with `num_bytes` bytes from the reader
+    fn read_exact(&mut self, num_bytes: usize) -> Result<(), Error> {
+        self.decode_buffer.clear();
+        self.reader
+            .by_ref()
+            .take(num_bytes as u64)
+            .read_to_end(&mut self.decode_buffer)?;
+        // If we did not get num_bytes bytes, return an error
+        if self.decode_buffer.len() != num_bytes {
+            return Err(format_err!(
+                "Expected to get {} bytes from the reader. Got {} bytes!",
+                num_bytes,
+                self.decode_buffer.len()
+            ));
+        }
+        Ok(())
+    }
+    // Skip a message from the underlying reader
+    pub fn skip(&mut self) -> Result<(), Error> {
+        self.read_exact(4)?;
+        let decoded_len = self.decode_buffer.as_slice().read_u32::<BigEndian>()?;
+        self.read_exact(decoded_len as usize)
+    }
     pub fn read_and_decode<M>(&mut self) -> Result<M, Error>
     where
         M: Message + Default,
     {
-        // Attempt to take 4 bytes from the buffer
-        self.reader
-            .by_ref()
-            .take(4)
-            .read_to_end(&mut self.decode_buffer)?;
-        // If we did not get 4 bytes, return an error
-        if self.decode_buffer.len() != 4 {
-            return Err(format_err!(
-                "Expected to get 4 bytes for length. Got {} bytes!",
-                self.decode_buffer.len()
-            ));
-        }
+        // Attempt to take 4 bytes from the buffer for length
+        self.read_exact(4)?;
         // decode the 4 bytes as a big endian u32
         let decoded_len = self.decode_buffer.as_slice().read_u32::<BigEndian>()?;
-        self.decode_buffer.clear();
+
         // Decode the message
-        self.reader
-            .by_ref()
-            .take(decoded_len as u64)
-            .read_to_end(&mut self.decode_buffer)?;
+        self.read_exact(decoded_len as usize)?;
         let decoded_message = M::decode(self.decode_buffer.as_slice())?;
-        self.decode_buffer.clear();
         Ok(decoded_message)
     }
 }
