@@ -1583,9 +1583,7 @@ fn test_proto_write() -> Result<(), Error> {
         assert!(outputs_proto == outputs_bin);
 
         // Test to make sure that the clonotype iterator works
-        let clonotypes: Vec<_> = ClonotypeIter::from_reader(File::open(&proto_file).unwrap())
-            .unwrap()
-            .collect();
+        let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
         assert!(clonotypes == outputs_proto.clonotypes);
 
         std::fs::remove_file(&proto_file)?;

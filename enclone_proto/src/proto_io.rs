@@ -204,6 +204,12 @@ pub struct ClonotypeIter<R: Read> {
     proto_reader: ProtoReader<R>,
 }
 
+impl ClonotypeIter<BufReader<File>> {
+    pub fn from_file(file: impl AsRef<Path>) -> Result<Self, Error> {
+        ClonotypeIter::from_reader(BufReader::new(File::open(file)?))
+    }
+}
+
 impl<R: Read> ClonotypeIter<R> {
     pub fn from_reader(reader: R) -> Result<Self, Error> {
         let mut proto_reader = ProtoReader::from_reader(reader);
