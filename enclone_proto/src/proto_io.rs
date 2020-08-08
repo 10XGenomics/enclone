@@ -19,7 +19,7 @@
 //! - `Length` is an unsigned 32 bit integer stored in **Big endian** order.
 //! - If there are multiple messages, they are stored consecutively following the same format.
 
-use crate::types::EncloneOutputs;
+use crate::types::{Clonotype, EncloneOutputs};
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use failure::{format_err, Error};
 use prost::Message;
@@ -73,44 +73,58 @@ pub struct ProtoReader<R: Read> {
 }
 
 impl<R: Read> ProtoReader<R> {
-    pub fn with_reader(reader: R) -> Self {
+    pub fn from_reader(reader: R) -> Self {
         ProtoReader {
             decode_buffer: Vec::with_capacity(BUFFER_CAPACITY),
             reader,
         }
     }
+    // Clear the decode_buffer and fill it with `num_bytes` bytes from the reader
+    fn read_exact(&mut self, num_bytes: usize) -> Result<(), Error> {
+        self.decode_buffer.clear();
+        self.reader
+            .by_ref()
+            .take(num_bytes as u64)
+            .read_to_end(&mut self.decode_buffer)?;
+        // If we did not get num_bytes bytes, return an error
+        if self.decode_buffer.len() != num_bytes {
+            return Err(format_err!(
+                "Expected to get {} bytes from the reader. Got {} bytes!",
+                num_bytes,
+                self.decode_buffer.len()
+            ));
+        }
+        Ok(())
+    }
+    // Skip a message from the underlying reader
+    pub fn skip(&mut self) -> Result<(), Error> {
+        self.read_exact(4)?;
+        let decoded_len = self.decode_buffer.as_slice().read_u32::<BigEndian>()?;
+        self.read_exact(decoded_len as usize)
+    }
     pub fn read_and_decode<M>(&mut self) -> Result<M, Error>
     where
         M: Message + Default,
     {
-        // Attempt to take 4 bytes from the buffer
-        self.reader
-            .by_ref()
-            .take(4)
-            .read_to_end(&mut self.decode_buffer)?;
-        // If we did not get 4 bytes, return an error
-        if self.decode_buffer.len() != 4 {
-            return Err(format_err!(
-                "Expected to get 4 bytes for length. Got {} bytes!",
-                self.decode_buffer.len()
-            ));
-        }
+        // Attempt to take 4 bytes from the buffer for length
+        self.read_exact(4)?;
         // decode the 4 bytes as a big endian u32
         let decoded_len = self.decode_buffer.as_slice().read_u32::<BigEndian>()?;
-        self.decode_buffer.clear();
+
         // Decode the message
-        self.reader
-            .by_ref()
-            .take(decoded_len as u64)
-            .read_to_end(&mut self.decode_buffer)?;
+        self.read_exact(decoded_len as usize)?;
         let decoded_message = M::decode(self.decode_buffer.as_slice())?;
-        self.decode_buffer.clear();
         Ok(decoded_message)
     }
 }
 
 /// The enclone outputs are stored in the protobuf file as follows:
 /// ```text
+/// +------------+----------------------------+
+/// | Length     |      Version String        |....
+/// | [4 bytes]  |      [Length Bytes]        |....
+/// +------------+----------------------------+
+///
 /// +------------+----------------------------+
 /// | Length     |      Metadata (aggr)       |....
 /// | [4 bytes]  |      [Length Bytes]        |....
@@ -136,6 +150,8 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
     let writer = BufWriter::new(File::create(path)?);
     let mut proto_writer = ProtoWriter::with_writer(writer);
 
+    // Write the version
+    proto_writer.encode_and_write(enclone_outputs.version)?;
     // Write the metadata
     proto_writer.encode_and_write(enclone_outputs.metadata)?;
     // Write the universal reference
@@ -154,8 +170,10 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
 /// clonotypes instead of loading everything into memory.
 pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let reader = BufReader::new(File::open(path)?);
-    let mut proto_reader = ProtoReader::with_reader(reader);
+    let mut proto_reader = ProtoReader::from_reader(reader);
 
+    // Read the version
+    let version = proto_reader.read_and_decode()?;
     // Read the metadata
     let metadata = proto_reader.read_and_decode()?;
     // Read the universal reference
@@ -170,9 +188,57 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     }
 
     Ok(EncloneOutputs {
+        version,
         metadata,
         universal_reference,
         donor_reference,
+        num_clonotypes,
         clonotypes,
     })
+}
+
+/// Iterator over clonotypes
+pub struct ClonotypeIter<R: Read> {
+    index: u32,
+    num_clonotypes: u32,
+    proto_reader: ProtoReader<R>,
+}
+
+impl ClonotypeIter<BufReader<File>> {
+    pub fn from_file(file: impl AsRef<Path>) -> Result<Self, Error> {
+        ClonotypeIter::from_reader(BufReader::new(File::open(file)?))
+    }
+}
+
+impl<R: Read> ClonotypeIter<R> {
+    pub fn from_reader(reader: R) -> Result<Self, Error> {
+        let mut proto_reader = ProtoReader::from_reader(reader);
+        // Skip version, metadata, universal reference, donor reference
+        for _ in 0..4 {
+            proto_reader.skip()?;
+        }
+        let num_clonotypes: u32 = proto_reader.read_and_decode()?;
+        Ok(ClonotypeIter {
+            index: 0,
+            num_clonotypes,
+            proto_reader,
+        })
+    }
+}
+
+impl<R: Read> Iterator for ClonotypeIter<R> {
+    type Item = Clonotype;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index < self.num_clonotypes {
+            let cl = match self.proto_reader.read_and_decode() {
+                Ok(c) => c,
+                Err(e) => panic!("Failed to decode clonotype due to {}", e),
+            };
+            self.index += 1;
+            Some(cl)
+        } else {
+            None
+        }
+    }
 }
