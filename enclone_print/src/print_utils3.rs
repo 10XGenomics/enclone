@@ -59,16 +59,13 @@ pub fn define_column_info(
         cvars.push(cv);
     }
 
-    // Compute CDR1 starts, etc.  *** TO DO ***
-
-    let cdr1_starts = vec![None; cols];
-    let cdr1_lens = vec![None; cols];
-    let cdr2_starts = vec![None; cols];
-    let cdr2_lens = vec![None; cols];
-
     // Compute CDR3 starts, etc.
 
+    let mut cdr1_starts = Vec::<Option<usize>>::new();
+    let mut cdr2_starts = Vec::<Option<usize>>::new();
     let mut cdr3_starts = Vec::<usize>::new();
+    let mut cdr1_lens = Vec::<Option<usize>>::new();
+    let mut cdr2_lens = Vec::<Option<usize>>::new();
     let mut cdr3_lens = Vec::<usize>::new();
     let mut seq_lens = Vec::<usize>::new();
     let mut seq_del_lens = Vec::<usize>::new();
@@ -79,9 +76,36 @@ pub fn define_column_info(
             if m.is_some() {
                 let m = m.unwrap();
                 let exm = &ex.share[m];
+                cdr1_lens.push(Some(exm.cdr1_aa.len()));
+                cdr2_lens.push(Some(exm.cdr2_aa.len()));
                 cdr3_lens.push(exm.cdr3_aa.len());
                 seq_lens.push(exm.seq.len());
                 seq_del_lens.push(exm.seq_del.len());
+
+                // The logic below with testing i < start while incrementing start seems fishy.
+
+                if exm.cdr1_start.is_some() {
+                    let mut start = exm.cdr1_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
+                    }
+                    cdr1_starts.push(Some(start));
+                } else {
+                    cdr1_starts.push(None);
+                }
+                if exm.cdr2_start.is_some() {
+                    let mut start = exm.cdr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
+                    }
+                    cdr2_starts.push(Some(start));
+                } else {
+                    cdr2_starts.push(None);
+                }
                 let mut start = exm.cdr3_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -549,7 +573,13 @@ pub fn build_table_stuff(
                     if m.is_some() {
                         let m = m.unwrap();
                         let mut s = String::new();
-                        if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
+                        let amino = &ctl.clono_print_opt.amino;
+                        let _printing_cdr1 =
+                            amino.contains(&"cdr1".to_string()) && rsi.cdr1_starts[cx].is_some();
+                        let _printing_cdr2 =
+                            amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[cx].is_some();
+                        let printing_cdr3 = amino.contains(&"cdr3".to_string());
+                        if printing_cdr3 {
                             let cs = rsi.cdr3_starts[cx] / 3;
                             let lead = show_aa[cx].iter().position(|x| *x == cs).unwrap();
                             s += &" ".repeat(lead);
@@ -566,6 +596,7 @@ pub fn build_table_stuff(
                                 s += " ";
                             }
                         }
+
                         row.push(s);
                         break;
                     }
