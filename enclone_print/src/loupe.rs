@@ -14,7 +14,6 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use io_utils::*;
-use std::collections::HashMap;
 use vector_utils::*;
 
 // Export donor reference/inferred alt allele sequences
@@ -84,7 +83,6 @@ pub fn make_loupe_clonotype(
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    to_ref_index_orig: &HashMap<usize, usize>,
 ) -> Clonotype {
     // Define concatenated universal and donor reference sequences.
 
@@ -140,23 +138,8 @@ pub fn make_loupe_clonotype(
         }
         let ex = &exact_clonotypes[exacts[u0]];
         let nt_sequence = ex.share[m0].full_seq.clone();
-        let mut u_idx = rsi.uids[cx];
-        let mut v_idx = rsi.vids[cx];
-        let mut d_idx = rsi.dids[cx];
-        let mut j_idx = rsi.jids[cx];
-        let mut c_idx = rsi.cids[cx];
         let chain_type = ex.share[m0].chain_type.clone();
-        if u_idx.is_some() {
-            u_idx = Some(to_ref_index_orig[&u_idx.unwrap()]);
-        }
-        v_idx = to_ref_index_orig[&v_idx];
-        if d_idx.is_some() {
-            d_idx = Some(to_ref_index_orig[&d_idx.unwrap()]);
-        }
-        j_idx = to_ref_index_orig[&j_idx];
-        if c_idx.is_some() {
-            c_idx = Some(to_ref_index_orig[&c_idx.unwrap()]);
-        }
+
         let donor_v_idx = rsi.vpids[cx];
         let donor_j_idx = None;
         let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
@@ -174,11 +157,11 @@ pub fn make_loupe_clonotype(
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
             aa_sequence: aa_sequence,
-            u_idx: u_idx.map(|idx| idx as u32),
-            v_idx: v_idx as u32,
-            d_idx: d_idx.map(|idx| idx as u32),
-            j_idx: j_idx as u32,
-            c_idx: c_idx.map(|idx| idx as u32),
+            u_idx: rsi.uids[cx].map(|idx| idx as u32),
+            v_idx: rsi.vids[cx] as u32,
+            d_idx: rsi.dids[cx].map(|idx| idx as u32),
+            j_idx: rsi.jids[cx] as u32,
+            c_idx: rsi.cids[cx].map(|idx| idx as u32),
             donor_v_idx: donor_v_idx.map(|idx| idx as u32),
             donor_j_idx: donor_j_idx,
             universal_reference: universal_reference,
