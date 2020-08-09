@@ -59,6 +59,13 @@ pub fn define_column_info(
         cvars.push(cv);
     }
 
+    // Compute CDR1 starts, etc.  *** TO DO ***
+
+    let cdr1_starts = vec![None; cols];
+    let cdr1_lens = vec![None; cols];
+    let cdr2_starts = vec![None; cols];
+    let cdr2_lens = vec![None; cols];
+
     // Compute CDR3 starts, etc.
 
     let mut cdr3_starts = Vec::<usize>::new();
@@ -237,6 +244,10 @@ pub fn define_column_info(
         dids: dids,
         jids: jids,
         cids: cids,
+        cdr1_starts: cdr1_starts,
+        cdr1_lens: cdr1_lens,
+        cdr2_starts: cdr2_starts,
+        cdr2_lens: cdr2_lens,
         cdr3_starts: cdr3_starts,
         cdr3_lens: cdr3_lens,
         seq_lens: seq_lens,
