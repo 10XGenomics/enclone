@@ -580,8 +580,8 @@ pub fn build_table_stuff(
                             amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[cx].is_some();
                         let printing_cdr3 = amino.contains(&"cdr3".to_string());
                         if printing_cdr3 {
-                            let cs = rsi.cdr3_starts[cx] / 3;
-                            let lead = show_aa[cx].iter().position(|x| *x == cs).unwrap();
+                            let cs3 = rsi.cdr3_starts[cx] / 3;
+                            let lead = show_aa[cx].iter().position(|x| *x == cs3).unwrap();
                             s += &" ".repeat(lead);
                             if lead > 0 {
                                 s += " ";
@@ -592,11 +592,10 @@ pub fn build_table_stuff(
                             s += &"═".repeat(left);
                             s += "CDR3";
                             s += &"═".repeat(right);
-                            if show_aa[cx][show_aa[cx].len() - 1] != cs + n - 1 {
+                            if show_aa[cx][show_aa[cx].len() - 1] != cs3 + n - 1 {
                                 s += " ";
                             }
                         }
-
                         row.push(s);
                         break;
                     }
