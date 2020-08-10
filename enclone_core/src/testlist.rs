@@ -283,14 +283,16 @@ pub const TESTS: [&str; 105] = [
         MAX_CDR3_DIFFS=100 CDR3=CVRILGRALTVRVYFYYGIDVW"###,
 ];
 
-// Test using the extended public dataset collection.
+// Test using the extended public dataset collection.  Or tests that require samtools.
 
-pub const EXTENDED_TESTS: [&str; 2] = [
+pub const EXTENDED_TESTS: [&str; 3] = [
     // 1. test that used to crash on a particular barcode
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
      NO_PRE NFORCE"###,
+    // 3. test sec and mem [requires samtools]
+    r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
 ];
 
 // Tests of internal features.

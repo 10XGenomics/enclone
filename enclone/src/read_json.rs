@@ -131,8 +131,12 @@ fn parse_vector_entry_from_json(
     let mut j_start_ref = 0;
     let mut c_start = None;
     let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
+    let cdr1_aa: String = String::new(); // NEED TO POPULATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let cdr2_aa: String = String::new(); // NEED TO POPULATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let cdr3_aa: String;
     let cdr3_dna: String;
+    let cdr1_start: Option<usize> = None; // NEED TO POPULATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let cdr2_start: Option<usize> = None; // NEED TO POPULATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let mut cdr3_start: usize;
     if v.get("version").is_some() {
         *cr_version = v["version"].to_string().between("\"", "\"").to_string();
@@ -471,6 +475,10 @@ fn parse_vector_entry_from_json(
         j_ref_id: j_ref_id,
         c_ref_id: c_ref_id,
         u_ref_id: u_ref_id,
+        cdr1_aa: cdr1_aa.to_string(),
+        cdr1_start: cdr1_start,
+        cdr2_aa: cdr2_aa.to_string(),
+        cdr2_start: cdr2_start,
         cdr3_aa: cdr3_aa.to_string(),
         cdr3_start: cdr3_start,
         quals: quals,

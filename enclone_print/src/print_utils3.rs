@@ -61,7 +61,11 @@ pub fn define_column_info(
 
     // Compute CDR3 starts, etc.
 
+    let mut cdr1_starts = Vec::<Option<usize>>::new();
+    let mut cdr2_starts = Vec::<Option<usize>>::new();
     let mut cdr3_starts = Vec::<usize>::new();
+    let mut cdr1_lens = Vec::<Option<usize>>::new();
+    let mut cdr2_lens = Vec::<Option<usize>>::new();
     let mut cdr3_lens = Vec::<usize>::new();
     let mut seq_lens = Vec::<usize>::new();
     let mut seq_del_lens = Vec::<usize>::new();
@@ -72,9 +76,36 @@ pub fn define_column_info(
             if m.is_some() {
                 let m = m.unwrap();
                 let exm = &ex.share[m];
+                cdr1_lens.push(Some(exm.cdr1_aa.len()));
+                cdr2_lens.push(Some(exm.cdr2_aa.len()));
                 cdr3_lens.push(exm.cdr3_aa.len());
                 seq_lens.push(exm.seq.len());
                 seq_del_lens.push(exm.seq_del.len());
+
+                // The logic below with testing i < start while incrementing start seems fishy.
+
+                if exm.cdr1_start.is_some() {
+                    let mut start = exm.cdr1_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
+                    }
+                    cdr1_starts.push(Some(start));
+                } else {
+                    cdr1_starts.push(None);
+                }
+                if exm.cdr2_start.is_some() {
+                    let mut start = exm.cdr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
+                    }
+                    cdr2_starts.push(Some(start));
+                } else {
+                    cdr2_starts.push(None);
+                }
                 let mut start = exm.cdr3_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -237,6 +268,10 @@ pub fn define_column_info(
         dids: dids,
         jids: jids,
         cids: cids,
+        cdr1_starts: cdr1_starts,
+        cdr1_lens: cdr1_lens,
+        cdr2_starts: cdr2_starts,
+        cdr2_lens: cdr2_lens,
         cdr3_starts: cdr3_starts,
         cdr3_lens: cdr3_lens,
         seq_lens: seq_lens,
@@ -525,6 +560,7 @@ pub fn build_table_stuff(
 
     let mut row = vec!["".to_string(); row1.len()];
     for cx in 0..cols {
+        let show = &show_aa[cx];
         for j in 0..rsi.cvars[cx].len() {
             if rsi.cvars[cx][j] != "amino".to_string() {
                 if drows.is_empty() {
@@ -538,9 +574,80 @@ pub fn build_table_stuff(
                     if m.is_some() {
                         let m = m.unwrap();
                         let mut s = String::new();
-                        if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
-                            let cs = rsi.cdr3_starts[cx] / 3;
-                            let lead = show_aa[cx].iter().position(|x| *x == cs).unwrap();
+                        let amino = &ctl.clono_print_opt.amino;
+                        let printing_cdr1 =
+                            amino.contains(&"cdr1".to_string()) && rsi.cdr1_starts[cx].is_some();
+                        let printing_cdr2 =
+                            amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[cx].is_some();
+                        let printing_cdr3 = amino.contains(&"cdr3".to_string());
+                        if printing_cdr1 {
+                            let cs1 = rsi.cdr1_starts[cx].unwrap() / 3;
+                            let lead = show.iter().position(|x| *x == cs1).unwrap();
+                            s += &" ".repeat(lead);
+                            if lead > 0 {
+                                s += " ";
+                            }
+                            let n = exact_clonotypes[exacts[u]].share[m].cdr1_aa.len();
+                            if n >= 4 {
+                                let left = (n - 3) / 2;
+                                let right = n - left - 4;
+                                s += &"═".repeat(left);
+                                s += "CDR1";
+                                s += &"═".repeat(right);
+                            } else if n == 3 {
+                                s += "CR1";
+                            } else if n == 2 {
+                                s += "C1";
+                            } else if n == 1 {
+                                s += "1";
+                            }
+                        }
+                        if printing_cdr2 {
+                            let lead;
+                            let cs2 = rsi.cdr2_starts[cx].unwrap() / 3;
+                            let pos2 = show.iter().position(|x| *x == cs2).unwrap();
+                            if !printing_cdr1 {
+                                lead = pos2;
+                            } else {
+                                let cs1 = rsi.cdr1_starts[cx].unwrap() / 3;
+                                let pos1 = show.iter().position(|x| *x == cs1).unwrap();
+                                lead = pos2 - pos1;
+                            }
+                            s += &" ".repeat(lead);
+                            if lead > 0 {
+                                s += " ";
+                            }
+                            let n = exact_clonotypes[exacts[u]].share[m].cdr2_aa.len();
+                            if n >= 4 {
+                                let left = (n - 3) / 2;
+                                let right = n - left - 4;
+                                s += &"═".repeat(left);
+                                s += "CDR2";
+                                s += &"═".repeat(right);
+                            } else if n == 3 {
+                                s += "CR2";
+                            } else if n == 2 {
+                                s += "C2";
+                            } else if n == 1 {
+                                s += "2";
+                            }
+                        }
+
+                        if printing_cdr3 {
+                            let lead;
+                            let cs3 = rsi.cdr3_starts[cx] / 3;
+                            let pos3 = show.iter().position(|x| *x == cs3).unwrap();
+                            if !printing_cdr1 && !printing_cdr2 {
+                                lead = pos3;
+                            } else if printing_cdr2 {
+                                let cs2 = rsi.cdr2_starts[cx].unwrap() / 3;
+                                let pos2 = show.iter().position(|x| *x == cs2).unwrap();
+                                lead = pos3 - pos2;
+                            } else {
+                                let cs1 = rsi.cdr1_starts[cx].unwrap() / 3;
+                                let pos1 = show.iter().position(|x| *x == cs1).unwrap();
+                                lead = pos3 - pos1;
+                            }
                             s += &" ".repeat(lead);
                             if lead > 0 {
                                 s += " ";
@@ -551,9 +658,6 @@ pub fn build_table_stuff(
                             s += &"═".repeat(left);
                             s += "CDR3";
                             s += &"═".repeat(right);
-                            if show_aa[cx][show_aa[cx].len() - 1] != cs + n - 1 {
-                                s += " ";
-                            }
                         }
                         row.push(s);
                         break;

@@ -562,7 +562,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     "\nSince the reference sequence is already in the VDJ input directories that\n\
                     you supplied to enclone, it is not necessary to supply the MOUSE argument.\n\
                     Please remove that argument.  Exiting now because of possible unintended\n\
-                    consequences.\n\n"
+                    consequences.\n"
                 );
                 std::process::exit(1);
             }
