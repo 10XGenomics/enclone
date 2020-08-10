@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 106] = [
+pub const TESTS: [&str; 105] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -281,18 +281,18 @@ pub const TESTS: [&str; 106] = [
     // 105. test MAX_DEGRADATION and MAX_DIFFS
     r###"BCR=123085,123089 MAX_LOG_SCORE=100 MAX_DEGRADATION=150 MAX_DIFFS=200
         MAX_CDR3_DIFFS=100 CDR3=CVRILGRALTVRVYFYYGIDVW"###,
-    // 106. test sec and mem
-    r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
 ];
 
-// Test using the extended public dataset collection.
+// Test using the extended public dataset collection.  Or tests that require samtools.
 
-pub const EXTENDED_TESTS: [&str; 2] = [
+pub const EXTENDED_TESTS: [&str; 3] = [
     // 1. test that used to crash on a particular barcode
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
      NO_PRE NFORCE"###,
+    // 3. test sec and mem [requires samtools]
+    r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
 ];
 
 // Tests of internal features.
