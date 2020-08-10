@@ -3,6 +3,7 @@
 // Loupe uses to access clonotype data.
 
 use enclone_proto::proto_io::write_proto;
+use enclone_proto::PROTO_VERSION;
 use vdj_ann::*;
 
 use self::refx::*;
@@ -13,7 +14,6 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use io_utils::*;
-use std::collections::HashMap;
 use vector_utils::*;
 
 // Export donor reference/inferred alt allele sequences
@@ -70,20 +70,29 @@ pub fn make_donor_refs(
     drefs
 }
 
+fn amino_acid(seq: &[u8], start: usize) -> Vec<u8> {
+    seq[start..]
+        .chunks_exact(3)
+        .map(|codon| codon_to_aa(&codon))
+        .collect()
+}
+
 pub fn make_loupe_clonotype(
     exact_clonotypes: &Vec<ExactClonotype>,
     exacts: &Vec<usize>,
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    to_ref_index_orig: &HashMap<usize, usize>,
 ) -> Clonotype {
     // Define concatenated universal and donor reference sequences.
 
     let mat = &rsi.mat;
     let cols = rsi.uids.len();
     let mut concatu = vec![Vec::<u8>::new(); cols];
+    let mut vstartu = vec![0; cols]; // Index of the start of the V region in concatu
     let mut concatd = vec![Vec::<u8>::new(); cols];
+    let mut vstartd = vec![0; cols]; // Index of the start of the V region in concatd
+
     for cx in 0..cols {
         if rsi.uids[cx].is_some() {
             let mut x = refdata.refs[rsi.uids[cx].unwrap()].to_ascii_vec();
@@ -91,6 +100,8 @@ pub fn make_loupe_clonotype(
             concatd[cx].append(&mut x);
         }
         let mut x = refdata.refs[rsi.vids[cx]].to_ascii_vec();
+        vstartu[cx] = concatu[cx].len();
+        vstartd[cx] = concatd[cx].len();
         concatu[cx].append(&mut x);
         if rsi.vpids[cx].is_none() {
             concatd[cx].append(&mut x);
@@ -127,23 +138,8 @@ pub fn make_loupe_clonotype(
         }
         let ex = &exact_clonotypes[exacts[u0]];
         let nt_sequence = ex.share[m0].full_seq.clone();
-        let mut u_idx = rsi.uids[cx];
-        let mut v_idx = rsi.vids[cx];
-        let mut d_idx = rsi.dids[cx];
-        let mut j_idx = rsi.jids[cx];
-        let mut c_idx = rsi.cids[cx];
         let chain_type = ex.share[m0].chain_type.clone();
-        if u_idx.is_some() {
-            u_idx = Some(to_ref_index_orig[&u_idx.unwrap()]);
-        }
-        v_idx = to_ref_index_orig[&v_idx];
-        if d_idx.is_some() {
-            d_idx = Some(to_ref_index_orig[&d_idx.unwrap()]);
-        }
-        j_idx = to_ref_index_orig[&j_idx];
-        if c_idx.is_some() {
-            c_idx = Some(to_ref_index_orig[&c_idx.unwrap()]);
-        }
+
         let donor_v_idx = rsi.vpids[cx];
         let donor_j_idx = None;
         let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
@@ -154,19 +150,26 @@ pub fn make_loupe_clonotype(
         let universal_reference_aln = Alignment::from(&al);
         let al = aligner.semiglobal(&nt_sequence, &donor_reference);
         let donor_reference_aln = Alignment::from(&al);
+
+        let aa_sequence = amino_acid(&nt_sequence, ex.share[m0].v_start);
+        let aa_sequence_universal = amino_acid(&universal_reference, vstartu[cx]);
+        let aa_sequence_donor = amino_acid(&donor_reference, vstartd[cx]);
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
-            u_idx: u_idx.map(|idx| idx as u32),
-            v_idx: v_idx as u32,
-            d_idx: d_idx.map(|idx| idx as u32),
-            j_idx: j_idx as u32,
-            c_idx: c_idx.map(|idx| idx as u32),
+            aa_sequence: aa_sequence,
+            u_idx: rsi.uids[cx].map(|idx| idx as u32),
+            v_idx: rsi.vids[cx] as u32,
+            d_idx: rsi.dids[cx].map(|idx| idx as u32),
+            j_idx: rsi.jids[cx] as u32,
+            c_idx: rsi.cids[cx].map(|idx| idx as u32),
             donor_v_idx: donor_v_idx.map(|idx| idx as u32),
             donor_j_idx: donor_j_idx,
             universal_reference: universal_reference,
             universal_reference_aln: universal_reference_aln,
+            aa_sequence_universal,
             donor_reference: donor_reference,
             donor_reference_aln: donor_reference_aln,
+            aa_sequence_donor,
             v_start: ex.share[m0].v_start as u32,
             v_end: ex.share[m0].v_stop as u32,
             v_end_ref: ex.share[m0].v_stop_ref as u32,
@@ -321,7 +324,9 @@ pub fn loupe_out(
             None => Metadata::default(),
         };
         let enclone_outputs = EncloneOutputs {
+            version: PROTO_VERSION.into(),
             metadata,
+            num_clonotypes: all_loupe_clonotypes.len() as u32,
             clonotypes: all_loupe_clonotypes,
             universal_reference: UniversalReference { items: uref },
             donor_reference: DonorReference {
