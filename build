@@ -8,6 +8,14 @@
 
 # WARNING: note harcoding of version14!
 
+# import and update enclone-data
+
+if ( !(-d enclone-data) ) then
+    git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
+endif
+git -C enclone-data fetch --depth=1 origin `cat data_version`
+git -C enclone-data switch --detach FETCH_HEAD
+
 # make outputs
 
 mkdir -p enclone_main/test/outputs
@@ -34,5 +42,5 @@ target/debug/merge_html
 
 # update dataset checksums
 
-git write-tree --prefix=enclone_main/test/inputs/version14/123085 > datasets_small_checksum
-git write-tree --prefix=enclone_main/test/inputs/version14 > datasets_medium_checksum
+git -C enclone-data write-tree --prefix=big_inputs/version14/123085 > datasets_small_checksum
+git -C enclone-data write-tree --prefix=big_inputs/version14 > datasets_medium_checksum
