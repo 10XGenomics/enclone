@@ -10,7 +10,7 @@ build:
 
 # Test Enclone.
 test: enclone_main/test/.gitignore
-	git -C $(<D) fetch --depth=1 origin tag v0.4.45
+	git -C $(<D) fetch --depth=1 origin b0387a2540086c94b3737a09812f28835c1ca9ce
 	git -C $(<D) switch --detach FETCH_HEAD
 	cargo test --features=basic
 
