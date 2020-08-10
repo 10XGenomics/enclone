@@ -25,7 +25,7 @@ jobs:
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
-        run: cargo build
+        run: cargo build --release
       - name: download test data
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
@@ -46,7 +46,7 @@ jobs:
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: build-enclone
-        run: cargo build
+        run: cargo build --release
       - name: download test data
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
