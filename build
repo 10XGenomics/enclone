@@ -13,10 +13,8 @@
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
-cd enclone-data
-git fetch --depth=1
-git checkout `cat ../data_version`
-cd ..
+git -C enclone-data fetch --depth=1 origin `cat data_version`
+git -C enclone-data switch --detach FETCH_HEAD
 
 # make outputs
 
