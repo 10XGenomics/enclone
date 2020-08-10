@@ -753,7 +753,6 @@ fn test_enclone() {
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
-#[ignore] // Unable to find the path 40955
 fn test_extended() {
     PrettyTrace::new().on();
     let t = Instant::now();
@@ -1128,7 +1127,6 @@ fn test_for_broken_links_and_spellcheck() {
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
-#[ignore] // Unable to find the path 128040
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;
