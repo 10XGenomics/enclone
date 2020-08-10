@@ -237,6 +237,7 @@ main() {
     #    For the medium case, this is not optimal, because if anything changed,
     #    all the files get re-downloaded.
 
+    raw_data_repo=https://raw.githubusercontent.com/10XGenomics/enclone-data
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
@@ -248,7 +249,7 @@ main() {
             mkdir -p 123085/outs
             cd 123085/outs
             json="all_contig_annotations.json.lz4"
-            url="$raw_repo/enclone_main/test/inputs/version14/123085/outs/$json"
+            url="$raw_data_repo/big_inputs/version14/123085/outs/$json"
             if $_have_curl; then
                 curl -s $url -O
             else
@@ -274,9 +275,9 @@ main() {
             printf "however, you might have a slower connection.\n\n"
             rm -rf enclone/datasets enclone/version14
             cd enclone
-            git clone --depth=1 https://github.com/10XGenomics/enclone.git
-            mv enclone/enclone_main/test/inputs/version14 datasets
-            rm -rf enclone
+            git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
+            mv enclone-data/big_inputs/version14 datasets
+            rm -rf enclone-data
             cd ..
             echo "$_datasets_medium_checksum_master" > enclone/datasets_medium_checksum
             printf "Done with that download.\n"
