@@ -1522,6 +1522,34 @@ fn test_enclone_prebuild() {
     println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
 }
 
+fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
+    let uref_items = &enclone_outs.universal_reference.items;
+    for cl in &enclone_outs.clonotypes {
+        for cl_chain in &cl.chains {
+            assert!(uref_items.len() > cl_chain.v_idx as usize);
+            assert!(uref_items.len() > cl_chain.j_idx as usize);
+            assert_eq!(uref_items[cl_chain.v_idx as usize].region, 1);
+            assert_eq!(uref_items[cl_chain.j_idx as usize].region, 3);
+            if let Some(d_idx) = cl_chain.d_idx {
+                assert!(uref_items.len() > d_idx as usize);
+                assert_eq!(uref_items[d_idx as usize].region, 2);
+            }
+            if let Some(u_idx) = cl_chain.u_idx {
+                assert!(uref_items.len() > u_idx as usize);
+                assert_eq!(uref_items[u_idx as usize].region, 0);
+            }
+            for ex_cl in &cl.exact_clonotypes {
+                for ex_cl_chain in ex_cl.chains.iter().map(|info| &info.chain) {
+                    if let Some(c_region_idx) = ex_cl_chain.c_region_idx {
+                        assert!(uref_items.len() > c_region_idx as usize);
+                        assert_eq!(uref_items[c_region_idx as usize].region, 4);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // This test runs enclone for two test inputs, with LOUPE output
@@ -1549,6 +1577,18 @@ fn test_proto_write() -> Result<(), Error> {
             .output()
             .expect(&format!("failed to execute enclone for test_proto_write"));
 
+        // Test to make sure proto and bin are consistent.
+        let outputs_proto = read_proto(&proto_file)?;
+        let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
+        assert!(outputs_proto == outputs_bin);
+
+        // Test to make sure that the clonotype iterator works
+        let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
+        assert!(clonotypes == outputs_proto.clonotypes);
+
+        // Check consistency
+        check_enclone_outs_consistency(&outputs_proto);
+
         // Test to make sure output is unchanged.
 
         let oldx = format!("test/inputs/{}.binary.gz", t.after("="));
@@ -1575,16 +1615,6 @@ fn test_proto_write() -> Result<(), Error> {
             );
             std::process::exit(1);
         }
-
-        // Test to make sure proto and bin are consistent.
-
-        let outputs_proto = read_proto(&proto_file)?;
-        let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
-        assert!(outputs_proto == outputs_bin);
-
-        // Test to make sure that the clonotype iterator works
-        let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
-        assert!(clonotypes == outputs_proto.clonotypes);
 
         std::fs::remove_file(&proto_file)?;
         std::fs::remove_file(&bin_file)?;
