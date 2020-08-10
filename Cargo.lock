@@ -550,7 +550,7 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 
 [[package]]
 name = "enclone"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -584,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "ansi_escape",
  "bio",
@@ -605,7 +605,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -616,7 +616,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -649,7 +649,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -681,7 +681,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "bio",
  "byteorder",
@@ -696,7 +696,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.4.45"
+version = "0.4.46"
 dependencies = [
  "amino",
  "ansi_escape",
