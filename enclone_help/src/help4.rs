@@ -166,6 +166,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
         );
+
         h.ldoc(
             "NWEAK_ONESIES",
             "By default, enclone filters out onesie clonotypes having a single exact",
@@ -176,8 +177,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "less than 0.1% of the total number of cells.  NWEAK_ONESIES turns this off.",
+            "greater than one but less than 0.1% of the total number of cells.",
         );
+        h.doc(
+            "",
+            "This filter reduces the likelihood of creating clonotypes containing cells",
+        );
+        h.doc("", "that arose from different recombination events.");
+        h.doc("", "NWEAK_ONESIES turns this filter off.");
+
         h.ldoc(
             "NFOURSIE_KILL",
             "By default, if enclone finds a foursie exact subclonotype that",
@@ -599,25 +607,26 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "For both of these, the algorithm looks for reads that go through the end of",
+            "For both of these, the algorithm looks for reads that are aligned through the",
         );
         h.doc(
             "",
-            "a constant region CH3 exon, and then read into a CH3-CHS or CH4-CHS exon, in",
+            "right end of a constant region CH3 exon, and then read into a CH3-CHS or",
         );
         h.doc(
             "",
-            "the secreted case, or a M, M1 or M2 exon, in the membrane case.  This choice is",
+            "CH4-CHS exon, in the secreted case, or a M, M1 or M2 exon, in the membrane case.",
         );
         h.doc(
             "",
-            "determined by sequence tables in the code, and we cannot be absolutely certain",
+            "This choice is determined by sequence tables in the code, and we cannot be",
         );
-        h.doc("", "that these tables are complete.");
+        h.doc("", "absolutely certain that these tables are complete.");
         h.docpr(
             "",
-            "\\bold{These fields require the presence of the file possorted_genome_bam.bam.}",
+            "\\bold{These fields require the presence of the files possorted_genome_bam.bam}",
         );
+        h.docpr("", "\\bold{and possorted_genome_bam.bam.bai.}");
         h.docpr(
             "",
             "\\bold{These fields also require that you have samtools in your path.}",

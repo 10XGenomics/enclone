@@ -753,7 +753,6 @@ fn test_enclone() {
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
-#[ignore] // Unable to find the path 40955
 fn test_extended() {
     PrettyTrace::new().on();
     let t = Instant::now();
@@ -870,8 +869,8 @@ fn test_for_broken_links_and_spellcheck() {
         hypermutation hypermutations igh ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
         moresies multiomic ncbi ncross NEWICK Newick \
-        nopager noprint nqual nwhitef oligos onesie parseable pbmc pcell phylip plasmablast \
-        preinstalled prepends redownloads samtools screenshot segn sloooooooow \
+        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell phylip \
+        plasmablast preinstalled prepends redownloads samtools screenshot segn sloooooooow \
         spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
@@ -1128,7 +1127,6 @@ fn test_for_broken_links_and_spellcheck() {
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
-#[ignore] // Unable to find the path 128040
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
         let example_name = SITE_EXAMPLES[i].0;

@@ -286,7 +286,7 @@ pub fn delete_weaks(
 
     if cols == 1 && nexacts == 1 && ctl.clono_filt_opt.weak_onesies {
         let ex = &exact_clonotypes[exacts[0]];
-        if !ex.share[0].left && ex.ncells() * 1000 < total_cells {
+        if !ex.share[0].left && ex.ncells() > 1 && ex.ncells() * 1000 < total_cells {
             bads[0] = true;
         }
     }

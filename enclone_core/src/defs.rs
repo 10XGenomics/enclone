@@ -605,6 +605,10 @@ pub struct TigData {
     pub d_ref_id: Option<usize>,              // index of D segment reference sequence in ref file
     pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
     pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
+    pub cdr1_aa: String,                      // CDR1 amino acid sequence
+    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
+    pub cdr2_aa: String,                      // CDR2 amino acid sequence
+    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub quals: Vec<u8>,                       // quality scores, truncated to V..J
@@ -667,6 +671,10 @@ pub struct TigData1 {
     pub d_ref_id: Option<usize>,              // index of D segment reference sequence in ref file
     pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
     pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
+    pub cdr1_aa: String,                      // CDR1 amino acid sequence
+    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
+    pub cdr2_aa: String,                      // CDR2 amino acid sequence
+    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub left: bool,                           // true if this is IGH or TRB
@@ -782,6 +790,10 @@ pub struct ColInfo {
     pub dids: Vec<Option<usize>>,
     pub jids: Vec<usize>,
     pub cids: Vec<Option<usize>>,
+    pub cdr1_starts: Vec<Option<usize>>,
+    pub cdr1_lens: Vec<Option<usize>>,
+    pub cdr2_starts: Vec<Option<usize>>,
+    pub cdr2_lens: Vec<Option<usize>>,
     pub cdr3_starts: Vec<usize>,
     pub cdr3_lens: Vec<usize>,
     pub seq_lens: Vec<usize>, // not sure we should be computing or using this

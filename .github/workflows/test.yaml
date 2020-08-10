@@ -27,7 +27,7 @@ jobs:
       - name: build-enclone
         run: cargo build
       - name: unit tests
-        run: cargo test
+        run: cd enclone_main; cargo test --release --features basic -- --nocapture
 
   test-linux:
     # This job runs on Linux
@@ -46,4 +46,4 @@ jobs:
       - name: build-enclone
         run: cargo build
       - name: unit tests
-        run: cargo test
+        run: cd enclone_main; cargo test --release --features basic -- --nocapture
