@@ -23,6 +23,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::{HashMap, HashSet};
@@ -1588,6 +1589,7 @@ fn test_proto_write() -> Result<(), Error> {
             .expect(&format!("failed to execute enclone for test_proto_write"));
 
         // Test to make sure proto and bin are consistent.
+
         let outputs_proto = read_proto(&proto_file)?;
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
         if outputs_proto != outputs_bin {
@@ -1596,42 +1598,37 @@ fn test_proto_write() -> Result<(), Error> {
         }
 
         // Test to make sure that the clonotype iterator works
+
         let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
         assert!(clonotypes == outputs_proto.clonotypes);
 
         // Check consistency
+
         check_enclone_outs_consistency(&outputs_proto);
 
         // Test to make sure output is unchanged.
 
-        let oldx = format!("testx/inputs/{}.binary.gz", t.after("="));
-        let mut f = File::open(&oldx)?;
-        let mut oldbufgz = Vec::<u8>::new();
-        f.read_to_end(&mut oldbufgz)?;
-        let mut gz = GzDecoder::new(&oldbufgz[..]);
-        let mut oldbuf = Vec::<u8>::new();
-        gz.read_to_end(&mut oldbuf)?;
-        let mut f = File::open(&bin_file)?;
-        let mut newbuf = Vec::<u8>::new();
-        f.read_to_end(&mut newbuf)?;
-        if oldbuf != newbuf {
+        let oldx = format!("testx/inputs/{}.binary.sha256", t.after("="));
+        let mut fold = std::fs::File::open(&oldx)?;
+        let mut cksum_old = Vec::<u8>::new();
+        fold.read_to_end(&mut cksum_old)?;
+        let mut fnew = std::fs::File::open(&bin_file)?;
+        let mut cksum_new = Vec::<u8>::new();
+        fnew.read_to_end(&mut cksum_new)?;
+        let cksum_new = format!("{:x}", sha2::Sha256::digest(&cksum_new));
+        std::fs::remove_file(&proto_file)?;
+        std::fs::remove_file(&bin_file)?;
+        if strme(&cksum_old) != cksum_new {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
-                please regenerate the file {} using the command\n\
-                enclone {} BINARY=enclone_main/testx/inputs/{}.binary NOPRINT; \
-                gzip -f enclone_main/testx/inputs/{}.binary",
+                please run the command\n\
+                echo -n {} > enclone_main/testx/inputs/{}.binary.sha256",
                 t,
-                oldx,
-                t,
-                t.after("="),
+                &cksum_new,
                 t.after("=")
             );
             std::process::exit(1);
         }
-
-        std::fs::remove_file(&proto_file)?;
-        std::fs::remove_file(&bin_file)?;
     }
-
     Ok(())
 }

@@ -641,6 +641,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "sha2",
  "stats_utils",
  "string_utils",
  "vdj_ann",
