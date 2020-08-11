@@ -1240,7 +1240,10 @@ fn test_enclone_examples() {
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-        let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+        let mut new = new.arg(format!(
+            "PRE=../enclone-data/big_inputs/version{}",
+            TEST_FILES_VERSION
+        ));
         for i in 0..args.len() {
             new = new.arg(&args[i]);
         }
@@ -1440,7 +1443,7 @@ fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
-        "test/inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
@@ -1456,7 +1459,10 @@ fn test_enclone_prebuild() {
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    let mut new = new.arg(format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    ));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
     }
@@ -1477,7 +1483,7 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
     if !path_exists(&format!(
-        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     )) {
         panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
@@ -1489,7 +1495,10 @@ fn test_enclone_prebuild() {
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    let mut new = new.arg(format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    ));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
     }
@@ -1513,7 +1522,7 @@ fn test_enclone_prebuild() {
     // Clean up: delete feature_barcode_matrix.bin.
 
     std::fs::remove_file(&format!(
-        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     ))
     .unwrap();
@@ -1561,7 +1570,10 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
-    let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+    let pre_arg = format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    );
 
     let bin_file = format!("{}.binary", LOUPE_OUT_FILENAME);
     let proto_file = format!("{}.proto", LOUPE_OUT_FILENAME);
