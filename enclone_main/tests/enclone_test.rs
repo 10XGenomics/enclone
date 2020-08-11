@@ -341,7 +341,7 @@ fn test_curl_command() {
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}",
+        "git -C ../enclone-data write-tree --prefix=big_inputs/version{}",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_medium_checksum";
@@ -375,7 +375,7 @@ fn test_datasets_sha256() {
         std::process::exit(1);
     }
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}/123085",
+        "git -C ../enclone-data write-tree --prefix=big_inputs/version{}/123085",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_small_checksum";
