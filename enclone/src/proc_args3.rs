@@ -171,14 +171,20 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
     }
     if !path_exists(&p) {
         if ctl.gen_opt.pre.is_empty() {
+            let path = std::env::current_dir().unwrap();
             eprintln!(
-                "\nUnable to find the path {}.  This came from the {} argument.\n",
-                p, source
+                "\nIn directory {}, unable to find the path {}.  This came from the {} argument.\n",
+                path.display(),
+                p,
+                source
             );
         } else {
+            let path = std::env::current_dir().unwrap();
             eprintln!(
-                "\nUnable to find the path {}, even if prepended by any of the directories \
+                "\nIn directory {}, unable to find the\npath {},\n\
+                even if prepended by any of the directories \
                 in\nPRE={}.\nThis came from the {} argument.\n",
+                path.display(),
                 p,
                 ctl.gen_opt.pre.iter().format(","),
                 source

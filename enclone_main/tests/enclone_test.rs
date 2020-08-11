@@ -38,7 +38,7 @@ use std::time::{Duration, Instant};
 use string_utils::*;
 use vector_utils::*;
 
-const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
+const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -197,17 +197,17 @@ fn test_curl_command() {
             }
             m
         }
-        if !path_exists("test/outputs") {
+        if !path_exists("testx/outputs") {
             eprintln!(
                 "\ntest_curl_command:\n\
-                You need to create the directory enclone_main/test/outputs.\n\
+                You need to create the directory enclone_main/testx/outputs.\n\
                 If you run \"./build\" this will be done for you.\n"
             );
             std::process::exit(1);
         }
         for pass in 1..=2 {
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-                let g = format!("test/outputs/{}", f);
+                let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
                     if !metadata(&g).unwrap().is_dir() {
                         remove_file(&g).unwrap();
@@ -220,10 +220,10 @@ fn test_curl_command() {
             let command;
             let version;
             if pass == 1 {
-                command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
+                command = "curl -sSf -L bit.ly/enclone_install | sh -s small testx/outputs";
                 version = "master";
             } else {
-                command = "cat ../install.sh | sh -s small test/outputs";
+                command = "cat ../install.sh | sh -s small testx/outputs";
                 version = "local";
             }
             let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
@@ -244,7 +244,7 @@ fn test_curl_command() {
                 "enclone/version",
             ];
             for f in req.iter() {
-                if !path_exists(&format!("test/outputs/{}", f)) {
+                if !path_exists(&format!("testx/outputs/{}", f)) {
                     eprintln!(
                         "\nAttempt to run enclone install command using {} version of \
                         install.sh failed to fetch {}.\n",
@@ -253,7 +253,7 @@ fn test_curl_command() {
                     std::process::exit(1);
                 }
             }
-            if path_exists("test/outputs/.subversion") {
+            if path_exists("testx/outputs/.subversion") {
                 eprintln!(
                     "\nAttempt to run enclone install command using {} version of \
                     install.sh created .subversion.\n",
@@ -261,14 +261,14 @@ fn test_curl_command() {
                 );
                 std::process::exit(1);
             }
-            let z = open_for_read!["test/outputs/enclone/version"];
+            let z = open_for_read!["testx/outputs/enclone/version"];
             let mut version = String::new();
             for line in z.lines() {
                 version = line.unwrap();
                 version = version.after("v").to_string();
             }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-                let g = format!("test/outputs/{}", f);
+                let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
                     if *f == ".profile" {
                         remove_file(&g).unwrap();
@@ -1168,7 +1168,7 @@ fn test_site_examples() {
                     break;
                 }
             }
-            let save = format!("test/outputs/{}", example_name.rev_after("/"));
+            let save = format!("testx/outputs/{}", example_name.rev_after("/"));
             {
                 let mut f = open_for_write_new![&save];
                 fwrite!(f, "{}", out_stuff);
@@ -1194,32 +1194,32 @@ fn test_site_examples() {
 
     insert_html(
         "../pages/index.html.src",
-        "test/outputs/index.html",
+        "testx/outputs/index.html",
         true,
         0,
     );
     insert_html(
         "../pages/expanded.html.src",
-        "test/outputs/expanded.html",
+        "testx/outputs/expanded.html",
         true,
         2,
     );
-    let new_index = read_to_string("test/outputs/index.html").unwrap();
+    let new_index = read_to_string("testx/outputs/index.html").unwrap();
     if read_to_string("../index.html").unwrap() != new_index {
         eprintln!("\nContent of index.html has changed.");
         {
-            let mut f = open_for_write_new!["test/outputs/index.html.new"];
+            let mut f = open_for_write_new!["testx/outputs/index.html.new"];
             fwrite!(f, "{}", new_index);
         }
-        eprintln!("Please diff index.html enclone_main/test/outputs/index.html.new.\n");
+        eprintln!("Please diff index.html enclone_main/testx/outputs/index.html.new.\n");
         std::process::exit(1);
     }
     /*
     if read_to_string("../pages/auto/expanded.html").unwrap()
-        != edit_html(&read_to_string("test/outputs/expanded.html").unwrap())
+        != edit_html(&read_to_string("testx/outputs/expanded.html").unwrap())
     */
     if read_to_string("../pages/auto/expanded.html").unwrap()
-        != read_to_string("test/outputs/expanded.html").unwrap()
+        != read_to_string("testx/outputs/expanded.html").unwrap()
     {
         eprintln!("\nContent of expanded.html has changed.\n");
         std::process::exit(1);
@@ -1590,7 +1590,10 @@ fn test_proto_write() -> Result<(), Error> {
         // Test to make sure proto and bin are consistent.
         let outputs_proto = read_proto(&proto_file)?;
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
-        assert!(outputs_proto == outputs_bin);
+        if outputs_proto != outputs_bin {
+            eprintln!("\noutputs_proto is not equal to outputs_bin\n");
+            std::process::exit(1);
+        }
 
         // Test to make sure that the clonotype iterator works
         let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
