@@ -880,7 +880,7 @@ fn test_for_broken_links_and_spellcheck() {
 
     // Set up dictionary.
 
-    let dictionary0 = read_to_string("../enclone/src/english_wordlist").unwrap();
+    let dictionary0 = read_to_string("../enclone-data/english_wordlist").unwrap();
     let dictionary0 = dictionary0.split('\n').collect::<Vec<&str>>();
     let mut dictionary = Vec::<String>::new();
     for w in dictionary0.iter() {
