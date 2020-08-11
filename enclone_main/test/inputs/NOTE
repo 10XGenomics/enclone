@@ -1,9 +1,0 @@
-Directories version*. contain large pipeline output files.  These files will need to be
-periodically updated.  This should be done by git removing the version* directory, and git
-adding a new version* directory, which has updated files in it.
-
-This is to avoid causing git to think about edits to large files.
-
-The reason we're not storing these files using git-lfs is that git-lfs tends to do flaky
-things periodically, possibly because of user error, but it makes it too fragile for a 
-public repo.
