@@ -51,7 +51,7 @@ pub const TESTS: [&str; 105] = [
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,origins,donors,datasets AMINO=share
      MIX_DONORS"###,
     // 11. tests META
-    r###"META=test/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
+    r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
     // 12. this added because it got better when a noise filter was added, also tests u_max
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
@@ -110,7 +110,7 @@ pub const TESTS: [&str; 105] = [
     // 35. tests barcode-by-barcode specification of colors, and tests LEGEND=
     // Note that the specification of PRE overrides our usual specification.
     // (This yields a lot of output so will be annoying to debug if something changes.)
-    r###"PRE= META=test/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout
+    r###"PRE=../enclone-data/big_inputs/version{TEST_FILES_VERSION},. META=testx/inputs/test35_meta MIN_CELLS=10 MIN_CHAINS_EXACT=2 NOPRINT PLOT=stdout NO_PRE
      LEGEND=red,IGHG1,green,IGHG3,blue,IGHA1,orange,IGHM,black,unassigned"###,
     // 36. tests PCELL and u_Σ in PCOLS (both forms)
     r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCELL CVARSP=u_Σ
@@ -187,20 +187,20 @@ pub const TESTS: [&str; 105] = [
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
     // 66. test BC in combination with PER_CELL and PCELL
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
+    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
         POUT=stdouth PCOLS=barcode,T CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
     // 67. expect fail if garbage PRE
     r###"PRE=garbage_gerbil_stuff BCR=86237 CELLS=3 EXPECT_FAIL NO_PRE"###,
     // 68. a test of PRE
-    r###"PRE=mumbo_jumbo,test/inputs/version{TEST_FILES_VERSION} BCR=86237 NO_PRE
+    r###"PRE=mumbo_jumbo,../enclone-data/big_inputs/version{TEST_FILES_VERSION} BCR=86237 NO_PRE
         CDR3=CARENHPVEYCSSTSCYKAYYYGMDVW"###,
     // 69. another test of pre
-    r###"PRE=mumbo_jumbo BCR=test/inputs/version{TEST_FILES_VERSION}/86237 NO_PRE
+    r###"PRE=mumbo_jumbo BCR=../enclone-data/big_inputs/version{TEST_FILES_VERSION}/86237 NO_PRE
         CDR3=CARENHPVEYCSSTSCYKAYYYGMDVW"###,
     // 70. another test of META
     r###"META=mumbo_jumbo EXPECT_FAIL"###,
     // 71. another test of META
-    r###"PRE=test/inputs/version{TEST_FILES_VERSION},test/inputs META=test11_meta
+    r###"PRE=../enclone-data/big_inputs/version{TEST_FILES_VERSION},testx/inputs META=test11_meta
         CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex NO_PRE"###,
     // 72. test SUMMARY_CSV
     r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
@@ -244,11 +244,11 @@ pub const TESTS: [&str; 105] = [
     r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
     // 90. test FCELL with non-null value
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
         CDR3=CARGYEDFTMKYGMDVW FCELL=keeper=yes"###,
     // 91. test FCELL with null value
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=test/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
         CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
@@ -349,7 +349,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     // 6.
     (
         "pages/auto/illusory5.html",
-        "BCR=128040 GEX=127801 BC=test/inputs/128024_cells.csv \
+        "BCR=128040 GEX=127801 BC=testx/inputs/128024_cells.csv \
          CDR3=CARGGTTTYFISW PER_CELL NUMI NUMI_RATIO \
          LVARSP=gex,cred,T CHAINS_EXACT=2 NGROUP HTML=\"illusory clonotype expansion 5\"",
     ),

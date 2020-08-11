@@ -23,6 +23,7 @@ use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use stats_utils::*;
 use std::cmp::min;
 use std::collections::{HashMap, HashSet};
@@ -38,7 +39,7 @@ use std::time::{Duration, Instant};
 use string_utils::*;
 use vector_utils::*;
 
-const LOUPE_OUT_FILENAME: &str = "test/__test_proto";
+const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -197,17 +198,17 @@ fn test_curl_command() {
             }
             m
         }
-        if !path_exists("test/outputs") {
+        if !path_exists("testx/outputs") {
             eprintln!(
                 "\ntest_curl_command:\n\
-                You need to create the directory enclone_main/test/outputs.\n\
+                You need to create the directory enclone_main/testx/outputs.\n\
                 If you run \"./build\" this will be done for you.\n"
             );
             std::process::exit(1);
         }
         for pass in 1..=2 {
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-                let g = format!("test/outputs/{}", f);
+                let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
                     if !metadata(&g).unwrap().is_dir() {
                         remove_file(&g).unwrap();
@@ -220,10 +221,10 @@ fn test_curl_command() {
             let command;
             let version;
             if pass == 1 {
-                command = "curl -sSf -L bit.ly/enclone_install | sh -s small test/outputs";
+                command = "curl -sSf -L bit.ly/enclone_install | sh -s small testx/outputs";
                 version = "master";
             } else {
-                command = "cat ../install.sh | sh -s small test/outputs";
+                command = "cat ../install.sh | sh -s small testx/outputs";
                 version = "local";
             }
             let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
@@ -244,7 +245,7 @@ fn test_curl_command() {
                 "enclone/version",
             ];
             for f in req.iter() {
-                if !path_exists(&format!("test/outputs/{}", f)) {
+                if !path_exists(&format!("testx/outputs/{}", f)) {
                     eprintln!(
                         "\nAttempt to run enclone install command using {} version of \
                         install.sh failed to fetch {}.\n",
@@ -253,7 +254,7 @@ fn test_curl_command() {
                     std::process::exit(1);
                 }
             }
-            if path_exists("test/outputs/.subversion") {
+            if path_exists("testx/outputs/.subversion") {
                 eprintln!(
                     "\nAttempt to run enclone install command using {} version of \
                     install.sh created .subversion.\n",
@@ -261,14 +262,14 @@ fn test_curl_command() {
                 );
                 std::process::exit(1);
             }
-            let z = open_for_read!["test/outputs/enclone/version"];
+            let z = open_for_read!["testx/outputs/enclone/version"];
             let mut version = String::new();
             for line in z.lines() {
                 version = line.unwrap();
                 version = version.after("v").to_string();
             }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
-                let g = format!("test/outputs/{}", f);
+                let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
                     if *f == ".profile" {
                         remove_file(&g).unwrap();
@@ -341,7 +342,7 @@ fn test_curl_command() {
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}",
+        "git -C ../enclone-data write-tree --prefix=big_inputs/version{}",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_medium_checksum";
@@ -375,7 +376,7 @@ fn test_datasets_sha256() {
         std::process::exit(1);
     }
     let sha_command1 = format!(
-        "git write-tree --prefix=enclone_main/test/inputs/version{}/123085",
+        "git -C ../enclone-data write-tree --prefix=big_inputs/version{}/123085",
         TEST_FILES_VERSION
     );
     let sha_command2 = "cat ../datasets_small_checksum";
@@ -879,7 +880,7 @@ fn test_for_broken_links_and_spellcheck() {
 
     // Set up dictionary.
 
-    let dictionary0 = read_to_string("../enclone/src/english_wordlist").unwrap();
+    let dictionary0 = read_to_string("../enclone-data/english_wordlist").unwrap();
     let dictionary0 = dictionary0.split('\n').collect::<Vec<&str>>();
     let mut dictionary = Vec::<String>::new();
     for w in dictionary0.iter() {
@@ -1168,7 +1169,7 @@ fn test_site_examples() {
                     break;
                 }
             }
-            let save = format!("test/outputs/{}", example_name.rev_after("/"));
+            let save = format!("testx/outputs/{}", example_name.rev_after("/"));
             {
                 let mut f = open_for_write_new![&save];
                 fwrite!(f, "{}", out_stuff);
@@ -1194,32 +1195,32 @@ fn test_site_examples() {
 
     insert_html(
         "../pages/index.html.src",
-        "test/outputs/index.html",
+        "testx/outputs/index.html",
         true,
         0,
     );
     insert_html(
         "../pages/expanded.html.src",
-        "test/outputs/expanded.html",
+        "testx/outputs/expanded.html",
         true,
         2,
     );
-    let new_index = read_to_string("test/outputs/index.html").unwrap();
+    let new_index = read_to_string("testx/outputs/index.html").unwrap();
     if read_to_string("../index.html").unwrap() != new_index {
         eprintln!("\nContent of index.html has changed.");
         {
-            let mut f = open_for_write_new!["test/outputs/index.html.new"];
+            let mut f = open_for_write_new!["testx/outputs/index.html.new"];
             fwrite!(f, "{}", new_index);
         }
-        eprintln!("Please diff index.html enclone_main/test/outputs/index.html.new.\n");
+        eprintln!("Please diff index.html enclone_main/testx/outputs/index.html.new.\n");
         std::process::exit(1);
     }
     /*
     if read_to_string("../pages/auto/expanded.html").unwrap()
-        != edit_html(&read_to_string("test/outputs/expanded.html").unwrap())
+        != edit_html(&read_to_string("testx/outputs/expanded.html").unwrap())
     */
     if read_to_string("../pages/auto/expanded.html").unwrap()
-        != read_to_string("test/outputs/expanded.html").unwrap()
+        != read_to_string("testx/outputs/expanded.html").unwrap()
     {
         eprintln!("\nContent of expanded.html has changed.\n");
         std::process::exit(1);
@@ -1240,7 +1241,10 @@ fn test_enclone_examples() {
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-        let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+        let mut new = new.arg(format!(
+            "PRE=../enclone-data/big_inputs/version{}",
+            TEST_FILES_VERSION
+        ));
         for i in 0..args.len() {
             new = new.arg(&args[i]);
         }
@@ -1440,7 +1444,7 @@ fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
-        "test/inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
@@ -1452,11 +1456,14 @@ fn test_enclone_prebuild() {
     let test_id = 48;
     let it = test_id - 1;
     let testn = format!("{} NH5", TESTS[it]);
-    let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
+    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    let mut new = new.arg(format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    ));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
     }
@@ -1477,7 +1484,7 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
     if !path_exists(&format!(
-        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     )) {
         panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
@@ -1489,7 +1496,10 @@ fn test_enclone_prebuild() {
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
-    let mut new = new.arg(format!("PRE=test/inputs/version{}", TEST_FILES_VERSION));
+    let mut new = new.arg(format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    ));
     for i in 0..args.len() {
         new = new.arg(&args[i]);
     }
@@ -1513,7 +1523,7 @@ fn test_enclone_prebuild() {
     // Clean up: delete feature_barcode_matrix.bin.
 
     std::fs::remove_file(&format!(
-        "test/inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     ))
     .unwrap();
@@ -1561,7 +1571,10 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
-    let pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+    let pre_arg = format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    );
 
     let bin_file = format!("{}.binary", LOUPE_OUT_FILENAME);
     let proto_file = format!("{}.proto", LOUPE_OUT_FILENAME);
@@ -1576,47 +1589,46 @@ fn test_proto_write() -> Result<(), Error> {
             .expect(&format!("failed to execute enclone for test_proto_write"));
 
         // Test to make sure proto and bin are consistent.
+
         let outputs_proto = read_proto(&proto_file)?;
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
-        assert!(outputs_proto == outputs_bin);
+        if outputs_proto != outputs_bin {
+            eprintln!("\noutputs_proto is not equal to outputs_bin\n");
+            std::process::exit(1);
+        }
 
         // Test to make sure that the clonotype iterator works
+
         let clonotypes: Vec<_> = ClonotypeIter::from_file(&proto_file).unwrap().collect();
         assert!(clonotypes == outputs_proto.clonotypes);
 
         // Check consistency
+
         check_enclone_outs_consistency(&outputs_proto);
 
         // Test to make sure output is unchanged.
 
-        let oldx = format!("test/inputs/{}.binary.gz", t.after("="));
-        let mut f = File::open(&oldx)?;
-        let mut oldbufgz = Vec::<u8>::new();
-        f.read_to_end(&mut oldbufgz)?;
-        let mut gz = GzDecoder::new(&oldbufgz[..]);
-        let mut oldbuf = Vec::<u8>::new();
-        gz.read_to_end(&mut oldbuf)?;
-        let mut f = File::open(&bin_file)?;
-        let mut newbuf = Vec::<u8>::new();
-        f.read_to_end(&mut newbuf)?;
-        if oldbuf != newbuf {
+        let oldx = format!("testx/inputs/{}.binary.sha256", t.after("="));
+        let mut fold = std::fs::File::open(&oldx)?;
+        let mut cksum_old = Vec::<u8>::new();
+        fold.read_to_end(&mut cksum_old)?;
+        let mut fnew = std::fs::File::open(&bin_file)?;
+        let mut cksum_new = Vec::<u8>::new();
+        fnew.read_to_end(&mut cksum_new)?;
+        let cksum_new = format!("{:x}", sha2::Sha256::digest(&cksum_new));
+        std::fs::remove_file(&proto_file)?;
+        std::fs::remove_file(&bin_file)?;
+        if strme(&cksum_old) != cksum_new {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
-                please regenerate the file {} using the command\n\
-                enclone {} BINARY=enclone_main/test/inputs/{}.binary NOPRINT; \
-                gzip -f enclone_main/test/inputs/{}.binary",
+                please run the command\n\
+                echo -n {} > enclone_main/testx/inputs/{}.binary.sha256",
                 t,
-                oldx,
-                t,
-                t.after("="),
+                &cksum_new,
                 t.after("=")
             );
             std::process::exit(1);
         }
-
-        std::fs::remove_file(&proto_file)?;
-        std::fs::remove_file(&bin_file)?;
     }
-
     Ok(())
 }

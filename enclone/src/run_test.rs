@@ -65,10 +65,13 @@ pub fn run_test(
     }
     test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
     let mut log = Vec::<u8>::new();
-    let out_file = format!("test/inputs/outputs/enclone_{}{}_output", testname, it + 1);
-    let mut pre_arg = format!("PRE=test/inputs/version{}", TEST_FILES_VERSION);
+    let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, it + 1);
+    let mut pre_arg = format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    );
     let mut local_pre_arg = format!(
-        "PRE=enclone_main/test/inputs/version{},enclone_main",
+        "PRE=enclone-data/big_inputs/version{},enclone_main",
         TEST_FILES_VERSION
     );
     if no_pre {
@@ -85,8 +88,8 @@ pub fn run_test(
         emit_bold_escape(&mut log);
         fwriteln!(
             log,
-            "enclone {} {} > enclone_main/test/inputs/outputs/enclone_{}{}_output; \
-             git add enclone_main/test/inputs/outputs/enclone_{}{}_output\n",
+            "enclone {} {} > enclone_main/testx/inputs/outputs/enclone_{}{}_output; \
+             git add enclone_main/testx/inputs/outputs/enclone_{}{}_output\n",
             local_pre_arg,
             test,
             testname,
@@ -242,7 +245,7 @@ pub fn run_test(
                 }
             }
             // let f = format!(
-            //     "test/inputs/version{}/{}/outs/all_contig_annotations.json.lz4",
+            //     "testx/inputs/version{}/{}/outs/all_contig_annotations.json.lz4",
             //         version, args[0].after("=") );
             // if !path_exists(&f) {
             //     println!( "Perhaps you forgot to lz4 compress the json file.\n" );
@@ -268,7 +271,7 @@ pub fn run_test(
             fwriteln!(
                 log,
                 "enclone {} {} \
-                 > enclone_main/test/inputs/outputs/enclone_{}{}_output\n",
+                 > enclone_main/testx/inputs/outputs/enclone_{}{}_output\n",
                 local_pre_arg,
                 test,
                 testname,

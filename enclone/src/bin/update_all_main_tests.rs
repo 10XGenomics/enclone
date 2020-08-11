@@ -31,7 +31,7 @@ fn main() {
             "enclone", it, &testname, "test", &mut res.1, &mut res.2, &mut out,
         );
         if !res.1 {
-            let out_file = format!("test/inputs/outputs/enclone_test{}_output", it + 1);
+            let out_file = format!("testx/inputs/outputs/enclone_test{}_output", it + 1);
             let mut f = open_for_write_new![&out_file];
             fwrite!(f, "{}", out);
         }

@@ -18,7 +18,7 @@ git -C enclone-data switch --detach FETCH_HEAD
 
 # make outputs
 
-mkdir -p enclone_main/test/outputs
+mkdir -p enclone_main/testx/outputs
 
 # run rustfmt
 
