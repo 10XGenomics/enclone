@@ -1455,7 +1455,7 @@ fn test_enclone_prebuild() {
     let test_id = 48;
     let it = test_id - 1;
     let testn = format!("{} NH5", TESTS[it]);
-    let out_file = format!("test/inputs/outputs/enclone_test{}_output", test_id);
+    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
@@ -1601,7 +1601,7 @@ fn test_proto_write() -> Result<(), Error> {
 
         // Test to make sure output is unchanged.
 
-        let oldx = format!("test/inputs/{}.binary.gz", t.after("="));
+        let oldx = format!("testx/inputs/{}.binary.gz", t.after("="));
         let mut f = File::open(&oldx)?;
         let mut oldbufgz = Vec::<u8>::new();
         f.read_to_end(&mut oldbufgz)?;
@@ -1615,8 +1615,8 @@ fn test_proto_write() -> Result<(), Error> {
             eprintln!(
                 "\nThe binary output of enclone on {} has changed.  If this is expected,\n\
                 please regenerate the file {} using the command\n\
-                enclone {} BINARY=enclone_main/test/inputs/{}.binary NOPRINT; \
-                gzip -f enclone_main/test/inputs/{}.binary",
+                enclone {} BINARY=enclone_main/testx/inputs/{}.binary NOPRINT; \
+                gzip -f enclone_main/testx/inputs/{}.binary",
                 t,
                 oldx,
                 t,
