@@ -471,7 +471,12 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     if ctl.gen_opt.internal_run {
         gex2 = expand_analysis_sets(&gex2);
     }
-    let donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
+    let donor_groups_gex;
+    if ctl.gen_opt.cellranger {
+        donor_groups_gex = vec![&gex2[..]];
+    } else {
+        donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
+    }
     let donor_groups_bc = bc.split(';').collect::<Vec<&str>>();
     let mut xcr = "TCR".to_string();
     if ctl.gen_opt.bcr {
@@ -500,10 +505,19 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     ctl.perf_stats(&t, "in proc_xcr 1");
     let t = Instant::now();
     for (id, d) in donor_groups.iter().enumerate() {
-        let origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        let origin_groups;
+        if ctl.gen_opt.cellranger {
+            origin_groups = vec![&d[..]];
+        } else {
+            origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        }
         let mut origin_groups_gex = Vec::<&str>::new();
         if have_gex {
-            origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+            if ctl.gen_opt.cellranger {
+                origin_groups_gex = vec![&donor_groups_gex[id][..]];
+            } else {
+                origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+            }
             if origin_groups_gex.len() != origin_groups.len() {
                 eprintln!(
                     "\nFor donor {}, there are {} {} origin groups and {} GEX origin groups, so \
@@ -531,11 +545,20 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
         }
         for (is, s) in origin_groups.iter().enumerate() {
-            let datasets = (*s).split(',').collect::<Vec<&str>>();
+            let datasets;
+            if ctl.gen_opt.cellranger {
+                datasets = vec![&s[..]];
+            } else {
+                datasets = (*s).split(',').collect::<Vec<&str>>();
+            }
             let datasets_gex: Vec<&str>;
             let mut datasets_bc = Vec::<&str>::new();
             if have_gex {
-                datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
+                if ctl.gen_opt.cellranger {
+                    datasets_gex = vec![&origin_groups_gex[is][..]];
+                } else {
+                    datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
+                }
                 if datasets_gex.len() != datasets.len() {
                     eprintln!(
                         "\nSee {} {} datasets and {} GEX datasets, so \
