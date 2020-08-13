@@ -51,8 +51,8 @@ precedence, i.e. color data for the first will be used if provided, etc.</p>
           padding: 8px; width: 950px">
 <b>Hint.</b>
 Use the <code>MIN_CELLS</code> option (see 
-(see <a href="../../pages/auto/help.filter.html">enclone help filter</a>) to exclude tiny clonotypes,
-which would otherwise crowd the image and make plotting very slow.
+(see <a href="../../pages/auto/help.filter.html">enclone help filter</a>) to exclude tiny 
+clonotypes, which would otherwise crowd the image and make plotting very slow.
 </p>
 
 <hr>
@@ -70,12 +70,21 @@ LEGEND=blue,123085,red,123089</code></p>
 that the two datasets are different samples from the same donor.  This is not actually true, as
 the two datasets are from the same sample, but is needed to plot in this way.</p>
 
+<p>The <code>NOPRINT</code> argument tells <span style="color:rgb(120,123,175);font-weight:900">enclone</span> to <i>not</i> generate its usual output, so
+although the command itself will appear to do nothing, it will create a file 
+<code>plot.svg</code>.</p>
+
+<p>If you're using a Mac, then the file <code>plot.svg</code> in the command can be displayed
+by typing <code>open plot.svg</code>.  In that case the application used to display the plot
+will be picked for you.  You can specify a particular app e.g. with
+<code>open -a "Google Chrome" plot.svg</code>.</p>
+
 <img src="../../img/samples.svg" alt="samples honeycomb plot" title="samples honeycomb plot">
 
-<br><br>
+<p>Here is a simpler example, which plots the clonotypes in a single dataset (plot not shown):
+<code>enclone BCR=123085 MIN_CELLS=10 PLOT="plot.svg,s1->blue" NOPRINT</code>.</p>
 
-There is another example on the main <span style="color:rgb(120,123,175);font-weight:900">enclone</span> page, based on pre- and post-vaccination
-samples.
+There is another example on the main <span style="color:rgb(120,123,175);font-weight:900">enclone</span> page, based on pre- and post-vaccination samples.
 
 <br><br>
 

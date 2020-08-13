@@ -190,6 +190,9 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
                 source
             );
         }
+        if ctl.gen_opt.cellranger {
+            panic!("This should not have happened, so a traceback follows.\n");
+        }
         std::process::exit(1);
     }
     p.to_string()
@@ -239,6 +242,17 @@ fn get_path_or_internal_id(
                     .output()
                     .expect("failed to execute xena http");
                 let m = String::from_utf8(o.stdout).unwrap();
+                if o.status.code() != Some(0) {
+                    let merr = String::from_utf8(o.stderr).unwrap();
+                    eprintln!(
+                        "\nSomething went wrong. the URL \
+                        \nhttp://xena.fuzzplex.com/api/analyses/{}\n\
+                        failed with the following stderr:\n{}\n\
+                        and the following stdout:\n{}\n",
+                        p, merr, m
+                    );
+                    std::process::exit(1);
+                }
                 if m.contains("502 Bad Gateway") {
                     // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
@@ -257,10 +271,13 @@ fn get_path_or_internal_id(
                         thread::sleep(time::Duration::from_millis(100));
                         if path_exists(&pp) {
                             eprintln!(
-                                "\nYou are experiencing unstable filesystem access: 100 milliseconds ago, \
+                                "\nYou are experiencing unstable filesystem access: \
+                                100 milliseconds ago, \
                                 the path\n\
-                                {}\nwas not visible, but now it is.  You might consider posting this problem on \
-                                the slack channel #seqops-bespin.\nOr retry again.  enclone is giving up because \
+                                {}\nwas not visible, but now it is.  You might consider posting \
+                                this problem on \
+                                the slack channel #seqops-bespin.\nOr retry again.  enclone is \
+                                giving up because \
                                 if filesystem access blinks in and out of existence,\n\
                                 other more cryptic events are likely to occur.\n",
                                 pp
@@ -269,9 +286,10 @@ fn get_path_or_internal_id(
                             eprintln!(
                                 "\nIt looks like you've provided an analysis ID for \
                                 which the pipeline outs folder\n{}\nhas not yet been generated.\n\
-                                This path did not exist:\n{}\n\n",
+                                This path did not exist:\n{}\n",
                                 p, pp
                             );
+                            eprintln!("Here is the stdout:\n{}\n", m);
                         }
                         std::process::exit(1);
                     }
@@ -287,10 +305,10 @@ fn get_path_or_internal_id(
                 }
             } else {
                 eprintln!(
-                    "\nAfter searching high and low, your path for {} \
+                    "\nAfter searching high and low, your path\n{}\nfor {} \
                     cannot be found.\nPlease check its value and also the value \
                     for PRE if you provided that.\n",
-                    source
+                    p, source
                 );
                 std::process::exit(1);
             }
@@ -460,12 +478,22 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     if ctl.gen_opt.internal_run {
         val = expand_analysis_sets(&val);
     }
-    let donor_groups = val.split(';').collect::<Vec<&str>>();
+    let donor_groups;
+    if ctl.gen_opt.cellranger {
+        donor_groups = vec![&val[..]];
+    } else {
+        donor_groups = val.split(';').collect::<Vec<&str>>();
+    }
     let mut gex2 = expand_integer_ranges(&gex);
     if ctl.gen_opt.internal_run {
         gex2 = expand_analysis_sets(&gex2);
     }
-    let donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
+    let donor_groups_gex;
+    if ctl.gen_opt.cellranger {
+        donor_groups_gex = vec![&gex2[..]];
+    } else {
+        donor_groups_gex = gex2.split(';').collect::<Vec<&str>>();
+    }
     let donor_groups_bc = bc.split(';').collect::<Vec<&str>>();
     let mut xcr = "TCR".to_string();
     if ctl.gen_opt.bcr {
@@ -494,10 +522,19 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     ctl.perf_stats(&t, "in proc_xcr 1");
     let t = Instant::now();
     for (id, d) in donor_groups.iter().enumerate() {
-        let origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        let origin_groups;
+        if ctl.gen_opt.cellranger {
+            origin_groups = vec![&d[..]];
+        } else {
+            origin_groups = (*d).split(':').collect::<Vec<&str>>();
+        }
         let mut origin_groups_gex = Vec::<&str>::new();
         if have_gex {
-            origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+            if ctl.gen_opt.cellranger {
+                origin_groups_gex = vec![&donor_groups_gex[id][..]];
+            } else {
+                origin_groups_gex = donor_groups_gex[id].split(':').collect::<Vec<&str>>();
+            }
             if origin_groups_gex.len() != origin_groups.len() {
                 eprintln!(
                     "\nFor donor {}, there are {} {} origin groups and {} GEX origin groups, so \
@@ -525,11 +562,20 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
         }
         for (is, s) in origin_groups.iter().enumerate() {
-            let datasets = (*s).split(',').collect::<Vec<&str>>();
+            let datasets;
+            if ctl.gen_opt.cellranger {
+                datasets = vec![&s[..]];
+            } else {
+                datasets = (*s).split(',').collect::<Vec<&str>>();
+            }
             let datasets_gex: Vec<&str>;
             let mut datasets_bc = Vec::<&str>::new();
             if have_gex {
-                datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
+                if ctl.gen_opt.cellranger {
+                    datasets_gex = vec![&origin_groups_gex[is][..]];
+                } else {
+                    datasets_gex = origin_groups_gex[is].split(',').collect::<Vec<&str>>();
+                }
                 if datasets_gex.len() != datasets.len() {
                     eprintln!(
                         "\nSee {} {} datasets and {} GEX datasets, so \

@@ -1601,7 +1601,7 @@ pub fn group_and_print_clonotypes(
             );
         }
 
-        // Print origin (sample)/donor table.
+        // Print origin (sample)/donor table, but only if there is more than one.
 
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
@@ -1630,10 +1630,12 @@ pub fn group_and_print_clonotypes(
             row.push(format!("{}", sdx[i].2));
             rows.push(row);
         }
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
-        log = log.replace("\n", "\n   ");
-        fwrite!(logx, "   {}", log);
+        if rows.len() > 3 {
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
+            log = log.replace("\n", "\n   ");
+            fwrite!(logx, "   {}", log);
+        }
     }
 
     // Print summary csv stats.
