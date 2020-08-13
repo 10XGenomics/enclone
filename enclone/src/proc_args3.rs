@@ -466,7 +466,12 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     if ctl.gen_opt.internal_run {
         val = expand_analysis_sets(&val);
     }
-    let donor_groups = val.split(';').collect::<Vec<&str>>();
+    let donor_groups;
+    if ctl.gen_opt.cellranger {
+        donor_groups = vec![&val[..]];
+    } else {
+        donor_groups = val.split(';').collect::<Vec<&str>>();
+    }
     let mut gex2 = expand_integer_ranges(&gex);
     if ctl.gen_opt.internal_run {
         gex2 = expand_analysis_sets(&gex2);
