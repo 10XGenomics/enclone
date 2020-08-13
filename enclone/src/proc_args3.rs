@@ -290,10 +290,10 @@ fn get_path_or_internal_id(
                 }
             } else {
                 eprintln!(
-                    "\nAfter searching high and low, your path for {} \
+                    "\nAfter searching high and low, your path\n{}\nfor {} \
                     cannot be found.\nPlease check its value and also the value \
                     for PRE if you provided that.\n",
-                    source
+                    p, source
                 );
                 std::process::exit(1);
             }
