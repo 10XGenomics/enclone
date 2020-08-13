@@ -37,6 +37,11 @@ LEGEND=blue,123085,red,123089</code></p>
 that the two datasets are different samples from the same donor.  This is not actually true, as
 the two datasets are from the same sample, but is needed to plot in this way.</p>
 
+<p>If you're using a Mac, then the file <code>plot.svg</code> in the command can be displayed
+by typing <code>open plot.svg</code>.  In that case the application used to display the plot
+will be picked for you.  You can specify a particular app e.g. with
+<code>open -a "Google Chrome" plot.svg</code>.</p>
+
 <img src="../../img/samples.svg" alt="samples honeycomb plot" title="samples honeycomb plot">
 
 <br><br>
