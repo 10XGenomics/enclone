@@ -19,9 +19,4 @@ SUMMARY STATISTICS
    • number of cells having 2 or 3 chains = 1135
    • mean over middle third of contig UMI counts (heavy chain / TRB) = 354.20
    • mean over middle third of contig UMI counts (light chain / TRA) = 2015.84
-   ┌────────────────────┐
-   │origin  donor  cells│
-   ├────────────────────┤
-   │s1      d1      1321│
-   └────────────────────┘
-   
+
