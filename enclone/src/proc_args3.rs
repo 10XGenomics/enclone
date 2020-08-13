@@ -257,10 +257,13 @@ fn get_path_or_internal_id(
                         thread::sleep(time::Duration::from_millis(100));
                         if path_exists(&pp) {
                             eprintln!(
-                                "\nYou are experiencing unstable filesystem access: 100 milliseconds ago, \
+                                "\nYou are experiencing unstable filesystem access: \
+                                100 milliseconds ago, \
                                 the path\n\
-                                {}\nwas not visible, but now it is.  You might consider posting this problem on \
-                                the slack channel #seqops-bespin.\nOr retry again.  enclone is giving up because \
+                                {}\nwas not visible, but now it is.  You might consider posting \
+                                this problem on \
+                                the slack channel #seqops-bespin.\nOr retry again.  enclone is \
+                                giving up because \
                                 if filesystem access blinks in and out of existence,\n\
                                 other more cryptic events are likely to occur.\n",
                                 pp
