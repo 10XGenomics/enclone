@@ -190,6 +190,9 @@ pub fn get_path_fail(p: &str, ctl: &EncloneControl, source: &str) -> String {
                 source
             );
         }
+        if ctl.gen_opt.cellranger {
+            panic!("This should not have happened, so a traceback follows.\n");
+        }
         std::process::exit(1);
     }
     p.to_string()
