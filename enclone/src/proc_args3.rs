@@ -242,6 +242,17 @@ fn get_path_or_internal_id(
                     .output()
                     .expect("failed to execute xena http");
                 let m = String::from_utf8(o.stdout).unwrap();
+                if o.status.code() != Some(0) {
+                    let merr = String::from_utf8(o.stderr).unwrap();
+                    eprintln!(
+                        "\nSomething went wrong. the URL \
+                        \nhttp://xena.fuzzplex.com/api/analyses/{}\n\
+                        failed with the following stderr:\n{}\n\
+                        and the following stdout:\n{}\n",
+                        p, merr, m
+                    );
+                    std::process::exit(1);
+                }
                 if m.contains("502 Bad Gateway") {
                     // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
@@ -275,9 +286,10 @@ fn get_path_or_internal_id(
                             eprintln!(
                                 "\nIt looks like you've provided an analysis ID for \
                                 which the pipeline outs folder\n{}\nhas not yet been generated.\n\
-                                This path did not exist:\n{}\n\n",
+                                This path did not exist:\n{}\n",
                                 p, pp
                             );
+                            eprintln!("Here is the stdout:\n{}\n", m);
                         }
                         std::process::exit(1);
                     }
