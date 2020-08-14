@@ -795,51 +795,54 @@ filtering by clonotype.  These options cause only certain clonotypes to be print
 "enclone help special", which describes other filtering options.  This page also described
 scanning for feature enrichment.
 
-┌─────────────────────┬────────────────────────────────────────────────────────────────────────┐
-│MIN_CELLS=n          │  only show clonotypes having at least n cells                          │
-│MAX_CELLS=n          │  only show clonotypes having at most n cells                           │
-│CELLS=n              │  only show clonotypes having exactly n cells                           │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│MIN_UMIS=n           │  only show clonotypes having ≳ n UMIs on some chain on some cell       │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│MIN_CHAINS=n         │  only show clonotypes having at least n chains                         │
-│MAX_CHAINS=n         │  only show clonotypes having at most n chains                          │
-│CHAINS=n             │  only show clonotypes having exactly n chains                          │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│CDR3=&lt;pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches        │
-│                     │  the given pattern (regular expression)*, from beginning to end        │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names   │
-│SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers │
-│                     │  both: looks for V, D, J and C segments; double quote only             │
-│                     │  needed if n > 1                                                       │
-│                     │  For both SEG and SEGN, multiple instances are allowed, and their      │
-│                     │  effects are cumulative.                                               │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes            │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│VJ=seq               │  only show clonotypes using exactly the given V..J sequence            │
-│                     │  (string in alphabet ACGT)                                             │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets        │
-│MAX_DATASETS=n       │  only show clonotypes containing cells from at most n datasets         │
-│MIN_DATASET_RATIO=n  │  only show clonotypes having at least n cells and for which the ratio  │
-│                     │  of the number of cells in the must abundant dataset to the next most  │
-│                     │  abundant one is at least n                                            │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│CDIFF                │  only show clonotypes having a difference in constant region with the  │
-│                     │  universal reference                                                   │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│DEL                  │  only show clonotypes exhibiting a deletion                            │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes               │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│INKT                 │  only show clonotypes for which some exact subclonotype is annotated as│
-│                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details             │
-├─────────────────────┼────────────────────────────────────────────────────────────────────────┤
-│MAIT                 │  only show clonotypes for which some exact subclonotype is annotated as│
-│                     │  having some MAIT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details             │
-└─────────────────────┴────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────┬─────────────────────────────────────────────────────────────────────────┐
+│MIN_CELLS=n          │  only show clonotypes having at least n cells                           │
+│MAX_CELLS=n          │  only show clonotypes having at most n cells                            │
+│CELLS=n              │  only show clonotypes having exactly n cells                            │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MIN_UMIS=n           │  only show clonotypes having ≳ n UMIs on some chain on some cell        │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS=n         │  only show clonotypes having at least n chains                          │
+│MAX_CHAINS=n         │  only show clonotypes having at most n chains                           │
+│CHAINS=n             │  only show clonotypes having exactly n chains                           │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│CDR3=&lt;pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches         │
+│                     │  the given pattern (regular expression)*, from beginning to end         │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names    │
+│SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers  │
+│                     │  both: looks for V, D, J and C segments; double quote only              │
+│                     │  needed if n > 1                                                        │
+│                     │  For both SEG and SEGN, multiple instances are allowed, and their       │
+│                     │  effects are cumulative.                                                │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes             │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│VJ=seq               │  only show clonotypes using exactly the given V..J sequence             │
+│                     │  (string in alphabet ACGT)                                              │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MIN_DATASETS=n       │  only show clonotypes containing cells from at least n datasets         │
+│MAX_DATASETS=n       │  only show clonotypes containing cells from at most n datasets          │
+│MIN_DATASET_RATIO=n  │  only show clonotypes having at least n cells and for which the ratio   │
+│                     │  of the number of cells in the must abundant dataset to the next most   │
+│                     │  abundant one is at least n                                             │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│CDIFF                │  only show clonotypes having a difference in constant region with the   │
+│                     │  universal reference                                                    │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│DEL                  │  only show clonotypes exhibiting a deletion                             │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes; note that such│
+│                     │  clonotypes will typically contain cells that are \bold{not} in your    │
+│                     │  list; if you want to fully restrict to a list of barcodes you can use  │
+│                     │  the \bold{FCELL} option, please see "enclone help special"             │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│INKT                 │  only show clonotypes for which some exact subclonotype is annotated as │
+│                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MAIT                 │  only show clonotypes for which some exact subclonotype is annotated as │
+│                     │  having some MAIT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
+└─────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 * Examples of how to specify CDR3:
 
