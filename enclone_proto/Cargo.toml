@@ -1,6 +1,6 @@
 [package]
 name = "enclone_proto"
-version = "0.4.49"
+version = "0.4.50"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
