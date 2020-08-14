@@ -115,10 +115,8 @@ message ExactSubClonotypeChainInfo {
 // end of the J-REGION as well as the same C-REGION annotation for each chain.
 // TODO: Maybe mutations outside V-J?
 message ExactSubClonotype {
-  // The chains in an exact subclonotype. The number of elements in this vector
-  // is equal to the total number of chains in the parent clonotype. The order
-  // of chains is consistent with the order in the parent clonotype and at least
-  // one element in this vector is not a `None`.
+  // The chains in an exact subclonotype along with the index of the chain in
+  // the parent clonotype
   repeated ExactSubClonotypeChainInfo chains = 1;
   // List of cell barcodes in this exact subclonotype. The number of elements in
   // this list is equal to the number of elements in the `umi_counts` and
@@ -305,6 +303,7 @@ message DonorReference {
 message GemWellInfo {
   required string donor = 1;
   required string origin = 2;
+  required string library_id = 3;
   // Data for all the additional columns. For convenience, we are storing it as
   // a map, rather than an array with the order defined by `additional_columns`
   // in Metadata

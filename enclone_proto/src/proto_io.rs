@@ -166,9 +166,11 @@ pub fn write_proto(enclone_outputs: EncloneOutputs, path: impl AsRef<Path>) -> R
     Ok(())
 }
 
-/// A read that mirrors the write above. It is possible to stream through the
-/// clonotypes instead of loading everything into memory.
-pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
+/// A read that mirrors the write above. The fields until the list of clonotypes are read here.
+/// The clonotypes are assigned an empty vector.
+pub fn read_proto_until_clonotypes(
+    path: impl AsRef<Path>,
+) -> Result<(EncloneOutputs, ProtoReader<impl Read>), Error> {
     let reader = BufReader::new(File::open(path)?);
     let mut proto_reader = ProtoReader::from_reader(reader);
 
@@ -182,19 +184,30 @@ pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
     let donor_reference = proto_reader.read_and_decode()?;
     // Number of clonotypes
     let num_clonotypes: u32 = proto_reader.read_and_decode()?;
+
+    Ok((
+        EncloneOutputs {
+            version,
+            metadata,
+            universal_reference,
+            donor_reference,
+            num_clonotypes,
+            clonotypes: Vec::new(),
+        },
+        proto_reader,
+    ))
+}
+
+/// A read that mirrors the write above. It is possible to stream through the
+/// clonotypes instead of loading everything into memory.
+pub fn read_proto(path: impl AsRef<Path>) -> Result<EncloneOutputs, Error> {
+    let (mut output, mut proto_reader) = read_proto_until_clonotypes(path)?;
     let mut clonotypes = Vec::new();
-    for _ in 0..num_clonotypes {
+    for _ in 0..output.num_clonotypes {
         clonotypes.push(proto_reader.read_and_decode()?);
     }
-
-    Ok(EncloneOutputs {
-        version,
-        metadata,
-        universal_reference,
-        donor_reference,
-        num_clonotypes,
-        clonotypes,
-    })
+    output.clonotypes = clonotypes;
+    Ok(output)
 }
 
 /// Iterator over clonotypes
