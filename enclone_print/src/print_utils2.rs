@@ -100,7 +100,7 @@ pub fn row_fill(
     let ex = &exact_clonotypes[clonotype_id];
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 {
+            if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
@@ -120,7 +120,10 @@ pub fn row_fill(
     pcols_sort.sort();
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+            if pass == 2
+                && ctl.parseable_opt.pout.len() > 0
+                && $col + 1 <= ctl.parseable_opt.pchains
+            {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
