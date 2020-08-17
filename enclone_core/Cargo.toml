@@ -1,6 +1,6 @@
 [package]
 name = "enclone_core"
-version = "0.4.50"
+version = "0.4.51"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
