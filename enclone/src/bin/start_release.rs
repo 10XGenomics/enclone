@@ -18,6 +18,7 @@ fn main() {
 
     // Step 1.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
 
+    println!("\nbumping version");
     let all = read_dir(".").unwrap();
     let mut versions = Vec::<String>::new();
     for f in all {
@@ -87,15 +88,19 @@ fn main() {
 
     // 3. Commit and push changes.
 
+    println!("committing changes");
     let new = Command::new("git")
         .arg("commit")
         .arg("-a")
+        .arg("-m")
+        .arg("bump version")
         .output()
         .expect(&format!("failed to execute git commit"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit commit failed\n");
         std::process::exit(1);
     }
+    println!("pushing changes");
     let new = Command::new("git")
         .arg("push")
         .output()
@@ -107,6 +112,7 @@ fn main() {
 
     // 4. Tag the commit.
 
+    println!("tagging commit");
     let new = Command::new("git")
         .arg("tag")
         .arg(&version)
@@ -119,6 +125,7 @@ fn main() {
 
     // 5. Trigger the release.
 
+    println!("triggering release");
     let new = Command::new("git")
         .arg("push")
         .arg("origin")
