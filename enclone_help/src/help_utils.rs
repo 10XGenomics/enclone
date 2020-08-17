@@ -36,6 +36,46 @@ impl HelpDesk {
     pub fn doc(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
     }
+
+    // docf2: like doc, but fold x2 to n2 chars.
+
+    pub fn docf2(&mut self, x1: &str, x2: &str, n2: usize) {
+        let mut c2 = Vec::<char>::new();
+        for m in x2.chars() {
+            c2.push(m);
+        }
+        let mut y2 = Vec::<String>::new();
+        let mut start = 0;
+        let mut i = 0;
+        while i < c2.len() {
+            if c2[i] == ' ' && i - start > n2 {
+                i -= 1;
+                while i > 0 && c2[i] != ' ' {
+                    i -= 1;
+                }
+                let mut s = String::new();
+                for j in start..i {
+                    s.push(c2[j]);
+                }
+                y2.push(s);
+                start = i + 1;
+            }
+            i += 1;
+        }
+        let mut s = String::new();
+        for j in start..c2.len() {
+            s.push(c2[j]);
+        }
+        y2.push(s);
+        for i in 0..y2.len() {
+            if i == 0 {
+                self.doc(&x1, &y2[i]);
+            } else {
+                self.doc("", &y2[i]);
+            }
+        }
+    }
+
     pub fn ldoc(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec!["\\hline".to_string(); 2]);
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
