@@ -292,9 +292,7 @@ pub fn build_info(
         // improper cells having two or more chains.
 
         if !placed
-            && (shares.len() == 1
-                && ctl.join_alg_opt.merge_onesies
-                && exact_clonotypes[i].ncells() * ctl.onesie_mult >= total_clones)
+            && (shares.len() == 1 && exact_clonotypes[i].ncells() * ctl.onesie_mult >= total_clones)
             || ctl.merge_all_impropers
         {
             let mut exact_cols = Vec::<usize>::new();
