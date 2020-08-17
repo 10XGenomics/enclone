@@ -253,18 +253,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "to find errors.  Use of the bc field for META input specification",
         );
         h.doc("", "automatically turns on this option.");
-        h.ldoc(
-            "KEEP_IMPROPER",
-            "An exact subclonotype is improper if it does not have one chain",
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "NIMPROPER",
+            "enclone filters out exact subclonotypes having only one chain type \
+            (heavy or light or TRA or TRB).  (Exception: it does not remove clonotypes having \
+            exactly one chain, but whose number of cells is at least (total cells)/10000.) \
+            For example, the filter removes all exact subclonotypes having two TRA chains and \
+            no other chains.  The NIMPROPER option turns off this filter.",
+            75,
         );
-        h.doc(
-            "",
-            "of each type.  This option causes all improper exact subclonotypes to be",
-        );
-        h.doc(
-            "",
-            "retained, although they may be removed by other filters.",
-        );
+
         h.ldoc(
             "MIN_CHAINS_EXACT=n",
             "Delete any exact subclonotype having less than n chains.  You can use this",

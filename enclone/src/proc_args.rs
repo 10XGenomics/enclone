@@ -275,7 +275,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 "NWHITEF",
                 "NBC_DUP",
                 "MIX_DONORS",
-                "KEEP_IMPROPER",
+                "NIMPROPER",
             ];
             for j in 0..f.len() {
                 if args[i] == "NALL" || f[j] != "NCELL" {
@@ -327,7 +327,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("INKT", &mut ctl.clono_filt_opt.inkt),
         ("INSERTIONS", &mut ctl.gen_opt.insertions),
         ("JC1", &mut ctl.gen_opt.jc1),
-        ("KEEP_IMPROPER", &mut ctl.merge_all_impropers),
         ("MAIT", &mut ctl.clono_filt_opt.mait),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
         ("MEAN", &mut ctl.clono_print_opt.mean),
@@ -339,6 +338,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NGEX", &mut ctl.clono_filt_opt.ngex),
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
+        ("NIMPROPER", &mut ctl.merge_all_impropers),
         ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
         ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
@@ -468,6 +468,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
+
+        // Replace deprecated option.
+
+        if arg == "KEEP_IMPROPER".to_string() {
+            arg = "NIMPROPER".to_string();
+        }
 
         // Strip out certain quoted expressions.
 
