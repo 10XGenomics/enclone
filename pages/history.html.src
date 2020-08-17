@@ -29,7 +29,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
-<b>8/20/20</b></b>: deprecate <code>KEEP_IMPROPER</code>; the new name is 
+<b>8/17/20</b></b>: deprecate <code>KEEP_IMPROPER</code>; the new name is 
 <code>NIMPROPER</code>.
 </p>
 
