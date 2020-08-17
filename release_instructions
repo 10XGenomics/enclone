@@ -2,12 +2,9 @@
 1. Merge in changes you want to master, and then git switch master and git pull origin master to 
    catch your local version up-to-speed.
 2. Do another cargo b and cargo t to make sure things behave as expected.
-3. Type "bump_version" to bump the z version in each enclone crate Cargo.toml, then commit and
-   push the change.
-4. Edit README.md to reflect the upcoming version change (do this via GitHub.com so that it's an 
-   officially signed commit).
-5. git tag vX.Y.Z , for instance git tag v0.4.43
-6. git push origin --tags (this triggers the release build and upload process)
-7. When the release is done, change the title of the release to beta release vX.Y.Z, download the 
+3. Type "start_release" to bump the z version and trigger the release process.
+   - Note one thing that this does not do: it does not generate an officially signed commit
+     for README.md.
+4. When the release is done, change the title of the release to beta release vX.Y.Z, download the 
    binaries, and calculate the SHA-256 checksums for the binaries and include those in the release 
    notes.
