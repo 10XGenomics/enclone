@@ -386,6 +386,32 @@ pub fn find_exact_subclonotypes(
         println!("max exact subclonotype size = {}", max_exact);
     }
 
+    // Edit if NWEAK_ONESIES not specified.
+
+    /*
+    if ctl.clono_filt_opt.weak_onesies {
+        let mut total_cells = 0;
+        for i in 0..exact_clonotypes.len() {
+            total_cells += exact_clonotypes[i].ncells();
+        }
+        let mut exacts2 = Vec::<ExactClonotype>::new();
+        for i in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[i];
+            if ex.share.len() == 1 && ex.ncells() > 1 && ex.ncells() * 1000 < total_cells {
+                for j in 0..ex.clones.len() {
+                    exacts2.push(ExactClonotype {
+                        share: ex.share.clone(),
+                        clones: vec![ex.clones[j].clone()],
+                    });
+                }
+            } else {
+                exacts2.push(exact_clonotypes[i].clone());
+            }
+        }
+        exact_clonotypes = exacts2;
+    }
+    */
+
     // Fill in iNKT and MAIT annotations.
 
     mark_innate(&refdata, &mut exact_clonotypes);

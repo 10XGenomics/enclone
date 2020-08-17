@@ -869,7 +869,7 @@ fn test_for_broken_links_and_spellcheck() {
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
-        moresies multiomic ncbi ncross NEWICK Newick \
+        moresies multiomic ncbi ncross newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell phylip \
         plasmablast preinstalled prepends redownloads samtools screenshot segn sloooooooow \
         spacebar stackexchange standalone stdout subclonotype \
