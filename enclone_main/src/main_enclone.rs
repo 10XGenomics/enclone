@@ -1092,6 +1092,7 @@ pub fn main_enclone(args: &Vec<String>) {
             if ex.share.len() == 1
                 && ex.ncells() > 1
                 && ex.ncells() * 1000 < ncells_total
+                && to_info.contains_key(&i)
                 && eq.orbit_size(to_info[&i] as i32) == 1
             {
                 for j in 0..ex.clones.len() {
