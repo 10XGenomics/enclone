@@ -28,10 +28,6 @@ pub fn build_info(
     // improve both time and space computational performance by reducing that redundancy.
 
     let exiting = AtomicBool::new(false);
-    let mut total_clones = 0;
-    for i in 0..exact_clonotypes.len() {
-        total_clones += exact_clonotypes[i].ncells();
-    }
     let mut info = Vec::<CloneInfo>::new();
     let mut results = Vec::<(usize, Vec<CloneInfo>, ExactClonotype)>::new();
     for i in 0..exact_clonotypes.len() {
@@ -291,10 +287,7 @@ pub fn build_info(
         // Incorporate improper cells if they are onesies.  Note that we're dropping the
         // improper cells having two or more chains.
 
-        if !placed
-            && (shares.len() == 1 && exact_clonotypes[i].ncells() * ctl.onesie_mult >= total_clones)
-            || ctl.merge_all_impropers
-        {
+        if !placed && (shares.len() == 1 || ctl.merge_all_impropers) {
             let mut exact_cols = Vec::<usize>::new();
             for i in 0..tigs.len() {
                 exact_cols.push(i);

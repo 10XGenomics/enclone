@@ -250,11 +250,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NIMPROPER",
-            "enclone filters out exact subclonotypes having only one chain type \
-            (heavy or light or TRA or TRB).  (Exception: it does not remove clonotypes having \
-            exactly one chain, but whose number of cells is at least (total cells)/10000.) \
-            For example, the filter removes all exact subclonotypes having two TRA chains and \
-            no other chains.  The NIMPROPER option turns off this filter.",
+            "enclone filters out exact subclonotypes having more than one chain, but all of the \
+            same type.  For example, the filter removes all exact subclonotypes having two TRA \
+            chains and no other chains.  The NIMPROPER option turns off this filter.",
             75,
         );
 

@@ -550,7 +550,6 @@ pub struct EncloneControl {
     pub comp: bool,                       // print computational performance stats
     pub comp2: bool,                      // print more detailed computational performance stats
     pub debug_table_printing: bool,       // turn on debugging for table printing
-    pub onesie_mult: usize,               // see main.rs
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics
     pub origin_info: OriginInfo,          // origin (sample) info

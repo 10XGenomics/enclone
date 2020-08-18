@@ -62,10 +62,14 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <hr>
 
 <p>
-<b>8/18/20</b></b>: subtle change to what <code>NWEAK_ONESIES</code> does, rather than delete
-certain dubious onesie clonotypes, after this change, they are disintegrated into single cells
-(if <code>NWEAK_ONESIES</code> is not specified); please see "enclone help special".
-</p>
+<b>8/18/20</b></b>: 
+<ol>
+<li> Change what the weak onesies filter does: unless <code>NWEAK_ONESIES</code> is used, now,
+rather than delete certain dubious onesie clonotypes, such clonotypes are disintegrated into
+single cell clonotypes.</li>
+<li> Change what the improper filter does: unless <code>NIMPROPER</code> is used, now,
+clonotypes having more than one chain but all of the same type are deleted.</li>
+</ol>
 
 <p>
 <b>8/17/20</b></b>: deprecate <code>KEEP_IMPROPER</code>; the new name is 
@@ -74,7 +78,7 @@ certain dubious onesie clonotypes, after this change, they are disintegrated int
 
 <p>
 <b>8/10/20</b></b>: tweak the definition of the weak onesies filter so that it does not
-delete single-cell clonotypes.
+delete single-cell clonotypes.  Superceded by subsequent change on 8/18/20.
 </p>
 
 <p>
