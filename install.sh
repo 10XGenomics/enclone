@@ -227,7 +227,7 @@ main() {
             echo 'PATH=~/bin:$PATH' >> .profile
     fi
     if [ -f .zshrc ] || [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo -n 'export PATH=~/bin:$PATH' >> .zshrc
+        echo 'export PATH=~/bin:$PATH' >> .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
