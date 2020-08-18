@@ -226,9 +226,6 @@ main() {
         test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
             echo 'PATH=~/bin:$PATH' >> .profile
     fi
-    if [ -f .zshrc ] || [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo 'export PATH=~/bin:$PATH' >> .zshrc
-    fi
 
     # 8. Add ~/bin to zsh path if needed.
     #
