@@ -115,7 +115,7 @@ fn main() {
     println!("tagging commit");
     let new = Command::new("git")
         .arg("tag")
-        .arg(&version)
+        .arg(&format!("v{}", version))
         .output()
         .expect(&format!("failed to execute git tag"));
     if new.status.code() != Some(0) {
