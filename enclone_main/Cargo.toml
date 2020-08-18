@@ -22,7 +22,7 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
-equiv = "0.1.1"
+equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a606b2c65a999197f88eb644c53022c6270badf6" }
 io_utils = "0.2"
 itertools = "0.9.0"
 perf_stats = "0.1.2"

@@ -29,6 +29,12 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>8/18/20</b></b>: subtle change to what <code>NWEAK_ONESIES</code> does, rather than delete
+certain dubious onesie clonotypes, after this change, they are disintegrated into single cells
+(if <code>NWEAK_ONESIES</code> is not specified); please see "enclone help special".
+</p>
+
+<p>
 <b>8/17/20</b></b>: deprecate <code>KEEP_IMPROPER</code>; the new name is 
 <code>NIMPROPER</code>.
 </p>

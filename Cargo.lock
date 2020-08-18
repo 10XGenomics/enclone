@@ -559,7 +559,7 @@ dependencies = [
  "debruijn",
  "dirs",
  "enclone_core",
- "equiv",
+ "equiv 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6)",
  "graph_simple",
  "hdf5",
  "io_utils",
@@ -627,7 +627,7 @@ dependencies = [
  "enclone_print",
  "enclone_proto",
  "enclone_tail",
- "equiv",
+ "equiv 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6)",
  "failure",
  "file-lock",
  "flate2",
@@ -660,7 +660,7 @@ dependencies = [
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6)",
  "failure",
  "hdf5",
  "io_utils",
@@ -704,7 +704,7 @@ dependencies = [
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6)",
  "hdf5",
  "io_utils",
  "itertools 0.9.0",
@@ -723,6 +723,11 @@ dependencies = [
  "vdj_ann",
  "vector_utils",
 ]
+
+[[package]]
+name = "equiv"
+version = "0.1.1"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6#a606b2c65a999197f88eb644c53022c6270badf6"
 
 [[package]]
 name = "equiv"
@@ -1027,7 +1032,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5ce3419d89b5959ccc3a7238e1f76c99c859ca59592aed46ff562a12004537c"
 dependencies = [
  "debruijn",
- "equiv",
+ "equiv 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "graph_simple",
  "kmer_lookup",
  "petgraph 0.4.13",

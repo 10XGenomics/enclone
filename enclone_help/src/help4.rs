@@ -167,24 +167,17 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
         );
 
-        h.ldoc(
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NWEAK_ONESIES",
-            "By default, enclone filters out onesie clonotypes having a single exact",
+            "By default, enclone disintegrates certain untrusted clonotypes into single cell \
+            clonotypes.  The untrusted clonotypes are onesies \
+            that are light chain or TRA and whose number of cells is less than 0.1% of the total \
+            number of cells.  This operation reduces the likelihood of creating clonotypes \
+            containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
+            this operation off.",
+            75,
         );
-        h.doc(
-            "",
-            "subclonotype, and that are light chain or TRA, and whose number of cells is",
-        );
-        h.doc(
-            "",
-            "greater than one but less than 0.1% of the total number of cells.",
-        );
-        h.doc(
-            "",
-            "This filter reduces the likelihood of creating clonotypes containing cells",
-        );
-        h.doc("", "that arose from different recombination events.");
-        h.doc("", "NWEAK_ONESIES turns this filter off.");
 
         h.ldoc(
             "NFOURSIE_KILL",
