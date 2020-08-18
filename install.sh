@@ -213,7 +213,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 7. Add ~/bin to path if needed.
+    # 7. Add ~/bin to bash path if needed.
     #
     #    This does nothing if you already have ~/bin in your path.
     #
@@ -226,13 +226,23 @@ main() {
         test -r .bash_profile && echo 'PATH=~/bin:$PATH' >> .bash_profile || \
             echo 'PATH=~/bin:$PATH' >> .profile
     fi
-    if [ -f .zshrc ] || [[ "$SHELL" == "/bin/zsh" ]]; then
-        echo -n 'export PATH=~/bin:$PATH' >> .zshrc
+
+    # 8. Add ~/bin to zsh path if needed.
+    #
+    #    (a) If .zshrc exists and we have not already added ~/bin to the PATH in it, do so.
+    #    (b) If .zshrc does not exist but the user shell is zsh, add ~/bin as above.
+
+    if [ -f .zshrc ]; then
+        if [[ `cat .zshrc` != *"export PATH=~/bin:"* ]]; then
+            echo 'export PATH=~/bin:$PATH' >> .zshrc
+        fi
+    elif [[ "$SHELL" == "/bin/zsh" ]]; then
+        echo 'export PATH=~/bin:$PATH' > .zshrc
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 8. Download data.  
+    # 9. Download data.  
     #
     #    For the medium case, this is not optimal, because if anything changed,
     #    all the files get re-downloaded.
@@ -318,6 +328,9 @@ main() {
     else
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
     fi
+    printf "\n"
+    printf "🌸 If you CLOSE this terminal window and open a new one, then enclone will be     🌸\n"
+    printf "🌸 in your executable path.  Otherwise enclone may not be found when you type it. 🌸\n"
     printf "\nAll done, have a lovely day!\n\n"
 
 }
