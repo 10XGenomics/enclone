@@ -1115,6 +1115,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let mut x = Vec::<usize>::new();
             for k in 0..to_exact_new[j].len() {
                 info[i].clonotype_index = to_exact_new[j][k];
+                info[i].clonotype_id = to_exact_new[j][k];
                 x.push(info2.len());
                 info2.push(info[i].clone());
             }
