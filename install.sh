@@ -318,6 +318,9 @@ main() {
     else
         echo "enclone installation took $(($ENDTIME - $STARTTIME)) seconds."
     fi
+    printf "\n"
+    printf "🌸 If you CLOSE this terminal window and open a new one, then enclone will be     🌸\n"
+    printf "🌸 in your executable path.  Otherwise enclone may not be found when you type it. 🌸\n"
     printf "\nAll done, have a lovely day!\n\n"
 
 }
