@@ -5,6 +5,8 @@
 # however you should only need to do that rarely,
 # and if you do need to, "cargo t" will catch the problem and should tell you
 # what to do.
+#
+# See also README.
 
 # WARNING: note harcoding of version14!
 
