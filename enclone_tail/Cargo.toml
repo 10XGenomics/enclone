@@ -28,7 +28,7 @@ mirror_sparse_matrix = "0.1.4"
 ndarray = "0.13"
 perf_stats = "0.1.2"
 pretty_trace = "0.3.2"
-rayon = "1.0.2"
+rayon = "1.3"
 serde = "1.0.90"
 serde_derive = "1.0.102"
 serde_json = "*"
@@ -36,7 +36,7 @@ stats_utils = "0.1.1"
 string_utils = "0.1.1"
 tables = "0.1.2"
 tar = "0.4.29"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="183e2d657e6436494072a32cf8da4f7b753d1e69" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="abe356edc0ee6ea6080e1d468c1a2ca8b680d7ca" }
 vector_utils = "0.1.3"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
