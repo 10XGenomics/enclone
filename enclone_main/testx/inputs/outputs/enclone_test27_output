@@ -8,15 +8,15 @@ SUMMARY STATISTICS
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
-   │1       │                   151  │             151  │   11.4│
-   │2       │                   304  │             923  │   69.9│
-   │3       │                    11  │             243  │   18.4│
+   │1       │                   136  │             136  │   10.4│
+   │2       │                   304  │             927  │   70.8│
+   │3       │                    11  │             243  │   18.5│
    │4       │                     2  │               4  │    0.3│
-   │total   │                   468  │            1321  │  100.0│
+   │total   │                   453  │            1310  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
-   • number of clonotypes having at least two cells = 126
-   • number of cells having 1 chain = 185
+   • number of clonotypes having at least two cells = 130
+   • number of cells having 1 chain = 174
    • number of cells having 2 or 3 chains = 1135
    • mean over middle third of contig UMI counts (heavy chain / TRB) = 354.20
-   • mean over middle third of contig UMI counts (light chain / TRA) = 2015.84
+   • mean over middle third of contig UMI counts (light chain / TRA) = 2068.23
 

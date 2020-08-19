@@ -62,19 +62,38 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <hr>
 
 <p>
+<b>8/19/20</b></b>: 
+<ol>
+<li> Change what the weak onesies filter does: unless <code>NWEAK_ONESIES</code> is used, now,
+rather than delete certain dubious onesie clonotypes, such clonotypes are disintegrated into
+single cell clonotypes.</li>
+<li> Change what the improper filter does: unless <code>NIMPROPER</code> is used, now,
+clonotypes having more than one chain but all of the same type are deleted.</li>
+<li> Add a new filter that prevents merges of onesie clonotypes into other clonotypes; this
+filter may be turned off with a new argument <code>NMERGE_ONESIES</code>.  This behavior is
+mostly (but not completely) a splitting out of previous functionality so as to simplify and
+clarify.</li>
+</ol>
+Importantly, these changes have the effect of <i>increasing</i> the number of cells in
+clonotypes; the extra cells are mostly in onesie clonotypes.
+Precise definitions may be found by typing (or clicking here): 
+<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+</p>
+
+<p>
 <b>8/17/20</b></b>: deprecate <code>KEEP_IMPROPER</code>; the new name is 
 <code>NIMPROPER</code>.
 </p>
 
 <p>
 <b>8/10/20</b></b>: tweak the definition of the weak onesies filter so that it does not
-delete single-cell clonotypes.
+delete single-cell clonotypes.  Superceded by subsequent change on 8/18/20.
 </p>
 
 <p>
 <b>8/7/20</b></b>: add the ability to analyze alternate splicing using GEX data to characterize
 UMIs as secreted or membrane, and display this information using lvars "sec" and "mem".   See
-<code>enclone help lvars</code> for limitations.
+<code>enclone help lvars</code> for limitations.  This is highly experimental.
 </p>
 
 <p>
@@ -87,6 +106,7 @@ if Cell Ranger version 4.0 or greater was used.</li>
 <li>Add cvar <code>cdr3_len</code></li>
 <li>Add and document knobs that allow nearly all clonotype join filtering to be turned off.  Please
     see \"enclone help how\" and the end of \"enclone help faq\".</li>
+</ol>
 </p>
 
 <p>

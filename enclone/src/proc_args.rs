@@ -122,14 +122,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.join_alg_opt.max_score = 1_000_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
+    ctl.join_alg_opt.merge_onesies_ctl = true;
     ctl.join_alg_opt.max_cdr3_diffs = 10;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
 
     ctl.parseable_opt.pchains = 4;
-
-    ctl.onesie_mult = 10_000;
 
     // Pretest for consistency amongst TCR, BCR, GEX and META.  Also preparse GEX.
 
@@ -375,6 +374,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
         ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
         ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
+        ("NMERGE_ONESIES", &mut ctl.join_alg_opt.merge_onesies_ctl),
         ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
         ("NSILENT", &mut ctl.silent),
         ("NUMI", &mut ctl.clono_filt_opt.umi_filt),
@@ -404,7 +404,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
         ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
-        ("ONESIE_MULT", &mut ctl.onesie_mult),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];

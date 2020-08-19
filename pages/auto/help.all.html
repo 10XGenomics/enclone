@@ -323,8 +323,8 @@ using the command-line argument <span style="font-weight:bold;">EASY</span>.
 special" for a description of the filters.
 
 We are actively working to improve the algorithm.  To test the performance of the current version,
-we combined data from 443 BCR libraries from 30 donors, which yielded <span style="color:#c23621;font-weight:bold;">9573</span> clonotypes having at
-least two cells each, of which <span style="color:#c23621;font-weight:bold;">15 (0.16%)</span> contained data from multiple donors.  These are errors.
+we combined data from 442 BCR libraries from 30 donors, which yielded <span style="color:#c23621;font-weight:bold;">8678</span> clonotypes having at
+least two cells each, of which <span style="color:#c23621;font-weight:bold;">15 (0.17%)</span> contained data from multiple donors.  These are errors.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help command
@@ -973,12 +973,17 @@ clonotype.
 │                    │  weak and appear to be artifacts, perhaps arising from a stray mRNA molecule│
 │                    │  that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.   │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│NWEAK_ONESIES       │  By default, enclone filters out onesie clonotypes having a single exact    │
-│                    │  subclonotype, and that are light chain or TRA, and whose number of cells is│
-│                    │  greater than one but less than 0.1% of the total number of cells.          │
-│                    │  This filter reduces the likelihood of creating clonotypes containing cells │
-│                    │  that arose from different recombination events.                            │
-│                    │  NWEAK_ONESIES turns this filter off.                                       │
+│NWEAK_ONESIES       │  By default, enclone disintegrates certain untrusted clonotypes into single │
+│                    │  cell clonotypes.  The untrusted clonotypes are onesies that are light chain│
+│                    │  or TRA and whose number of cells is less than 0.1% of the total number of  │
+│                    │  cells.  This operation reduces the likelihood of creating clonotypes       │
+│                    │  containing cells that arose from different recombination events.           │
+│                    │  NWEAK_ONESIES turns this operation off.                                    │
+├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
+│NMERGE_ONESIES      │  enclone merges certain onesie clonotypes into clonotypes having two or more│
+│                    │  chains.  By default, this merger is prevented if the number of cells in the│
+│                    │  onesie is less than 0.01% of the total number of cells.  NMERGE_ONESIES    │
+│                    │  causes these merges to happen anyway.                                      │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
 │NFOURSIE_KILL       │  By default, if enclone finds a foursie exact subclonotype that             │
 │                    │  contains a twosie exact subclonotype having at least ten cells, it kills   │
@@ -1001,10 +1006,8 @@ clonotype.
 │                    │  to find errors.  Use of the bc field for META input specification          │
 │                    │  automatically turns on this option.                                        │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
-│NIMPROPER           │  enclone filters out exact subclonotypes having only one chain type (heavy  │
-│                    │  or light or TRA or TRB).  (Exception: it does not remove clonotypes having │
-│                    │  exactly one chain, but whose number of cells is at least (total            │
-│                    │  cells)/10000.) For example, the filter removes all exact subclonotypes     │
+│NIMPROPER           │  enclone filters out exact subclonotypes having more than one chain, but all│
+│                    │  of the same type.  For example, the filter removes all exact subclonotypes │
 │                    │  having two TRA chains and no other chains.  The NIMPROPER option turns off │
 │                    │  this filter.                                                               │
 ├────────────────────┼─────────────────────────────────────────────────────────────────────────────┤
@@ -1092,6 +1095,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │               │  <span style="font-weight:bold;">and possorted_genome_bam.bam.bai.</span>                                               │
 │               │  <span style="font-weight:bold;">These fields also require that you have samtools in your path.</span>                  │
 │               │  Note that these counts tend to be low.                                          │
+│               │  <span style="color:#c23621;font-weight:bold;">PLEASE NOTE: THIS IS EXPERIMENTAL AND UNLIKELY TO BE FULLY CORRECT.</span>             │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────────┤
 │cred           │  Short for credibility.  It is a measure of the extent to which cells            │
 │               │  having gene expression similar to a given putative B cell are themselves        │

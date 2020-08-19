@@ -340,9 +340,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         h.print(
             "We are actively working to improve the algorithm.  To test the performance of the \
-            current version, we combined data from 443 BCR libraries from 30 donors, which yielded \
-            \\boldred{9573} clonotypes having at least two cells each, of which \
-            \\boldred{15 (0.16%)} contained data from multiple donors.  These are errors.\n\n",
+            current version, we combined data from 442 BCR libraries from 30 donors, which yielded \
+            \\boldred{8678} clonotypes having at least two cells each, of which \
+            \\boldred{15 (0.17%)} contained data from multiple donors.  These are errors.\n\n",
         );
         h.end_doc();
     }

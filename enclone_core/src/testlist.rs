@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 106] = [
+pub const TESTS: [&str; 108] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -284,6 +284,10 @@ pub const TESTS: [&str; 106] = [
     // 106. test for failed interaction between POUT and COMPLETE (crashed at one point)
     r###"BCR=123085 CDR3=CAKANQLLYGGRQYYYGMDVW COMPLETE POUT=stdout
         PCOLS=clonotype_id,exact_subclonotype_id,n,d_donor1,d_donor2"###,
+    // 107. part 1 of test for weak onesies filter
+    r###"TCR=101287 CDR3=CASSQVAGAGQPQHF"###,
+    // 108. part 2 of test for weak onesies filter
+    r###"TCR=101287 CDR3=CASSQVAGAGQPQHF NWEAK_ONESIES"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.

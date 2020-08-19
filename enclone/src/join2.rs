@@ -134,13 +134,11 @@ pub fn finish_join(
                 }
             }
             unique_sort(&mut exacts);
-            let left = exact_clonotypes[info[*x].clonotype_index].share[0].left;
-            let mut ncells = exact_clonotypes[info[*x].clonotype_index].ncells();
-            for j in 0..exacts.len() {
-                ncells += exact_clonotypes[exacts[j]].ncells();
-            }
-            if ncells == 2 && ncells_total > 1000 && !left {
-                ok = false;
+            if ctl.join_alg_opt.merge_onesies_ctl {
+                let ncells0 = exact_clonotypes[info[*x].clonotype_index].ncells();
+                if ncells0 * 10000 < ncells_total {
+                    ok = false;
+                }
             }
             if ok {
                 eq.join(*x as i32, alltigs2[ms[0]].1 as i32);

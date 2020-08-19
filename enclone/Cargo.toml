@@ -23,7 +23,7 @@ bio = ">=0.31, <=0.32"
 debruijn = "0.3.2"
 dirs = "2.0.2"
 enclone_core = { path = "../enclone_core" }
-equiv = "0.1.1"
+equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a606b2c65a999197f88eb644c53022c6270badf6" }
 graph_simple = "0.1.1"
 io_utils = "0.2"
 itertools = "0.9.0"

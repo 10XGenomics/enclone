@@ -159,7 +159,7 @@ pub fn delete_weaks(
     exacts: &Vec<usize>,
     mults: &Vec<usize>, // should eliminate
     exact_clonotypes: &Vec<ExactClonotype>,
-    total_cells: usize,
+    _total_cells: usize,
     mat: &Vec<Vec<Option<usize>>>,
     vars: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
@@ -278,16 +278,6 @@ pub fn delete_weaks(
                     bads[*d] = true;
                 }
             }
-        }
-    }
-
-    // Delete onesie clonotypes having one exact clonotype that's a light chain and very
-    // low frequency.
-
-    if cols == 1 && nexacts == 1 && ctl.clono_filt_opt.weak_onesies {
-        let ex = &exact_clonotypes[exacts[0]];
-        if !ex.share[0].left && ex.ncells() > 1 && ex.ncells() * 1000 < total_cells {
-            bads[0] = true;
         }
     }
 }

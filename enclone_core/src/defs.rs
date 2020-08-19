@@ -444,10 +444,11 @@ pub struct JoinPrintOpt {
 
 #[derive(Default)]
 pub struct JoinAlgOpt {
-    pub max_score: f64,      // max score for join
-    pub easy: bool,          // make joins even if core condition violated
-    pub merge_onesies: bool, // create and merge onesies where completely unambiguous
-    pub bcjoin: bool,        // join only by barcode identity
+    pub max_score: f64,          // max score for join
+    pub easy: bool,              // make joins even if core condition violated
+    pub merge_onesies: bool,     // create and merge onesies where completely unambiguous
+    pub merge_onesies_ctl: bool, // restriction on onesie merger
+    pub bcjoin: bool,            // join only by barcode identity
     pub max_cdr3_diffs: usize,
 }
 
@@ -550,7 +551,6 @@ pub struct EncloneControl {
     pub comp: bool,                       // print computational performance stats
     pub comp2: bool,                      // print more detailed computational performance stats
     pub debug_table_printing: bool,       // turn on debugging for table printing
-    pub onesie_mult: usize,               // see main.rs
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics
     pub origin_info: OriginInfo,          // origin (sample) info

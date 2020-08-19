@@ -167,24 +167,27 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
         );
 
-        h.ldoc(
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NWEAK_ONESIES",
-            "By default, enclone filters out onesie clonotypes having a single exact",
+            "By default, enclone disintegrates certain untrusted clonotypes into single cell \
+            clonotypes.  The untrusted clonotypes are onesies \
+            that are light chain or TRA and whose number of cells is less than 0.1% of the total \
+            number of cells.  This operation reduces the likelihood of creating clonotypes \
+            containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
+            this operation off.",
+            75,
         );
-        h.doc(
-            "",
-            "subclonotype, and that are light chain or TRA, and whose number of cells is",
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "NMERGE_ONESIES",
+            "enclone merges certain onesie clonotypes into clonotypes having two or more chains.  \
+            By default, this merger is prevented if the number of cells in the onesie is less \
+            than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
+            happen anyway.",
+            75,
         );
-        h.doc(
-            "",
-            "greater than one but less than 0.1% of the total number of cells.",
-        );
-        h.doc(
-            "",
-            "This filter reduces the likelihood of creating clonotypes containing cells",
-        );
-        h.doc("", "that arose from different recombination events.");
-        h.doc("", "NWEAK_ONESIES turns this filter off.");
 
         h.ldoc(
             "NFOURSIE_KILL",
@@ -257,11 +260,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NIMPROPER",
-            "enclone filters out exact subclonotypes having only one chain type \
-            (heavy or light or TRA or TRB).  (Exception: it does not remove clonotypes having \
-            exactly one chain, but whose number of cells is at least (total cells)/10000.) \
-            For example, the filter removes all exact subclonotypes having two TRA chains and \
-            no other chains.  The NIMPROPER option turns off this filter.",
+            "enclone filters out exact subclonotypes having more than one chain, but all of the \
+            same type.  For example, the filter removes all exact subclonotypes having two TRA \
+            chains and no other chains.  The NIMPROPER option turns off this filter.",
             75,
         );
 
@@ -632,6 +633,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "\\bold{These fields also require that you have samtools in your path.}",
         );
         h.doc("", "Note that these counts tend to be low.");
+        h.docpr(
+            "",
+            "\\boldred{PLEASE NOTE: THIS IS EXPERIMENTAL AND UNLIKELY TO BE FULLY CORRECT.}",
+        );
         h.ldoc(
             "cred",
             "Short for credibility.  It is a measure of the extent to which cells",

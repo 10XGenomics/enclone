@@ -1056,7 +1056,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Form equivalence relation on exact subclonotypes.
 
     let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
-    let eq: EquivRel = join_exacts(
+    let mut eq: EquivRel = join_exacts(
         is_bcr,
         &refdata,
         &ctl,
@@ -1071,6 +1071,72 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
     */
+
+    // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
+    // cell clonotypes.  This requires editing of exact_clonotypes, info and eq.
+
+    if ctl.clono_filt_opt.weak_onesies {
+        let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
+        let mut to_info = HashMap::<usize, usize>::new();
+        let mut exacts2 = Vec::<ExactClonotype>::new();
+        for i in 0..info.len() {
+            to_info.insert(info[i].clonotype_index, i);
+        }
+        let mut to_exact_new = Vec::<Vec<usize>>::new();
+        for i in 0..exact_clonotypes.len() {
+            let ex = &exact_clonotypes[i];
+            let mut enew = Vec::<usize>::new();
+            if ex.share.len() == 1
+                && ex.ncells() > 1
+                && ex.ncells() * 1000 < ncells_total
+                && to_info.contains_key(&i)
+                && eq.orbit_size(to_info[&i] as i32) == 1
+            {
+                for j in 0..ex.clones.len() {
+                    enew.push(exacts2.len());
+                    exacts2.push(ExactClonotype {
+                        share: ex.share.clone(),
+                        clones: vec![ex.clones[j].clone()],
+                    });
+                }
+            } else {
+                enew.push(exacts2.len());
+                exacts2.push(exact_clonotypes[i].clone());
+            }
+            to_exact_new.push(enew);
+        }
+        exact_clonotypes = exacts2;
+        let mut info2 = Vec::<CloneInfo>::new();
+        let mut to_info2 = Vec::<Vec<usize>>::new();
+        for i in 0..info.len() {
+            let j = info[i].clonotype_index;
+            let mut x = Vec::<usize>::new();
+            for k in 0..to_exact_new[j].len() {
+                info[i].clonotype_index = to_exact_new[j][k];
+                info[i].clonotype_id = to_exact_new[j][k];
+                x.push(info2.len());
+                info2.push(info[i].clone());
+            }
+            to_info2.push(x);
+        }
+        info = info2;
+        let mut reps = Vec::<i32>::new();
+        eq.orbit_reps(&mut reps);
+        let mut eq2 = EquivRel::new(info.len() as i32);
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            if o.len() > 1 {
+                for j in 0..o.len() - 1 {
+                    eq2.join(
+                        to_info2[o[j] as usize][0] as i32,
+                        to_info2[o[j + 1] as usize][0] as i32,
+                    );
+                }
+            }
+        }
+        eq = eq2;
+    }
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
