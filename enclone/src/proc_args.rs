@@ -122,6 +122,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     ctl.join_alg_opt.max_score = 1_000_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
+    ctl.join_alg_opt.merge_onesies_ctl = true;
     ctl.join_alg_opt.max_cdr3_diffs = 10;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
@@ -373,6 +374,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
         ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
         ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
+        ("NMERGE_ONESIES", &mut ctl.join_alg_opt.merge_onesies_ctl),
         ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
         ("NSILENT", &mut ctl.silent),
         ("NUMI", &mut ctl.clono_filt_opt.umi_filt),

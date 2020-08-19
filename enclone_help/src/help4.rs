@@ -179,6 +179,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             75,
         );
 
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "NMERGE_ONESIES",
+            "enclone merges certain onesie clonotypes into clonotypes having two or more chains.  \
+            By default, this merger is prevented if the number of cells in the onesie is less \
+            than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
+            happen anyway.",
+            75,
+        );
+
         h.ldoc(
             "NFOURSIE_KILL",
             "By default, if enclone finds a foursie exact subclonotype that",

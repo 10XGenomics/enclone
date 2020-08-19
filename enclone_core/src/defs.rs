@@ -444,10 +444,11 @@ pub struct JoinPrintOpt {
 
 #[derive(Default)]
 pub struct JoinAlgOpt {
-    pub max_score: f64,      // max score for join
-    pub easy: bool,          // make joins even if core condition violated
-    pub merge_onesies: bool, // create and merge onesies where completely unambiguous
-    pub bcjoin: bool,        // join only by barcode identity
+    pub max_score: f64,          // max score for join
+    pub easy: bool,              // make joins even if core condition violated
+    pub merge_onesies: bool,     // create and merge onesies where completely unambiguous
+    pub merge_onesies_ctl: bool, // restriction on onesie merger
+    pub bcjoin: bool,            // join only by barcode identity
     pub max_cdr3_diffs: usize,
 }
 
