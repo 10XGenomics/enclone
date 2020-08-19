@@ -633,6 +633,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "\\bold{These fields also require that you have samtools in your path.}",
         );
         h.doc("", "Note that these counts tend to be low.");
+        h.docpr(
+            "",
+            "\\boldred{PLEASE NOTE: THIS IS EXPERIMENTAL AND UNLIKELY TO BE FULLY CORRECT.}",
+        );
         h.ldoc(
             "cred",
             "Short for credibility.  It is a measure of the extent to which cells",
