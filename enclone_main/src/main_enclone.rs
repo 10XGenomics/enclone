@@ -1076,10 +1076,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // cell clonotypes.  This requires editing of exact_clonotypes, info and eq.
 
     if ctl.clono_filt_opt.weak_onesies {
-        let mut ncells_total = 0;
-        for i in 0..exact_clonotypes.len() {
-            ncells_total += exact_clonotypes[i].ncells();
-        }
+        let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
         let mut to_info = HashMap::<usize, usize>::new();
         let mut exacts2 = Vec::<ExactClonotype>::new();
         for i in 0..info.len() {
