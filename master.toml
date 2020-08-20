@@ -14,6 +14,7 @@ bytes = "0.5.5"
 chrono = "0.4.15"
 debruijn = "0.3.2"
 dirs = "2.0.2"
+edit-distance = "2.1.0"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone = { path = "../enclone" }

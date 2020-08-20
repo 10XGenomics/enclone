@@ -543,6 +543,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
 
 [[package]]
+name = "edit-distance"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbbaaaf38131deb9ca518a274a45bfdb8771f139517b073b16c2d3d32ae5037b"
+
+[[package]]
 name = "either"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -658,6 +664,7 @@ dependencies = [
  "byteorder",
  "bytes",
  "debruijn",
+ "edit-distance",
  "enclone_core",
  "enclone_proto",
  "equiv 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=a606b2c65a999197f88eb644c53022c6270badf6)",

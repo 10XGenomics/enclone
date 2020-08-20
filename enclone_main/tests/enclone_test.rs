@@ -863,7 +863,7 @@ fn test_for_broken_links_and_spellcheck() {
     // places and reduce the dictionary exceptions accordingly.
 
     let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
-        clonotyping codebase colorn contig contigs cred crispr \
+        clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
         foursie foursies \
         genomics germline github githubusercontent google googletagmanager grok gz html \
