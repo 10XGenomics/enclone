@@ -302,10 +302,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "CDR3=<pattern>",
             "only show clonotypes having a CDR3 amino acid seq that matches",
         );
-        h.doc(
-            "",
-            "the given pattern (regular expression)*, from beginning to end",
-        );
+        h.doc("", "the given pattern*, from beginning to end");
 
         // doc SEG and SEGN
 
@@ -420,6 +417,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         // footnote for CDR3
 
         h.print("* Examples of how to specify CDR3:\n\n");
+        h.print(
+            "Two pattern types are allowed: either regular expressions, or \"Levenshtein \
+            distance patterns\", as exhibited by examples below.\n\n",
+        );
         let mut rows = Vec::<Vec<String>>::new();
         rows.push(vec![
             "CDR3=CARPKSDYIIDAFDIW".to_string(),
@@ -432,6 +433,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         rows.push(vec![
             "CDR3=\".*DYIID.*\"".to_string(),
             "have a CDR3 that contains DYIID inside it".to_string(),
+        ]);
+        rows.push(vec![
+            "CDR3=\"CQTWGTGIRVF~3\"".to_string(),
+            "CDR3s within Levenshtein distance 3 of CQTWGTGIRVF".to_string(),
+        ]);
+        rows.push(vec![
+            "CDR3=\"CQTWGTGIRVF~3|CQVWDSSSDHPYVF~2\"".to_string(),
+            "CDR3s within Levenshtein distance 3 of CQTWGTGIRVF".to_string(),
+        ]);
+        rows.push(vec![
+            "".to_string(),
+            "or Levenshtein distance 2 of CQVWDSSSDHPYVF".to_string(),
         ]);
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);

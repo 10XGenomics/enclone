@@ -467,7 +467,8 @@ pub struct ClonoFiltOpt {
     pub max_chains: usize,   // only show clonotypes with at most this many chains
     pub ngex: bool,          // turn off gex filtering,
     pub ncross: bool,        // turn off cross filtering,
-    pub cdr3: Option<Regex>, // only show clonotypes having one of these CDR3_AA sequences
+    pub cdr3: Option<Regex>, // only show clonotypes whose CDR3_AA matches regular expression
+    pub cdr3_lev: String,    // only show clonotypes whose CDR3_AA matches Levenshtein dist pattern
     pub whitef: bool,        // only show clonotypes exhibiting whitelist contamination
     pub protect_bads: bool,  // protect bads from deletion
     pub fail_only: bool,     // only print fails

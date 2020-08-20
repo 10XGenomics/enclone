@@ -823,15 +823,30 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             let x = arg.after("MAX_LOG_SCORE=").force_f64();
             ctl.join_alg_opt.max_score = 10.0_f64.powf(x);
         } else if arg.starts_with("CDR3=") {
-            let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
-            if !reg.is_ok() {
-                eprintln!(
-                    "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
-                    arg.after("CDR3=")
-                );
-                std::process::exit(1);
+            let fields = arg.split('|').collect::<Vec<&str>>();
+            let mut lev = true;
+            for i in 0..fields.len() {
+                if !Regex::new(r"[A-Z]+~[0-9]+")
+                    .as_ref()
+                    .unwrap()
+                    .is_match(fields[i])
+                {
+                    lev = false;
+                }
             }
-            ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
+            if lev {
+                ctl.clono_filt_opt.cdr3_lev = arg.after("=").to_string();
+            } else {
+                let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
+                if !reg.is_ok() {
+                    eprintln!(
+                        "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
+                        arg.after("CDR3=")
+                    );
+                    std::process::exit(1);
+                }
+                ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
+            }
         } else if is_usize_arg(&arg, "CHAINS") {
             ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
             ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
@@ -889,6 +904,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Sanity check arguments.
 
+    if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
+        eprintln!(
+            "\nPlease use the CDR3 argument to specify either a regular expression or a\n\
+            Levenshtein distance pattern, but not both.\n"
+        );
+        std::process::exit(1);
+    }
     if ctl.gen_opt.clustal_aa != "".to_string() && ctl.gen_opt.clustal_aa != "stdout".to_string() {
         if !ctl.gen_opt.clustal_aa.ends_with(".tar") {
             eprintln!("\nIf the value of CLUSTAL_AA is not stdout, it must end in .tar.\n");

@@ -807,7 +807,7 @@ scanning for feature enrichment.
 │CHAINS=n             │  only show clonotypes having exactly n chains                           │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │CDR3=&lt;pattern>       │  only show clonotypes having a CDR3 amino acid seq that matches         │
-│                     │  the given pattern (regular expression)*, from beginning to end         │
+│                     │  the given pattern*, from beginning to end                              │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │SEG="s_1|...|s_n"    │  only show clonotypes using one of the given reference segment names    │
 │SEGN="s_1|...|s_n"   │  only show clonotypes using one of the given reference segment numbers  │
@@ -846,11 +846,17 @@ scanning for feature enrichment.
 
 * Examples of how to specify CDR3:
 
-┌────────────────────────────────────────┬────────────────────────────────────────────────┐
-│CDR3=CARPKSDYIIDAFDIW                   │  have exactly this sequence as a CDR3          │
-│CDR3="CARPKSDYIIDAFDIW|CQVWDSSSDHPYVF"  │  have at least one of these sequences as a CDR3│
-│CDR3=".*DYIID.*"                        │  have a CDR3 that contains DYIID inside it     │
-└────────────────────────────────────────┴────────────────────────────────────────────────┘
+Two pattern types are allowed: either regular expressions, or "Levenshtein distance patterns", as
+exhibited by examples below.
+
+┌────────────────────────────────────────┬────────────────────────────────────────────────────┐
+│CDR3=CARPKSDYIIDAFDIW                   │  have exactly this sequence as a CDR3              │
+│CDR3="CARPKSDYIIDAFDIW|CQVWDSSSDHPYVF"  │  have at least one of these sequences as a CDR3    │
+│CDR3=".*DYIID.*"                        │  have a CDR3 that contains DYIID inside it         │
+│CDR3="CQTWGTGIRVF~3"                    │  CDR3s within Levenshtein distance 3 of CQTWGTGIRVF│
+│CDR3="CQTWGTGIRVF~3|CQVWDSSSDHPYVF~2"   │  CDR3s within Levenshtein distance 3 of CQTWGTGIRVF│
+│                                        │  or Levenshtein distance 2 of CQVWDSSSDHPYVF       │
+└────────────────────────────────────────┴────────────────────────────────────────────────────┘
 
 Note that double quotes should be used if the pattern contains characters other than letters.
 

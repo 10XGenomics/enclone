@@ -29,8 +29,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
-<b>8/19/20</b></b>: 
+<b>8/20/20</b></b>: 
 <ol>
+<li> Allow \"Levenshtein distance patterns\" for CDR3 filter specification.  For more information,
+type or click here:
+<a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.</li>
 <li> Change what the weak onesies filter does: unless <code>NWEAK_ONESIES</code> is used, now,
 rather than delete certain dubious onesie clonotypes, such clonotypes are disintegrated into
 single cell clonotypes.</li>
@@ -41,7 +44,7 @@ filter may be turned off with a new argument <code>NMERGE_ONESIES</code>.  This 
 mostly (but not completely) a splitting out of previous functionality so as to simplify and
 clarify.</li>
 </ol>
-Importantly, these changes have the effect of <i>increasing</i> the number of cells in
+Importantly, the last three changes have the effect of <i>increasing</i> the number of cells in
 clonotypes; the extra cells are mostly in onesie clonotypes.
 Precise definitions may be found by typing (or clicking here): 
 <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.

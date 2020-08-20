@@ -7,6 +7,7 @@
 use vdj_ann::*;
 
 use self::refx::*;
+use edit_distance::edit_distance;
 use enclone_core::defs::*;
 use std::cmp::*;
 use string_utils::*;
@@ -28,11 +29,15 @@ pub fn survives_filter(
     if n == 0 {
         return false;
     }
+
     // Clonotypes with at least n cells
+
     if n < ctl.clono_filt_opt.ncells_low {
         return false;
     }
+
     // Clonotypes having iNKT or MAIT evidence
+
     if ctl.clono_filt_opt.inkt {
         let mut evidence = false;
         for s in exacts.iter() {
@@ -65,7 +70,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes marked by heuristics
+
     if ctl.clono_filt_opt.marked {
         let mut marked = false;
         for s in exacts.iter() {
@@ -80,7 +87,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Marked clonotypes which are also B cells by annotation
+
     if ctl.clono_filt_opt.marked_b {
         let mut marked_b = false;
         for s in exacts.iter() {
@@ -102,7 +111,9 @@ pub fn survives_filter(
         }
     }
     let cols = rsi.vids.len();
+
     // Barcode required
+
     if ctl.clono_filt_opt.barcode.len() > 0 {
         let mut ok = false;
         for s in exacts.iter() {
@@ -119,7 +130,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with deletions
+
     if ctl.clono_filt_opt.del {
         let mut ok = false;
         for s in exacts.iter() {
@@ -134,7 +147,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with same V gene in 2 chains
+
     if ctl.clono_filt_opt.vdup {
         let mut dup = false;
         let mut x = rsi.vids.clone();
@@ -151,7 +166,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with constant region differences
+
     if ctl.clono_filt_opt.cdiff {
         let mut cdiff = false;
         for s in exacts.iter() {
@@ -176,7 +193,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with onesie exact subclonotypes
+
     if ctl.clono_filt_opt.have_onesie {
         let mut have = false;
         for i in 0..exacts.len() {
@@ -188,7 +207,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with full length V..J
+
     if !ctl.clono_filt_opt.vj.is_empty() {
         let mut have_vj = false;
         for s in exacts.iter() {
@@ -203,15 +224,21 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with no more than n cells
+
     if n > ctl.clono_filt_opt.ncells_high {
         return false;
     }
+
     // Clonotypes with at least n chains
+
     if exacts.len() < ctl.clono_filt_opt.min_exacts {
         return false;
     }
+
     // Clonotypes with given V gene name
+
     for i in 0..ctl.clono_filt_opt.seg.len() {
         let mut hit = false;
         for j in 0..ctl.clono_filt_opt.seg[i].len() {
@@ -240,7 +267,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with given V gene number/allele
+
     for i in 0..ctl.clono_filt_opt.segn.len() {
         let mut hit = false;
         for j in 0..ctl.clono_filt_opt.segn[i].len() {
@@ -271,7 +300,9 @@ pub fn survives_filter(
             return false;
         }
     }
+
     // Clonotypes with at least n cells
+
     if mults.iter().sum::<usize>() < ctl.clono_filt_opt.ncells_low {
         return false;
     }
@@ -280,7 +311,9 @@ pub fn survives_filter(
         let ex = &exact_clonotypes[exacts[i]];
         numi = max(numi, ex.max_umi_count());
     }
+
     // Clonotypes with at least n UMIs for contig
+
     if numi < ctl.clono_filt_opt.min_umi {
         return false;
     }
@@ -290,11 +323,15 @@ pub fn survives_filter(
         lis.append(&mut z);
     }
     unique_sort(&mut lis);
+
     // Clonotypes found in at least n datasets
+
     if lis.len() < ctl.clono_filt_opt.min_datasets {
         return false;
     }
+
     // Clonotypes in no more than n datasets
+
     if lis.len() > ctl.clono_filt_opt.max_datasets {
         return false;
     }
@@ -320,10 +357,13 @@ pub fn survives_filter(
     }
 
     // Clonotypes with no more and no less than min and max chains
+
     if cols < ctl.clono_filt_opt.min_chains || cols > ctl.clono_filt_opt.max_chains {
         return false;
     }
+
     // Clonotypes with given junction AA sequence
+
     if ctl.clono_filt_opt.cdr3.is_some() {
         let mut ok = false;
         for s in exacts.iter() {
@@ -344,6 +384,40 @@ pub fn survives_filter(
             return false;
         }
     }
+
+    // Clonotypes having given CDR3 (given by Levenshtein distance pattern).
+
+    if ctl.clono_filt_opt.cdr3_lev.len() > 0 {
+        let fields = ctl
+            .clono_filt_opt
+            .cdr3_lev
+            .split('|')
+            .collect::<Vec<&str>>();
+        let mut cdr3 = Vec::<String>::new();
+        let mut dist = Vec::<usize>::new();
+        for i in 0..fields.len() {
+            cdr3.push(fields[i].before("~").to_string());
+            dist.push(fields[i].after("~").force_usize());
+        }
+        let mut ok = false;
+        'exact_loop: for s in exacts.iter() {
+            let ex = &exact_clonotypes[*s];
+            for j in 0..ex.share.len() {
+                for k in 0..cdr3.len() {
+                    if edit_distance(&ex.share[j].cdr3_aa, &cdr3[k]) <= dist[k] {
+                        ok = true;
+                        break 'exact_loop;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return false;
+        }
+    }
+
+    // Donors.
+
     let mut donors = Vec::<usize>::new();
     for u in 0..exacts.len() {
         let ex = &exact_clonotypes[exacts[u]];

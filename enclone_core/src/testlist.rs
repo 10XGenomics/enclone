@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 108] = [
+pub const TESTS: [&str; 109] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -288,6 +288,8 @@ pub const TESTS: [&str; 108] = [
     r###"TCR=101287 CDR3=CASSQVAGAGQPQHF"###,
     // 108. part 2 of test for weak onesies filter
     r###"TCR=101287 CDR3=CASSQVAGAGQPQHF NWEAK_ONESIES"###,
+    // 109. test Levenshtein distance pattern
+    r###"BCR=123085 CDR3="CAKDKVPRRSSWSVFDYYGMDVW~9|CAVTIFGVRTALPYYYALDVW~9" NGROUP"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
