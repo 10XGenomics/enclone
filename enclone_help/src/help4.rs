@@ -527,6 +527,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Hamming distance of V..J DNA sequence to donor reference, excluding",
         );
         h.doc("", "region of recombination");
+        h.doc(
+            "dref_aa",
+            "Hamming distance of V..J amino acid sequence to donor reference, excluding",
+        );
+        h.doc("", "region of recombination");
         h.ldoc(
             "inkt",
             "A string showing the extent to which the T cells in an exact subclonotype",

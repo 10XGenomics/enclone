@@ -29,6 +29,10 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>8/24/20</b></b>: Add lead variable <code>dref_aa</code>, the number of amino acid differences
+with the donor reference.</p>
+
+<p>
 <b>8/20/20</b></b>: 
 <ol>
 <li> Allow "Levenshtein distance patterns" for CDR3 filter specification.  For more information,

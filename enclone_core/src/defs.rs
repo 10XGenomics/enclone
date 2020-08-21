@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 28] = [
+pub const LVARS_ALLOWED: [&str; 29] = [
     "datasets",
     "origins",
     "donors",
@@ -36,6 +36,7 @@ pub const LVARS_ALLOWED: [&str; 28] = [
     "near",
     "far",
     "dref",
+    "dref_aa",
     "ext",
     "mark",
     "inkt",
@@ -240,6 +241,7 @@ impl LinearCondition {
             "near",
             "far",
             "dref",
+            "dref_aa",
             "n_gex_cell",
             "n_gex",
             "n_b",
