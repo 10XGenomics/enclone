@@ -110,13 +110,10 @@ fn test_css_existence() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// NOT BASIC
-
 // Make sure that if sync_master was run, nothing would change.
 //
 // A bit ugly because of duplicated code.
 
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_sync_master() {
