@@ -139,7 +139,9 @@ enclone has the capability to filter by bounding certain lead variables, using t
 argument:
 <span style="font-weight:bold;">F="L"</span>
 where L is a linear condition (as defined above).  Currently this is limited to the case where the
-lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Multiple bounds may be imposed by using
+lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Also it is not implemented for all lead
+variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
+imposed by using
 multiple instances of <span style="font-weight:bold;">F=...</span> .
 
 <span style="font-weight:bold;">feature scanning</span>
