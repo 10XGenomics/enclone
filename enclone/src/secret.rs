@@ -1,6 +1,15 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Get counts for secreted and membrane proteins.
+//
+// The basic problem with this is the relevant exon junctions are too far from the 5' end,
+// so there is not enough signal to be useful.
+//
+// Also what is done below appears not to handle the IGHG case correctly.
+//
+// For IGHG, the boundaries should be
+// (A)CH2-(B)CH3-CHS  [secreted]
+// (A)CH2-(B)Mx [membrane].
 
 use enclone_core::defs::*;
 use std::collections::HashMap;

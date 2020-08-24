@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 109] = [
+pub const TESTS: [&str; 111] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -290,6 +290,10 @@ pub const TESTS: [&str; 109] = [
     r###"TCR=101287 CDR3=CASSQVAGAGQPQHF NWEAK_ONESIES"###,
     // 109. test Levenshtein distance pattern
     r###"BCR=123085 CDR3="CAKDKVPRRSSWSVFDYYGMDVW~9|CAVTIFGVRTALPYYYALDVW~9" NGROUP"###,
+    // 110. test dref_aa
+    r###"BCR=123085 LVARSP=dref,dref_aa CDR3=CAREKGIGSSGWDWGAFDIW"###,
+    // 111. test for fail if F used with unsupported variable
+    r###"BCR=123085 LVARSP=near F="near>=0" EXPECT_FAIL"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.

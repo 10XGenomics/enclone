@@ -527,6 +527,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Hamming distance of V..J DNA sequence to donor reference, excluding",
         );
         h.doc("", "region of recombination");
+        h.doc(
+            "dref_aa",
+            "Hamming distance of V..J amino acid sequence to donor reference, excluding",
+        );
+        h.doc("", "region of recombination");
         h.ldoc(
             "inkt",
             "A string showing the extent to which the T cells in an exact subclonotype",
@@ -598,6 +603,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "<custom>_cu",
             "or cu; this represents a sum of UMI counts across the matching features. ●",
         );
+
+        // sec and mem: deprecated because not enough signal
+
+        /*
         h.ldoc(
             "sec",
             "for human or mouse BCR, number of GEX UMIs that are characterized as secreted",
@@ -637,6 +646,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "\\boldred{PLEASE NOTE: THIS IS EXPERIMENTAL AND UNLIKELY TO BE FULLY CORRECT.}",
         );
+        */
+
         h.ldoc(
             "cred",
             "Short for credibility.  It is a measure of the extent to which cells",

@@ -29,9 +29,22 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>8/24/20</b></b>: 
+<ol>
+<li>Add lead variable <code>dref_aa</code>, the number of amino acid differences
+with the donor reference.</li>
+<li>Add estimated doublet rate to summary stats.</li>
+<li>We are deprecating the lead variables <code>sec</code> and <code>mem</code> that measure
+UMIs supporting secreted versus membrane-bound antibody transcripts.  Because the exon boundaries
+that determine this are far from the 5' end, there is rarely enough signal to be informative.
+We removed the documentation.</li>
+</ol>
+</p>
+
+<p>
 <b>8/20/20</b></b>: 
 <ol>
-<li> Allow \"Levenshtein distance patterns\" for CDR3 filter specification.  For more information,
+<li> Allow "Levenshtein distance patterns" for CDR3 filter specification.  For more information,
 type or click here:
 <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.</li>
 <li> Change what the weak onesies filter does: unless <code>NWEAK_ONESIES</code> is used, now,

@@ -23,7 +23,7 @@ bio = ">=0.31, <=0.32"
 debruijn = "0.3.2"
 dirs = "2.0.2"
 enclone_core = { path = "../enclone_core" }
-equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a606b2c65a999197f88eb644c53022c6270badf6" }
+equiv = "0.1.2"
 graph_simple = "0.1.1"
 io_utils = "0.2"
 itertools = "0.9.0"
@@ -40,7 +40,7 @@ stats_utils = "0.1.1"
 stirling_numbers = "0.1.2"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="abe356edc0ee6ea6080e1d468c1a2ca8b680d7ca" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a45d97ef04925f7b44a2b96f4cafc4ec68d0ede4" }
 vector_utils = "0.1.3"
 
 [target.'cfg(not(windows))'.dependencies]

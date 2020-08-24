@@ -626,24 +626,34 @@ pub fn row_fill(
             stats.push((x.to_string(), counts));
         } else if x == "sec" && ctl.gen_opt.using_secmem {
             let mut n = 0;
+            let mut y = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
                 if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    n += ctl.origin_info.secmem[li][&bc.clone()].0;
+                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
+                    n += count;
                 }
+                y.push(count as f64);
             }
             lvar![i, x, format!("{}", n)];
+            stats.push((x.to_string(), y));
         } else if x == "mem" && ctl.gen_opt.using_secmem {
             let mut n = 0;
+            let mut y = Vec::<f64>::new();
             for l in 0..ex.clones.len() {
                 let li = ex.clones[l][0].dataset_index;
                 let bc = &ex.clones[l][0].barcode;
+                let mut count = 0;
                 if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    n += ctl.origin_info.secmem[li][&bc.clone()].1;
+                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
+                    n += count;
                 }
+                y.push(count as f64);
             }
             lvar![i, x, format!("{}", n)];
+            stats.push((x.to_string(), y));
         } else if x == "dref" {
             let mut diffs = 0;
             for m in 0..cols {
@@ -663,6 +673,40 @@ pub fn row_fill(
                         }
                         if p >= z - (jref.len() - ctl.heur.ref_j_trim)
                             && b != jref[jref.len() - (z - p)]
+                        {
+                            diffs += 1;
+                        }
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", diffs)];
+        } else if x == "dref_aa" {
+            let mut diffs = 0;
+            for m in 0..cols {
+                if mat[m][u].is_some() {
+                    let r = mat[m][u].unwrap();
+                    let seq = &ex.share[r].seq_del_amino;
+                    let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                    if rsi.vpids[m].is_some() {
+                        vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                    }
+                    let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                    let z = seq.len();
+                    for p in (0..=z - 3).step_by(3) {
+                        if seq[p..p + 3].to_vec() == b"---".to_vec() {
+                            diffs += 1;
+                            continue;
+                        }
+                        let a = codon_to_aa(&seq[p..p + 3]);
+                        if p + 2 <= vref.len() - ctl.heur.ref_v_trim
+                            && a != codon_to_aa(&vref[p..p + 3])
+                        {
+                            diffs += 1;
+                        }
+                        if p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
+                            && a != codon_to_aa(
+                                &jref[jref.len() - (z - p)..jref.len() - (z - p) + 3],
+                            )
                         {
                             diffs += 1;
                         }

@@ -21,7 +21,7 @@ enclone = { path = "../enclone" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
-equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a606b2c65a999197f88eb644c53022c6270badf6" }
+equiv = "0.1.2"
 failure = "0.1.6"
 file-lock = "1.1.20"
 flate2 = "1.0.17"
@@ -49,5 +49,5 @@ string_utils = "0.1.1"
 tables = "0.1.2"
 tar = "0.4.29"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="abe356edc0ee6ea6080e1d468c1a2ca8b680d7ca" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a45d97ef04925f7b44a2b96f4cafc4ec68d0ede4" }
 vector_utils = "0.1.3"

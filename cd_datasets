@@ -1,5 +1,7 @@
 #!/bin/csh
 
 # This will only work if enclone-data has been imported, e.g. via ./build.
+#
+# This doesn't actually work as a script because the cd isn't visible outside it....
 
 cd enclone-data/big_inputs/current
