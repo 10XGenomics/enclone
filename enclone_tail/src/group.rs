@@ -1310,17 +1310,26 @@ pub fn group_and_print_clonotypes(
         middle_mean_umisl = (middlel as f64) / (denoml as f64);
     }
 
-    // Compute n1 and n23.
+    // Compute n1 and n2 and n23 and n4.
 
     let mut n1 = 0;
+    let mut n2 = 0;
     let mut n23 = 0;
+    let mut n4 = 0;
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
             if ex.nchains() == 1 {
                 n1 += ex.ncells();
-            } else if ex.nchains() == 2 || ex.nchains() == 3 {
+            }
+            if ex.nchains() == 2 {
+                n2 += ex.ncells();
+            }
+            if ex.nchains() == 2 || ex.nchains() == 3 {
                 n23 += ex.ncells();
+            }
+            if ex.nchains() == 4 {
+                n4 += ex.ncells();
             }
         }
     }
@@ -1554,6 +1563,18 @@ pub fn group_and_print_clonotypes(
         );
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
+        let mut doublet_rate = 0.0;
+        if n2 > 0 || n4 > 0 {
+            doublet_rate = n4 as f64 / (n2 + n4) as f64;
+        }
+        fwrite!(
+            logx,
+            "   • estimated doublet rate = {:.1}% = {}/{}",
+            100.0 * doublet_rate,
+            n4,
+            n2 + n4
+        );
+        fwriteln!(logx, " = cells with 4 chains / cells with 2 or 4 chains");
 
         // Print UMI stats.
 
