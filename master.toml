@@ -49,5 +49,5 @@ string_utils = "0.1.1"
 tables = "0.1.2"
 tar = "0.4.29"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="a45d97ef04925f7b44a2b96f4cafc4ec68d0ede4" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="12c2654bfe1df8cf7723e3d04f340d846688b277" }
 vector_utils = "0.1.3"
