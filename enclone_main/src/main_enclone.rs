@@ -844,13 +844,13 @@ pub fn main_enclone(args: &Vec<String>) {
             let x = &mut tig_bc[i][j];
             let aa = aa_seq(&x.seq, 0);
             let start1 = cdr1_start(&aa, &x.chain_type, false);
-            x.cdr1_start = Some(start1);
+            x.cdr1_start = Some(3 * start1);
             let stop1 = fr2_start(&aa, &x.chain_type, false);
             if start1 <= stop1 {
                 x.cdr1_aa = stringme(&aa[start1..stop1]);
             }
             let start2 = cdr2_start(&aa, &x.chain_type, false);
-            x.cdr2_start = Some(start2);
+            x.cdr2_start = Some(3 * start2);
             let stop2 = fr3_start(&aa, &x.chain_type, false);
             if start2 <= stop2 {
                 x.cdr2_aa = stringme(&aa[start2..stop2]);
