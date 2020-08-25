@@ -790,8 +790,24 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "a measure of CDR3 complexity, which is the total number of S, D and I",
         );
         h.doc("", "symbols in \"edit\" as defined above");
-        h.ldoc("cdr3_dna", "the CDR3_DNA sequence");
+
+        h.ldoc(
+            "cdr1_aa",
+            "the CDR1_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr2_aa",
+            "the CDR2_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc("cdr3_aa", "the CDR3_AA sequence");
         h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
+        h.doc("cdr3_dna", "the CDR3_DNA sequence");
+        h.doc(
+            "",
+            "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
+        );
+        h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
+
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",

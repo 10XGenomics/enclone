@@ -1179,8 +1179,13 @@ where each xi is one of:
 │comp        │  a measure of CDR3 complexity, which is the total number of S, D and I       │
 │            │  symbols in "edit" as defined above                                          │
 ├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│cdr3_dna    │  the CDR3_DNA sequence                                                       │
+│cdr1_aa     │  the CDR1_AA sequence, or "unknown" if not computed                          │
+│cdr2_aa     │  the CDR2_AA sequence, or "unknown" if not computed                          │
+│cdr3_aa     │  the CDR3_AA sequence                                                        │
 │cdr3_len    │  number of amino acids in the CDR3 sequence                                  │
+│cdr3_dna    │  the CDR3_DNA sequence                                                       │
+│            │  For CDR1 and CDR2, please see "enclone help amino" and the page on          │
+│            │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
 ├────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen       │  number of bases from the start of the V region to the end of the J region   │
 │clen        │  length of observed constant region (usually truncated at primer start)      │
