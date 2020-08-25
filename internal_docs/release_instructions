@@ -5,6 +5,8 @@
 3. Type "start_release" to bump the z version and trigger the release process.
    - Note one thing that this does not do: it does not generate an officially signed commit
      for README.md.
+   - Note that after doing a release, Cargo.lock needs to be updated.  Could this be done 
+     instead as part of the release process?
 4. When the release is done, change the title of the release to beta release vX.Y.Z, download the 
    binaries, and calculate the SHA-256 checksums for the binaries and include those in the release 
    notes.
