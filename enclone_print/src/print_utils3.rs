@@ -440,11 +440,24 @@ pub fn insert_reference_rows(
                     refseq.push(jseq[j + trim]);
                 }
                 let mut refx = String::new();
-                let cs = rsi.cdr3_starts[cz] / 3;
-                let n = rsi.cdr3_lens[cz];
+                let n1 = rsi.cdr1_lens[cz];
+                let n2 = rsi.cdr2_lens[cz];
+                let cs3 = rsi.cdr3_starts[cz] / 3;
+                let n3 = rsi.cdr3_lens[cz];
+                let amino = &ctl.clono_print_opt.amino;
+                let show1 = amino.contains(&"cdr1".to_string()) && rsi.cdr1_starts[cz].is_some();
+                let show2 = amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[cz].is_some();
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
-                    if k > 0 && p == cs {
+                    if show1 && k > 0 && p == rsi.cdr1_starts[cz].unwrap() / 3 {
+                        refx += " ";
+                    }
+                    if show2 && k > 0 && p == rsi.cdr2_starts[cz].unwrap() / 3
+                        && (!show1 || 
+                            show_aa[cz][k-1] != rsi.cdr1_starts[cz].unwrap()/3 + n1.unwrap() - 1) {
+                        refx += " ";
+                    }
+                    if k > 0 && p == cs3 {
                         refx += " ";
                     }
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
@@ -461,9 +474,19 @@ pub fn insert_reference_rows(
                         }
                         refx += strme(&log);
                     }
-                    if k < show_aa[cz].len() - 1 && p == cs + n - 1 {
-                        refx += " ";
+
+                    if k < show_aa[cz].len() - 1 {
+                        if show1 && p == rsi.cdr1_starts[cz].unwrap() / 3 + n1.unwrap() - 1 {
+                            refx += " ";
+                        }
+                        if show2 && p == rsi.cdr2_starts[cz].unwrap() / 3 + n2.unwrap() - 1 {
+                            refx += " ";
+                        }
+                        if p == cs3 / 3 + n3 - 1 {
+                            refx += " ";
+                        }
                     }
+
                 }
                 row.push(refx);
                 for _ in 1..rsi.cvars[cz].len() {
@@ -552,7 +575,7 @@ pub fn build_table_stuff(
 
     // Insert position rows.
 
-    *drows = insert_position_rows(&rsi, &show_aa, &vars, &row1);
+    *drows = insert_position_rows(&ctl, &rsi, &show_aa, &vars, &row1);
     let mut drows2 = drows.clone();
     rows.append(&mut drows2);
 
@@ -611,10 +634,13 @@ pub fn build_table_stuff(
                             } else {
                                 let cs1 = rsi.cdr1_starts[cx].unwrap() / 3;
                                 let pos1 = show.iter().position(|x| *x == cs1).unwrap();
-                                lead = pos2 - pos1;
+                                lead = pos2 - pos1 - rsi.cdr1_lens[cx].unwrap();
                             }
                             s += &" ".repeat(lead);
                             if lead > 0 {
+                                s += " ";
+                            }
+                            if printing_cdr1 {
                                 s += " ";
                             }
                             let n = exact_clonotypes[exacts[u]].share[m].cdr2_aa.len();
@@ -642,11 +668,11 @@ pub fn build_table_stuff(
                             } else if printing_cdr2 {
                                 let cs2 = rsi.cdr2_starts[cx].unwrap() / 3;
                                 let pos2 = show.iter().position(|x| *x == cs2).unwrap();
-                                lead = pos3 - pos2;
+                                lead = 1 + pos3 - pos2 - rsi.cdr2_lens[cx].unwrap();
                             } else {
                                 let cs1 = rsi.cdr1_starts[cx].unwrap() / 3;
                                 let pos1 = show.iter().position(|x| *x == cs1).unwrap();
-                                lead = pos3 - pos1;
+                                lead = 1 + pos3 - pos1 - rsi.cdr1_lens[cx].unwrap();
                             }
                             s += &" ".repeat(lead);
                             if lead > 0 {

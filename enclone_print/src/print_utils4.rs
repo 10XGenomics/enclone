@@ -190,6 +190,22 @@ pub fn build_show_aa(
                 }
             }
         }
+        if ctl.clono_print_opt.amino.contains(&"cdr1".to_string()) {
+            if rsi.cdr1_starts[cx].is_some() {
+                for j in 0..rsi.cdr1_lens[cx].unwrap() {
+                    let p = rsi.cdr1_starts[cx].unwrap() / 3 + j;
+                    show_aa[cx].push(p);
+                }
+            }
+        }
+        if ctl.clono_print_opt.amino.contains(&"cdr2".to_string()) {
+            if rsi.cdr2_starts[cx].is_some() {
+                for j in 0..rsi.cdr2_lens[cx].unwrap() {
+                    let p = rsi.cdr2_starts[cx].unwrap() / 3 + j;
+                    show_aa[cx].push(p);
+                }
+            }
+        }
         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
             for j in 0..rsi.cdr3_lens[cx] {
                 let p = rsi.cdr3_starts[cx] / 3 + j;

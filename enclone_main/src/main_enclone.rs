@@ -2,9 +2,8 @@
 //
 // See README for documentation.
 
-use vdj_ann::*;
-
 use self::refx::*;
+use amino::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
@@ -21,6 +20,7 @@ use enclone::proc_args2::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
+use enclone::vdj_features::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_help::help1::*;
@@ -50,6 +50,7 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
+use vdj_ann::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -835,6 +836,27 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut gex_cells_specified,
     );
     ctl.perf_stats(&tparse, "loading from json");
+
+    // Populate CDR1 and CDR2.
+
+    for i in 0..tig_bc.len() {
+        for j in 0..tig_bc[i].len() {
+            let x = &mut tig_bc[i][j];
+            let aa = aa_seq(&x.seq, 0);
+            let start1 = cdr1_start(&aa, &x.chain_type, false);
+            x.cdr1_start = Some(start1);
+            let stop1 = fr2_start(&aa, &x.chain_type, false);
+            if start1 <= stop1 {
+                x.cdr1_aa = stringme(&aa[start1..stop1]);
+            }
+            let start2 = cdr2_start(&aa, &x.chain_type, false);
+            x.cdr2_start = Some(start2);
+            let stop2 = fr3_start(&aa, &x.chain_type, false);
+            if start2 <= stop2 {
+                x.cdr2_aa = stringme(&aa[start2..stop2]);
+            }
+        }
+    }
 
     // Search for SHM indels.
 

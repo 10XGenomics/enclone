@@ -1074,11 +1074,24 @@ pub fn row_fill(
             }
             let var = &all_vars[j];
             if *var == "amino".to_string() && col_var {
-                let cs = rsi.cdr3_starts[col] / 3;
-                let n = rsi.cdr3_lens[col];
+                let n1 = rsi.cdr1_lens[col];
+                let n2 = rsi.cdr2_lens[col];
+                let cs3 = rsi.cdr3_starts[col] / 3;
+                let n3 = rsi.cdr3_lens[col];
+                let amino = &ctl.clono_print_opt.amino;
+                let show1 = amino.contains(&"cdr1".to_string()) && rsi.cdr1_starts[col].is_some();
+                let show2 = amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[col].is_some();
                 for k in 0..show_aa[col].len() {
                     let p = show_aa[col][k];
-                    if k > 0 && p == cs {
+                    if show1 && k > 0 && p == rsi.cdr1_starts[col].unwrap() / 3 {
+                        cx[col][j] += " ";
+                    }
+                    if show2 && k > 0 && p == rsi.cdr2_starts[col].unwrap() / 3 
+                        && (!show1 || 
+                            show_aa[col][k-1] != rsi.cdr1_starts[col].unwrap()/3 + n1.unwrap() - 1) {
+                        cx[col][j] += " ";
+                    }
+                    if k > 0 && p == cs3 {
                         cx[col][j] += " ";
                     }
                     if 3 * p + 3 <= seq_amino.len()
@@ -1101,8 +1114,16 @@ pub fn row_fill(
                         }
                         cx[col][j] += strme(&log);
                     }
-                    if k < show_aa[col].len() - 1 && p == cs + n - 1 {
-                        cx[col][j] += " ";
+                    if k < show_aa[col].len() - 1 {
+                        if show1 && p == rsi.cdr1_starts[col].unwrap() / 3 + n1.unwrap() - 1 {
+                            cx[col][j] += " ";
+                        }
+                        if show2 && p == rsi.cdr2_starts[col].unwrap() / 3 + n2.unwrap() - 1 {
+                            cx[col][j] += " ";
+                        }
+                        if p == cs3 / 3 + n3 - 1 {
+                            cx[col][j] += " ";
+                        }
                     }
                 }
             } else if *var == "comp".to_string() || *var == "edit".to_string() {
