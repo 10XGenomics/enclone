@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 111] = [
+pub const TESTS: [&str; 117] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -294,6 +294,18 @@ pub const TESTS: [&str; 111] = [
     r###"BCR=123085 LVARSP=dref,dref_aa CDR3=CAREKGIGSSGWDWGAFDIW"###,
     // 111. test for fail if F used with unsupported variable
     r###"BCR=123085 LVARSP=near F="near>=0" EXPECT_FAIL"###,
+    // 112. test 1 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr2,cdr3"###,
+    // 113. test 2 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr3"###,
+    // 114. test 3 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr2,cdr3"###,
+    // 115. test 4 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr2"###,
+    // 116. test 5 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1"###,
+    // 117. test 6 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr2"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
