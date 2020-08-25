@@ -56,7 +56,7 @@ pub fn edit_html(html: &str) -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn html_header(level: usize, title: &str) -> String {
+fn html_header(level: usize, title: &str, extra_head: &str) -> String {
     assert!(level == 0 || level == 2);
     let ltext;
     if level == 0 {
@@ -75,10 +75,12 @@ pub fn html_header(level: usize, title: &str) -> String {
         <title>{}</title>\n\
         <link rel=\"stylesheet\" type=\"text/css\" href=\"{}/enclone_css_v2.css\">\n\
         {}
+        {}
         </head>\n",
         title,
         ltext,
-        gtag()
+        gtag(),
+        extra_head,
     )
 }
 
@@ -90,22 +92,32 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
     let pwd = env::current_dir().unwrap();
     let pwd = pwd.to_str().unwrap();
     let mut title = String::new();
+    let mut extra_head = String::new();
     {
         let f = BufReader::new(File::open(&in_file).expect(&format!(
             "In directory {}, could not open file \"{}\"",
             pwd, &in_file
         )));
+        let mut in_head = false;
         for line in f.lines() {
             let s = line.unwrap();
+            if s == "</head>" {
+                break;
+            }
+            if in_head {
+                extra_head += &format!("{}\n", s);
+            }
             if s.contains("<title>") {
                 title = s.between("<title>", "</title>").to_string();
-                break;
+            }
+            if s == "<head>" {
+                in_head = true;
             }
         }
     }
     let f = open_for_read![&in_file];
     let mut g = open_for_write_new![&out_file];
-    fwrite!(g, "{}", html_header(level, &title));
+    fwrite!(g, "{}", html_header(level, &title, &extra_head));
     fwriteln!(
         g,
         "
@@ -119,8 +131,19 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
         💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩\n
         ––>"
     );
+    let mut in_head = false;
     for line in f.lines() {
         let mut s = line.unwrap();
+        if s == "<head>" {
+            in_head = true;
+        }
+        if s == "</head>" {
+            in_head = false;
+            continue;
+        }
+        if in_head {
+            continue;
+        }
         if s.starts_with("<title>") {
         } else if s.starts_with("#include ") {
             let mut f = format!("../{}", s.after("#include "));
