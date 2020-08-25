@@ -29,6 +29,13 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>8/25/20</b></b>: Now CDR1 and CDR2 can be displayed.  Please see
+<a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> for how to specify 
+these, and 
+<a href="../../pages/auto/features.html">this page</a> for how we calculate these features.
+</p>
+
+<p>
 <b>8/24/20</b></b>: 
 <ol>
 <li>Add lead variable <code>dref_aa</code>, the number of amino acid differences
