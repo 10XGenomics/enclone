@@ -486,7 +486,7 @@ pub fn insert_reference_rows(
                         if show2 && p == rsi.cdr2_starts[cz].unwrap() / 3 + n2.unwrap() - 1 {
                             refx += " ";
                         }
-                        if p == cs3 / 3 + n3 - 1 {
+                        if p == cs3 + n3 - 1 {
                             refx += " ";
                         }
                     }

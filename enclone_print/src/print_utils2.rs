@@ -1125,7 +1125,7 @@ pub fn row_fill(
                         if show2 && p == rsi.cdr2_starts[col].unwrap() / 3 + n2.unwrap() - 1 {
                             cx[col][j] += " ";
                         }
-                        if p == cs3 / 3 + n3 - 1 {
+                        if p == cs3 + n3 - 1 {
                             cx[col][j] += " ";
                         }
                     }
