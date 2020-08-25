@@ -801,6 +801,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("cdr3_aa", "the CDR3_AA sequence");
         h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
+        h.doc(
+            "cdr1_dna",
+            "the CDR1_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr2_dna",
+            "the CDR2_DNA sequence, or \"unknown\" if not computed",
+        );
         h.doc("cdr3_dna", "the CDR3_DNA sequence");
         h.doc(
             "",

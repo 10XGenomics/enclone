@@ -1229,11 +1229,35 @@ pub fn row_fill(
                     cvar![j, var, format!("{}", edit)];
                 }
             } else if *var == "cdr1_aa".to_string() {
-                cvar![j, var, ex.share[mid].cdr1_aa.clone()];
+                let mut y = "unknown".to_string();
+                if ex.share[mid].cdr1_start.is_some() {
+                    y = ex.share[mid].cdr1_aa.clone();
+                }
+                cvar![j, var, y];
             } else if *var == "cdr2_aa".to_string() {
-                cvar![j, var, ex.share[mid].cdr2_aa.clone()];
+                let mut y = "unknown".to_string();
+                if ex.share[mid].cdr2_start.is_some() {
+                    y = ex.share[mid].cdr2_aa.clone();
+                }
+                cvar![j, var, y];
             } else if *var == "cdr3_aa".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
+            } else if *var == "cdr1_dna".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr1_start.is_some() {
+                    let start = x.cdr1_start.unwrap();
+                    y = stringme(&x.seq[start..start + 3 * x.cdr1_aa.len()]);
+                }
+                cvar![j, var, y];
+            } else if *var == "cdr2_dna".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr2_start.is_some() {
+                    let start = x.cdr2_start.unwrap();
+                    y = stringme(&x.seq[start..start + 3 * x.cdr2_aa.len()]);
+                }
+                cvar![j, var, y];
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "cdr3_len".to_string() {

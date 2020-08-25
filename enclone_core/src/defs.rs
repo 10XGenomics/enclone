@@ -46,10 +46,10 @@ pub const LVARS_ALLOWED: [&str; 29] = [
 ];
 
 // Chain variables that can be used for contigs and chains
-pub const CVARS_ALLOWED: [&str; 28] = [
+pub const CVARS_ALLOWED: [&str; 30] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
-    "r_μ", "const", "white", "cdr3_dna", "cdr3_len", "cdr1_aa", "cdr2_aa", "cdr3_aa", "ulen",
-    "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
+    "r_μ", "const", "white", "cdr1_dna", "cdr2_dna", "cdr3_dna", "cdr3_len", "cdr1_aa", "cdr2_aa",
+    "cdr3_aa", "ulen", "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -817,6 +817,8 @@ pub fn justification(x: &str) -> u8 {
         || x == "cdr1_aa"
         || x == "cdr2_aa"
         || x == "cdr3_aa"
+        || x == "cdr1_dna"
+        || x == "cdr2_dna"
         || x == "cdr3_dna"
         || x == "cdiff"
         || x == "notes"
