@@ -452,9 +452,13 @@ pub fn insert_reference_rows(
                     if show1 && k > 0 && p == rsi.cdr1_starts[cz].unwrap() / 3 {
                         refx += " ";
                     }
-                    if show2 && k > 0 && p == rsi.cdr2_starts[cz].unwrap() / 3
-                        && (!show1 || 
-                            show_aa[cz][k-1] != rsi.cdr1_starts[cz].unwrap()/3 + n1.unwrap() - 1) {
+                    if show2
+                        && k > 0
+                        && p == rsi.cdr2_starts[cz].unwrap() / 3
+                        && (!show1
+                            || show_aa[cz][k - 1]
+                                != rsi.cdr1_starts[cz].unwrap() / 3 + n1.unwrap() - 1)
+                    {
                         refx += " ";
                     }
                     if k > 0 && p == cs3 {
@@ -486,7 +490,6 @@ pub fn insert_reference_rows(
                             refx += " ";
                         }
                     }
-
                 }
                 row.push(refx);
                 for _ in 1..rsi.cvars[cz].len() {

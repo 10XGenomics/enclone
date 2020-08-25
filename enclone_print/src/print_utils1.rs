@@ -596,8 +596,12 @@ pub fn insert_position_rows(
                                 if j > 0 && show1 && *p == cs1.unwrap() / 3 {
                                     ds += " ";
                                 }
-                                if j > 0 && show2 && *p == cs2.unwrap() / 3
-                                    && (!show1 || show_aa[cx][j-1] != cs1.unwrap()/3 + n1.unwrap() - 1) {
+                                if j > 0
+                                    && show2
+                                    && *p == cs2.unwrap() / 3
+                                    && (!show1
+                                        || show_aa[cx][j - 1] != cs1.unwrap() / 3 + n1.unwrap() - 1)
+                                {
                                     ds += " ";
                                 }
                                 if j > 0 && *p == cs3 / 3 {

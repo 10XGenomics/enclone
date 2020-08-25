@@ -1086,9 +1086,13 @@ pub fn row_fill(
                     if show1 && k > 0 && p == rsi.cdr1_starts[col].unwrap() / 3 {
                         cx[col][j] += " ";
                     }
-                    if show2 && k > 0 && p == rsi.cdr2_starts[col].unwrap() / 3 
-                        && (!show1 || 
-                            show_aa[col][k-1] != rsi.cdr1_starts[col].unwrap()/3 + n1.unwrap() - 1) {
+                    if show2
+                        && k > 0
+                        && p == rsi.cdr2_starts[col].unwrap() / 3
+                        && (!show1
+                            || show_aa[col][k - 1]
+                                != rsi.cdr1_starts[col].unwrap() / 3 + n1.unwrap() - 1)
+                    {
                         cx[col][j] += " ";
                     }
                     if k > 0 && p == cs3 {
