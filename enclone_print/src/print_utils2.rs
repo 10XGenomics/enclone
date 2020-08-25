@@ -1228,6 +1228,12 @@ pub fn row_fill(
                 } else {
                     cvar![j, var, format!("{}", edit)];
                 }
+            } else if *var == "cdr1_aa".to_string() {
+                cvar![j, var, ex.share[mid].cdr1_aa.clone()];
+            } else if *var == "cdr2_aa".to_string() {
+                cvar![j, var, ex.share[mid].cdr2_aa.clone()];
+            } else if *var == "cdr3_aa".to_string() {
+                cvar![j, var, ex.share[mid].cdr3_aa.clone()];
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "cdr3_len".to_string() {
