@@ -1017,6 +1017,12 @@ pub fn row_fill(
 
         // Speak some other column entries.
 
+        speakc!(
+            u,
+            col,
+            "vj_aa".to_string(),
+            stringme(&aa_seq(&ex.share[mid].seq, 0))
+        );
         speakc!(u, col, "vj_seq".to_string(), stringme(&ex.share[mid].seq));
         speakc!(u, col, "seq".to_string(), stringme(&ex.share[mid].full_seq));
         speakc!(u, col, "v_start".to_string(), ex.share[mid].v_start);
