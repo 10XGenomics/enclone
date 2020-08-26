@@ -233,6 +233,11 @@ pub fn run_test(
                         oldc[i],
                         newc[i]
                     );
+                    fwriteln!(
+                        log,
+                        "Note that this can be confusing if the differing character is in an \
+                            ANSI escape sequence.\n"
+                    );
                     let mut jold = i;
                     while jold > 0 && oldc[jold] != '\n' {
                         jold -= 1;
