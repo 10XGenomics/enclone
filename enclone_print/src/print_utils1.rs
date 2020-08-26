@@ -570,13 +570,22 @@ pub fn insert_position_rows(
         }
         for cx in 0..cols {
             let cs1 = rsi.cdr1_starts[cx];
-            let n1 = rsi.cdr1_lens[cx];
+            let mut n1 = 0;
+            if rsi.cdr1_starts[cx] <= rsi.fr2_starts[cx] {
+                n1 = (rsi.fr2_starts[cx] - rsi.cdr1_starts[cx]) / 3;
+            }
             let cs2 = rsi.cdr2_starts[cx];
-            let n2 = rsi.cdr2_lens[cx];
+
+            let mut n2 = 0;
+            if rsi.cdr2_starts[cx] <= rsi.fr3_starts[cx] {
+                n2 = (rsi.fr3_starts[cx] - rsi.cdr2_starts[cx]) / 3;
+            }
             let cs3 = rsi.cdr3_starts[cx];
             let n3 = rsi.cdr3_lens[cx];
-            let show1 = cs1.is_some() && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
-            let show2 = cs2.is_some() && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
+            let show1 = cs1 <= rsi.fr2_starts[cx]
+                && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
+            let show2 = cs2 <= rsi.fr3_starts[cx]
+                && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
             for m in 0..rsi.cvars[cx].len() {
                 if zpass == 1 {
                     if rsi.cvars[cx][m] == "amino".to_string() {
@@ -593,14 +602,13 @@ pub fn insert_position_rows(
                         if rsi.cvars[cx][m] == "amino".to_string() {
                             let mut ds = String::new();
                             for (j, p) in show_aa[cx].iter().enumerate() {
-                                if j > 0 && show1 && *p == cs1.unwrap() / 3 {
+                                if j > 0 && show1 && *p == cs1 / 3 {
                                     ds += " ";
                                 }
                                 if j > 0
                                     && show2
-                                    && *p == cs2.unwrap() / 3
-                                    && (!show1
-                                        || show_aa[cx][j - 1] != cs1.unwrap() / 3 + n1.unwrap() - 1)
+                                    && *p == cs2 / 3
+                                    && (!show1 || show_aa[cx][j - 1] != cs1 / 3 + n1 - 1)
                                 {
                                     ds += " ";
                                 }
@@ -609,10 +617,10 @@ pub fn insert_position_rows(
                                 }
                                 print_digit(*p, i, digits, &mut ds);
                                 if j < show_aa[cx].len() - 1 {
-                                    if show1 && *p == cs1.unwrap() / 3 + n1.unwrap() - 1 {
+                                    if show1 && *p == cs1 / 3 + n1 - 1 {
                                         ds += " ";
                                     }
-                                    if show2 && *p == cs2.unwrap() / 3 + n2.unwrap() - 1 {
+                                    if show2 && *p == cs2 / 3 + n2 - 1 {
                                         ds += " ";
                                     }
                                     if *p == cs3 / 3 + n3 - 1 {

@@ -837,24 +837,17 @@ pub fn main_enclone(args: &Vec<String>) {
     );
     ctl.perf_stats(&tparse, "loading from json");
 
-    // Populate CDR1 and CDR2.
+    // Populate features.
 
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];
             let aa = aa_seq(&x.seq, 0);
-            let start1 = cdr1_start(&aa, &x.chain_type, false);
-            x.cdr1_start = Some(3 * start1);
-            let stop1 = fr2_start(&aa, &x.chain_type, false);
-            if start1 <= stop1 {
-                x.cdr1_aa = stringme(&aa[start1..stop1]);
-            }
-            let start2 = cdr2_start(&aa, &x.chain_type, false);
-            x.cdr2_start = Some(3 * start2);
-            let stop2 = fr3_start(&aa, &x.chain_type, false);
-            if start2 <= stop2 {
-                x.cdr2_aa = stringme(&aa[start2..stop2]);
-            }
+            x.fr1_start = 3 * fr1_start(&aa, &x.chain_type);
+            x.cdr1_start = 3 * cdr1_start(&aa, &x.chain_type, false);
+            x.fr2_start = 3 * fr2_start(&aa, &x.chain_type, false);
+            x.cdr2_start = 3 * cdr2_start(&aa, &x.chain_type, false);
+            x.fr3_start = 3 * fr3_start(&aa, &x.chain_type, false);
         }
     }
 

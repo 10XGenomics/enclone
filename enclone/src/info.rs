@@ -38,6 +38,7 @@ pub fn build_info(
         let mut lens = Vec::<usize>::new();
         let mut tigs = Vec::<Vec<u8>>::new();
         let mut tigs_amino = Vec::<Vec<u8>>::new();
+        let mut tigs_ins = Vec::<Vec<(usize, Vec<u8>)>>::new();
         let mut tigsp = Vec::<DnaString>::new();
         let mut has_del = Vec::<bool>::new();
         let mut orig_tigs = Vec::<DnaString>::new();
@@ -66,6 +67,7 @@ pub fn build_info(
             let mut annv = x.annv.clone();
             vsids.push(vid);
             jsids.push(jid);
+            // DELETION
             if annv.len() == 2 && annv[1].0 == annv[0].0 + annv[0].1 {
                 let mut t = Vec::<u8>::new();
                 let (mut del_start, mut del_stop) = (annv[0].1, annv[1].3);
@@ -99,14 +101,19 @@ pub fn build_info(
                 annv[0].1 += (del_stop - del_start) + annv[1].1;
                 annv.truncate(1);
                 tigs_amino.push(t);
+                tigs_ins.push(Vec::new());
                 has_del.push(true);
+            // INSERTION
             } else if annv.len() == 2 && annv[1].3 == annv[0].3 + annv[0].1 {
                 let ins_len = (annv[1].0 - annv[0].0 - annv[0].1) as usize;
                 let mut ins_pos = (annv[0].0 + annv[0].1) as usize;
                 let mut t = Vec::<u8>::new();
+                let mut nt = Vec::<u8>::new();
                 for i in 0..x.seq.len() {
                     if i < ins_pos || i >= ins_pos + ins_len {
                         t.push(x.seq[i]);
+                    } else {
+                        nt.push(x.seq[i]);
                     }
                 }
                 has_del.push(true); // DOES NOT MAKE SENSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -120,6 +127,8 @@ pub fn build_info(
                     }
                 }
                 tigs_amino.push(t);
+                let ins = vec![(ins_pos, nt)];
+                tigs_ins.push(ins);
                 annv[0].1 += annv[1].1;
                 annv.truncate(1);
             } else {
@@ -127,6 +136,7 @@ pub fn build_info(
                 lens.push(x.seq.len());
                 tigs.push(x.seq.clone());
                 tigs_amino.push(x.seq.clone());
+                tigs_ins.push(Vec::new());
             }
 
             // Save reference V segment.  However in the case where there is a
@@ -227,6 +237,7 @@ pub fn build_info(
 
             x.seq_del = tigs[tigs.len() - 1].clone();
             x.seq_del_amino = tigs_amino[tigs_amino.len() - 1].clone();
+            x.ins = tigs_ins[tigs_ins.len() - 1].clone();
             x.vs = vs[vs.len() - 1].clone();
             x.vs_notesx = vs_notesx[vs_notesx.len() - 1].clone();
             x.js = js[js.len() - 1].clone();

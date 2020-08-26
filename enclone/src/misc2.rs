@@ -164,6 +164,7 @@ pub fn create_exact_subclonotype_core(
             seq: tig_bc[r][m].seq.clone(),
             seq_del: tig_bc[r][m].seq.clone(), // may get changed later
             seq_del_amino: tig_bc[r][m].seq.clone(), // may get changed later
+            ins: Vec::new(),                   // may get changed later
             full_seq: full,
             v_start: utr.len(),
             v_stop: tig_bc[r][m].v_stop + utr.len() - tig_bc[r][m].v_start,
@@ -179,9 +180,10 @@ pub fn create_exact_subclonotype_core(
             d_ref_id: tig_bc[r][m].d_ref_id,
             j_ref_id: tig_bc[r][m].j_ref_id,
             c_ref_id: tig_bc[r][m].c_ref_id,
-            cdr1_aa: tig_bc[r][m].cdr1_aa.clone(),
+            fr1_start: tig_bc[r][m].fr1_start,
+            fr2_start: tig_bc[r][m].fr2_start,
+            fr3_start: tig_bc[r][m].fr3_start,
             cdr1_start: tig_bc[r][m].cdr1_start,
-            cdr2_aa: tig_bc[r][m].cdr2_aa.clone(),
             cdr2_start: tig_bc[r][m].cdr2_start,
             cdr3_aa: tig_bc[r][m].cdr3_aa.clone(),
             cdr3_start: tig_bc[r][m].cdr3_start,

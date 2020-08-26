@@ -1074,24 +1074,24 @@ pub fn row_fill(
             }
             let var = &all_vars[j];
             if *var == "amino".to_string() && col_var {
-                let n1 = rsi.cdr1_lens[col];
-                let n2 = rsi.cdr2_lens[col];
+                let n1 = (rsi.fr2_starts[col] - rsi.cdr1_starts[col]) / 3;
+                let n2 = (rsi.fr3_starts[col] - rsi.cdr2_starts[col]) / 3;
                 let cs3 = rsi.cdr3_starts[col] / 3;
                 let n3 = rsi.cdr3_lens[col];
                 let amino = &ctl.clono_print_opt.amino;
-                let show1 = amino.contains(&"cdr1".to_string()) && rsi.cdr1_starts[col].is_some();
-                let show2 = amino.contains(&"cdr2".to_string()) && rsi.cdr2_starts[col].is_some();
+                let show1 = amino.contains(&"cdr1".to_string())
+                    && rsi.cdr1_starts[col] <= rsi.fr2_starts[col];
+                let show2 = amino.contains(&"cdr2".to_string())
+                    && rsi.cdr2_starts[col] <= rsi.fr3_starts[col];
                 for k in 0..show_aa[col].len() {
                     let p = show_aa[col][k];
-                    if show1 && k > 0 && p == rsi.cdr1_starts[col].unwrap() / 3 {
+                    if show1 && k > 0 && p == rsi.cdr1_starts[col] / 3 {
                         cx[col][j] += " ";
                     }
                     if show2
                         && k > 0
-                        && p == rsi.cdr2_starts[col].unwrap() / 3
-                        && (!show1
-                            || show_aa[col][k - 1]
-                                != rsi.cdr1_starts[col].unwrap() / 3 + n1.unwrap() - 1)
+                        && p == rsi.cdr2_starts[col] / 3
+                        && (!show1 || show_aa[col][k - 1] != rsi.cdr1_starts[col] / 3 + n1 - 1)
                     {
                         cx[col][j] += " ";
                     }
@@ -1119,10 +1119,10 @@ pub fn row_fill(
                         cx[col][j] += strme(&log);
                     }
                     if k < show_aa[col].len() - 1 {
-                        if show1 && p == rsi.cdr1_starts[col].unwrap() / 3 + n1.unwrap() - 1 {
+                        if show1 && p == rsi.cdr1_starts[col] / 3 + n1 - 1 {
                             cx[col][j] += " ";
                         }
-                        if show2 && p == rsi.cdr2_starts[col].unwrap() / 3 + n2.unwrap() - 1 {
+                        if show2 && p == rsi.cdr2_starts[col] / 3 + n2 - 1 {
                             cx[col][j] += " ";
                         }
                         if p == cs3 + n3 - 1 {
@@ -1229,15 +1229,43 @@ pub fn row_fill(
                     cvar![j, var, format!("{}", edit)];
                 }
             } else if *var == "cdr1_aa".to_string() {
+                let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if ex.share[mid].cdr1_start.is_some() {
-                    y = ex.share[mid].cdr1_aa.clone();
+                if x.cdr1_start <= x.fr2_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr1_start..x.fr2_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    let aa = aa_seq(&dna, 0);
+                    y = stringme(&aa);
                 }
                 cvar![j, var, y];
             } else if *var == "cdr2_aa".to_string() {
+                let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if ex.share[mid].cdr2_start.is_some() {
-                    y = ex.share[mid].cdr2_aa.clone();
+                if x.cdr2_start <= x.fr3_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr2_start..x.fr3_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    let aa = aa_seq(&dna, 0);
+                    y = stringme(&aa);
                 }
                 cvar![j, var, y];
             } else if *var == "cdr3_aa".to_string() {
@@ -1245,17 +1273,39 @@ pub fn row_fill(
             } else if *var == "cdr1_dna".to_string() {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.cdr1_start.is_some() {
-                    let start = x.cdr1_start.unwrap();
-                    y = stringme(&x.seq[start..start + 3 * x.cdr1_aa.len()]);
+                if x.cdr1_start <= x.fr2_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr1_start..x.fr2_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    y = stringme(&dna);
                 }
                 cvar![j, var, y];
             } else if *var == "cdr2_dna".to_string() {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.cdr2_start.is_some() {
-                    let start = x.cdr2_start.unwrap();
-                    y = stringme(&x.seq[start..start + 3 * x.cdr2_aa.len()]);
+                if x.cdr2_start <= x.fr3_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr2_start..x.fr3_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    y = stringme(&dna);
                 }
                 cvar![j, var, y];
             } else if *var == "cdr3_dna".to_string() {

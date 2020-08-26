@@ -191,18 +191,16 @@ pub fn build_show_aa(
             }
         }
         if ctl.clono_print_opt.amino.contains(&"cdr1".to_string()) {
-            if rsi.cdr1_starts[cx].is_some() {
-                for j in 0..rsi.cdr1_lens[cx].unwrap() {
-                    let p = rsi.cdr1_starts[cx].unwrap() / 3 + j;
-                    show_aa[cx].push(p);
+            if rsi.cdr1_starts[cx] <= rsi.fr2_starts[cx] {
+                for j in (rsi.cdr1_starts[cx]..rsi.fr2_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
                 }
             }
         }
         if ctl.clono_print_opt.amino.contains(&"cdr2".to_string()) {
-            if rsi.cdr2_starts[cx].is_some() {
-                for j in 0..rsi.cdr2_lens[cx].unwrap() {
-                    let p = rsi.cdr2_starts[cx].unwrap() / 3 + j;
-                    show_aa[cx].push(p);
+            if rsi.cdr2_starts[cx] <= rsi.fr3_starts[cx] {
+                for j in (rsi.cdr2_starts[cx]..rsi.fr3_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
                 }
             }
         }

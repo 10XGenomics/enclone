@@ -608,10 +608,11 @@ pub struct TigData {
     pub d_ref_id: Option<usize>,              // index of D segment reference sequence in ref file
     pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
     pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
-    pub cdr1_aa: String,                      // CDR1 amino acid sequence
-    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
-    pub cdr2_aa: String,                      // CDR2 amino acid sequence
-    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
+    pub fr1_start: usize,                     // start position in bases of FWR1 on V..J
+    pub cdr1_start: usize,                    // start position in bases of CDR1 on V..J
+    pub fr2_start: usize,                     // start position in bases of FWR2 on V..J
+    pub cdr2_start: usize,                    // start position in bases of CDR2 on V..J
+    pub fr3_start: usize,                     // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub quals: Vec<u8>,                       // quality scores, truncated to V..J
@@ -655,35 +656,38 @@ pub struct TigData0 {
 
 #[derive(Clone)]
 pub struct TigData1 {
-    pub cdr3_dna: String,                     // CDR3 DNA sequence
-    pub seq: Vec<u8>,                         // V..J contig subsequence
-    pub seq_del: Vec<u8>,                     // V..J, possibly with mod 3 del
-    pub seq_del_amino: Vec<u8>,               // V..J, possibly with mod 3 del at mod 3 start
-    pub full_seq: Vec<u8>,                    // full contig sequence (consensus)
-    pub v_start: usize,                       // start of V on full contig sequence
-    pub v_stop: usize,                        // stop of aligned V on full contig sequence
-    pub v_stop_ref: usize,                    // stop of aligned V on reference V
-    pub j_start: usize,                       // start of aligned J on full contig sequence
-    pub j_start_ref: usize,                   // start of aligned J on reference J
-    pub j_stop: usize,                        // stop of J on full contig sequence
-    pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
-    pub v_ref_id: usize,                      // index of V segment reference sequence in ref file
-    pub v_ref_id_donor: Option<usize>,        // optional index into alt_refs
-    pub v_ref_id_donor_donor: Option<usize>,  // donor id for v_ref_id_donor
+    pub cdr3_dna: String,           // CDR3 DNA sequence
+    pub seq: Vec<u8>,               // V..J contig subsequence
+    pub seq_del: Vec<u8>,           // V..J, possibly with mod 3 del
+    pub seq_del_amino: Vec<u8>,     // V..J, possibly with mod 3 del at mod 3 start
+    pub ins: Vec<(usize, Vec<u8>)>, // insertions in V..J (currently at most one)
+    // **before** the given position
+    pub full_seq: Vec<u8>,                   // full contig sequence (consensus)
+    pub v_start: usize,                      // start of V on full contig sequence
+    pub v_stop: usize,                       // stop of aligned V on full contig sequence
+    pub v_stop_ref: usize,                   // stop of aligned V on reference V
+    pub j_start: usize,                      // start of aligned J on full contig sequence
+    pub j_start_ref: usize,                  // start of aligned J on reference J
+    pub j_stop: usize,                       // stop of J on full contig sequence
+    pub u_ref_id: Option<usize>,             // index of 5'-UTR in ref file if found
+    pub v_ref_id: usize,                     // index of V segment reference sequence in ref file
+    pub v_ref_id_donor: Option<usize>,       // optional index into alt_refs
+    pub v_ref_id_donor_donor: Option<usize>, // donor id for v_ref_id_donor
     pub v_ref_id_donor_alt_id: Option<usize>, // alt ref id for donor id for v_ref_id_donor
-    pub d_ref_id: Option<usize>,              // index of D segment reference sequence in ref file
-    pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
-    pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
-    pub cdr1_aa: String,                      // CDR1 amino acid sequence
-    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
-    pub cdr2_aa: String,                      // CDR2 amino acid sequence
-    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
-    pub cdr3_aa: String,                      // CDR3 amino acid sequence
-    pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
-    pub left: bool,                           // true if this is IGH or TRB
-    pub chain_type: String,                   // e.g. IGH
+    pub d_ref_id: Option<usize>,             // index of D segment reference sequence in ref file
+    pub j_ref_id: usize,                     // index of J segment reference sequence in ref file
+    pub c_ref_id: Option<usize>,             // index of C segment reference sequence in ref file
+    pub fr1_start: usize,                    // start position in bases of FWR1 on V..J
+    pub cdr1_start: usize,                   // start position in bases of CDR1 on V..J
+    pub fr2_start: usize,                    // start position in bases of FWR2 on V..J
+    pub cdr2_start: usize,                   // start position in bases of CDR2 on V..J
+    pub fr3_start: usize,                    // start position in bases of FWR3 on V..J
+    pub cdr3_aa: String,                     // CDR3 amino acid sequence
+    pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
+    pub left: bool,                          // true if this is IGH or TRB
+    pub chain_type: String,                  // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub vs: DnaString,                        // reference V segment (possibly donor allele)
+    pub vs: DnaString,                       // reference V segment (possibly donor allele)
     pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
     pub js: DnaString,     // reference J segment
     pub inkt_alpha_chain_gene_match: bool,
@@ -793,10 +797,11 @@ pub struct ColInfo {
     pub dids: Vec<Option<usize>>,
     pub jids: Vec<usize>,
     pub cids: Vec<Option<usize>>,
-    pub cdr1_starts: Vec<Option<usize>>,
-    pub cdr1_lens: Vec<Option<usize>>,
-    pub cdr2_starts: Vec<Option<usize>>,
-    pub cdr2_lens: Vec<Option<usize>>,
+    pub fr1_starts: Vec<usize>,
+    pub cdr1_starts: Vec<usize>,
+    pub fr2_starts: Vec<usize>,
+    pub cdr2_starts: Vec<usize>,
+    pub fr3_starts: Vec<usize>,
     pub cdr3_starts: Vec<usize>,
     pub cdr3_lens: Vec<usize>,
     pub seq_lens: Vec<usize>, // not sure we should be computing or using this
