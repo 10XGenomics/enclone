@@ -255,11 +255,11 @@ pub fn run_test(
                         knew += 1;
                     }
                     let mut old_line = String::new();
-                    for z in jold..kold {
+                    for z in jold + 1..kold {
                         old_line.push(oldc[z]);
                     }
                     let mut new_line = String::new();
-                    for z in jnew..knew {
+                    for z in jnew + 1..knew {
                         new_line.push(newc[z]);
                     }
                     fwriteln!(
