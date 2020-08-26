@@ -58,7 +58,8 @@ pub const TESTS: [&str; 121] = [
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
     // 14. this added because it got better when a bug in bads detection was fixed
     r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
-    // 15. tests insertion and AMINO range
+    // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
+    // it was fixed
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 16. tests number of cells broken out by dataset
     r###"BCR=123085,123089 LVARS=n,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
@@ -91,7 +92,7 @@ pub const TESTS: [&str; 121] = [
     r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
-    // 29. tests parenthesized variable in F, SUM and MEAN
+    // 29. tests parenthesized variable in F, SUM and MEAN; also indel was wrong
     r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
      NH5"###,
     // 30. tests d_univ and d_donor
@@ -319,7 +320,8 @@ pub const TESTS: [&str; 121] = [
 // Test using the extended public dataset collection.  Or tests that require samtools.
 
 pub const EXTENDED_TESTS: [&str; 3] = [
-    // 1. test that used to crash on a particular barcode
+    // 1. test that used to crash on a particular barcode; this also gave the wrong
+    // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW

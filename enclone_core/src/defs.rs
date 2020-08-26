@@ -662,6 +662,7 @@ pub struct TigData1 {
     pub seq: Vec<u8>,               // V..J contig subsequence
     pub seq_del: Vec<u8>,           // V..J, possibly with mod 3 del
     pub seq_del_amino: Vec<u8>,     // V..J, possibly with mod 3 del at mod 3 start
+    pub aa_mod_indel: Vec<u8>,      // amino acid sequence, after removing indel if present
     pub ins: Vec<(usize, Vec<u8>)>, // insertions in V..J (currently at most one)
     // **before** the given position
     pub full_seq: Vec<u8>,                   // full contig sequence (consensus)
