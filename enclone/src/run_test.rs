@@ -233,6 +233,36 @@ pub fn run_test(
                         oldc[i],
                         newc[i]
                     );
+                    let mut jold = i;
+                    while jold > 0 && oldc[jold] != '\n' {
+                        jold -= 1;
+                    }
+                    let mut jnew = i;
+                    while jnew > 0 && newc[jnew] != '\n' {
+                        jnew -= 1;
+                    }
+                    let mut kold = i + 1;
+                    while kold < oldc.len() && oldc[kold] != '\n' {
+                        kold += 1;
+                    }
+                    let mut knew = i + 1;
+                    while knew < newc.len() && newc[knew] != '\n' {
+                        knew += 1;
+                    }
+                    let mut old_line = String::new();
+                    for z in jold..kold {
+                        old_line.push(oldc[z]);
+                    }
+                    let mut new_line = String::new();
+                    for z in jnew..knew {
+                        new_line.push(newc[z]);
+                    }
+                    fwriteln!(
+                        log,
+                        "first differing line:\nold = {}\nnew = {}\n",
+                        old_line,
+                        new_line,
+                    );
                     break;
                 }
             }
