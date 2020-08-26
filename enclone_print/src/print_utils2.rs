@@ -1310,6 +1310,46 @@ pub fn row_fill(
                 cvar![j, var, y];
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
+            } else if *var == "cdr1_len".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr1_start <= x.fr2_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr1_start..x.fr2_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    let aa = aa_seq(&dna, 0);
+                    y = format!("{}", aa.len());
+                }
+                cvar![j, var, y];
+            } else if *var == "cdr2_len".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr2_start <= x.fr3_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.cdr2_start..x.fr3_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+                    let aa = aa_seq(&dna, 0);
+                    y = format!("{}", aa.len());
+                }
+                cvar![j, var, y];
             } else if *var == "cdr3_len".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
             } else if *var == "ulen".to_string() {
