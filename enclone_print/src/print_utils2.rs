@@ -1080,8 +1080,14 @@ pub fn row_fill(
             }
             let var = &all_vars[j];
             if *var == "amino".to_string() && col_var {
-                let n1 = (rsi.fr2_starts[col] - rsi.cdr1_starts[col]) / 3;
-                let n2 = (rsi.fr3_starts[col] - rsi.cdr2_starts[col]) / 3;
+                let mut n1 = 0;
+                if rsi.cdr1_starts[col] <= rsi.fr2_starts[col] {
+                    n1 = (rsi.fr2_starts[col] - rsi.cdr1_starts[col]) / 3;
+                }
+                let mut n2 = 0;
+                if rsi.cdr2_starts[col] <= rsi.fr3_starts[col] {
+                    n2 = (rsi.fr3_starts[col] - rsi.cdr2_starts[col]) / 3;
+                }
                 let cs3 = rsi.cdr3_starts[col] / 3;
                 let n3 = rsi.cdr3_lens[col];
                 let amino = &ctl.clono_print_opt.amino;

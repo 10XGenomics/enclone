@@ -453,8 +453,14 @@ pub fn insert_reference_rows(
                     refseq.push(jseq[j + trim]);
                 }
                 let mut refx = String::new();
-                let n1 = (rsi.fr2_starts[cz] - rsi.cdr1_starts[cz]) / 3;
-                let n2 = (rsi.fr3_starts[cz] - rsi.cdr2_starts[cz]) / 3;
+                let mut n1 = 0;
+                if rsi.cdr1_starts[cz] <= rsi.fr2_starts[cz] {
+                    n1 = (rsi.fr2_starts[cz] - rsi.cdr1_starts[cz]) / 3;
+                }
+                let mut n2 = 0;
+                if rsi.cdr2_starts[cz] <= rsi.fr3_starts[cz] {
+                    n2 = (rsi.fr3_starts[cz] - rsi.cdr2_starts[cz]) / 3;
+                }
                 let cs3 = rsi.cdr3_starts[cz] / 3;
                 let n3 = rsi.cdr3_lens[cz];
                 let amino = &ctl.clono_print_opt.amino;
