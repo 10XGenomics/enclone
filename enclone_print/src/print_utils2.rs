@@ -1286,6 +1286,23 @@ pub fn row_fill(
                             dna.push(x.seq_del_amino[p]);
                         }
                     }
+
+                    // Test for internal error.
+
+                    let mut found = false;
+                    for i in 0..x.seq.len() {
+                        if x.seq[i..].starts_with(&dna) {
+                            found = true;
+                        }
+                    }
+                    if !found {
+                        eprintln!(
+                            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                            strme(&dna),
+                            x.cdr3_aa
+                        );
+                        std::process::exit(1);
+                    }
                     y = stringme(&dna);
                 }
                 cvar![j, var, y];
@@ -1304,6 +1321,23 @@ pub fn row_fill(
                         if x.seq_del_amino[p] != b'-' {
                             dna.push(x.seq_del_amino[p]);
                         }
+                    }
+
+                    // Test for internal error.
+
+                    let mut found = false;
+                    for i in 0..x.seq.len() {
+                        if x.seq[i..].starts_with(&dna) {
+                            found = true;
+                        }
+                    }
+                    if !found {
+                        eprintln!(
+                            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                            strme(&dna),
+                            x.cdr3_aa
+                        );
+                        std::process::exit(1);
                     }
                     y = stringme(&dna);
                 }
