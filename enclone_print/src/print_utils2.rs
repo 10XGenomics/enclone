@@ -72,6 +72,7 @@ pub fn row_fill(
     fp: &Vec<Vec<usize>>,
     vars_amino: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
+    field_types: &Vec<Vec<u8>>,
     bads: &mut Vec<bool>,
     gex_low: &mut usize,
     row: &mut Vec<String>,                       // row of human-readable output
@@ -1080,34 +1081,9 @@ pub fn row_fill(
             }
             let var = &all_vars[j];
             if *var == "amino".to_string() && col_var {
-                let mut n1 = 0;
-                if rsi.cdr1_starts[col] <= rsi.fr2_starts[col] {
-                    n1 = (rsi.fr2_starts[col] - rsi.cdr1_starts[col]) / 3;
-                }
-                let mut n2 = 0;
-                if rsi.cdr2_starts[col] <= rsi.fr3_starts[col] {
-                    n2 = (rsi.fr3_starts[col] - rsi.cdr2_starts[col]) / 3;
-                }
-                let cs3 = rsi.cdr3_starts[col] / 3;
-                let n3 = rsi.cdr3_lens[col];
-                let amino = &ctl.clono_print_opt.amino;
-                let show1 = amino.contains(&"cdr1".to_string())
-                    && rsi.cdr1_starts[col] <= rsi.fr2_starts[col];
-                let show2 = amino.contains(&"cdr2".to_string())
-                    && rsi.cdr2_starts[col] <= rsi.fr3_starts[col];
                 for k in 0..show_aa[col].len() {
                     let p = show_aa[col][k];
-                    if show1 && k > 0 && p == rsi.cdr1_starts[col] / 3 {
-                        cx[col][j] += " ";
-                    }
-                    if show2
-                        && k > 0
-                        && p == rsi.cdr2_starts[col] / 3
-                        && (!show1 || show_aa[col][k - 1] != rsi.cdr1_starts[col] / 3 + n1 - 1)
-                    {
-                        cx[col][j] += " ";
-                    }
-                    if k > 0 && p == cs3 {
+                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
                         cx[col][j] += " ";
                     }
                     if 3 * p + 3 <= seq_amino.len()
@@ -1129,17 +1105,6 @@ pub fn row_fill(
                             color_by_property(&vec![aa], &mut log);
                         }
                         cx[col][j] += strme(&log);
-                    }
-                    if k < show_aa[col].len() - 1 {
-                        if show1 && p == rsi.cdr1_starts[col] / 3 + n1 - 1 {
-                            cx[col][j] += " ";
-                        }
-                        if show2 && p == rsi.cdr2_starts[col] / 3 + n2 - 1 {
-                            cx[col][j] += " ";
-                        }
-                        if p == cs3 + n3 - 1 {
-                            cx[col][j] += " ";
-                        }
                     }
                 }
             } else if *var == "comp".to_string() || *var == "edit".to_string() {

@@ -917,11 +917,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
              in one combined ordered group, where each xi is one of:\n\n",
         );
-
         h.doc("cdr1", "CDR1 sequence");
         h.doc("cdr2", "CDR2 sequence");
         h.doc("cdr3", "CDR3 sequence");
-        h.doc("", "Notes about CDR1 and CDR2:");
+        h.doc("fwr1", "FWR1 sequence");
+        h.doc("fwr2", "FWR2 sequence");
+        h.doc("fwr3", "FWR3 sequence");
+        h.doc("", "Notes:");
         h.docpr(
             "",
             "1. Please see the page on \\green{bit.ly/enclone} about V(D)J features for notes",
@@ -942,7 +944,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
             85,
         );
-
+        h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
             "share",

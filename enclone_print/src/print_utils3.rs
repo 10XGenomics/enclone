@@ -368,6 +368,7 @@ pub fn insert_reference_rows(
     ctl: &EncloneControl,
     rsi: &ColInfo,
     show_aa: &Vec<Vec<usize>>,
+    field_types: &Vec<Vec<u8>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     row1: &Vec<String>,
@@ -453,34 +454,9 @@ pub fn insert_reference_rows(
                     refseq.push(jseq[j + trim]);
                 }
                 let mut refx = String::new();
-                let mut n1 = 0;
-                if rsi.cdr1_starts[cz] <= rsi.fr2_starts[cz] {
-                    n1 = (rsi.fr2_starts[cz] - rsi.cdr1_starts[cz]) / 3;
-                }
-                let mut n2 = 0;
-                if rsi.cdr2_starts[cz] <= rsi.fr3_starts[cz] {
-                    n2 = (rsi.fr3_starts[cz] - rsi.cdr2_starts[cz]) / 3;
-                }
-                let cs3 = rsi.cdr3_starts[cz] / 3;
-                let n3 = rsi.cdr3_lens[cz];
-                let amino = &ctl.clono_print_opt.amino;
-                let show1 = amino.contains(&"cdr1".to_string())
-                    && rsi.cdr1_starts[cz] <= rsi.fr2_starts[cz];
-                let show2 = amino.contains(&"cdr2".to_string())
-                    && rsi.cdr2_starts[cz] <= rsi.fr3_starts[cz];
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
-                    if show1 && k > 0 && p == rsi.cdr1_starts[cz] / 3 {
-                        refx += " ";
-                    }
-                    if show2
-                        && k > 0
-                        && p == rsi.cdr2_starts[cz] / 3
-                        && (!show1 || show_aa[cz][k - 1] != rsi.cdr1_starts[cz] / 3 + n1 - 1)
-                    {
-                        refx += " ";
-                    }
-                    if k > 0 && p == cs3 {
+                    if k > 0 && field_types[cz][k] != field_types[cz][k - 1] {
                         refx += " ";
                     }
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
@@ -496,18 +472,6 @@ pub fn insert_reference_rows(
                             color_by_property(&vec![aa], &mut log);
                         }
                         refx += strme(&log);
-                    }
-
-                    if k < show_aa[cz].len() - 1 {
-                        if show1 && p == rsi.cdr1_starts[cz] / 3 + n1 - 1 {
-                            refx += " ";
-                        }
-                        if show2 && p == rsi.cdr2_starts[cz] / 3 + n2 - 1 {
-                            refx += " ";
-                        }
-                        if p == cs3 + n3 - 1 {
-                            refx += " ";
-                        }
                     }
                 }
                 row.push(refx);
@@ -529,6 +493,7 @@ pub fn build_table_stuff(
     rsi: &ColInfo,
     vars: &Vec<Vec<usize>>,
     show_aa: &Vec<Vec<usize>>,
+    field_types: &Vec<Vec<u8>>,
     row1: &mut Vec<String>,
     justify: &mut Vec<u8>,
     drows: &mut Vec<Vec<String>>,
@@ -597,7 +562,7 @@ pub fn build_table_stuff(
 
     // Insert position rows.
 
-    *drows = insert_position_rows(&ctl, &rsi, &show_aa, &vars, &row1);
+    *drows = insert_position_rows(&rsi, &show_aa, &field_types, &vars, &row1);
     let mut drows2 = drows.clone();
     rows.append(&mut drows2);
 
@@ -618,105 +583,74 @@ pub fn build_table_stuff(
                     let m = rsi.mat[cx][u];
                     if m.is_some() {
                         let m = m.unwrap();
-                        let mut s = String::new();
+                        let mut n = show_aa[cx].len();
+                        for k in 1..show_aa[cx].len() {
+                            if field_types[cx][k] != field_types[cx][k - 1] {
+                                n += 1;
+                            }
+                        }
+                        let mut ch = vec![' '; n];
                         let amino = &ctl.clono_print_opt.amino;
-                        let printing_cdr1 = amino.contains(&"cdr1".to_string())
-                            && rsi.cdr1_starts[cx] <= rsi.fr2_starts[cx];
-                        let printing_cdr2 = amino.contains(&"cdr2".to_string())
-                            && rsi.cdr2_starts[cx] <= rsi.fr3_starts[cx];
-                        let printing_cdr3 = amino.contains(&"cdr3".to_string());
-                        if printing_cdr1 {
-                            let cs1 = rsi.cdr1_starts[cx] / 3;
-                            let lead = show.iter().position(|x| *x == cs1).unwrap();
-                            s += &" ".repeat(lead);
-                            if lead > 0 {
-                                s += " ";
-                            }
-                            let mut n = 0;
-                            let x = &exact_clonotypes[exacts[u]].share[m];
-                            if x.cdr1_start <= x.fr2_start {
-                                n = (x.fr2_start - x.cdr1_start) / 3;
-                            }
-                            if n >= 4 {
-                                let left = (n - 3) / 2;
-                                let right = n - left - 4;
-                                s += &"═".repeat(left);
-                                s += "CDR1";
-                                s += &"═".repeat(right);
-                            } else if n == 3 {
-                                s += "CR1";
-                            } else if n == 2 {
-                                s += "C1";
-                            } else if n == 1 {
-                                s += "1";
-                            }
-                        }
-                        if printing_cdr2 {
-                            let lead;
-                            let cs2 = rsi.cdr2_starts[cx] / 3;
-                            let pos2 = show.iter().position(|x| *x == cs2).unwrap();
-                            if !printing_cdr1 {
-                                lead = pos2;
-                            } else {
-                                let cs1 = rsi.cdr1_starts[cx] / 3;
-                                let pos1 = show.iter().position(|x| *x == cs1).unwrap();
-                                lead = pos2 - pos1 - (rsi.fr2_starts[cx] - rsi.cdr1_starts[cx]) / 3;
-                            }
-                            s += &" ".repeat(lead);
-                            if lead > 0 {
-                                s += " ";
-                            }
-                            if printing_cdr1 {
-                                s += " ";
-                            }
-                            let mut n = 0;
-                            if rsi.cdr2_starts[cx] <= rsi.fr3_starts[cx] {
-                                n = (rsi.fr3_starts[cx] - rsi.cdr2_starts[cx]) / 3;
-                            }
-                            if n >= 4 {
-                                let left = (n - 3) / 2;
-                                let right = n - left - 4;
-                                s += &"═".repeat(left);
-                                s += "CDR2";
-                                s += &"═".repeat(right);
-                            } else if n == 3 {
-                                s += "CR2";
-                            } else if n == 2 {
-                                s += "C2";
-                            } else if n == 1 {
-                                s += "2";
+                        let x = &exact_clonotypes[exacts[u]].share[m];
+                        let fields = [
+                            ("fwr1".to_string(), rsi.fr1_starts[cx], rsi.cdr1_starts[cx]),
+                            ("fwr2".to_string(), rsi.fr2_starts[cx], rsi.cdr2_starts[cx]),
+                            ("fwr3".to_string(), rsi.fr3_starts[cx], rsi.cdr3_starts[cx]),
+                            ("cdr1".to_string(), rsi.cdr1_starts[cx], rsi.fr2_starts[cx]),
+                            ("cdr2".to_string(), rsi.cdr2_starts[cx], rsi.fr3_starts[cx]),
+                            (
+                                "cdr3".to_string(),
+                                rsi.cdr3_starts[cx],
+                                rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                            ),
+                        ];
+                        for z in 0..fields.len() {
+                            if amino.contains(&fields[z].0) && fields[z].1 <= fields[z].2 {
+                                let cs1 = fields[z].1 / 3;
+                                let mut ch_start = 0;
+                                for k in 0..show.len() {
+                                    if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
+                                        ch_start += 1;
+                                    }
+                                    if show[k] == cs1 {
+                                        break;
+                                    }
+                                    ch_start += 1;
+                                }
+                                let n = (fields[z].2 - fields[z].1) / 3;
+                                let mut t = fields[z].0.to_string();
+                                t.make_ascii_uppercase();
+                                let t = t.as_bytes();
+                                let mut s = String::new();
+                                if n >= 4 {
+                                    let left = (n - 3) / 2;
+                                    let right = n - left - 4;
+                                    s += &"═".repeat(left);
+                                    s += strme(&t);
+                                    s += &"═".repeat(right);
+                                } else if n == 3 {
+                                    s += strme(&t[0..1]);
+                                    s += strme(&t[2..4]);
+                                } else if n == 2 {
+                                    s += strme(&t[0..1]);
+                                    s += strme(&t[3..4]);
+                                } else if n == 1 {
+                                    s += strme(&t[3..4]);
+                                }
+                                let mut schars = Vec::<char>::new();
+                                for x in s.chars() {
+                                    schars.push(x);
+                                }
+                                for k in 0..n {
+                                    ch[ch_start + k] = schars[k];
+                                }
                             }
                         }
-                        if printing_cdr3 {
-                            let lead;
-                            let cs3 = rsi.cdr3_starts[cx] / 3;
-                            let pos3 = show.iter().position(|x| *x == cs3).unwrap();
-                            if !printing_cdr1 && !printing_cdr2 {
-                                lead = pos3;
-                            } else if printing_cdr2 {
-                                let cs2 = rsi.cdr2_starts[cx] / 3;
-                                let pos2 = show.iter().position(|x| *x == cs2).unwrap();
-                                lead = 1 + pos3
-                                    - pos2
-                                    - (rsi.fr3_starts[cx] - rsi.cdr2_starts[cx]) / 3;
-                            } else {
-                                let cs1 = rsi.cdr1_starts[cx] / 3;
-                                let pos1 = show.iter().position(|x| *x == cs1).unwrap();
-                                lead = 1 + pos3
-                                    - pos1
-                                    - (rsi.fr2_starts[cx] - rsi.cdr1_starts[cx]) / 3;
-                            }
-                            s += &" ".repeat(lead);
-                            if lead > 0 {
-                                s += " ";
-                            }
-                            let n = exact_clonotypes[exacts[u]].share[m].cdr3_aa.len();
-                            let left = (n - 3) / 2;
-                            let right = n - left - 4;
-                            s += &"═".repeat(left);
-                            s += "CDR3";
-                            s += &"═".repeat(right);
+                        let mut s = String::new();
+                        for c in ch {
+                            s.push(c);
                         }
+                        s = s.trim_end().to_string();
                         row.push(s);
                         break;
                     }
