@@ -842,7 +842,8 @@ pub fn main_enclone(args: &Vec<String>) {
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];
-            let aa = aa_seq(&x.seq, 0);
+            // let aa = aa_seq(&x.seq, 0);
+            let aa = aa_seq(&refdata.refs[x.v_ref_id].to_ascii_vec(), 0);
             x.fr1_start = 3 * fr1_start(&aa, &x.chain_type);
             x.cdr1_start = 3 * cdr1_start(&aa, &x.chain_type, false);
             x.fr2_start = 3 * fr2_start(&aa, &x.chain_type, false);
