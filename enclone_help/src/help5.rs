@@ -37,9 +37,11 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              Insertions are shown only in amino acid space, in a special per-chain column called \
              \\bold{notes} that \
              appears if there is an insertion.  Colored amino acids are shown for the insertion, \
-             and the position of the insertion is shown.  The position is the position of the \
-             amino acid after which the insertion appears, where the first amino acid (start \
-             codon) is numbered 0.\n\n",
+             and the position of the insertion is shown.  The notation e.g.\n\
+             ins = TFT at 46\n\
+             means that TFT is inserted after the first 46 amino acids.  Since the first amino \
+             acid (which is a start codon) is numbered 0, the insertion actually occurs after \
+             the amino acid numbered 45.\n\n",
         );
         h.end_doc();
     }

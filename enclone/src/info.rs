@@ -38,6 +38,8 @@ pub fn build_info(
         let mut lens = Vec::<usize>::new();
         let mut tigs = Vec::<Vec<u8>>::new();
         let mut tigs_amino = Vec::<Vec<u8>>::new();
+        let mut aa_mod_indel = Vec::<Vec<u8>>::new();
+        let mut tigs_ins = Vec::<Vec<(usize, Vec<u8>)>>::new();
         let mut tigsp = Vec::<DnaString>::new();
         let mut has_del = Vec::<bool>::new();
         let mut orig_tigs = Vec::<DnaString>::new();
@@ -66,6 +68,8 @@ pub fn build_info(
             let mut annv = x.annv.clone();
             vsids.push(vid);
             jsids.push(jid);
+            let mut vsnx = String::new();
+            // DELETION
             if annv.len() == 2 && annv[1].0 == annv[0].0 + annv[0].1 {
                 let mut t = Vec::<u8>::new();
                 let (mut del_start, mut del_stop) = (annv[0].1, annv[1].3);
@@ -98,28 +102,85 @@ pub fn build_info(
                 }
                 annv[0].1 += (del_stop - del_start) + annv[1].1;
                 annv.truncate(1);
-                tigs_amino.push(t);
+                tigs_amino.push(t.clone());
+                let mut aa = Vec::<u8>::new();
+                for p in (0..=t.len() - 3).step_by(3) {
+                    if t[p] == b'-' {
+                        aa.push(b'-');
+                    } else {
+                        aa.push(codon_to_aa(&t[p..p + 3]));
+                    }
+                }
+
+                aa_mod_indel.push(aa);
+                tigs_ins.push(Vec::new());
                 has_del.push(true);
+            // INSERTION
             } else if annv.len() == 2 && annv[1].3 == annv[0].3 + annv[0].1 {
                 let ins_len = (annv[1].0 - annv[0].0 - annv[0].1) as usize;
-                let mut ins_pos = (annv[0].0 + annv[0].1) as usize;
+                let ins_pos = (annv[0].0 + annv[0].1) as usize;
                 let mut t = Vec::<u8>::new();
+                let mut nt = Vec::<u8>::new();
                 for i in 0..x.seq.len() {
                     if i < ins_pos || i >= ins_pos + ins_len {
                         t.push(x.seq[i]);
+                    } else {
+                        nt.push(x.seq[i]);
                     }
                 }
                 has_del.push(true); // DOES NOT MAKE SENSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 lens.push(t.len());
-                tigs.push(t);
-                ins_pos -= ins_pos % 3;
-                let mut t = Vec::<u8>::new();
-                for i in 0..x.seq.len() {
-                    if i < ins_pos || i >= ins_pos + ins_len {
-                        t.push(x.seq[i]);
-                    }
-                }
+                tigs.push(t.clone());
+                let ins = vec![(ins_pos, nt)];
+                tigs_ins.push(ins);
                 tigs_amino.push(t);
+
+                // Optimize to compute entry in aa_mod_indel and the inserted aa sequence.
+
+                let aa_full = aa_seq(&x.seq, 0);
+                let ref_aa = aa_seq(&refdata.refs[vid].to_ascii_vec(), 0);
+                let ins_len_aa = ins_len / 3;
+                const EXT: usize = 10;
+                let ins_pos_low;
+                if ins_pos / 3 < EXT {
+                    ins_pos_low = 0;
+                } else {
+                    ins_pos_low = ins_pos / 3 - EXT;
+                }
+                let mut ins_pos_high =
+                    std::cmp::min(ins_pos / 3 + EXT, aa_full.len() - ins_len_aa + 1);
+                ins_pos_high = std::cmp::min(ins_pos_high, ref_aa.len() - ins_len_aa + 1);
+                let mut mis = Vec::<(usize, usize, Vec<u8>)>::new();
+                for j in ins_pos_low..ins_pos_high {
+                    let mut y = Vec::<u8>::new();
+                    for k in 0..aa_full.len() {
+                        if k < j || k >= j + ins_len_aa {
+                            y.push(aa_full[k].clone());
+                        }
+                    }
+                    let mut m = 0;
+                    for l in 0..ref_aa.len() {
+                        if l < y.len() && ref_aa[l] != y[l] {
+                            m += 1;
+                        }
+                    }
+                    mis.push((m, j, y.clone()));
+                }
+                mis.sort();
+                aa_mod_indel.push(mis[0].2.clone());
+                let ins_aa_pos = mis[0].1.clone();
+                let mut aax = Vec::<u8>::new();
+                let b = 3 * ins_aa_pos;
+                for p in 0..ins_len_aa {
+                    emit_codon_color_escape(&x.seq[b + 3 * p..b + 3 * p + 3], &mut aax);
+                    let aa = codon_to_aa(&x.seq[b + 3 * p..b + 3 * p + 3]);
+                    aax.push(aa);
+                    emit_end_escape(&mut aax);
+                }
+                vsnx = format!("ins = {} at {}", strme(&aax), ins_aa_pos);
+
+                // Finish up ann.
+
                 annv[0].1 += annv[1].1;
                 annv.truncate(1);
             } else {
@@ -127,6 +188,8 @@ pub fn build_info(
                 lens.push(x.seq.len());
                 tigs.push(x.seq.clone());
                 tigs_amino.push(x.seq.clone());
+                aa_mod_indel.push(aa_seq(&x.seq, 0));
+                tigs_ins.push(Vec::new());
             }
 
             // Save reference V segment.  However in the case where there is a
@@ -134,7 +197,6 @@ pub fn build_info(
             // reference V segment accordingly.
 
             let rt = &refdata.refs[vid as usize];
-            let mut vsnx = String::new();
             if x.annv.len() == 2 {
                 if x.annv[0].1 as usize > rt.len() {
                     let msg = format!("x.annv[0].1 = {}, rt.len() = {}", x.annv[0].1, rt.len());
@@ -168,21 +230,6 @@ pub fn build_info(
                     }
                     vs.push(r.clone());
                     vs_notes.push("".to_string());
-
-                    // Make note on insertion.  Rounded down to modulo 3 position.  Note that
-                    // rounding down doesn't necessarily make sense.
-
-                    let ins_len = (x.annv[1].0 - x.annv[0].0 - x.annv[0].1) as usize;
-                    let mut ins_pos = (x.annv[0].0 + x.annv[0].1) as usize;
-                    ins_pos -= ins_pos % 3;
-                    let mut aax = Vec::<u8>::new();
-                    for p in 0..ins_len / 3 {
-                        emit_codon_color_escape(&x.seq[3 * p..3 * p + 3], &mut aax);
-                        let aa = codon_to_aa(&x.seq[3 * p..3 * p + 3]);
-                        aax.push(aa);
-                        emit_end_escape(&mut aax);
-                    }
-                    vsnx = format!("ins = {} at {}", strme(&aax), ins_pos / 3);
                 } else {
                     // maybe can't happen
                     vs.push(rt.clone());
@@ -227,6 +274,8 @@ pub fn build_info(
 
             x.seq_del = tigs[tigs.len() - 1].clone();
             x.seq_del_amino = tigs_amino[tigs_amino.len() - 1].clone();
+            x.aa_mod_indel = aa_mod_indel[aa_mod_indel.len() - 1].clone();
+            x.ins = tigs_ins[tigs_ins.len() - 1].clone();
             x.vs = vs[vs.len() - 1].clone();
             x.vs_notesx = vs_notesx[vs_notesx.len() - 1].clone();
             x.js = js[js.len() - 1].clone();

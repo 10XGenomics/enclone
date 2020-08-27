@@ -15,6 +15,7 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
+amino = "0.1.1"
 debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }

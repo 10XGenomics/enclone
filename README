@@ -10,7 +10,7 @@ Notes on building and testing:
    assuming that you have installed enclone with the "large" option.
    This automatically runs with -- --nocapture.
    If you have only "medium" and not "large, you can use instead:
-   cd enclone; cargo test --features basic -- --nocapture
+   cd enclone_main; cargo test --features basic -- --nocapture
 
 4. This does not include the very large test given by enclone/src/enclone.test.
    That test can only be run at 10x Genomics because it includes datasets that we don't

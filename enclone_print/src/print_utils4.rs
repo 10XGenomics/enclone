@@ -190,10 +190,45 @@ pub fn build_show_aa(
                 }
             }
         }
+        if ctl.clono_print_opt.amino.contains(&"cdr1".to_string()) {
+            if rsi.cdr1_starts[cx] <= rsi.fr2_starts[cx] {
+                for j in (rsi.cdr1_starts[cx]..rsi.fr2_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
+                }
+            }
+        }
+        if ctl.clono_print_opt.amino.contains(&"cdr2".to_string()) {
+            if rsi.cdr2_starts[cx] <= rsi.fr3_starts[cx] {
+                for j in (rsi.cdr2_starts[cx]..rsi.fr3_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
+                }
+            }
+        }
         if ctl.clono_print_opt.amino.contains(&"cdr3".to_string()) {
             for j in 0..rsi.cdr3_lens[cx] {
                 let p = rsi.cdr3_starts[cx] / 3 + j;
                 show_aa[cx].push(p);
+            }
+        }
+        if ctl.clono_print_opt.amino.contains(&"fwr1".to_string()) {
+            if rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx] {
+                for j in (rsi.fr1_starts[cx]..rsi.cdr1_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
+                }
+            }
+        }
+        if ctl.clono_print_opt.amino.contains(&"fwr2".to_string()) {
+            if rsi.fr2_starts[cx] <= rsi.cdr2_starts[cx] {
+                for j in (rsi.fr2_starts[cx]..rsi.cdr2_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
+                }
+            }
+        }
+        if ctl.clono_print_opt.amino.contains(&"fwr3".to_string()) {
+            if rsi.fr3_starts[cx] <= rsi.cdr3_starts[cx] {
+                for j in (rsi.fr3_starts[cx]..rsi.cdr3_starts[cx]).step_by(3) {
+                    show_aa[cx].push(j / 3);
+                }
             }
         }
         if ctl.clono_print_opt.amino.contains(&"var".to_string()) {

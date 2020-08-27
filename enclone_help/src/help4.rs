@@ -790,8 +790,38 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "a measure of CDR3 complexity, which is the total number of S, D and I",
         );
         h.doc("", "symbols in \"edit\" as defined above");
-        h.ldoc("cdr3_dna", "the CDR3_DNA sequence");
-        h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
+
+        h.ldoc(
+            "cdr*_aa",
+            "the CDR*_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr*_len",
+            "number of amino acids in the CDR* sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr*_dna",
+            "the CDR*_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_aa",
+            "the FWR*_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_len",
+            "number of amino acids in the FWR* sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_dna",
+            "the FWR*_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc("", "For all of these, * is 1 or 2 or 3.");
+        h.doc(
+            "",
+            "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
+        );
+        h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
+
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
@@ -887,7 +917,34 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
              in one combined ordered group, where each xi is one of:\n\n",
         );
+        h.doc("cdr1", "CDR1 sequence");
+        h.doc("cdr2", "CDR2 sequence");
         h.doc("cdr3", "CDR3 sequence");
+        h.doc("fwr1", "FWR1 sequence");
+        h.doc("fwr2", "FWR2 sequence");
+        h.doc("fwr3", "FWR3 sequence");
+        h.doc("", "Notes:");
+        h.docpr(
+            "",
+            "1. Please see the page on \\green{bit.ly/enclone} about V(D)J features for notes",
+        );
+        h.doc("", "on our method and interpretation.");
+        h.docf2(
+            "",
+            "2. There are circumstances under which these cannot \
+            be calculated, most notably in cases where something is wrong with the associated \
+            reference sequence.  In such cases, even though you specify CDR1 or CDR2, they will \
+            not be shown.",
+            85,
+        );
+        h.docf2(
+            "",
+            "3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header \
+            line that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even \
+            more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
+            85,
+        );
+        h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
         h.ldoc("var", "positions in chain that vary across the clonotype");
         h.doc(
             "share",

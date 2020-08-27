@@ -368,6 +368,47 @@ pub fn print_clonotypes(
                     &exact_clonotypes,
                 );
 
+                // Define field types corresponding to the amino acid positions to show.
+
+                let mut field_types = vec![Vec::new(); cols];
+                for cx in 0..cols {
+                    let mut ft = vec![0 as u8; show_aa[cx].len()];
+                    let cs1 = rsi.cdr1_starts[cx];
+                    let cs2 = rsi.cdr2_starts[cx];
+                    let cs3 = rsi.cdr3_starts[cx];
+                    let n3 = rsi.cdr3_lens[cx];
+                    let fs1 = rsi.fr1_starts[cx];
+                    let fs2 = rsi.fr2_starts[cx];
+                    let fs3 = rsi.fr3_starts[cx];
+                    let show_cdr1 = cs1 <= rsi.fr2_starts[cx]
+                        && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
+                    let show_cdr2 = cs2 <= rsi.fr3_starts[cx]
+                        && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
+                    let show_cdr3 = ctl.clono_print_opt.amino.contains(&"cdr3".to_string());
+                    let show_fwr1 = rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx]
+                        && ctl.clono_print_opt.amino.contains(&"fwr1".to_string());
+                    let show_fwr2 = rsi.fr2_starts[cx] <= rsi.cdr2_starts[cx]
+                        && ctl.clono_print_opt.amino.contains(&"fwr2".to_string());
+                    let show_fwr3 = rsi.fr3_starts[cx] <= rsi.cdr3_starts[cx]
+                        && ctl.clono_print_opt.amino.contains(&"fwr3".to_string());
+                    for (j, p) in show_aa[cx].iter().enumerate() {
+                        if show_cdr1 && *p >= cs1 / 3 && *p < rsi.fr2_starts[cx] / 3 {
+                            ft[j] = 1;
+                        } else if show_cdr2 && *p >= cs2 / 3 && *p < rsi.fr3_starts[cx] / 3 {
+                            ft[j] = 2;
+                        } else if show_cdr3 && *p >= cs3 / 3 && *p < cs3 / 3 + n3 {
+                            ft[j] = 3;
+                        } else if show_fwr1 && *p >= fs1 / 3 && *p < rsi.cdr1_starts[cx] / 3 {
+                            ft[j] = 4;
+                        } else if show_fwr2 && *p >= fs2 / 3 && *p < rsi.cdr2_starts[cx] / 3 {
+                            ft[j] = 5;
+                        } else if show_fwr3 && *p >= fs3 / 3 && *p < rsi.cdr3_starts[cx] / 3 {
+                            ft[j] = 6;
+                        }
+                    }
+                    field_types[cx] = ft;
+                }
+
                 // Build varmat.
 
                 let mut varmat = vec![vec![vec![b'-']; cols]; nexacts];
@@ -751,6 +792,7 @@ pub fn print_clonotypes(
                         &fp,
                         &vars_amino,
                         &show_aa,
+                        &field_types,
                         &mut bads,
                         &mut gex_low,
                         &mut row,
@@ -1255,6 +1297,7 @@ pub fn print_clonotypes(
                     &rsi,
                     &vars,
                     &show_aa,
+                    &field_types,
                     &mut row1,
                     &mut justify,
                     &mut drows,
@@ -1268,6 +1311,7 @@ pub fn print_clonotypes(
                     &ctl,
                     &rsi,
                     &show_aa,
+                    &field_types,
                     &refdata,
                     &dref,
                     &row1,

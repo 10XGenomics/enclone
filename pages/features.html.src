@@ -1,0 +1,942 @@
+<title>Detecting V(D)J features</title>
+
+<head>
+    <style>
+    .fixedtextbox {
+        font-family: "DejaVuSansMono"; 
+        line-height: 115%; 
+        background-color: #F4F4F4; 
+        border: 1px solid black; padding: 10px; 
+        font-size: 14px;
+    }
+    .match {
+        color: #58D68D;
+    }
+    .red {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>Detecting V(D)J features</h1>
+
+A V(D)J transcript has the following structure:
+
+<br><br>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="center" style="border: 2px solid black">5' UTR</th>
+<th align="center" style="border: 2px solid black">leader</th>
+<th align="center" style="border: 2px solid black">FWR1</th>
+<th align="center" style="border: 2px solid black">CDR1</th>
+<th align="center" style="border: 2px solid black">FWR2</th>
+<th align="center" style="border: 2px solid black">CDR2</th>
+<th align="center" style="border: 2px solid black">FWR3</th>
+<th align="center" style="border: 2px solid black">CDR3</th>
+<th align="center" style="border: 2px solid black">FWR4</th>
+<th align="center" style="border: 2px solid black">constant region</th>
+<th align="center" style="border: 2px solid black">3' UTR</th>
+<th align="center" style="border: 2px solid black">poly-A tail</th>
+</tr>
+</thead>
+</table>
+
+<p>
+Here we describe functions that start from a reference sequence for a V segment, and from that 
+compute all the features lying fully within such a sequence, comprising the leader up through
+FWR3.
+</p>
+
+<p>
+These functions all work via a position-weight matrix (PWM) that characterizes a particular
+site.  The matrices were <b>empirically</b> and <b>manually</b> configured to match the available 
+truth data, insofar as this was possible.  
+<ul>
+<li> That one can have such a matrix at all is due to conservation, and in the 
+vast majority of cases, the exact details of the matrix would not matter.  
+</li>
+<li> Yet the fine details of the matrix do affect a handful of cases,
+thus reflecting the characteristics of the truth data, including errors therein, if present.
+</li>
+</ul>
+</p>
+
+<p>
+The functions have been tested on several species: human, rhesus, rabbit, mouse 
+and rat, as well as some other species that were less abundant in the truth data.  Because of
+very high conservation in the V region, we anticipate
+that the functions would likely work well on most other mammalian species, but it is
+impossible to know without trying.  We are interested in hearing about issues and also about
+improvements to the functions that we currently use.
+</p>
+
+<p>
+The functions return values that are consistent with the Martin (or equivalently Chothia)
+system for BCR, and the IMGT system for TCR.  
+</p>
+
+<p><b>
+It is very important to understand that for
+BCR, different numbering systems give rise to different answers, and for example, different actual
+sequences for the CDR1 and CDR2 regions!
+</b></p>
+
+<p>
+If the functions do not return consistent answers, i.e. with features ordered properly
+along the transcript, then we change their values to null.  This can happen if a V reference 
+sequence is defective, for example if it has a frameshift.  It may happen very rarely in other 
+cases.  We encountered exactly one such instance and report it below.
+</p>
+
+<hr>
+
+<h2>Truth data</h2>
+
+<p>We used three sources of truth data:</p>
+
+<p>
+<b>1. <a href="http://www.abybank.org/abdb">abYbank</a>.</b>  These data consist of PDB 
+(crystallographic protein) BCR records augmented with 
+Martin numbering.  There is one heavy and one light chain for each.  These data were downloaded
+from http://www.abybank.org/abdb/Data/NR_LH_Combined_Martin.tar.bz2 on 7/12/2020.  After filtering
+there were the following records:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">811</td>
+    <td align="left" style="border: 2px solid black"><i>Homo sapiens</i></td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">761</td>
+    <td align="left" style="border: 2px solid black"><i>Mus musculus</i></td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">19</td>
+    <td align="left" style="border: 2px solid black"><i>Macacca mulatta</i></td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">13</td>
+    <td align="left" style="border: 2px solid black"><i>Oryctolagus cuniculus</i></td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">15</td>
+    <td align="left" style="border: 2px solid black">Other species.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+We used this <a href="http://www.bioinf.org.uk/abs/info.html#martinnum">description</a> 
+to define the boundaries of the CDR1 and CDR2 sequences.
+</p>
+
+<!--
+If the above link ever breaks, here is an archived version:
+https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html
+-->
+
+<p>
+<b>2. <a href="http://opig.stats.ox.ac.uk/webapps/stcrdab">STCRDab</a>.</b>  These data are
+also crystallographic protein records, but for TCR.  They contain CDR1 and CDR2 annotations
+that we use as truth data.  There were 832 records when downloaded on 7/22/20, 
+all from human and mouse.
+</p>
+
+<p>
+<b> 3. <a href="http://www.imgt.org/">IMGT</a>.</b>  The data we used consisted of annotated 
+reference sequences for human, rhesus, rabbit, mouse and rat (<i>Rattus norvegicus</i>).  These 
+were for BCR and TCR, with the exception of rat, for which we had only BCR data.  The sequences
+themselves were also downloaded from IMGT, except for human and mouse, for which we used the
+V(D)J reference sequences supplied by 10X Genomics.  After filtering
+there were 1245 sequences.  This was our only source for FWR1 start position truth data.
+</p>
+
+<p>
+<b>Filtering and editing.</b>  We removed any sequences containing evidence of frameshifts, for
+example stop codons, and also removed sequences that did not reach into the CDR3 region.  For the 
+protein sources, we made the amino acid sequences look more like V reference sequences (for which 
+the algorithm is designed), by prepending 21 amino acids and truncating 5 amino acids after the 
+CDR3 start.  
+</p>
+
+<p>
+<b>Reconciliation of numbering systems.</b> To compensate for differences with the IMGT 
+numbering system:
+<ul>
+<li>IGH CDR1: we remove the last amino acid from the IMGT sequence.</li>
+<li>IGK and IGL CDR1: we remove the first three and the last two amino acids from our sequence.</li>
+<li>IGH CDR2: we remove the first and last amino acids from the IMGT sequence.</li>
+<li>IGK and IGL CDR2: we remove the last four amino acids from our sequence.</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>Test results</h2>
+
+<p>
+<b>A.</b>  The FWR1 start algorithm could only be tested versus the IMGT data.  We found a single 
+discrepancy, for rabbit gene <code>IGHV1S18*01</code>, for which we report a start position one
+smaller than what IMGT reports.
+</p>
+
+<p>
+<b>B.</b>  We tested transcripts from all three sources for consistency with both CDR1 and CDR2.
+<ol>
+<li>
+abYbank: there was a single discrepancy, for the light chain of <code>4TNW_1</code> in mouse, 
+where we report a CDR1 sequence that is one shorter on the right, and a CDR2 sequence that is one
+longer on the left.
+</li>
+<li>
+STCRDab: there were no discrepancies.
+</li>
+<li>IMGT: there were 348 discrepancies.  Of these 341 were cases where there were highly conserved 
+positions for which the truth data for the FWR2 start appeared to be one too low.  These were the 
+W or Q positions in the PWM with score 250 (see below).  By species there were 153 in rat, 97 in 
+mouse and 91 in rhesus.  We were surprised by this and wonder if somehow we may have misinterpreted
+the IMGT conventions.  In general for these cases, both CDR1 and CDR2 were different.  There were six 
+additional cases where conservation supports the choice made by our algorithm (see appendix).  Finally we 
+observed a single case, rat gene <code>IGHV2-50*01</code>, where the entire region before the CDR1 start 
+is deleted in the reference sequence.  For this case, our algorithm does not report a value for CDR1.
+</li>
+</ol>
+</p>
+
+<hr>
+
+<h2>Detecting the start of the FWR1 region</h2>
+
+<p>
+The V region has already been located with the aid of the reference sequences.  It 
+begins with a start codon.
+</p>
+
+<p>
+We first compute the zero-based start <code>s</code> of the CDR1 region (see next section), and then 
+search the first <code>s+15</code> amino acids in the V region, looking for the following PWM:
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">150</td>
+    <td align="values" style="border: 2px solid black">D, E, G, K, Q</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">A, I, Q, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">L, M, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">E, Q</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">22</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">C</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">23</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">C</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Example.</b>  Suppose that starting at a particular position, we
+observe the following amino acids (downward reading relative column positions shown for clarity):
+<pre>
+<code>         11111111112222</code>
+<code>12345678901234567890123</code>
+<code>QVQLVQSGAEVKKPGASVKVSCK</code>
+</pre>
+
+Then the total score for the particular position would be 
+<code>150 + 50 + 100 + 250 + 250 + 0 = 800</code>, which is
+the maximum score one could normally get, since the likelihood of observing a <code>C</code>
+at both positions <code>22</code> and <code>23</code> is very small.  The position would almost certainly 
+be the "winner" and thus declared the start of the FWR1 region.  We make one exception: if the first
+codon is C, we add one to the start position.
+</p>
+
+<hr>
+
+<h2>Detecting the start of the CDR1 region</h2>
+
+<p>
+We use the following PWM:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">I, L, M, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">80</td>
+    <td align="values" style="border: 2px solid black">R, S, T</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">C</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">8</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">D, I, S</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and search for this motif, starting at zero-based positions between 25 and 47, inclusive.
+As with FWR1, the highest scoring position is declared the winner.  The value returned by
+the function then depends on the chain type.  For IGK and IGL, we return 5 plus the winning
+position, and for other chain types, we return 8 plus the winning position.
+</p>
+
+<hr>
+
+<h2>Detecting the start of the FWR2 region</h2>
+
+<p>
+We use the following PWM:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">F, L, M, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">W</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">150</td>
+    <td align="values" style="border: 2px solid black">Y</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">R</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="values" style="border: 2px solid black">Q</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">9</td>
+    <td align="right" style="border: 2px solid black">110</td>
+    <td align="values" style="border: 2px solid black">G</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">10</td>
+    <td align="right" style="border: 2px solid black">60</td>
+    <td align="values" style="border: 2px solid black">K, Q</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">11</td>
+    <td align="right" style="border: 2px solid black">40</td>
+    <td align="values" style="border: 2px solid black">A, G, K</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and search for this motif, starting at zero-based positions between 40 and 73, inclusive
+(except for IGH, where we stop at 62).
+The highest scoring position is declared the winner.  The value returned by
+the function then depends on the chain type.  For IGH, we return the winner.  For 
+IGK and IGL we add one to the winner.  For TRA and TRB, we subtract one from the winner.
+</p>
+
+<hr>
+
+<h2>Detecting the start of the CDR2 region</h2>
+
+<p>
+We use different functions, depending on the chain type.  For IGH, we use the following PWM:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">80</td>
+    <td align="values" style="border: 2px solid black">L</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">80</td>
+    <td align="values" style="border: 2px solid black">E</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">80</td>
+    <td align="values" style="border: 2px solid black">W</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">40</td>
+    <td align="values" style="border: 2px solid black">I, L, M, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">40</td>
+    <td align="values" style="border: 2px solid black">A, G, S</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and search for this motif, between 8 and 13 amino acids after the start of FWR2 (as calculated
+above).  Then we return 7 plus the highest scoring position.
+</p>
+
+<p>
+For IGK and IGL, we simply return 15 plus the start of FWR2.
+</p>
+
+<p>
+For TRA, we use the following PWM:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">15</td>
+    <td align="values" style="border: 2px solid black">L, P</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">15</td>
+    <td align="values" style="border: 2px solid black">E, I, Q, T, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">20</td>
+    <td align="values" style="border: 2px solid black">F, L</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">35</td>
+    <td align="values" style="border: 2px solid black">L</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">15</td>
+    <td align="values" style="border: 2px solid black">I, L</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and search for this motif, between 10 and 12 amino acids after the start of FWR2.
+Then we return 6 plus the highest scoring position.
+</p>
+
+<p>
+For TRB, we simply return 17 plus the start of FWR2.
+</p>
+
+<hr>
+
+<h2>Detecting the start of the FWR3 region</h2>
+
+<p>
+In order to determine the start of the FWR3 region, we first determine the start of the CDR3
+region (see below).
+</p>
+
+<p>
+We then use different functions, depending on the chain type.  For IGH, we use the following PWM:
+</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">600</td>
+    <td align="values" style="border: 2px solid black">N, Y</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">500</td>
+    <td align="values" style="border: 2px solid black">Y</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">400</td>
+    <td align="values" style="border: 2px solid black">A, N</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">850</td>
+    <td align="values" style="border: 2px solid black">F, L</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">7</td>
+    <td align="right" style="border: 2px solid black">800</td>
+    <td align="values" style="border: 2px solid black">K, Q, R</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">9</td>
+    <td align="right" style="border: 2px solid black">1000</td>
+    <td align="values" style="border: 2px solid black">K, R</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">10</td>
+    <td align="right" style="border: 2px solid black">700</td>
+    <td align="values" style="border: 2px solid black">A, F, L, V</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+searching between the start of the CDR3 minus 40 and the start of the CDR3 minus 34, inclusive.
+Then we return the start of the motif, minus one.
+</p>
+
+<p>For IGK and IGL we use the following PWM:</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">G</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">P</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">R</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">F</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">8</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">G</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+searching between the start of the CDR3 minus 35 and the start of the CDR3 minus 28, inclusive.
+Then we return the start of the motif.
+</p>
+
+<p>For TRA we use the following PWM:</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">E, K, N, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">A, E, K, T</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">60</td>
+    <td align="values" style="border: 2px solid black">E, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">D, N, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">N</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">80</td>
+    <td align="values" style="border: 2px solid black">G, M, R</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">7</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">A, F, I, Y</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">8</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">S, T</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">9</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">A, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">10</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">E, T</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">12</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">D, N</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+searching between the start of the CDR3 minus 36 and the start of the CDR3 minus 33, inclusive.
+Then we return the start of the motif, plus one.
+</p>
+
+<p>For TRB we use the following PWM:</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">50</td>
+    <td align="values" style="border: 2px solid black">D, E, K</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">200</td>
+    <td align="values" style="border: 2px solid black">G, Q, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">200</td>
+    <td align="values" style="border: 2px solid black">D, E, G, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">200</td>
+    <td align="values" style="border: 2px solid black">I, L, M, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">P, S</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+searching between the start of the CDR3 minus 38 and the start of the CDR3 minus 35, inclusive.
+Then we return the start of the motif, minus two.
+</p>
+
+<hr>
+
+<h2>Detecting the start of the CDR3 region</h2>
+
+<p>We use the following PWM:</p>
+
+<table rules="all" cellpadding="6" style="border: 2px solid black">
+<thead>
+<tr>
+<th align="right" style="border: 2px solid black">pos</th>
+<th align="right" style="border: 2px solid black">weight</th>
+<th align="left" style="border: 2px solid black">values</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">1</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">A, L, V</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">E, Q, T</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">3</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">A, P, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">4</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">E, G, S</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">5</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">D, Q</td>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">6</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">A, S, T</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">7</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">A, G, S</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">8</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">L, T, V</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">9</td>
+    <td align="right" style="border: 2px solid black">300</td>
+    <td align="values" style="border: 2px solid black">Y</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">10</td>
+    <td align="right" style="border: 2px solid black">100</td>
+    <td align="values" style="border: 2px solid black">F, L, Y</td>
+</tr>
+</tr>
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">11</td>
+    <td align="right" style="border: 2px solid black">300</td>
+    <td align="values" style="border: 2px solid black">C</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and look for this motif, terminating right before the CDR3, assuming that up to 18 amino acids of the CDR3 
+are present in the reference sequence.
+</p>
+
+<hr>
+
+<h1>Appendix: six miscellaneous discrepancies with IMGT</h1>
+
+<p>
+<b>Case 1.</b>  This is for the gene <code>TRAV12-1</code> in human.  We agree with IMGT for 
+CDR1, and IMGT shows <span class=red>CDR2</span> extending one amino acid further on the right.  However the motif we use 
+strongly supports the right boundary that we give, matching at eight amino acids.
+Note that in this case that the motif is designed 
+to overlap by one base with the <span class=red>CDR2</span>.
+
+<pre class=fixedtextbox>MISLRVLLVILWLQLSWVWSQRKEVEQDPGPFNVPEGATVAFNCTYSNSASQSFFWYRQDCRKEPKLLMS<span class=red>VYSSG</span>NEDGRFTAQLNRASQYISLLIRDSKLSDSATYLCVVN
+                                                                          <span class=match>--▊▊▊▊▊▊▊--▊</span>
+                                                                          EAEDGGAEAE-D
+                                                                          KESNNMFSVT-N
+                                                                          NT-S-RIT----
+                                                                          VK----Y-----
+</pre>
+</p>
+
+<p>
+<b>Case 2.</b>  This is for the gene <code>TRBV6-8</code> in human.  We agree with IMGT for CDR1, 
+and IMGT shows <span class=red>CDR2</span> extending one amino acid further on the right.  However 
+the motif we use strongly supports the right boundary that we give:
+</p>
+
+<pre class=fixedtextbox>MSLGLLCCAAFSLLWAGPVNAGVTQTPKFHILKTGQSMTLQCAQDMNHGYMSWYRQDPGMGLRLIYY<span class=red>SAAAG</span>TTDKEVPNGYNVSRLNTEDFPLRLVSAAPSRTSVYLCASSY
+                                                                        <span class=match>--▊-▊▊▊</span>
+                                                                        --EGDIP
+                                                                        --DQELS
+                                                                        --KSGM-
+                                                                        ----SV-
+</pre>
+
+<b>Case 3.</b> This is a different allele for the gene <code>TRBV6-8</code>, and the story is 
+exactly the same.
+
+<pre class=fixedtextbox>MSLGLLCCAAFSLLWAGPVNAGVTQTPKFHILKTGQSMTLQCAQDMNHGYMSWYRQDPGMGLRLIYY<span class=red>SAAAG</span>TTDKEVPNGYNVSRLNTEDFPLRLVSAAPSQTSVYLCASSY
+                                                                        <span class=match>--▊-▊▊▊</span>
+                                                                        --EGDIP
+                                                                        --DQELS
+                                                                        --KSGM-
+                                                                        ----SV-
+</pre>
+
+<p>
+<b>Case 4.</b>  This is for the gene <code>IGHV11-1*01</code> in rat.
+</p>
+
+<p>
+For CDR1, we compute <code>GFTFSNS</code>, which partially agrees with IMGT (<code>GFTFSN</code>, 
+after adjusting for the numbering scheme), and fully agrees with ANARCI.
+For CDR2, we do not compute a value, because the left and right motifs for CDR2 match the
+reference sequence very strongly and overlap.  The implied length of the CDR2 is minus one, 
+although this is for the Martin/Chothia numbering system, and for a different numbering system
+which extended further, the length would be positive.
+</p>
+
+<pre class=fixedtextbox>
+                                                               ---I---
+                                                               ---LA--
+                                                               ---MG--
+                                                               LEWVS--
+                                                               <span class=match>▊▊▊▊▊--</span>
+MELELLSFIFALLKCNVQCEAQLVESGGGWVQPGASLKLSCVASGFTFSNSWMYWFHQFPGKALEWIGGIKYAPSIKNRVTMSRENAKSTLNLQMNNVRSDYTATYYCVR
+                                                                     <span class=match>--▊▊---▊-▊▊</span>
+                                                                     -NYA--FK-KA
+                                                                     -Y N--LQ-RF
+                                                                     -------R--L
+                                                                     ----------V
+</pre>
+
+<p>
+<b>Case 5.</b>  This is for the gene <code>IGHV3-1*01</code> in rat.
+</p>
+
+<p>
+The computed value for CDR1 is <code>GYSITSN</code>, which agrees with IMGT.  For 
+<span class=red>CDR2</span>, we compute <code>SYSGS</code>, which agrees exactly with the 
+bracketing motifs (see below), whereas IMGT computes <code>ISYSG</code>.
+</p>
+
+<pre class=fixedtextbox>
+                                                                ---L---
+                                                                ---IA--
+                                                                ---MS--
+                                                                LEWVG--
+                                                                <span class=match>-▊▊▊▊--</span>
+MRTLGLLYLLTALPGECILSEVQLQESGPGLVKPSQSLSLTCSVTGYSITSNYWGWIRKFPGNKMEWIGHI<span class=red>SYSGS</span>TSYNPSLKSRISITRDTSKNQFFLQLNSVTTEDTATYYCAR
+                                                                            <span class=match>--▊▊--▊▊-▊-</span>
+                                                                            -NYA--FK-KA
+                                                                            -Y-N--LQ-RF
+                                                                            -------R--L
+                                                                            ----------V
+</pre>
+
+<p>
+<b>Case 6.</b>  This is for the gene <code>IGHV8-30*01</code> in rat.
+</p>
+
+<p>
+For <span class=red>CDR2</span>, we report <code>DWDGD</code>, whereas the adjusted value for IMGT 
+is <code>IDWDG</code>.  However the PWMs strongly support our choice:
+</p>
+
+<pre class=fixedtextbox>
+                                                               ---L---
+                                                               ---IA--
+                                                               ---MS--
+                                                               LEWVG--
+                                                               <span class=match>▊▊▊▊▊--</span>
+MDRLTSSFLLLLVPAYVLSQVTLKESGPGMLQPSKTLSLTCSFSGFSLTIHGTHGAPMPIRGSLEWLAAI<span class=red>DWDGD</span>KYYNPSLKSRLTVSKDTSNTQVFLKITSVDIADTATYYCARR
+                                                                           <span class=match>-▊▊▊--▊▊-▊▊</span>
+                                                                           -NYA--FK-KA
+                                                                           -Y-N--LQ-RF
+                                                                           -------R--L
+                                                                           ----------V
+</pre>
+
+</body>
+</html>

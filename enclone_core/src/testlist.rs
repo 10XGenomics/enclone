@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 111] = [
+pub const TESTS: [&str; 134] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -58,7 +58,8 @@ pub const TESTS: [&str; 111] = [
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
     // 14. this added because it got better when a bug in bads detection was fixed
     r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
-    // 15. tests insertion and AMINO range
+    // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
+    // it was fixed
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 16. tests number of cells broken out by dataset
     r###"BCR=123085,123089 LVARS=n,n_123085,n_123089 CDR3=CTRDRDLRGATDAFDIW"###,
@@ -91,7 +92,7 @@ pub const TESTS: [&str; 111] = [
     r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
-    // 29. tests parenthesized variable in F, SUM and MEAN
+    // 29. tests parenthesized variable in F, SUM and MEAN; also indel was wrong
     r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
      NH5"###,
     // 30. tests d_univ and d_donor
@@ -294,12 +295,59 @@ pub const TESTS: [&str; 111] = [
     r###"BCR=123085 LVARSP=dref,dref_aa CDR3=CAREKGIGSSGWDWGAFDIW"###,
     // 111. test for fail if F used with unsupported variable
     r###"BCR=123085 LVARSP=near F="near>=0" EXPECT_FAIL"###,
+    // 112. test 1 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr2,cdr3"###,
+    // 113. test 2 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr3"###,
+    // 114. test 3 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr2,cdr3"###,
+    // 115. test 4 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr2"###,
+    // 116. test 5 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1"###,
+    // 117. test 6 of 6 for cdr1/cdr2 in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr2"###,
+    // 118. test cdr1_aa and cdr2_aa
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=cdr1_aa,cdr2_aa AMINO=cdr1"###,
+    // 119. test cdr3_aa
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=cdr3_aa AMINO=cdr3"###,
+    // 120. test cdr1_dna and cdr2_dna
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_dna,cdr2_dna AMINO="###,
+    // 121. test cdr1_len and cdr2_len
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_len,cdr2_len AMINO="###,
+    // 122. test insertion in CDR1
+    r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa"###,
+    // 123. test fwr1_dna and fwr2_dna
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_dna,fwr2_dna AMINO=cdr3"###,
+    // 124. test fwr3_dna
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr3_dna AMINO=cdr3"###,
+    // 125. test fwr1_aa and fwr2_aa and fwr3_aa
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_aa,fwr2_aa,fwr3_aa AMINO=cdr3"###,
+    // 126. test fwr1_len and fwr2_len and fwr3_len
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_len,fwr2_len,fwr3_len AMINO=cdr3"###,
+    // 127. test 1/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr1,cdr1"###,
+    // 128. test 2/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,fwr2"###,
+    // 129. test 3/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr2,cdr2"###,
+    // 130. test 4/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr2,fwr3"###,
+    // 131. test 5/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr3,cdr3"###,
+    // 132. test 6/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr1,fwr2"###,
+    // 133. test 7/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr2,fwr3"###,
+    // 134. test 8/8 for fwr* in AMINO
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,fwr2,cdr2,fwr3"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
 
 pub const EXTENDED_TESTS: [&str; 3] = [
-    // 1. test that used to crash on a particular barcode
+    // 1. test that used to crash on a particular barcode; this also gave the wrong
+    // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW

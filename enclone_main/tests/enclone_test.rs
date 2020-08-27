@@ -859,17 +859,18 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
 
-    let extra_words = "amazonaws barcode barcodes barcoding bcn cdiff chmod clonotype clonotypes \
+    let extra_words = "abybank amazonaws anarci barcode barcodes barcoding bcn bioinf cdiff chmod \
+        clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
-        foursie foursies \
+        fixedtextbox foursie foursies frameshifts \
         genomics germline github githubusercontent google googletagmanager grok gz html \
-        hypermutation hypermutations igh ighm igkc imgt \
+        hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
         moresies multiomic ncbi ncross newick nimproper \
-        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell phylip \
-        plasmablast preinstalled prepends redownloads samtools screenshot segn sloooooooow \
-        spacebar stackexchange standalone stdout subclonotype \
+        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phylip \
+        plasmablast preinstalled prepends pwm pwms redownloads samtools screenshot segn \
+        sloooooooow spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
@@ -922,7 +923,9 @@ fn test_for_broken_links_and_spellcheck() {
 
     // Test each html.
 
+    let mut dict_fail = false;
     for x in htmls {
+        let mut bads = HashSet::<String>::new();
         let f = open_for_read![x];
         let depth = x.matches('/').count();
         for line in f.lines() {
@@ -947,12 +950,18 @@ fn test_for_broken_links_and_spellcheck() {
                 }
                 let mut wl = w.clone();
                 wl.make_ascii_lowercase();
-                if !bin_member(&dictionary, &wl.to_string()) {
-                    eprintln!(
-                        "\nthe word \"{}\" in file {} isn't in the dictionary\n",
-                        w, x
-                    );
-                    std::process::exit(1);
+                if !bin_member(&dictionary, &wl.to_string()) && !bads.contains(&wl.to_string()) {
+                    let mut wu = w.clone();
+                    wu.make_ascii_uppercase();
+                    if w != wu || w.len() < 20 {
+                        // arbitrary long uppercase strings allowed
+                        bads.insert(wl.to_string());
+                        eprintln!(
+                            "\nthe word \"{}\" in file {} isn't in the dictionary",
+                            wl, x
+                        );
+                        dict_fail = true;
+                    }
                 }
             }
 
@@ -1112,6 +1121,10 @@ fn test_for_broken_links_and_spellcheck() {
                 */
             }
         }
+    }
+    if dict_fail {
+        eprintln!("");
+        std::process::exit(1);
     }
 }
 

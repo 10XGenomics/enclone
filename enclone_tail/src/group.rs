@@ -386,9 +386,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
                         } else {
                             let r = rsi[oo].mat[m][k].unwrap();
-                            let s = ex.share[r].seq_del_amino.clone();
-                            let mut s = aa_seq(&s, 0);
-                            seq.append(&mut s);
+                            let mut z = ex.share[r].aa_mod_indel.clone();
+                            seq.append(&mut z);
                         }
                     }
                     names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
@@ -654,9 +653,8 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
                         } else {
                             let r = rsi[oo].mat[m][k].unwrap();
-                            let s = ex.share[r].seq_del_amino.clone();
-                            let mut s = aa_seq(&s, 0);
-                            seq.append(&mut s);
+                            let mut z = ex.share[r].aa_mod_indel.clone();
+                            seq.append(&mut z);
                         }
                     }
                     names.push(format!("{}", k + 1,));

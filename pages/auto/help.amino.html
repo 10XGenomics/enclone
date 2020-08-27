@@ -48,19 +48,34 @@ There is a complex per-chain column to the left of other per-chain columns, defi
 <span style="font-weight:bold;">AMINO=x1,...,xn</span>: display amino acid columns for the given categories, in one combined ordered
 group, where each xi is one of:
 
-┌────────┬───────────────────────────────────────────────────────────────────────────────────┐
-│cdr3    │  CDR3 sequence                                                                    │
-├────────┼───────────────────────────────────────────────────────────────────────────────────┤
-│var     │  positions in chain that vary across the clonotype                                │
-│share   │  positions in chain that differ consistently from the donor reference             │
-├────────┼───────────────────────────────────────────────────────────────────────────────────┤
-│donor   │  positions in chain where the donor reference differs from the universal reference│
-├────────┼───────────────────────────────────────────────────────────────────────────────────┤
-│donorn  │  positions in chain where the donor reference differs nonsynonymously             │
-│        │  from the universal reference                                                     │
-├────────┼───────────────────────────────────────────────────────────────────────────────────┤
-│a-b     │  amino acids numbered a through b (zero-based, inclusive)                         │
-└────────┴───────────────────────────────────────────────────────────────────────────────────┘
+┌────────┬───────────────────────────────────────────────────────────────────────────────────────┐
+│cdr1    │  CDR1 sequence                                                                        │
+│cdr2    │  CDR2 sequence                                                                        │
+│cdr3    │  CDR3 sequence                                                                        │
+│fwr1    │  FWR1 sequence                                                                        │
+│fwr2    │  FWR2 sequence                                                                        │
+│fwr3    │  FWR3 sequence                                                                        │
+│        │  Notes:                                                                               │
+│        │  1. Please see the page on <span style="color:#25bc24;">bit.ly/enclone</span> about V(D)J features for notes              │
+│        │  on our method and interpretation.                                                    │
+│        │  2. There are circumstances under which these cannot be calculated, most notably in   │
+│        │  cases where something is wrong with the associated reference sequence.  In such      │
+│        │  cases, even though you specify CDR1 or CDR2, they will not be shown.                 │
+│        │  3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header line│
+│        │  that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even more   │
+│        │  cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.               │
+│        │  4. The same stipulations apply to FWR1, FWR2 and FWR3.                               │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│var     │  positions in chain that vary across the clonotype                                    │
+│share   │  positions in chain that differ consistently from the donor reference                 │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│donor   │  positions in chain where the donor reference differs from the universal reference    │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│donorn  │  positions in chain where the donor reference differs nonsynonymously                 │
+│        │  from the universal reference                                                         │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│a-b     │  amino acids numbered a through b (zero-based, inclusive)                             │
+└────────┴───────────────────────────────────────────────────────────────────────────────────────┘
 
 Note that we compute positions in base space, and then divide by three to get positions in amino
 acid space.  Thus it can happen that a position in amino acid space is shown for both <span style="font-weight:bold;">var</span> and <span style="font-weight:bold;">share</span>.

@@ -759,7 +759,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             for x in ctl.clono_print_opt.amino.iter() {
                 let mut ok = false;
-                if *x == "cdr3" || *x == "var" || *x == "share" || *x == "donor" || *x == "donorn" {
+                if *x == "cdr1"
+                    || *x == "cdr2"
+                    || *x == "cdr3"
+                    || *x == "fwr1"
+                    || *x == "fwr2"
+                    || *x == "fwr3"
+                    || *x == "var"
+                    || *x == "share"
+                    || *x == "donor"
+                    || *x == "donorn"
+                {
                     ok = true;
                 } else if x.contains('-') {
                     let (start, stop) = (x.before("-"), x.after("-"));

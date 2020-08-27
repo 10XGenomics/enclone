@@ -2,9 +2,8 @@
 //
 // See README for documentation.
 
-use vdj_ann::*;
-
 use self::refx::*;
+use amino::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
@@ -21,6 +20,7 @@ use enclone::proc_args2::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
+use enclone::vdj_features::*;
 use enclone_core::defs::*;
 use enclone_core::*;
 use enclone_help::help1::*;
@@ -50,6 +50,7 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
+use vdj_ann::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -835,6 +836,49 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut gex_cells_specified,
     );
     ctl.perf_stats(&tparse, "loading from json");
+
+    // Populate features.
+
+    let mut fr1_starts = vec![0; refdata.refs.len()];
+    let mut fr2_starts = vec![0; refdata.refs.len()];
+    let mut fr3_starts = vec![0; refdata.refs.len()];
+    let mut cdr1_starts = vec![0; refdata.refs.len()];
+    let mut cdr2_starts = vec![0; refdata.refs.len()];
+    for i in 0..refdata.refs.len() {
+        if refdata.is_v(i) {
+            let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
+            let rtype = refdata.rtype[i];
+            let chain_type;
+            if rtype == 0 {
+                chain_type = "IGH";
+            } else if rtype == 1 {
+                chain_type = "IGK";
+            } else if rtype == 2 {
+                chain_type = "IGL";
+            } else if rtype == 3 {
+                chain_type = "TRA";
+            } else if rtype == 4 {
+                chain_type = "TRB";
+            } else {
+                continue;
+            }
+            fr1_starts[i] = 3 * fr1_start(&aa, &chain_type);
+            fr2_starts[i] = 3 * fr2_start(&aa, &chain_type, false);
+            fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
+            cdr1_starts[i] = 3 * cdr1_start(&aa, &chain_type, false);
+            cdr2_starts[i] = 3 * cdr2_start(&aa, &chain_type, false);
+        }
+    }
+    for i in 0..tig_bc.len() {
+        for j in 0..tig_bc[i].len() {
+            let x = &mut tig_bc[i][j];
+            x.fr1_start = fr1_starts[x.v_ref_id];
+            x.fr2_start = fr2_starts[x.v_ref_id];
+            x.fr3_start = fr3_starts[x.v_ref_id];
+            x.cdr1_start = cdr1_starts[x.v_ref_id];
+            x.cdr2_start = cdr2_starts[x.v_ref_id];
+        }
+    }
 
     // Search for SHM indels.
 
