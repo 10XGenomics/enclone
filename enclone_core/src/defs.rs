@@ -824,12 +824,8 @@ pub fn justification(x: &str) -> u8 {
     if x == "amino"
         || x == "var"
         || x == "const"
-        || x == "cdr1_aa"
-        || x == "cdr2_aa"
-        || x == "cdr3_aa"
-        || x == "cdr1_dna"
-        || x == "cdr2_dna"
-        || x == "cdr3_dna"
+        || x.ends_with("_aa")
+        || x.ends_with("_dna")
         || x == "cdiff"
         || x == "notes"
         || x == "edit"
@@ -843,11 +839,8 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("j_name")
         || x.starts_with("utr_name")
         || x.starts_with("vj_seq")
-        || x.starts_with("vj_aa")
         || x.starts_with("seq")
         || x.starts_with("q")
-        || x.starts_with("cdr3_aa")
-        || x.starts_with("var_aa")
         || x.starts_with("var_indices")
         || x.starts_with("share_indices")
         || x.ends_with("_barcode")
