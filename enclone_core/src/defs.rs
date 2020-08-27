@@ -824,7 +824,7 @@ pub fn justification(x: &str) -> u8 {
     if x == "amino"
         || x == "var"
         || x == "const"
-        || x.ends_with("_aa")
+        || (x.ends_with("_aa") && x != "dref_aa")
         || x.ends_with("_dna")
         || x == "cdiff"
         || x == "notes"
