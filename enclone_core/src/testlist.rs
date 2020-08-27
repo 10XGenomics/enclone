@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 122] = [
+pub const TESTS: [&str; 126] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -317,6 +317,14 @@ pub const TESTS: [&str; 122] = [
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_len,cdr2_len AMINO="###,
     // 122. test insertion in CDR1
     r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa"###,
+    // 123. test fwr1_dna and fwr2_dna
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_dna,fwr2_dna AMINO=cdr3"###,
+    // 124. test fwr3_dna
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr3_dna AMINO=cdr3"###,
+    // 125. test fwr1_aa and fwr2_aa and fwr3_aa
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_aa,fwr2_aa,fwr3_aa AMINO=cdr3"###,
+    // 126. test fwr1_len and fwr2_len and fwr3_len
+    r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_len,fwr2_len,fwr3_len AMINO=cdr3"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
