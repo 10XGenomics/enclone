@@ -792,32 +792,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "symbols in \"edit\" as defined above");
 
         h.ldoc(
-            "cdr1_aa",
-            "the CDR1_AA sequence, or \"unknown\" if not computed",
+            "cdr*_aa",
+            "the CDR*_AA sequence, or \"unknown\" if not computed",
         );
         h.doc(
-            "cdr2_aa",
-            "the CDR2_AA sequence, or \"unknown\" if not computed",
-        );
-        h.doc("cdr3_aa", "the CDR3_AA sequence");
-        h.doc(
-            "cdr1_len",
-            "number of amino acids in the CDR1 sequence, or \"unknown\" if not computed",
+            "cdr*_len",
+            "number of amino acids in the CDR* sequence, or \"unknown\" if not computed",
         );
         h.doc(
-            "cdr2_len",
-            "number of amino acids in the CDR2 sequence, or \"unknown\" if not computed",
+            "cdr*_dna",
+            "the CDR*_DNA sequence, or \"unknown\" if not computed",
         );
-        h.doc("cdr3_len", "number of amino acids in the CDR3 sequence");
-        h.doc(
-            "cdr1_dna",
-            "the CDR1_DNA sequence, or \"unknown\" if not computed",
-        );
-        h.doc(
-            "cdr2_dna",
-            "the CDR2_DNA sequence, or \"unknown\" if not computed",
-        );
-        h.doc("cdr3_dna", "the CDR3_DNA sequence");
+        h.doc("", "For all of these, * is 1 or 2 or 3.");
         h.doc(
             "",
             "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
