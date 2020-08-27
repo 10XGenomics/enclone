@@ -1336,6 +1336,141 @@ pub fn row_fill(
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "cdr3_len".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
+            } else if *var == "fwr1_dna".to_string()
+                || *var == "fwr1_aa".to_string()
+                || *var == "fwr1_len".to_string()
+            {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.fr1_start <= x.cdr1_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.fr1_start..x.cdr1_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+
+                    // Test for internal error.
+
+                    let mut found = false;
+                    for i in 0..x.seq.len() {
+                        if x.seq[i..].starts_with(&dna) {
+                            found = true;
+                        }
+                    }
+                    if !found {
+                        eprintln!(
+                            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                            strme(&dna),
+                            x.cdr3_aa
+                        );
+                        std::process::exit(1);
+                    }
+                    if *var == "fwr1_dna".to_string() {
+                        y = stringme(&dna);
+                    } else if *var == "fwr1_aa".to_string() {
+                        y = stringme(&aa_seq(&dna, 0));
+                    } else {
+                        y = format!("{}", dna.len() / 3);
+                    }
+                }
+                cvar![j, var, y];
+            } else if *var == "fwr2_dna".to_string()
+                || *var == "fwr2_aa".to_string()
+                || *var == "fwr2_len".to_string()
+            {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.fr2_start <= x.cdr2_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.fr2_start..x.cdr2_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+
+                    // Test for internal error.
+
+                    let mut found = false;
+                    for i in 0..x.seq.len() {
+                        if x.seq[i..].starts_with(&dna) {
+                            found = true;
+                        }
+                    }
+                    if !found {
+                        eprintln!(
+                            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                            strme(&dna),
+                            x.cdr3_aa
+                        );
+                        std::process::exit(1);
+                    }
+                    if *var == "fwr2_dna".to_string() {
+                        y = stringme(&dna);
+                    } else if *var == "fwr2_aa".to_string() {
+                        y = stringme(&aa_seq(&dna, 0));
+                    } else {
+                        y = format!("{}", dna.len() / 3);
+                    }
+                }
+                cvar![j, var, y];
+            } else if *var == "fwr3_dna".to_string()
+                || *var == "fwr3_aa".to_string()
+                || *var == "fwr3_len".to_string()
+            {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.fr3_start <= x.cdr3_start {
+                    let mut dna = Vec::<u8>::new();
+                    for p in x.fr3_start..x.cdr3_start {
+                        for j in 0..x.ins.len() {
+                            if x.ins[j].0 == p {
+                                let mut z = x.ins[j].1.clone();
+                                dna.append(&mut z);
+                            }
+                        }
+                        if x.seq_del_amino[p] != b'-' {
+                            dna.push(x.seq_del_amino[p]);
+                        }
+                    }
+
+                    // Test for internal error.
+
+                    let mut found = false;
+                    for i in 0..x.seq.len() {
+                        if x.seq[i..].starts_with(&dna) {
+                            found = true;
+                        }
+                    }
+                    if !found {
+                        eprintln!(
+                            "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                            strme(&dna),
+                            x.cdr3_aa
+                        );
+                        std::process::exit(1);
+                    }
+                    if *var == "fwr3_dna".to_string() {
+                        y = stringme(&dna);
+                    } else if *var == "fwr3_aa".to_string() {
+                        y = stringme(&aa_seq(&dna, 0));
+                    } else {
+                        y = format!("{}", dna.len() / 3);
+                    }
+                }
+                cvar![j, var, y];
             } else if *var == "ulen".to_string() {
                 cvar![j, *var, format!("{}", ex.share[mid].v_start)];
             } else if *var == "clen".to_string() {

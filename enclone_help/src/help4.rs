@@ -803,6 +803,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "cdr*_dna",
             "the CDR*_DNA sequence, or \"unknown\" if not computed",
         );
+        h.doc(
+            "fwr*_aa",
+            "the FWR*_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_len",
+            "number of amino acids in the FWR* sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_dna",
+            "the FWR*_DNA sequence, or \"unknown\" if not computed",
+        );
         h.doc("", "For all of these, * is 1 or 2 or 3.");
         h.doc(
             "",
