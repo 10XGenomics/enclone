@@ -416,6 +416,8 @@ pub struct GeneralOpt {
     pub color: String,
     pub species: String, // human or mouse or unknown, determined from the reference sequence
     pub using_secmem: bool,
+    pub const_igh: Option<Regex>,
+    pub const_igkl: Option<Regex>,
 }
 
 // Allele-finding algorithmic options.
@@ -874,14 +876,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         };
     }
-    macro_rules! speakerc {
-        ($col:expr, $var:expr) => {
-            let varc = format!("{}{}", $var, $col + 1);
-            if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &varc) {
-                parseable_fields.push(format!("{}{}", $var, $col + 1));
-            }
-        };
-    }
     let mut have_gex = false;
     for i in 0..ctl.origin_info.gex_path.len() {
         if ctl.origin_info.gex_path[i].len() > 0 {
@@ -918,6 +912,17 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         }
         speaker!(x);
     }
+
+    // Define chain variables for parseable output.
+
+    macro_rules! speakerc {
+        ($col:expr, $var:expr) => {
+            let varc = format!("{}{}", $var, $col + 1);
+            if ctl.parseable_opt.pcols.is_empty() || bin_member(&pcols_sort, &varc) {
+                parseable_fields.push(format!("{}{}", $var, $col + 1));
+            }
+        };
+    }
     for col in 0..ctl.parseable_opt.pchains {
         for x in CVARS_ALLOWED.iter() {
             speakerc!(col, x);
@@ -927,28 +932,27 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
                 speakerc!(col, x);
             }
         }
-        for x in &["v_name", "d_name", "j_name", "v_id", "d_id", "j_id"] {
-            speakerc!(col, x);
-        }
         for x in &[
+            "v_name",
+            "d_name",
+            "j_name",
+            "v_id",
+            "d_id",
+            "j_id",
             "var_indices_dna",
             "var_indices_aa",
             "share_indices_dna",
             "share_indices_aa",
-        ] {
-            speakerc!(col, x);
-        }
-        for x in &[
             "v_start",
             "const_id",
             "utr_id",
             "utr_name",
             "cdr3_start",
-            "cdr3_aa",
+            "seq",
+            "vj_seq",
+            "vj_aa",
+            "var_aa",
         ] {
-            speakerc!(col, x);
-        }
-        for x in &["seq", "vj_seq", "vj_aa", "var_aa"] {
             speakerc!(col, x);
         }
         for i in 0..pcols_sort.len() {
@@ -960,6 +964,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         }
     }
+
+    // Define more lead variables for parseable output.
+
     speaker!("group_id");
     speaker!("group_ncells");
     speaker!("clonotype_id");

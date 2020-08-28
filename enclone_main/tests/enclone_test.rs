@@ -15,7 +15,6 @@ use enclone_core::testlist::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
 use failure::Error;
-use file_lock::FileLock;
 use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
@@ -56,6 +55,50 @@ fn valid_link(link: &str) -> bool {
         }
         return false;
     }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Add test for redundancy of columns in parseable output.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_for_parseable_redundancy() {
+    let test = "BCR=85333 CDR3=CARDLRVEGFDYW POUT=testx/outputs/redundancy_out";
+    let args = parse_bsv(&test);
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_for_parseable_redundancy"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\neparseable redundancy test: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let f = open_for_read!["testx/outputs/redundancy_out"];
+    for line in f.lines() {
+        let s = line.unwrap();
+        let mut fields = s.split(',').collect::<Vec<&str>>();
+        fields.sort();
+        assert!(fields.len() > 0);
+        let mut i = 0;
+        while i < fields.len() {
+            let j = next_diff(&fields, i);
+            if j - i > 1 {
+                eprintln!(
+                    "\nParseable output field {} appears more than once.\n",
+                    fields[i]
+                );
+                std::process::exit(1);
+            }
+            i = j;
+        }
+        break;
+    }
+    let _ = remove_file("testx/outputs/redundancy_out");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -161,10 +204,7 @@ fn test_sync_master() {
 // There are two passes.  The first pass tests the copy of install.sh that is one master, and
 // the second pass tests the local version.
 //
-// This only runs internally because running this test bumps the download count that GitHub
-// tracks, and we need to track the correction for our own "downloads" via this test.
-//
-// Increments an internal counter.
+// Not sure if this needs to be internal-only.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -177,24 +217,6 @@ fn test_curl_command() {
         }
     }
     if internal_run {
-        fn get_github_release_counts() -> HashMap<String, isize> {
-            let mut m = HashMap::<String, isize>::new();
-            let o = Command::new("curl")
-                .arg("https://api.github.com/repos/10XGenomics/enclone/releases")
-                .output()
-                .expect("failed to execute github http");
-            let mut tag_name = String::new();
-            let mx = String::from_utf8(o.stdout).unwrap();
-            for s in mx.lines() {
-                if s.contains("tag_name") {
-                    tag_name = s.between("v", "\"").to_string();
-                } else if s.contains("download_count") {
-                    let count = s.between(": ", ",").force_i64();
-                    m.insert(tag_name.clone(), count as isize);
-                }
-            }
-            m
-        }
         if !path_exists("testx/outputs") {
             eprintln!(
                 "\ntest_curl_command:\n\
@@ -214,7 +236,6 @@ fn test_curl_command() {
                     }
                 }
             }
-            // let counts1 = get_github_release_counts();
             let command;
             let version;
             if pass == 1 {
@@ -259,12 +280,6 @@ fn test_curl_command() {
                 );
                 std::process::exit(1);
             }
-            let z = open_for_read!["testx/outputs/enclone/version"];
-            let mut version = String::new();
-            for line in z.lines() {
-                version = line.unwrap();
-                version = version.after("v").to_string();
-            }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
@@ -275,55 +290,6 @@ fn test_curl_command() {
                     }
                 }
             }
-
-            // Increment download count.
-            //
-            // Not absolutely sure the locking mechanism used here is correct.
-            //
-            // The sleep time here was empirically determined to be enough so that GitHub has
-            // time to increment the release count.
-
-            // thread::sleep(time::Duration::from_millis(1000));
-            // let counts2 = get_github_release_counts();
-            // if counts1.contains_key(&version) && counts2.contains_key(&version) {
-            // Test to see if the count on GitHub was incremented.  If not, there is nothing
-            // to do.  It seems that GitHub is erratic in incrementing the count.  Or maybe
-            // this is not the case.  It's not clear because we decided it was erratic before
-            // we fixed a bug.
-            // let delta = counts2[&version] - counts1[&version];
-            // if delta >= 1 {
-            let count_file = "/mnt/assembly/vdj/internal_download_count";
-            if !path_exists(&count_file) {
-                eprintln!(
-                    "\nCan't find the file {}.  Has something been moved?\n",
-                    count_file
-                );
-                std::process::exit(1);
-            }
-            let mut filelock = match FileLock::lock(&count_file, true, true) {
-                Ok(lock) => lock,
-                Err(err) => panic!("Error getting write lock: {}", err),
-            };
-            let mut log = Vec::<u8>::new();
-            let mut found = false;
-            {
-                let f = open_for_read![&count_file];
-                for line in f.lines() {
-                    let s = line.unwrap();
-                    if s.starts_with(&format!("{} = ", version)) {
-                        fwriteln!(log, "{} = {}", version, s.after("= ").force_usize() + 1);
-                        found = true;
-                    } else {
-                        fwriteln!(log, "{}", s);
-                    }
-                }
-            }
-            if !found {
-                fwriteln!(log, "{} = 1", version);
-            }
-            filelock.file.write_all(&log).unwrap();
-            // }
-            // }
         }
     }
 }

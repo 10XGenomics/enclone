@@ -161,6 +161,7 @@ pub fn delete_weaks(
     exact_clonotypes: &Vec<ExactClonotype>,
     _total_cells: usize,
     mat: &Vec<Vec<Option<usize>>>,
+    refdata: &RefData,
     vars: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
 ) {
@@ -179,6 +180,56 @@ pub fn delete_weaks(
             && exact_clonotypes[exacts[u]].share.len() != ctl.gen_opt.chains_exact
         {
             bads[u] = true;
+        }
+    }
+
+    // Mark for deletion exact subclonotypes, based on CONST_IGH and CONST_IGKL
+    // (see enclone help special).
+
+    if ctl.gen_opt.const_igh.is_some() {
+        for u in 0..nexacts {
+            let mut ok = false;
+            let ex = &exact_clonotypes[exacts[u]];
+            for m in 0..ex.share.len() {
+                if ex.share[m].left && ex.share[m].c_ref_id.is_some() {
+                    let id = ex.share[m].c_ref_id.unwrap();
+                    if ctl
+                        .gen_opt
+                        .const_igh
+                        .as_ref()
+                        .unwrap()
+                        .is_match(&refdata.name[id])
+                    {
+                        ok = true;
+                    }
+                }
+            }
+            if !ok {
+                bads[u] = true;
+            }
+        }
+    }
+    if ctl.gen_opt.const_igkl.is_some() {
+        for u in 0..nexacts {
+            let mut ok = false;
+            let ex = &exact_clonotypes[exacts[u]];
+            for m in 0..ex.share.len() {
+                if !ex.share[m].left && ex.share[m].c_ref_id.is_some() {
+                    let id = ex.share[m].c_ref_id.unwrap();
+                    if ctl
+                        .gen_opt
+                        .const_igkl
+                        .as_ref()
+                        .unwrap()
+                        .is_match(&refdata.name[id])
+                    {
+                        ok = true;
+                    }
+                }
+            }
+            if !ok {
+                bads[u] = true;
+            }
         }
     }
 

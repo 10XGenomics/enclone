@@ -344,6 +344,7 @@ pub fn print_clonotypes(
                         &exact_clonotypes,
                         total_cells,
                         &mat,
+                        &refdata,
                         &vars,
                         &mut bads,
                     );
