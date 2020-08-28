@@ -1074,12 +1074,51 @@ pub fn row_fill(
                 all_vars.push(var.to_string());
             }
         }
+        let mut somelist = vec![false; all_vars.len()];
         for j in 0..all_vars.len() {
+            let var = &all_vars[j];
+            let varc = format!("{}{}", var, col + 1);
+            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                somelist[j] = true;
+            } else if pass == 2
+                && ctl.parseable_opt.pout.len() > 0
+                && col + 1 <= ctl.parseable_opt.pchains
+                && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
+            {
+                somelist[j] = true;
+            }
+        }
+        for j in 0..all_vars.len() {
+            // Decide if there is nothing to compute.  This is almost certainly not optimal.
+
+            let mut needed = false;
+            let var = &all_vars[j];
+            let varc = format!("{}{}", var, col + 1);
+            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+                needed = true;
+            } else if pass == 2
+                && ctl.parseable_opt.pout.len() > 0
+                && col + 1 <= ctl.parseable_opt.pchains
+                && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
+            {
+                needed = true;
+            } else if *var == "amino".to_string() {
+                needed = true;
+            } else if *var == "u_cell".to_string() || *var == "r_cell".to_string() {
+                needed = true;
+            } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
+                needed = true;
+            }
+            if !needed {
+                continue;
+            }
             let col_var = j < rsi_vars.len();
             if !col_var && ctl.parseable_opt.pout.len() == 0 {
                 continue;
             }
-            let var = &all_vars[j];
+
+            // Compute.
+
             if *var == "amino".to_string() && col_var {
                 for k in 0..show_aa[col].len() {
                     let p = show_aa[col][k];
