@@ -76,8 +76,8 @@ jobs:
           prerelease: false
           body: |
             SHA-256 checksums:
-            - ${{hashfiles('artifacts/enclone-linux')}} `enclone_linux`
-            - ${{hashfiles('artifacts/enclone-macos')}} `enclone_macos`
+            - ${{hashFiles('artifacts/enclone-linux')}} `enclone_linux`
+            - ${{hashFiles('artifacts/enclone-macos')}} `enclone_macos`
       - name: Upload Linux
         id: upload-linux-release 
         uses: actions/upload-release-asset@v1
