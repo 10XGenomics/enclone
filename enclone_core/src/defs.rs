@@ -937,13 +937,7 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         ] {
             speakerc!(col, x);
         }
-        for x in &[
-            "v_start",
-            "const_id",
-            "utr_id",
-            "utr_name",
-            "cdr3_start",
-        ] {
+        for x in &["v_start", "const_id", "utr_id", "utr_name", "cdr3_start"] {
             speakerc!(col, x);
         }
         for x in &["seq", "vj_seq", "vj_aa", "var_aa"] {
