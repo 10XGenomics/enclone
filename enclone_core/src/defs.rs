@@ -83,7 +83,6 @@ pub const PCVARS_ALLOWED: [&str; 20] = [
     "utr_id",
     "utr_name",
     "cdr3_start",
-    "cdr3_aa",
     "seq",
     "vj_seq",
     "vj_aa",
@@ -944,7 +943,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "utr_id",
             "utr_name",
             "cdr3_start",
-            "cdr3_aa",
         ] {
             speakerc!(col, x);
         }
