@@ -60,6 +60,50 @@ fn valid_link(link: &str) -> bool {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Add test for redundancy of columns in parseable output.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_for_parseable_redundancy() {
+    let test = "BCR=85333 CDR3=CARDLRVEGFDYW POUT=testx/outputs/redundancy_out";
+    let args = parse_bsv(&test);
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_for_parseable_redundancy"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\neparseable redundancy test: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let f = open_for_read!["testx/outputs/redundancy_out"];
+    for line in f.lines() {
+        let s = line.unwrap();
+        let mut fields = s.split(',').collect::<Vec<&str>>();
+        fields.sort();
+        assert!(fields.len() > 0);
+        let mut i = 0;
+        while i < fields.len() {
+            let j = next_diff(&fields, i);
+            if j - i > 1 {
+                eprintln!(
+                    "\nParseable output field {} appears more than once.\n",
+                    fields[i]
+                );
+                std::process::exit(1);
+            }
+            i = j;
+        }
+        break;
+    }
+    let _ = remove_file("testx/outputs/redundancy_out");
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // NOT BASIC
 
 // Make sure all help pages have been edited.
