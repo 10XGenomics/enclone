@@ -1,7 +1,14 @@
 
-This repo was moved from the 10x Genomics Cell Ranger repo, branch dj/cr-1577b, on 1/6/2019.  
-The intent was to keep the history, but that didn't work.  This file is a summary of the history, 
-consisting of manually pruned logs from dj/cr-1577b and the preceding branch dj/cr-1577.
+1. On 8/12/2020, a separate repo called enclone_data, containing large files, was split from
+the enclone repo.  As part of this process, the enclone history was rewritten.  Before we did
+that, we made a copy of the repo and put it at https://github.com/10xDev/enclone-legacy.
+That is only accessible from 10x Genomics, and could be used in principle to recover deleted
+history, should that be needed.
+
+2. The enclone repo was moved from the 10x Genomics Cell Ranger repo, branch dj/cr-1577b, on 
+1/6/2019.  The intent was to keep the history, but that didn't work.  This file is a summary of 
+the history, consisting of manually pruned logs from dj/cr-1577b and the preceding branch 
+dj/cr-1577.
 
 manually pruned history from cellranger branch dj/cr-1577b
 (see also "manually pruned history from cellranger branch dj/cr-1577", below)
