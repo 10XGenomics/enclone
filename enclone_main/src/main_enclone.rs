@@ -478,7 +478,14 @@ pub fn main_enclone(args: &Vec<String>) {
     let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
     let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[0], ann);
     if !path_exists(&json) && !path_exists(&json_lz4) {
-        eprintln!("\ncan't find {} or {}\n", json, json_lz4);
+        eprintln!(
+            "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
+            There are various possible reasons for this, including an incorrectly \
+            specified path, or incorrect\nspecification of PRE, or a partially copied outs \
+            directory that does not include \
+            all the needed files,\nor a mixup between VDJ and GEX path names.\n",
+            json, json_lz4
+        );
         std::process::exit(1);
     }
     let mut jsonx = json.clone();

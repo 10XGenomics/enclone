@@ -16,7 +16,31 @@ use vector_utils::*;
 fn main() {
     PrettyTrace::new().on();
 
-    // Step 1.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
+    // Step 1. Test "cargo b".
+
+    println!("running cargo b");
+    let new = Command::new("cargo")
+        .arg("b")
+        .output()
+        .expect(&format!("failed to execute cargo b"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ncargo b failed\n");
+        std::process::exit(1);
+    }
+
+    // Step 2. Test "cargo t".
+
+    println!("running cargo t");
+    let new = Command::new("cargo")
+        .arg("b")
+        .output()
+        .expect(&format!("failed to execute cargo t"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ncargo t failed\n");
+        std::process::exit(1);
+    }
+
+    // Step 3.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
 
     println!("\nbumping version");
     let all = read_dir(".").unwrap();
@@ -78,7 +102,7 @@ fn main() {
         }
     }
 
-    // 2. Edit README.md to reflect the upcoming version.
+    // Step 4. Edit README.md to reflect the upcoming version.
 
     {
         let readme = include_str!["../../../README.md"].replace(&old_version, &version);
@@ -86,7 +110,7 @@ fn main() {
         fwriteln!(g, "{}", readme);
     }
 
-    // 3. Commit and push changes.
+    // Step 5. Commit and push changes.
 
     println!("committing changes");
     let new = Command::new("git")
@@ -110,7 +134,7 @@ fn main() {
         std::process::exit(1);
     }
 
-    // 4. Tag the commit.
+    // Step 6. Tag the commit.
 
     println!("tagging commit");
     let new = Command::new("git")
@@ -123,7 +147,7 @@ fn main() {
         std::process::exit(1);
     }
 
-    // 5. Trigger the release.
+    // Step 7. Trigger the release.
 
     println!("triggering release");
     let new = Command::new("git")
@@ -137,8 +161,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // 6. Done.
+    // Step 8. Done.
 
     println!("\nAll done, looks like it worked!\n");
+    println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
 }
