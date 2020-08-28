@@ -164,5 +164,6 @@ fn main() {
     // Step 8. Done.
 
     println!("\nAll done, looks like it worked!\n");
+    println!("GitHub should now be making a release.\n");
     println!("Please read enclone/release_instructions.\n");
 }
