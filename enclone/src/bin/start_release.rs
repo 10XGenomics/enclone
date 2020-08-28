@@ -18,7 +18,7 @@ fn main() {
 
     // Step 1. Test "cargo b".
 
-    println!("running cargo b");
+    println!("\nrunning cargo b");
     let new = Command::new("cargo")
         .arg("b")
         .output()
@@ -42,7 +42,7 @@ fn main() {
 
     // Step 3.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
 
-    println!("\nbumping version");
+    println!("bumping version");
     let all = read_dir(".").unwrap();
     let mut versions = Vec::<String>::new();
     for f in all {
