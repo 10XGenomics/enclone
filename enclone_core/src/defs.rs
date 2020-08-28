@@ -416,6 +416,8 @@ pub struct GeneralOpt {
     pub color: String,
     pub species: String, // human or mouse or unknown, determined from the reference sequence
     pub using_secmem: bool,
+    pub const_igh: Option<Regex>,
+    pub const_igkl: Option<Regex>,
 }
 
 // Allele-finding algorithmic options.

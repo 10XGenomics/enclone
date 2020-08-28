@@ -832,6 +832,26 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_f64_arg(&arg, "MAX_LOG_SCORE") {
             let x = arg.after("MAX_LOG_SCORE=").force_f64();
             ctl.join_alg_opt.max_score = 10.0_f64.powf(x);
+        } else if arg.starts_with("CONST_IGH=") {
+            let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGH=")));
+            if !reg.is_ok() {
+                eprintln!(
+                    "\nYour CONST_IGH value {} could not be parsed as a regular expression.\n",
+                    arg.after("CONST_IGH=")
+                );
+                std::process::exit(1);
+            }
+            ctl.gen_opt.const_igh = Some(reg.unwrap());
+        } else if arg.starts_with("CONST_IGKL=") {
+            let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGKL=")));
+            if !reg.is_ok() {
+                eprintln!(
+                    "\nYour CONST_IGKL value {} could not be parsed as a regular expression.\n",
+                    arg.after("CONST_IGKL=")
+                );
+                std::process::exit(1);
+            }
+            ctl.gen_opt.const_igkl = Some(reg.unwrap());
         } else if arg.starts_with("CDR3=") {
             let fields = arg.split('|').collect::<Vec<&str>>();
             let mut lev = true;
@@ -914,6 +934,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Sanity check arguments.
 
+    if ctl.gen_opt.const_igh.is_some() && !have_bcr {
+        eprintln!("\nThe option CONST_IGH does not make sense for TCR.\n");
+        std::process::exit(1);
+    }
+    if ctl.gen_opt.const_igkl.is_some() && !have_bcr {
+        eprintln!("\nThe option CONST_IGKL does not make sense for TCR.\n");
+        std::process::exit(1);
+    }
     if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
         eprintln!(
             "\nPlease use the CDR3 argument to specify either a regular expression or a\n\

@@ -20,94 +20,65 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              filters to be turned off, and which normally should not be invoked.  The last \
              two options can be used to simplify the view of a clonotype.\n\n",
         );
-        h.doc(
+
+        h.docf2(
             "NALL",
             "Turn off all the noise filters shown below.  This may yield quite a mess.",
+            60,
         );
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NCELL",
-            "Use contigs found by Cell Ranger even if they were not in a called cell, ",
+            "Use contigs found by Cell Ranger even if they were not in a called cell, \
+            or not called high confidence.",
+            60,
         );
-        h.doc("", "or not called high confidence.");
+
         h.doc(
             "NALL_CELL",
             "turn off all the noise filters except for the cell filter",
         );
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NGEX",
-            "If gene expression and/or feature barcode data are provided, if a barcode",
+            "If gene expression and/or feature barcode data are provided, if a barcode \
+            is called a cell by the VDJ part of the Cell Ranger pipeline, but not \
+            called a cell by the gene expression and/or feature barcode part, then the \
+            default behavior of enclone is to remove such cells from clonotypes.  This \
+            option disables that behavior.",
+            60,
         );
-        h.doc(
-            "",
-            "is called a cell by the VDJ part of the Cell Ranger pipeline, but not",
-        );
-        h.doc(
-            "",
-            "called a cell by the gene expression and/or feature barcode part, then the",
-        );
-        h.doc(
-            "",
-            "default behavior of enclone is to remove such cells from clonotypes.  This",
-        );
-        h.doc("", "option disables that behavior.");
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NCROSS",
-            "If you specify that two or more libraries arose from the same origin (i.e.",
+            "If you specify that two or more libraries arose from the same origin (i.e. \
+            cells from the same tube or tissue), then by default enclone will \
+            \"cross filter\" so as to remove expanded exact subclonotypes that are \
+            present in one library but not another, in a fashion that would be highly \
+            improbable, assuming random draws of cells from the tube.  These are \
+            believed to arise when a plasma or plasmablast cell breaks up during during \
+            or after pipetting from the tube, and the resulting fragments seed GEMs, \
+            yielding expanded 'fake' clonotypes that are residues of real single plasma \
+            cells.  The NCROSS options turns off this filter, which could be useful so \
+            long as you interpret the restored clonotypes as representing what are \
+            probably single cells.  There may also be other situations where the filter \
+            should be turned off, and in particular the filter can do weird things if \
+            inputs are somehow mis-specified to enclone.  Note that for purposes of \
+            this option, enclone defines an origin by the pair \
+            (origin name, donor name).",
+            60,
         );
-        h.doc(
-            "",
-            "cells from the same tube or tissue), then by default enclone will",
-        );
-        h.doc(
-            "",
-            "\"cross filter\" so as to remove expanded exact subclonotypes that are",
-        );
-        h.doc(
-            "",
-            "present in one library but not another, in a fashion that would be highly",
-        );
-        h.doc(
-            "",
-            "improbable, assuming random draws of cells from the tube.  These are",
-        );
-        h.doc(
-            "",
-            "believed to arise when a plasma or plasmablast cell breaks up during during",
-        );
-        h.doc(
-            "",
-            "or after pipetting from the tube, and the resulting fragments seed GEMs,",
-        );
-        h.doc(
-            "",
-            "yielding expanded 'fake' clonotypes that are residues of real single plasma",
-        );
-        h.doc(
-            "",
-            "cells.  The NCROSS options turns off this filter, which could be useful so",
-        );
-        h.doc(
-            "",
-            "long as you interpret the restored clonotypes as representing what are",
-        );
-        h.doc(
-            "",
-            "probably single cells.  There may also be other situations where the filter",
-        );
-        h.doc(
-            "",
-            "should be turned off, and in particular the filter can do weird things if",
-        );
-        h.doc(
-            "",
-            "inputs are somehow mis-specified to enclone.  Note that for purposes of",
-        );
-        h.doc("", "this option, enclone defines an origin by the pair");
-        h.doc("", "(origin name, donor name).");
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NUMI",
             "Filter out B cells based on low BCR UMI counts.  The heuristics for this",
+            65,
         );
+
         h.docpr(
             "",
             "are described on the enclone site at \\green{bit.ly/enclone}.",
@@ -121,50 +92,35 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "are described on the enclone site at \\green{bit.ly/enclone}.",
         );
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NGRAPH_FILTER",
-            "By default, enclone filters to remove exact subclonotypes that by virtue of",
+            "By default, enclone filters to remove exact subclonotypes that by virtue of \
+            their relationship to other exact subclonotypes, appear to arise from \
+            background mRNA or a phenotypically similar phenomenon.  The \
+            NGRAPH_FILTER option turns off this filtering.",
+            60,
         );
-        h.doc(
-            "",
-            "their relationship to other exact subclonotypes, appear to arise from",
-        );
-        h.doc(
-            "",
-            "background mRNA or a phenotypically similar phenomenon.  The",
-        );
-        h.doc("", "NGRAPH_FILTER option turns off this filtering.");
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NQUAL",
-            "By default, enclone filters out exact subclonotypes having a base in V..J",
+            "By default, enclone filters out exact subclonotypes having a base in V..J \
+            that looks like it might be wrong.  More specifically, enclone finds bases \
+            which are not Q60 for a barcode, not Q40 for two barcodes, are not \
+            supported by other exact subclonotypes, are variant within the clonotype, \
+            and which disagree with the donor reference.  NQUAL turns this off.",
+            60,
         );
-        h.doc(
-            "",
-            "that looks like it might be wrong.  More specifically, enclone finds bases",
-        );
-        h.doc(
-            "",
-            "which are not Q60 for a barcode, not Q40 for two barcodes, are not",
-        );
-        h.doc(
-            "",
-            "supported by other exact subclonotypes, are variant within the clonotype,",
-        );
-        h.doc(
-            "",
-            "and which disagree with the donor reference.  NQUAL turns this off.",
-        );
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NWEAK_CHAINS",
-            "By default, enclone filters chains from clonotypes that are",
-        );
-        h.doc(
-            "",
-            "weak and appear to be artifacts, perhaps arising from a stray mRNA molecule",
-        );
-        h.doc(
-            "",
-            "that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
+            "By default, enclone filters chains from clonotypes that are \
+            weak and appear to be artifacts, perhaps arising from a stray mRNA molecule \
+            that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
+            60,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -176,7 +132,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             number of cells.  This operation reduces the likelihood of creating clonotypes \
             containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
             this operation off.",
-            75,
+            60,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -186,42 +142,29 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             By default, this merger is prevented if the number of cells in the onesie is less \
             than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
             happen anyway.",
-            75,
+            60,
         );
 
-        h.ldoc(
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NFOURSIE_KILL",
-            "By default, if enclone finds a foursie exact subclonotype that",
+            "By default, if enclone finds a foursie exact subclonotype that \
+            contains a twosie exact subclonotype having at least ten cells, it kills \
+            the foursie exact subclonotype, no matter how many cells it has.  The \
+            foursies that are killed are believed to be rare oddball artifacts arising \
+            from repeated cell doublets or GEMs that contain two cells and multiple gel \
+            beads.  The argument NFOURSIE_KILL turns off this filtering.",
+            60,
         );
-        h.doc(
-            "",
-            "contains a twosie exact subclonotype having at least ten cells, it kills",
-        );
-        h.doc(
-            "",
-            "the foursie exact subclonotype, no matter how many cells it has.  The",
-        );
-        h.doc(
-            "",
-            "foursies that are killed are believed to be rare oddball artifacts arising",
-        );
-        h.doc(
-            "",
-            "from repeated cell doublets or GEMs that contain two cells and multiple gel",
-        );
-        h.doc(
-            "",
-            "beads.  The argument NFOURSIE_KILL turns off this filtering.",
-        );
-        h.ldoc(
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NWHITEF",
-            "By default, enclone filters out rare artifacts arising from \
-             contamination",
+            "By default, enclone filters out rare artifacts arising from contamination \
+            of oligos on gel beads.  The NWHITEF option turns off this filter.",
+            60,
         );
-        h.doc(
-            "",
-            "of oligos on gel beads.  The NWHITEF option turns off this filter.",
-        );
+
         h.ldoc(
             "NBC_DUP",
             "By default, enclone filters out duplicated barcodes within an exact",
@@ -230,32 +173,19 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "subclonotype.  The NBC_DUP option turns off this filter.",
         );
-        h.ldoc(
-            "MIX_DONORS",
-            "By default, enclone will prevent cells from different donors from being",
-        );
-        h.doc(
-            "",
-            "placed in the same clonotype.  The MIX_DONORS option turns off this",
-        );
-        h.doc(
-            "",
-            "behavior, thus allowing cells from different donors to be placed in the",
-        );
-        h.doc(
-            "",
-            "same clonotype.  The main use of this option is for specificity testing, in",
-        );
 
-        h.doc(
-            "",
-            "which data from different donors are deliberately combined in an attempt",
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "MIX_DONORS",
+            "By default, enclone will prevent cells from different donors from being \
+            placed in the same clonotype.  The MIX_DONORS option turns off this \
+            behavior, thus allowing cells from different donors to be placed in the \
+            same clonotype.  The main use of this option is for specificity testing, \
+            in which data from different donors are deliberately combined in an attempt \
+            to find errors.  Use of the bc field for META input specification \
+            automatically turns on this option.",
+            60,
         );
-        h.doc(
-            "",
-            "to find errors.  Use of the bc field for META input specification",
-        );
-        h.doc("", "automatically turns on this option.");
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
@@ -263,18 +193,20 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "enclone filters out exact subclonotypes having more than one chain, but all of the \
             same type.  For example, the filter removes all exact subclonotypes having two TRA \
             chains and no other chains.  The NIMPROPER option turns off this filter.",
-            75,
+            60,
         );
 
-        h.ldoc(
+        // Documentation section.
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "MIN_CHAINS_EXACT=n",
-            "Delete any exact subclonotype having less than n chains.  You can use this",
+            "Delete any exact subclonotype having less than n chains.  You can use this \
+            to \"purify\" a clonotype so as to display only exact subclonotypes having \
+            all their chains.",
+            60,
         );
-        h.doc(
-            "",
-            "to \"purify\" a clonotype so as to display only exact subclonotypes having",
-        );
-        h.doc("", "all their chains.");
+
         h.doc(
             "CHAINS_EXACT=n",
             "Delete any exact subclonotype not having exactly n chains.",
@@ -292,31 +224,38 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "delete any exact subclonotype that has less chains than the clonotype",
         );
         h.doc("", "for which you would like to see a simplified view.");
-        h.ldoc(
+        h.docf2(
+            "CONST_IGH=\"<pattern>\"",
+            "for BCR, keep only exact subclonotypes having a heavy chain whose constant region \
+            gene name matches the given pattern (meaning regular expression, see \
+            \"enclone help filter\")",
+            60,
+        );
+        h.docf2(
+            "CONST_IGKL=\"<pattern>\"",
+            "for BCR, keep only exact subclonotypes having a light chain whose constant region \
+            gene name matches the given pattern (meaning regular expression, see \
+            \"enclone help filter\")",
+            60,
+        );
+
+        // Documentation section.
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "FCELL=var=value",
-            "Supposing that var has been specified as a field using the BC option",
+            "Supposing that var has been specified as a field using the BC option \
+            (or equivalently, using bc, via META), see \"enclone help input\", this \
+            option filters out all barcodes that do not satisfy the given constraint.  \
+            Note that for purposes of testing the constraint, if the value for a \
+            particular barcode has not been specified via BC or bc, then its value is \
+            taken to be null.  Also multiple instances of FCELL may be used to impose \
+            multiple filters.",
+            60,
         );
-        h.doc(
-            "",
-            "(or equivalently, using bc, via META), see \"enclone help input\", this",
-        );
-        h.doc(
-            "",
-            "option filters out all barcodes that do not satisfy the given constraint.",
-        );
-        h.doc(
-            "",
-            "Note that for purposes of testing the constraint, if the value for a",
-        );
-        h.doc(
-            "",
-            "particular barcode has not been specified via BC or bc, then its value is",
-        );
-        h.doc(
-            "",
-            "taken to be null.  Also multiple instances of FCELL may be used to impose",
-        );
-        h.doc("", "multiple filters.");
+
+        // Done.
+
         h.print_tab2();
         h.print("\n");
         h.end_doc();
