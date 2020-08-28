@@ -67,7 +67,7 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 20] = [
+pub const PCVARS_ALLOWED: [&str; 19] = [
     "v_name",
     "d_name",
     "j_name",
