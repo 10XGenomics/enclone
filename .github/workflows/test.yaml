@@ -14,16 +14,48 @@ jobs:
     # This job runs on MacOS Catalina
     runs-on: macos-latest
     steps:
+
+      # get prerequisite code in place (duplicated verbatim below)
+
       - name: rust version
         run: rustup default 1.43.0
       - name: add rustfmt
         run: rustup component add rustfmt
       - name: install cargo-license
         run: cargo install cargo-license
+
+      # set up caching (duplicated verbatim below)
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-registry-
+      - name: Cache cargo git index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-git-
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: lib/rust/target
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+          restore-keys: |
+            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
+            ${{runner.os}}-cargo-target-
+
+      # start the real work
+
       - name: Checkout enclone master
         uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
+      - name: Remove the Cargo target directory
+        if: github.ref == 'refs/heads/master'
+        run: cargo clean
       - name: build-enclone
         run: cargo build --release
       - name: download test data
@@ -35,12 +67,41 @@ jobs:
     # This job runs on Linux
     runs-on: ubuntu-latest
     steps:
+
+      # get prerequisite code in place (duplicated verbatim above)
+
       - name: rust version
         run: rustup default 1.43.0
       - name: add rustfmt
         run: rustup component add rustfmt
       - name: install cargo-license
         run: cargo install cargo-license
+
+      # set up caching (duplicated verbatim below)
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-registry-
+      - name: Cache cargo git index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-git-
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: lib/rust/target
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+          restore-keys: |
+            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
+            ${{runner.os}}-cargo-target-
+
+      # start the real work
+
       - name: Checkout enclone master
         uses: actions/checkout@master
         with:
@@ -52,6 +113,9 @@ jobs:
           | awk '$2 == "blob" && $3 >= 1000000 { print substr($1, 1, 7), $3, $4; fail=1 } END { exit fail }'
       - name: Check Rust formatting
         run: cargo fmt -- --check
+      - name: Remove the Cargo target directory
+        if: github.ref == 'refs/heads/master'
+        run: cargo clean
       - name: build-enclone
         run: cargo build --release
       - name: download test data
