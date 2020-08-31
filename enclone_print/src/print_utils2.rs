@@ -1475,6 +1475,23 @@ pub fn row_fill(
                     }
                 }
                 cvar![j, var, y];
+            } else if *var == "fwr4_dna".to_string()
+                || *var == "fwr4_aa".to_string()
+                || *var == "fwr4_len".to_string()
+            {
+                let x = &ex.share[mid];
+                let start = x.cdr3_start + 3 * x.cdr3_aa.len();
+                let stop = x.seq_del_amino.len();
+                let dna = &x.seq_del_amino[start..stop];
+                let y;
+                if *var == "fwr4_dna".to_string() {
+                    y = stringme(&dna);
+                } else if *var == "fwr4_aa".to_string() {
+                    y = stringme(&aa_seq(&dna.to_vec(), 0));
+                } else {
+                    y = format!("{}", dna.len() / 3);
+                }
+                cvar![j, var, y];
             } else if *var == "ulen".to_string() {
                 cvar![j, *var, format!("{}", ex.share[mid].v_start)];
             } else if *var == "clen".to_string() {

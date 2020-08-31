@@ -754,7 +754,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "fwr*_dna",
             "the FWR*_DNA sequence, or \"unknown\" if not computed",
         );
-        h.doc("", "For all of these, * is 1 or 2 or 3.");
+        h.doc(
+            "",
+            "For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).",
+        );
         h.doc(
             "",
             "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
