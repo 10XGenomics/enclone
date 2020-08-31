@@ -63,6 +63,12 @@ jobs:
       - name: unit tests
         run: cd enclone_main; cargo test --release --features basic -- --nocapture
 
+      # clean up (duplicated verbatim below)
+
+      - name: Remove the Cargo target directory
+        if: github.ref == 'refs/heads/master'
+        run: cd lib/rust && cargo clean
+
   test-linux:
     # This job runs on Linux
     runs-on: ubuntu-latest
@@ -122,3 +128,9 @@ jobs:
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
         run: cd enclone_main; cargo test --release --features basic -- --nocapture
+
+      # clean up (duplicated verbatim above)
+
+      - name: Remove the Cargo target directory
+        if: github.ref == 'refs/heads/master'
+        run: cd lib/rust && cargo clean
