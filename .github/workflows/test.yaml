@@ -42,10 +42,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: lib/rust/target
-          key: ${{runner.os}}-cargo-target-
-            ${{hashFiles('Cargo.lock')}}-
-            ${{hashFiles('Cargo.toml')}}-
-            ${{hashFiles('**/*.rs')}}
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('Cargo.toml')}}-${{hashFiles('**/*.rs')}}
           restore-keys: |
             ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
             ${{runner.os}}-cargo-target-
@@ -101,10 +98,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: lib/rust/target
-          key: ${{runner.os}}-cargo-target-
-            ${{hashFiles('Cargo.lock')}}-
-            ${{hashFiles('**/Cargo.toml')}}-
-            ${{hashFiles('**/*.rs')}}
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
           restore-keys: |
             ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
             ${{runner.os}}-cargo-target-
