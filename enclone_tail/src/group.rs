@@ -42,6 +42,7 @@ pub fn group_and_print_clonotypes(
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
+    vdj_cells: &Vec<Vec<String>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
     // Build index to join info.
@@ -1367,6 +1368,11 @@ pub fn group_and_print_clonotypes(
         }
         fwriteln!(logx, "   • number of datasets = {}", ctl.origin_info.n());
         fwriteln!(logx, "   • number of donors = {}", ctl.origin_info.donors);
+        let mut vcells = 0;
+        for i in 0..vdj_cells.len() {
+            vcells += vdj_cells[i].len();
+        }
+        fwriteln!(logx, "   • original number of cells = {}", vcells);
 
         // Print mean reads per cell if known.
 
