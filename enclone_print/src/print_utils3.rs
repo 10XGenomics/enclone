@@ -603,6 +603,11 @@ pub fn build_table_stuff(
                                 rsi.cdr3_starts[cx],
                                 rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
                             ),
+                            (
+                                "fwr4".to_string(),
+                                rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                                rsi.seq_del_lens[cx] - 1,
+                            ),
                         ];
                         for z in 0..fields.len() {
                             if amino.contains(&fields[z].0) && fields[z].1 <= fields[z].2 {

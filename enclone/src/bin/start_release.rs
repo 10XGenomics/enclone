@@ -16,9 +16,54 @@ use vector_utils::*;
 fn main() {
     PrettyTrace::new().on();
 
-    // Step 1. Test "cargo b".
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    println!("\nrunning cargo b");
+    // Step 1. Verify that we're on master.
+
+    println!("\nchecking git status");
+    let new = Command::new("git")
+        .arg("status")
+        .output()
+        .expect(&format!("failed to execute git status"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ngit status failed\n");
+        std::process::exit(1);
+    }
+    let s = strme(&new.stdout);
+    if !s.contains("Your branch is up to date with 'origin/master'.") {
+        eprintln!(
+            "\nExpected to see message:\n\
+            Your branch is up to date with 'origin/master'.\n"
+        );
+        std::process::exit(1);
+    }
+    if !s.contains("nothing to commit, working tree clean") {
+        eprintln!(
+            "\nExpected to see message:\n\
+            nothing to commit, working tree clean\n"
+        );
+        std::process::exit(1);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 2. Pull.
+
+    println!("running git pull");
+    let new = Command::new("git")
+        .arg("pull")
+        .output()
+        .expect(&format!("failed to execute git pull"));
+    if new.status.code() != Some(0) {
+        eprintln!("\ngit pull failed\n");
+        std::process::exit(1);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 3. Test "cargo b".
+
+    println!("running cargo b");
     let new = Command::new("cargo")
         .arg("b")
         .output()
@@ -28,7 +73,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Step 2. Test "cargo t".
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 4. Test "cargo t".
 
     println!("running cargo t");
     let new = Command::new("cargo")
@@ -40,7 +87,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Step 3.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 5.  Bump version x.y.z to x.y.z+1 in every Cargo.toml.
 
     println!("bumping version");
     let all = read_dir(".").unwrap();
@@ -102,7 +151,9 @@ fn main() {
         }
     }
 
-    // Step 4. Edit README.md to reflect the upcoming version.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 6. Edit README.md to reflect the upcoming version.
 
     {
         let readme = include_str!["../../../README.md"].replace(&old_version, &version);
@@ -110,7 +161,9 @@ fn main() {
         fwriteln!(g, "{}", readme);
     }
 
-    // Step 5. Commit and push changes.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 7. Commit and push changes.
 
     println!("committing changes");
     let new = Command::new("git")
@@ -134,7 +187,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Step 6. Tag the commit.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 8. Tag the commit.
 
     println!("tagging commit");
     let new = Command::new("git")
@@ -147,7 +202,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Step 7. Trigger the release.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 9. Trigger the release.
 
     println!("triggering release");
     let new = Command::new("git")
@@ -161,7 +218,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Step 8. Done.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Step 10. Done.
 
     println!("\nAll done, looks like it worked!\n");
     println!("GitHub should now be making a release.\n");

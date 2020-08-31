@@ -231,6 +231,11 @@ pub fn build_show_aa(
                 }
             }
         }
+        if ctl.clono_print_opt.amino.contains(&"fwr4".to_string()) {
+            for j in (rsi.cdr3_starts[cx] + 3 * rsi.cdr3_lens[cx]..rsi.seq_lens[cx]).step_by(3) {
+                show_aa[cx].push(j / 3);
+            }
+        }
         if ctl.clono_print_opt.amino.contains(&"var".to_string()) {
             for j in 0..vars_amino[cx].len() {
                 let p = vars_amino[cx][j];

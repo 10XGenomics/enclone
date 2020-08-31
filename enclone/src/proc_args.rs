@@ -765,6 +765,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     || *x == "fwr1"
                     || *x == "fwr2"
                     || *x == "fwr3"
+                    || *x == "fwr4"
                     || *x == "var"
                     || *x == "share"
                     || *x == "donor"

@@ -392,6 +392,7 @@ pub fn print_clonotypes(
                         && ctl.clono_print_opt.amino.contains(&"fwr2".to_string());
                     let show_fwr3 = rsi.fr3_starts[cx] <= rsi.cdr3_starts[cx]
                         && ctl.clono_print_opt.amino.contains(&"fwr3".to_string());
+                    let show_fwr4 = ctl.clono_print_opt.amino.contains(&"fwr4".to_string());
                     for (j, p) in show_aa[cx].iter().enumerate() {
                         if show_cdr1 && *p >= cs1 / 3 && *p < rsi.fr2_starts[cx] / 3 {
                             ft[j] = 1;
@@ -405,6 +406,8 @@ pub fn print_clonotypes(
                             ft[j] = 5;
                         } else if show_fwr3 && *p >= fs3 / 3 && *p < rsi.cdr3_starts[cx] / 3 {
                             ft[j] = 6;
+                        } else if show_fwr4 && *p >= cs3 / 3 + n3 {
+                            ft[j] = 7;
                         }
                     }
                     field_types[cx] = ft;
