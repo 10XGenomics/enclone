@@ -41,8 +41,8 @@ jobs:
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
-          path: lib/rust/target
-          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+          path: target
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
           restore-keys: |
             ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
             ${{runner.os}}-cargo-target-
@@ -94,7 +94,7 @@ jobs:
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
-          path: lib/rust/target
+          path: target
           key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
           restore-keys: |
             ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
