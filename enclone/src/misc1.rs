@@ -192,8 +192,8 @@ pub fn lookup_heavy_chain_reuse(
 
 pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
     if !ctl.clono_filt_opt.ncross {
-        // Get the list of dataset origins.  Here we allow the same origin name to have been used for
-        // more than one donor, as we haven't explicitly prohibited that.
+        // Get the list of dataset origins.  Here we allow the same origin name to have been used
+        // for more than one donor, as we haven't explicitly prohibited that.
 
         let mut origins = Vec::<(String, String)>::new();
         for i in 0..ctl.origin_info.n() {
@@ -226,11 +226,12 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
             }
         }
 
-        // Find all the V..J segments, and for each, the number of times it appears in each dataset ID.
+        // Find all the V..J segments, and for each, the number of times it appears in each 
+        // dataset ID.
         //
         // Note that there is no point running this unless we have at least two dataset IDs, and in
-        // fact unless there is an origin with at least two dataset IDs.  Better: just gather data for
-        // the origin for which there are at least two dataset IDs.  Also no point if NCROSS.
+        // fact unless there is an origin with at least two dataset IDs.  Better: just gather data 
+        // for the origin for which there are at least two dataset IDs.  Also no point if NCROSS.
 
         let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, dataset index, count)
         {
@@ -280,6 +281,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
+                    fate.insert(tig_bc[i].barcode().clone(), "fails CROSS filter");
                     to_delete[i] = true;
                 }
             }

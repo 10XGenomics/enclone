@@ -894,8 +894,9 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Filter using light --> heavy graph.
 
+    let mut fate = vec![HashMap::<String,String>::new(); vdj_cells.len()];
     if !ctl.gen_opt.ngraph_filter {
-        graph_filter(&mut tig_bc, ctl.gen_opt.graph);
+        graph_filter(&mut tig_bc, ctl.gen_opt.graph, &mut fate);
     }
 
     // Sort tig_bc.
@@ -904,7 +905,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Cross filter.
 
-    cross_filter(&ctl, &mut tig_bc);
+    cross_filter(&ctl, &mut tig_bc, &mut fate);
 
     // Look for barcode reuse.
 
@@ -914,7 +915,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Find exact subclonotypes.
 
     let texact = Instant::now();
-    let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata);
+    let mut exact_clonotypes = find_exact_subclonotypes(&ctl, &tig_bc, &refdata, &mut fate);
     ctl.perf_stats(&texact, "finding exact subclonotypes");
 
     // Test for consistency between VDJ cells and GEX cells.  This is designed to work even if
@@ -1045,6 +1046,12 @@ pub fn main_enclone(args: &Vec<String>) {
                             let p = (ex.share[i1].seq.clone(), ex.share[i2].seq.clone());
                             if bin_member(&twosies, &p) {
                                 to_delete[i] = true;
+                                for j in 0..ex.clones.len() {
+                                    fate[ex.clones[j].dataset_index].insert(
+                                        ex.clones[j].barcode.clone(),
+                                        "fails FOURSIE_KILL filter".to_string());
+                                    }
+                                }
                             }
                         }
                     }
@@ -1063,7 +1070,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // an indel in some cases.
 
     let tinfo = Instant::now();
-    let mut info: Vec<CloneInfo> = build_info(&refdata, &ctl, &mut exact_clonotypes);
+    let mut info: Vec<CloneInfo> = build_info(&refdata, &ctl, &mut exact_clonotypes, &mut fate);
     ctl.perf_stats(&tinfo, "building info");
 
     // Derive consensus sequences for alternate alleles of V segments.  Then create donor
@@ -1354,6 +1361,12 @@ pub fn main_enclone(args: &Vec<String>) {
                             }
                             if pass == 3 && ctl.clono_filt_opt.umi_filt {
                                 erase_if(&mut ex.clones, &to_delete);
+                                for i in 0..ex.clones.len() {
+                                    if to_delete[i] {
+                                        fate[ex.clones[i].dataset_index].insert(
+                                            ex.clones[i].barcode.clone(), "fails UMI filter");
+                                    }
+                                }
                             }
                         }
                     }
@@ -1452,6 +1465,13 @@ pub fn main_enclone(args: &Vec<String>) {
                         }
                     }
                     if pass == 2 && ctl.clono_filt_opt.umi_ratio_filt {
+                        for i in 0..ex.clones.len() {
+                            if to_delete[i] {
+                                fate[ex.clones[i].dataset_index].insert(
+                                    ex.clones[z[l].3].barcode.clone(), 
+                                    "fails UMI_RATIO filter");
+                            }
+                        }
                         erase_if(&mut ex.clones, &to_delete[j]);
                         if ex.ncells() == 0 {
                             to_deletex[j] = true;
@@ -1489,11 +1509,13 @@ pub fn main_enclone(args: &Vec<String>) {
                 if ctl.gen_opt.cellranger {
                     if gex_cells_specified[li] && !bin_member(&gex_cells[li], &bc) {
                         to_delete[k] = true;
+                        fate[li].insert(bc.clone(), "fails GEX filter".to_string());
                     }
                 } else if !ctl.clono_filt_opt.ngex && ctl.origin_info.gex_path[li].len() > 0 {
                     let gbc = &gex_info.gex_cell_barcodes[li];
                     if !bin_member(&gbc, &bc) {
                         to_delete[k] = true;
+                        fate[li].insert(bc.clone(), "fails GEX filter".to_string());
                     }
                 }
             }
@@ -1689,6 +1711,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut out_datas,
         &mut tests,
         &mut controls,
+        &mut fate,
     );
     ctl.perf_stats(&torb, "making orbits");
 

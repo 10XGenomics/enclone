@@ -12,6 +12,7 @@ use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
 use rayon::prelude::*;
+use std::collections::HashMap;
 use std::sync::atomic::AtomicBool;
 use string_utils::*;
 use vector_utils::*;
@@ -20,6 +21,7 @@ pub fn build_info(
     refdata: &RefData,
     ctl: &EncloneControl,
     exact_clonotypes: &mut Vec<ExactClonotype>,
+    fate: &mut Vec<HashMap<String,String>>,
 ) -> Vec<CloneInfo> {
     // Build info about clonotypes.  We create a data structure info.
     // An entry in info is a clonotype having appropriate properties.
@@ -336,6 +338,14 @@ pub fn build_info(
         // Incorporate improper cells if they are onesies.  Note that we're dropping the
         // improper cells having two or more chains.
 
+        if !placed && shares.len() > 1 && !ctl.merge_all_impropers) {
+            let ex = &exact_clonotypes[i];
+            for j in 0..ex.clones.len() {
+                fate[ex.clones[j].dataset_index].insert(
+                    ex.clones[j].barcode.clone(),
+                    "fails IMPROPER filter");
+            }
+        }
         if !placed && (shares.len() == 1 || ctl.merge_all_impropers) {
             let mut exact_cols = Vec::<usize>::new();
             for i in 0..tigs.len() {
