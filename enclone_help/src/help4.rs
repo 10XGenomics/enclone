@@ -17,8 +17,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print("\n\\bold{special filtering options}\n\n");
         h.print(
             "This page documents some options, most of which allow noise \
-             filters to be turned off, and which normally should not be invoked.  The last \
-             two options can be used to simplify the view of a clonotype.\n\n",
+             filters to be turned off, and which normally should not be invoked.  Some of \
+             these options delete barcodes, and a summary of this action is included in the \
+             SUMMARY option.  At the bottom of this page we provide some other options that are \
+             not noise filters.\n\n",
         );
 
         h.docf2(
