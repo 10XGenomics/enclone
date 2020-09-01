@@ -763,7 +763,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
         );
         h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
-
+        h.ldoc(
+            "aa%",
+            "percent identity with donor reference, outside junction region",
+        );
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
