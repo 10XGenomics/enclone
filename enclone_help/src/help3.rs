@@ -206,9 +206,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.print("[all apply to chain i of a particular exact clonotype]\n\n");
         h.doc("vj_seq<i>", "DNA sequence of V..J");
         h.doc(
+            "vj_seq_nl<i>",
+            "DNA sequence of V..J, but starting after the leader",
+        );
+        h.doc(
             "vj_aa<i>",
             "amino acid sequence of V..J (excludes last base, in incomplete codon)",
         );
+        h.doc(
+            "vj_aa_nl<i>",
+            "amino acid sequence of V..J (excludes last base, in incomplete codon),",
+        );
+        h.doc("", "but starting after the leader");
         h.doc("seq<i>", "full DNA sequence");
         h.doc(
             "q<n>_<i>",

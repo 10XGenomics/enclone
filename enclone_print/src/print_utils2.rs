@@ -1018,16 +1018,24 @@ pub fn row_fill(
 
         // Speak some other column entries.
 
+        let xm = &ex.share[mid];
+        speakc!(u, col, "vj_aa".to_string(), stringme(&aa_seq(&xm.seq, 0)));
         speakc!(
             u,
             col,
-            "vj_aa".to_string(),
-            stringme(&aa_seq(&ex.share[mid].seq, 0))
+            "vj_aa_nl".to_string(),
+            stringme(&aa_seq(&xm.seq, xm.fr1_start))
         );
-        speakc!(u, col, "vj_seq".to_string(), stringme(&ex.share[mid].seq));
-        speakc!(u, col, "seq".to_string(), stringme(&ex.share[mid].full_seq));
-        speakc!(u, col, "v_start".to_string(), ex.share[mid].v_start);
-        let cid = ex.share[mid].c_ref_id;
+        speakc!(u, col, "vj_seq".to_string(), stringme(&xm.seq));
+        speakc!(
+            u,
+            col,
+            "vj_seq_nl".to_string(),
+            stringme(&xm.seq[xm.fr1_start..])
+        );
+        speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
+        speakc!(u, col, "v_start".to_string(), xm.v_start);
+        let cid = xm.c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
             speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
@@ -1038,8 +1046,8 @@ pub fn row_fill(
             speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
             speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
         }
-        speakc!(u, col, "cdr3_start".to_string(), ex.share[mid].cdr3_start);
-        speakc!(u, col, "cdr3_aa".to_string(), ex.share[mid].cdr3_aa);
+        speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
+        speakc!(u, col, "cdr3_aa".to_string(), xm.cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);

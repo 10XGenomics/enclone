@@ -67,7 +67,7 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 20] = [
+pub const PCVARS_ALLOWED: [&str; 22] = [
     "v_name",
     "d_name",
     "j_name",
@@ -86,7 +86,9 @@ pub const PCVARS_ALLOWED: [&str; 20] = [
     "cdr3_aa",
     "seq",
     "vj_seq",
+    "vj_seq_nl",
     "vj_aa",
+    "vj_aa_nl",
     "var_aa",
 ];
 
@@ -828,6 +830,7 @@ pub fn justification(x: &str) -> u8 {
         || x == "const"
         || (x.ends_with("_aa") && x != "dref_aa")
         || x.ends_with("_dna")
+        || x.ends_with("_name")
         || x == "cdiff"
         || x == "notes"
         || x == "edit"
@@ -836,11 +839,9 @@ pub fn justification(x: &str) -> u8 {
         || x == "ext"
         || x == "barcode"
         || x == "barcodes"
-        || x.starts_with("v_name")
-        || x.starts_with("d_name")
-        || x.starts_with("j_name")
-        || x.starts_with("utr_name")
         || x.starts_with("vj_seq")
+        || x.starts_with("vj_seq_nl")
+        || x.starts_with("vj_aa_nl")
         || x.starts_with("seq")
         || x.starts_with("q")
         || x.starts_with("var_indices")
@@ -950,7 +951,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "cdr3_start",
             "seq",
             "vj_seq",
+            "vj_seq_nl",
             "vj_aa",
+            "vj_aa_nl",
             "var_aa",
         ] {
             speakerc!(col, x);

@@ -1,0 +1,21 @@
+
+[1m[38;5;27m[1] GROUP = 1 CLONOTYPES = 1 CELLS[0m
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬──────────────────────────┐
+│           │  CHAIN 1                 │
+│           │  322|IGLV1-36 ◆ 316|IGLJ3│
+│           ├──────────────────────────┤
+│           │  1111111111111           │
+│           │  0001111111111           │
+│           │  7890123456789           │
+│           │  ═════CDR3════           │
+│reference  │  [38;5;178mC[1m[38;5;25mAA[38;5;166mW[0m[38;5;36mD[0m◦◦◦◦◦◦◦◦           │
+│donor ref  │  [38;5;178mC[1m[38;5;25mAA[38;5;166mW[0m[38;5;36mD[0m◦◦◦◦◦◦◦◦           │
+├───────────┼──────────────────────────┤
+│[1m#  n       [0m│[1m  .............  u  const [0m│
+│1  1       │  [38;5;178mC[1m[38;5;25mAA[38;5;166mW[0m[38;5;36mD[1m[38;5;25mDSLN[38;5;166mGWVF[0m  6  IGLC3 │
+└───────────┴──────────────────────────┘
+vj_aa_nl1
+QSVLTQPPSVSEAPRQRVTISCSGSSSNIGNNAVNWYQQLPGKAPKLLIYYDDLLPSGVSDRFSGSKSGTSASLAISGLQSEDEADYYCAAWDDSLNGWVFGGGTKLTVL
+
