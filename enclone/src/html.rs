@@ -1,6 +1,6 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Utility for inserting html files.  It also changes all instance of #enclone to
+// Utility for inserting html files.  It also changes all instances of #enclone to
 // a preset format for that.
 
 use io_utils::*;
