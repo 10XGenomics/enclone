@@ -1547,6 +1547,42 @@ pub fn row_fill(
                     *var,
                     format!("{:.1}", percent_ratio(denom - diffs, denom))
                 ];
+            } else if *var == "dna%".to_string() {
+                let xm = &ex.share[mid];
+                let mut diffs = 0;
+                let mut denom = 0;
+                let seq = &xm.seq_del_amino;
+                let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+                if xm.v_ref_id_donor_alt_id.is_some() {
+                    vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+                let z = seq.len();
+                for p in 0..z {
+                    let b = seq[p];
+                    if b == b'-' {
+                        diffs += 1;
+                        denom += 1;
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim {
+                        denom += 1;
+                        if b != vref[p] {
+                            diffs += 1;
+                        }
+                    }
+                    if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                        denom += 1;
+                        if b != jref[jref.len() - (z - p)] {
+                            diffs += 1;
+                        }
+                    }
+                }
+                cvar![
+                    j,
+                    *var,
+                    format!("{:.1}", percent_ratio(denom - diffs, denom))
+                ];
             } else if *var == "vjlen".to_string() {
                 cvar![
                     j,

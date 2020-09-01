@@ -355,7 +355,7 @@ pub const TESTS: [&str; 141] = [
     // 140. test cvar vj_aa_nl
     r###"BCR=85333 CHAINS=1 CDR3=CAAWDDSLNGWVF POUT=stdout PCOLS=vj_aa_nl1"###,
     // 141. test cvar aa%
-    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW CVARS=aa%"###,
+    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW CVARS=aa%,dna%"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.

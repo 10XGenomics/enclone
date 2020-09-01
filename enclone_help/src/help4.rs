@@ -767,7 +767,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
         h.ldoc(
             "aa%",
-            "percent identity with donor reference, outside junction region",
+            "amino acid percent identity with donor reference, outside junction region",
+        );
+        h.doc(
+            "dna%",
+            "nucleotide percent identity with donor reference, outside junction region",
         );
         h.ldoc(
             "vjlen",
