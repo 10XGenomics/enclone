@@ -1049,7 +1049,7 @@ pub fn main_enclone(args: &Vec<String>) {
                                 for j in 0..ex.clones.len() {
                                     fate[ex.clones[j][0].dataset_index].insert(
                                         ex.clones[j][0].barcode.clone(),
-                                        "fails FOURSIE_KILL filter".to_string(),
+                                        "failed FOURSIE_KILL filter".to_string(),
                                     );
                                 }
                             }
@@ -1365,7 +1365,7 @@ pub fn main_enclone(args: &Vec<String>) {
                                     if to_delete[i] {
                                         fate[ex.clones[i][0].dataset_index].insert(
                                             ex.clones[i][0].barcode.clone(),
-                                            "fails UMI filter".to_string(),
+                                            "failed UMI filter".to_string(),
                                         );
                                     }
                                 }
@@ -1471,7 +1471,7 @@ pub fn main_enclone(args: &Vec<String>) {
                             if to_delete[j][i] {
                                 fate[ex.clones[i][0].dataset_index].insert(
                                     ex.clones[i][0].barcode.clone(),
-                                    "fails UMI_RATIO filter".to_string(),
+                                    "failed UMI_RATIO filter".to_string(),
                                 );
                             }
                         }
@@ -1512,13 +1512,13 @@ pub fn main_enclone(args: &Vec<String>) {
                 if ctl.gen_opt.cellranger {
                     if gex_cells_specified[li] && !bin_member(&gex_cells[li], &bc) {
                         to_delete[k] = true;
-                        fate[li].insert(bc.clone(), "fails GEX filter".to_string());
+                        fate[li].insert(bc.clone(), "failed GEX filter".to_string());
                     }
                 } else if !ctl.clono_filt_opt.ngex && ctl.origin_info.gex_path[li].len() > 0 {
                     let gbc = &gex_info.gex_cell_barcodes[li];
                     if !bin_member(&gbc, &bc) {
                         to_delete[k] = true;
-                        fate[li].insert(bc.clone(), "fails GEX filter".to_string());
+                        fate[li].insert(bc.clone(), "failed GEX filter".to_string());
                     }
                 }
             }

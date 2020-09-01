@@ -264,7 +264,7 @@ pub fn graph_filter(
         if to_delete[i] {
             fate[tig_bc[i][0].dataset_index].insert(
                 tig_bc[i][0].barcode.clone(),
-                "fails GRAPH_FILTER filter".to_string(),
+                "failed GRAPH_FILTER filter".to_string(),
             );
         }
     }
@@ -367,7 +367,7 @@ pub fn graph_filter(
         if to_delete[i] {
             fate[tig_bc[i][0].dataset_index].insert(
                 tig_bc[i][0].barcode.clone(),
-                "fails GRAPH_FILTER filter".to_string(),
+                "failed GRAPH_FILTER filter".to_string(),
             );
         }
     }

@@ -288,7 +288,7 @@ pub fn cross_filter(
                 if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
                     fate[tig_bc[i][0].dataset_index].insert(
                         tig_bc[i][0].barcode.clone(),
-                        "fails CROSS filter".to_string(),
+                        "failed CROSS filter".to_string(),
                     );
                     to_delete[i] = true;
                     break;

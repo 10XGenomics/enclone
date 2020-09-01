@@ -349,7 +349,7 @@ pub fn build_info(
                 res.3.push((
                     ex.clones[j][0].dataset_index,
                     ex.clones[j][0].barcode.clone(),
-                    "fails IMPROPER filter".to_string(),
+                    "failed IMPROPER filter".to_string(),
                 ));
             }
         }

@@ -74,7 +74,7 @@ pub fn filter_gelbead_contamination(
                 fate.push((
                     clones[i][0].dataset_index,
                     clones[i][0].barcode.clone(),
-                    "fails WHITEF filter".to_string(),
+                    "failed WHITEF filter".to_string(),
                 ));
             }
         }
@@ -354,12 +354,12 @@ pub fn find_exact_subclonotypes(
                         res.2.push((
                             tig_bc[t1][0].dataset_index,
                             tig_bc[t1][0].barcode.clone(),
-                            "fails BC_DUP filter".to_string(),
+                            "failed BC_DUP filter".to_string(),
                         ));
                         res.2.push((
                             tig_bc[t2][0].dataset_index,
                             tig_bc[t2][0].barcode.clone(),
-                            "fails BC_DUP filter".to_string(),
+                            "failed BC_DUP filter".to_string(),
                         ));
                     }
                 }

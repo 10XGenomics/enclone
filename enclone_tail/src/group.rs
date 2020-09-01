@@ -1517,14 +1517,18 @@ pub fn group_and_print_clonotypes(
         fates.sort();
         let mut freq = Vec::<(u32, String)>::new();
         make_freq(&fates, &mut freq);
+        let mut rows = Vec::<Vec<String>>::new();
+        rows.push(vec!["barcodes".to_string(), "why deleted".to_string()]);
+        rows.push(vec!["\\hline".to_string(); 2]);
         for i in 0..freq.len() {
-            fwriteln!(
-                logx,
-                "   {} barcodes deleted because {}",
-                freq[i].0,
-                freq[i].1
-            );
+            rows.push(vec![format!("{}", freq[i].0), freq[i].1.clone()]);
         }
+        rows.push(vec![format!("{}", fates.len()), "total".to_string()]);
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"r|l".to_vec(), false, false);
+        log.truncate(log.len() - 1);
+        log = log.replace("\n", "\n   ");
+        fwrite!(logx, "   {}\n", log);
 
         // Print other stats.
 

@@ -307,7 +307,7 @@ pub fn delete_weaks(
                     fate.push((
                         ex.clones[i][0].dataset_index,
                         ex.clones[i][0].barcode.clone(),
-                        "fails QUAL filter".to_string(),
+                        "failed QUAL filter".to_string(),
                     ));
                 }
             }
@@ -341,7 +341,7 @@ pub fn delete_weaks(
                         fate.push((
                             ex.clones[i][0].dataset_index,
                             ex.clones[i][0].barcode.clone(),
-                            "fails WEAK_CHAINS filter".to_string(),
+                            "failed WEAK_CHAINS filter".to_string(),
                         ));
                     }
                 }
