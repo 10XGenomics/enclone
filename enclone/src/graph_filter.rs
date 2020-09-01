@@ -30,7 +30,7 @@ use vector_utils::*;
 // Hmm, seems like the edges go from heavy to light.
 
 pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool, 
-    fate: &mut Vec<HashMap<String,String>> {
+    fate: &mut Vec<HashMap<String,String>> ) {
     let mut ndels = 0;
     let mut seqs = Vec::<(Vec<u8>, bool, String, usize)>::new();
     for i in 0..tig_bc.len() {
@@ -259,7 +259,7 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool,
     }
     for i in 0..tig_bc.len() {
         if to_delete[i] {
-            fate[tig_bc[i].dataset_index].insert(tig_bc[i].barcode.clone(), 
+            fate[tig_bc[i][0].dataset_index].insert(tig_bc[i].barcode.clone(), 
                 "fails GRAPH_FILTER filter".to_string());
         }
     }

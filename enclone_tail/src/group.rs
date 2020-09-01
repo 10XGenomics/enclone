@@ -1510,8 +1510,8 @@ pub fn group_and_print_clonotypes(
         fwriteln!(logx, "barcode fate");
         let mut fates = Vec::<String>::new();
         for i in 0..fate.len() {
-            for j in 0..fate[i].len() {
-                fates.push(fate[i][j].clone());
+            for f in fate[i].iter() {
+                fates.push(f.1.clone());
             }
         }
         fates.sort();

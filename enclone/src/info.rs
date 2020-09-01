@@ -338,12 +338,12 @@ pub fn build_info(
         // Incorporate improper cells if they are onesies.  Note that we're dropping the
         // improper cells having two or more chains.
 
-        if !placed && shares.len() > 1 && !ctl.merge_all_impropers) {
+        if !placed && shares.len() > 1 && !ctl.merge_all_impropers {
             let ex = &exact_clonotypes[i];
             for j in 0..ex.clones.len() {
                 fate[ex.clones[j].dataset_index].insert(
                     ex.clones[j].barcode.clone(),
-                    "fails IMPROPER filter");
+                    "fails IMPROPER filter".to_string());
             }
         }
         if !placed && (shares.len() == 1 || ctl.merge_all_impropers) {

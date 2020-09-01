@@ -68,9 +68,8 @@ pub fn filter_gelbead_contamination(ctl: &EncloneControl, mut clones: &mut Vec<V
         }
         for i in 0..bad.len() {
             if bad[i] {
-                fate[clones[i].dataset_index].insert(clones[i].barcode.clone(),
+                fate[clones[i][0].dataset_index].insert(clones[i][0].barcode.clone(),
                     "fails WHITEF filter".to_string());
-                }
             }
         }
         erase_if(&mut clones, &bad);
@@ -346,11 +345,11 @@ pub fn find_exact_subclonotypes(
                     if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
                         to_delete[t1 - r] = true;
                         to_delete[t2 - r] = true;
-                        fate[tig_bc[t1].dataset_index].insert(
-                            tig_bc[t1].barcode.clone(),
+                        fate[tig_bc[t1][0].dataset_index].insert(
+                            tig_bc[t1][0].barcode.clone(),
                             "fails BC_DUP filter".to_string());
-                        fate[tig_bc[t2].dataset_index].insert(
-                            tig_bc[t2].barcode.clone(),
+                        fate[tig_bc[t2][0].dataset_index].insert(
+                            tig_bc[t2][0].barcode.clone(),
                             "fails BC_DUP filter".to_string());
                     }
                 }

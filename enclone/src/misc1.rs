@@ -8,6 +8,7 @@ use itertools::*;
 #[cfg(not(target_os = "windows"))]
 use pager::Pager;
 use perf_stats::*;
+use std::collections::HashMap;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
@@ -190,7 +191,7 @@ pub fn lookup_heavy_chain_reuse(
 // original cells that were drawn (perhaps breaking up in the process of drawing), and was
 // subsequently distintegrated.
 
-pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
+pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>, fate: &mut Vec<HashMap<String,String>>) {
     if !ctl.clono_filt_opt.ncross {
         // Get the list of dataset origins.  Here we allow the same origin name to have been used
         // for more than one donor, as we haven't explicitly prohibited that.
@@ -281,7 +282,7 @@ pub fn cross_filter(ctl: &EncloneControl, mut tig_bc: &mut Vec<Vec<TigData>>) {
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
-                    fate.insert(tig_bc[i].barcode().clone(), "fails CROSS filter");
+                    fate[tig_bc[i][j].dataset_index].insert(tig_bc[i].barcode().clone(), "fails CROSS filter".to_string());
                     to_delete[i] = true;
                 }
             }
