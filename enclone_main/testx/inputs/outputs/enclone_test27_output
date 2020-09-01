@@ -4,7 +4,20 @@ SUMMARY STATISTICS
    • number of datasets = 1
    • number of donors = 1
    • original number of cells = 1661
-2. for the selected clonotypes
+2. barcode fate
+   ┌──────────┬────────────────────────────┐
+   │barcodes  │  why deleted               │
+   ├──────────┼────────────────────────────┤
+   │     234  │  failed UMI filter         │
+   │      55  │  failed IMPROPER filter    │
+   │      23  │  failed FOURSIE_KILL filter│
+   │      17  │  failed GRAPH_FILTER filter│
+   │      12  │  failed QUAL filter        │
+   │       6  │  failed WHITEF filter      │
+   │       4  │  failed WEAK_CHAINS filter │
+   │     351  │  total                     │
+   └──────────┴────────────────────────────┘
+3. for the selected clonotypes
    ┌────────┬────────────────────────┬──────────────────┬───────┐
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
