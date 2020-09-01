@@ -24,6 +24,11 @@ jobs:
       - name: install cargo-license
         run: cargo install cargo-license
 
+      # check out master
+
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+
       # set up caching (duplicated verbatim below)
 
       - name: Cache cargo registry
@@ -49,8 +54,6 @@ jobs:
 
       # start the real work
 
-      - name: Checkout enclone master
-        uses: actions/checkout@master
       - name: Check Rust formatting
         run: cargo fmt -- --check
       - name: Remove the Cargo target directory
@@ -77,6 +80,13 @@ jobs:
       - name: install cargo-license
         run: cargo install cargo-license
 
+      # check out master
+
+      - name: Checkout enclone master
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 100
+
       # set up caching (duplicated verbatim below)
 
       - name: Cache cargo registry
@@ -102,10 +112,6 @@ jobs:
 
       # start the real work
 
-      - name: Checkout enclone master
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 100
       - name: Check for large files
         run: >
           git rev-list --objects ${{github.event.pull_request.base.sha}}..
