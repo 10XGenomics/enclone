@@ -24,29 +24,6 @@ jobs:
       - name: install cargo-license
         run: cargo install cargo-license
 
-      # set up caching (duplicated verbatim below)
-
-      - name: Cache cargo registry
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-registry-
-      - name: Cache cargo git index
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/git
-          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-git-
-      - name: Cache cargo build
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
-          restore-keys: |
-            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
-            ${{runner.os}}-cargo-target-
-
       # start the real work
 
       - name: Checkout enclone master
@@ -63,20 +40,6 @@ jobs:
       - name: unit tests
         run: cd enclone_main; cargo test --release --features basic -- --nocapture
 
-  test-linux:
-    # This job runs on Linux
-    runs-on: ubuntu-latest
-    steps:
-
-      # get prerequisite code in place (duplicated verbatim above)
-
-      - name: rust version
-        run: rustup default 1.43.0
-      - name: add rustfmt
-        run: rustup component add rustfmt
-      - name: install cargo-license
-        run: cargo install cargo-license
-
       # set up caching (duplicated verbatim below)
 
       - name: Cache cargo registry
@@ -99,6 +62,20 @@ jobs:
           restore-keys: |
             ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
             ${{runner.os}}-cargo-target-
+
+  test-linux:
+    # This job runs on Linux
+    runs-on: ubuntu-latest
+    steps:
+
+      # get prerequisite code in place (duplicated verbatim above)
+
+      - name: rust version
+        run: rustup default 1.43.0
+      - name: add rustfmt
+        run: rustup component add rustfmt
+      - name: install cargo-license
+        run: cargo install cargo-license
 
       # start the real work
 
@@ -122,3 +99,26 @@ jobs:
         run: git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
       - name: unit tests
         run: cd enclone_main; cargo test --release --features basic -- --nocapture
+
+      # set up caching (duplicated verbatim below)
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-registry-
+      - name: Cache cargo git index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
+          restore-keys: ${{runner.os}}-cargo-git-
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+          restore-keys: |
+            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
+            ${{runner.os}}-cargo-target-
