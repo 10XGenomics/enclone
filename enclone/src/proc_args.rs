@@ -933,16 +933,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         **f = stringme(&tilde_expand(&f.as_bytes()));
     }
 
-    // Sanity check arguments.
+    // Sanity check arguments (and more below).
 
-    if ctl.gen_opt.const_igh.is_some() && !have_bcr {
-        eprintln!("\nThe option CONST_IGH does not make sense for TCR.\n");
-        std::process::exit(1);
-    }
-    if ctl.gen_opt.const_igkl.is_some() && !have_bcr {
-        eprintln!("\nThe option CONST_IGKL does not make sense for TCR.\n");
-        std::process::exit(1);
-    }
     if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
         eprintln!(
             "\nPlease use the CDR3 argument to specify either a regular expression or a\n\
@@ -990,6 +982,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         std::process::exit(1);
     }
     ctl.perf_stats(&t, "after main args loop 1");
+
+    // Process TCR, BCR and META.
+
     let t = Instant::now();
     check_cvars(&ctl);
     if metas.len() > 0 {
@@ -1002,6 +997,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let arg = &xcrs[xcrs.len() - 1];
         proc_xcr(&arg, &gex, &bc, have_gex, &mut ctl);
     }
+
+    // More argument sanity checking.
+
+    if ctl.gen_opt.const_igh.is_some() && !ctl.gen_opt.bcr {
+        eprintln!("\nThe option CONST_IGH does not make sense for TCR.\n");
+        std::process::exit(1);
+    }
+    if ctl.gen_opt.const_igkl.is_some() && !ctl.gen_opt.bcr {
+        eprintln!("\nThe option CONST_IGKL does not make sense for TCR.\n");
+        std::process::exit(1);
+    }
+
+    // Proceed.
+
     let t = Instant::now();
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
@@ -1073,7 +1082,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             eprintln!("\nPLOT_BY_ISOTYPE cannot be used with PLOT or LEGEND.\n");
             std::process::exit(1);
         }
-        if !have_bcr {
+        if !ctl.gen_opt.bcr {
             eprintln!("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n");
             std::process::exit(1);
         }

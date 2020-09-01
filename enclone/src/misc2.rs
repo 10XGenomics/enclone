@@ -10,6 +10,7 @@ use enclone_core::defs::*;
 use io_utils::*;
 use rayon::prelude::*;
 use std::cmp::{max, min};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use string_utils::*;
@@ -19,11 +20,15 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Filter out putative gel bead contamination.  We look for cases where inside a
-// given exact subclonotype, the same first or last half of the barcode is reused, and one
+// given exact subclonotype, the same first or last half of a barcode is reused, and one
 // instance has at least 10-fold higher UMI count.  If the fraction of the "bad"
 // clones is at least 20%, delete them.
 
-pub fn filter_gelbead_contamination(ctl: &EncloneControl, mut clones: &mut Vec<Vec<TigData0>>) {
+pub fn filter_gelbead_contamination(
+    ctl: &EncloneControl,
+    mut clones: &mut Vec<Vec<TigData0>>,
+    fate: &mut Vec<(usize, String, String)>,
+) {
     if !ctl.gen_opt.nwhitef {
         const GB_UMI_MULT: usize = 10;
         const GB_MIN_FRAC: f64 = 0.2;
@@ -62,6 +67,15 @@ pub fn filter_gelbead_contamination(ctl: &EncloneControl, mut clones: &mut Vec<V
                     }
                 }
                 m = n;
+            }
+        }
+        for i in 0..bad.len() {
+            if bad[i] {
+                fate.push((
+                    clones[i][0].dataset_index,
+                    clones[i][0].barcode.clone(),
+                    "failed WHITEF filter".to_string(),
+                ));
             }
         }
         erase_if(&mut clones, &bad);
@@ -242,6 +256,7 @@ pub fn find_exact_subclonotypes(
     ctl: &EncloneControl,
     tig_bc: &Vec<Vec<TigData>>,
     refdata: &RefData,
+    fate: &mut Vec<HashMap<String, String>>,
 ) -> Vec<ExactClonotype> {
     let mut exact_clonotypes = Vec::<ExactClonotype>::new();
     let mut r = 0;
@@ -267,7 +282,8 @@ pub fn find_exact_subclonotypes(
                         && refdata.name[cid1.unwrap()] != refdata.name[cid2.unwrap()] )
 
                     || ( cid1.is_some() && cid2.is_some()
-                        && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
+                        && tig_bc[r][m].c_start.unwrap() + tig_bc[s][m].j_stop
+                        < tig_bc[s][m].c_start.unwrap() + tig_bc[r][m].j_stop )
 
                     // Check for different donors if MIX_DONORS specified on command line.
                     // Note funky redundancy in checking each chain
@@ -287,9 +303,9 @@ pub fn find_exact_subclonotypes(
         groups.push((r, s));
         r = s;
     }
-    let mut results = Vec::<(usize, Vec<ExactClonotype>)>::new();
+    let mut results = Vec::<(usize, Vec<ExactClonotype>, Vec<(usize, String, String)>)>::new();
     for i in 0..groups.len() {
-        results.push((i, Vec::new()));
+        results.push((i, Vec::new(), Vec::new()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -335,6 +351,16 @@ pub fn find_exact_subclonotypes(
                     if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
                         to_delete[t1 - r] = true;
                         to_delete[t2 - r] = true;
+                        res.2.push((
+                            tig_bc[t1][0].dataset_index,
+                            tig_bc[t1][0].barcode.clone(),
+                            "failed BC_DUP filter".to_string(),
+                        ));
+                        res.2.push((
+                            tig_bc[t2][0].dataset_index,
+                            tig_bc[t2][0].barcode.clone(),
+                            "failed BC_DUP filter".to_string(),
+                        ));
                     }
                 }
             }
@@ -360,7 +386,7 @@ pub fn find_exact_subclonotypes(
 
         // Filter out putative gel bead contamination.
 
-        filter_gelbead_contamination(&ctl, &mut clones);
+        filter_gelbead_contamination(&ctl, &mut clones, &mut res.2);
 
         // Save exact subclonotype.
 
@@ -376,6 +402,9 @@ pub fn find_exact_subclonotypes(
         if results[i].1.len() > 0 {
             max_exact = max(max_exact, results[i].1[0].ncells());
             exact_clonotypes.append(&mut results[i].1);
+        }
+        for j in 0..results[i].2.len() {
+            fate[results[i].2[j].0].insert(results[i].2[j].1.clone(), results[i].2[j].2.clone());
         }
     }
     if ctl.gen_opt.utr_con || ctl.gen_opt.con_con {

@@ -8,6 +8,7 @@ use io_utils::*;
 use petgraph::prelude::*;
 use rayon::prelude::*;
 use std::cmp::*;
+use std::collections::HashMap;
 use std::io::Write;
 use string_utils::*;
 use vector_utils::*;
@@ -28,7 +29,11 @@ use vector_utils::*;
 //
 // Hmm, seems like the edges go from heavy to light.
 
-pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
+pub fn graph_filter(
+    mut tig_bc: &mut Vec<Vec<TigData>>,
+    graph: bool,
+    fate: &mut Vec<HashMap<String, String>>,
+) {
     let mut ndels = 0;
     let mut seqs = Vec::<(Vec<u8>, bool, String, usize)>::new();
     for i in 0..tig_bc.len() {
@@ -255,6 +260,14 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
             ndels += 1;
         }
     }
+    for i in 0..tig_bc.len() {
+        if to_delete[i] {
+            fate[tig_bc[i][0].dataset_index].insert(
+                tig_bc[i][0].barcode.clone(),
+                "failed GRAPH_FILTER filter".to_string(),
+            );
+        }
+    }
     erase_if(&mut tig_bc, &to_delete);
     if graph {
         fwriteln!(log, "");
@@ -348,6 +361,14 @@ pub fn graph_filter(mut tig_bc: &mut Vec<Vec<TigData>>, graph: bool) {
         to_delete[i] = results[i].1;
         if to_delete[i] {
             ndels += 1;
+        }
+    }
+    for i in 0..tig_bc.len() {
+        if to_delete[i] {
+            fate[tig_bc[i][0].dataset_index].insert(
+                tig_bc[i][0].barcode.clone(),
+                "failed GRAPH_FILTER filter".to_string(),
+            );
         }
     }
     erase_if(&mut tig_bc, &to_delete);

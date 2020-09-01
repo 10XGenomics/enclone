@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 138] = [
+pub const TESTS: [&str; 141] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -50,8 +50,9 @@ pub const TESTS: [&str; 138] = [
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,origins,donors,datasets AMINO=share
      MIX_DONORS"###,
-    // 11. tests META
-    r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
+    // 11. tests META, and CONST_IGH + META, which was broken at one point
+    r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex
+     CONST_IGH=IGHD"###,
     // 12. this added because it got better when a noise filter was added, also tests u_max
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
@@ -349,6 +350,12 @@ pub const TESTS: [&str; 138] = [
     r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr3,fwr4 CVARS=fwr4_aa"###,
     // 138. test 2/2 of fwr4
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=fwr4_dna,fwr4_len"###,
+    // 139. test cvar vj_seq_nl
+    r###"BCR=85333 CHAINS=1 CDR3=CAAWDDSLNGWVF POUT=stdout PCOLS=vj_seq_nl1"###,
+    // 140. test cvar vj_aa_nl
+    r###"BCR=85333 CHAINS=1 CDR3=CAAWDDSLNGWVF POUT=stdout PCOLS=vj_aa_nl1"###,
+    // 141. test cvar aa%
+    r###"BCR=85333 CDR3=CAKGDRTGYSYGGGIFDYW CVARS=aa%,dna%"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.

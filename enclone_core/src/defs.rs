@@ -47,12 +47,12 @@ pub const LVARS_ALLOWED: [&str; 29] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 44] = [
+pub const CVARS_ALLOWED: [&str; 46] = [
     "var", "u", "u_min", "u_max", "u_Σ", "u_μ", "comp", "edit", "r", "r_min", "r_max", "r_Σ",
     "r_μ", "const", "white", "cdr1_dna", "cdr2_dna", "cdr3_dna", "cdr1_len", "cdr2_len",
     "cdr3_len", "cdr1_aa", "cdr2_aa", "cdr3_aa", "fwr1_dna", "fwr2_dna", "fwr3_dna", "fwr4_dna",
     "fwr1_len", "fwr2_len", "fwr3_len", "fwr4_len", "fwr1_aa", "fwr2_aa", "fwr3_aa", "fwr4_aa",
-    "ulen", "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor",
+    "ulen", "vjlen", "clen", "cdiff", "udiff", "notes", "d_univ", "d_donor", "aa%", "dna%",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -67,7 +67,7 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 20] = [
+pub const PCVARS_ALLOWED: [&str; 22] = [
     "v_name",
     "d_name",
     "j_name",
@@ -86,7 +86,9 @@ pub const PCVARS_ALLOWED: [&str; 20] = [
     "cdr3_aa",
     "seq",
     "vj_seq",
+    "vj_seq_nl",
     "vj_aa",
+    "vj_aa_nl",
     "var_aa",
 ];
 
@@ -828,6 +830,7 @@ pub fn justification(x: &str) -> u8 {
         || x == "const"
         || (x.ends_with("_aa") && x != "dref_aa")
         || x.ends_with("_dna")
+        || x.ends_with("_name")
         || x == "cdiff"
         || x == "notes"
         || x == "edit"
@@ -836,11 +839,9 @@ pub fn justification(x: &str) -> u8 {
         || x == "ext"
         || x == "barcode"
         || x == "barcodes"
-        || x.starts_with("v_name")
-        || x.starts_with("d_name")
-        || x.starts_with("j_name")
-        || x.starts_with("utr_name")
         || x.starts_with("vj_seq")
+        || x.starts_with("vj_seq_nl")
+        || x.starts_with("vj_aa_nl")
         || x.starts_with("seq")
         || x.starts_with("q")
         || x.starts_with("var_indices")
@@ -950,7 +951,9 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "cdr3_start",
             "seq",
             "vj_seq",
+            "vj_seq_nl",
             "vj_aa",
+            "vj_aa_nl",
             "var_aa",
         ] {
             speakerc!(col, x);

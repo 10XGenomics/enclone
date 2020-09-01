@@ -43,6 +43,7 @@ pub fn group_and_print_clonotypes(
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
+    fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
     // Build index to join info.
@@ -1504,9 +1505,34 @@ pub fn group_and_print_clonotypes(
             }
         }
 
+        // Print barcode fate.
+
+        fwriteln!(logx, "2. barcode fate");
+        let mut fates = Vec::<String>::new();
+        for i in 0..fate.len() {
+            for f in fate[i].iter() {
+                fates.push(f.1.clone());
+            }
+        }
+        fates.sort();
+        let mut freq = Vec::<(u32, String)>::new();
+        make_freq(&fates, &mut freq);
+        let mut rows = Vec::<Vec<String>>::new();
+        rows.push(vec!["barcodes".to_string(), "why deleted".to_string()]);
+        rows.push(vec!["\\hline".to_string(); 2]);
+        for i in 0..freq.len() {
+            rows.push(vec![format!("{}", freq[i].0), freq[i].1.clone()]);
+        }
+        rows.push(vec![format!("{}", fates.len()), "total".to_string()]);
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"r|l".to_vec(), false, false);
+        log.truncate(log.len() - 1);
+        log = log.replace("\n", "\n   ");
+        fwrite!(logx, "   {}\n", log);
+
         // Print other stats.
 
-        fwriteln!(logx, "2. for the selected clonotypes");
+        fwriteln!(logx, "3. for the selected clonotypes");
 
         // Print summary table for chains / clonotypes / cells.
 

@@ -1018,16 +1018,24 @@ pub fn row_fill(
 
         // Speak some other column entries.
 
+        let xm = &ex.share[mid];
+        speakc!(u, col, "vj_aa".to_string(), stringme(&aa_seq(&xm.seq, 0)));
         speakc!(
             u,
             col,
-            "vj_aa".to_string(),
-            stringme(&aa_seq(&ex.share[mid].seq, 0))
+            "vj_aa_nl".to_string(),
+            stringme(&aa_seq(&xm.seq, xm.fr1_start))
         );
-        speakc!(u, col, "vj_seq".to_string(), stringme(&ex.share[mid].seq));
-        speakc!(u, col, "seq".to_string(), stringme(&ex.share[mid].full_seq));
-        speakc!(u, col, "v_start".to_string(), ex.share[mid].v_start);
-        let cid = ex.share[mid].c_ref_id;
+        speakc!(u, col, "vj_seq".to_string(), stringme(&xm.seq));
+        speakc!(
+            u,
+            col,
+            "vj_seq_nl".to_string(),
+            stringme(&xm.seq[xm.fr1_start..])
+        );
+        speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
+        speakc!(u, col, "v_start".to_string(), xm.v_start);
+        let cid = xm.c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
             speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
@@ -1038,8 +1046,8 @@ pub fn row_fill(
             speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
             speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
         }
-        speakc!(u, col, "cdr3_start".to_string(), ex.share[mid].cdr3_start);
-        speakc!(u, col, "cdr3_aa".to_string(), ex.share[mid].cdr3_aa);
+        speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
+        speakc!(u, col, "cdr3_aa".to_string(), xm.cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);
@@ -1499,6 +1507,81 @@ pub fn row_fill(
                     j,
                     var,
                     format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
+                ];
+            } else if *var == "aa%".to_string() {
+                let xm = &ex.share[mid];
+                let mut diffs = 0;
+                let mut denom = 0;
+                let aa_seq = &xm.aa_mod_indel;
+                let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+                if xm.v_ref_id_donor_alt_id.is_some() {
+                    vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+                let z = 3 * aa_seq.len() + 1;
+                for p in 0..aa_seq.len() {
+                    if aa_seq[p] == b'-' {
+                        diffs += 1;
+                        denom += 1;
+                        continue;
+                    }
+                    if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim {
+                        denom += 1;
+                        if aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3]) {
+                            diffs += 1;
+                        }
+                    }
+                    if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3 {
+                        denom += 1;
+                        if aa_seq[p]
+                            != codon_to_aa(
+                                &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
+                            )
+                        {
+                            diffs += 1;
+                        }
+                    }
+                }
+                cvar![
+                    j,
+                    *var,
+                    format!("{:.1}", percent_ratio(denom - diffs, denom))
+                ];
+            } else if *var == "dna%".to_string() {
+                let xm = &ex.share[mid];
+                let mut diffs = 0;
+                let mut denom = 0;
+                let seq = &xm.seq_del_amino;
+                let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+                if xm.v_ref_id_donor_alt_id.is_some() {
+                    vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+                }
+                let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+                let z = seq.len();
+                for p in 0..z {
+                    let b = seq[p];
+                    if b == b'-' {
+                        diffs += 1;
+                        denom += 1;
+                        continue;
+                    }
+                    if p < vref.len() - ctl.heur.ref_v_trim {
+                        denom += 1;
+                        if b != vref[p] {
+                            diffs += 1;
+                        }
+                    }
+                    if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                        denom += 1;
+                        if b != jref[jref.len() - (z - p)] {
+                            diffs += 1;
+                        }
+                    }
+                }
+                cvar![
+                    j,
+                    *var,
+                    format!("{:.1}", percent_ratio(denom - diffs, denom))
                 ];
             } else if *var == "vjlen".to_string() {
                 cvar![

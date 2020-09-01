@@ -763,7 +763,10 @@ each of these has the same value for each exact clonotype</span>
 
 ┌───────────────┬──────────────────────────────────────────────────────────────────────────┐
 │vj_seq&lt;i>      │  DNA sequence of V..J                                                    │
+│vj_seq_nl&lt;i>   │  DNA sequence of V..J, but starting after the leader                     │
 │vj_aa&lt;i>       │  amino acid sequence of V..J (excludes last base, in incomplete codon)   │
+│vj_aa_nl&lt;i>    │  amino acid sequence of V..J (excludes last base, in incomplete codon),  │
+│               │  but starting after the leader                                           │
 │seq&lt;i>         │  full DNA sequence                                                       │
 │q&lt;n>_&lt;i>       │  special option to display a comma-separated list of the quality         │
 │               │  scores for chain i, at zero-based position n, numbered starting at the  │
@@ -929,8 +932,9 @@ enclone help special
 <span style="font-weight:bold;">special filtering options</span>
 
 This page documents some options, most of which allow noise filters to be turned off, and which
-normally should not be invoked.  The last two options can be used to simplify the view of a
-clonotype.
+normally should not be invoked.  Some of these options delete barcodes, and a summary of this
+action is included in the SUMMARY option.  At the bottom of this page we provide some other
+options that are not noise filters.
 
 ┌────────────────────────┬─────────────────────────────────────────────────────────────────────────┐
 │NALL                    │  Turn off all the noise filters shown below.  This may yield            │
@@ -1212,6 +1216,9 @@ where each xi is one of:
 │            │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
 │            │  For CDR1 and CDR2, please see "enclone help amino" and the page on          │
 │            │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
+├────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│aa%         │  amino acid percent identity with donor reference, outside junction region   │
+│dna%        │  nucleotide percent identity with donor reference, outside junction region   │
 ├────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen       │  number of bases from the start of the V region to the end of the J region   │
 │clen        │  length of observed constant region (usually truncated at primer start)      │

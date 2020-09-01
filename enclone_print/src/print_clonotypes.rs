@@ -52,6 +52,7 @@ pub fn print_clonotypes(
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
+    fate: &mut Vec<HashMap<String, String>>,
 ) {
     // Make an abbreviation.
 
@@ -123,6 +124,7 @@ pub fn print_clonotypes(
         isize,
         Vec<bool>,
         Vec<bool>,
+        Vec<(usize, String, String)>,
     )>::new();
     for i in 0..orbits.len() {
         results.push((
@@ -137,6 +139,7 @@ pub fn print_clonotypes(
             0,
             Vec::<bool>::new(),
             Vec::<bool>::new(),
+            Vec::new(),
         ));
     }
     results.par_iter_mut().for_each(|res| {
@@ -347,6 +350,7 @@ pub fn print_clonotypes(
                         &refdata,
                         &vars,
                         &mut bads,
+                        &mut res.11,
                     );
                 }
 
@@ -1540,6 +1544,12 @@ pub fn print_clonotypes(
             }
         }
     });
+
+    for i in 0..results.len() {
+        for j in 0..results[i].11.len() {
+            fate[results[i].11[j].0].insert(results[i].11[j].1.clone(), results[i].11[j].2.clone());
+        }
+    }
 
     // Sort results in descending order by number of cells.
 

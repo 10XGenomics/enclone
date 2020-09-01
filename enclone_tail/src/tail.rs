@@ -29,6 +29,7 @@ pub fn tail_code(
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
+    fate: &Vec<HashMap<String, String>>,
     tests: &Vec<usize>,
     controls: &Vec<usize>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
@@ -50,6 +51,7 @@ pub fn tail_code(
         &join_info,
         &gex_info,
         &vdj_cells,
+        &fate,
         &dref,
     );
 

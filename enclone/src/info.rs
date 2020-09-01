@@ -12,6 +12,7 @@ use debruijn::{dna_string::*, Mer};
 use enclone_core::defs::*;
 use enclone_core::print_tools::*;
 use rayon::prelude::*;
+use std::collections::HashMap;
 use std::sync::atomic::AtomicBool;
 use string_utils::*;
 use vector_utils::*;
@@ -20,6 +21,7 @@ pub fn build_info(
     refdata: &RefData,
     ctl: &EncloneControl,
     exact_clonotypes: &mut Vec<ExactClonotype>,
+    fate: &mut Vec<HashMap<String, String>>,
 ) -> Vec<CloneInfo> {
     // Build info about clonotypes.  We create a data structure info.
     // An entry in info is a clonotype having appropriate properties.
@@ -29,9 +31,14 @@ pub fn build_info(
 
     let exiting = AtomicBool::new(false);
     let mut info = Vec::<CloneInfo>::new();
-    let mut results = Vec::<(usize, Vec<CloneInfo>, ExactClonotype)>::new();
+    let mut results = Vec::<(
+        usize,
+        Vec<CloneInfo>,
+        ExactClonotype,
+        Vec<(usize, String, String)>,
+    )>::new();
     for i in 0..exact_clonotypes.len() {
-        results.push((i, Vec::new(), exact_clonotypes[i].clone()));
+        results.push((i, Vec::new(), exact_clonotypes[i].clone(), Vec::new()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -336,6 +343,16 @@ pub fn build_info(
         // Incorporate improper cells if they are onesies.  Note that we're dropping the
         // improper cells having two or more chains.
 
+        if !placed && shares.len() > 1 && !ctl.merge_all_impropers {
+            let ex = &exact_clonotypes[i];
+            for j in 0..ex.clones.len() {
+                res.3.push((
+                    ex.clones[j][0].dataset_index,
+                    ex.clones[j][0].barcode.clone(),
+                    "failed IMPROPER filter".to_string(),
+                ));
+            }
+        }
         if !placed && (shares.len() == 1 || ctl.merge_all_impropers) {
             let mut exact_cols = Vec::<usize>::new();
             for i in 0..tigs.len() {
@@ -370,6 +387,9 @@ pub fn build_info(
     for i in 0..results.len() {
         info.append(&mut results[i].1);
         exact_clonotypes[i] = results[i].2.clone();
+        for j in 0..results[i].3.len() {
+            fate[results[i].3[j].0].insert(results[i].3[j].1.clone(), results[i].3[j].2.clone());
+        }
     }
 
     // Sort info.

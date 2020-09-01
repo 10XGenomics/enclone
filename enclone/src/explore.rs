@@ -7,7 +7,7 @@ use string_utils::*;
 use vector_utils::*;
 
 // Exploratory code, in which we examine the data, so as to help decide on the
-// best definition of exact subclonotype.  Antiquated.
+// best definition of exact subclonotype.  Super antiquated.
 
 pub fn explore(li: usize, tig_bc: &Vec<Vec<TigData>>, ctl: &EncloneControl) {
     if ctl.gen_opt.exp {
