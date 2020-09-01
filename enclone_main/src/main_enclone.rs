@@ -1730,6 +1730,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &join_info,
         &gex_info,
         &vdj_cells,
+        &fate,
         &tests,
         &controls,
         &h5_data,
