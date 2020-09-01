@@ -894,7 +894,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Filter using light --> heavy graph.
 
-    let mut fate = vec![HashMap::<String,String>::new(); vdj_cells.len()];
+    let mut fate = vec![HashMap::<String, String>::new(); vdj_cells.len()];
     if !ctl.gen_opt.ngraph_filter {
         graph_filter(&mut tig_bc, ctl.gen_opt.graph, &mut fate);
     }
@@ -1047,10 +1047,10 @@ pub fn main_enclone(args: &Vec<String>) {
                             if bin_member(&twosies, &p) {
                                 to_delete[i] = true;
                                 for j in 0..ex.clones.len() {
-                                    fate[ex.clones[j].dataset_index].insert(
-                                        ex.clones[j].barcode.clone(),
-                                        "fails FOURSIE_KILL filter".to_string());
-                                    }
+                                    fate[ex.clones[j][0].dataset_index].insert(
+                                        ex.clones[j][0].barcode.clone(),
+                                        "fails FOURSIE_KILL filter".to_string(),
+                                    );
                                 }
                             }
                         }
@@ -1363,8 +1363,10 @@ pub fn main_enclone(args: &Vec<String>) {
                                 erase_if(&mut ex.clones, &to_delete);
                                 for i in 0..ex.clones.len() {
                                     if to_delete[i] {
-                                        fate[ex.clones[i].dataset_index].insert(
-                                            ex.clones[i].barcode.clone(), "fails UMI filter");
+                                        fate[ex.clones[i][0].dataset_index].insert(
+                                            ex.clones[i][0].barcode.clone(),
+                                            "fails UMI filter".to_string(),
+                                        );
                                     }
                                 }
                             }
@@ -1466,10 +1468,11 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                     if pass == 2 && ctl.clono_filt_opt.umi_ratio_filt {
                         for i in 0..ex.clones.len() {
-                            if to_delete[i] {
-                                fate[ex.clones[i].dataset_index].insert(
-                                    ex.clones[z[l].3].barcode.clone(), 
-                                    "fails UMI_RATIO filter");
+                            if to_delete[j][i] {
+                                fate[ex.clones[i][0].dataset_index].insert(
+                                    ex.clones[i][0].barcode.clone(),
+                                    "fails UMI_RATIO filter".to_string(),
+                                );
                             }
                         }
                         erase_if(&mut ex.clones, &to_delete[j]);

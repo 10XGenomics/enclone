@@ -43,7 +43,7 @@ pub fn group_and_print_clonotypes(
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String,String>>,
+    fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
     // Build index to join info.
@@ -1507,7 +1507,7 @@ pub fn group_and_print_clonotypes(
 
         // Print barcode fate.
 
-        fwriteln!(logx, "barcode fate");
+        fwriteln!(logx, "2. barcode fate");
         let mut fates = Vec::<String>::new();
         for i in 0..fate.len() {
             for f in fate[i].iter() {
@@ -1518,12 +1518,17 @@ pub fn group_and_print_clonotypes(
         let mut freq = Vec::<(u32, String)>::new();
         make_freq(&fates, &mut freq);
         for i in 0..freq.len() {
-            println!("{} barcodes deleted because {}", freq[i].0, freq[i].1);
+            fwriteln!(
+                logx,
+                "   {} barcodes deleted because {}",
+                freq[i].0,
+                freq[i].1
+            );
         }
 
         // Print other stats.
 
-        fwriteln!(logx, "2. for the selected clonotypes");
+        fwriteln!(logx, "3. for the selected clonotypes");
 
         // Print summary table for chains / clonotypes / cells.
 

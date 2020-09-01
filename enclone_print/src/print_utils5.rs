@@ -164,7 +164,7 @@ pub fn delete_weaks(
     refdata: &RefData,
     vars: &Vec<Vec<usize>>,
     bads: &mut Vec<bool>,
-    fate: &mut Vec<HashMap<String,String>>,
+    fate: &mut Vec<(usize, String, String)>,
 ) {
     // Mark for deletion exact subclonotypes that fail the MIN_CELLS_EXACT or MIN_CHAINS_EXACT
     // or CHAINS_EXACT tests.
@@ -304,8 +304,11 @@ pub fn delete_weaks(
                 bads[u] = true;
                 let ex = &exact_clonotypes[exacts[u]];
                 for i in 0..ex.ncells() {
-                    fate[ex.clones[i].dataset_index].insert(ex.clones[i].barcode.clone(),
-                        "fails QUAL filter".to_string());
+                    fate.push((
+                        ex.clones[i][0].dataset_index,
+                        ex.clones[i][0].barcode.clone(),
+                        "fails QUAL filter".to_string(),
+                    ));
                 }
             }
             j = k;
@@ -335,8 +338,11 @@ pub fn delete_weaks(
                     bads[*d] = true;
                     let ex = &exact_clonotypes[exacts[*d]];
                     for i in 0..ex.ncells() {
-                        fate[ex.clones[i].dataset_index].insert(ex.clones[i].barcode.clone(),
-                            "fails WEAK_CHAINS filter".to_string());
+                        fate.push((
+                            ex.clones[i][0].dataset_index,
+                            ex.clones[i][0].barcode.clone(),
+                            "fails WEAK_CHAINS filter".to_string(),
+                        ));
                     }
                 }
             }
