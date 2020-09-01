@@ -1360,7 +1360,6 @@ pub fn main_enclone(args: &Vec<String>) {
                                 best_ex_sum = ex_sum;
                             }
                             if pass == 3 && ctl.clono_filt_opt.umi_filt {
-                                erase_if(&mut ex.clones, &to_delete);
                                 for i in 0..ex.clones.len() {
                                     if to_delete[i] {
                                         fate[ex.clones[i][0].dataset_index].insert(
@@ -1369,6 +1368,7 @@ pub fn main_enclone(args: &Vec<String>) {
                                         );
                                     }
                                 }
+                                erase_if(&mut ex.clones, &to_delete);
                             }
                         }
                     }
