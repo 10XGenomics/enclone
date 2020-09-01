@@ -50,8 +50,9 @@ pub const TESTS: [&str; 138] = [
     // Note that we have deliberately "faked" two donors.  In reality there is one.
     r###"BCR="123085;123089" CDR3=CVKDRVTGTITELDYW LVARS=n,origins,donors,datasets AMINO=share
      MIX_DONORS"###,
-    // 11. tests META
-    r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex"###,
+    // 11. tests META, and CONST_IGH + META, which was broken at one point
+    r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex
+     CONST_IGH=IGHD"###,
     // 12. this added because it got better when a noise filter was added, also tests u_max
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
     // 13. this added because it got better when a noise filter was added; also test FASTA
