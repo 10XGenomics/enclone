@@ -1343,22 +1343,7 @@ pub fn print_clonotypes(
 
                 let diff_pos = rows.len();
                 if !drows.is_empty() {
-                    use itertools::Itertools;
-                    // let mut row = vec![String::new(); row1.len()];
                     let mut row = row1.clone();
-
-                    /*
-                    let mut row = Vec::<String>::new();
-                    if ctl.clono_print_opt.bu {
-                        row.push("#  barcode".to_string());
-                    } else {
-                        row.push("#".to_string());
-                    }
-                    for i in 0..lvars.len() {
-                        row.push(lvars[i].clone());
-                    }
-                    */
-
                     for col in 0..cols {
                         for m in 0..rsi.cvars[col].len() {
                             if rsi.cvars[col][m] == "amino".to_string() {
@@ -1395,27 +1380,10 @@ pub fn print_clonotypes(
                     }
                     rows.push(row);
                 } else {
-                    /*
-                    for i in 0..row1.len() {
-                        if xrow_filled[i] {
-                            row1[i] = xrow[i].clone();
-                        }
-                    }
-                    */
                     for i in 0..row1.len() {
                         rows[diff_pos - 1][i] = row1[i].clone();
                     }
                 }
-
-                // Insert placeholder for dots row.
-
-                /*
-                let diff_pos = rows.len();
-                if !drows.is_empty() {
-                    let row = Vec::<String>::new();
-                    rows.push(row);
-                }
-                */
 
                 // Finish building table content.
 
@@ -1500,10 +1468,6 @@ pub fn print_clonotypes(
                     }
                     rows.push(row);
                 }
-
-                // Make the diff row.
-
-                // make_diff_row(&ctl, &rsi, cols, diff_pos, &drows, &mut row1, &mut rows);
 
                 // Make table.
 
