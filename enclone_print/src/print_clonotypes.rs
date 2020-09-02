@@ -1339,6 +1339,47 @@ pub fn print_clonotypes(
                     rows.push(vec!["\\hline".to_string(); width]);
                 }
 
+                // Build the dots row.  [WORK IN PROGRESS]
+
+                /*
+                let diff_pos = rows.len();
+                if !drows.is_empty() {
+                    let mut row = vec![String::new(); row1.len()];
+                    for col in 0..cols {
+                        for m in 0..rsi.cvars[col].len() {
+                            if rsi.cvars[col][m] == "amino".to_string() {
+                                let mut xdots = String::new();
+                                for k in 0..show_aa[col].len() {
+                                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
+                                        xdots.push(' ');
+                                    }
+                                    let p = show_aa[col][k];
+                                    let mut codons = Vec::<Vec<u8>>::new();
+                                    for u in 0..nexacts {
+                                        if mat[col][u].is_some() {
+                                            let seq_amino = rsi.seqss_amino[col][u].clone();
+                                            if 3 * p + 3 <= seq_amino.len() {
+                                                codons.push(seq_amino[3 * p..3 * p + 3].to_vec());
+                                            }
+                                        }
+                                    }
+                                    unique_sort(&mut codons);
+                                    if codons.len() > 1 {
+                                        xdots.push('x');
+                                    } else {
+                                        xdots.push('.');
+                                    }
+                                }
+                                row.push(xdots);
+                            } else {
+                                row.push(String::new());
+                            }
+                        }
+                    }
+                    rows.push(row);
+                }
+                */
+
                 // Insert placeholder for dots row.
 
                 let diff_pos = rows.len();
