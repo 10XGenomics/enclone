@@ -77,13 +77,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NUMI",
-            "Filter out B cells based on low BCR UMI counts.  The heuristics for this",
+            "Filter out B cells based on low BCR UMI counts.  The heuristics",
             65,
         );
 
         h.docpr(
             "",
-            "are described on the enclone site at \\green{bit.ly/enclone}.",
+            "for this are described on the enclone site at \\green{bit.ly/enclone}.",
         );
         h.doc(
             "NUMI_RATIO",

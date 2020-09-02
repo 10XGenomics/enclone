@@ -59,9 +59,9 @@ processes all result in "cells" having low UMI counts, many of which do not corr
 real cells.  Illusory clonotype expansions are generally infrequent, but occasionally cluster
 in individual datasets.</p>
 
-<p>Nomenclature: for any cell, find the maximum UMI count for its zero or more heavy chains,
-and the maximum for its light chains.  The sum of these two maxima is 
-denoted <code>umitot</code>.</p>
+<p>Nomenclature: for any cell, find the maximum UMI count for its heavy chains, if any, and the 
+maximum for its light chains, if any.  The sum of these two maxima is denoted 
+<code>umitot</code>.</p>
 
 <p>The algorithm for this filter first establishes a baseline for the expected value of 
 <code>umitot</code>, for each dataset taken individually.  To do this, all clonotypes having 
