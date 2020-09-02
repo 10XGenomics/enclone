@@ -676,6 +676,7 @@ fn test_formatting() {
 fn test_enclone() {
     PrettyTrace::new().on();
     let t = Instant::now();
+    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
     //                       id     ok    output
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {
