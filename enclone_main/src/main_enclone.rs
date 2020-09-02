@@ -1662,7 +1662,8 @@ pub fn main_enclone(args: &Vec<String>) {
         if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
             let x = gex_info.h5_data[li].as_ref();
             if x.is_none() {
-                // THIS FAILS SPORADICALLY, OBSERVED TWICE, CAUSING PUSH TO D_READERS BELOW TO FAIL.
+                // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
+                // CAUSING PUSH TO D_READERS BELOW TO FAIL.
                 eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
                 eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
                 if path_exists(&ctl.origin_info.gex_path[li]) {
