@@ -1660,11 +1660,28 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     for li in 0..ctl.origin_info.n() {
         if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
-            // THE FOLLOWING LINE HAS BEEN OBSERVED TO FAIL SPORADICALLY.  THIS HAS BEEN
-            // OBSERVED ONCE.  THE FAIL WAS THAT
-            // called `Option::unwrap()` on a `None` value.
-
-            d_readers.push(Some(gex_info.h5_data[li].as_ref().unwrap().as_reader()));
+            let x = gex_info.h5_data[li].as_ref();
+            if x.is_none() {
+                // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
+                // CAUSING PUSH TO D_READERS BELOW TO FAIL.
+                eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
+                eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
+                if path_exists(&ctl.origin_info.gex_path[li]) {
+                    eprintln!("Path exists.");
+                    let h5_path =
+                        format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
+                    eprintln!("H5 path = {}.", h5_path);
+                    if path_exists(&h5_path) {
+                        eprintln!("h5 path does not exist.");
+                    } else {
+                        eprintln!("h5 path exists.");
+                    }
+                } else {
+                    eprintln!("Path exists.");
+                }
+                eprintln!("");
+            }
+            d_readers.push(Some(x.unwrap().as_reader()));
             ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
         } else {
             d_readers.push(None);

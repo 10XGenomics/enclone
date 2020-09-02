@@ -971,8 +971,7 @@ options that are not noise filters.
 │                        │  by the pair (origin name, donor name).                                 │
 ├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │NUMI                    │  Filter out B cells based on low BCR UMI counts.  The heuristics        │
-│                        │  for this                                                               │
-│                        │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                   │
+│                        │  for this are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.          │
 │NUMI_RATIO              │  Filter out B cells based on low BCR UMI counts relative to another cell│
 │                        │  in a given clonotype.  The heuristics for this                         │
 │                        │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                   │
@@ -1325,23 +1324,30 @@ enclone help display
 
 <span style="font-weight:bold;">other options that control clonotype display</span>
 
-┌───────────┬───────────────────────────────────────────────────────────────────────────────┐
-│PER_CELL   │  expand out each exact clonotype line, showing one line per cell,             │
-│           │  for each such line, displaying the barcode name, the number of UMIs assigned,│
-│           │  and the gene expression UMI count, if applicable, under gex_med              │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│BARCODES   │  print list of all barcodes of the cells in each clonotype, in a              │
-│           │  single line near the top of the printout for a given clonotype               │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│SEQC       │  print V..J sequence for each chain in the first exact subclonotype, near     │
-│           │  the top of the printout for a given clonotype                                │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│FULL_SEQC  │  print full sequence for each chain in the first exact subclonotype,          │
-│           │  near the top of the printout for a given clonotype                           │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│SUM        │  print sum row for each clonotype                                             │
-│MEAN       │  print mean row for each clonotype                                            │
-└───────────┴───────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,             │
+│               │  for each such line, displaying the barcode name, the number of UMIs assigned,│
+│               │  and the gene expression UMI count, if applicable, under gex_med              │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a              │
+│               │  single line near the top of the printout for a given clonotype               │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near     │
+│               │  the top of the printout for a given clonotype                                │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,          │
+│               │  near the top of the printout for a given clonotype                           │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SUM            │  print sum row for each clonotype                                             │
+│MEAN           │  print mean row for each clonotype                                            │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a C if the column lies within a complementarity-determining region,     │
+│               │  and F if it lies in a framework region, and an L if it lies in the leader    │
+│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,     │
+│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                      │
+└───────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">options that control clonotype grouping</span>
 

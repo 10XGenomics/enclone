@@ -29,8 +29,18 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>9/2/20</b>:
+<ul>
+<li>Add options <code>DIFF_STYLE=C1</code> and <code>DIFF_STYLE=C2</code> that allow alternate
+labeling for the diff row in a clonotype table, which by default shows x's and dots.</li>
+<li>Fix bugs in the diff row printing: sometimes it was not shown, and it was not correctly
+handled when <code>COLOR=property</code> was specified.</li>
+</ul>
+
+
+<p>
 <b>9/1/20</b>:
-<ol>
+<ul>
 <li>Add parseable field <code>vj_seq_nl</code>, the DNA sequence of V..J, but starting after the
 leader.</li>
 <li>Add parseable field <code>vj_aa_nl</code>, the amino acid sequence of V..J, but starting after
@@ -40,7 +50,7 @@ outside junction region.</li>
 <li>Add chain variable <code>dna%</code> = nucleotide percent identity with donor reference, 
 outside junction region.</li>
 <li>Add summary of barcode fate if SUMMARY option is used.</li>
-</ol>
+</ul>
 </p>
 
 <p>

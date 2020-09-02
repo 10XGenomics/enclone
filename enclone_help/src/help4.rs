@@ -77,13 +77,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NUMI",
-            "Filter out B cells based on low BCR UMI counts.  The heuristics for this",
+            "Filter out B cells based on low BCR UMI counts.  The heuristics",
             65,
         );
 
         h.docpr(
             "",
-            "are described on the enclone site at \\green{bit.ly/enclone}.",
+            "for this are described on the enclone site at \\green{bit.ly/enclone}.",
         );
         h.doc(
             "NUMI_RATIO",
@@ -969,6 +969,25 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "near the top of the printout for a given clonotype");
         h.ldoc("SUM", "print sum row for each clonotype");
         h.doc("MEAN", "print mean row for each clonotype");
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "DIFF_STYLE=C1",
+            "instead of showing an x for each amino acid column containing a difference, \
+             show a C if the column lies within a complementarity-determining region, \
+             and F if it lies in a framework region, and an L if it lies in the leader",
+            75,
+        );
+        h.doc(
+            "DIFF_STYLE=C2",
+            "instead of showing an x for each amino acid column containing a difference,",
+        );
+        h.docpr(
+            "",
+            "show a \\boldred{◼} if the column lies within a complementarity-determining region,",
+        );
+        h.docpr("", "and otherwise show a \\bold{▮}.");
+
         h.print_tab2();
         h.print("\n");
         h.print(

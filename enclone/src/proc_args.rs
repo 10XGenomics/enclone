@@ -617,6 +617,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
         // Other.
+        } else if arg.starts_with("DIFF_STYLE=") {
+            ctl.gen_opt.diff_style = arg.after("=").to_string();
+            if ctl.gen_opt.diff_style != "C1" && ctl.gen_opt.diff_style != "C2" {
+                eprintln!("\nThe only allowed values for DIFF_STYLE are C1 and C2.\n");
+                std::process::exit(1);
+            }
         } else if arg.starts_with("COLOR=") {
             ctl.gen_opt.color = arg.after("COLOR=").to_string();
             if ctl.gen_opt.color != "codon".to_string()

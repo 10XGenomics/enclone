@@ -1339,12 +1339,108 @@ pub fn print_clonotypes(
                     rows.push(vec!["\\hline".to_string(); width]);
                 }
 
-                // Insert placeholder for dots row.
+                // Build the diff row.
 
                 let diff_pos = rows.len();
                 if !drows.is_empty() {
-                    let row = Vec::<String>::new();
+                    let mut row = row1.clone();
+                    for col in 0..cols {
+                        for m in 0..rsi.cvars[col].len() {
+                            if rsi.cvars[col][m] == "amino".to_string() {
+                                let mut xdots = String::new();
+                                for k in 0..show_aa[col].len() {
+                                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
+                                        xdots.push(' ');
+                                    }
+                                    let p = show_aa[col][k];
+                                    let q = 3 * p;
+                                    let leader = q < rsi.fr1_starts[col];
+                                    let mut cdr = false;
+                                    if q >= rsi.cdr1_starts[col] && q < rsi.fr2_starts[col] {
+                                        cdr = true;
+                                    }
+                                    if q >= rsi.cdr2_starts[col] && q < rsi.fr3_starts[col] {
+                                        cdr = true;
+                                    }
+                                    if q >= rsi.cdr3_starts[col]
+                                        && q < rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col]
+                                    {
+                                        cdr = true;
+                                    }
+                                    let mut codons = Vec::<Vec<u8>>::new();
+                                    for u in 0..nexacts {
+                                        if mat[col][u].is_some() {
+                                            let seq_amino = rsi.seqss_amino[col][u].clone();
+                                            if 3 * p + 3 <= seq_amino.len() {
+                                                codons.push(seq_amino[3 * p..3 * p + 3].to_vec());
+                                            }
+                                        }
+                                    }
+                                    unique_sort(&mut codons);
+                                    if codons.len() > 1 {
+                                        if cdr {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('C');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('0');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('3');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('◼');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('0');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('3');
+                                                xdots.push('0');
+                                                xdots.push('m');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        } else if !leader {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('F');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('▮');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        } else {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('L');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('▮');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        }
+                                    } else {
+                                        xdots.push('.');
+                                    }
+                                }
+                                row.push(xdots);
+                            } else {
+                                row.push(rsi.cvars[col][m].clone());
+                            }
+                        }
+                        for i in 0..row.len() {
+                            row[i] = format!("[01m{}[0m", row[i]);
+                        }
+                    }
                     rows.push(row);
+                } else {
+                    for i in 0..row1.len() {
+                        rows[diff_pos - 1][i] = row1[i].clone();
+                    }
                 }
 
                 // Finish building table content.
@@ -1430,10 +1526,6 @@ pub fn print_clonotypes(
                     }
                     rows.push(row);
                 }
-
-                // Make the diff row.
-
-                make_diff_row(&ctl, &rsi, cols, diff_pos, &drows, &mut row1, &mut rows);
 
                 // Make table.
 
