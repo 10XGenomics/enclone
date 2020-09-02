@@ -420,6 +420,7 @@ pub struct GeneralOpt {
     pub using_secmem: bool,
     pub const_igh: Option<Regex>,
     pub const_igkl: Option<Regex>,
+    pub diff_style: String,
 }
 
 // Allele-finding algorithmic options.

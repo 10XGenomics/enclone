@@ -617,6 +617,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
 
         // Other.
+        } else if arg == "DIFF_STYLE=Xx" {
+            ctl.gen_opt.diff_style = "Xx".to_string();
         } else if arg.starts_with("COLOR=") {
             ctl.gen_opt.color = arg.after("COLOR=").to_string();
             if ctl.gen_opt.color != "codon".to_string()

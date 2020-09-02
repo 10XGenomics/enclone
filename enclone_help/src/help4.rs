@@ -969,6 +969,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "near the top of the printout for a given clonotype");
         h.ldoc("SUM", "print sum row for each clonotype");
         h.doc("MEAN", "print mean row for each clonotype");
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "DIFF_STYLE=Xx",
+            "instead of showing an x for each amino acid column containing a difference, \
+             show an X if the column lies within a complementarity-determining region, \
+             and otherwise show an x.",
+            70,
+        );
+
         h.print_tab2();
         h.print("\n");
         h.print(
