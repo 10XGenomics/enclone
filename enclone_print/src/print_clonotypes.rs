@@ -1353,6 +1353,20 @@ pub fn print_clonotypes(
                                         xdots.push(' ');
                                     }
                                     let p = show_aa[col][k];
+                                    let q = 3 * p;
+                                    let leader = q < rsi.fr1_starts[col];
+                                    let mut cdr = false;
+                                    if q >= rsi.cdr1_starts[col] && q < rsi.fr2_starts[col] {
+                                        cdr = true;
+                                    }
+                                    if q >= rsi.cdr2_starts[col] && q < rsi.fr3_starts[col] {
+                                        cdr = true;
+                                    }
+                                    if q >= rsi.cdr3_starts[col]
+                                        && q < rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col]
+                                    {
+                                        cdr = true;
+                                    }
                                     let mut codons = Vec::<Vec<u8>>::new();
                                     for u in 0..nexacts {
                                         if mat[col][u].is_some() {
@@ -1364,7 +1378,51 @@ pub fn print_clonotypes(
                                     }
                                     unique_sort(&mut codons);
                                     if codons.len() > 1 {
-                                        xdots.push('x');
+                                        if cdr {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('C');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('0');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('3');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('◼');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('0');
+                                                xdots.push('1');
+                                                xdots.push('m');
+                                                xdots.push('');
+                                                xdots.push('[');
+                                                xdots.push('3');
+                                                xdots.push('0');
+                                                xdots.push('m');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        } else if !leader {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('F');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('▮');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        } else {
+                                            if ctl.gen_opt.diff_style == "C1".to_string() {
+                                                xdots.push('L');
+                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
+                                                xdots.push('▮');
+                                            } else {
+                                                xdots.push('x');
+                                            }
+                                        }
                                     } else {
                                         xdots.push('.');
                                     }
@@ -1374,9 +1432,9 @@ pub fn print_clonotypes(
                                 row.push(rsi.cvars[col][m].clone());
                             }
                         }
-                    }
-                    for i in 0..row.len() {
-                        row[i] = format!("[01m{}[0m", row[i]);
+                        for i in 0..row.len() {
+                            row[i] = format!("[01m{}[0m", row[i]);
+                        }
                     }
                     rows.push(row);
                 } else {

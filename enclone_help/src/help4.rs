@@ -972,12 +972,21 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
-            "DIFF_STYLE=Xx",
+            "DIFF_STYLE=C1",
             "instead of showing an x for each amino acid column containing a difference, \
-             show an X if the column lies within a complementarity-determining region, \
-             and otherwise show an x.",
-            70,
+             show a C if the column lies within a complementarity-determining region, \
+             and F if it lies in a framework region, and an L if it lies in the leader",
+            75,
         );
+        h.doc(
+            "DIFF_STYLE=C2",
+            "instead of showing an x for each amino acid column containing a difference,",
+        );
+        h.docpr(
+            "",
+            "show a \\boldred{◼} if the column lies within a complementarity-determining region,",
+        );
+        h.docpr("", "and otherwise show a \\bold{▮}.");
 
         h.print_tab2();
         h.print("\n");

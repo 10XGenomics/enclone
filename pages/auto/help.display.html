@@ -63,9 +63,12 @@ gtag('config', 'UA-58278925-3');
 │SUM            │  print sum row for each clonotype                                             │
 │MEAN           │  print mean row for each clonotype                                            │
 ├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│DIFF_STYLE=Xx  │  instead of showing an x for each amino acid column containing a              │
-│               │  difference, show an X if the column lies within a                            │
-│               │  complementarity-determining region, and otherwise show an x.                 │
+│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a C if the column lies within a complementarity-determining region,     │
+│               │  and F if it lies in a framework region, and an L if it lies in the leader    │
+│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,     │
+│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                      │
 └───────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">options that control clonotype grouping</span>
