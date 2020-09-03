@@ -1538,6 +1538,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" WHITEF ") && ctl.gen_opt.nwhitef {
                     continue;
                 }
+                if f.1.contains(" BC_DUP ") && !ctl.clono_filt_opt.bc_dup {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }

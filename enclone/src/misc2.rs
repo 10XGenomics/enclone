@@ -345,23 +345,23 @@ pub fn find_exact_subclonotypes(
         // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
-        if ctl.clono_filt_opt.bc_dup {
-            for t1 in r..s {
-                for t2 in t1 + 1..s {
-                    if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+        for t1 in r..s {
+            for t2 in t1 + 1..s {
+                if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+                    if ctl.clono_filt_opt.bc_dup {
                         to_delete[t1 - r] = true;
                         to_delete[t2 - r] = true;
-                        res.2.push((
-                            tig_bc[t1][0].dataset_index,
-                            tig_bc[t1][0].barcode.clone(),
-                            "failed BC_DUP filter".to_string(),
-                        ));
-                        res.2.push((
-                            tig_bc[t2][0].dataset_index,
-                            tig_bc[t2][0].barcode.clone(),
-                            "failed BC_DUP filter".to_string(),
-                        ));
                     }
+                    res.2.push((
+                        tig_bc[t1][0].dataset_index,
+                        tig_bc[t1][0].barcode.clone(),
+                        "failed BC_DUP filter".to_string(),
+                    ));
+                    res.2.push((
+                        tig_bc[t2][0].dataset_index,
+                        tig_bc[t2][0].barcode.clone(),
+                        "failed BC_DUP filter".to_string(),
+                    ));
                 }
             }
         }
