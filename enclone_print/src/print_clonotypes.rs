@@ -876,6 +876,13 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     row.push(format!("{}", n));
+                                } else if lvars[k] == "filter".to_string() {
+                                    let mut f = String::new();
+                                    if fate[li].contains_key(&bc.clone()) {
+                                        f = fate[li][&bc.clone()].clone();
+                                        f = f.between(" ", " ").to_string();
+                                    }
+                                    row.push(f);
                                 } else if lvars[k] == "n_other".to_string() {
                                     let mut n = 0;
                                     let di = ex.clones[bcl.2][0].dataset_index;

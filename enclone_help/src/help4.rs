@@ -19,8 +19,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "This page documents some options, most of which allow noise \
              filters to be turned off, and which normally should not be invoked.  Some of \
              these options delete barcodes, and a summary of this action is included in the \
-             SUMMARY option.  At the bottom of this page we provide some other options that are \
-             not noise filters.\n\n",
+             SUMMARY option.  See also the lead variable \"filter\", see \
+             \"enclone help lvars\".  At the bottom of this page we provide some other options \
+             that are not noise filters.\n\n",
         );
 
         h.docf2(
@@ -628,6 +629,19 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc(
             "",
             "consist of mixed cell types, rather than consisting of pure B or T cells.",
+        );
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
+            "filter",
+            "See \"enclone help special\".  Use with PER_CELL.  If you turn off some default \
+            filters (or all default filters, e.g. with NALL), and this cell would have been \
+            deleted by one of the default filters, then this will show the name of \
+            the last filter that would have been applied to delete the cell.  Note that there \
+            are complex interactions between filters, so the actual effect with all default \
+            filters on may not be identical in all cases.  Note also that use of NALL will \
+            typically result in peculiar artifacts, so this should only be used as an \
+            exploratory tool.",
+            75,
         );
         h.print_tab2();
         h.print(

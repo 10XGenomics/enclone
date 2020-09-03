@@ -468,6 +468,8 @@ pub fn row_fill(
             */
             cell_types.sort();
             lvar![i, x, format!("{}", abbrev_list(&cell_types))];
+        } else if x == "filter" {
+            lvar![i, x, String::new()];
         } else if x == "mark" {
             let mut n = 0;
             for j in 0..ex.clones.len() {
