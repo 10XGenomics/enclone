@@ -1526,6 +1526,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" NGRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
                     continue;
                 }
+                if f.1.contains(" QUAL") && !ctl.clono_filt_opt.qual_filter {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }
