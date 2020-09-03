@@ -1523,10 +1523,16 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt.umi_ratio_filt {
                     continue;
                 }
-                if f.1.contains(" NGRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
+                if f.1.contains(" GRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
                     continue;
                 }
                 if f.1.contains(" QUAL") && !ctl.clono_filt_opt.qual_filter {
+                    continue;
+                }
+                if f.1.contains(" WEAK_CHAINS ") && !ctl.clono_filt_opt.weak_chains {
+                    continue;
+                }
+                if f.1.contains(" FOURSIE_KILL ") && !ctl.clono_filt_opt.weak_foursies {
                     continue;
                 }
                 fates.push(f.1.clone());

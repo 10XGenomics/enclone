@@ -1024,41 +1024,41 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Filter out some foursie artifacts.
 
-    if ctl.clono_filt_opt.weak_foursies {
-        let t = Instant::now();
-        let mut to_delete = vec![false; exact_clonotypes.len()];
-        let mut twosies = Vec::<(Vec<u8>, Vec<u8>)>::new();
-        for i in 0..exact_clonotypes.len() {
-            let ex = &exact_clonotypes[i];
-            if ex.share.len() == 2 && (ex.share[0].left ^ ex.share[1].left) && ex.ncells() >= 10 {
-                twosies.push((ex.share[0].seq.clone(), ex.share[1].seq.clone()));
-            }
+    let t = Instant::now();
+    let mut to_delete = vec![false; exact_clonotypes.len()];
+    let mut twosies = Vec::<(Vec<u8>, Vec<u8>)>::new();
+    for i in 0..exact_clonotypes.len() {
+        let ex = &exact_clonotypes[i];
+        if ex.share.len() == 2 && (ex.share[0].left ^ ex.share[1].left) && ex.ncells() >= 10 {
+            twosies.push((ex.share[0].seq.clone(), ex.share[1].seq.clone()));
         }
-        unique_sort(&mut twosies);
-        for i in 0..exact_clonotypes.len() {
-            let ex = &exact_clonotypes[i];
-            if ex.share.len() == 4 {
-                for i1 in 0..4 {
-                    for i2 in i1 + 1..4 {
-                        if ex.share[i1].left ^ ex.share[i2].left {
-                            let p = (ex.share[i1].seq.clone(), ex.share[i2].seq.clone());
-                            if bin_member(&twosies, &p) {
-                                to_delete[i] = true;
-                                for j in 0..ex.clones.len() {
-                                    fate[ex.clones[j][0].dataset_index].insert(
-                                        ex.clones[j][0].barcode.clone(),
-                                        "failed FOURSIE_KILL filter".to_string(),
-                                    );
-                                }
+    }
+    unique_sort(&mut twosies);
+    for i in 0..exact_clonotypes.len() {
+        let ex = &exact_clonotypes[i];
+        if ex.share.len() == 4 {
+            for i1 in 0..4 {
+                for i2 in i1 + 1..4 {
+                    if ex.share[i1].left ^ ex.share[i2].left {
+                        let p = (ex.share[i1].seq.clone(), ex.share[i2].seq.clone());
+                        if bin_member(&twosies, &p) {
+                            to_delete[i] = true;
+                            for j in 0..ex.clones.len() {
+                                fate[ex.clones[j][0].dataset_index].insert(
+                                    ex.clones[j][0].barcode.clone(),
+                                    "failed FOURSIE_KILL filter".to_string(),
+                                );
                             }
                         }
                     }
                 }
             }
         }
-        erase_if(&mut exact_clonotypes, &to_delete);
-        ctl.perf_stats(&t, "filtering foursies");
     }
+    if ctl.clono_filt_opt.weak_foursies {
+        erase_if(&mut exact_clonotypes, &to_delete);
+    }
+    ctl.perf_stats(&t, "filtering foursies");
 
     // Look for insertions (experimental).
 

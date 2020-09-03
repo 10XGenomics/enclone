@@ -318,7 +318,7 @@ pub fn delete_weaks(
     // Based on the number of cells in each column, decide which exact subclonotypes
     // look like junk.  Preliminary heuristic.
 
-    if cols > 2 && ctl.clono_filt_opt.weak_chains {
+    if cols > 2 {
         let mut ncells = vec![0; cols];
         let mut col_entries = vec![Vec::<usize>::new(); cols];
         for u in 0..nexacts {
@@ -335,7 +335,9 @@ pub fn delete_weaks(
         for j in 0..cols {
             if ncells[j] <= 5 && 8 * ncells[j] < total_cells {
                 for d in col_entries[j].iter() {
-                    bads[*d] = true;
+                    if ctl.clono_filt_opt.weak_chains {
+                        bads[*d] = true;
+                    }
                     let ex = &exact_clonotypes[exacts[*d]];
                     for i in 0..ex.ncells() {
                         fate.push((
