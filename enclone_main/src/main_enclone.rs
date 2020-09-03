@@ -895,9 +895,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Filter using light --> heavy graph.
 
     let mut fate = vec![HashMap::<String, String>::new(); vdj_cells.len()];
-    if !ctl.gen_opt.ngraph_filter {
-        graph_filter(&mut tig_bc, ctl.gen_opt.graph, &mut fate);
-    }
+    graph_filter(&ctl, &mut tig_bc, ctl.gen_opt.graph, &mut fate);
 
     // Sort tig_bc.
 

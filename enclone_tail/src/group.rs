@@ -1523,6 +1523,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt.umi_ratio_filt {
                     continue;
                 }
+                if f.1.contains(" NGRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }

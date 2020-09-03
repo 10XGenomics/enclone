@@ -30,6 +30,7 @@ use vector_utils::*;
 // Hmm, seems like the edges go from heavy to light.
 
 pub fn graph_filter(
+    ctl: &EncloneControl,
     mut tig_bc: &mut Vec<Vec<TigData>>,
     graph: bool,
     fate: &mut Vec<HashMap<String, String>>,
@@ -268,7 +269,9 @@ pub fn graph_filter(
             );
         }
     }
-    erase_if(&mut tig_bc, &to_delete);
+    if !ctl.gen_opt.ngraph_filter {
+        erase_if(&mut tig_bc, &to_delete);
+    }
     if graph {
         fwriteln!(log, "");
         print!("{}", strme(&log));
@@ -371,7 +374,9 @@ pub fn graph_filter(
             );
         }
     }
-    erase_if(&mut tig_bc, &to_delete);
+    if !ctl.gen_opt.ngraph_filter {
+        erase_if(&mut tig_bc, &to_delete);
+    }
     if graph {
         fwriteln!(log, "");
         print!("{}", strme(&log));
