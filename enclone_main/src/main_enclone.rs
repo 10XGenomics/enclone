@@ -1215,16 +1215,13 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut orbits = Vec::<Vec<i32>>::new();
     let mut reps = Vec::<i32>::new();
     eq.orbit_reps(&mut reps);
-    if is_tcr || !ctl.clono_filt_opt.umi_filt {
+    if is_tcr {
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
             eq.orbit(reps[i], &mut o);
             orbits.push(o);
         }
-    }
-    if !is_tcr
-        && (ctl.gen_opt.baseline || ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark)
-    {
+    } else {
         let mut umis = vec![Vec::<usize>::new(); ctl.origin_info.n()];
         for i in 0..reps.len() {
             let mut o = Vec::<i32>::new();
@@ -1266,126 +1263,128 @@ pub fn main_enclone(args: &Vec<String>) {
                 println!("umin = {:.2}", umin[l]);
             }
         }
-        if ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
-            const MIN_BASELINE_CELLS: usize = 20;
-            for i in 0..reps.len() {
-                let mut o = Vec::<i32>::new();
-                eq.orbit(reps[i], &mut o);
-                let mut ncells = 0;
-                for j in 0..o.len() {
-                    let x: &CloneInfo = &info[o[j] as usize];
-                    let ex = &exact_clonotypes[x.clonotype_index];
-                    ncells += ex.ncells();
-                }
-                let mut nbads = 0;
-                if ncells >= 2 {
-                    let mut to_deletex = vec![false; o.len()];
-                    let (mut best_ex, mut best_ex_sum) = (0, 0);
-                    let (mut best_cell, mut best_cell_count) = (0, 0);
-                    let mut baselined = true;
-                    let mut protected = false;
-                    for pass in 1..=3 {
-                        if pass == 2 {
-                            if nbads == 0 {
+        // if ctl.clono_filt_opt.umi_filt || ctl.clono_filt_opt.umi_filt_mark {
+        const MIN_BASELINE_CELLS: usize = 20;
+        for i in 0..reps.len() {
+            let mut o = Vec::<i32>::new();
+            eq.orbit(reps[i], &mut o);
+            let mut ncells = 0;
+            for j in 0..o.len() {
+                let x: &CloneInfo = &info[o[j] as usize];
+                let ex = &exact_clonotypes[x.clonotype_index];
+                ncells += ex.ncells();
+            }
+            let mut nbads = 0;
+            if ncells >= 2 {
+                let mut to_deletex = vec![false; o.len()];
+                let (mut best_ex, mut best_ex_sum) = (0, 0);
+                let (mut best_cell, mut best_cell_count) = (0, 0);
+                let mut baselined = true;
+                let mut protected = false;
+                for pass in 1..=3 {
+                    if pass == 2 {
+                        if nbads == 0 {
+                            protected = true;
+                        } else {
+                            let p = 0.1;
+                            let bound = 0.01;
+
+                            // Find probability of observing nbads or more events of probability
+                            // p in a sample of size ncells, and if that is at least bound,
+                            // don't delete any cells (except onesies).
+
+                            if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
                                 protected = true;
-                            } else {
-                                let p = 0.1;
-                                let bound = 0.01;
-
-                                // Find probability of observing nbads or more events of probability
-                                // p in a sample of size ncells, and if that is at least bound,
-                                // don't delete any cells (except onesies).
-
-                                if binomial_sum(ncells, ncells - nbads, 1.0 - p) >= bound {
-                                    protected = true;
-                                }
-                            }
-                        }
-                        for j in 0..o.len() {
-                            let x: &CloneInfo = &info[o[j] as usize];
-                            let ex = &mut exact_clonotypes[x.clonotype_index];
-                            let mut to_delete = vec![false; ex.ncells()];
-                            let mut ex_sum = 0;
-                            for k in 0..ex.ncells() {
-                                let li = ex.clones[k][0].dataset_index;
-                                if nu[li] >= MIN_BASELINE_CELLS {
-                                    let (mut umish, mut umisl) = (0, 0);
-                                    for l in 0..ex.share.len() {
-                                        if ex.share[l].left {
-                                            umish = max(umish, ex.clones[k][l].umi_count);
-                                        } else {
-                                            umisl = max(umish, ex.clones[k][l].umi_count);
-                                        }
-                                    }
-                                    let umitot = umish + umisl;
-                                    if pass == 1 {
-                                        ex_sum += umitot;
-                                    }
-                                    if pass == 2
-                                        && j == best_ex
-                                        && umitot > best_cell_count
-                                        && ex.share.len() > 1
-                                    {
-                                        best_cell = k;
-                                        best_cell_count = umitot;
-                                    }
-                                    if (umitot as f64) < umin[li] {
-                                        if pass == 1 {
-                                            nbads += 1;
-                                        } else if pass == 3 && protected {
-                                            if ex.share.len() == 1 {
-                                                to_delete[k] = true;
-                                                if ctl.clono_filt_opt.umi_filt_mark {
-                                                    ex.clones[k][0].marked = true;
-                                                }
-                                            }
-                                        } else if pass == 3 {
-                                            if !baselined
-                                                || (best_ex, best_cell) != (j, k)
-                                                || ex.share.len() == 1
-                                            {
-                                                to_delete[k] = true;
-                                                if ctl.clono_filt_opt.umi_filt_mark {
-                                                    ex.clones[k][0].marked = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    baselined = false;
-                                }
-                            }
-                            if pass == 1 && ex_sum > best_ex_sum {
-                                best_ex = j;
-                                best_ex_sum = ex_sum;
-                            }
-                            if pass == 3 && ctl.clono_filt_opt.umi_filt {
-                                for i in 0..ex.clones.len() {
-                                    if to_delete[i] {
-                                        fate[ex.clones[i][0].dataset_index].insert(
-                                            ex.clones[i][0].barcode.clone(),
-                                            "failed UMI filter".to_string(),
-                                        );
-                                    }
-                                }
-                                erase_if(&mut ex.clones, &to_delete);
                             }
                         }
                     }
                     for j in 0..o.len() {
                         let x: &CloneInfo = &info[o[j] as usize];
                         let ex = &mut exact_clonotypes[x.clonotype_index];
-                        if ex.ncells() == 0 {
-                            to_deletex[j] = true;
+                        let mut to_delete = vec![false; ex.ncells()];
+                        let mut ex_sum = 0;
+                        for k in 0..ex.ncells() {
+                            let li = ex.clones[k][0].dataset_index;
+                            if nu[li] >= MIN_BASELINE_CELLS {
+                                let (mut umish, mut umisl) = (0, 0);
+                                for l in 0..ex.share.len() {
+                                    if ex.share[l].left {
+                                        umish = max(umish, ex.clones[k][l].umi_count);
+                                    } else {
+                                        umisl = max(umish, ex.clones[k][l].umi_count);
+                                    }
+                                }
+                                let umitot = umish + umisl;
+                                if pass == 1 {
+                                    ex_sum += umitot;
+                                }
+                                if pass == 2
+                                    && j == best_ex
+                                    && umitot > best_cell_count
+                                    && ex.share.len() > 1
+                                {
+                                    best_cell = k;
+                                    best_cell_count = umitot;
+                                }
+                                if (umitot as f64) < umin[li] {
+                                    if pass == 1 {
+                                        nbads += 1;
+                                    } else if pass == 3 && protected {
+                                        if ex.share.len() == 1 {
+                                            to_delete[k] = true;
+                                            if ctl.clono_filt_opt.umi_filt_mark {
+                                                ex.clones[k][0].marked = true;
+                                            }
+                                        }
+                                    } else if pass == 3 {
+                                        if !baselined
+                                            || (best_ex, best_cell) != (j, k)
+                                            || ex.share.len() == 1
+                                        {
+                                            to_delete[k] = true;
+                                            if ctl.clono_filt_opt.umi_filt_mark {
+                                                ex.clones[k][0].marked = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                baselined = false;
+                            }
+                        }
+                        if pass == 1 && ex_sum > best_ex_sum {
+                            best_ex = j;
+                            best_ex_sum = ex_sum;
+                        }
+                        if pass == 3 {
+                            for i in 0..ex.clones.len() {
+                                if to_delete[i] {
+                                    fate[ex.clones[i][0].dataset_index].insert(
+                                        ex.clones[i][0].barcode.clone(),
+                                        "failed UMI filter".to_string(),
+                                    );
+                                }
+                            }
+                            if ctl.clono_filt_opt.umi_filt {
+                                erase_if(&mut ex.clones, &to_delete);
+                            }
                         }
                     }
-                    erase_if(&mut o, &to_deletex);
                 }
-                if ctl.clono_filt_opt.umi_filt && !o.is_empty() {
-                    orbits.push(o.clone());
+                for j in 0..o.len() {
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &mut exact_clonotypes[x.clonotype_index];
+                    if ex.ncells() == 0 {
+                        to_deletex[j] = true;
+                    }
                 }
+                erase_if(&mut o, &to_deletex);
+            }
+            if !o.is_empty() {
+                orbits.push(o.clone());
             }
         }
+        // }
     }
 
     // Filter B cells based on UMI count ratios.  This assumes V..J identity to filter.
