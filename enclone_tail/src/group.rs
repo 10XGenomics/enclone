@@ -1541,6 +1541,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" BC_DUP ") && !ctl.clono_filt_opt.bc_dup {
                     continue;
                 }
+                if f.1.contains(" IMPROPER ") && ctl.merge_all_impropers {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }
