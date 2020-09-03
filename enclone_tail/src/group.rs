@@ -1511,6 +1511,12 @@ pub fn group_and_print_clonotypes(
         let mut fates = Vec::<String>::new();
         for i in 0..fate.len() {
             for f in fate[i].iter() {
+                if f.1.contains(" GEX ") && ctl.clono_filt_opt.ngex {
+                    continue;
+                }
+                if f.1.contains(" CROSS ") && ctl.clono_filt_opt.ncross {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }

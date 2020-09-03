@@ -1514,11 +1514,13 @@ pub fn main_enclone(args: &Vec<String>) {
                         to_delete[k] = true;
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
                     }
-                } else if !ctl.clono_filt_opt.ngex && ctl.origin_info.gex_path[li].len() > 0 {
+                } else if ctl.origin_info.gex_path[li].len() > 0 {
                     let gbc = &gex_info.gex_cell_barcodes[li];
                     if !bin_member(&gbc, &bc) {
-                        to_delete[k] = true;
                         fate[li].insert(bc.clone(), "failed GEX filter".to_string());
+                        if !ctl.clono_filt_opt.ngex {
+                            to_delete[k] = true;
+                        }
                     }
                 }
             }
