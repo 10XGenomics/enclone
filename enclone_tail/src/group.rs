@@ -1535,6 +1535,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" FOURSIE_KILL ") && !ctl.clono_filt_opt.weak_foursies {
                     continue;
                 }
+                if f.1.contains(" WHITEF ") && ctl.gen_opt.nwhitef {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }
