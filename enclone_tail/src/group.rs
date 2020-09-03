@@ -1520,6 +1520,9 @@ pub fn group_and_print_clonotypes(
                 if f.1.contains(" UMI ") && !ctl.clono_filt_opt.umi_filt {
                     continue;
                 }
+                if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt.umi_ratio_filt {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }

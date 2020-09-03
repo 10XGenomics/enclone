@@ -1389,7 +1389,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Filter B cells based on UMI count ratios.  This assumes V..J identity to filter.
 
-    if is_bcr && (ctl.clono_filt_opt.umi_ratio_filt || ctl.clono_filt_opt.umi_ratio_filt_mark) {
+    if is_bcr {
         const MIN_UMI_RATIO: usize = 500;
         let mut orbits2 = Vec::<Vec<i32>>::new();
         'orbit: for i in 0..orbits.len() {
@@ -1465,7 +1465,8 @@ pub fn main_enclone(args: &Vec<String>) {
                             nbads += 1;
                         }
                     }
-                    if pass == 2 && ctl.clono_filt_opt.umi_ratio_filt {
+
+                    if pass == 2 {
                         for i in 0..ex.clones.len() {
                             if to_delete[j][i] {
                                 fate[ex.clones[i][0].dataset_index].insert(
@@ -1474,25 +1475,25 @@ pub fn main_enclone(args: &Vec<String>) {
                                 );
                             }
                         }
-                        erase_if(&mut ex.clones, &to_delete[j]);
-                        if ex.ncells() == 0 {
-                            to_deletex[j] = true;
+                        if ctl.clono_filt_opt.umi_ratio_filt {
+                            erase_if(&mut ex.clones, &to_delete[j]);
+                            if ex.ncells() == 0 {
+                                to_deletex[j] = true;
+                            }
                         }
                     }
                 }
                 if pass == 2 {
                     if ctl.clono_filt_opt.umi_ratio_filt {
                         erase_if(&mut o, &to_deletex);
-                        if !o.is_empty() {
-                            orbits2.push(o.clone());
-                        }
+                    }
+                    if !o.is_empty() {
+                        orbits2.push(o.clone());
                     }
                 }
             }
         }
-        if ctl.clono_filt_opt.umi_ratio_filt {
-            orbits = orbits2;
-        }
+        orbits = orbits2;
     }
 
     // Remove cells that are not called cells by GEX or feature barcodes.
