@@ -1062,6 +1062,17 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                        │  particular barcode has not been specified via BC or bc, then           │
 │                        │  its value is taken to be null.  Also multiple instances of             │
 │                        │  FCELL may be used to impose multiple filters.                          │
+│                        │                                                                         │
+│                        │  As a toy example, suppose you had a CSV file f having five lines:      │
+│                        │  barcode,nice                                                           │
+│                        │  AGCATACTCAGAGGTG-1,true                                                │
+│                        │  CGTGAGCGTATATGGA-1,true                                                │
+│                        │  CGTTAGAAGGAGTAGA-1,false                                               │
+│                        │  CGTTAGAAGGAGTAGA-1,dunno                                               │
+│                        │  then the command                                                       │
+│                        │  enclone BCR=123085 BC=f FCELL=nice=true                                │
+│                        │  would cause enclone to use only the first two barcodes shown in        │
+│                        │  the file.                                                              │
 └────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

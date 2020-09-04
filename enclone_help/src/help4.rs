@@ -256,6 +256,23 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             multiple filters.",
             60,
         );
+        h.doc("", "");
+        h.doc(
+            "",
+            "As a toy example, suppose you had a CSV file f having five lines:",
+        );
+        h.doc("", "barcode,nice");
+        h.doc("", "AGCATACTCAGAGGTG-1,true");
+        h.doc("", "CGTGAGCGTATATGGA-1,true");
+        h.doc("", "CGTTAGAAGGAGTAGA-1,false");
+        h.doc("", "CGTTAGAAGGAGTAGA-1,dunno");
+        h.doc("", "then the command");
+        h.doc("", "enclone BCR=123085 BC=f FCELL=nice=true");
+        h.doc(
+            "",
+            "would cause enclone to use only the first two barcodes shown in",
+        );
+        h.doc("", "the file.");
 
         // Done.
 
