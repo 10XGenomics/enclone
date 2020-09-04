@@ -29,55 +29,55 @@ pub fn filter_gelbead_contamination(
     mut clones: &mut Vec<Vec<TigData0>>,
     fate: &mut Vec<(usize, String, String)>,
 ) {
-    if !ctl.gen_opt.nwhitef {
-        const GB_UMI_MULT: usize = 10;
-        const GB_MIN_FRAC: f64 = 0.2;
-        let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
-        for l in 0..clones.len() {
-            let li = clones[l][0].dataset_index;
-            let bc = &clones[l][0].barcode;
-            let mut numi = 0;
-            for j in 0..clones[l].len() {
-                numi += clones[l][j].umi_count;
-            }
-            bch[0].push((li, bc[0..8].to_string(), numi, l));
-            bch[1].push((li, bc[8..16].to_string(), numi, l));
+    const GB_UMI_MULT: usize = 10;
+    const GB_MIN_FRAC: f64 = 0.2;
+    let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
+    for l in 0..clones.len() {
+        let li = clones[l][0].dataset_index;
+        let bc = &clones[l][0].barcode;
+        let mut numi = 0;
+        for j in 0..clones[l].len() {
+            numi += clones[l][j].umi_count;
         }
-        let mut bad = vec![false; clones.len()];
-        for l in 0..2 {
-            bch[l].sort();
-            let mut m = 0;
-            while m < bch[l].len() {
-                let n = next_diff12_4(&bch[l], m as i32) as usize;
-                let mut count = 0;
+        bch[0].push((li, bc[0..8].to_string(), numi, l));
+        bch[1].push((li, bc[8..16].to_string(), numi, l));
+    }
+    let mut bad = vec![false; clones.len()];
+    for l in 0..2 {
+        bch[l].sort();
+        let mut m = 0;
+        while m < bch[l].len() {
+            let n = next_diff12_4(&bch[l], m as i32) as usize;
+            let mut count = 0;
+            for u1 in m..n {
+                for u2 in m..n {
+                    if bch[l][u1].2 >= GB_UMI_MULT * bch[l][u2].2 {
+                        count += 1;
+                    }
+                }
+            }
+            if count as f64 / clones.len() as f64 >= GB_MIN_FRAC {
                 for u1 in m..n {
                     for u2 in m..n {
                         if bch[l][u1].2 >= GB_UMI_MULT * bch[l][u2].2 {
-                            count += 1;
+                            bad[bch[l][u2].3] = true;
                         }
                     }
                 }
-                if count as f64 / clones.len() as f64 >= GB_MIN_FRAC {
-                    for u1 in m..n {
-                        for u2 in m..n {
-                            if bch[l][u1].2 >= GB_UMI_MULT * bch[l][u2].2 {
-                                bad[bch[l][u2].3] = true;
-                            }
-                        }
-                    }
-                }
-                m = n;
             }
+            m = n;
         }
-        for i in 0..bad.len() {
-            if bad[i] {
-                fate.push((
-                    clones[i][0].dataset_index,
-                    clones[i][0].barcode.clone(),
-                    "failed WHITEF filter".to_string(),
-                ));
-            }
+    }
+    for i in 0..bad.len() {
+        if bad[i] {
+            fate.push((
+                clones[i][0].dataset_index,
+                clones[i][0].barcode.clone(),
+                "failed WHITEF filter".to_string(),
+            ));
         }
+    }
+    if !ctl.gen_opt.nwhitef {
         erase_if(&mut clones, &bad);
     }
 }
@@ -345,23 +345,23 @@ pub fn find_exact_subclonotypes(
         // the case where a barcode was accidentally reused.
 
         let mut to_delete = vec![false; s - r];
-        if ctl.clono_filt_opt.bc_dup {
-            for t1 in r..s {
-                for t2 in t1 + 1..s {
-                    if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+        for t1 in r..s {
+            for t2 in t1 + 1..s {
+                if tig_bc[t1][0].barcode == tig_bc[t2][0].barcode {
+                    if ctl.clono_filt_opt.bc_dup {
                         to_delete[t1 - r] = true;
                         to_delete[t2 - r] = true;
-                        res.2.push((
-                            tig_bc[t1][0].dataset_index,
-                            tig_bc[t1][0].barcode.clone(),
-                            "failed BC_DUP filter".to_string(),
-                        ));
-                        res.2.push((
-                            tig_bc[t2][0].dataset_index,
-                            tig_bc[t2][0].barcode.clone(),
-                            "failed BC_DUP filter".to_string(),
-                        ));
                     }
+                    res.2.push((
+                        tig_bc[t1][0].dataset_index,
+                        tig_bc[t1][0].barcode.clone(),
+                        "failed BC_DUP filter".to_string(),
+                    ));
+                    res.2.push((
+                        tig_bc[t2][0].dataset_index,
+                        tig_bc[t2][0].barcode.clone(),
+                        "failed BC_DUP filter".to_string(),
+                    ));
                 }
             }
         }

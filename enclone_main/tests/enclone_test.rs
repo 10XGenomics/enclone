@@ -106,12 +106,14 @@ fn test_for_parseable_redundancy() {
 // NOT BASIC
 
 // Make sure all help pages have been edited.
+// Also make sure that they do not contain backslashes, which are likely errors.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_pages_edited() {
     let all = read_dir("../pages/auto").unwrap();
+    let mut fail = false;
     for f in all {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();
@@ -132,6 +134,17 @@ fn test_help_pages_edited() {
                 std::process::exit(1);
             }
         }
+        let h = open_for_read![&format!("{}", f)];
+        for line in h.lines() {
+            let s = line.unwrap();
+            if s.contains("\\") {
+                eprintln!("\nIllegal backslash in {}, line is:\n{}\n", f, s);
+                fail = true;
+            }
+        }
+    }
+    if fail {
+        std::process::exit(1);
     }
 }
 
@@ -834,7 +847,7 @@ fn test_for_broken_links_and_spellcheck() {
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
-        moresies multiomic ncbi ncross newick nimproper \
+        moresies multiomic nall ncbi ncross newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phylip \
         plasmablast preinstalled prepends pwm pwms redownloads samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout subclonotype \

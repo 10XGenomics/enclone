@@ -240,85 +240,85 @@ pub fn delete_weaks(
 
     let cols = mat.len();
     // (column, pos, base, qual, row)
-    if ctl.clono_filt_opt.qual_filter {
-        let mut vquals = Vec::<(usize, usize, u8, u8, usize)>::new();
-        for u in 0..nexacts {
-            let clonotype_id = exacts[u];
-            let ex = &exact_clonotypes[clonotype_id];
-            for col in 0..cols {
-                let m = mat[col][u];
-                if m.is_some() {
-                    let m = m.unwrap();
-                    if ex.share[m].annv.len() > 1 {
-                        continue;
+    let mut vquals = Vec::<(usize, usize, u8, u8, usize)>::new();
+    for u in 0..nexacts {
+        let clonotype_id = exacts[u];
+        let ex = &exact_clonotypes[clonotype_id];
+        for col in 0..cols {
+            let m = mat[col][u];
+            if m.is_some() {
+                let m = m.unwrap();
+                if ex.share[m].annv.len() > 1 {
+                    continue;
+                }
+                let n = ex.share[m].seq_del.len();
+                let vref = &exact_clonotypes[exacts[u]].share[m].vs.to_ascii_vec();
+                let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
+                for z in 0..vars[col].len() {
+                    let p = vars[col][z];
+                    let b = ex.share[m].seq_del[p];
+                    let mut refdiff = false;
+                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                        refdiff = true;
                     }
-                    let n = ex.share[m].seq_del.len();
-                    let vref = &exact_clonotypes[exacts[u]].share[m].vs.to_ascii_vec();
-                    let jref = &exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
-                    for z in 0..vars[col].len() {
-                        let p = vars[col][z];
-                        let b = ex.share[m].seq_del[p];
-                        let mut refdiff = false;
-                        if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
-                            refdiff = true;
-                        }
-                        if p >= n - (jref.len() - ctl.heur.ref_j_trim)
-                            && b != jref[jref.len() - (n - p)]
-                        {
-                            refdiff = true;
-                        }
-                        if refdiff {
-                            for j in 0..ex.clones.len() {
-                                let qual = ex.clones[j][m].quals[p];
-                                vquals.push((col, p, b, qual, u));
-                            }
+                    if p >= n - (jref.len() - ctl.heur.ref_j_trim)
+                        && b != jref[jref.len() - (n - p)]
+                    {
+                        refdiff = true;
+                    }
+                    if refdiff {
+                        for j in 0..ex.clones.len() {
+                            let qual = ex.clones[j][m].quals[p];
+                            vquals.push((col, p, b, qual, u));
                         }
                     }
                 }
             }
         }
-        vquals.sort();
-        let mut j = 0;
-        while j < vquals.len() {
-            let mut k = j + 1;
-            while k < vquals.len() {
-                if vquals[k].0 != vquals[j].0
-                    || vquals[k].1 != vquals[j].1
-                    || vquals[k].2 != vquals[j].2
-                {
-                    break;
-                }
-                k += 1;
+    }
+    vquals.sort();
+    let mut j = 0;
+    while j < vquals.len() {
+        let mut k = j + 1;
+        while k < vquals.len() {
+            if vquals[k].0 != vquals[j].0
+                || vquals[k].1 != vquals[j].1
+                || vquals[k].2 != vquals[j].2
+            {
+                break;
             }
-            let mut q60 = false;
-            let mut q40 = 0;
-            for m in j..k {
-                if vquals[m].3 >= 60 {
-                    q60 = true;
-                } else if vquals[m].3 >= 40 {
-                    q40 += 1;
-                }
+            k += 1;
+        }
+        let mut q60 = false;
+        let mut q40 = 0;
+        for m in j..k {
+            if vquals[m].3 >= 60 {
+                q60 = true;
+            } else if vquals[m].3 >= 40 {
+                q40 += 1;
             }
-            if !q60 && q40 < 2 {
-                let u = vquals[j].4;
+        }
+        if !q60 && q40 < 2 {
+            let u = vquals[j].4;
+            if ctl.clono_filt_opt.qual_filter {
                 bads[u] = true;
-                let ex = &exact_clonotypes[exacts[u]];
-                for i in 0..ex.ncells() {
-                    fate.push((
-                        ex.clones[i][0].dataset_index,
-                        ex.clones[i][0].barcode.clone(),
-                        "failed QUAL filter".to_string(),
-                    ));
-                }
             }
-            j = k;
+            let ex = &exact_clonotypes[exacts[u]];
+            for i in 0..ex.ncells() {
+                fate.push((
+                    ex.clones[i][0].dataset_index,
+                    ex.clones[i][0].barcode.clone(),
+                    "failed QUAL filter".to_string(),
+                ));
+            }
         }
+        j = k;
     }
 
     // Based on the number of cells in each column, decide which exact subclonotypes
     // look like junk.  Preliminary heuristic.
 
-    if cols > 2 && ctl.clono_filt_opt.weak_chains {
+    if cols > 2 {
         let mut ncells = vec![0; cols];
         let mut col_entries = vec![Vec::<usize>::new(); cols];
         for u in 0..nexacts {
@@ -335,7 +335,9 @@ pub fn delete_weaks(
         for j in 0..cols {
             if ncells[j] <= 5 && 8 * ncells[j] < total_cells {
                 for d in col_entries[j].iter() {
-                    bads[*d] = true;
+                    if ctl.clono_filt_opt.weak_chains {
+                        bads[*d] = true;
+                    }
                     let ex = &exact_clonotypes[exacts[*d]];
                     for i in 0..ex.ncells() {
                         fate.push((

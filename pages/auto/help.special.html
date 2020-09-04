@@ -48,8 +48,8 @@ gtag('config', 'UA-58278925-3');
 
 This page documents some options, most of which allow noise filters to be turned off, and which
 normally should not be invoked.  Some of these options delete barcodes, and a summary of this
-action is included in the SUMMARY option.  At the bottom of this page we provide some other
-options that are not noise filters.
+action is included in the SUMMARY option.  See also the lead variable "filter", see "enclone help
+lvars".  At the bottom of this page we provide some other options that are not noise filters.
 
 ┌────────────────────────┬─────────────────────────────────────────────────────────────────────────┐
 │NALL                    │  Turn off all the noise filters shown below.  This may yield            │
@@ -177,6 +177,17 @@ options that are not noise filters.
 │                        │  particular barcode has not been specified via BC or bc, then           │
 │                        │  its value is taken to be null.  Also multiple instances of             │
 │                        │  FCELL may be used to impose multiple filters.                          │
+│                        │                                                                         │
+│                        │  As a toy example, suppose you had a CSV file f having five lines:      │
+│                        │  barcode,nice                                                           │
+│                        │  AGCATACTCAGAGGTG-1,true                                                │
+│                        │  CGTGAGCGTATATGGA-1,true                                                │
+│                        │  CGTTAGAAGGAGTAGA-1,false                                               │
+│                        │  CGTTAGAAGGAGTAGA-1,dunno                                               │
+│                        │  then the command                                                       │
+│                        │  enclone BCR=123085 BC=f FCELL=nice=true                                │
+│                        │  would cause enclone to use only the first two barcodes shown in        │
+│                        │  the file.                                                              │
 └────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>

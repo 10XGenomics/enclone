@@ -196,105 +196,105 @@ pub fn cross_filter(
     mut tig_bc: &mut Vec<Vec<TigData>>,
     fate: &mut Vec<HashMap<String, String>>,
 ) {
-    if !ctl.clono_filt_opt.ncross {
-        // Get the list of dataset origins.  Here we allow the same origin name to have been used
-        // for more than one donor, as we haven't explicitly prohibited that.
+    // Get the list of dataset origins.  Here we allow the same origin name to have been used
+    // for more than one donor, as we haven't explicitly prohibited that.
 
-        let mut origins = Vec::<(String, String)>::new();
-        for i in 0..ctl.origin_info.n() {
-            origins.push((
+    let mut origins = Vec::<(String, String)>::new();
+    for i in 0..ctl.origin_info.n() {
+        origins.push((
+            ctl.origin_info.donor_id[i].clone(),
+            ctl.origin_info.origin_id[i].clone(),
+        ));
+    }
+    unique_sort(&mut origins);
+    let mut to_origin = vec![0; ctl.origin_info.n()];
+    for i in 0..ctl.origin_info.n() {
+        to_origin[i] = bin_position(
+            &origins,
+            &(
                 ctl.origin_info.donor_id[i].clone(),
                 ctl.origin_info.origin_id[i].clone(),
-            ));
-        }
-        unique_sort(&mut origins);
-        let mut to_origin = vec![0; ctl.origin_info.n()];
-        for i in 0..ctl.origin_info.n() {
-            to_origin[i] = bin_position(
-                &origins,
-                &(
-                    ctl.origin_info.donor_id[i].clone(),
-                    ctl.origin_info.origin_id[i].clone(),
-                ),
-            ) as usize;
-        }
+            ),
+        ) as usize;
+    }
 
-        // For each dataset index, and each origin, compute the total number of productive pairs.
+    // For each dataset index, and each origin, compute the total number of productive pairs.
 
-        let mut n_dataset_index = vec![0; ctl.origin_info.n()];
-        let mut n_origin = vec![0; origins.len()];
+    let mut n_dataset_index = vec![0; ctl.origin_info.n()];
+    let mut n_origin = vec![0; origins.len()];
+    for i in 0..tig_bc.len() {
+        for j in 0..tig_bc[i].len() {
+            let x = &tig_bc[i][j];
+            n_dataset_index[x.dataset_index] += 1;
+            n_origin[to_origin[x.dataset_index]] += 1;
+        }
+    }
+
+    // Find all the V..J segments, and for each, the number of times it appears in each
+    // dataset ID.
+    //
+    // Note that there is no point running this unless we have at least two dataset IDs, and in
+    // fact unless there is an origin with at least two dataset IDs.  Better: just gather data
+    // for the origin for which there are at least two dataset IDs.  Also no point if NCROSS.
+
+    let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, dataset index, count)
+    {
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 let x = &tig_bc[i][j];
-                n_dataset_index[x.dataset_index] += 1;
-                n_origin[to_origin[x.dataset_index]] += 1;
+                vjx.push((x.seq.clone(), x.dataset_index, 1));
             }
         }
-
-        // Find all the V..J segments, and for each, the number of times it appears in each
-        // dataset ID.
-        //
-        // Note that there is no point running this unless we have at least two dataset IDs, and in
-        // fact unless there is an origin with at least two dataset IDs.  Better: just gather data
-        // for the origin for which there are at least two dataset IDs.  Also no point if NCROSS.
-
-        let mut vjx = Vec::<(Vec<u8>, usize, usize)>::new(); // (V..J, dataset index, count)
-        {
-            for i in 0..tig_bc.len() {
-                for j in 0..tig_bc[i].len() {
-                    let x = &tig_bc[i][j];
-                    vjx.push((x.seq.clone(), x.dataset_index, 1));
-                }
-            }
-            vjx.sort();
-            let mut to_delete = vec![false; vjx.len()];
-            let mut i = 0;
-            while i < vjx.len() {
-                let j = next_diff(&vjx, i); // actually only need to check first two fields
-                vjx[i].2 = j - i;
-                for k in i + 1..j {
-                    to_delete[k] = true;
-                }
-                i = j;
-            }
-            erase_if(&mut vjx, &to_delete);
-        }
-
-        // Now do the cross filter.
-
-        let mut blacklist = Vec::<Vec<u8>>::new();
+        vjx.sort();
+        let mut to_delete = vec![false; vjx.len()];
         let mut i = 0;
         while i < vjx.len() {
-            let j = next_diff1_3(&vjx, i as i32) as usize;
-            if j - i == 1 {
-                let dataset_index = vjx[i].1;
-                let n = vjx[i].2;
-                let x = n_dataset_index[dataset_index];
-                let y = n_origin[to_origin[dataset_index]];
-                if y > 0 {
-                    let p = (x as f64 / y as f64).powi(n as i32);
-                    if p <= 1.0e-6 {
-                        blacklist.push(vjx[i].0.clone());
-                    }
-                }
+            let j = next_diff(&vjx, i); // actually only need to check first two fields
+            vjx[i].2 = j - i;
+            for k in i + 1..j {
+                to_delete[k] = true;
             }
             i = j;
         }
-        blacklist.sort();
-        let mut to_delete = vec![false; tig_bc.len()];
-        const UMIS_SAVE: usize = 100;
-        for i in 0..tig_bc.len() {
-            for j in 0..tig_bc[i].len() {
-                if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
-                    fate[tig_bc[i][0].dataset_index].insert(
-                        tig_bc[i][0].barcode.clone(),
-                        "failed CROSS filter".to_string(),
-                    );
-                    to_delete[i] = true;
-                    break;
+        erase_if(&mut vjx, &to_delete);
+    }
+
+    // Now do the cross filter.
+
+    let mut blacklist = Vec::<Vec<u8>>::new();
+    let mut i = 0;
+    while i < vjx.len() {
+        let j = next_diff1_3(&vjx, i as i32) as usize;
+        if j - i == 1 {
+            let dataset_index = vjx[i].1;
+            let n = vjx[i].2;
+            let x = n_dataset_index[dataset_index];
+            let y = n_origin[to_origin[dataset_index]];
+            if y > 0 {
+                let p = (x as f64 / y as f64).powi(n as i32);
+                if p <= 1.0e-6 {
+                    blacklist.push(vjx[i].0.clone());
                 }
             }
         }
-        erase_if(&mut tig_bc, &to_delete);
+        i = j;
     }
+    blacklist.sort();
+    let mut to_delete = vec![false; tig_bc.len()];
+    const UMIS_SAVE: usize = 100;
+    for i in 0..tig_bc.len() {
+        for j in 0..tig_bc[i].len() {
+            if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
+                fate[tig_bc[i][0].dataset_index].insert(
+                    tig_bc[i][0].barcode.clone(),
+                    "failed CROSS filter".to_string(),
+                );
+                if !ctl.clono_filt_opt.ncross {
+                    to_delete[i] = true;
+                }
+                break;
+            }
+        }
+    }
+    erase_if(&mut tig_bc, &to_delete);
 }

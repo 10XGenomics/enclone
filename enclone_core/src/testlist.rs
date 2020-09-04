@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 144] = [
+pub const TESTS: [&str; 145] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -362,6 +362,9 @@ pub const TESTS: [&str; 144] = [
     r###"BCR=123085 CDR3=CARVRDILTGDYGMDVW DIFF_STYLE=C2"###,
     // 144. test 3/3 of DIFF_STYLE
     r###"BCR=123085 CDR3=CAREPLYYDFWSAYFDYW DIFF_STYLE=C1"###,
+    // 145. test the lead variable "filter"
+    r###"BCR=123085 NALL LVARSP=filter PER_CELL CHAINS=2 CDR3=CQQSYSTPPYTF SEG=IGKV1D-39
+        SEG=IGLV3-21"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.

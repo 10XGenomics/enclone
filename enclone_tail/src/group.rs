@@ -1511,6 +1511,39 @@ pub fn group_and_print_clonotypes(
         let mut fates = Vec::<String>::new();
         for i in 0..fate.len() {
             for f in fate[i].iter() {
+                if f.1.contains(" GEX ") && ctl.clono_filt_opt.ngex {
+                    continue;
+                }
+                if f.1.contains(" CROSS ") && ctl.clono_filt_opt.ncross {
+                    continue;
+                }
+                if f.1.contains(" UMI ") && !ctl.clono_filt_opt.umi_filt {
+                    continue;
+                }
+                if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt.umi_ratio_filt {
+                    continue;
+                }
+                if f.1.contains(" GRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
+                    continue;
+                }
+                if f.1.contains(" QUAL") && !ctl.clono_filt_opt.qual_filter {
+                    continue;
+                }
+                if f.1.contains(" WEAK_CHAINS ") && !ctl.clono_filt_opt.weak_chains {
+                    continue;
+                }
+                if f.1.contains(" FOURSIE_KILL ") && !ctl.clono_filt_opt.weak_foursies {
+                    continue;
+                }
+                if f.1.contains(" WHITEF ") && ctl.gen_opt.nwhitef {
+                    continue;
+                }
+                if f.1.contains(" BC_DUP ") && !ctl.clono_filt_opt.bc_dup {
+                    continue;
+                }
+                if f.1.contains(" IMPROPER ") && ctl.merge_all_impropers {
+                    continue;
+                }
                 fates.push(f.1.clone());
             }
         }

@@ -13,7 +13,7 @@ use vector_utils::*;
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 29] = [
+pub const LVARS_ALLOWED: [&str; 30] = [
     "datasets",
     "origins",
     "donors",
@@ -43,6 +43,7 @@ pub const LVARS_ALLOWED: [&str; 29] = [
     "mait",
     "sec",
     "mem",
+    "filter",
 ];
 
 // Chain variables that can be used for contigs and chains
@@ -832,6 +833,7 @@ pub fn justification(x: &str) -> u8 {
         || (x.ends_with("_aa") && x != "dref_aa")
         || x.ends_with("_dna")
         || x.ends_with("_name")
+        || x.ends_with("_indices")
         || x == "cdiff"
         || x == "notes"
         || x == "edit"
@@ -840,13 +842,12 @@ pub fn justification(x: &str) -> u8 {
         || x == "ext"
         || x == "barcode"
         || x == "barcodes"
+        || x == "filter"
         || x.starts_with("vj_seq")
         || x.starts_with("vj_seq_nl")
         || x.starts_with("vj_aa_nl")
         || x.starts_with("seq")
         || x.starts_with("q")
-        || x.starts_with("var_indices")
-        || x.starts_with("share_indices")
         || x.ends_with("_barcode")
         || x.ends_with("_barcodes")
     {
