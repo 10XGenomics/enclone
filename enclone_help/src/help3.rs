@@ -391,7 +391,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "BARCODE=bc1,...,bcn",
             "only show clonotypes that use one of the given barcodes; note that such",
         );
-        h.doc(
+        h.docpr(
             "",
             "clonotypes will typically contain cells that are \\bold{not} in your",
         );
@@ -399,7 +399,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "list; if you want to fully restrict to a list of barcodes you can use",
         );
-        h.doc(
+        h.docpr(
             "",
             "the \\bold{FCELL} option, please see \"enclone help special\"",
         );
