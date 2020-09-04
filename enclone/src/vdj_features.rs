@@ -394,10 +394,7 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Given the amino acid sequence for a V reference sequence, attempt to find the start of the
-// FR3 region.
-
-pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
     // First find the start of the CDR3.
 
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
@@ -419,7 +416,18 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
         scores.push((score, j + nm));
     }
     reverse_sort(&mut scores);
-    let cdr3_start = scores[0].1;
+    scores[0].1
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Given the amino acid sequence for a V reference sequence, attempt to find the start of the
+// FR3 region.
+
+pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+    // First find the start of the CDR3.
+
+    let cdr3_start = cdr3_start(&aa, &chain_type, verbose);
     /*
     use string_utils::*;
     println!(
