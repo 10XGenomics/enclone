@@ -128,11 +128,11 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 
     // #20
 
-    pwm.push(vec![]);
+    pwm.push(vec![(30, b'T')]);
 
     // #21
 
-    pwm.push(vec![(100, b'L'), (100, b'I'), (100, b'V'), (100, b'M')]);
+    pwm.push(vec![(200, b'L'), (200, b'I'), (200, b'V'), (200, b'M')]);
 
     // #22
 

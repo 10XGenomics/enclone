@@ -307,8 +307,13 @@ We use the following PWM:
     <td align="values" style="border: 2px solid black">V</td>
 </tr>
 <tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">30</td>
+    <td align="values" style="border: 2px solid black">T</td>
+</tr>
+<tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">3</td>
-    <td align="right" style="border: 2px solid black">100</td>
+    <td align="right" style="border: 2px solid black">200</td>
     <td align="values" style="border: 2px solid black">I, L, M, V</td>
 </tr>
 <tr style="border: 2px solid black">
