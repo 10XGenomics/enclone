@@ -16,11 +16,15 @@ The content here is geeky and technical.
 <hr>
 
 <p><b>Foursie filtering.</b>  
-For each foursie exact subclonotype, enclone looks at each pair of two chains within it
-(with one heavy and one light, or TRB/TRA), and if the V..J sequences for those appear in
-a twosie exact subclonotype having at least ten cells, then the foursie exact subclonotype
-is deleted, no matter how many cells it has.  For example, this shows two foursie clonotypes
-that are present if the filtering is off:
+Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
+<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
+the actual biology of single cells, we do not do this.  However we never merge them with other
+exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
+doublets.  Specifically, for each foursie exact subclonotype, #enclone looks at each pair of two 
+chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
+appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
+subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
+clonotypes that are present if the filtering is off:
 
 <pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
 </code></pre>
