@@ -11,6 +11,9 @@
 // modified to add a fake leader sequence on the left (we use MXXXXXXXXXXXXXXXXXXXX), and to
 // truncate on the right to trim a bit beyond the start of the CDR3.
 
+// THIS IS A COPY FROM THE ENCLONE REPO TO FACILITATE EXPERIMENTATION!
+
+use string_utils::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -167,7 +170,8 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             }
         }
         if verbose {
-            println!("j = {}, score = {}", j, score);
+            let seq = &aa[j..j + pwm.len()];
+            println!("j = {}, seq = {}, score = {}", j, strme(&seq), score);
         }
         score_pos.push((score, j));
     }
