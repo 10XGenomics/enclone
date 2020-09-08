@@ -151,13 +151,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NFOURSIE_KILL",
-            "By default, if enclone finds a foursie exact subclonotype that \
-            contains a twosie exact subclonotype having at least ten cells, it kills \
-            the foursie exact subclonotype, no matter how many cells it has.  The \
-            foursies that are killed are believed to be rare oddball artifacts arising \
+            "Under certain circumstances, enclone will delete foursie exact subclonotypes.  \
+            Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
+            The foursies that are killed are believed to be artifacts arising \
             from repeated cell doublets or GEMs that contain two cells and multiple gel \
             beads.  The argument NFOURSIE_KILL turns off this filtering.",
-            60,
+            65,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);

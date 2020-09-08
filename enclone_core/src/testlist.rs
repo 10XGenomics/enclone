@@ -399,7 +399,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 10] = [
+pub const SITE_EXAMPLES: [(&str, &str); 12] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -458,5 +458,15 @@ pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     (
         "pages/auto/mait_example.html",
         "TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF HTML",
+    ),
+    // 11.
+    (
+        "pages/auto/foursie1.html",
+        "BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL HTML",
+    ),
+    // 12.
+    (
+        "pages/auto/foursie2.html",
+        "BCR=123085 CDR3=CARRYFGVVADAFDIW HTML",
     ),
 ];

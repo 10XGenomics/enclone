@@ -124,14 +124,13 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                        │  0.01% of the total number of cells.  NMERGE_ONESIES causes             │
 │                        │  these merges to happen anyway.                                         │
 ├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NFOURSIE_KILL           │  By default, if enclone finds a foursie exact subclonotype              │
-│                        │  that contains a twosie exact subclonotype having at least              │
-│                        │  ten cells, it kills the foursie exact subclonotype, no                 │
-│                        │  matter how many cells it has.  The foursies that are killed            │
-│                        │  are believed to be rare oddball artifacts arising from                 │
-│                        │  repeated cell doublets or GEMs that contain two cells and              │
-│                        │  multiple gel beads.  The argument NFOURSIE_KILL turns off              │
-│                        │  this filtering.                                                        │
+│NFOURSIE_KILL           │  Under certain circumstances, enclone will delete foursie exact         │
+│                        │  subclonotypes.  Please see                                             │
+│                        │  https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.      │
+│                        │   The foursies that are killed are believed to be artifacts             │
+│                        │  arising from repeated cell doublets or GEMs that contain two           │
+│                        │  cells and multiple gel beads.  The argument NFOURSIE_KILL turns        │
+│                        │  off this filtering.                                                    │
 ├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │NWHITEF                 │  By default, enclone filters out rare artifacts arising from            │
 │                        │  contamination of oligos on gel beads.  The NWHITEF option              │
