@@ -49,11 +49,20 @@ The content here is geeky and technical.
 
 <hr>
 
+<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
+is a chain that appears in a relatively small number of cells, we delete all the cells that support
+that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
+condition is that the number of cells supporting the chain is at most <code>5</code>, and 
+<code>8</code> times that number of cell is less than the total number of cells in the clonotype.
+
+<hr>
+
 <p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
 made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
 observed in different libraries should be statistically consistent.  Otherwise, they likely 
 represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
-apply the following test as a proxy for statistical consistency:
+apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
+specified):
 </p>
 
 <p>
