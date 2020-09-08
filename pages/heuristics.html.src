@@ -14,6 +14,26 @@ is geeky and technical.
 
 <hr>
 
+<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
+made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
+observed in different libraries should be statistically consistent.  Otherwise, they likely 
+represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
+apply the following test as a proxy for statistical consistency:
+</p>
+
+<p>
+If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
+<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
+the total number of productive pairs for all datasets from the same origin.  
+If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
+instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
+V..J segment that do not have at least <code>100</code> supporting UMIs.
+</p>
+
+<p>This test could clearly be strengthened.</p>
+
+<hr>
+
 <p><b>UMI filtering.</b>  #enclone filters out B cells having low UMI counts, relative to a baseline
 that is determined for each dataset, according to a
 heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
