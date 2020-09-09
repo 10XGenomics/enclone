@@ -187,6 +187,13 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
     if chain_type.starts_with("TR") || chain_type == "IGH" {
         add = 6;
     }
+    if score_pos.is_empty() {
+        eprintln!(
+            "\ncdr1_start encountered empty score_pos;\naa = {}\n",
+            strme(&aa)
+        );
+        std::process::exit(1);
+    }
     score_pos[0].1 + add + 2
 }
 
