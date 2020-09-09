@@ -1629,9 +1629,17 @@ pub fn group_and_print_clonotypes(
         if n2 > 0 || n4 > 0 {
             doublet_rate = n4 as f64 / (n2 + n4) as f64;
         }
+        let celltype;
+        if ctl.gen_opt.bcr {
+            celltype = "B";
+        } else {
+            celltype = "T";
+        }
         fwrite!(
             logx,
-            "   • estimated doublet rate = {:.1}% = {}/{}",
+            "   • estimated {}-{} doublet rate = {:.1}% = {}/{}",
+            celltype,
+            celltype,
             100.0 * doublet_rate,
             n4,
             n2 + n4
