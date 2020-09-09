@@ -288,6 +288,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that set something to true.
 
     let mut set_true = vec![
+        ("ACCEPT_BROKEN", &mut ctl.gen_opt.accept_broken),
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),

@@ -422,6 +422,7 @@ pub struct GeneralOpt {
     pub const_igh: Option<Regex>,
     pub const_igkl: Option<Regex>,
     pub diff_style: String,
+    pub accept_broken: bool,
 }
 
 // Allele-finding algorithmic options.

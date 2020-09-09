@@ -752,6 +752,54 @@ pub fn main_enclone(args: &Vec<String>) {
         to_ref_index.insert(refdata.id[i] as usize, i);
     }
 
+    // Flag defective reference sequences.
+
+    let mut log = Vec::<u8>::new();
+    let mut count = 0;
+    for i in 0..refdata.refs.len() {
+        if refdata.is_v(i) {
+            let seq = refdata.refs[i].to_ascii_vec();
+            let aa = aa_seq(&seq, 0);
+            if !aa.starts_with(b"M") {
+                count += 1;
+                fwriteln!(
+                    log,
+                    "{}. The following V segment reference sequence does not begin \
+                    with a start codon:\n",
+                    count
+                );
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders[i], strme(&seq));
+            }
+        }
+    }
+    if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
+        eprintln!(
+            "\n{} errors were detected in the reference sequences supplied to enclone.\n\
+            Please see comments at end for what you can do about this.\n",
+            count
+        );
+        eprint!("{}", strme(&log));
+        eprintln!(
+            "{} errors were detected in the reference sequences supplied to enclone.",
+            count
+        );
+        eprintln!(
+            "\nDefective reference sequences are a problem because they can result in \
+            misannotation."
+        );
+        eprintln!(
+            "\nYou have the following options:\n\
+            1. Override this test by supplying the argument ACCEPT_BROKEN.  Or you can define\n   \
+            the environment variable ENCLONE_ACCEPT_BROKEN.\n\
+            2. Fix the defects in the reference sequences.\n\
+            3. Delete the defective reference sequences.\n\
+            4. Use the reference sequences that are packaged with enclone (for human and mouse).\n\
+            \nNote that for options 2-4, you will then need to run with the option RE to force \
+            reannotation,\nor else rerun Cell Ranger.\n"
+        );
+        std::process::exit(1);
+    }
+
     // Determine if the species is human or mouse or unknown.
 
     ctl.gen_opt.species = species(&refdata);
