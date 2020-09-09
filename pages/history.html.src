@@ -35,7 +35,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <span style="color:red">
 Test for defective reference sequences and exit if they're found (allowing for override).
 </span>
-Currently the only thing that is tested is that V segment reference sequences being with a
+Currently the only thing that is tested is that V segment reference sequences begin with a
 start codon.
 </li>
 <li>
