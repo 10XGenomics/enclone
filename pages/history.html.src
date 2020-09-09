@@ -29,6 +29,13 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>9/11/20</b>: Tweak the computations of FWR1 and CDR1 start positions.  The page
+<a href="../../pages/auto/features.html">this page</a> has been updated accordingly.  The
+results for tests of species described on that page did not change, but there were changes to
+other species, including a few changes for horse.
+</p>
+
+<p>
 <b>9/4/20</b>: Add the capability of seeing which default filters would have been applied, if
 the filters are turned off.  See the lead variable "filter" at 
 <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.

@@ -255,8 +255,8 @@ begins with a start codon.
 </p>
 
 <p>
-We first compute the zero-based start <code>s</code> of the CDR1 region (see next section), and then 
-search the first <code>s+15</code> amino acids in the V region, looking for the following PWM:
+We search the first <code>40</code> (<code>25</code> for IGL) amino acids in the V region,
+looking for the following PWM:
 
 <table rules="all" cellpadding="6" style="border: 2px solid black">
 <thead>
@@ -368,9 +368,9 @@ We use the following PWM:
 </table>
 
 <p>
-and search for this motif, starting at zero-based positions between 25 and 47, inclusive.
-As with FWR1, the highest scoring position is declared the winner.  The value returned by
-the function then depends on the chain type.  For IGK and IGL, we return 5 plus the winning
+and search for this motif, starting at zero-based positions between 25 and the FWR1 start plus 19, 
+inclusive.  As with FWR1, the highest scoring position is declared the winner.  The value returned 
+by the function then depends on the chain type.  For IGK and IGL, we return 5 plus the winning
 position, and for other chain types, we return 8 plus the winning position.
 </p>
 

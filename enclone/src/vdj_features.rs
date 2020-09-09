@@ -84,10 +84,9 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 
     // Score positions.
 
-    let cdr1 = cdr1_start(&aa, &chain_type, false);
     let mut score_pos = Vec::<(usize, usize)>::new();
     for j in 0..=aa.len() - pwm.len() {
-        if j + 15 > cdr1 {
+        if j > 40 || (chain_type == "IGL" && j > 25) {
             break;
         }
         let mut score = 0;
@@ -157,8 +156,12 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
     // Score positions.
 
     let mut score_pos = Vec::<(usize, usize)>::new();
+    let fr1 = fr1_start(&aa, &chain_type);
     for j in 0..=aa.len() - pwm.len() {
-        if j > 39 + z - 1 || j < 7 + z - 1 {
+        if j + pwm.len() > fr1 + 27 {
+            continue;
+        }
+        if j < 7 + z - 1 {
             continue;
         }
         let mut score = 0;
