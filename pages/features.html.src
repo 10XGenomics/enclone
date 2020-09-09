@@ -232,44 +232,51 @@ looking for the following PWM:
 <th align="right" style="border: 2px solid black">pos</th>
 <th align="right" style="border: 2px solid black">weight</th>
 <th align="left" style="border: 2px solid black">values</th>
+<th align="left" style="border: 2px solid black">notes</th>
 </tr>
 </thead>
 <tbody>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">1</td>
     <td align="right" style="border: 2px solid black">150</td>
-    <td align="values" style="border: 2px solid black">D, E, G, K, Q</td>
+    <td align="left" style="border: 2px solid black">D, E, G, K, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">2</td>
     <td align="right" style="border: 2px solid black">50</td>
-    <td align="values" style="border: 2px solid black">A, I, Q, V</td>
+    <td align="left" style="border: 2px solid black">A, I, Q, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">4</td>
     <td align="right" style="border: 2px solid black">100</td>
-    <td align="values" style="border: 2px solid black">L, M, V</td>
+    <td align="left" style="border: 2px solid black">L, M, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">6</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">E, Q</td>
+    <td align="left" style="border: 2px solid black">E, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">22</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">use weight 500 for IGH</td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">23</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tbody>
 </table>
 
 <p>
-<b>Example.</b>  Suppose that starting at a particular position, we
+<b>Example.</b>  Suppose that for IGH, starting at a particular position, we
 observe the following amino acids (downward reading relative column positions shown for clarity):
 <pre>
 <code>         11111111112222</code>
@@ -278,11 +285,11 @@ observe the following amino acids (downward reading relative column positions sh
 </pre>
 
 Then the total score for the particular position would be 
-<code>150 + 50 + 100 + 250 + 250 + 0 = 800</code>, which is
+<code>150 + 50 + 100 + 250 + 500 + 0 = 1050</code>, which is
 the maximum score one could normally get, since the likelihood of observing a <code>C</code>
-at both positions <code>22</code> and <code>23</code> is very small.  The position would almost certainly 
-be the "winner" and thus declared the start of the FWR1 region.  We make one exception: if the first
-codon is C, we add one to the start position.
+at both positions <code>22</code> and <code>23</code> is very small.  The position would almost 
+certainly be the "winner" and thus declared the start of the FWR1 region.  We make one 
+exception: if the first codon is C, we add one to the start position.
 </p>
 
 <hr>

@@ -76,7 +76,11 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 
     // #22
 
-    pwm.push(vec![(250, b'C')]);
+    if chain_type == "IGH" {
+        pwm.push(vec![(500, b'C')]);
+    } else {
+        pwm.push(vec![(250, b'C')]);
+    }
 
     // #23
 
