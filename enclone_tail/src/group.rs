@@ -1640,14 +1640,25 @@ pub fn group_and_print_clonotypes(
 
         // Print UMI stats.
 
+        let hchain;
+        let lchain;
+        if ctl.gen_opt.bcr {
+            hchain = "heavy chain";
+            lchain = "light chain";
+        } else {
+            hchain = "TRB";
+            lchain = "TRA";
+        }
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (heavy chain / TRB) = {:.2}",
+            "   • mean over middle third of contig UMI counts ({}) = {:.2}",
+            hchain,
             middle_mean_umish,
         );
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
+            "   • mean over middle third of contig UMI counts ({}) = {:.2}",
+            lchain,
             middle_mean_umisl,
         );
 
