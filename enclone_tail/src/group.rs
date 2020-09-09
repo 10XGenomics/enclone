@@ -1394,8 +1394,7 @@ pub fn group_and_print_clonotypes(
                 read_pairs += cells * rpc;
             }
             let rpc = ((read_pairs as f64) / (cells as f64)).round();
-            fwriteln!(logx, "   • cells (from cellranger) = {}", cells);
-            fwriteln!(logx, "   • read pairs per cell (from cellranger) = {}", rpc);
+            fwriteln!(logx, "   • read pairs per cell = {}", rpc);
         }
 
         // Print computational performance stats.
