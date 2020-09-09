@@ -634,7 +634,7 @@ pub fn main_enclone(args: &Vec<String>) {
             eprintln!("\nProblem with REF: it is not a FASTA file.\n");
             std::process::exit(1);
         }
-    } else if ctl.gen_opt.mouse && refx.len() == 0 {
+    } else if ctl.gen_opt.mouse && refx.len() == 0 && !ctl.gen_opt.imgt {
         if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
             if ctl.gen_opt.descrip {
                 println!("using old mouse reference");
@@ -648,26 +648,40 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     } else if refx.len() == 0 {
         if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
-            let imgt =
-                "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
-            if ctl.gen_opt.descrip {
-                println!("using imgt human reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let mut s = line.unwrap();
-                if ctl.gen_opt.imgt_fix {
-                    // Fix IGHJ6.
-                    if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
-                        .to_string()
-                        || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
-                            .to_string()
-                    {
-                        s += "G";
-                    }
+            if !ctl.gen_opt.mouse {
+                let imgt =
+                    "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
+                if ctl.gen_opt.descrip {
+                    println!("using imgt human reference");
                 }
-                refx += &s;
-                refx += &"\n";
+                let f = open_for_read![imgt];
+                for line in f.lines() {
+                    let mut s = line.unwrap();
+                    if ctl.gen_opt.imgt_fix {
+                        // Fix IGHJ6.
+                        if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
+                            .to_string()
+                            || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
+                                .to_string()
+                        {
+                            s += "G";
+                        }
+                    }
+                    refx += &s;
+                    refx += &"\n";
+                }
+            } else {
+                let imgt =
+                    "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_mouse_20180723-2.2.0/fasta/regions.fa";
+                if ctl.gen_opt.descrip {
+                    println!("using imgt mouse reference");
+                }
+                let f = open_for_read![imgt];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    refx += &s;
+                    refx += &"\n";
+                }
             }
             ctl.gen_opt.reannotate = true;
         } else if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
