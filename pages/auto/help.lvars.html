@@ -109,12 +109,12 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │               │  consist of mixed cell types, rather than consisting of pure B or T cells.   │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │filter         │  See "enclone help special".  Use with PER_CELL.  If you turn off some       │
-│               │  default filters (or all default filters, e.g. with NALL), and this cell     │
-│               │  would have been deleted by one of the default filters, then this will show  │
-│               │  the name of the last filter that would have been applied to delete the      │
+│               │  default filters (or all default filters, e.g. with NALL_CELL), and this     │
+│               │  cell would have been deleted by one of the default filters, then this will  │
+│               │  show the name of the last filter that would have been applied to delete the │
 │               │  cell.  Note that there are complex interactions between filters, so the     │
-│               │  actual effect with all default filters on may not be identical in all       │
-│               │  cases.  Note also that use of NALL will typically result in peculiar        │
+│               │  actual effect with all default filters on may be significantly different.   │
+│               │  Note also that use of NALL_CELL will typically result in peculiar           │
 │               │  artifacts, so this should only be used as an exploratory tool.              │
 └───────────────┴──────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
