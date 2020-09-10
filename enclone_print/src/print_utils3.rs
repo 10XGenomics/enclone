@@ -64,7 +64,7 @@ pub fn define_column_info(
     let mut fr1_starts = Vec::<usize>::new();
     let mut fr2_starts = Vec::<usize>::new();
     let mut fr3_starts = Vec::<usize>::new();
-    let mut cdr1_starts = Vec::<usize>::new();
+    let mut cdr1_starts = Vec::<Option<usize>>::new();
     let mut cdr2_starts = Vec::<usize>::new();
     let mut cdr3_starts = Vec::<usize>::new();
     let mut cdr3_lens = Vec::<usize>::new();
@@ -83,13 +83,17 @@ pub fn define_column_info(
 
                 // The logic below with testing i < start while incrementing start seems fishy.
 
-                let mut start = exm.cdr1_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.cdr1_start.is_some() {
+                    let mut start = exm.cdr1_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    cdr1_starts.push(Some(start));
+                } else {
+                    cdr1_starts.push(None);
                 }
-                cdr1_starts.push(start);
                 let mut start = exm.cdr2_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -592,25 +596,59 @@ pub fn build_table_stuff(
                         let mut ch = vec![' '; n];
                         let amino = &ctl.clono_print_opt.amino;
                         let x = &exact_clonotypes[exacts[u]].share[m];
+                        let mut cs1 = 0;
+                        if rsi.cdr1_starts[cx].is_some() {
+                            cs1 = rsi.cdr1_starts[cx].unwrap();
+                        }
                         let fields = [
-                            ("fwr1".to_string(), rsi.fr1_starts[cx], rsi.cdr1_starts[cx]),
-                            ("fwr2".to_string(), rsi.fr2_starts[cx], rsi.cdr2_starts[cx]),
-                            ("fwr3".to_string(), rsi.fr3_starts[cx], rsi.cdr3_starts[cx]),
-                            ("cdr1".to_string(), rsi.cdr1_starts[cx], rsi.fr2_starts[cx]),
-                            ("cdr2".to_string(), rsi.cdr2_starts[cx], rsi.fr3_starts[cx]),
+                            (
+                                "fwr1".to_string(),
+                                rsi.fr1_starts[cx],
+                                cs1,
+                                rsi.cdr1_starts[cx].is_some(),
+                            ),
+                            (
+                                "fwr2".to_string(),
+                                rsi.fr2_starts[cx],
+                                rsi.cdr2_starts[cx],
+                                true,
+                            ),
+                            (
+                                "fwr3".to_string(),
+                                rsi.fr3_starts[cx],
+                                rsi.cdr3_starts[cx],
+                                true,
+                            ),
+                            (
+                                "cdr1".to_string(),
+                                cs1,
+                                rsi.fr2_starts[cx],
+                                rsi.cdr1_starts[cx].is_some(),
+                            ),
+                            (
+                                "cdr2".to_string(),
+                                rsi.cdr2_starts[cx],
+                                rsi.fr3_starts[cx],
+                                true,
+                            ),
                             (
                                 "cdr3".to_string(),
                                 rsi.cdr3_starts[cx],
                                 rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                                true,
                             ),
                             (
                                 "fwr4".to_string(),
                                 rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
                                 rsi.seq_del_lens[cx] - 1,
+                                true,
                             ),
                         ];
                         for z in 0..fields.len() {
-                            if amino.contains(&fields[z].0) && fields[z].1 <= fields[z].2 {
+                            if amino.contains(&fields[z].0)
+                                && fields[z].3
+                                && fields[z].1 <= fields[z].2
+                            {
                                 let cs1 = fields[z].1 / 3;
                                 let mut ch_start = 0;
                                 for k in 0..show.len() {

@@ -118,7 +118,7 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 // conventions appear to differ by fixed offsets.  The convention used here is for IMGT.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     // Define PWM for eight amino acids.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -188,13 +188,9 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
         add = 6;
     }
     if score_pos.is_empty() {
-        eprintln!(
-            "\ncdr1_start encountered empty score_pos;\naa = {}\n",
-            strme(&aa)
-        );
-        panic!(0 == 1);
+        return None;
     }
-    score_pos[0].1 + add + 2
+    Some(score_pos[0].1 + add + 2)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -706,7 +702,7 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 // Chain type is one of IGH, IGK, IGL, TRA or TRB, and is not used at the moment.
 
 pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Vec<u8> {
-    aa[cdr1_start(&aa, chain_type, verbose)..fr2_start(&aa, chain_type, verbose)].to_vec()
+    aa[cdr1_start(&aa, chain_type, verbose).unwrap()..fr2_start(&aa, chain_type, verbose)].to_vec()
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

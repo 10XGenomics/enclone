@@ -472,7 +472,7 @@ fn parse_vector_entry_from_json(
         c_ref_id: c_ref_id,
         u_ref_id: u_ref_id,
         fr1_start: 0,
-        cdr1_start: 0,
+        cdr1_start: Some(0),
         fr2_start: 0,
         cdr2_start: 0,
         fr3_start: 0,

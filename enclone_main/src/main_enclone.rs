@@ -911,7 +911,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut fr1_starts = vec![0; refdata.refs.len()];
     let mut fr2_starts = vec![0; refdata.refs.len()];
     let mut fr3_starts = vec![0; refdata.refs.len()];
-    let mut cdr1_starts = vec![0; refdata.refs.len()];
+    let mut cdr1_starts = vec![None; refdata.refs.len()];
     let mut cdr2_starts = vec![0; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
@@ -934,7 +934,10 @@ pub fn main_enclone(args: &Vec<String>) {
             fr1_starts[i] = 3 * fr1_start(&aa, &chain_type);
             fr2_starts[i] = 3 * fr2_start(&aa, &chain_type, false);
             fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
-            cdr1_starts[i] = 3 * cdr1_start(&aa, &chain_type, false);
+            let cs1 = cdr1_start(&aa, &chain_type, false);
+            if cs1.is_some() {
+                cdr1_starts[i] = Some(3 * cs1.unwrap());
+            }
             cdr2_starts[i] = 3 * cdr2_start(&aa, &chain_type, false);
         }
     }

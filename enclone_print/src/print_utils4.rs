@@ -191,8 +191,8 @@ pub fn build_show_aa(
             }
         }
         if ctl.clono_print_opt.amino.contains(&"cdr1".to_string()) {
-            if rsi.cdr1_starts[cx] <= rsi.fr2_starts[cx] {
-                for j in (rsi.cdr1_starts[cx]..rsi.fr2_starts[cx]).step_by(3) {
+            if rsi.cdr1_starts[cx].is_some() && rsi.cdr1_starts[cx].unwrap() <= rsi.fr2_starts[cx] {
+                for j in (rsi.cdr1_starts[cx].unwrap()..rsi.fr2_starts[cx]).step_by(3) {
                     show_aa[cx].push(j / 3);
                 }
             }
@@ -211,8 +211,8 @@ pub fn build_show_aa(
             }
         }
         if ctl.clono_print_opt.amino.contains(&"fwr1".to_string()) {
-            if rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx] {
-                for j in (rsi.fr1_starts[cx]..rsi.cdr1_starts[cx]).step_by(3) {
+            if rsi.cdr1_starts[cx].is_some() && rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx].unwrap() {
+                for j in (rsi.fr1_starts[cx]..rsi.cdr1_starts[cx].unwrap()).step_by(3) {
                     show_aa[cx].push(j / 3);
                 }
             }
