@@ -1467,7 +1467,9 @@ fn test_enclone_prebuild() {
     if old != new2 {
         eprintln!(
             "\nenclone_test_prebuild: first pass output has changed.\n\
-             You may want to add more info to this failure message.\n"
+            If you are OK with the new output, it should work to type:\n\
+            enclone {} > enclone_main/{}\n",
+            testn, out_file
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);

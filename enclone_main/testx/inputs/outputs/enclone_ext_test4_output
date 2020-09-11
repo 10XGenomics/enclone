@@ -8,25 +8,25 @@ SUMMARY STATISTICS
    ┌──────────┬────────────────────────────┐
    │barcodes  │  why deleted               │
    ├──────────┼────────────────────────────┤
-   │     194  │  failed GRAPH_FILTER filter│
    │     141  │  failed IMPROPER filter    │
-   │     335  │  total                     │
+   │       1  │  failed GRAPH_FILTER filter│
+   │     142  │  total                     │
    └──────────┴────────────────────────────┘
 3. for the selected clonotypes
    ┌────────┬────────────────────────┬──────────────────┬───────┐
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
-   │1       │                   637  │            1430  │   43.8│
-   │2       │                  1506  │            1600  │   49.0│
-   │3       │                   177  │             201  │    6.2│
-   │4       │                    26  │              31  │    1.0│
-   │total   │                  2346  │            3262  │  100.0│
+   │1       │                   638  │            1453  │   42.1│
+   │2       │                  1643  │            1737  │   50.3│
+   │3       │                   204  │             228  │    6.6│
+   │4       │                    32  │              37  │    1.1│
+   │total   │                  2517  │            3455  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
-   • number of clonotypes having at least two cells = 202
-   • number of cells having 1 chain = 1547
-   • number of cells having 2 or 3 chains = 1689
-   • estimated B-B doublet rate = 1.7% = 26/1538 = cells with 4 chains / cells with 2 or 4 chains
-   • mean over middle third of contig UMI counts (heavy chain) = 2.96
-   • mean over middle third of contig UMI counts (light chain) = 10.70
+   • number of clonotypes having at least two cells = 203
+   • number of cells having 1 chain = 1570
+   • number of cells having 2 or 3 chains = 1853
+   • estimated B-B doublet rate = 1.9% = 32/1681 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (heavy chain) = 2.71
+   • mean over middle third of contig UMI counts (light chain) = 10.53
 

@@ -14,4 +14,4 @@ enclone \
     BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
     ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT PRINT_FAILED_JOINS \
-    PRE=/mnt/assembly/vdj/current14 MIX_DONORS REQUIRED_FPS=15 NOPAGER $*
+    PRE=/mnt/assembly/vdj/current14 MIX_DONORS REQUIRED_FPS=16 NOPAGER $*

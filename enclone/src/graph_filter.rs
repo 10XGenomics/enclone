@@ -121,7 +121,16 @@ pub fn graph_filter(
 
     // Kill weak branches from light to heavy chains.  Also kill light chain onesies that
     // have too many heavy chain partners.
+    //
+    // ********************************************************************************************
+    // THIS IS TURNED OFF.  Reason: if a light chain is ubiquitous, then this code would be
+    // prejudiciously deleting pairs that use it.  The code kills a lot of real cells.
+    // When we turned off this code, we got one additional false positive, but it seems like we
+    // "should" have the false positive.  The code also resulted in the creation of a few more
+    // 5-chain clonotypes, and lots more 4-chain clonotypes (both in the ~400 dataset run).
+    // ********************************************************************************************
 
+    /*
     let mut log = Vec::<u8>::new();
     fwriteln!(log, "\nBRANCHING FROM LIGHT CHAINS");
     const MIN_RATIO_KILL: usize = 8;
@@ -276,6 +285,7 @@ pub fn graph_filter(
         fwriteln!(log, "");
         print!("{}", strme(&log));
     }
+    */
 
     // Kill weak branches from heavy to light chains.
 

@@ -412,7 +412,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 12] = [
     // Do not use NH5 because the bin file is too big for git.
     (
         "pages/auto/clonotype_with_gex.html",
-        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
          HTML=\"enclone example with gex\"",
     ),
     // 2.
