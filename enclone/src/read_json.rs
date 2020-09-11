@@ -374,6 +374,13 @@ fn parse_vector_entry_from_json(
         }
     }
 
+    // Test for busted CDR3.  This was observed to happen on 47680, barcode CGCCAAGTCCATGAAC-1.
+    // It is not known if this corresponds to a bug in cellranger that was subsequently fixed.
+
+    if cdr3_aa.contains("*") {
+        return;
+    }
+
     // Correct CDR3 start for insertion.
 
     if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
