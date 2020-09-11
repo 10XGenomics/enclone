@@ -595,7 +595,8 @@ pub fn build_table_stuff(
                         }
                         let mut ch = vec![' '; n];
                         let amino = &ctl.clono_print_opt.amino;
-                        let x = &exact_clonotypes[exacts[u]].share[m];
+                        let ex = &exact_clonotypes[exacts[u]];
+                        let x = &ex.share[m];
                         let mut cs1 = 0;
                         if rsi.cdr1_starts[cx].is_some() {
                             cs1 = rsi.cdr1_starts[cx].unwrap();
@@ -685,6 +686,25 @@ pub fn build_table_stuff(
                                     schars.push(x);
                                 }
                                 for k in 0..q {
+                                    // Catch an error condition that has happened a few times.
+
+                                    if ch_start + k >= ch.len() {
+                                        let mut ds = Vec::<String>::new();
+                                        for i in 0..ex.ncells() {
+                                            let li = ex.clones[i][m].dataset_index;
+                                            ds.push(ctl.origin_info.dataset_id[li].clone());
+                                        }
+                                        unique_sort(&mut ds);
+                                        panic!(
+                                            "Internal error, out of range in \
+                                            build_table_stuff, CDR3 = {}, datasets = {}.",
+                                            x.cdr3_aa,
+                                            ds.iter().format(",")
+                                        );
+                                    }
+
+                                    // Do the work.
+
                                     ch[ch_start + k] = schars[k];
                                 }
                             }
