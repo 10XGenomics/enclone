@@ -340,7 +340,7 @@ pub fn build_show_aa(
 
         if !show_aa[cx].is_empty() {
             let p = show_aa[cx][show_aa[cx].len() - 1];
-            if 3 * p + 3 > rsi.seq_lens[cx] {
+            if 3 * p + 3 > rsi.seq_del_lens[cx] {
                 show_aa[cx].pop();
             }
         }
