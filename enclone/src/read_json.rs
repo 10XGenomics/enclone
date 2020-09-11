@@ -374,10 +374,16 @@ fn parse_vector_entry_from_json(
         }
     }
 
-    // Test for busted CDR3.  This was observed to happen on 47680, barcode CGCCAAGTCCATGAAC-1.
-    // It is not known if this corresponds to a bug in cellranger that was subsequently fixed.
+    // Test for two very rare conditions where the CDR3 is busted.  This could be confusing to
+    // users if they hit one of these.
+    // Case 1: seen on 47680, barcode CGCCAAGTCCATGAAC-1.
+    // Case 2: seen on 99640, barcode CAGTAACCATGTCGAT-1.
+    // It is not known if these correspond to bugs in cellranger that were subsequently fixed.
 
     if cdr3_aa.contains("*") {
+        return;
+    }
+    if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
         return;
     }
 
