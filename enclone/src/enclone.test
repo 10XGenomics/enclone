@@ -20,7 +20,7 @@ enclone \
     NOPRINT \
     PRE=/mnt/assembly/vdj/current14 MIX_DONORS \
     REQUIRED_FPS=16 \
-    REQUIRED_CELLS=452182 \
+    REQUIRED_CELLS=452164 \
     NOPAGER $*
 
 # WARNING:

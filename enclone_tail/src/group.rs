@@ -1791,6 +1791,12 @@ pub fn group_and_print_clonotypes(
     // Test for required number of cells.
 
     if ctl.gen_opt.required_cells.is_some() {
+        let mut ncells = 0;
+        for i in 0..pics.len() {
+            for x in exacts[i].iter() {
+                ncells += exact_clonotypes[*x].ncells();
+            }
+        }
         if ctl.gen_opt.required_cells.unwrap() != ncells {
             eprintln!(
                 "\nThe required number of cells is {}, but you actually have {}.\n",
