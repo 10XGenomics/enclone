@@ -587,8 +587,8 @@ pub fn build_table_stuff(
                     let m = rsi.mat[cx][u];
                     if m.is_some() {
                         let m = m.unwrap();
-                        let mut n = show_aa[cx].len();
-                        for k in 1..show_aa[cx].len() {
+                        let mut n = show.len();
+                        for k in 1..show.len() {
                             if field_types[cx][k] != field_types[cx][k - 1] {
                                 n += 1;
                             }
@@ -660,31 +660,31 @@ pub fn build_table_stuff(
                                     }
                                     ch_start += 1;
                                 }
-                                let n = (fields[z].2 - fields[z].1) / 3;
+                                let q = (fields[z].2 - fields[z].1) / 3;
                                 let mut t = fields[z].0.to_string();
                                 t.make_ascii_uppercase();
                                 let t = t.as_bytes();
                                 let mut s = String::new();
-                                if n >= 4 {
-                                    let left = (n - 3) / 2;
-                                    let right = n - left - 4;
+                                if q >= 4 {
+                                    let left = (q - 3) / 2;
+                                    let right = q - left - 4;
                                     s += &"═".repeat(left);
                                     s += strme(&t);
                                     s += &"═".repeat(right);
-                                } else if n == 3 {
+                                } else if q == 3 {
                                     s += strme(&t[0..1]);
                                     s += strme(&t[2..4]);
-                                } else if n == 2 {
+                                } else if q == 2 {
                                     s += strme(&t[0..1]);
                                     s += strme(&t[3..4]);
-                                } else if n == 1 {
+                                } else if q == 1 {
                                     s += strme(&t[3..4]);
                                 }
                                 let mut schars = Vec::<char>::new();
                                 for x in s.chars() {
                                     schars.push(x);
                                 }
-                                for k in 0..n {
+                                for k in 0..q {
                                     ch[ch_start + k] = schars[k];
                                 }
                             }
