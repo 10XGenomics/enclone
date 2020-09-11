@@ -18,6 +18,7 @@ enclone \
     BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
     NOPRINT \
+    SUMMARY \
     PRE=/mnt/assembly/vdj/current14 MIX_DONORS \
     REQUIRED_FPS=16 \
     REQUIRED_CELLS=452164 \
