@@ -86,6 +86,8 @@ sample barcode clonotype_id.
 REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
 positive to be a clonotype that contains cells from multiple donors.
 
+REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not the given number
+
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
 

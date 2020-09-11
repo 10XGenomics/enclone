@@ -377,6 +377,7 @@ pub struct GeneralOpt {
     pub refname: String,
     pub noprint: bool,
     pub required_fps: Option<usize>,
+    pub required_cells: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
     pub summary_clean: bool,

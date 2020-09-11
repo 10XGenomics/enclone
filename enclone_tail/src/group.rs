@@ -1336,11 +1336,11 @@ pub fn group_and_print_clonotypes(
 
     // Print summary stats.
 
+    let mut ncells = 0;
     if ctl.gen_opt.summary {
         fwriteln!(logx, "\nSUMMARY STATISTICS");
         fwriteln!(logx, "1. overall");
         let mut nclono2 = 0;
-        let mut ncells = 0;
         let mut ncc = Vec::<(usize, usize)>::new();
         let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
         for i in 0..nclono {
@@ -1783,6 +1783,19 @@ pub fn group_and_print_clonotypes(
                  {} false positives, so the requirement is not met.\n",
                 ctl.gen_opt.required_fps.unwrap(),
                 fps
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of cells.
+
+    if ctl.gen_opt.required_cells.is_some() {
+        if ctl.gen_opt.required_cells.unwrap() != ncells {
+            eprintln!(
+                "\nThe required number of cells is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_cells.unwrap(),
+                ncells,
             );
             std::process::exit(1);
         }

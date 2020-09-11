@@ -600,6 +600,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.use_legend = true;
         } else if is_usize_arg(&arg, "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_CELLS") {
+            ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
         } else if is_usize_arg(&arg, "EXACT") {
             ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
         } else if is_usize_arg(&arg, "MIN_CHAINS") {
