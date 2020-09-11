@@ -1630,6 +1630,48 @@ fn test_proto_write() -> Result<(), Error> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 22. Test for no change to the output of the command that appears in the enclone annotated
+// example on the landing page.
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_annotated_example() {
+    PrettyTrace::new().on();
+    let it = 0;
+    let test = "BCR=123085 CDR3=CTRDRDLRGATDAFDIW";
+    let mut out = String::new();
+    let mut log = String::new();
+    let mut ok = false;
+    run_test(
+        env!("CARGO_BIN_EXE_enclone"),
+        it,
+        &test,
+        "annotated_example_test",
+        &mut ok,
+        &mut log,
+        &mut out,
+    );
+    print!("{}", log);
+    if !ok {
+        let mut log = Vec::<u8>::new();
+        emit_red_escape(&mut log);
+        fwriteln!(
+            log,
+            "Oh no: the results for the annotated example on the landing page have \
+            changed.  Assuming that\nthe change is intentional, to fix this you \
+            need to do two things:\n\
+            1. Update the test output.\n\
+            2. Manually update the annotated example output.\n\
+            The second item is a big pain, sorry!!!"
+        );
+        emit_end_escape(&mut log);
+        eprintln!("{}", strme(&log));
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn valid_link(link: &str) -> bool {
     use attohttpc::*;
     let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
