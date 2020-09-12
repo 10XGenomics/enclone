@@ -1806,4 +1806,18 @@ pub fn group_and_print_clonotypes(
             std::process::exit(1);
         }
     }
+
+    // Test for required number of donors
+
+    if ctl.gen_opt.required_donors.is_some() {
+        let ndonors = ctl.origin_info.donors;
+        if ctl.gen_opt.required_donors.unwrap() != ndonors {
+            eprintln!(
+                "\nThe required number of donors is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_donors.unwrap(),
+                ndonors,
+            );
+            std::process::exit(1);
+        }
+    }
 }

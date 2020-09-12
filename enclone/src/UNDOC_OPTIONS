@@ -88,6 +88,8 @@ positive to be a clonotype that contains cells from multiple donors.
 
 REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not the given number
 
+REQUIRED_DONORS=n: exit(1) if the number of donors is not the given number
+
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
 
