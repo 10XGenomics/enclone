@@ -583,20 +583,22 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 
         let mut score_pos = Vec::<(usize, isize)>::new();
         for j in cdr3_start as isize - 42 + 2..=cdr3_start as isize - 32 + 2 {
-            let mut score = 0;
-            for p in 0..pwm.len() {
-                for l in 0..pwm[p].len() {
-                    if pwm[p][l].1 == aa[j as usize + p] {
-                        score += pwm[p][l].0;
+            if j >= 0 {
+                let mut score = 0;
+                for p in 0..pwm.len() {
+                    for l in 0..pwm[p].len() {
+                        if pwm[p][l].1 == aa[j as usize + p] {
+                            score += pwm[p][l].0;
+                        }
                     }
                 }
+                // use string_utils::*;
+                // println!("score of {} = {}", strme(&aa[j..j + pwm.len()]), score);
+                if verbose {
+                    println!("j = {}, score = {}", j, score);
+                }
+                score_pos.push((score, -(j as isize)));
             }
-            // use string_utils::*;
-            // println!("score of {} = {}", strme(&aa[j..j + pwm.len()]), score);
-            if verbose {
-                println!("j = {}, score = {}", j, score);
-            }
-            score_pos.push((score, -(j as isize)));
         }
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
