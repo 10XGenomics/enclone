@@ -1833,4 +1833,18 @@ pub fn group_and_print_clonotypes(
             std::process::exit(1);
         }
     }
+
+    // Test for required number of datasets
+
+    if ctl.gen_opt.required_datasets.is_some() {
+        let ndatasets = ctl.origin_info.n();
+        if ctl.gen_opt.required_datasets.unwrap() != ndatasets {
+            eprintln!(
+                "\nThe required number of datasets is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_datasets.unwrap(),
+                ndatasets,
+            );
+            std::process::exit(1);
+        }
+    }
 }
