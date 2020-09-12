@@ -193,6 +193,8 @@ positive to be a clonotype that contains cells from multiple donors.
 
 REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not n
 
+REQUIRED_CLONOTYPES=n: exit(1) if the number of clonotypes is not n
+
 REQUIRED_DONORS=n: exit(1) if the number of donors is not n
 
 REQUIRED_TWO_CELL_CLONOTYPES=n: exit(1) if the number of clonotypes having >= 2 cells is not n

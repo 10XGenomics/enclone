@@ -604,6 +604,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
         } else if is_usize_arg(&arg, "REQUIRED_DONORS") {
             ctl.gen_opt.required_donors = Some(arg.after("REQUIRED_DONORS=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES") {
+            ctl.gen_opt.required_clonotypes = Some(arg.after("REQUIRED_CLONOTYPES=").force_usize());
         } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES") {
             ctl.gen_opt.required_two_cell_clonotypes =
                 Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());

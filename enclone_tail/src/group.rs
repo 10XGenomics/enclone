@@ -1807,6 +1807,19 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    // Test for required number of clonotypes.
+
+    if ctl.gen_opt.required_clonotypes.is_some() {
+        if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
+            eprintln!(
+                "\nThe required number of clonotypes is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_clonotypes.unwrap(),
+                nclono,
+            );
+            std::process::exit(1);
+        }
+    }
+
     // Test for required number of donors
 
     if ctl.gen_opt.required_donors.is_some() {
