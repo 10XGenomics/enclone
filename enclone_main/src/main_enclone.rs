@@ -806,26 +806,19 @@ pub fn main_enclone(args: &Vec<String>) {
 
             let seq = refdata.refs[i].to_ascii_vec();
             let aa = aa_seq(&seq, 0);
-            let mut no_start = false;
+            let mut reasons = Vec::<String>::new();
             if !aa.starts_with(b"M") {
-                no_start = true;
+                reasons.push("does not begin with a start codon".to_string());
             }
             let stops = aa.iter().filter(|&n| *n == b'*').count();
-            let stop = stops > 1;
-            let mut msg = String::new();
-            if no_start && stop {
-                msg = "The following V segment reference sequence does not begin \
-                    with a start codon, and has more than one stop codon"
-                    .to_string();
-            } else if no_start {
-                msg = "The following V segment reference sequence does not begin \
-                    with a start codon"
-                    .to_string();
-            } else if stop {
-                msg = "The following V segment reference sequence has more than one stop codon"
-                    .to_string();
+            if stops > 1 {
+                reasons.push("has more than one stop codon".to_string());
             }
-            if msg.len() > 0 {
+            if !reasons.is_empty() {
+                let msg = format!(
+                    "The following V segment reference sequence {}",
+                    reasons.iter().format(", and ")
+                );
                 count += 1;
                 broken[i] = true;
                 fwriteln!(log, "{}. {}:\n", count, msg);
