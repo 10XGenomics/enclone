@@ -756,6 +756,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut log = Vec::<u8>::new();
     let mut count = 0;
+    let mut broken = vec![false; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
         // Exclude chain types other than IGH, IGK, IGL, TRA and TRB.
 
@@ -782,6 +783,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let aa2 = aa_seq(&seq, 2);
             if aa2.contains(&b'*') && !aa0.contains(&b'*') {
                 count += 1;
+                broken[i] = true;
                 fwriteln!(
                     log,
                     "{}. The following C segment reference sequence appears to have \
@@ -825,6 +827,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             if msg.len() > 0 {
                 count += 1;
+                broken[i] = true;
                 fwriteln!(log, "{}. {}:\n", count, msg);
                 fwriteln!(log, ">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
@@ -973,6 +976,9 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut cdr2_starts = vec![None; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
+            if broken[i] && ctl.gen_opt.require_unbroken_ok {
+                continue;
+            }
             let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
             let rtype = refdata.rtype[i];
             let chain_type;
@@ -993,15 +999,39 @@ pub fn main_enclone(args: &Vec<String>) {
             let fr2 = fr2_start(&aa, &chain_type, false);
             if fr2.is_some() {
                 fr2_starts[i] = Some(3 * fr2.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
+                    could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                std::process::exit(1);
             }
             fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                    could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                std::process::exit(1);
             }
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                    could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                std::process::exit(1);
             }
         }
     }

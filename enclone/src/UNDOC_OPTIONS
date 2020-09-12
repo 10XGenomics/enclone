@@ -184,6 +184,9 @@ n_b as LVAR = number of B cells
 
 MAX_SCORE: was public, now deprecated, do not remove
 
+REQUIRE_UNBROKEN_OK: require that if a V reference sequence is not marked as broken, then all
+its features can be computed
+
 ===================================================================================================
 
 OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED
