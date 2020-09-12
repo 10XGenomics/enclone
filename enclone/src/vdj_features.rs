@@ -582,11 +582,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
         // Score positions.
 
         let mut score_pos = Vec::<(usize, isize)>::new();
-        for j in cdr3_start - 42 + 2..=cdr3_start - 32 + 2 {
+        for j in cdr3_start as isize - 42 + 2..=cdr3_start as isize - 32 + 2 {
             let mut score = 0;
             for p in 0..pwm.len() {
                 for l in 0..pwm[p].len() {
-                    if pwm[p][l].1 == aa[j + p] {
+                    if pwm[p][l].1 == aa[j as usize + p] {
                         score += pwm[p][l].0;
                     }
                 }
