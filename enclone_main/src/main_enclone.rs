@@ -802,6 +802,13 @@ pub fn main_enclone(args: &Vec<String>) {
                 continue;
             }
 
+            // This is very ugly.  We are exempting human IGHV1-12 because it is in our current
+            // human reference, but is only 60 amino acids long.  Also we're not checking for mouse.
+
+            if refdata.name[i] == "IGHV1-12" {
+                continue;
+            }
+
             // Continue.
 
             let seq = refdata.refs[i].to_ascii_vec();
@@ -813,6 +820,9 @@ pub fn main_enclone(args: &Vec<String>) {
             let stops = aa.iter().filter(|&n| *n == b'*').count();
             if stops > 1 {
                 reasons.push("has more than one stop codon".to_string());
+            }
+            if aa.len() < 100 {
+                reasons.push("is too short (has less than 100 amino acids)".to_string());
             }
             if !reasons.is_empty() {
                 let msg = format!(
