@@ -602,7 +602,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
         }
         reverse_sort(&mut score_pos);
         if !score_pos.is_empty() {
-            return Some((-score_pos[0].1) as usize - 1);
+            if -score_pos[0].1 >= 1 {
+                return Some((-score_pos[0].1) as usize - 1);
+            } else {
+                return None;
+            }
         } else {
             return None;
         }
