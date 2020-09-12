@@ -1015,6 +1015,15 @@ pub fn main_enclone(args: &Vec<String>) {
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
+                if fr2.is_some() && cs1.unwrap() > fr2.unwrap() && ctl.gen_opt.require_unbroken_ok {
+                    eprintln!(
+                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                        exceeds the FWR2 start for this reference sequence:\n"
+                    );
+                    let seq = refdata.refs[i].to_ascii_vec();
+                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                    std::process::exit(1);
+                }
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
@@ -1027,6 +1036,18 @@ pub fn main_enclone(args: &Vec<String>) {
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
+                if ctl.gen_opt.require_unbroken_ok {
+                    let fr3 = fr3_start(&aa, &chain_type, false);
+                    if cs2.unwrap() > fr3 {
+                        eprintln!(
+                            "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                            exceeds the FWR3 start for this reference sequence:\n"
+                        );
+                        let seq = refdata.refs[i].to_ascii_vec();
+                        eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                        std::process::exit(1);
+                    }
+                }
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
