@@ -822,7 +822,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 continue;
             }
 
-            // Continue.
+            // Test for broken.
 
             let seq = refdata.refs[i].to_ascii_vec();
             let aa = aa_seq(&seq, 0);
@@ -844,6 +844,28 @@ pub fn main_enclone(args: &Vec<String>) {
                     reasons.push("appears to need a C to be appended to its right end".to_string());
                 }
             }
+            if stops > 0 {
+                let mut fixable = false;
+                const TRIM: usize = 10;
+                for j in 0..aa.len() - TRIM {
+                    if aa[j] == b'*' {
+                        let mut seqx = seq.clone();
+                        for _ in 1..=2 {
+                            let _ = seqx.remove(3 * j);
+                            let aax = aa_seq(&seqx, 0);
+                            if !aax.contains(&b'*') {
+                                fixable = true;
+                            }
+                        }
+                    }
+                }
+                if fixable {
+                    reasons.push("appears to be frameshifted".to_string());
+                }
+            }
+
+            // Report results.
+
             if !reasons.is_empty() {
                 let msg = format!(
                     "The following V segment reference sequence {}",
