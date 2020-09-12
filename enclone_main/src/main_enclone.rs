@@ -758,6 +758,17 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut count = 0;
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
+            // This is very ugly.  We are exempting human TRBV21-1 because it is in our current
+            // reference (twice), but has multiple stop codons.  It should be deleted from the
+            // reference, and then we should remove this test.  But probably in the future so as
+            // not to inconvenience users.
+
+            if ctl.gen_opt.species != "mouse" && refdata.name[i] == "TRBV21-1" {
+                continue;
+            }
+
+            // Continue.
+
             let seq = refdata.refs[i].to_ascii_vec();
             let aa = aa_seq(&seq, 0);
             let mut no_start = false;
