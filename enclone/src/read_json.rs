@@ -488,7 +488,7 @@ fn parse_vector_entry_from_json(
         cdr1_start: None,
         fr2_start: None,
         cdr2_start: None,
-        fr3_start: 0,
+        fr3_start: None,
         cdr3_aa: cdr3_aa.to_string(),
         cdr3_start: cdr3_start,
         quals: quals,

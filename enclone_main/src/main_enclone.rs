@@ -1016,7 +1016,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut fr1_starts = vec![0; refdata.refs.len()];
     let mut fr2_starts = vec![None; refdata.refs.len()];
-    let mut fr3_starts = vec![0; refdata.refs.len()];
+    let mut fr3_starts = vec![None; refdata.refs.len()];
     let mut cdr1_starts = vec![None; refdata.refs.len()];
     let mut cdr2_starts = vec![None; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
@@ -1053,7 +1053,10 @@ pub fn main_enclone(args: &Vec<String>) {
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 std::process::exit(1);
             }
-            fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
+            let fs3 = fr3_start(&aa, &chain_type, false);
+            if fs3.is_some() {
+                fr3_starts[i] = Some(3 * fs3.unwrap());
+            }
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
@@ -1079,7 +1082,7 @@ pub fn main_enclone(args: &Vec<String>) {
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
                 if ctl.gen_opt.require_unbroken_ok {
-                    let fr3 = fr3_start(&aa, &chain_type, false);
+                    let fr3 = fr3_start(&aa, &chain_type, false).unwrap();
                     if cs2.unwrap() > fr3 {
                         eprintln!(
                             "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \

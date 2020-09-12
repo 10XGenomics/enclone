@@ -63,7 +63,7 @@ pub fn define_column_info(
 
     let mut fr1_starts = Vec::<usize>::new();
     let mut fr2_starts = Vec::<Option<usize>>::new();
-    let mut fr3_starts = Vec::<usize>::new();
+    let mut fr3_starts = Vec::<Option<usize>>::new();
     let mut cdr1_starts = Vec::<Option<usize>>::new();
     let mut cdr2_starts = Vec::<Option<usize>>::new();
     let mut cdr3_starts = Vec::<usize>::new();
@@ -123,13 +123,17 @@ pub fn define_column_info(
                 } else {
                     fr2_starts.push(None);
                 }
-                let mut start = exm.fr3_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.fr3_start.is_some() {
+                    let mut start = exm.fr3_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    fr3_starts.push(Some(start));
+                } else {
+                    fr3_starts.push(None);
                 }
-                fr3_starts.push(start);
                 let mut start = exm.cdr3_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -617,6 +621,10 @@ pub fn build_table_stuff(
                         if rsi.fr2_starts[cx].is_some() {
                             fs2 = rsi.fr2_starts[cx].unwrap();
                         }
+                        let mut fs3 = 0;
+                        if rsi.fr3_starts[cx].is_some() {
+                            fs3 = rsi.fr3_starts[cx].unwrap();
+                        }
                         let fields = [
                             (
                                 "fwr1".to_string(),
@@ -632,9 +640,9 @@ pub fn build_table_stuff(
                             ),
                             (
                                 "fwr3".to_string(),
-                                rsi.fr3_starts[cx],
+                                fs3,
                                 rsi.cdr3_starts[cx],
-                                true,
+                                rsi.fr3_starts[cx].is_some(),
                             ),
                             (
                                 "cdr1".to_string(),
@@ -645,8 +653,8 @@ pub fn build_table_stuff(
                             (
                                 "cdr2".to_string(),
                                 cs2,
-                                rsi.fr3_starts[cx],
-                                rsi.cdr2_starts[cx].is_some(),
+                                fs3,
+                                rsi.cdr2_starts[cx].is_some() && rsi.fr3_starts[cx].is_some(),
                             ),
                             (
                                 "cdr3".to_string(),

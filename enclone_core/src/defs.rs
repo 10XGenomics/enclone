@@ -629,7 +629,7 @@ pub struct TigData {
     pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
     pub fr2_start: Option<usize>,             // start position in bases of FWR2 on V..J
     pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
-    pub fr3_start: usize,                     // start position in bases of FWR3 on V..J
+    pub fr3_start: Option<usize>,             // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub quals: Vec<u8>,                       // quality scores, truncated to V..J
@@ -699,7 +699,7 @@ pub struct TigData1 {
     pub cdr1_start: Option<usize>,           // start position in bases of CDR1 on V..J
     pub fr2_start: Option<usize>,            // start position in bases of FWR2 on V..J
     pub cdr2_start: Option<usize>,           // start position in bases of CDR2 on V..J
-    pub fr3_start: usize,                    // start position in bases of FWR3 on V..J
+    pub fr3_start: Option<usize>,            // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
     pub left: bool,                          // true if this is IGH or TRB
@@ -819,7 +819,7 @@ pub struct ColInfo {
     pub cdr1_starts: Vec<Option<usize>>,
     pub fr2_starts: Vec<Option<usize>>,
     pub cdr2_starts: Vec<Option<usize>>,
-    pub fr3_starts: Vec<usize>,
+    pub fr3_starts: Vec<Option<usize>>,
     pub cdr3_starts: Vec<usize>,
     pub cdr3_lens: Vec<usize>,
     pub seq_lens: Vec<usize>, // not sure we should be computing or using this

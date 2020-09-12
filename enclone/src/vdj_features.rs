@@ -467,7 +467,7 @@ pub fn cdr3_score(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // FR3 region.
 
-pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     // First find the start of the CDR3.
 
     let cdr3_start = cdr3_start(&aa, &chain_type, verbose);
@@ -535,7 +535,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1);
+        } else {
+            return None;
+        }
 
     // Do IGH.
     } else if chain_type == "IGH" {
@@ -595,7 +599,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, -(j as isize)));
         }
         reverse_sort(&mut score_pos);
-        return (-score_pos[0].1) as usize - 1;
+        if !score_pos.is_empty() {
+            return Some((-score_pos[0].1) as usize - 1);
+        } else {
+            return None;
+        }
 
     // Do TRA.
     } else if chain_type == "TRA" {
@@ -668,7 +676,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1 + 1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1 + 1);
+        } else {
+            return None;
+        }
 
     // Do TRB.
     } else {
@@ -721,7 +733,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1);
+        } else {
+            return None;
+        }
     }
 }
 
@@ -750,6 +766,10 @@ pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     }
     let start = start.unwrap();
     let stop = fr3_start(&aa, chain_type, false);
+    if stop.is_none() {
+        return None;
+    }
+    let stop = stop.unwrap();
     if start > stop {
         panic!(
             "Error in cdr2(...): cdr2_start = {} exceeds fr3_start = {}",
