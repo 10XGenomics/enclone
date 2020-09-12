@@ -757,6 +757,15 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut log = Vec::<u8>::new();
     let mut count = 0;
     for i in 0..refdata.refs.len() {
+        // Exclude chain types other than IGH, IGK, IGL, TRA and TRB.
+
+        let rtype = refdata.rtype[i];
+        if rtype > 4 {
+            continue;
+        }
+
+        // Look for problems.
+
         if refdata.is_c(i) {
             // This is very ugly.  We are exempting mouse IGHG2B because is is in our current
             // reference but has an extra base at the beginning.  See also comments below at
