@@ -417,8 +417,6 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
-    // First find the start of the CDR3.
-
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
     let nm = motif[0].len();
     let reach = 18;
@@ -439,6 +437,29 @@ pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
     }
     reverse_sort(&mut scores);
     scores[0].1
+}
+
+pub fn cdr3_score(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
+    let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
+    let nm = motif[0].len();
+    let reach = 18;
+    let mut scores = Vec::<(usize, usize)>::new();
+    for j in aa.len() - nm - reach..=aa.len() - nm {
+        let mut score = 0;
+        for k in 0..nm {
+            for l in 0..motif.len() {
+                if aa[j + k] == motif[l][k] {
+                    score += 1;
+                    if aa[j + k] == b'Q' {
+                        break;
+                    }
+                }
+            }
+        }
+        scores.push((score, j + nm));
+    }
+    reverse_sort(&mut scores);
+    scores[0].0
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
