@@ -35,8 +35,6 @@ command-line help that comes with your copy of #enclone will always match its be
 <span style="color:red">
 Test for defective reference sequences and exit if they're found (allowing for override).
 </span>
-Currently the only thing that is tested is that V segment reference sequences begin with a
-start codon.
 <li>We turned off part of the graph filtering (which can be turned off completely with the
 argument <code>NGRAPH_FILTER</code>).  We did this because in some cases this code was deleting
 significant numbers of real cells.

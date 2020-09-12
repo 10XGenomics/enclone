@@ -760,14 +760,48 @@ pub fn main_enclone(args: &Vec<String>) {
         if refdata.is_v(i) {
             let seq = refdata.refs[i].to_ascii_vec();
             let aa = aa_seq(&seq, 0);
+            let mut no_start = false;
             if !aa.starts_with(b"M") {
+                no_start = true;
+            }
+            let rtype = refdata.rtype[i];
+            let chain_type;
+            if rtype == 0 {
+                chain_type = "IGH";
+            } else if rtype == 1 {
+                chain_type = "IGK";
+            } else if rtype == 2 {
+                chain_type = "IGL";
+            } else if rtype == 3 {
+                chain_type = "TRA";
+            } else if rtype == 4 {
+                chain_type = "TRB";
+            } else {
+                continue;
+            }
+            let mut stop = false;
+            // TEMPORARY WORKAROUND, TO CIRCLE BACK.
+            if aa.len() >= 50 {
+                let cdr3_start = cdr3_start(&aa, &chain_type, false);
+                stop = aa[0..cdr3_start].contains(&b'*');
+            }
+            let mut msg = String::new();
+            if no_start && stop {
+                msg = "The following V segment reference sequence does not begin \
+                    with a start codon, and has a stop codon before its CDR3 start"
+                    .to_string();
+            } else if no_start {
+                msg = "The following V segment reference sequence does not begin \
+                    with a start codon"
+                    .to_string();
+            } else if stop {
+                msg = "The following V segment reference sequence has a stop codon before \
+                    its CDR3 start"
+                    .to_string();
+            }
+            if msg.len() > 0 {
                 count += 1;
-                fwriteln!(
-                    log,
-                    "{}. The following V segment reference sequence does not begin \
-                    with a start codon:\n",
-                    count
-                );
+                fwriteln!(log, "{}. {}:\n", count, msg);
                 fwriteln!(log, ">{}\n{}\n", refdata.rheaders[i], strme(&seq));
             }
         }
