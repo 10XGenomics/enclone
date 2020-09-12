@@ -340,7 +340,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
 
         h.print(
             "We are actively working to improve the algorithm.  Test results for the current \
-             version may be found at \\green(bit.ly/enclone}.\n\n",
+             version may be found at \\green{bit.ly/enclone}.\n\n",
         );
         h.end_doc();
     }

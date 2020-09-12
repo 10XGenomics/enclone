@@ -1662,7 +1662,8 @@ fn test_annotated_example() {
             need to do two things:\n\
             1. Update the test output.\n\
             2. Manually update the annotated example output.\n\
-            The second item is a big pain, sorry!!!"
+            Because the second item is such a big pain, we stopped doing it, but you should\n\
+            check to make sure that it has not changed too much from what is shown."
         );
         emit_end_escape(&mut log);
         eprintln!("{}", strme(&log));
