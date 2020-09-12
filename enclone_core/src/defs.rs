@@ -379,6 +379,7 @@ pub struct GeneralOpt {
     pub required_fps: Option<usize>,
     pub required_cells: Option<usize>,
     pub required_donors: Option<usize>,
+    pub required_two_cell_clonotypes: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
     pub summary_clean: bool,

@@ -83,13 +83,6 @@ composition in the external clonotyping, as clonotype_id[count], ...
 The input file should have lines of the form:
 sample barcode clonotype_id.
 
-REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
-positive to be a clonotype that contains cells from multiple donors.
-
-REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not the given number
-
-REQUIRED_DONORS=n: exit(1) if the number of donors is not the given number
-
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
 
@@ -190,3 +183,16 @@ PLOT_BY_MARK
 n_b as LVAR = number of B cells
 
 MAX_SCORE: was public, now deprecated, do not remove
+
+===================================================================================================
+
+OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED
+
+REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
+positive to be a clonotype that contains cells from multiple donors.
+
+REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not n
+
+REQUIRED_DONORS=n: exit(1) if the number of donors is not n
+
+REQUIRED_TWO_CELL_CLONOTYPES=n: exit(1) if the number of clonotypes having >= 2 cells is not n
