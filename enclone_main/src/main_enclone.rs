@@ -758,10 +758,21 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut count = 0;
     let mut broken = vec![false; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
-        // Exclude chain types other than IGH, IGK, IGL, TRA and TRB.
+        // Determine chain type and exclude thosse other than IGH, IGK, IGL, TRA and TRB.
 
         let rtype = refdata.rtype[i];
-        if rtype > 4 {
+        let chain_type;
+        if rtype == 0 {
+            chain_type = "IGH";
+        } else if rtype == 1 {
+            chain_type = "IGK";
+        } else if rtype == 2 {
+            chain_type = "IGL";
+        } else if rtype == 3 {
+            chain_type = "TRA";
+        } else if rtype == 4 {
+            chain_type = "TRB";
+        } else {
             continue;
         }
 
@@ -825,6 +836,13 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             if aa.len() < 100 {
                 reasons.push("is too short (has less than 100 amino acids)".to_string());
+            }
+            if aa.len() >= 30 {
+                let mut aap = aa.clone();
+                aap.push(b'C');
+                if cdr3_score(&aap, &chain_type, false) > 4 + cdr3_score(&aa, &chain_type, false) {
+                    reasons.push("appears to need a C to be appended to its right end".to_string());
+                }
             }
             if !reasons.is_empty() {
                 let msg = format!(
@@ -1051,6 +1069,7 @@ pub fn main_enclone(args: &Vec<String>) {
                             "The CDR3 start score is {}.\n",
                             cdr3_score(&aa, &chain_type, false)
                         );
+                        eprintln!("Amino acid sequence =\n{}.\n", strme(&aa));
                         std::process::exit(1);
                     }
                 }
