@@ -369,7 +369,7 @@ pub const TESTS: [&str; 145] = [
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
 
-pub const EXTENDED_TESTS: [&str; 7] = [
+pub const EXTENDED_TESTS: [&str; 8] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -386,6 +386,8 @@ pub const EXTENDED_TESTS: [&str; 7] = [
     r###"BCR=47680 BARCODE=CGCCAAGTCCATGAAC-1 NO_PRE NFORCE"###,
     // 7. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
+    // 8. test MOUSE BCR + our reference (this crashed)
+    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
 ];
 
 // Tests of internal features.
