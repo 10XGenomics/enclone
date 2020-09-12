@@ -99,7 +99,7 @@ pub const TESTS: [&str; 145] = [
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
-    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW"###,
+    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW ACCEPT_BROKEN"###,
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN

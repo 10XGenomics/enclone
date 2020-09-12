@@ -757,7 +757,31 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut log = Vec::<u8>::new();
     let mut count = 0;
     for i in 0..refdata.refs.len() {
-        if refdata.is_v(i) {
+        if refdata.is_c(i) {
+            // This is very ugly.  We are exempting mouse IGHG2B because is is in our current
+            // reference but has an extra base at the beginning.  See also comments below at
+            // TRBV21-1.  Also, we're not actually checking for mouse.
+
+            if refdata.name[i] == "IGHG2B" {
+                continue;
+            }
+
+            // Continue.
+
+            let seq = refdata.refs[i].to_ascii_vec();
+            let aa0 = aa_seq(&seq, 0);
+            let aa2 = aa_seq(&seq, 2);
+            if aa2.contains(&b'*') && !aa0.contains(&b'*') {
+                count += 1;
+                fwriteln!(
+                    log,
+                    "{}. The following C segment reference sequence appears to have \
+                    an extra base at its beginning:\n",
+                    count
+                );
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders[i], strme(&seq));
+            }
+        } else if refdata.is_v(i) {
             // This is very ugly.  We are exempting human TRBV21-1 because it is in our current
             // reference (twice), but has multiple stop codons.  It should be deleted from the
             // reference, and then we should remove this test.  But probably in the future so as
