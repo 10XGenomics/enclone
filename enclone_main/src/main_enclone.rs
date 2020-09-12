@@ -1035,6 +1035,9 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
+    if ctl.gen_opt.require_unbroken_ok {
+        std::process::exit(0);
+    }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];
