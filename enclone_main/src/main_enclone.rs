@@ -799,6 +799,7 @@ pub fn main_enclone(args: &Vec<String>) {
             // not to inconvenience users.
 
             if ctl.gen_opt.species != "mouse" && refdata.name[i] == "TRBV21-1" {
+                broken[i] = true;
                 continue;
             }
 
@@ -806,6 +807,7 @@ pub fn main_enclone(args: &Vec<String>) {
             // human reference, but is only 60 amino acids long.  Also we're not checking for mouse.
 
             if refdata.name[i] == "IGHV1-12" {
+                broken[i] = true;
                 continue;
             }
 
