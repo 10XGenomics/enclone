@@ -779,7 +779,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     an extra base at its beginning:\n",
                     count
                 );
-                fwriteln!(log, ">{}\n{}\n", refdata.rheaders[i], strme(&seq));
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
         } else if refdata.is_v(i) {
             // This is very ugly.  We are exempting human TRBV21-1 because it is in our current
@@ -817,7 +817,7 @@ pub fn main_enclone(args: &Vec<String>) {
             if msg.len() > 0 {
                 count += 1;
                 fwriteln!(log, "{}. {}:\n", count, msg);
-                fwriteln!(log, ">{}\n{}\n", refdata.rheaders[i], strme(&seq));
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
             }
         }
     }
