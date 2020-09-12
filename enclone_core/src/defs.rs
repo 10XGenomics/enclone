@@ -626,8 +626,8 @@ pub struct TigData {
     pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
     pub fr1_start: usize,                     // start position in bases of FWR1 on V..J
     pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
-    pub fr2_start: usize,                     // start position in bases of FWR2 on V..J
-    pub cdr2_start: usize,                    // start position in bases of CDR2 on V..J
+    pub fr2_start: Option<usize>,             // start position in bases of FWR2 on V..J
+    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
     pub fr3_start: usize,                     // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
@@ -696,8 +696,8 @@ pub struct TigData1 {
     pub c_ref_id: Option<usize>,             // index of C segment reference sequence in ref file
     pub fr1_start: usize,                    // start position in bases of FWR1 on V..J
     pub cdr1_start: Option<usize>,           // start position in bases of CDR1 on V..J
-    pub fr2_start: usize,                    // start position in bases of FWR2 on V..J
-    pub cdr2_start: usize,                   // start position in bases of CDR2 on V..J
+    pub fr2_start: Option<usize>,            // start position in bases of FWR2 on V..J
+    pub cdr2_start: Option<usize>,           // start position in bases of CDR2 on V..J
     pub fr3_start: usize,                    // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
@@ -816,8 +816,8 @@ pub struct ColInfo {
     pub cids: Vec<Option<usize>>,
     pub fr1_starts: Vec<usize>,
     pub cdr1_starts: Vec<Option<usize>>,
-    pub fr2_starts: Vec<usize>,
-    pub cdr2_starts: Vec<usize>,
+    pub fr2_starts: Vec<Option<usize>>,
+    pub cdr2_starts: Vec<Option<usize>>,
     pub fr3_starts: Vec<usize>,
     pub cdr3_starts: Vec<usize>,
     pub cdr3_lens: Vec<usize>,

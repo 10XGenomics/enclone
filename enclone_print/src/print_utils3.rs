@@ -62,10 +62,10 @@ pub fn define_column_info(
     // Compute CDR3 starts, etc.
 
     let mut fr1_starts = Vec::<usize>::new();
-    let mut fr2_starts = Vec::<usize>::new();
+    let mut fr2_starts = Vec::<Option<usize>>::new();
     let mut fr3_starts = Vec::<usize>::new();
     let mut cdr1_starts = Vec::<Option<usize>>::new();
-    let mut cdr2_starts = Vec::<usize>::new();
+    let mut cdr2_starts = Vec::<Option<usize>>::new();
     let mut cdr3_starts = Vec::<usize>::new();
     let mut cdr3_lens = Vec::<usize>::new();
     let mut seq_lens = Vec::<usize>::new();
@@ -94,13 +94,17 @@ pub fn define_column_info(
                 } else {
                     cdr1_starts.push(None);
                 }
-                let mut start = exm.cdr2_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.cdr2_start.is_some() {
+                    let mut start = exm.cdr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    cdr2_starts.push(Some(start));
+                } else {
+                    cdr2_starts.push(None);
                 }
-                cdr2_starts.push(start);
                 let mut start = exm.fr1_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -108,13 +112,17 @@ pub fn define_column_info(
                     }
                 }
                 fr1_starts.push(start);
-                let mut start = exm.fr2_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.fr2_start.is_some() {
+                    let mut start = exm.fr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    fr2_starts.push(Some(start));
+                } else {
+                    fr2_starts.push(None);
                 }
-                fr2_starts.push(start);
                 let mut start = exm.fr3_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -601,6 +609,14 @@ pub fn build_table_stuff(
                         if rsi.cdr1_starts[cx].is_some() {
                             cs1 = rsi.cdr1_starts[cx].unwrap();
                         }
+                        let mut cs2 = 0;
+                        if rsi.cdr2_starts[cx].is_some() {
+                            cs2 = rsi.cdr2_starts[cx].unwrap();
+                        }
+                        let mut fs2 = 0;
+                        if rsi.fr2_starts[cx].is_some() {
+                            fs2 = rsi.fr2_starts[cx].unwrap();
+                        }
                         let fields = [
                             (
                                 "fwr1".to_string(),
@@ -610,9 +626,9 @@ pub fn build_table_stuff(
                             ),
                             (
                                 "fwr2".to_string(),
-                                rsi.fr2_starts[cx],
-                                rsi.cdr2_starts[cx],
-                                true,
+                                fs2,
+                                cs2,
+                                rsi.fr2_starts[cx].is_some() && rsi.cdr2_starts[cx].is_some(),
                             ),
                             (
                                 "fwr3".to_string(),
@@ -623,14 +639,14 @@ pub fn build_table_stuff(
                             (
                                 "cdr1".to_string(),
                                 cs1,
-                                rsi.fr2_starts[cx],
-                                rsi.cdr1_starts[cx].is_some(),
+                                fs2,
+                                rsi.cdr1_starts[cx].is_some() && rsi.fr2_starts[cx].is_some(),
                             ),
                             (
                                 "cdr2".to_string(),
-                                rsi.cdr2_starts[cx],
+                                cs2,
                                 rsi.fr3_starts[cx],
-                                true,
+                                rsi.cdr2_starts[cx].is_some(),
                             ),
                             (
                                 "cdr3".to_string(),

@@ -909,10 +909,10 @@ pub fn main_enclone(args: &Vec<String>) {
     // Populate features.
 
     let mut fr1_starts = vec![0; refdata.refs.len()];
-    let mut fr2_starts = vec![0; refdata.refs.len()];
+    let mut fr2_starts = vec![None; refdata.refs.len()];
     let mut fr3_starts = vec![0; refdata.refs.len()];
     let mut cdr1_starts = vec![None; refdata.refs.len()];
-    let mut cdr2_starts = vec![0; refdata.refs.len()];
+    let mut cdr2_starts = vec![None; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
             let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
@@ -932,13 +932,19 @@ pub fn main_enclone(args: &Vec<String>) {
                 continue;
             }
             fr1_starts[i] = 3 * fr1_start(&aa, &chain_type);
-            fr2_starts[i] = 3 * fr2_start(&aa, &chain_type, false);
+            let fr2 = fr2_start(&aa, &chain_type, false);
+            if fr2.is_some() {
+                fr2_starts[i] = Some(3 * fr2.unwrap());
+            }
             fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
             }
-            cdr2_starts[i] = 3 * cdr2_start(&aa, &chain_type, false);
+            let cs2 = cdr2_start(&aa, &chain_type, false);
+            if cs2.is_some() {
+                cdr2_starts[i] = Some(3 * cs2.unwrap());
+            }
         }
     }
     for i in 0..tig_bc.len() {
