@@ -1123,6 +1123,15 @@ pub fn main_enclone(args: &Vec<String>) {
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
+                if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
+                    eprintln!(
+                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                        exceeds the FWR3 start for this reference sequence:\n"
+                    );
+                    let seq = refdata.refs[i].to_ascii_vec();
+                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                    fail = true;
+                }
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
