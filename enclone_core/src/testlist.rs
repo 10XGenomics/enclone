@@ -386,17 +386,19 @@ pub const EXTENDED_TESTS: [&str; 8] = [
     r###"BCR=47680 BARCODE=CGCCAAGTCCATGAAC-1 NO_PRE NFORCE"###,
     // 7. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
-    // 8. test MOUSE BCR + our reference (this crashed)
+    // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
     r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
 ];
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 2] = [
+pub const INTERNAL_TESTS: [&str; 3] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
     // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"123085 IMGT ACCEPT_BROKEN NOPRINT EXPECT_NULL"###,
+    r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
+    // 3. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"70838 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN MOUSE NO_PRE NFORCE EXPECT_NULL"###,
 ];
 
 // List of examples in documentation.
