@@ -38,11 +38,12 @@ dependencies = [
 
 [[package]]
 name = "amino"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95097f68674a8108944ed3c1cf342f251cb9702dd212c763826d0aec0280b3e7"
+checksum = "7c1365081b7610266f7b9bff01acbe30746246ddd620e398b61b74bbc1a999d2"
 dependencies = [
  "debruijn",
+ "string_utils",
 ]
 
 [[package]]
@@ -2289,7 +2290,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2297,8 +2298,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
- "strum 0.18.0",
- "strum_macros 0.18.0",
+ "strum 0.19.2",
+ "strum_macros 0.19.2",
  "vdj_types",
  "vector_utils",
 ]

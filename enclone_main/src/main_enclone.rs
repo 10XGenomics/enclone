@@ -863,9 +863,20 @@ pub fn main_enclone(args: &Vec<String>) {
                     reasons.push("appears to be frameshifted".to_string());
                 }
             }
+            if aa.len() >= 31 {
+                for del in 1..=2 {
+                    let aad = aa_seq(&aa, del);
+                    if cdr3_score(&aad, &chain_type, false)
+                        > 4 + cdr3_score(&aa, &chain_type, false)
+                    {
+                        reasons.push("appears to be frameshifted".to_string());
+                    }
+                }
+            }
 
             // Report results.
 
+            unique_sort(&mut reasons);
             if !reasons.is_empty() {
                 let msg = format!(
                     "The following V segment reference sequence {}",
