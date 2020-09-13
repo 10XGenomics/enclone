@@ -1039,6 +1039,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut fr3_starts = vec![None; refdata.refs.len()];
     let mut cdr1_starts = vec![None; refdata.refs.len()];
     let mut cdr2_starts = vec![None; refdata.refs.len()];
+    let mut fail = false;
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
             if broken[i] && ctl.gen_opt.require_unbroken_ok {
@@ -1071,7 +1072,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                std::process::exit(1);
+                fail = true;
             }
             let fs3 = fr3_start(&aa, &chain_type, false);
             if fs3.is_some() {
@@ -1087,7 +1088,7 @@ pub fn main_enclone(args: &Vec<String>) {
                     );
                     let seq = refdata.refs[i].to_ascii_vec();
                     eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                    std::process::exit(1);
+                    fail = true;
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
@@ -1096,7 +1097,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                std::process::exit(1);
+                fail = true;
             }
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
@@ -1116,7 +1117,7 @@ pub fn main_enclone(args: &Vec<String>) {
                             cdr3_score(&aa, &chain_type, false),
                         );
                         eprintln!("Amino acid sequence =\n{}.\n", strme(&aa));
-                        std::process::exit(1);
+                        fail = true;
                     }
                 }
             } else if ctl.gen_opt.require_unbroken_ok {
@@ -1126,9 +1127,12 @@ pub fn main_enclone(args: &Vec<String>) {
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                std::process::exit(1);
+                fail = true;
             }
         }
+    }
+    if fail {
+        std::process::exit(1);
     }
     if ctl.gen_opt.require_unbroken_ok {
         std::process::exit(0);
