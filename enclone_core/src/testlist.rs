@@ -392,9 +392,11 @@ pub const EXTENDED_TESTS: [&str; 8] = [
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 1] = [
+pub const INTERNAL_TESTS: [&str; 2] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
+    // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"123085 IMGT ACCEPT_BROKEN NOPRINT EXPECT_NULL"###,
 ];
 
 // List of examples in documentation.
