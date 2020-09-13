@@ -1082,7 +1082,7 @@ pub fn main_enclone(args: &Vec<String>) {
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
-                    could not be computed\nfor this reference sequence:\n"
+                    could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
@@ -1094,7 +1094,7 @@ pub fn main_enclone(args: &Vec<String>) {
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
-                    could not be computed\nfor this reference sequence:\n"
+                    could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
@@ -1106,7 +1106,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
                     eprintln!(
                         "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
-                        exceeds the FWR2 start for this reference sequence:\n"
+                        exceeds the FWR2 start for this reference sequence:"
                     );
                     let seq = refdata.refs[i].to_ascii_vec();
                     eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
@@ -1127,7 +1127,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
                     eprintln!(
                         "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
-                        exceeds the FWR3 start for this reference sequence:\n"
+                        exceeds the FWR3 start for this reference sequence:"
                     );
                     let seq = refdata.refs[i].to_ascii_vec();
                     eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
@@ -1136,7 +1136,7 @@ pub fn main_enclone(args: &Vec<String>) {
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
-                    could not be computed\nfor this reference sequence:\n"
+                    could not be computed\nfor this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
@@ -1158,7 +1158,7 @@ pub fn main_enclone(args: &Vec<String>) {
             {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
-                    exceeds the CDR2 start for this reference sequence:\n"
+                    exceeds the CDR2 start for this reference sequence:"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
