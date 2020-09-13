@@ -882,6 +882,19 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                 }
             }
+            if reasons.is_empty() {
+                let cs2 = cdr2_start(&aa, &chain_type, false);
+                if cs2.is_some() {
+                    let fr3 = fr3_start(&aa, &chain_type, false).unwrap();
+                    if cs2.unwrap() > fr3 {
+                        reasons.push(
+                            "appears to be defective, because our computed \
+                            CDR2 start exceeds our computed FWR3 start"
+                                .to_string(),
+                        );
+                    }
+                }
+            }
 
             // Report results.
 
@@ -1102,24 +1115,6 @@ pub fn main_enclone(args: &Vec<String>) {
             let cs2 = cdr2_start(&aa, &chain_type, false);
             if cs2.is_some() {
                 cdr2_starts[i] = Some(3 * cs2.unwrap());
-                if ctl.gen_opt.require_unbroken_ok {
-                    let fr3 = fr3_start(&aa, &chain_type, false).unwrap();
-                    if cs2.unwrap() > fr3 {
-                        eprintln!(
-                            "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
-                            exceeds the FWR3 start for this reference sequence:\n"
-                        );
-                        let seq = refdata.refs[i].to_ascii_vec();
-                        eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                        eprintln!(
-                            "The CDR3 start position is {} and it has score {}.\n",
-                            cdr3_start(&aa, &chain_type, false),
-                            cdr3_score(&aa, &chain_type, false),
-                        );
-                        eprintln!("Amino acid sequence =\n{}.\n", strme(&aa));
-                        fail = true;
-                    }
-                }
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
