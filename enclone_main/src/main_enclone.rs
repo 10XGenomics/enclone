@@ -1080,7 +1080,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 fr2_starts[i] = Some(3 * fr2.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
                     could not be computed\nfor this reference sequence:\n"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
@@ -1090,6 +1090,14 @@ pub fn main_enclone(args: &Vec<String>) {
             let fs3 = fr3_start(&aa, &chain_type, false);
             if fs3.is_some() {
                 fr3_starts[i] = Some(3 * fs3.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
+                    could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
             }
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
