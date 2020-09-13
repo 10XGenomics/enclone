@@ -421,7 +421,11 @@ pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
     let nm = motif[0].len();
     let reach = 18;
     let mut scores = Vec::<(usize, usize)>::new();
-    for j in aa.len() - nm - reach..=aa.len() - nm {
+    for j in aa.len() as isize - nm as isize - reach as isize..=aa.len() as isize - nm as isize {
+        if j < 0 {
+            continue;
+        }
+        let j = j as usize;
         let mut score = 0;
         for k in 0..nm {
             for l in 0..motif.len() {
