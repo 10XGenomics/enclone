@@ -405,7 +405,11 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        Some(score_pos[0].1 + 6)
+        if score_pos.is_empty() {
+            return None;
+        } else {
+            return Some(score_pos[0].1 + 6);
+        }
     } else {
         if chain_type == "IGK" || chain_type == "IGL" {
             add = -2;
