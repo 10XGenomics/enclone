@@ -1074,10 +1074,11 @@ pub fn main_enclone(args: &Vec<String>) {
             } else {
                 continue;
             }
-            fr1_starts[i] = 3 * fr1_start(&aa, &chain_type);
-            let fr2 = fr2_start(&aa, &chain_type, false);
-            if fr2.is_some() {
-                fr2_starts[i] = Some(3 * fr2.unwrap());
+            let fs1 = fr1_start(&aa, &chain_type);
+            fr1_starts[i] = 3 * fs1;
+            let fs2 = fr2_start(&aa, &chain_type, false);
+            if fs2.is_some() {
+                fr2_starts[i] = Some(3 * fs2.unwrap());
             } else if ctl.gen_opt.require_unbroken_ok {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
@@ -1102,7 +1103,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let cs1 = cdr1_start(&aa, &chain_type, false);
             if cs1.is_some() {
                 cdr1_starts[i] = Some(3 * cs1.unwrap());
-                if fr2.is_some() && cs1.unwrap() > fr2.unwrap() && ctl.gen_opt.require_unbroken_ok {
+                if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
                     eprintln!(
                         "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
                         exceeds the FWR2 start for this reference sequence:\n"
@@ -1136,6 +1137,15 @@ pub fn main_enclone(args: &Vec<String>) {
                 eprintln!(
                     "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
                     could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            if cs1.is_some() && fs1 > cs1.unwrap() && ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
+                    exceeds the CDR1 start for this reference sequence:\n"
                 );
                 let seq = refdata.refs[i].to_ascii_vec();
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
