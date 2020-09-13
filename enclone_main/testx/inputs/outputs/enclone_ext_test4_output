@@ -26,7 +26,7 @@ SUMMARY STATISTICS
    • number of clonotypes having at least two cells = 203
    • number of cells having 1 chain = 1570
    • number of cells having 2 or 3 chains = 1853
-   • estimated B-B doublet rate = 1.9% = 32/1681 = cells with 4 chains / cells with 2 or 4 chains
-   • mean over middle third of contig UMI counts (heavy chain) = 2.71
-   • mean over middle third of contig UMI counts (light chain) = 10.53
+   • estimated T-T doublet rate = 1.9% = 32/1681 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (TRB) = 2.71
+   • mean over middle third of contig UMI counts (TRA) = 10.53
 

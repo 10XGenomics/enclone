@@ -378,8 +378,8 @@ pub const EXTENDED_TESTS: [&str; 8] = [
      NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
-    // 4. test MOUSE + IMGT
-    r###"BCR=70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
+    // 4. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
     r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
     // 6. this crashed (and didn't check if this is in extended public dataset collection)
