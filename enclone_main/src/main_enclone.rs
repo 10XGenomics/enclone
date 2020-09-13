@@ -865,7 +865,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             if aa.len() >= 31 {
                 for del in 1..=2 {
-                    let aad = aa_seq(&aa, del);
+                    let aad = aa_seq(&seq, del);
                     if cdr3_score(&aad, &chain_type, false)
                         > 4 + cdr3_score(&aa, &chain_type, false)
                     {
