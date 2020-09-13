@@ -842,7 +842,9 @@ pub fn main_enclone(args: &Vec<String>) {
                 reasons.push("has more than one stop codon".to_string());
             }
             if aa.len() < 100 {
-                reasons.push("is too short (has less than 100 amino acids)".to_string());
+                reasons.push("appears truncated (has less than 100 amino acids)".to_string());
+            } else if aa.len() < 105 && chain_type == "IGH" {
+                reasons.push("appears truncated (has less than 105 amino acids)".to_string());
             }
             if aa.len() >= 30 {
                 let mut aap = aa.clone();
