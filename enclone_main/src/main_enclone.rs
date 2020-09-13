@@ -822,6 +822,13 @@ pub fn main_enclone(args: &Vec<String>) {
                 continue;
             }
 
+            // Ugly.  Frameshifted.  Also this is mouse and not checking for that.
+
+            if refdata.name[i] == "TRAV23" {
+                broken[i] = true;
+                continue;
+            }
+
             // Test for broken.
 
             let seq = refdata.refs[i].to_ascii_vec();
