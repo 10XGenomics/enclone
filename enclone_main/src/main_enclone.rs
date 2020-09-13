@@ -1151,6 +1151,19 @@ pub fn main_enclone(args: &Vec<String>) {
                 eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                 fail = true;
             }
+            if cs2.is_some()
+                && fs2.is_some()
+                && fs2.unwrap() > cs2.unwrap()
+                && ctl.gen_opt.require_unbroken_ok
+            {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
+                    exceeds the CDR2 start for this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
         }
     }
     if fail {
