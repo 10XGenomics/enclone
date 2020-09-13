@@ -1111,8 +1111,9 @@ pub fn main_enclone(args: &Vec<String>) {
                         let seq = refdata.refs[i].to_ascii_vec();
                         eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
                         eprintln!(
-                            "The CDR3 start score is {}.\n",
-                            cdr3_score(&aa, &chain_type, false)
+                            "The CDR3 start position is {} and it has score {}.\n",
+                            cdr3_start(&aa, &chain_type, false),
+                            cdr3_score(&aa, &chain_type, false),
                         );
                         eprintln!("Amino acid sequence =\n{}.\n", strme(&aa));
                         std::process::exit(1);
