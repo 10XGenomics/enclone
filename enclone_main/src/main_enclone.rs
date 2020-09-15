@@ -971,10 +971,17 @@ pub fn main_enclone(args: &Vec<String>) {
  🌼  misannotation.                                                                          🌼\n"
         );
 
-    let mut rows = Vec::<Vec<String>>::new();
-    rows.push(vec!["You can make enclone ignore these defects by adding the additional argument".to_string()]);
-    rows.push(vec!["ACCEPT_BROKEN to the enclone command line.  Or you can obtain the same".to_string()]);
-    rows.push(vec!["behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string()]);
+        let mut rows = Vec::<Vec<String>>::new();
+        rows.push(vec![
+            "You can make enclone ignore these defects by adding the additional argument"
+                .to_string(),
+        ]);
+        rows.push(vec![
+            "ACCEPT_BROKEN to the enclone command line.  Or you can obtain the same".to_string(),
+        ]);
+        rows.push(vec![
+            "behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string(),
+        ]);
 
         let mut log = String::new();
         print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
