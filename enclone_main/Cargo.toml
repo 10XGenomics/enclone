@@ -35,6 +35,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 stats_utils = "0.1.1"
 string_utils = "0.1.1"
+tables = "0.1.2"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fe14ff4f5a6d33c8c28b753c8659f9ca08df9f78" }
 vector_utils = "0.1.3"
 

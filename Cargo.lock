@@ -659,6 +659,7 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
+ "tables",
  "vdj_ann",
  "vector_utils",
 ]

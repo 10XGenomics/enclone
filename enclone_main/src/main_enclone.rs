@@ -51,6 +51,7 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
+use tables::*;
 use vdj_ann::*;
 use vector_utils::*;
 
@@ -958,28 +959,33 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
         eprintln!(
-            "\n{} errors were detected in the reference sequences supplied to enclone.\n\
+            "\nSome errors were detected in the reference sequences supplied to enclone.\n\
             Please see comments at end for what you can do about this.\n",
-            count
         );
         eprint!("{}", strme(&log));
         eprintln!(
-            "{} errors were detected in the reference sequences supplied to enclone.",
-            count
+"🌼  Dear user, some defects were detected in the reference sequences supplied to enclone.   🌼\n\
+ 🌼  Some of these defects may be small.  Generally they are associated with V segments that 🌼\n\
+ 🌼  are frameshifted or truncated, or with C segments that have an extra base at the        🌼\n\
+ 🌼  beginning.  We are letting you know about this because they could result in             🌼\n\
+ 🌼  misannotation.                                                                          🌼\n"
         );
+
+    let mut rows = Vec::<Vec<String>>::new();
+    rows.push(vec!["You can make enclone ignore these defects by adding the additional argument".to_string()]);
+    rows.push(vec!["ACCEPT_BROKEN to the enclone command line.  Or you can obtain the same".to_string()]);
+    rows.push(vec!["behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string()]);
+
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
+        eprintln!("{}", log);
+
         eprintln!(
-            "\nDefective reference sequences are a problem because they can result in \
-            misannotation."
-        );
-        eprintln!(
-            "\nYou have the following options:\n\
-            1. Override this test by supplying the argument ACCEPT_BROKEN.  Or you can define\n   \
-            the environment variable ENCLONE_ACCEPT_BROKEN.\n\
-            2. Fix the defects in the reference sequences.\n\
-            3. Delete the defective reference sequences.\n\
-            4. Use the reference sequences that are packaged with enclone (for human and mouse).\n\
-            \nNote that for options 2-4, you will then need to run with the option RE to force \
-            reannotation,\nor else rerun Cell Ranger.\n"
+        "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
+        • rerun cellranger using the cleaned up reference sequences that come prepacked with it,\n\
+        • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
+        sequences.  This will be a bit slower because all the contigs will need to be\n  \
+        reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
         );
         std::process::exit(1);
     }
