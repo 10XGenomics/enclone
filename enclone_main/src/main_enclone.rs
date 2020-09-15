@@ -895,6 +895,23 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                 }
             }
+            if reasons.is_empty() {
+                if aa.len() >= 31 {
+                    // Pretty crappy frameshift test.  One should see high aa and dna similarity
+                    // to other seqs if shifted.  Or use more aas.
+                    let score = cdr3_score(&aa, &chain_type, false);
+                    let mut frameshift = false;
+                    for del in 1..=2 {
+                        let aad = aa_seq(&seq, del);
+                        if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
+                            frameshift = true;
+                        }
+                    }
+                    if frameshift {
+                        reasons.push("appears to be frameshifted".to_string());
+                    }
+                }
+            }
 
             // Report results.
 
