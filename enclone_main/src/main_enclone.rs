@@ -7,6 +7,7 @@ use amino::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
+use enclone::fwr3_freqs::*;
 use enclone::graph_filter::*;
 use enclone::info::*;
 use enclone::innate::*;
@@ -829,6 +830,13 @@ pub fn main_enclone(args: &Vec<String>) {
                 continue;
             }
 
+            // Ugly.  Truncated on right.  Human.
+
+            if refdata.name[i] == "IGLV5-48" {
+                broken[i] = true;
+                continue;
+            }
+
             // Test for broken.
 
             let seq = refdata.refs[i].to_ascii_vec();
@@ -910,6 +918,26 @@ pub fn main_enclone(args: &Vec<String>) {
                     if frameshift {
                         reasons.push("appears to be frameshifted".to_string());
                     }
+                }
+            }
+            if reasons.is_empty() {
+                let r;
+                if chain_type == "IGH" {
+                    r = 0;
+                } else if chain_type == "IGK" {
+                    r = 1;
+                } else if chain_type == "IGL" {
+                    r = 2;
+                } else if chain_type == "TRA" {
+                    r = 3;
+                } else {
+                    assert_eq!(chain_type, "TRB");
+                    r = 4;
+                }
+                let freqs = fwr3_freqs();
+                let score = score_fwr3(&aa, r, &freqs);
+                if score < 8.0 && score4(&aa, r) < 5 {
+                    reasons.push("appears to be frameshifted or truncated".to_string());
                 }
             }
 
