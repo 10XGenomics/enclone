@@ -363,49 +363,66 @@ We use the following PWM:
 <th align="right" style="border: 2px solid black">pos</th>
 <th align="right" style="border: 2px solid black">weight</th>
 <th align="left" style="border: 2px solid black">values</th>
+<th align="left" style="border: 2px solid black">notes</th>
 </tr>
 </thead>
 <tbody>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">1</td>
     <td align="right" style="border: 2px solid black">50</td>
-    <td align="values" style="border: 2px solid black">F, L, M, V</td>
+    <td align="left" style="border: 2px solid black">F, L, M, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
+
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="left" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black">only for IGL</td>
+</tr>
+
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">3</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">W</td>
+    <td align="left" style="border: 2px solid black">W</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">4</td>
     <td align="right" style="border: 2px solid black">150</td>
-    <td align="values" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">5</td>
     <td align="right" style="border: 2px solid black">100</td>
-    <td align="values" style="border: 2px solid black">R</td>
+    <td align="left" style="border: 2px solid black">R</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">6</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">Q</td>
+    <td align="left" style="border: 2px solid black">Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">9</td>
     <td align="right" style="border: 2px solid black">110</td>
-    <td align="values" style="border: 2px solid black">G</td>
+    <td align="left" style="border: 2px solid black">G</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">10</td>
     <td align="right" style="border: 2px solid black">60</td>
-    <td align="values" style="border: 2px solid black">K, Q</td>
+    <td align="left" style="border: 2px solid black">K, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">11</td>
     <td align="right" style="border: 2px solid black">40</td>
-    <td align="values" style="border: 2px solid black">A, G, K</td>
+    <td align="left" style="border: 2px solid black">A, G, K</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tbody>
 </table>

@@ -211,7 +211,11 @@ pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 
     // #40
 
-    pwm.push(vec![]);
+    if chain_type == "IGL" {
+        pwm.push(vec![(250, b'Y')]);
+    } else {
+        pwm.push(vec![]);
+    }
 
     // #41
 
