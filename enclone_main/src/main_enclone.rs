@@ -744,6 +744,14 @@ pub fn main_enclone(args: &Vec<String>) {
     }
 
     */
+    if ctl.gen_opt.built_in {
+        if ctl.gen_opt.mouse {
+            refx = mouse_ref();
+        } else {
+            refx = human_ref();
+        }
+        ctl.gen_opt.reannotate = true;
+    }
     let refx2 = &refx;
 
     // Build reference data.

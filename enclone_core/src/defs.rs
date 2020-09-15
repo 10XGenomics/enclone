@@ -429,6 +429,7 @@ pub struct GeneralOpt {
     pub diff_style: String,
     pub accept_broken: bool,
     pub require_unbroken_ok: bool,
+    pub built_in: bool,
 }
 
 // Allele-finding algorithmic options.
