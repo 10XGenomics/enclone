@@ -768,7 +768,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut count = 0;
     let mut broken = vec![false; refdata.refs.len()];
     for i in 0..refdata.refs.len() {
-        // Determine chain type and exclude thosse other than IGH, IGK, IGL, TRA and TRB.
+        // Determine chain type and exclude those other than IGH, IGK, IGL, TRA and TRB.
 
         let rtype = refdata.rtype[i];
         let chain_type;
