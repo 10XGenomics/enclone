@@ -187,6 +187,8 @@ MAX_SCORE: was public, now deprecated, do not remove
 REQUIRE_UNBROKEN_OK: require that if a V reference sequence is not marked as broken, then all
 its features can be computed, and exit after this test
 
+NALL_GEX: turn off all filters except GEX filter
+
 ===================================================================================================
 
 OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED

@@ -256,10 +256,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Preprocess NALL.
+    // Preprocess NALL and NALL_GEX.
 
     for i in 1..args.len() {
-        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" {
+        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" || args[i] == "NALL_GEX" {
             let f = [
                 "NCELL",
                 "NGEX",
@@ -277,7 +277,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 "NIMPROPER",
             ];
             for j in 0..f.len() {
-                if args[i] == "NALL" || f[j] != "NCELL" {
+                if f[j] == "NCELL" {
+                    if args[i] != "NALL_CELL" {
+                        args.push(f[j].to_string());
+                    }
+                } else if f[j] == "NGEX" {
+                    if args[i] != "NALL_GEX" {
+                        args.push(f[j].to_string());
+                    }
+                } else {
                     args.push(f[j].to_string());
                 }
             }
@@ -457,6 +465,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "MARK_STATS2",
         "NALL",
         "NALL_CELL",
+        "NALL_GEX",
         "NOPAGER",
         "NOPRETTY",
         "PLAIN",
