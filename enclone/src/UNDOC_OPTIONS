@@ -189,6 +189,8 @@ its features can be computed, and exit after this test
 
 NALL_GEX: turn off all filters except GEX filter
 
+REPROD: accept nonproductive contigs, recompute productive, then reject nonproductive
+
 ===================================================================================================
 
 OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED

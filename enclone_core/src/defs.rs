@@ -430,6 +430,7 @@ pub struct GeneralOpt {
     pub accept_broken: bool,
     pub require_unbroken_ok: bool,
     pub built_in: bool,
+    pub reprod: bool,
 }
 
 // Allele-finding algorithmic options.

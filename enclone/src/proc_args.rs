@@ -358,6 +358,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
         ("RE", &mut ctl.gen_opt.reannotate),
+        ("REPROD", &mut ctl.gen_opt.reprod),
         ("REQUIRE_UNBROKEN_OK", &mut ctl.gen_opt.require_unbroken_ok),
         ("REUSE", &mut ctl.gen_opt.reuse),
         ("SEQC", &mut ctl.clono_print_opt.seqc),

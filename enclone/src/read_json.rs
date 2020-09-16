@@ -110,11 +110,15 @@ fn parse_vector_entry_from_json(
 
     // Proceed.
 
-    if !v["productive"].as_bool().unwrap_or(false) {
-        return;
+    if !ctl.gen_opt.reprod {
+        if !v["productive"].as_bool().unwrap_or(false) {
+            return;
+        }
     }
-    if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
-        return;
+    if !ctl.gen_opt.reprod {
+        if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
+            return;
+        }
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
     let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
@@ -140,7 +144,7 @@ fn parse_vector_entry_from_json(
 
     // Reannotate.
 
-    if reannotate {
+    if reannotate || ctl.gen_opt.reprod {
         let x = DnaString::from_dna_string(&full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
