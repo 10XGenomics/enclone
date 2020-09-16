@@ -339,10 +339,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         // Finish.  Note that the numbers here also appear on the landing page.
 
         h.print(
-            "We are actively working to improve the algorithm.  To test the performance of the \
-            current version, we combined data from 442 BCR libraries from 30 donors, which yielded \
-            \\boldred{8678} clonotypes having at least two cells each, of which \
-            \\boldred{15 (0.17%)} contained data from multiple donors.  These are errors.\n\n",
+            "We are actively working to improve the algorithm.  Test results for the current \
+             version may be found at \\green{bit.ly/enclone}.\n\n",
         );
         h.end_doc();
     }

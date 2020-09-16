@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 145] = [
+pub const TESTS: [&str; 147] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -99,7 +99,7 @@ pub const TESTS: [&str; 145] = [
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
-    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW"###,
+    r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW ACCEPT_BROKEN"###,
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
     // 33. tests SCAN
@@ -365,11 +365,15 @@ pub const TESTS: [&str; 145] = [
     // 145. test the lead variable "filter"
     r###"BCR=123085 NALL LVARSP=filter PER_CELL CHAINS=2 CDR3=CQQSYSTPPYTF SEG=IGKV1D-39
         SEG=IGLV3-21"###,
+    // 146. test BUILT_IN
+    r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW BUILT_IN"###,
+    // 147. test NALL_GEX
+    r###"BCR=86237 GEX=85679 NALL_GEX LVARSP=n_gex,filter PER_CELL BARCODE=CTTGGCTGTTAAGACA-1"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
 
-pub const EXTENDED_TESTS: [&str; 3] = [
+pub const EXTENDED_TESTS: [&str; 8] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -378,13 +382,27 @@ pub const EXTENDED_TESTS: [&str; 3] = [
      NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
     r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
+    // 4. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
+    // 5. this crashed (and didn't check if this is in extended public dataset collection)
+    r###"BCR=83809 CDR3=CARVSLGYCSGGSCNSNYYFDYW NO_PRE NFORCE"###,
+    // 6. this crashed (and didn't check if this is in extended public dataset collection)
+    r###"BCR=47680 BARCODE=CGCCAAGTCCATGAAC-1 NO_PRE NFORCE"###,
+    // 7. this crashed (and didn't check if this is in extended public dataset collection)
+    r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
+    // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
+    r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
 ];
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 1] = [
+pub const INTERNAL_TESTS: [&str; 3] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
+    // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
+    // 3. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"70838 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN MOUSE NO_PRE NFORCE EXPECT_NULL"###,
 ];
 
 // List of examples in documentation.
@@ -399,12 +417,12 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 10] = [
+pub const SITE_EXAMPLES: [(&str, &str); 12] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
         "pages/auto/clonotype_with_gex.html",
-        "BCR=123085 CDR3=CQQRSNWPPSITF GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
          HTML=\"enclone example with gex\"",
     ),
     // 2.
@@ -458,5 +476,15 @@ pub const SITE_EXAMPLES: [(&str, &str); 10] = [
     (
         "pages/auto/mait_example.html",
         "TCR=101287 LVARSP=mait CDR3=CSAGQGDTEAFF HTML",
+    ),
+    // 11.
+    (
+        "pages/auto/foursie1.html",
+        "BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL HTML",
+    ),
+    // 12.
+    (
+        "pages/auto/foursie2.html",
+        "BCR=123085 CDR3=CARRYFGVVADAFDIW HTML",
     ),
 ];

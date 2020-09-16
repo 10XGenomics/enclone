@@ -256,10 +256,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Preprocess NALL.
+    // Preprocess NALL and NALL_GEX.
 
     for i in 1..args.len() {
-        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" {
+        if args[i] == "NALL".to_string() || args[i] == "NALL_CELL" || args[i] == "NALL_GEX" {
             let f = [
                 "NCELL",
                 "NGEX",
@@ -277,7 +277,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 "NIMPROPER",
             ];
             for j in 0..f.len() {
-                if args[i] == "NALL" || f[j] != "NCELL" {
+                if f[j] == "NCELL" {
+                    if args[i] != "NALL_CELL" {
+                        args.push(f[j].to_string());
+                    }
+                } else if f[j] == "NGEX" {
+                    if args[i] != "NALL_GEX" {
+                        args.push(f[j].to_string());
+                    }
+                } else {
                     args.push(f[j].to_string());
                 }
             }
@@ -288,6 +296,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that set something to true.
 
     let mut set_true = vec![
+        ("ACCEPT_BROKEN", &mut ctl.gen_opt.accept_broken),
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
@@ -296,6 +305,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("BARCODES", &mut ctl.clono_print_opt.barcodes),
         ("BASELINE", &mut ctl.gen_opt.baseline),
         ("BCJOIN", &mut ctl.join_alg_opt.bcjoin),
+        ("BUILT_IN", &mut ctl.gen_opt.built_in),
         ("CDIFF", &mut ctl.clono_filt_opt.cdiff),
         ("CHAIN_BRIEF", &mut ctl.clono_print_opt.chain_brief),
         ("COMPLETE", &mut ctl.gen_opt.complete),
@@ -348,6 +358,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
         ("RE", &mut ctl.gen_opt.reannotate),
+        ("REPROD", &mut ctl.gen_opt.reprod),
+        ("REQUIRE_UNBROKEN_OK", &mut ctl.gen_opt.require_unbroken_ok),
         ("REUSE", &mut ctl.gen_opt.reuse),
         ("SEQC", &mut ctl.clono_print_opt.seqc),
         ("SHOW_BC", &mut ctl.join_print_opt.show_bc),
@@ -454,6 +466,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "MARK_STATS2",
         "NALL",
         "NALL_CELL",
+        "NALL_GEX",
         "NOPAGER",
         "NOPRETTY",
         "PLAIN",
@@ -599,6 +612,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.use_legend = true;
         } else if is_usize_arg(&arg, "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_CELLS") {
+            ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_DONORS") {
+            ctl.gen_opt.required_donors = Some(arg.after("REQUIRED_DONORS=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES") {
+            ctl.gen_opt.required_clonotypes = Some(arg.after("REQUIRED_CLONOTYPES=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES") {
+            ctl.gen_opt.required_two_cell_clonotypes =
+                Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_DATASETS") {
+            ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
         } else if is_usize_arg(&arg, "EXACT") {
             ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
         } else if is_usize_arg(&arg, "MIN_CHAINS") {

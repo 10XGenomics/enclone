@@ -1260,9 +1260,12 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.cdr1_start <= x.fr2_start {
+                if x.cdr1_start.is_some()
+                    && x.fr2_start.is_some()
+                    && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+                {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.cdr1_start..x.fr2_start {
+                    for p in x.cdr1_start.unwrap()..x.fr2_start.unwrap() {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1305,9 +1308,12 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.cdr2_start <= x.fr3_start {
+                if x.cdr2_start.is_some()
+                    && x.fr3_start.is_some()
+                    && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+                {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.cdr2_start..x.fr3_start {
+                    for p in x.cdr2_start.unwrap()..x.fr3_start.unwrap() {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1356,9 +1362,9 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.fr1_start <= x.cdr1_start {
+                if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.fr1_start..x.cdr1_start {
+                    for p in x.fr1_start..x.cdr1_start.unwrap() {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1401,9 +1407,9 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.fr2_start <= x.cdr2_start {
+                if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.fr2_start..x.cdr2_start {
+                    for p in x.fr2_start.unwrap()..x.cdr2_start.unwrap() {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1446,9 +1452,9 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.fr3_start <= x.cdr3_start {
+                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.fr3_start..x.cdr3_start {
+                    for p in x.fr3_start.unwrap()..x.cdr3_start {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();

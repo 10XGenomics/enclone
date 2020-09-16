@@ -141,13 +141,12 @@ also be described separately in more detail.
 <!-- Note that the numbers below also appear in help1.rs. -->
 
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
-<b>Clonotyping performance.</b>  To test the performance of #enclone, we combined data from 442 BCR 
-enriched libraries from 30 donors. #enclone detected a total of 
-<span style="color:red">352,286</span>
-clonotypes.  Of the detected clonotypes, <span style="color:red">8,678</span> contained at least 
-two cells,
-of which <span style="color:red">15 (0.17%)</span> of the clonotypes 
-contained receptors from multiple donors, and thus were erroneous.
+<b>Clonotyping performance.</b>  To test the performance of #enclone, we combined data from 
+#required_datasets BCR enriched libraries from #required_donors donors. #enclone detected a total 
+of <span style="color:red">#required_clonotypes</span> clonotypes.  Of the detected clonotypes, 
+<span style="color:red">#required_two_cell_clonotypes</span> contained at least 
+two cells, of which <span style="color:red">#required_fps (#required_fp_percent)</span> 
+of the clonotypes contained receptors from multiple donors, and thus were erroneous.
 The low error rate is a consequence of the paired chain data and the #enclone 
 algorithm, which minimizes the placement of unrelated cells in the same clonotype.
 </p>
@@ -565,9 +564,12 @@ title="enclone annotated example" style="max-width:100%;"></a>
 		all transcript positions, only "interesting" positions are shown).</li>
 </ol>
 
-<p>The same exact output would be obtained by typing:</p>
-<pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
+<p>Approximately the same output would be obtained by typing:</p>
+<pre><code>enclone BCR=123085 CDR3=CTRDRDLRGATDAFDIW
 </code></pre>
+(As we change the algorithm, results are perturbed slightly, and we have not updated the
+diagram each time.  All other outputs shown on this site are kept current.)
+
 <p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
 contains some files from a Cell Ranger run, obtained from a human ovarian cancer sample.</p>
 
@@ -592,7 +594,8 @@ blanks, tabs, etc. in path names</b>.  #enclone can be made to work with such ch
 quoting the paths, but it makes things harder, and other programs you might use may break.
 </p>
 
-<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes #enclone to display only clonotypes in which 
+<p>The argument <code>CDR3=CTRDRDLRGATDAFDIW</code> causes #enclone to display only clonotypes in 
+which 
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
 automatically paged, so you can scroll through it.</p>

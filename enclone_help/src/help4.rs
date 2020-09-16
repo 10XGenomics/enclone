@@ -151,13 +151,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "NFOURSIE_KILL",
-            "By default, if enclone finds a foursie exact subclonotype that \
-            contains a twosie exact subclonotype having at least ten cells, it kills \
-            the foursie exact subclonotype, no matter how many cells it has.  The \
-            foursies that are killed are believed to be rare oddball artifacts arising \
+            "Under certain circumstances, enclone will delete foursie exact subclonotypes.  \
+            Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
+            The foursies that are killed are believed to be artifacts arising \
             from repeated cell doublets or GEMs that contain two cells and multiple gel \
             beads.  The argument NFOURSIE_KILL turns off this filtering.",
-            60,
+            65,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -651,11 +650,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.docf2(
             "filter",
             "See \"enclone help special\".  Use with PER_CELL.  If you turn off some default \
-            filters (or all default filters, e.g. with NALL), and this cell would have been \
+            filters (or all default filters, e.g. with NALL_CELL), and this cell would have been \
             deleted by one of the default filters, then this will show the name of \
             the last filter that would have been applied to delete the cell.  Note that there \
             are complex interactions between filters, so the actual effect with all default \
-            filters on may not be identical in all cases.  Note also that use of NALL will \
+            filters on may be significantly different.  Note also that use of NALL_CELL will \
             typically result in peculiar artifacts, so this should only be used as an \
             exploratory tool.",
             75,

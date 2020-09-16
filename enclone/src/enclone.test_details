@@ -8,29 +8,18 @@
 # it is relatively easy to think that the test succeeded, even though it failed, because you
 # may not see the failure message at the end.  This can cause great confusion.
 #
-# Use enclone.test_details to get details on false positives.  Note that this test 
-# (enclone.test) actually tests more, because it generates information for every clonotype, even 
-# though that information is not printed.  We found bugs this way.
+# This is a modified version of enclone.test that shows more details.
 
 rootdir=$(dirname $0)
 
 enclone \
     BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
-    NOPRINT \
-    SUMMARY \
-    PRE=/mnt/assembly/vdj/current14 \
-    MIX_DONORS \
-    NOPAGER \
-    \
+    ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT PRINT_FAILED_JOINS \
+    PRE=/mnt/assembly/vdj/current14 MIX_DONORS \
     REQUIRED_FPS=16 \
-    REQUIRED_CELLS=452164 \
-    REQUIRED_CLONOTYPES=394172 \
-    REQUIRED_DONORS=30 \
-    REQUIRED_TWO_CELL_CLONOTYPES=9101 \
-    REQUIRED_DATASETS=442 \
-    \
-    $*
+    NOPAGER $*
 
 # WARNING:
-# Please be very careful about changing the benchmark statistics.
+# Please be very careful about changing the benchmark statistic for
+# REQUIRED_FPS.

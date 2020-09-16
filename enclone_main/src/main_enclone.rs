@@ -7,6 +7,7 @@ use amino::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
+use enclone::fwr3_freqs::*;
 use enclone::graph_filter::*;
 use enclone::info::*;
 use enclone::innate::*;
@@ -50,6 +51,7 @@ use std::{
     time::Instant,
 };
 use string_utils::*;
+use tables::*;
 use vdj_ann::*;
 use vector_utils::*;
 
@@ -634,7 +636,7 @@ pub fn main_enclone(args: &Vec<String>) {
             eprintln!("\nProblem with REF: it is not a FASTA file.\n");
             std::process::exit(1);
         }
-    } else if ctl.gen_opt.mouse && refx.len() == 0 {
+    } else if ctl.gen_opt.mouse && refx.len() == 0 && !ctl.gen_opt.imgt {
         if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
             if ctl.gen_opt.descrip {
                 println!("using old mouse reference");
@@ -648,26 +650,40 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     } else if refx.len() == 0 {
         if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
-            let imgt =
-                "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
-            if ctl.gen_opt.descrip {
-                println!("using imgt human reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let mut s = line.unwrap();
-                if ctl.gen_opt.imgt_fix {
-                    // Fix IGHJ6.
-                    if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
-                        .to_string()
-                        || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
-                            .to_string()
-                    {
-                        s += "G";
-                    }
+            if !ctl.gen_opt.mouse {
+                let imgt =
+                    "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
+                if ctl.gen_opt.descrip {
+                    println!("using IMGT human reference");
                 }
-                refx += &s;
-                refx += &"\n";
+                let f = open_for_read![imgt];
+                for line in f.lines() {
+                    let mut s = line.unwrap();
+                    if ctl.gen_opt.imgt_fix {
+                        // Fix IGHJ6.
+                        if s == "ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
+                            .to_string()
+                            || s == "ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
+                                .to_string()
+                        {
+                            s += "G";
+                        }
+                    }
+                    refx += &s;
+                    refx += &"\n";
+                }
+            } else {
+                let imgt =
+                    "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_mouse_20180723-2.2.0/fasta/regions.fa";
+                if ctl.gen_opt.descrip {
+                    println!("using IMGT mouse reference");
+                }
+                let f = open_for_read![imgt];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    refx += &s;
+                    refx += &"\n";
+                }
             }
             ctl.gen_opt.reannotate = true;
         } else if ctl.gen_opt.cr_version == "".to_string() && !ctl.gen_opt.reannotate {
@@ -728,6 +744,14 @@ pub fn main_enclone(args: &Vec<String>) {
     }
 
     */
+    if ctl.gen_opt.built_in {
+        if ctl.gen_opt.mouse {
+            refx = mouse_ref();
+        } else {
+            refx = human_ref();
+        }
+        ctl.gen_opt.reannotate = true;
+    }
     let refx2 = &refx;
 
     // Build reference data.
@@ -736,6 +760,249 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut to_ref_index = HashMap::<usize, usize>::new();
     for i in 0..refdata.refs.len() {
         to_ref_index.insert(refdata.id[i] as usize, i);
+    }
+
+    // Flag defective reference sequences.
+
+    let mut log = Vec::<u8>::new();
+    let mut count = 0;
+    let mut broken = vec![false; refdata.refs.len()];
+    for i in 0..refdata.refs.len() {
+        // Determine chain type and exclude those other than IGH, IGK, IGL, TRA and TRB.
+
+        let rtype = refdata.rtype[i];
+        let chain_type;
+        if rtype == 0 {
+            chain_type = "IGH";
+        } else if rtype == 1 {
+            chain_type = "IGK";
+        } else if rtype == 2 {
+            chain_type = "IGL";
+        } else if rtype == 3 {
+            chain_type = "TRA";
+        } else if rtype == 4 {
+            chain_type = "TRB";
+        } else {
+            continue;
+        }
+
+        // Look for problems.
+
+        if refdata.is_c(i) {
+            // This is very ugly.  We are exempting mouse IGHG2B because is is in our current
+            // reference but has an extra base at the beginning.  See also comments below at
+            // TRBV21-1.  Also, we're not actually checking for mouse.
+
+            if refdata.name[i] == "IGHG2B" {
+                continue;
+            }
+
+            // Continue.
+
+            let seq = refdata.refs[i].to_ascii_vec();
+            let aa0 = aa_seq(&seq, 0);
+            let aa2 = aa_seq(&seq, 2);
+            if aa2.contains(&b'*') && !aa0.contains(&b'*') {
+                count += 1;
+                broken[i] = true;
+                fwriteln!(
+                    log,
+                    "{}. The following C segment reference sequence appears to have \
+                    an extra base at its beginning:\n",
+                    count
+                );
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+            }
+        } else if refdata.is_v(i) {
+            // This is very ugly.  We are exempting human TRBV21-1 because it is in our current
+            // reference (twice), but has multiple stop codons.  It should be deleted from the
+            // reference, and then we should remove this test.  But probably in the future so as
+            // not to inconvenience users.
+
+            if ctl.gen_opt.species != "mouse" && refdata.name[i] == "TRBV21-1" {
+                broken[i] = true;
+                continue;
+            }
+
+            // This is very ugly.  We are exempting human IGHV1-12 because it is in our current
+            // human reference, but is only 60 amino acids long.  Also we're not checking for mouse.
+
+            if refdata.name[i] == "IGHV1-12" {
+                broken[i] = true;
+                continue;
+            }
+
+            // Ugly.  Frameshifted.  Also this is mouse and not checking for that.
+
+            if refdata.name[i] == "TRAV23" {
+                broken[i] = true;
+                continue;
+            }
+
+            // Ugly.  Truncated on right.  Human.
+
+            if refdata.name[i] == "IGLV5-48" {
+                broken[i] = true;
+                continue;
+            }
+
+            // Test for broken.
+
+            let seq = refdata.refs[i].to_ascii_vec();
+            let aa = aa_seq(&seq, 0);
+            let mut reasons = Vec::<String>::new();
+            if !aa.starts_with(b"M") {
+                reasons.push("does not begin with a start codon".to_string());
+            }
+            let stops = aa.iter().filter(|&n| *n == b'*').count();
+            if stops > 1 {
+                reasons.push("has more than one stop codon".to_string());
+            }
+            if aa.len() < 100 {
+                reasons.push("appears truncated (has less than 100 amino acids)".to_string());
+            } else if aa.len() < 105 && chain_type == "IGH" {
+                reasons.push("appears truncated (has less than 105 amino acids)".to_string());
+            }
+            if aa.len() >= 30 {
+                let mut aap = aa.clone();
+                aap.push(b'C');
+                if cdr3_score(&aap, &chain_type, false) > 4 + cdr3_score(&aa, &chain_type, false) {
+                    reasons.push("appears to need a C to be appended to its right end".to_string());
+                }
+            }
+            if stops > 0 {
+                let mut fixable = false;
+                const TRIM: usize = 10;
+                for j in 0..aa.len() - TRIM {
+                    if aa[j] == b'*' {
+                        let mut seqx = seq.clone();
+                        for _ in 1..=2 {
+                            let _ = seqx.remove(3 * j);
+                            let aax = aa_seq(&seqx, 0);
+                            if !aax.contains(&b'*') {
+                                fixable = true;
+                            }
+                        }
+                    }
+                }
+                if fixable {
+                    reasons.push("appears to be frameshifted".to_string());
+                }
+            }
+            if aa.len() >= 31 {
+                for del in 1..=2 {
+                    let aad = aa_seq(&seq, del);
+                    if cdr3_score(&aad, &chain_type, false)
+                        > 4 + cdr3_score(&aa, &chain_type, false)
+                    {
+                        reasons.push("appears to be frameshifted".to_string());
+                    }
+                }
+            }
+            if reasons.is_empty() {
+                let cs2 = cdr2_start(&aa, &chain_type, false);
+                if cs2.is_some() {
+                    let fr3 = fr3_start(&aa, &chain_type, false).unwrap();
+                    if cs2.unwrap() > fr3 {
+                        reasons.push(
+                            "appears to be defective, because our computed \
+                            CDR2 start exceeds our computed FWR3 start"
+                                .to_string(),
+                        );
+                    }
+                }
+            }
+            if reasons.is_empty() {
+                if aa.len() >= 31 {
+                    // Pretty crappy frameshift test.  One should see high aa and dna similarity
+                    // to other seqs if shifted.  Or use more aas.
+                    let score = cdr3_score(&aa, &chain_type, false);
+                    let mut frameshift = false;
+                    for del in 1..=2 {
+                        let aad = aa_seq(&seq, del);
+                        if score <= 6 && cdr3_score(&aad, &chain_type, false) >= 3 + score {
+                            frameshift = true;
+                        }
+                    }
+                    if frameshift {
+                        reasons.push("appears to be frameshifted".to_string());
+                    }
+                }
+            }
+            if reasons.is_empty() {
+                let r;
+                if chain_type == "IGH" {
+                    r = 0;
+                } else if chain_type == "IGK" {
+                    r = 1;
+                } else if chain_type == "IGL" {
+                    r = 2;
+                } else if chain_type == "TRA" {
+                    r = 3;
+                } else {
+                    assert_eq!(chain_type, "TRB");
+                    r = 4;
+                }
+                let freqs = fwr3_freqs();
+                let score = score_fwr3(&aa, r, &freqs);
+                if score < 8.0 && score4(&aa, r) < 5 {
+                    reasons.push("appears to be frameshifted or truncated".to_string());
+                }
+            }
+
+            // Report results.
+
+            unique_sort(&mut reasons);
+            if !reasons.is_empty() {
+                let msg = format!(
+                    "The following V segment reference sequence {}",
+                    reasons.iter().format(", and ")
+                );
+                count += 1;
+                broken[i] = true;
+                fwriteln!(log, "{}. {}:\n", count, msg);
+                fwriteln!(log, ">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+            }
+        }
+    }
+    if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
+        eprintln!(
+            "\nSome errors were detected in the reference sequences supplied to enclone.\n\
+            Please see comments at end for what you can do about this.\n",
+        );
+        eprint!("{}", strme(&log));
+        eprintln!(
+"🌼  Dear user, some defects were detected in the reference sequences supplied to enclone.   🌼\n\
+ 🌼  Some of these defects may be small.  Generally they are associated with V segments that 🌼\n\
+ 🌼  are frameshifted or truncated, or with C segments that have an extra base at the        🌼\n\
+ 🌼  beginning.  We are letting you know about this because they could result in             🌼\n\
+ 🌼  misannotation.                                                                          🌼\n"
+        );
+
+        let mut rows = Vec::<Vec<String>>::new();
+        rows.push(vec![
+            "You can make enclone ignore these defects by adding the additional argument"
+                .to_string(),
+        ]);
+        rows.push(vec![
+            "ACCEPT_BROKEN to the enclone command line.  Or you can obtain the same".to_string(),
+        ]);
+        rows.push(vec![
+            "behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string(),
+        ]);
+
+        let mut log = String::new();
+        print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
+        eprintln!("{}", log);
+
+        eprintln!(
+        "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
+        • rerun cellranger using the cleaned up reference sequences that come prepacked with it,\n\
+        • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
+        sequences.  This will be a bit slower because all the contigs will need to be\n  \
+        reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
+        );
+        std::process::exit(1);
     }
 
     // Determine if the species is human or mouse or unknown.
@@ -847,12 +1114,16 @@ pub fn main_enclone(args: &Vec<String>) {
     // Populate features.
 
     let mut fr1_starts = vec![0; refdata.refs.len()];
-    let mut fr2_starts = vec![0; refdata.refs.len()];
-    let mut fr3_starts = vec![0; refdata.refs.len()];
-    let mut cdr1_starts = vec![0; refdata.refs.len()];
-    let mut cdr2_starts = vec![0; refdata.refs.len()];
+    let mut fr2_starts = vec![None; refdata.refs.len()];
+    let mut fr3_starts = vec![None; refdata.refs.len()];
+    let mut cdr1_starts = vec![None; refdata.refs.len()];
+    let mut cdr2_starts = vec![None; refdata.refs.len()];
+    let mut fail = false;
     for i in 0..refdata.refs.len() {
         if refdata.is_v(i) {
+            if broken[i] && ctl.gen_opt.require_unbroken_ok {
+                continue;
+            }
             let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
             let rtype = refdata.rtype[i];
             let chain_type;
@@ -869,12 +1140,103 @@ pub fn main_enclone(args: &Vec<String>) {
             } else {
                 continue;
             }
-            fr1_starts[i] = 3 * fr1_start(&aa, &chain_type);
-            fr2_starts[i] = 3 * fr2_start(&aa, &chain_type, false);
-            fr3_starts[i] = 3 * fr3_start(&aa, &chain_type, false);
-            cdr1_starts[i] = 3 * cdr1_start(&aa, &chain_type, false);
-            cdr2_starts[i] = 3 * cdr2_start(&aa, &chain_type, false);
+            let fs1 = fr1_start(&aa, &chain_type);
+            fr1_starts[i] = 3 * fs1;
+            let fs2 = fr2_start(&aa, &chain_type, false);
+            if fs2.is_some() {
+                fr2_starts[i] = Some(3 * fs2.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
+                    could not be computed\nfor this reference sequence:"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            let fs3 = fr3_start(&aa, &chain_type, false);
+            if fs3.is_some() {
+                fr3_starts[i] = Some(3 * fs3.unwrap());
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
+                    could not be computed\nfor this reference sequence:"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            let cs1 = cdr1_start(&aa, &chain_type, false);
+            if cs1.is_some() {
+                cdr1_starts[i] = Some(3 * cs1.unwrap());
+                if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
+                    eprintln!(
+                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                        exceeds the FWR2 start for this reference sequence:"
+                    );
+                    let seq = refdata.refs[i].to_ascii_vec();
+                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                    fail = true;
+                }
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
+                    could not be computed\nfor this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            let cs2 = cdr2_start(&aa, &chain_type, false);
+            if cs2.is_some() {
+                cdr2_starts[i] = Some(3 * cs2.unwrap());
+                if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
+                    eprintln!(
+                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                        exceeds the FWR3 start for this reference sequence:"
+                    );
+                    let seq = refdata.refs[i].to_ascii_vec();
+                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                    fail = true;
+                }
+            } else if ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
+                    could not be computed\nfor this reference sequence:"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            if cs1.is_some() && fs1 > cs1.unwrap() && ctl.gen_opt.require_unbroken_ok {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
+                    exceeds the CDR1 start for this reference sequence:\n"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
+            if cs2.is_some()
+                && fs2.is_some()
+                && fs2.unwrap() > cs2.unwrap()
+                && ctl.gen_opt.require_unbroken_ok
+            {
+                eprintln!(
+                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
+                    exceeds the CDR2 start for this reference sequence:"
+                );
+                let seq = refdata.refs[i].to_ascii_vec();
+                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
+                fail = true;
+            }
         }
+    }
+    if fail {
+        std::process::exit(1);
+    }
+    if ctl.gen_opt.require_unbroken_ok {
+        std::process::exit(0);
     }
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {

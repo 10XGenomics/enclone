@@ -1336,37 +1336,37 @@ pub fn group_and_print_clonotypes(
 
     // Print summary stats.
 
+    let mut ncells = 0;
+    let mut nclono2 = 0;
+    let mut ncc = Vec::<(usize, usize)>::new();
+    let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
+    for i in 0..nclono {
+        let mut n = 0;
+        for j in 0..exacts[i].len() {
+            let ex = &exact_clonotypes[exacts[i][j]];
+            n += ex.ncells();
+            for k in 0..ex.clones.len() {
+                let x = &ex.clones[k][0];
+                sd.push((x.origin_index, x.donor_index));
+            }
+        }
+        if n >= 2 {
+            nclono2 += 1;
+        }
+        ncells += n;
+        ncc.push((rsi[i].mat.len(), n));
+    }
+    sd.sort();
+    let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
+    let mut i = 0;
+    while i < sd.len() {
+        let j = next_diff(&sd, i);
+        sdx.push((sd[i].0, sd[i].1, j - i));
+        i = j;
+    }
     if ctl.gen_opt.summary {
         fwriteln!(logx, "\nSUMMARY STATISTICS");
         fwriteln!(logx, "1. overall");
-        let mut nclono2 = 0;
-        let mut ncells = 0;
-        let mut ncc = Vec::<(usize, usize)>::new();
-        let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
-        for i in 0..nclono {
-            let mut n = 0;
-            for j in 0..exacts[i].len() {
-                let ex = &exact_clonotypes[exacts[i][j]];
-                n += ex.ncells();
-                for k in 0..ex.clones.len() {
-                    let x = &ex.clones[k][0];
-                    sd.push((x.origin_index, x.donor_index));
-                }
-            }
-            if n >= 2 {
-                nclono2 += 1;
-            }
-            ncells += n;
-            ncc.push((rsi[i].mat.len(), n));
-        }
-        sd.sort();
-        let mut sdx = Vec::<(Option<usize>, Option<usize>, usize)>::new();
-        let mut i = 0;
-        while i < sd.len() {
-            let j = next_diff(&sd, i);
-            sdx.push((sd[i].0, sd[i].1, j - i));
-            i = j;
-        }
         fwriteln!(logx, "   • number of datasets = {}", ctl.origin_info.n());
         fwriteln!(logx, "   • number of donors = {}", ctl.origin_info.donors);
         let mut vcells = 0;
@@ -1394,8 +1394,7 @@ pub fn group_and_print_clonotypes(
                 read_pairs += cells * rpc;
             }
             let rpc = ((read_pairs as f64) / (cells as f64)).round();
-            fwriteln!(logx, "   • cells (from cellranger) = {}", cells);
-            fwriteln!(logx, "   • read pairs per cell (from cellranger) = {}", rpc);
+            fwriteln!(logx, "   • read pairs per cell = {}", rpc);
         }
 
         // Print computational performance stats.
@@ -1630,9 +1629,17 @@ pub fn group_and_print_clonotypes(
         if n2 > 0 || n4 > 0 {
             doublet_rate = n4 as f64 / (n2 + n4) as f64;
         }
+        let celltype;
+        if ctl.gen_opt.bcr {
+            celltype = "B";
+        } else {
+            celltype = "T";
+        }
         fwrite!(
             logx,
-            "   • estimated doublet rate = {:.1}% = {}/{}",
+            "   • estimated {}-{} doublet rate = {:.1}% = {}/{}",
+            celltype,
+            celltype,
             100.0 * doublet_rate,
             n4,
             n2 + n4
@@ -1641,14 +1648,25 @@ pub fn group_and_print_clonotypes(
 
         // Print UMI stats.
 
+        let hchain;
+        let lchain;
+        if ctl.gen_opt.bcr {
+            hchain = "heavy chain";
+            lchain = "light chain";
+        } else {
+            hchain = "TRB";
+            lchain = "TRA";
+        }
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (heavy chain / TRB) = {:.2}",
+            "   • mean over middle third of contig UMI counts ({}) = {:.2}",
+            hchain,
             middle_mean_umish,
         );
         fwriteln!(
             logx,
-            "   • mean over middle third of contig UMI counts (light chain / TRA) = {:.2}",
+            "   • mean over middle third of contig UMI counts ({}) = {:.2}",
+            lchain,
             middle_mean_umisl,
         );
 
@@ -1765,6 +1783,79 @@ pub fn group_and_print_clonotypes(
                  {} false positives, so the requirement is not met.\n",
                 ctl.gen_opt.required_fps.unwrap(),
                 fps
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of cells.
+
+    if ctl.gen_opt.required_cells.is_some() {
+        let mut ncells = 0;
+        for i in 0..pics.len() {
+            for x in exacts[i].iter() {
+                ncells += exact_clonotypes[*x].ncells();
+            }
+        }
+        if ctl.gen_opt.required_cells.unwrap() != ncells {
+            eprintln!(
+                "\nThe required number of cells is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_cells.unwrap(),
+                ncells,
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of clonotypes.
+
+    if ctl.gen_opt.required_clonotypes.is_some() {
+        if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
+            eprintln!(
+                "\nThe required number of clonotypes is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_clonotypes.unwrap(),
+                nclono,
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of donors
+
+    if ctl.gen_opt.required_donors.is_some() {
+        let ndonors = ctl.origin_info.donors;
+        if ctl.gen_opt.required_donors.unwrap() != ndonors {
+            eprintln!(
+                "\nThe required number of donors is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_donors.unwrap(),
+                ndonors,
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of >=2 cell clonotypes.
+
+    if ctl.gen_opt.required_two_cell_clonotypes.is_some() {
+        if ctl.gen_opt.required_two_cell_clonotypes.unwrap() != nclono2 {
+            eprintln!(
+                "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
+                nclono2,
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of datasets
+
+    if ctl.gen_opt.required_datasets.is_some() {
+        let ndatasets = ctl.origin_info.n();
+        if ctl.gen_opt.required_datasets.unwrap() != ndatasets {
+            eprintln!(
+                "\nThe required number of datasets is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_datasets.unwrap(),
+                ndatasets,
             );
             std::process::exit(1);
         }

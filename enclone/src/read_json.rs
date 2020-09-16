@@ -110,11 +110,15 @@ fn parse_vector_entry_from_json(
 
     // Proceed.
 
-    if !v["productive"].as_bool().unwrap_or(false) {
-        return;
+    if !ctl.gen_opt.reprod {
+        if !v["productive"].as_bool().unwrap_or(false) {
+            return;
+        }
     }
-    if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
-        return;
+    if !ctl.gen_opt.reprod {
+        if !ctl.gen_opt.ncell && !v["high_confidence"].as_bool().unwrap_or(false) {
+            return;
+        }
     }
     let tigname = &v["contig_name"].to_string().between("\"", "\"").to_string();
     let full_seq = &v["sequence"].to_string().between("\"", "\"").to_string();
@@ -140,7 +144,7 @@ fn parse_vector_entry_from_json(
 
     // Reannotate.
 
-    if reannotate {
+    if reannotate || ctl.gen_opt.reprod {
         let x = DnaString::from_dna_string(&full_seq);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
@@ -374,6 +378,19 @@ fn parse_vector_entry_from_json(
         }
     }
 
+    // Test for two very rare conditions where the CDR3 is busted.  This could be confusing to
+    // users if they hit one of these.
+    // Case 1: seen on 47680, barcode CGCCAAGTCCATGAAC-1.
+    // Case 2: seen on 99640, barcode CAGTAACCATGTCGAT-1.
+    // It is not known if these correspond to bugs in cellranger that were subsequently fixed.
+
+    if cdr3_aa.contains("*") {
+        return;
+    }
+    if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
+        return;
+    }
+
     // Correct CDR3 start for insertion.
 
     if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
@@ -472,10 +489,10 @@ fn parse_vector_entry_from_json(
         c_ref_id: c_ref_id,
         u_ref_id: u_ref_id,
         fr1_start: 0,
-        cdr1_start: 0,
-        fr2_start: 0,
-        cdr2_start: 0,
-        fr3_start: 0,
+        cdr1_start: None,
+        fr2_start: None,
+        cdr2_start: None,
+        fr3_start: None,
         cdr3_aa: cdr3_aa.to_string(),
         cdr3_start: cdr3_start,
         quals: quals,

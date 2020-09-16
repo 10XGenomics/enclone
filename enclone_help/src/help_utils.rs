@@ -57,6 +57,15 @@ impl HelpDesk {
                 for j in start..i {
                     s.push(c2[j]);
                 }
+                if s.len() == 0 {
+                    eprintln!(
+                        "\nError in docf2, x2 = \n\n{}\n\nThere is probably a string in there that \
+                        exceeds your argument {}.\n",
+                        x2,
+                        n2,
+                    );
+                    std::process::exit(1);
+                }
                 y2.push(s);
                 start = i + 1;
             }

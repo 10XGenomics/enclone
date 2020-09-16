@@ -385,30 +385,41 @@ pub fn print_clonotypes(
                     let fs1 = rsi.fr1_starts[cx];
                     let fs2 = rsi.fr2_starts[cx];
                     let fs3 = rsi.fr3_starts[cx];
-                    let show_cdr1 = cs1 <= rsi.fr2_starts[cx]
+                    let show_cdr1 = cs1.is_some()
+                        && fs2.is_some()
+                        && cs1.unwrap() <= fs2.unwrap()
                         && ctl.clono_print_opt.amino.contains(&"cdr1".to_string());
-                    let show_cdr2 = cs2 <= rsi.fr3_starts[cx]
+                    let show_cdr2 = cs2.is_some()
+                        && fs3.is_some()
+                        && cs2.unwrap() <= fs3.unwrap()
                         && ctl.clono_print_opt.amino.contains(&"cdr2".to_string());
                     let show_cdr3 = ctl.clono_print_opt.amino.contains(&"cdr3".to_string());
-                    let show_fwr1 = rsi.fr1_starts[cx] <= rsi.cdr1_starts[cx]
+                    let show_fwr1 = cs1.is_some()
+                        && rsi.fr1_starts[cx] <= cs1.unwrap()
                         && ctl.clono_print_opt.amino.contains(&"fwr1".to_string());
-                    let show_fwr2 = rsi.fr2_starts[cx] <= rsi.cdr2_starts[cx]
+                    let show_fwr2 = fs2.is_some()
+                        && cs2.is_some()
+                        && fs2.unwrap() <= cs2.unwrap()
                         && ctl.clono_print_opt.amino.contains(&"fwr2".to_string());
-                    let show_fwr3 = rsi.fr3_starts[cx] <= rsi.cdr3_starts[cx]
+                    let show_fwr3 = fs3.is_some()
+                        && fs3.unwrap() <= rsi.cdr3_starts[cx]
                         && ctl.clono_print_opt.amino.contains(&"fwr3".to_string());
                     let show_fwr4 = ctl.clono_print_opt.amino.contains(&"fwr4".to_string());
                     for (j, p) in show_aa[cx].iter().enumerate() {
-                        if show_cdr1 && *p >= cs1 / 3 && *p < rsi.fr2_starts[cx] / 3 {
+                        if show_cdr1 && *p >= cs1.unwrap() / 3 && *p < fs2.unwrap() / 3 {
                             ft[j] = 1;
-                        } else if show_cdr2 && *p >= cs2 / 3 && *p < rsi.fr3_starts[cx] / 3 {
+                        } else if show_cdr2 && *p >= cs2.unwrap() / 3 && *p < fs3.unwrap() / 3 {
                             ft[j] = 2;
                         } else if show_cdr3 && *p >= cs3 / 3 && *p < cs3 / 3 + n3 {
                             ft[j] = 3;
-                        } else if show_fwr1 && *p >= fs1 / 3 && *p < rsi.cdr1_starts[cx] / 3 {
+                        } else if show_fwr1 && *p >= fs1 / 3 && *p < cs1.unwrap() / 3 {
                             ft[j] = 4;
-                        } else if show_fwr2 && *p >= fs2 / 3 && *p < rsi.cdr2_starts[cx] / 3 {
+                        } else if show_fwr2 && *p >= fs2.unwrap() / 3 && *p < cs2.unwrap() / 3 {
                             ft[j] = 5;
-                        } else if show_fwr3 && *p >= fs3 / 3 && *p < rsi.cdr3_starts[cx] / 3 {
+                        } else if show_fwr3
+                            && *p >= fs3.unwrap() / 3
+                            && *p < rsi.cdr3_starts[cx] / 3
+                        {
                             ft[j] = 6;
                         } else if show_fwr4 && *p >= cs3 / 3 + n3 {
                             ft[j] = 7;
@@ -1363,10 +1374,15 @@ pub fn print_clonotypes(
                                     let q = 3 * p;
                                     let leader = q < rsi.fr1_starts[col];
                                     let mut cdr = false;
-                                    if q >= rsi.cdr1_starts[col] && q < rsi.fr2_starts[col] {
+                                    if rsi.cdr1_starts[col].is_some()
+                                        && q >= rsi.cdr1_starts[col].unwrap()
+                                        && q < rsi.fr2_starts[col].unwrap()
+                                    {
                                         cdr = true;
                                     }
-                                    if q >= rsi.cdr2_starts[col] && q < rsi.fr3_starts[col] {
+                                    if q >= rsi.cdr2_starts[col].unwrap()
+                                        && q < rsi.fr3_starts[col].unwrap()
+                                    {
                                         cdr = true;
                                     }
                                     if q >= rsi.cdr3_starts[col]

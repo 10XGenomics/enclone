@@ -63,6 +63,28 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <hr>
 
 <p>
+<b>9/16/20</b>: 
+<ul>
+<li>
+<span style="color:red">
+Test for defective reference sequences and exit if they're found (allowing for override).
+</span>
+There is also a new argument <code>BUILT_IN</code> to force recomputation using the built-in
+reference (for human or mouse).
+<li>We turned off part of the graph filtering (which can be turned off completely with the
+argument <code>NGRAPH_FILTER</code>).  We did this because in some cases this code was deleting
+significant numbers of real cells.
+</li>
+<li>
+Tweak feature computations.  The page
+<a href="../../pages/auto/features.html">this page</a> has been updated accordingly.  The
+results for tests of species described on that page did not change, but there were changes to
+other species, including a few changes for dog and horse.
+</li>
+</ul>
+</p>
+
+<p>
 <b>9/4/20</b>: Add the capability of seeing which default filters would have been applied, if
 the filters are turned off.  See the lead variable "filter" at 
 <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.

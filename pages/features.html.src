@@ -204,10 +204,11 @@ STCRDab: there were no discrepancies.
 positions for which the truth data for the FWR2 start appeared to be one too low.  These were the 
 W or Q positions in the PWM with score 250 (see below).  By species there were 153 in rat, 97 in 
 mouse and 91 in rhesus.  We were surprised by this and wonder if somehow we may have misinterpreted
-the IMGT conventions.  In general for these cases, both CDR1 and CDR2 were different.  There were six 
-additional cases where conservation supports the choice made by our algorithm (see appendix).  Finally we 
-observed a single case, rat gene <code>IGHV2-50*01</code>, where the entire region before the CDR1 start 
-is deleted in the reference sequence.  For this case, our algorithm does not report a value for CDR1.
+the IMGT conventions.  In general for these cases, both CDR1 and CDR2 were different.  There were 
+six additional cases where conservation supports the choice made by our algorithm (see appendix).  
+Finally we observed a single case, rat gene <code>IGHV2-50*01</code>, where the entire region 
+before the CDR1 start is deleted in the reference sequence.  For this case, our algorithm does not 
+report a value for CDR1.
 </li>
 </ol>
 </p>
@@ -222,8 +223,8 @@ begins with a start codon.
 </p>
 
 <p>
-We first compute the zero-based start <code>s</code> of the CDR1 region (see next section), and then 
-search the first <code>s+15</code> amino acids in the V region, looking for the following PWM:
+We search the first <code>40</code> (<code>25</code> for IGL) amino acids in the V region,
+looking for the following PWM:
 
 <table rules="all" cellpadding="6" style="border: 2px solid black">
 <thead>
@@ -231,44 +232,51 @@ search the first <code>s+15</code> amino acids in the V region, looking for the 
 <th align="right" style="border: 2px solid black">pos</th>
 <th align="right" style="border: 2px solid black">weight</th>
 <th align="left" style="border: 2px solid black">values</th>
+<th align="left" style="border: 2px solid black">notes</th>
 </tr>
 </thead>
 <tbody>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">1</td>
     <td align="right" style="border: 2px solid black">150</td>
-    <td align="values" style="border: 2px solid black">D, E, G, K, Q</td>
+    <td align="left" style="border: 2px solid black">D, E, G, K, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">2</td>
     <td align="right" style="border: 2px solid black">50</td>
-    <td align="values" style="border: 2px solid black">A, I, Q, V</td>
+    <td align="left" style="border: 2px solid black">A, I, Q, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">4</td>
     <td align="right" style="border: 2px solid black">100</td>
-    <td align="values" style="border: 2px solid black">L, M, V</td>
+    <td align="left" style="border: 2px solid black">L, M, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">6</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">E, Q</td>
+    <td align="left" style="border: 2px solid black">E, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">22</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">use weight 500 for IGH</td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">23</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black">C</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tbody>
 </table>
 
 <p>
-<b>Example.</b>  Suppose that starting at a particular position, we
+<b>Example.</b>  Suppose that for IGH, starting at a particular position, we
 observe the following amino acids (downward reading relative column positions shown for clarity):
 <pre>
 <code>         11111111112222</code>
@@ -277,11 +285,11 @@ observe the following amino acids (downward reading relative column positions sh
 </pre>
 
 Then the total score for the particular position would be 
-<code>150 + 50 + 100 + 250 + 250 + 0 = 800</code>, which is
+<code>150 + 50 + 100 + 250 + 500 + 0 = 1050</code>, which is
 the maximum score one could normally get, since the likelihood of observing a <code>C</code>
-at both positions <code>22</code> and <code>23</code> is very small.  The position would almost certainly 
-be the "winner" and thus declared the start of the FWR1 region.  We make one exception: if the first
-codon is C, we add one to the start position.
+at both positions <code>22</code> and <code>23</code> is very small.  The position would almost 
+certainly be the "winner" and thus declared the start of the FWR1 region.  We make one 
+exception: if the first codon is C, we add one to the start position.
 </p>
 
 <hr>
@@ -307,8 +315,13 @@ We use the following PWM:
     <td align="values" style="border: 2px solid black">V</td>
 </tr>
 <tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">30</td>
+    <td align="values" style="border: 2px solid black">T</td>
+</tr>
+<tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">3</td>
-    <td align="right" style="border: 2px solid black">100</td>
+    <td align="right" style="border: 2px solid black">200</td>
     <td align="values" style="border: 2px solid black">I, L, M, V</td>
 </tr>
 <tr style="border: 2px solid black">
@@ -330,9 +343,9 @@ We use the following PWM:
 </table>
 
 <p>
-and search for this motif, starting at zero-based positions between 25 and 47, inclusive.
-As with FWR1, the highest scoring position is declared the winner.  The value returned by
-the function then depends on the chain type.  For IGK and IGL, we return 5 plus the winning
+and search for this motif, starting at zero-based positions between 25 and the FWR1 start plus 19, 
+inclusive.  As with FWR1, the highest scoring position is declared the winner.  The value returned 
+by the function then depends on the chain type.  For IGK and IGL, we return 5 plus the winning
 position, and for other chain types, we return 8 plus the winning position.
 </p>
 
@@ -350,49 +363,66 @@ We use the following PWM:
 <th align="right" style="border: 2px solid black">pos</th>
 <th align="right" style="border: 2px solid black">weight</th>
 <th align="left" style="border: 2px solid black">values</th>
+<th align="left" style="border: 2px solid black">notes</th>
 </tr>
 </thead>
 <tbody>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">1</td>
     <td align="right" style="border: 2px solid black">50</td>
-    <td align="values" style="border: 2px solid black">F, L, M, V</td>
+    <td align="left" style="border: 2px solid black">F, L, M, V</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
+
+<tr style="border: 2px solid black">
+    <td align="right" style="border: 2px solid black">2</td>
+    <td align="right" style="border: 2px solid black">250</td>
+    <td align="left" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black">only for IGL</td>
+</tr>
+
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">3</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">W</td>
+    <td align="left" style="border: 2px solid black">W</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">4</td>
     <td align="right" style="border: 2px solid black">150</td>
-    <td align="values" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black">Y</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">5</td>
     <td align="right" style="border: 2px solid black">100</td>
-    <td align="values" style="border: 2px solid black">R</td>
+    <td align="left" style="border: 2px solid black">R</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">6</td>
     <td align="right" style="border: 2px solid black">250</td>
-    <td align="values" style="border: 2px solid black">Q</td>
+    <td align="left" style="border: 2px solid black">Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">9</td>
     <td align="right" style="border: 2px solid black">110</td>
-    <td align="values" style="border: 2px solid black">G</td>
+    <td align="left" style="border: 2px solid black">G</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">10</td>
     <td align="right" style="border: 2px solid black">60</td>
-    <td align="values" style="border: 2px solid black">K, Q</td>
+    <td align="left" style="border: 2px solid black">K, Q</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 <tr style="border: 2px solid black">
     <td align="right" style="border: 2px solid black">11</td>
     <td align="right" style="border: 2px solid black">40</td>
-    <td align="values" style="border: 2px solid black">A, G, K</td>
+    <td align="left" style="border: 2px solid black">A, G, K</td>
+    <td align="left" style="border: 2px solid black"></td>
 </tr>
 </tbody>
 </table>

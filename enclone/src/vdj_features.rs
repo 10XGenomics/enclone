@@ -11,6 +11,9 @@
 // modified to add a fake leader sequence on the left (we use MXXXXXXXXXXXXXXXXXXXX), and to
 // truncate on the right to trim a bit beyond the start of the CDR3.
 
+// THIS IS A COPY FROM THE ENCLONE REPO TO FACILITATE EXPERIMENTATION!
+
+use string_utils::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -73,7 +76,11 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 
     // #22
 
-    pwm.push(vec![(250, b'C')]);
+    if chain_type == "IGH" {
+        pwm.push(vec![(500, b'C')]);
+    } else {
+        pwm.push(vec![(250, b'C')]);
+    }
 
     // #23
 
@@ -81,10 +88,9 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 
     // Score positions.
 
-    let cdr1 = cdr1_start(&aa, &chain_type, false);
     let mut score_pos = Vec::<(usize, usize)>::new();
     for j in 0..=aa.len() - pwm.len() {
-        if j + 15 > cdr1 {
+        if j > 40 || (chain_type == "IGL" && j > 25) {
             break;
         }
         let mut score = 0;
@@ -112,7 +118,7 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 // conventions appear to differ by fixed offsets.  The convention used here is for IMGT.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     // Define PWM for eight amino acids.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -125,11 +131,11 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 
     // #20
 
-    pwm.push(vec![]);
+    pwm.push(vec![(30, b'T')]);
 
     // #21
 
-    pwm.push(vec![(100, b'L'), (100, b'I'), (100, b'V'), (100, b'M')]);
+    pwm.push(vec![(200, b'L'), (200, b'I'), (200, b'V'), (200, b'M')]);
 
     // #22
 
@@ -154,8 +160,12 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
     // Score positions.
 
     let mut score_pos = Vec::<(usize, usize)>::new();
+    let fr1 = fr1_start(&aa, &chain_type);
     for j in 0..=aa.len() - pwm.len() {
-        if j > 39 + z - 1 || j < 7 + z - 1 {
+        if j + pwm.len() > fr1 + 27 {
+            continue;
+        }
+        if j < 7 + z - 1 {
             continue;
         }
         let mut score = 0;
@@ -167,7 +177,8 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             }
         }
         if verbose {
-            println!("j = {}, score = {}", j, score);
+            let seq = &aa[j..j + pwm.len()];
+            println!("j = {}, seq = {}, score = {}", j, strme(&seq), score);
         }
         score_pos.push((score, j));
     }
@@ -176,7 +187,10 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
     if chain_type.starts_with("TR") || chain_type == "IGH" {
         add = 6;
     }
-    score_pos[0].1 + add + 2
+    if score_pos.is_empty() {
+        return None;
+    }
+    Some(score_pos[0].1 + add + 2)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -184,7 +198,7 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // FR2 region.  Chain type is one of IGH, IGK, IGL, TRA or TRB'
 
-pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     // Define PWM for six amino acids.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -197,7 +211,11 @@ pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 
     // #40
 
-    pwm.push(vec![]);
+    if chain_type == "IGL" {
+        pwm.push(vec![(250, b'Y')]);
+    } else {
+        pwm.push(vec![]);
+    }
 
     // #41
 
@@ -265,7 +283,11 @@ pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
     if chain_type == "IGK" || chain_type == "IGL" {
         add += 2;
     }
-    score_pos[0].1 + add - 1
+    if score_pos.is_empty() {
+        None
+    } else {
+        Some(score_pos[0].1 + add - 1)
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -273,8 +295,12 @@ pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // CDR2 region.  Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     let s2 = fr2_start(&aa, chain_type, false);
+    if s2.is_none() {
+        return None;
+    }
+    let s2 = s2.unwrap();
     let mut add = 0 as isize;
     if chain_type == "IGH" {
         // Six amino acids preceeding the CDR2 start.
@@ -326,7 +352,7 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        score_pos[0].1 + 7
+        Some(score_pos[0].1 + 7)
     } else if chain_type == "TRA" {
         // Six amino acids preceeding the CDR2 start.
 
@@ -383,20 +409,49 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        score_pos[0].1 + 6
+        if score_pos.is_empty() {
+            return None;
+        } else {
+            return Some(score_pos[0].1 + 6);
+        }
     } else {
         if chain_type == "IGK" || chain_type == "IGL" {
             add = -2;
         }
-        s2 + (17 + add) as usize
+        Some(s2 + (17 + add) as usize)
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
-    // First find the start of the CDR3.
+    let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
+    let nm = motif[0].len();
+    let reach = 18;
+    let mut scores = Vec::<(usize, usize)>::new();
+    for j in aa.len() as isize - nm as isize - reach as isize..=aa.len() as isize - nm as isize {
+        if j < 0 {
+            continue;
+        }
+        let j = j as usize;
+        let mut score = 0;
+        for k in 0..nm {
+            for l in 0..motif.len() {
+                if aa[j + k] == motif[l][k] {
+                    score += 1;
+                    if aa[j + k] == b'Q' {
+                        break;
+                    }
+                }
+            }
+        }
+        scores.push((score, j + nm));
+    }
+    reverse_sort(&mut scores);
+    scores[0].1
+}
 
+pub fn cdr3_score(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
     let nm = motif[0].len();
     let reach = 18;
@@ -416,7 +471,7 @@ pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
         scores.push((score, j + nm));
     }
     reverse_sort(&mut scores);
-    scores[0].1
+    scores[0].0
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -424,7 +479,7 @@ pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // FR3 region.
 
-pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
+pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
     // First find the start of the CDR3.
 
     let cdr3_start = cdr3_start(&aa, &chain_type, verbose);
@@ -492,7 +547,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1);
+        } else {
+            return None;
+        }
 
     // Do IGH.
     } else if chain_type == "IGH" {
@@ -535,24 +594,34 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
         // Score positions.
 
         let mut score_pos = Vec::<(usize, isize)>::new();
-        for j in cdr3_start - 42 + 2..=cdr3_start - 32 + 2 {
-            let mut score = 0;
-            for p in 0..pwm.len() {
-                for l in 0..pwm[p].len() {
-                    if pwm[p][l].1 == aa[j + p] {
-                        score += pwm[p][l].0;
+        for j in cdr3_start as isize - 42 + 2..=cdr3_start as isize - 32 + 2 {
+            if j >= 0 {
+                let mut score = 0;
+                for p in 0..pwm.len() {
+                    for l in 0..pwm[p].len() {
+                        if pwm[p][l].1 == aa[j as usize + p] {
+                            score += pwm[p][l].0;
+                        }
                     }
                 }
+                // use string_utils::*;
+                // println!("score of {} = {}", strme(&aa[j..j + pwm.len()]), score);
+                if verbose {
+                    println!("j = {}, score = {}", j, score);
+                }
+                score_pos.push((score, -(j as isize)));
             }
-            // use string_utils::*;
-            // println!("score of {} = {}", strme(&aa[j..j + pwm.len()]), score);
-            if verbose {
-                println!("j = {}, score = {}", j, score);
-            }
-            score_pos.push((score, -(j as isize)));
         }
         reverse_sort(&mut score_pos);
-        return (-score_pos[0].1) as usize - 1;
+        if !score_pos.is_empty() {
+            if -score_pos[0].1 >= 1 {
+                return Some((-score_pos[0].1) as usize - 1);
+            } else {
+                return None;
+            }
+        } else {
+            return None;
+        }
 
     // Do TRA.
     } else if chain_type == "TRA" {
@@ -625,7 +694,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1 + 1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1 + 1);
+        } else {
+            return None;
+        }
 
     // Do TRB.
     } else {
@@ -678,7 +751,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
-        return score_pos[0].1;
+        if !score_pos.is_empty() {
+            return Some(score_pos[0].1);
+        } else {
+            return None;
+        }
     }
 }
 
@@ -687,8 +764,12 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, return the CDR1 sequence.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB, and is not used at the moment.
 
-pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Vec<u8> {
-    aa[cdr1_start(&aa, chain_type, verbose)..fr2_start(&aa, chain_type, verbose)].to_vec()
+pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr2 = fr2_start(&aa, chain_type, verbose);
+    if fr2.is_none() {
+        return None;
+    }
+    Some(aa[cdr1_start(&aa, chain_type, verbose).unwrap()..fr2.unwrap()].to_vec())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -696,14 +777,93 @@ pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Vec<u8> {
 // Given the amino acid sequence for a V reference sequence, return the CDR2 sequence.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Vec<u8> {
+pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let start = cdr2_start(&aa, chain_type, verbose);
+    if start.is_none() {
+        return None;
+    }
+    let start = start.unwrap();
     let stop = fr3_start(&aa, chain_type, false);
+    if stop.is_none() {
+        return None;
+    }
+    let stop = stop.unwrap();
     if start > stop {
         panic!(
             "Error in cdr2(...): cdr2_start = {} exceeds fr3_start = {}",
             start, stop
         );
     }
-    aa[start..stop].to_vec()
+    Some(aa[start..stop].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn score_fwr3(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 {
+    let chain_type;
+    if r == 0 {
+        chain_type = "IGH";
+    } else if r == 1 {
+        chain_type = "IGK";
+    } else if r == 2 {
+        chain_type = "IGL";
+    } else if r == 3 {
+        chain_type = "TRA";
+    } else {
+        chain_type = "TRB";
+    }
+    let cdr3 = cdr3_start(&aa.to_vec(), chain_type, false);
+    let motif = freqs[0].len();
+    let mut score = 0.0;
+    for j in 0..motif {
+        let x = aa[cdr3 - j - 1];
+        let mut m = 0;
+        let mut total = 0;
+        for k in 0..freqs[r][j].len() {
+            let count = freqs[r][j][k].0;
+            let y = freqs[r][j][k].1;
+            total += count;
+            if y == x {
+                m += count;
+            }
+        }
+        score += m as f64 / total as f64;
+    }
+    score
+}
+
+pub fn score4(aa: &[u8], r: usize) -> usize {
+    let chain_type;
+    if r == 0 {
+        chain_type = "IGH";
+    } else if r == 1 {
+        chain_type = "IGK";
+    } else if r == 2 {
+        chain_type = "IGL";
+    } else if r == 3 {
+        chain_type = "TRA";
+    } else {
+        chain_type = "TRB";
+    }
+    let cdr3 = cdr3_start(&aa.to_vec(), chain_type, false);
+    let n = aa.len();
+    assert!(n >= 22);
+    let mut score = 0;
+    let x = aa[cdr3 - 4];
+    if x == b'V' || x == b'T' || x == b'L' {
+        score += 1;
+    }
+    let x = aa[cdr3 - 3];
+    if x == b'Y' {
+        score += 1;
+    }
+    let x = aa[cdr3 - 2];
+    if x == b'Y' || x == b'F' || x == b'L' {
+        score += 1;
+    }
+    let x = aa[cdr3 - 1];
+    if x == b'C' {
+        score += 3;
+    }
+    score
 }

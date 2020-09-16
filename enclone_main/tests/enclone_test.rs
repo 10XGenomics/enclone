@@ -42,24 +42,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn valid_link(link: &str) -> bool {
-    use attohttpc::*;
-    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
-    let response = req.send();
-    if response.is_err() {
-        return false;
-    } else {
-        let response = response.unwrap();
-        if response.is_success() {
-            return true;
-        }
-        return false;
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Add test for redundancy of columns in parseable output.
+// 1. Test for redundancy of columns in parseable output.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -102,6 +85,8 @@ fn test_for_parseable_redundancy() {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 2.
 
 // NOT BASIC
 
@@ -150,6 +135,8 @@ fn test_help_pages_edited() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 3.
+
 // NOT BASIC
 
 // Make sure that two css files still exist.  These can never be deleted because they are
@@ -166,7 +153,7 @@ fn test_css_existence() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Make sure that if sync_master was run, nothing would change.
+// 4. Make sure that if sync_master was run, nothing would change.
 //
 // A bit ugly because of duplicated code.
 
@@ -207,6 +194,8 @@ fn test_sync_master() {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 5.
 
 // NOT BASIC
 
@@ -309,6 +298,8 @@ fn test_curl_command() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 6.
+
 // NOT BASIC
 
 // Make sure that the dataset checksum files are current.
@@ -380,6 +371,8 @@ fn test_datasets_sha256() {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 7.
 
 // SPEED (AND NOT BASIC)
 // calibrated for bespin1, and requires linux
@@ -512,6 +505,8 @@ fn test_cpu() {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 8.
 
 // NOT BASIC
 
@@ -658,7 +653,7 @@ fn test_licenses() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that files are rustfmt'ed.
+// 9. Test that files are rustfmt'ed.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -678,7 +673,7 @@ fn test_formatting() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// The following is a single test, containing many subtests, each of which is a regression test
+// 10. The following is a single test, containing many subtests, each of which is a regression test
 // for a given enclone command line.
 //
 // If you ever need to change the output of all tests, use the main program
@@ -724,6 +719,8 @@ fn test_enclone() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 11.
+
 // NOT BASIC
 
 // Regression tests using the extended public dataset collection.
@@ -768,6 +765,8 @@ fn test_extended() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 12.
+
 // NOT BASIC
 
 // Regression tests for internal features.
@@ -811,6 +810,8 @@ fn test_internal() {
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 13.
 
 // NOT BASIC
 
@@ -1110,6 +1111,8 @@ fn test_for_broken_links_and_spellcheck() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 14.
+
 // NOT BASIC
 
 // Test site examples to make sure they are what they claim to be, and that the
@@ -1219,7 +1222,7 @@ fn test_site_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that examples are what we claim they are.
+// 15. Test that examples are what we claim they are.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -1265,7 +1268,7 @@ fn test_enclone_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that references to the dataset version in README.md are current.
+// 16. Test that references to the dataset version in README.md are current.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -1286,9 +1289,9 @@ fn test_version_number_in_readme() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that the DejaVuSansMono definition in enclone_css_v2.css has not changed.  We put this here
-// because that definition has to be manually tested, and we don't want it accidentally changed
-// and broken.  This is really gross, but it's not clear how to do it better.
+// 17. Test that the DejaVuSansMono definition in enclone_css_v2.css has not changed.  We put this
+// here because that definition has to be manually tested, and we don't want it accidentally
+// changed and broken.  This is really gross, but it's not clear how to do it better.
 //
 // Absolutely hideous implementation to verify that
 // cat ../pages/enclone_css_v2.css | head -36 = "2474276863 1467".
@@ -1329,7 +1332,7 @@ fn test_dejavu() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that help output hasn't changed.
+// 18. Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -1403,7 +1406,7 @@ fn test_help_output() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that enclone help all HTML works (without STABLE_DOC).
+// 19. Test that enclone help all HTML works (without STABLE_DOC).
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -1426,7 +1429,7 @@ fn test_help_no_stable() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test that PREBUILD works.
+// 20. Test that PREBUILD works.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -1467,7 +1470,9 @@ fn test_enclone_prebuild() {
     if old != new2 {
         eprintln!(
             "\nenclone_test_prebuild: first pass output has changed.\n\
-             You may want to add more info to this failure message.\n"
+            If you are OK with the new output, it should work to type:\n\
+            enclone {} > enclone_main/{}\n",
+            testn, out_file
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
@@ -1550,7 +1555,7 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// This test runs enclone for two test inputs, with LOUPE output
+// 21. This test runs enclone for two test inputs, with LOUPE output
 // turned on. It will then read both the bincode and proto file created
 // and asserts that we get the same data structure either way.
 //
@@ -1621,4 +1626,64 @@ fn test_proto_write() -> Result<(), Error> {
         }
     }
     Ok(())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 22. Test for no change to the output of the command that appears in the enclone annotated
+// example on the landing page.
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_annotated_example() {
+    PrettyTrace::new().on();
+    let it = 0;
+    let test = "BCR=123085 CDR3=CTRDRDLRGATDAFDIW";
+    let mut out = String::new();
+    let mut log = String::new();
+    let mut ok = false;
+    run_test(
+        env!("CARGO_BIN_EXE_enclone"),
+        it,
+        &test,
+        "annotated_example_test",
+        &mut ok,
+        &mut log,
+        &mut out,
+    );
+    print!("{}", log);
+    if !ok {
+        let mut log = Vec::<u8>::new();
+        emit_red_escape(&mut log);
+        fwriteln!(
+            log,
+            "Oh no: the results for the annotated example on the landing page have \
+            changed.  Assuming that\nthe change is intentional, to fix this you \
+            need to do two things:\n\
+            1. Update the test output.\n\
+            2. Manually update the annotated example output.\n\
+            Because the second item is such a big pain, we stopped doing it, but you should\n\
+            check to make sure that it has not changed too much from what is shown."
+        );
+        emit_end_escape(&mut log);
+        eprintln!("{}", strme(&log));
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+fn valid_link(link: &str) -> bool {
+    use attohttpc::*;
+    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
+    let response = req.send();
+    if response.is_err() {
+        return false;
+    } else {
+        let response = response.unwrap();
+        if response.is_success() {
+            return true;
+        }
+        return false;
+    }
 }

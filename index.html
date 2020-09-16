@@ -175,13 +175,12 @@ also be described separately in more detail.
 <!-- Note that the numbers below also appear in help1.rs. -->
 
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
-<b>Clonotyping performance.</b>  To test the performance of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, we combined data from 442 BCR 
-enriched libraries from 30 donors. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> detected a total of 
-<span style="color:red">352,286</span>
-clonotypes.  Of the detected clonotypes, <span style="color:red">8,678</span> contained at least 
-two cells,
-of which <span style="color:red">15 (0.17%)</span> of the clonotypes 
-contained receptors from multiple donors, and thus were erroneous.
+<b>Clonotyping performance.</b>  To test the performance of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, we combined data from 
+442 BCR enriched libraries from 30 donors. <span style="color:rgb(120,123,175);font-weight:900">enclone</span> detected a total 
+of <span style="color:red">394,172</span> clonotypes.  Of the detected clonotypes, 
+<span style="color:red">9,101</span> contained at least 
+two cells, of which <span style="color:red">16 (0.18%)</span> 
+of the clonotypes contained receptors from multiple donors, and thus were erroneous.
 The low error rate is a consequence of the paired chain data and the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> 
 algorithm, which minimizes the placement of unrelated cells in the same clonotype.
 </p>
@@ -599,9 +598,12 @@ title="enclone annotated example" style="max-width:100%;"></a>
 		all transcript positions, only "interesting" positions are shown).</li>
 </ol>
 
-<p>The same exact output would be obtained by typing:</p>
-<pre><code>enclone BCR=123085 CDR3=CQQRSNWPPSITF
+<p>Approximately the same output would be obtained by typing:</p>
+<pre><code>enclone BCR=123085 CDR3=CTRDRDLRGATDAFDIW
 </code></pre>
+(As we change the algorithm, results are perturbed slightly, and we have not updated the
+diagram each time.  All other outputs shown on this site are kept current.)
+
 <p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
 contains some files from a Cell Ranger run, obtained from a human ovarian cancer sample.</p>
 
@@ -626,7 +628,8 @@ blanks, tabs, etc. in path names</b>.  <span style="color:rgb(120,123,175);font-
 quoting the paths, but it makes things harder, and other programs you might use may break.
 </p>
 
-<p>The argument <code>CDR3=CQQRSNWPPSITF</code> causes <span style="color:rgb(120,123,175);font-weight:900">enclone</span> to display only clonotypes in which 
+<p>The argument <code>CDR3=CTRDRDLRGATDAFDIW</code> causes <span style="color:rgb(120,123,175);font-weight:900">enclone</span> to display only clonotypes in 
+which 
 the given CDR3 sequence occurs.  Many other filters are provided.  In the absence of filters, all 
 clonotypes are shown.  Clonotypes are shown from largest to smallest, and the output is 
 automatically paged, so you can scroll through it.</p>
@@ -642,9 +645,9 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 example, here we add columns for the same clonotype, showing the median number of UMIs detected
 for all genes, a particular gene, and a particular antibody:</p>
 
-<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 54 CELLS</span>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 53 CELLS</span>
 
-[1.1] CLONOTYPE = 54 CELLS
+[1.1] CLONOTYPE = 53 CELLS
 ┌───────────────────────────────────┬──────────────────────────────────────┬───────────────────────────────┐
 │                                   │  <span style="font-weight:bold;">CHAIN 1</span>                             │  CHAIN 2                      │
 │                                   │  <span style="font-weight:bold;">144.1.2|IGHV3-49 ◆ 53|IGHJ3</span>         │  282|IGKV3-11 ◆ 218|IGKJ5     │
@@ -661,7 +664,6 @@ for all genes, a particular gene, and a particular antibody:</p>
 │2   3   9224         544       53  │  <span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">M</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>   89  IGHG1  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">CH</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>   7663  IGKC │
 │3   1  15850        1530       78  │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>  172  IGHG1  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  12603  IGKC │
 │4   1   1519          11       21  │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#31c39a;">S</span>   33  IGHG1  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>    116  IGKC │
-│5   1   5347         142       23  │                                      │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>   3471  IGKC │
 └───────────────────────────────────┴──────────────────────────────────────┴───────────────────────────────┘
 </span></pre>
 

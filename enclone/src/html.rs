@@ -4,6 +4,7 @@
 // a preset format for that.
 
 use io_utils::*;
+use stats_utils::*;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
@@ -87,6 +88,43 @@ fn html_header(level: usize, title: &str, extra_head: &str) -> String {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
+    // Extract requirements for the big test from the file enclone.test.
+
+    let x = include_str!("enclone.test");
+    let mut required_fps = None;
+    let mut required_cells = None;
+    let mut required_donors = None;
+    let mut required_two_cell_clonotypes = None;
+    let mut required_datasets = None;
+    let mut required_clonotypes = None;
+    for line in x.lines() {
+        if line.contains("REQUIRED_FPS=") {
+            required_fps = Some(line.between("=", " ").force_usize());
+        } else if line.contains("REQUIRED_CELLS=") {
+            required_cells = Some(line.between("=", " ").force_usize());
+        } else if line.contains("REQUIRED_CLONOTYPES=") {
+            required_clonotypes = Some(line.between("=", " ").force_usize());
+        } else if line.contains("REQUIRED_DONORS=") {
+            required_donors = Some(line.between("=", " ").force_usize());
+        } else if line.contains("REQUIRED_TWO_CELL_CLONOTYPES=") {
+            required_two_cell_clonotypes = Some(line.between("=", " ").force_usize());
+        } else if line.contains("REQUIRED_DATASETS=") {
+            required_datasets = Some(line.between("=", " ").force_usize());
+        }
+    }
+    let required_fps = required_fps.unwrap();
+    let required_cells = required_cells.unwrap();
+    let required_clonotypes = required_clonotypes.unwrap();
+    let required_donors = required_donors.unwrap();
+    let required_two_cell_clonotypes = required_two_cell_clonotypes.unwrap();
+    let required_datasets = required_datasets.unwrap();
+    let required_fp_percent = format!(
+        "{:.2}%",
+        percent_ratio(required_fps, required_two_cell_clonotypes)
+    );
+
+    // Keep going.
+
     const ENCLONE_FORMATTED: &str =
         "<span style=\"color:rgb(120,123,175);font-weight:900\">enclone</span>";
     let pwd = env::current_dir().unwrap();
@@ -170,6 +208,16 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
             }
         } else {
             s = s.replace("#enclone", ENCLONE_FORMATTED);
+            s = s.replace("#required_fps", &format!("{}", required_fps));
+            s = s.replace("#required_cells", &add_commas(required_cells));
+            s = s.replace("#required_clonotypes", &add_commas(required_clonotypes));
+            s = s.replace("#required_donors", &format!("{}", required_donors));
+            s = s.replace("#required_datasets", &format!("{}", required_datasets));
+            s = s.replace(
+                "#required_two_cell_clonotypes",
+                &add_commas(required_two_cell_clonotypes),
+            );
+            s = s.replace("#required_fp_percent", &format!("{}", &required_fp_percent));
             fwriteln!(g, "{}", s);
         }
     }

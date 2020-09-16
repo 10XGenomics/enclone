@@ -83,9 +83,6 @@ composition in the external clonotyping, as clonotype_id[count], ...
 The input file should have lines of the form:
 sample barcode clonotype_id.
 
-REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
-positive to be a clonotype that contains cells from multiple donors.
-
 SUMMARY_CLEAN: if SUMMARY specified, don't show computational performance stats, so 
 we can regress on output
 
@@ -115,11 +112,12 @@ LVARS entries
 - npe<n> = total number of cells in this clonotype that are within PCA distance n of this cell
 - ppe<n> = percent of all gex cells within PCA distance n of this cell that are in this clonotype
 
-IMGT: specify the IMGT reference, only implemented for human, forces RE so slow
+IMGT: specify the IMGT reference, forces RE so slow
 How this reference was created
 - go into a new directory
 - /mnt/home/jaffe/repos/cellranger/lib/bin/fetch-imgt --genome human-imgt-20200415
 - mkvdjref --genome=vdj_IMGT_human_20200415 --seqs=human-imgt-20200415-mkvdjref-input.fasta
+- also for mouse
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
 
@@ -185,3 +183,27 @@ PLOT_BY_MARK
 n_b as LVAR = number of B cells
 
 MAX_SCORE: was public, now deprecated, do not remove
+
+REQUIRE_UNBROKEN_OK: require that if a V reference sequence is not marked as broken, then all
+its features can be computed, and exit after this test
+
+NALL_GEX: turn off all filters except GEX filter
+
+REPROD: accept nonproductive contigs, recompute productive, then reject nonproductive
+
+===================================================================================================
+
+OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED
+
+REQUIRED_FPS=n: exit(1) if the number of false positives is not n; here we define a false
+positive to be a clonotype that contains cells from multiple donors.
+
+REQUIRED_CELLS=n: exit(1) if the number of cells in clonotypes is not n
+
+REQUIRED_CLONOTYPES=n: exit(1) if the number of clonotypes is not n
+
+REQUIRED_DONORS=n: exit(1) if the number of donors is not n
+
+REQUIRED_TWO_CELL_CLONOTYPES=n: exit(1) if the number of clonotypes having >= 2 cells is not n
+
+REQUIRED_DATASETS=n: exit(1) if the number of datasets is not n

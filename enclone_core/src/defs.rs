@@ -377,6 +377,11 @@ pub struct GeneralOpt {
     pub refname: String,
     pub noprint: bool,
     pub required_fps: Option<usize>,
+    pub required_cells: Option<usize>,
+    pub required_clonotypes: Option<usize>,
+    pub required_donors: Option<usize>,
+    pub required_two_cell_clonotypes: Option<usize>,
+    pub required_datasets: Option<usize>,
     pub cellranger: bool,
     pub summary: bool,
     pub summary_clean: bool,
@@ -422,6 +427,10 @@ pub struct GeneralOpt {
     pub const_igh: Option<Regex>,
     pub const_igkl: Option<Regex>,
     pub diff_style: String,
+    pub accept_broken: bool,
+    pub require_unbroken_ok: bool,
+    pub built_in: bool,
+    pub reprod: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -619,10 +628,10 @@ pub struct TigData {
     pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
     pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
     pub fr1_start: usize,                     // start position in bases of FWR1 on V..J
-    pub cdr1_start: usize,                    // start position in bases of CDR1 on V..J
-    pub fr2_start: usize,                     // start position in bases of FWR2 on V..J
-    pub cdr2_start: usize,                    // start position in bases of CDR2 on V..J
-    pub fr3_start: usize,                     // start position in bases of FWR3 on V..J
+    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
+    pub fr2_start: Option<usize>,             // start position in bases of FWR2 on V..J
+    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
+    pub fr3_start: Option<usize>,             // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                      // CDR3 amino acid sequence
     pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub quals: Vec<u8>,                       // quality scores, truncated to V..J
@@ -689,10 +698,10 @@ pub struct TigData1 {
     pub j_ref_id: usize,                     // index of J segment reference sequence in ref file
     pub c_ref_id: Option<usize>,             // index of C segment reference sequence in ref file
     pub fr1_start: usize,                    // start position in bases of FWR1 on V..J
-    pub cdr1_start: usize,                   // start position in bases of CDR1 on V..J
-    pub fr2_start: usize,                    // start position in bases of FWR2 on V..J
-    pub cdr2_start: usize,                   // start position in bases of CDR2 on V..J
-    pub fr3_start: usize,                    // start position in bases of FWR3 on V..J
+    pub cdr1_start: Option<usize>,           // start position in bases of CDR1 on V..J
+    pub fr2_start: Option<usize>,            // start position in bases of FWR2 on V..J
+    pub cdr2_start: Option<usize>,           // start position in bases of CDR2 on V..J
+    pub fr3_start: Option<usize>,            // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
     pub left: bool,                          // true if this is IGH or TRB
@@ -809,10 +818,10 @@ pub struct ColInfo {
     pub jids: Vec<usize>,
     pub cids: Vec<Option<usize>>,
     pub fr1_starts: Vec<usize>,
-    pub cdr1_starts: Vec<usize>,
-    pub fr2_starts: Vec<usize>,
-    pub cdr2_starts: Vec<usize>,
-    pub fr3_starts: Vec<usize>,
+    pub cdr1_starts: Vec<Option<usize>>,
+    pub fr2_starts: Vec<Option<usize>>,
+    pub cdr2_starts: Vec<Option<usize>>,
+    pub fr3_starts: Vec<Option<usize>>,
     pub cdr3_starts: Vec<usize>,
     pub cdr3_lens: Vec<usize>,
     pub seq_lens: Vec<usize>, // not sure we should be computing or using this

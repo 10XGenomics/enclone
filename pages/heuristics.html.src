@@ -8,9 +8,64 @@
 <h1>enclone heuristics</h1>
 
 <p>This page is a start in describing the heuristics that #enclone uses.  It will be gradually
-expanded.  See also <a href="../../pages/auto/help.how.html">enclone help how</a>.  The content here
-is geeky and technical.
+expanded.  See also <a href="../../pages/auto/help.how.html">enclone help how</a>
+and <a href="../../pages/auto/help.special.html">enclone help special</a>.  
+The content here is geeky and technical.
 </p>
+
+<hr>
+
+<p><b>Foursie filtering.</b>  
+Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
+<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
+the actual biology of single cells, we do not do this.  However we never merge them with other
+exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
+doublets.  Specifically, for each foursie exact subclonotype, #enclone looks at each pair of two 
+chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
+appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
+subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
+clonotypes that are present if the filtering is off:
+
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
+</code></pre>
+
+#include pages/auto/foursie1.html
+
+and which are deleted if the foursie filtering is on:
+
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW
+</code></pre>
+
+#include pages/auto/foursie2.html
+
+<hr>
+
+<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
+is a chain that appears in a relatively small number of cells, we delete all the cells that support
+that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
+condition is that the number of cells supporting the chain is at most <code>5</code>, and 
+<code>8</code> times that number of cell is less than the total number of cells in the clonotype.
+
+<hr>
+
+<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
+made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
+observed in different libraries should be statistically consistent.  Otherwise, they likely 
+represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
+apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
+specified):
+</p>
+
+<p>
+If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
+<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
+the total number of productive pairs for all datasets from the same origin.  
+If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
+instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
+V..J segment that do not have at least <code>100</code> supporting UMIs.
+</p>
+
+<p>This test could clearly be strengthened.</p>
 
 <hr>
 

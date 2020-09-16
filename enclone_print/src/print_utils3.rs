@@ -62,10 +62,10 @@ pub fn define_column_info(
     // Compute CDR3 starts, etc.
 
     let mut fr1_starts = Vec::<usize>::new();
-    let mut fr2_starts = Vec::<usize>::new();
-    let mut fr3_starts = Vec::<usize>::new();
-    let mut cdr1_starts = Vec::<usize>::new();
-    let mut cdr2_starts = Vec::<usize>::new();
+    let mut fr2_starts = Vec::<Option<usize>>::new();
+    let mut fr3_starts = Vec::<Option<usize>>::new();
+    let mut cdr1_starts = Vec::<Option<usize>>::new();
+    let mut cdr2_starts = Vec::<Option<usize>>::new();
     let mut cdr3_starts = Vec::<usize>::new();
     let mut cdr3_lens = Vec::<usize>::new();
     let mut seq_lens = Vec::<usize>::new();
@@ -83,20 +83,28 @@ pub fn define_column_info(
 
                 // The logic below with testing i < start while incrementing start seems fishy.
 
-                let mut start = exm.cdr1_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.cdr1_start.is_some() {
+                    let mut start = exm.cdr1_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    cdr1_starts.push(Some(start));
+                } else {
+                    cdr1_starts.push(None);
                 }
-                cdr1_starts.push(start);
-                let mut start = exm.cdr2_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.cdr2_start.is_some() {
+                    let mut start = exm.cdr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    cdr2_starts.push(Some(start));
+                } else {
+                    cdr2_starts.push(None);
                 }
-                cdr2_starts.push(start);
                 let mut start = exm.fr1_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -104,20 +112,28 @@ pub fn define_column_info(
                     }
                 }
                 fr1_starts.push(start);
-                let mut start = exm.fr2_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.fr2_start.is_some() {
+                    let mut start = exm.fr2_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    fr2_starts.push(Some(start));
+                } else {
+                    fr2_starts.push(None);
                 }
-                fr2_starts.push(start);
-                let mut start = exm.fr3_start;
-                for (i, c) in exm.seq_del.iter().enumerate() {
-                    if i < start && *c == b'-' {
-                        start += 1;
+                if exm.fr3_start.is_some() {
+                    let mut start = exm.fr3_start.unwrap();
+                    for (i, c) in exm.seq_del.iter().enumerate() {
+                        if i < start && *c == b'-' {
+                            start += 1;
+                        }
                     }
+                    fr3_starts.push(Some(start));
+                } else {
+                    fr3_starts.push(None);
                 }
-                fr3_starts.push(start);
                 let mut start = exm.cdr3_start;
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
@@ -583,34 +599,81 @@ pub fn build_table_stuff(
                     let m = rsi.mat[cx][u];
                     if m.is_some() {
                         let m = m.unwrap();
-                        let mut n = show_aa[cx].len();
-                        for k in 1..show_aa[cx].len() {
+                        let mut n = show.len();
+                        for k in 1..show.len() {
                             if field_types[cx][k] != field_types[cx][k - 1] {
                                 n += 1;
                             }
                         }
                         let mut ch = vec![' '; n];
                         let amino = &ctl.clono_print_opt.amino;
-                        let x = &exact_clonotypes[exacts[u]].share[m];
+                        let ex = &exact_clonotypes[exacts[u]];
+                        let x = &ex.share[m];
+                        let mut cs1 = 0;
+                        if rsi.cdr1_starts[cx].is_some() {
+                            cs1 = rsi.cdr1_starts[cx].unwrap();
+                        }
+                        let mut cs2 = 0;
+                        if rsi.cdr2_starts[cx].is_some() {
+                            cs2 = rsi.cdr2_starts[cx].unwrap();
+                        }
+                        let mut fs2 = 0;
+                        if rsi.fr2_starts[cx].is_some() {
+                            fs2 = rsi.fr2_starts[cx].unwrap();
+                        }
+                        let mut fs3 = 0;
+                        if rsi.fr3_starts[cx].is_some() {
+                            fs3 = rsi.fr3_starts[cx].unwrap();
+                        }
                         let fields = [
-                            ("fwr1".to_string(), rsi.fr1_starts[cx], rsi.cdr1_starts[cx]),
-                            ("fwr2".to_string(), rsi.fr2_starts[cx], rsi.cdr2_starts[cx]),
-                            ("fwr3".to_string(), rsi.fr3_starts[cx], rsi.cdr3_starts[cx]),
-                            ("cdr1".to_string(), rsi.cdr1_starts[cx], rsi.fr2_starts[cx]),
-                            ("cdr2".to_string(), rsi.cdr2_starts[cx], rsi.fr3_starts[cx]),
+                            (
+                                "fwr1".to_string(),
+                                rsi.fr1_starts[cx],
+                                cs1,
+                                rsi.cdr1_starts[cx].is_some(),
+                            ),
+                            (
+                                "fwr2".to_string(),
+                                fs2,
+                                cs2,
+                                rsi.fr2_starts[cx].is_some() && rsi.cdr2_starts[cx].is_some(),
+                            ),
+                            (
+                                "fwr3".to_string(),
+                                fs3,
+                                rsi.cdr3_starts[cx],
+                                rsi.fr3_starts[cx].is_some(),
+                            ),
+                            (
+                                "cdr1".to_string(),
+                                cs1,
+                                fs2,
+                                rsi.cdr1_starts[cx].is_some() && rsi.fr2_starts[cx].is_some(),
+                            ),
+                            (
+                                "cdr2".to_string(),
+                                cs2,
+                                fs3,
+                                rsi.cdr2_starts[cx].is_some() && rsi.fr3_starts[cx].is_some(),
+                            ),
                             (
                                 "cdr3".to_string(),
                                 rsi.cdr3_starts[cx],
                                 rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                                true,
                             ),
                             (
                                 "fwr4".to_string(),
                                 rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
                                 rsi.seq_del_lens[cx] - 1,
+                                true,
                             ),
                         ];
                         for z in 0..fields.len() {
-                            if amino.contains(&fields[z].0) && fields[z].1 <= fields[z].2 {
+                            if amino.contains(&fields[z].0)
+                                && fields[z].3
+                                && fields[z].1 <= fields[z].2
+                            {
                                 let cs1 = fields[z].1 / 3;
                                 let mut ch_start = 0;
                                 for k in 0..show.len() {
@@ -622,31 +685,50 @@ pub fn build_table_stuff(
                                     }
                                     ch_start += 1;
                                 }
-                                let n = (fields[z].2 - fields[z].1) / 3;
+                                let q = (fields[z].2 - fields[z].1) / 3;
                                 let mut t = fields[z].0.to_string();
                                 t.make_ascii_uppercase();
                                 let t = t.as_bytes();
                                 let mut s = String::new();
-                                if n >= 4 {
-                                    let left = (n - 3) / 2;
-                                    let right = n - left - 4;
+                                if q >= 4 {
+                                    let left = (q - 3) / 2;
+                                    let right = q - left - 4;
                                     s += &"═".repeat(left);
                                     s += strme(&t);
                                     s += &"═".repeat(right);
-                                } else if n == 3 {
+                                } else if q == 3 {
                                     s += strme(&t[0..1]);
                                     s += strme(&t[2..4]);
-                                } else if n == 2 {
+                                } else if q == 2 {
                                     s += strme(&t[0..1]);
                                     s += strme(&t[3..4]);
-                                } else if n == 1 {
+                                } else if q == 1 {
                                     s += strme(&t[3..4]);
                                 }
                                 let mut schars = Vec::<char>::new();
                                 for x in s.chars() {
                                     schars.push(x);
                                 }
-                                for k in 0..n {
+                                for k in 0..q {
+                                    // Catch an error condition that has happened a few times.
+
+                                    if ch_start + k >= ch.len() {
+                                        let mut ds = Vec::<String>::new();
+                                        for i in 0..ex.ncells() {
+                                            let li = ex.clones[i][m].dataset_index;
+                                            ds.push(ctl.origin_info.dataset_id[li].clone());
+                                        }
+                                        unique_sort(&mut ds);
+                                        panic!(
+                                            "Internal error, out of range in \
+                                            build_table_stuff, CDR3 = {}, datasets = {}.",
+                                            x.cdr3_aa,
+                                            ds.iter().format(",")
+                                        );
+                                    }
+
+                                    // Do the work.
+
                                     ch[ch_start + k] = schars[k];
                                 }
                             }

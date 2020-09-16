@@ -1,68 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--  -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
-<title>enclone heuristics</title>
-<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){{dataLayer.push(arguments);}}
-gtag('js', new Date());
-gtag('config', 'UA-58278925-3');
-</script>
-
-        
-        </head>
-
-        <! ––
-
-        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
-
-        PUT DOWN YOUR HAMMER.
-        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
-        THANK YOU FOR YOUR COOPERATION,
-
-        SINCERELY,
-        THE BENEVOLENT OVERLORDS
-
-        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
-
-        ––>
-
+<title>enclone output</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
+</head>
 <body>
-
-<br>
-<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-
-<h1>enclone heuristics</h1>
-
-<p>This page is a start in describing the heuristics that <span style="color:rgb(120,123,175);font-weight:900">enclone</span> uses.  It will be gradually
-expanded.  See also <a href="../../pages/auto/help.how.html">enclone help how</a>
-and <a href="../../pages/auto/help.special.html">enclone help special</a>.  
-The content here is geeky and technical.
-</p>
-
-<hr>
-
-<p><b>Foursie filtering.</b>  
-Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
-<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
-the actual biology of single cells, we do not do this.  However we never merge them with other
-exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
-doublets.  Specifically, for each foursie exact subclonotype, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> looks at each pair of two 
-chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
-appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
-subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
-clonotypes that are present if the filtering is off:
-
-<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
-</code></pre>
-
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 34 CELLS</span>
 
 [1.1] CLONOTYPE = 34 CELLS
@@ -121,127 +90,6 @@ clonotypes that are present if the filtering is off:
 │1  1       │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  69  ?      │  <span style="color:#e7bd20;">K</span><span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#3e7dd1;font-weight:bold;">QL</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#31c39a;">S</span><span style="color:#eb99c2;font-weight:bold;">YYYY</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>  304  IGHG1  │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  562  IGKC    │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  266  IGKC  │
 └───────────┴────────────────────────────────────────────┴─────────────────────────────────────────┴────────────────────────────┴───────────────────────────┘
 </span></pre>
-
-and which are deleted if the foursie filtering is on:
-
-<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW
-</code></pre>
-
-<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 34 CELLS</span>
-
-[1.1] CLONOTYPE = 34 CELLS
-┌───────────┬────────────────────────────────────────────┬───────────────────────────┐
-│           │  <span style="font-weight:bold;">CHAIN 1</span>                                   │  CHAIN 2                  │
-│           │  <span style="font-weight:bold;">181.1.1|IGHV4-30-2 ◆ 53|IGHJ3</span>             │  254|IGKV1D-39 ◆ 218|IGKJ5│
-│           ├────────────────────────────────────────────┼───────────────────────────┤
-│           │             1 1111111111111111             │  111111111111             │
-│           │  222455678990 1111122222222223             │  011111111112             │
-│           │  057138037346 5678901234567890             │  901234567890             │
-│           │               ══════CDR3══════             │  ════CDR3════             │
-│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">S</span><span style="color:#eb99c2;font-weight:bold;">S</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">SR</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">H</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#31c39a;">S</span><span style="color:#e7bd20;">T</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
-│donor ref  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">T</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
-├───────────┼────────────────────────────────────────────┼───────────────────────────┤
-│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ............ ................   u  const  </span>│<span style="font-weight:bold;">  ............    u  const </span>│
-│1  34      │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">TYR</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">V</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  58  IGHM   │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  207  IGKC  │
-└───────────┴────────────────────────────────────────────┴───────────────────────────┘
-</span></pre>
-
-<hr>
-
-<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
-is a chain that appears in a relatively small number of cells, we delete all the cells that support
-that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
-condition is that the number of cells supporting the chain is at most <code>5</code>, and 
-<code>8</code> times that number of cell is less than the total number of cells in the clonotype.
-
-<hr>
-
-<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
-made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
-observed in different libraries should be statistically consistent.  Otherwise, they likely 
-represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
-apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
-specified):
-</p>
-
-<p>
-If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
-<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
-the total number of productive pairs for all datasets from the same origin.  
-If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
-instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
-V..J segment that do not have at least <code>100</code> supporting UMIs.
-</p>
-
-<p>This test could clearly be strengthened.</p>
-
-<hr>
-
-<p><b>UMI filtering.</b>  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> filters out B cells having low UMI counts, relative to a baseline
-that is determined for each dataset, according to a
-heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
-filter.</code>
-
-<p>The motivation for this filter is to mitigate illusory clonotype expansions arising from
-fragmentation of plasma cells or other physical processes (not all fully understood).  These
-processes all result in "cells" having low UMI counts, many of which do not correspond to intact 
-real cells.  Illusory clonotype expansions are generally infrequent, but occasionally cluster
-in individual datasets.</p>
-
-<p>Nomenclature: for any cell, find the maximum UMI count for its heavy chains, if any, and the 
-maximum for its light chains, if any.  The sum of these two maxima is denoted 
-<code>umitot</code>.</p>
-
-<p>The algorithm for this filter first establishes a baseline for the expected value of 
-<code>umitot</code>, for each dataset taken individually.  To do this, all clonotypes having 
-exactly one cell and exactly one heavy and light chain each are examined.  If there are less than 
-<code>20</code> such cells, the filter is not applied to cells in that dataset.  Otherwise,
-let <code>n_50%</code> denote the median of the <code>umitot</code> values for the dataset, and let
-<code>n_10%</code> the 10th percentile.  Let
-<pre><code>umin = min( n_10%, n_50% - 4 * sqrt(n_50%) )</code>.</pre>
-This is the baseline <i>low</i> value for <code>umitot</code>.  The reason for having the second
-part of the <code>min</code> is to prevent filtering in cases where UMI counts are sufficiently 
-low that poisson variability could cause a real cell to appear fake.</p>
-
-<p>Next we scan each clonotype having at least two cells, and delete every cell having 
-<code>umitot < umin</code>, with the following qualifications:  
-<ul>
-<li>Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
-cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
-probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
-less then <code>0.01</code>.  The more cells are flagged in a clonotype, the more likely this
-test is satisfied, which is the point of the test.
-</li>
-<li>If <i>every</i> cell in a clonotype would be deleted, then we find its exact subclonotype 
-having the highest sum for <code>umitot</code>, summing across its cells.  Then we protect from
-deletion the cell in this exact subclonotype having the highest <code>umitot</code> value.  We 
-do this because in general even if a clonotype expansion did not occur, there was probably at
-least a single <i>bona fide</i> cell that gave rise to it.
-</li>
-</ul>
-
-A better test could probably be devised that started from the expected distribution of UMI counts.
-The test would trigger based on the number and improbability of low UMI counts.  The current test 
-only considers the number of counts that fall below a threshold, and not their particular values.
-
-<p>This UMI filter is carried out before most of the other filters.</p>
-
-<hr>
-
-<p><b>UMI ratio filtering.</b>  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> filters out B cells having low UMI counts, relative to
-other UMI counts in a given clonotype, according to a 
-heuristic described here, unless the argument <code>NUMI_RATIO</code> is supplied, to turn off that
-filter.</code>
-
-<p>First we mark a cell for possible deletion, if the VDJ UMI count for some chain of some other 
-cell is at least 500 times greater than the total VDJ UMI count for the given cell.</p>
-
-<p>Then we scan each clonotype having at least two cells, and delete every cell marked as above,
-with the following qualification.  
-Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
-cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
-probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
-less then <code>0.01</code>.</p>
-
 </body>
 </html>
+
