@@ -117,7 +117,7 @@ How this reference was created
 - go into a new directory
 - /mnt/home/jaffe/repos/cellranger/lib/bin/fetch-imgt --genome human-imgt-20200415
 - mkvdjref --genome=vdj_IMGT_human_20200415 --seqs=human-imgt-20200415-mkvdjref-input.fasta
-- alse for mouse
+- also for mouse
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
 
