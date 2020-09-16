@@ -654,7 +654,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 let imgt =
                     "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
                 if ctl.gen_opt.descrip {
-                    println!("using imgt human reference");
+                    println!("using IMGT human reference");
                 }
                 let f = open_for_read![imgt];
                 for line in f.lines() {
