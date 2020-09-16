@@ -676,7 +676,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 let imgt =
                     "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_mouse_20180723-2.2.0/fasta/regions.fa";
                 if ctl.gen_opt.descrip {
-                    println!("using imgt mouse reference");
+                    println!("using IMGT mouse reference");
                 }
                 let f = open_for_read![imgt];
                 for line in f.lines() {
