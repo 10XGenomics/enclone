@@ -840,8 +840,8 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
 
-    let extra_words = "abybank amazonaws anarci barcode barcodes barcoding bcn bioinf cdiff chmod \
-        clonotype clonotypes \
+    let extra_words = "abybank amazonaws anarci barcode barcodes barcoding bcn \
+        bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifts fwr \
