@@ -375,7 +375,7 @@ pub const TESTS: [&str; 150] = [
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL"###,
     // 150. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
-        CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW""###,
+        CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
