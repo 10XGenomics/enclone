@@ -997,7 +997,8 @@ pub fn main_enclone(args: &Vec<String>) {
 
         eprintln!(
         "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
-        • rerun cellranger using the cleaned up reference sequences that come prepacked with it,\n\
+        • rerun cellranger using the cleaned up reference sequences that come prepackaged with \
+          it\n  (noting that your might have used an older, less clean version of that)\n\
         • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
         sequences.  This will be a bit slower because all the contigs will need to be\n  \
         reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
