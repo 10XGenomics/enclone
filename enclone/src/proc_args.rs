@@ -445,21 +445,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_string_readable = [("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata)];
 
-    // Define arguments that do nothing (because already parsed).
+    // Define arguments that do nothing (because already parsed), and which have no "= value" part.
 
-    let set_nothing = [
-        "BC",
-        "BI",
+    let set_nothing_simple = [
         "CELLRANGER",
         "COMP",
         "COMP2",
         "CTRLC",
         "DUMP_INTERNAL_IDS",
-        "EMAIL",
         "FORCE_EXTERNAL",
-        "GEX",
-        "HAPS",
-        "HTML",
         "LONG_HELP",
         "MARKED_B",
         "MARK_STATS",
@@ -470,11 +464,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "NOPAGER",
         "NOPRETTY",
         "PLAIN",
-        "PRE",
         "PRINT_CPU",
         "PRINT_CPU_INFO",
         "SVG",
     ];
+
+    // Define arguments that do nothing (because already parsed), and which may have
+    // an "= value" part.
+
+    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HAPS", "HTML", "PRE"];
 
     // Traverse arguments.
 
@@ -585,6 +583,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     );
                     std::process::exit(1);
                 }
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_nothing_simple args.
+
+        for j in 0..set_nothing_simple.len() {
+            if arg == set_nothing_simple[j].to_string() {
                 continue 'args_loop;
             }
         }
