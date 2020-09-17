@@ -129,6 +129,13 @@ pub fn load_gex(
                         Perhaps one of your directories is missing some stuff.\n",
                         f
                     );
+                    eprintln!(
+                        "One possibility is that you ran \"cellranger count\" using only \
+                        feature barcode (antibody) data,\nand you had less then ten antibodies.  \
+                        Currently if you do this, cellranger will not run the secondary\n\
+                        analyses, so you'll be missing some files.  A workaround is to add \
+                        some \"fake\" antibodies\nto pad out the total number to ten.\n",
+                    );
                     std::process::exit(1);
                 }
             }

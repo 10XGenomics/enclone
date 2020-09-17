@@ -1738,6 +1738,85 @@ pub fn group_and_print_clonotypes(
             log = log.replace("\n", "\n   ");
             fwrite!(logx, "   {}", log);
         }
+
+        // Print gene expression cluster analysis, but only if there is one library and the
+        // cell types file was provided (which would be for PD cellranger runs with GEX data).
+
+        if ctl.origin_info.n() == 1 && gex_info.cell_type_specified[0] {
+            let cell_type = &gex_info.cell_type[0];
+            let cluster = &gex_info.cluster[0];
+            if cluster.len() > 0 {
+                let mut nclust = 0;
+                for x in cluster.iter() {
+                    nclust = max(*x.1, nclust);
+                }
+                let mut ncells = vec![0; nclust];
+                let mut ncells_type = vec![0; nclust];
+                let mut ncells_vdj = vec![0; nclust];
+                let mut ncells_vdj_max = vec![0; nclust];
+                for x in cluster.iter() {
+                    ncells[x.1 - 1] += 1;
+                    let bc = &x.0;
+                    let typex = &cell_type[bc.clone()];
+                    if ctl.gen_opt.bcr && typex.starts_with('B') {
+                        ncells_type[x.1 - 1] += 1;
+                    } else if ctl.gen_opt.tcr && typex.starts_with('T') {
+                        ncells_type[x.1 - 1] += 1;
+                    }
+                }
+                for i in 0..nclono {
+                    let mut cs = Vec::<usize>::new();
+                    for j in 0..exacts[i].len() {
+                        let ex = &exact_clonotypes[exacts[i][j]];
+                        for k in 0..ex.ncells() {
+                            let bc = &ex.clones[k][0].barcode;
+                            if cluster.contains_key(&bc.clone()) {
+                                cs.push(cluster[&bc.clone()] - 1);
+                            }
+                        }
+                    }
+                    cs.sort();
+                    let mut freq = Vec::<(u32, usize)>::new();
+                    make_freq(&cs, &mut freq);
+                    for x in freq.iter() {
+                        ncells_vdj[x.1] += x.0;
+                        ncells_vdj_max[x.1] = max(x.0, ncells_vdj_max[x.1]);
+                    }
+                }
+                let mut rows = Vec::<Vec<String>>::new();
+                let bt;
+                if ctl.gen_opt.bcr {
+                    bt = "B";
+                } else {
+                    bt = "T";
+                }
+                rows.push(vec![
+                    "gex cluster".to_string(),
+                    "cells".to_string(),
+                    format!("%{}", bt),
+                    "%in clonotypes".to_string(),
+                    "max % in one clonotype".to_string(),
+                ]);
+                rows.push(vec!["\\hline".to_string(); 5]);
+                for i in 0..nclust {
+                    let n = ncells[i];
+                    let mut row = Vec::<String>::new();
+                    row.push(format!("{}", i + 1));
+                    row.push(format!("{}", n));
+                    row.push(format!("{:.1}", percent_ratio(ncells_type[i], n)));
+                    row.push(format!("{:.1}", percent_ratio(ncells_vdj[i] as usize, n)));
+                    row.push(format!(
+                        "{:.1}",
+                        percent_ratio(ncells_vdj_max[i] as usize, n)
+                    ));
+                    rows.push(row);
+                }
+                let mut log = String::new();
+                print_tabular_vbox(&mut log, &rows, 2, &b"r|r|r|r|r".to_vec(), false, false);
+                log = log.replace("\n", "\n   ");
+                fwrite!(logx, "   {}", log);
+            }
+        }
     }
 
     // Print summary csv stats.

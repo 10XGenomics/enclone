@@ -646,6 +646,11 @@ Note that the VDJ outs directories must be from Cell Ranger version <span style=
 for earlier versions (which you will be informed of if you try), but it is much slower and the
 results may not be as good.
 
+Note also that running "cellranger count" using only feature barcodes (antibodies),
+             with less than ten features, will not yield all the needed files.  You can work
+around this by adding "fake antibodies", to the feature list, so as to pad out the total number to
+ten.
+
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help parseable
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
@@ -1122,7 +1127,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │               │  to cases where all exact subclonotypes have a complete set of chains.       │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                          │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells reported by GEX                                           │
+│n_gex          │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                  │
 ├───────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type     │
 │&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow     │

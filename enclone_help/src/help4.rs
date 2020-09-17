@@ -532,7 +532,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "to cases where all exact subclonotypes have a complete set of chains.",
         );
         h.ldocpr("gex", "\\red{●} median gene expression UMI count");
-        h.docpr("n_gex", "\\blue{●} number of cells reported by GEX");
+        h.docpr(
+            "n_gex",
+            "\\blue{●} number of cells found by cellranger using GEX or Ab data",
+        );
         // nonpublic for now as we don't know if this is useful
         /*
         h.doc(

@@ -25,7 +25,7 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
     // printed multiple times.
     if !exiting.swap(true, Ordering::Relaxed) {
         eprint!(
-            "\nThere is something wrong with the contig annotations in the Cell Ranger output \
+            "\nThere is something wrong with the contig annotations in the cellranger output \
              file"
         );
         if json.is_some() {
@@ -33,28 +33,36 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
         } else {
             eprint!(".");
         }
-        eprint!("\n\npossibly relevant internal data: {}", msg);
+        if ctl.gen_opt.internal_run {
+            eprint!("\n\npossibly relevant internal data: {}", msg);
+        }
         if ctl.gen_opt.internal_run {
             eprint!(
                 "\n\nATTENTION INTERNAL 10X USERS!\n\
-                Quite possibly you are using data from a Cell Ranger run carried out using a \
+                Quite possibly you are using data from a cellranger run carried out using a \
                 version\n\
                 between 3.1 and 4.0.  For certain of these versions, it is necessary to add the\n\
                 argument CURRENT_REF to your command line.  If that doesn't work, please see below."
             );
         }
         eprintln!(
-            "\n\nHere are possible sources of this problem:\n\n\
-             1. If the file was generated using \
-             Cell Ranger version < 3.1, please either\nregenerate the file using the \
-             current Cell Ranger version, or else run this program with the RE option to\n\
-             regenerate annotations from scratch, but we warn you that this code \
-             is not guaranteed to run\ncorrectly on outdated json files.\n\n\
-             2. Make sure you have the correct chain type, TCR or BCR.\n\n\
-             3. Make sure you have the correct reference sequence.  See \
-             \"enclone help faq\".\n\n\
-             4. If none of these apply, please report the problem to \
-             enclone@10xgenomics.com.  But please\nfirst rerun with RE to confirm the problem.\n"
+            "\n\nHere is what you should do:\n\n\
+             1. If you used cellranger version ≥ 4.0, the problem is very likely\n\
+                that the directory outs/vdj_reference was not retained, so enclone\n\
+                didn't see it, and had to guess what the reference sequence was.\n\
+                Fix this and everything should be fine.\n\n\
+             2. If you used cellranger version 3.1, then you need to add a command-line\n\
+                argument REF=<vdj_reference_fasta_file_name>, or if you already did that,\n\
+                make sure it is the *same* as that which you gave cellranger.\n\n\
+             3. If you used cellranger version < 3.1 (the only other possibility), then\n\
+                you have options:\n\
+                • rerun cellranger using the current version\n\
+                • or provide an argument REF= as above and RE to force reannotation\n\
+                • or provide the argument BUILT_IN to use the current reference and force\n  \
+                  reannotation (and MOUSE if you used mouse); only works with human and mouse.\n\n\
+             Note that one way to get the error is to specify TCR when you meant BCR, or the\n\
+             other way.\n\n\
+             If you're stuck, please write to us at enclone@10xgenomics.com.\n"
         );
         std::process::exit(1);
     }

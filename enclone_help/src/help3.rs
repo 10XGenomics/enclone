@@ -39,6 +39,12 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              is a workaround for earlier versions (which you will be informed of if you try), but \
              it is much slower and the results may not be as good.\n\n",
         );
+        h.print(
+            "Note also that running \"cellranger count\" using only feature barcodes (antibodies),
+             with less than ten features, will not yield all the needed files.  You can work \
+             around this by adding \"fake antibodies\", to the feature list, so as to pad out \
+             the total number to ten.\n\n",
+        );
         h.end_doc();
     }
 

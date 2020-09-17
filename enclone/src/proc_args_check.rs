@@ -77,6 +77,24 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
         }
     }
     for x in to_check.iter() {
+        if !gex_info.have_gex && !gex_info.have_fb {
+            if *x == "n_gex".to_string() || *x == "n_gex_cell".to_string() {
+                if category == "parseable" {
+                    eprintln!(
+                        "\nParseable field {} does not make sense because neither gene expression \
+                         nor feature barcode data\nwere provided as input.\n",
+                        x
+                    );
+                } else {
+                    eprintln!(
+                        "\nLead variable {} does not make sense because neither gene expression \
+                         not feature barcode data\nwere provided as input.\n",
+                        x
+                    );
+                }
+                std::process::exit(1);
+            }
+        }
         if !gex_info.have_gex {
             let mut problem = false;
             for y in g_ends.iter() {
@@ -87,8 +105,6 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             if problem
                 || *x == "gex".to_string()
                 || x.starts_with("gex_")
-                || *x == "n_gex_cell".to_string()
-                || *x == "n_gex".to_string()
                 || *x == "clust".to_string()
                 || *x == "type".to_string()
                 || *x == "entropy".to_string()
@@ -332,9 +348,16 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
         let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !gex_info.have_gex && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust")
-            || x == "type"
-        {
+
+        if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
+            eprintln!(
+                "\nCan't use parseable variable {} without having gene \
+                 expression or feature barcode data.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+        if !gex_info.have_gex && (x.starts_with("gex") || x == "clust") || x == "type" {
             eprintln!(
                 "\nCan't use parseable variable {} without having gene \
                  expression data.\n",
@@ -500,9 +523,15 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
 
         // The rest.
 
-        if !gex_info.have_gex
-            && (x.starts_with("gex") || x.starts_with("n_gex") || x == "clust" || x == "type")
-        {
+        if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
+            eprintln!(
+                "\nCan't use LVARS or LVARSP variable {} without having gene \
+                 expression or feature barcode data.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+        if !gex_info.have_gex && (x.starts_with("gex") || x == "clust" || x == "type") {
             eprintln!(
                 "\nCan't use LVARS or LVARSP variable {} without having gene \
                  expression data.\n",

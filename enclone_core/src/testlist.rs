@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 147] = [
+pub const TESTS: [&str; 150] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -369,6 +369,13 @@ pub const TESTS: [&str; 147] = [
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW BUILT_IN"###,
     // 147. test NALL_GEX
     r###"BCR=86237 GEX=85679 NALL_GEX LVARSP=n_gex,filter PER_CELL BARCODE=CTTGGCTGTTAAGACA-1"###,
+    // 148. test that LVARSP=n_gex fails if only BCR provided
+    r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
+    // 149. test that LVARSP=gex fails on Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL"###,
+    // 150. test Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
+        CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
