@@ -46,7 +46,7 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
         eprintln!(
             "\n\nHere are possible sources of this problem:\n\n\
              1. If the file was generated using \
-             Cell Ranger version < 3.1, please either\nregenerate the file using the \
+             Cell Ranger version < 3.1, please either regenerate the file\nusing the \
              current Cell Ranger version, or else run this program with the RE option to\n\
              regenerate annotations from scratch, but we warn you that this code \
              is not guaranteed to run\ncorrectly on outdated json files.\n\n\
