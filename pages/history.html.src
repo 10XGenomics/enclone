@@ -29,6 +29,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <hr>
 
 <p>
+<b>9/17/20</b>: Clarify documentation for the case where <code>GEX=(antibody data)</code> and fix 
+bug in handling of <code>n_gex</code> for that.
+</p>
+
+<p>
 <b>9/16/20</b>: 
 <ul>
 <li>
