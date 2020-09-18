@@ -10,7 +10,7 @@ use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
-use std::{env, time::Instant};
+use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
@@ -70,6 +70,45 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];
+    }
+
+    // Process special option SPLIT_COMMAND.
+
+    let mut split = false;
+    for i in 1..args.len() {
+        if args[i] == "SPLIT_BY_COMMAND" {
+            split = true;
+        }
+    }
+    if split {
+        let (mut bcr, mut gex) = (Vec::<&str>::new(), Vec::<&str>::new());
+        let mut args2 = Vec::<String>::new();
+        for i in 1..args.len() {
+            if args[i] == "SPLIT_BY_COMMAND" {
+            } else if args[i].starts_with("BCR=") {
+                bcr = args[i].after("BCR=").split(',').collect::<Vec<&str>>();
+            } else if args[i].starts_with("GEX=") {
+                gex = args[i].after("GEX=").split(',').collect::<Vec<&str>>();
+            } else {
+                args2.push(args[i].to_string());
+            }
+        }
+        for i in 0..bcr.len() {
+            let mut args = args2.clone();
+            args.push(format!("BCR={}", bcr[i]));
+            args.push(format!("GEX={}", gex[i]));
+            println!("\nenclone {}\n", args.iter().format(" "));
+            let o = Command::new("enclone")
+                .args(&args)
+                .output()
+                .expect("failed to execute enclone");
+            print!("{}{}", strme(&o.stdout), strme(&o.stderr));
+            if o.status.code() != Some(0) {
+                println!("FAILED!\n");
+                std::process::exit(1);
+            }
+        }
+        std::process::exit(0);
     }
 
     // Set up general options.

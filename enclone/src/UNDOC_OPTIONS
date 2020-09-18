@@ -191,6 +191,9 @@ NALL_GEX: turn off all filters except GEX filter
 
 REPROD: accept nonproductive contigs, recompute productive, then reject nonproductive
 
+SPLIT_COMMAND: assuming that BCR and GEX have been provided with multiple entries each, split out 
+separate commands having them specified one by one, and run them, then exit
+
 ===================================================================================================
 
 OPTIONS THAT ALLOW METRIC VALUES TO BE LOCKED
