@@ -129,6 +129,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.full_counts = true;
     ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
+    ctl.gen_opt.peer_group_dist = "MFL".to_string();
 
     // Set up clonotyping control parameters.
 
@@ -394,6 +395,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NWHITEF", &mut ctl.gen_opt.nwhitef),
         ("NWARN", &mut ctl.gen_opt.nwarn),
         ("PCELL", &mut ctl.parseable_opt.pbarcode),
+        ("PG_READABLE", &mut ctl.gen_opt.peer_group_readable),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
         ("RE", &mut ctl.gen_opt.reannotate),
@@ -477,6 +479,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let set_string_writeable = [
         ("BINARY", &mut ctl.gen_opt.binary),
         ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("PEER_GROUP", &mut ctl.gen_opt.peer_group_filename),
         ("PROTO", &mut ctl.gen_opt.proto),
     ];
 
@@ -649,6 +652,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.join_print_opt.seq = true;
 
         // Not movable.
+        } else if arg.starts_with("PG_DIST=") {
+            let dist = arg.after("PG_DIST=");
+            if dist != "MFL" {
+                eprintln!("\nCurrently the only allowed value for PG_DIST is MFL.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.peer_group_dist = dist.to_string();
         } else if is_simple_arg(&arg, "H5") {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&arg, "NH5") {

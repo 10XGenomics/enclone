@@ -431,6 +431,9 @@ pub struct GeneralOpt {
     pub require_unbroken_ok: bool,
     pub built_in: bool,
     pub reprod: bool,
+    pub peer_group_filename: String,
+    pub peer_group_dist: String,
+    pub peer_group_readable: bool,
 }
 
 // Allele-finding algorithmic options.
