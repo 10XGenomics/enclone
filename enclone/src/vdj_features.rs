@@ -766,10 +766,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 
 pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr2 = fr2_start(&aa, chain_type, verbose);
-    if fr2.is_none() {
+    let cdr1 = cdr1_start(&aa, chain_type, verbose);
+    if fr2.is_none() || cdr1.is_none() || cdr1.unwrap() > fr2.unwrap() {
         return None;
     }
-    Some(aa[cdr1_start(&aa, chain_type, verbose).unwrap()..fr2.unwrap()].to_vec())
+    Some(aa[cdr1.unwrap()..fr2.unwrap()].to_vec())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
