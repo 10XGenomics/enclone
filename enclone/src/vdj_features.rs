@@ -790,10 +790,7 @@ pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     }
     let stop = stop.unwrap();
     if start > stop {
-        panic!(
-            "Error in cdr2(...): cdr2_start = {} exceeds fr3_start = {}",
-            start, stop
-        );
+        return None;
     }
     Some(aa[start..stop].to_vec())
 }
