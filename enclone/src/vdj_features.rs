@@ -799,6 +799,42 @@ pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn fwr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr1 = fr1_start(&aa, chain_type);
+    let cdr1 = cdr1_start(&aa, chain_type, verbose);
+    if cdr1.is_none() {
+        return None;
+    }
+    Some(aa[fr1..cdr1.unwrap()].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn fwr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr2 = fr2_start(&aa, chain_type, verbose);
+    if fr2.is_none() {
+        return None;
+    }
+    let cdr2 = cdr2_start(&aa, chain_type, verbose);
+    if cdr2.is_none() {
+        return None;
+    }
+    Some(aa[fr2.unwrap()..cdr2.unwrap()].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn fwr3(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr3 = fr3_start(&aa, chain_type, verbose);
+    if fr3.is_none() {
+        return None;
+    }
+    let cdr3 = cdr3_start(&aa, chain_type, verbose);
+    Some(aa[fr3.unwrap()..cdr3].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn score_fwr3(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 {
     let chain_type;
     if r == 0 {
