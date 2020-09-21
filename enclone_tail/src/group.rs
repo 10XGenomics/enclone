@@ -1,6 +1,8 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 // Group and print clonotypes.  For now, limited grouping functionality.
+//
+// To keep compilation time down, this crate should not reach into the enclone crate.
 
 use crate::display_tree::*;
 use crate::neighbor::*;
@@ -9,7 +11,9 @@ use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_core::mammalian_fixed_len::*;
 use enclone_core::print_tools::*;
+use enclone_core::vdj_features::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use io_utils::*;
@@ -26,6 +30,7 @@ use std::mem::swap;
 use std::path::Path;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use string_utils::*;
+use superslice::Ext;
 use tables::*;
 use tar::{Builder, Header};
 use vdj_ann::refx::*;
@@ -46,6 +51,188 @@ pub fn group_and_print_clonotypes(
     fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
+    // Create peer group file.
+
+    if ctl.gen_opt.peer_group_filename.len() > 0 {
+        // Calculate peer groups for each V segment reference sequence.
+
+        let mut pg = vec![Vec::<(usize, u8, u32)>::new(); refdata.refs.len()];
+        {
+            let m = mammalian_fixed_len();
+            let mut start = HashMap::<(String, String), usize>::new();
+            let mut stop = HashMap::<(String, String), usize>::new();
+            for chain in ["IGH", "IGK", "IGL", "TRA", "TRB"].iter() {
+                for feature in ["fwr1", "cdr1", "fwr2", "cdr2", "fwr3"].iter() {
+                    let low = m.lower_bound_by_key(&(*chain, *feature), |(a, b, _c, _d)| (a, b));
+                    let high = m.upper_bound_by_key(&(*chain, *feature), |(a, b, _c, _d)| (a, b));
+                    start.insert((chain.to_string(), feature.to_string()), low);
+                    stop.insert((chain.to_string(), feature.to_string()), high);
+                }
+            }
+            for i in 0..refdata.refs.len() {
+                if refdata.is_v(i) {
+                    let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
+                    let rtype = refdata.rtype[i];
+                    let chain_type;
+                    if rtype == 0 {
+                        chain_type = "IGH";
+                    } else if rtype == 1 {
+                        chain_type = "IGK";
+                    } else if rtype == 2 {
+                        chain_type = "IGL";
+                    } else if rtype == 3 {
+                        chain_type = "TRA";
+                    } else if rtype == 4 {
+                        chain_type = "TRB";
+                    } else {
+                        continue;
+                    }
+                    let fs1 = fr1_start(&aa, &chain_type);
+                    let cs1 = cdr1_start(&aa, &chain_type, false);
+                    let fs2 = fr2_start(&aa, &chain_type, false);
+                    let cs2 = cdr2_start(&aa, &chain_type, false);
+                    let fs3 = fr3_start(&aa, &chain_type, false);
+                    let cs3 = cdr3_start(&aa, &chain_type, false);
+                    if cs1.is_some() && fs1 < cs1.unwrap() {
+                        let cs1 = cs1.unwrap();
+                        let x1 = start[&(chain_type.to_string(), "fwr1".to_string())];
+                        let x2 = stop[&(chain_type.to_string(), "fwr1".to_string())];
+                        let len = cs1 - fs1;
+                        for x in x1..x2 {
+                            if m[x].2 == len {
+                                for j in 0..len {
+                                    for k in 0..m[x].3[j].len() {
+                                        pg[i].push((fs1 + j, m[x].3[j][k].1, m[x].3[j][k].0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if cs1.is_some() && fs2.is_some() && cs1.unwrap() < fs2.unwrap() {
+                        let cs1 = cs1.unwrap();
+                        let fs2 = fs2.unwrap();
+                        let x1 = start[&(chain_type.to_string(), "cdr1".to_string())];
+                        let x2 = stop[&(chain_type.to_string(), "cdr1".to_string())];
+                        let len = fs2 - cs1;
+                        for x in x1..x2 {
+                            if m[x].2 == len {
+                                for j in 0..len {
+                                    for k in 0..m[x].3[j].len() {
+                                        pg[i].push((cs1 + j, m[x].3[j][k].1, m[x].3[j][k].0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if fs2.is_some() && cs2.is_some() && fs2.unwrap() < cs2.unwrap() {
+                        let fs2 = fs2.unwrap();
+                        let cs2 = cs2.unwrap();
+                        let x1 = start[&(chain_type.to_string(), "fwr2".to_string())];
+                        let x2 = stop[&(chain_type.to_string(), "fwr2".to_string())];
+                        let len = cs2 - fs2;
+                        for x in x1..x2 {
+                            if m[x].2 == len {
+                                for j in 0..len {
+                                    for k in 0..m[x].3[j].len() {
+                                        pg[i].push((fs2 + j, m[x].3[j][k].1, m[x].3[j][k].0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if cs2.is_some() && fs3.is_some() && cs2.unwrap() < fs3.unwrap() {
+                        let cs2 = cs2.unwrap();
+                        let fs3 = fs3.unwrap();
+                        let x1 = start[&(chain_type.to_string(), "cdr2".to_string())];
+                        let x2 = stop[&(chain_type.to_string(), "cdr2".to_string())];
+                        let len = fs3 - cs2;
+                        for x in x1..x2 {
+                            if m[x].2 == len {
+                                for j in 0..len {
+                                    for k in 0..m[x].3[j].len() {
+                                        pg[i].push((cs2 + j, m[x].3[j][k].1, m[x].3[j][k].0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if fs3.is_some() && fs3.unwrap() < cs3 {
+                        let fs3 = fs3.unwrap();
+                        let x1 = start[&(chain_type.to_string(), "fwr3".to_string())];
+                        let x2 = stop[&(chain_type.to_string(), "fwr3".to_string())];
+                        let len = cs3 - fs3;
+                        for x in x1..x2 {
+                            if m[x].2 == len {
+                                for j in 0..len {
+                                    for k in 0..m[x].3[j].len() {
+                                        pg[i].push((fs3 + j, m[x].3[j][k].1, m[x].3[j][k].0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        let mut f = open_for_write_new![&ctl.gen_opt.peer_group_filename];
+        if !ctl.gen_opt.peer_group_readable {
+            fwriteln!(f, "clonotype,chain,pos,amino_acid,count");
+        } else {
+            fwriteln!(f, "clonotype,chain,pos,distribution");
+        }
+        for i in 0..exacts.len() {
+            for j in 0..rsi[i].mat.len() {
+                let id = rsi[i].vids[j];
+                let rtype = refdata.rtype[id];
+                let chain_type;
+                if rtype == 0 {
+                    chain_type = "IGH";
+                } else if rtype == 1 {
+                    chain_type = "IGK";
+                } else if rtype == 2 {
+                    chain_type = "IGL";
+                } else if rtype == 3 {
+                    chain_type = "TRA";
+                } else {
+                    chain_type = "TRB";
+                }
+                if !ctl.gen_opt.peer_group_readable {
+                    for y in pg[id].iter() {
+                        fwriteln!(
+                            f,
+                            "{},{},{},{},{},{}",
+                            i + 1,
+                            j + 1,
+                            chain_type,
+                            y.0,
+                            y.1 as char,
+                            y.2
+                        );
+                    }
+                } else {
+                    let mut k = 0;
+                    while k < pg[id].len() {
+                        let l = next_diff1_3(&pg[id], k as i32) as usize;
+                        let mut s = Vec::<String>::new();
+                        for m in k..l {
+                            s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
+                        }
+                        fwriteln!(
+                            f,
+                            "{},{},{},{},{}",
+                            i + 1,
+                            j + 1,
+                            chain_type,
+                            pg[id][k].0,
+                            s.iter().format(":")
+                        );
+                        k = l;
+                    }
+                }
+            }
+        }
+    }
+
     // Build index to join info.
 
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];

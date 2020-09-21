@@ -735,6 +735,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
+ "superslice",
  "tables",
  "tar",
  "vdj_ann",

@@ -25,4 +25,3 @@ pub mod read_json;
 pub mod run_test;
 pub mod secret;
 pub mod subset_json;
-pub mod vdj_features;
