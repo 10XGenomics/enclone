@@ -177,57 +177,6 @@ pub fn group_and_print_clonotypes(
     fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
-    // Create peer group file.
-
-    if ctl.gen_opt.peer_group_filename.len() > 0 {
-        let pg = mammalian_fixed_len_peer_groups(&refdata);
-        let mut f = open_for_write_new![&ctl.gen_opt.peer_group_filename];
-        if !ctl.gen_opt.peer_group_readable {
-            fwriteln!(f, "clonotype,chain,pos,amino_acid,count");
-        } else {
-            fwriteln!(f, "clonotype,chain,pos,distribution");
-        }
-        let chain_types = ["IGH", "IGK", "IGL", "TRA", "TRB"];
-        for i in 0..exacts.len() {
-            for j in 0..rsi[i].mat.len() {
-                let id = rsi[i].vids[j];
-                if !ctl.gen_opt.peer_group_readable {
-                    for y in pg[id].iter() {
-                        fwriteln!(
-                            f,
-                            "{},{},{},{},{},{}",
-                            i + 1,
-                            j + 1,
-                            chain_types[refdata.rtype[id] as usize],
-                            y.0,
-                            y.1 as char,
-                            y.2
-                        );
-                    }
-                } else {
-                    let mut k = 0;
-                    while k < pg[id].len() {
-                        let l = next_diff1_3(&pg[id], k as i32) as usize;
-                        let mut s = Vec::<String>::new();
-                        for m in k..l {
-                            s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
-                        }
-                        fwriteln!(
-                            f,
-                            "{},{},{},{},{}",
-                            i + 1,
-                            j + 1,
-                            chain_types[refdata.rtype[id] as usize],
-                            pg[id][k].0,
-                            s.iter().format(":")
-                        );
-                        k = l;
-                    }
-                }
-            }
-        }
-    }
-
     // Build index to join info.
 
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
@@ -317,6 +266,27 @@ pub fn group_and_print_clonotypes(
     if ctl.gen_opt.phylip_dna.len() > 0 && ctl.gen_opt.phylip_dna != "stdout".to_string() {
         let file = File::create(&ctl.gen_opt.phylip_dna).unwrap();
         phylip_dna = Some(Builder::new(file));
+    }
+
+    // Set up for peer group output.
+
+    #[allow(bare_trait_objects)]
+    let mut pgout = match ctl.gen_opt.peer_group_filename.as_str() {
+        "" => (Box::new(stdout()) as Box<Write>),
+        "stdout" => (Box::new(stdout()) as Box<Write>),
+        _ => {
+            let path = Path::new(&ctl.gen_opt.peer_group_filename);
+            Box::new(File::create(&path).unwrap()) as Box<Write>
+        }
+    };
+    if ctl.gen_opt.peer_group_filename.len() > 0 {
+        if ctl.gen_opt.peer_group_filename != "stdout".to_string() {
+            if !ctl.gen_opt.peer_group_readable {
+                fwriteln!(pgout, "group,clonotype,chain,pos,amino_acid,count");
+            } else {
+                fwriteln!(pgout, "group,clonotype,chain,pos,distribution");
+            }
+        }
     }
 
     // Group clonotypes and make output.
@@ -1162,6 +1132,98 @@ pub fn group_and_print_clonotypes(
 
                     let nw = display_tree(&vnames, &edges, 0, 100);
                     fwrite!(logx, "\n{}", nw);
+                }
+            }
+
+            // Generate peer group output.
+
+            if ctl.gen_opt.peer_group_filename.len() > 0 {
+                let pg = mammalian_fixed_len_peer_groups(&refdata);
+                if !ctl.gen_opt.peer_group_readable {
+                    if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
+                        fwriteln!(logx, "group,clonotype,chain,pos,amino_acid,count");
+                    }
+                } else {
+                    if ctl.gen_opt.peer_group_filename == "stdout".to_string() {
+                        fwriteln!(logx, "group,clonotype,chain,pos,distribution");
+                    }
+                }
+                let chain_types = ["IGH", "IGK", "IGL", "TRA", "TRB"];
+                for q in 0..rsi[oo].mat.len() {
+                    let id = rsi[oo].vids[q];
+                    if ctl.gen_opt.peer_group_filename != "stdout".to_string() {
+                        if !ctl.gen_opt.peer_group_readable {
+                            for y in pg[id].iter() {
+                                fwriteln!(
+                                    pgout,
+                                    "{},{},{},{},{},{},{}",
+                                    groups,
+                                    j + 1,
+                                    q + 1,
+                                    chain_types[refdata.rtype[id] as usize],
+                                    y.0,
+                                    y.1 as char,
+                                    y.2
+                                );
+                            }
+                        } else {
+                            let mut k = 0;
+                            while k < pg[id].len() {
+                                let l = next_diff1_3(&pg[id], k as i32) as usize;
+                                let mut s = Vec::<String>::new();
+                                for m in k..l {
+                                    s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
+                                }
+                                fwriteln!(
+                                    pgout,
+                                    "{},{},{},{},{},{}",
+                                    groups,
+                                    j + 1,
+                                    q + 1,
+                                    chain_types[refdata.rtype[id] as usize],
+                                    pg[id][k].0,
+                                    s.iter().format(":")
+                                );
+                                k = l;
+                            }
+                        }
+                    } else {
+                        if !ctl.gen_opt.peer_group_readable {
+                            for y in pg[id].iter() {
+                                fwriteln!(
+                                    logx,
+                                    "{},{},{},{},{},{},{}",
+                                    groups,
+                                    j + 1,
+                                    q + 1,
+                                    chain_types[refdata.rtype[id] as usize],
+                                    y.0,
+                                    y.1 as char,
+                                    y.2
+                                );
+                            }
+                        } else {
+                            let mut k = 0;
+                            while k < pg[id].len() {
+                                let l = next_diff1_3(&pg[id], k as i32) as usize;
+                                let mut s = Vec::<String>::new();
+                                for m in k..l {
+                                    s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
+                                }
+                                fwriteln!(
+                                    logx,
+                                    "{},{},{},{},{},{}",
+                                    groups,
+                                    j + 1,
+                                    q + 1,
+                                    chain_types[refdata.rtype[id] as usize],
+                                    pg[id][k].0,
+                                    s.iter().format(":")
+                                );
+                                k = l;
+                            }
+                        }
+                    }
                 }
             }
 
