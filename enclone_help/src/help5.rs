@@ -76,7 +76,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         }
         h.print_plain(&format!("{}\n", pal));
         h.print(
-            "\nWhen enclone shows amino acids, it uses one of two coloring schemes.  The first \
+            "\nWhen enclone shows amino acids, it uses one of three coloring schemes.  The first \
              scheme (the default, or using the argument \\bold{COLOR=codon}), colors amino \
              acids by codon, according to the following scheme:\n\n",
         );
@@ -120,7 +120,15 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             }
         }
         h.print(
-            "In both cases, \
+            "The third scheme for coloring amino acids has the form \\bold{COLOR=rarity:red.p} \
+             where p is a decimal number (at most 100), representing a percentage.  For example, \
+             one could have \\bold{COLOR=rarity:red.1}, which would cause amino acids having \
+             general frequency ≤ 1% to be colored red, and all others colored black.  For more \
+             information about this, please see\n\
+             can just navigate to there from \\green{bit.ly/enclone}.)\n\n",
+        );
+        h.print(
+            "In all three cases, \
              the coloring is done using special characters, called ANSI escape characters.  \
              Color is used occasionally elsewhere by enclone, and there is also some \
              bolding, accomplished using the same mechanism.\n\n\

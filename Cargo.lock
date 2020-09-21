@@ -600,6 +600,7 @@ dependencies = [
 name = "enclone_core"
 version = "0.5.9"
 dependencies = [
+ "amino",
  "ansi_escape",
  "bio",
  "bytes",
@@ -614,6 +615,8 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "string_utils",
+ "superslice",
+ "vdj_ann",
  "vector_utils",
 ]
 
@@ -735,7 +738,6 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
- "superslice",
  "tables",
  "tar",
  "vdj_ann",

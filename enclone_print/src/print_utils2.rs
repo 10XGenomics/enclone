@@ -3,12 +3,11 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
+use crate::print_utils1::*;
 use amino::*;
-use ansi_escape::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
-use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
@@ -91,6 +90,7 @@ pub fn row_fill(
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
     nd_fields: &Vec<String>,
+    peer_groups: &Vec<Vec<(usize, u8, u32)>>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -1130,6 +1130,7 @@ pub fn row_fill(
             // Compute.
 
             if *var == "amino".to_string() && col_var {
+                let mut last_color = "black".to_string();
                 for k in 0..show_aa[col].len() {
                     let p = show_aa[col][k];
                     if k > 0 && field_types[col][k] != field_types[col][k - 1] {
@@ -1144,15 +1145,9 @@ pub fn row_fill(
                     {
                         cx[col][j] += "*";
                     } else {
-                        let mut log = Vec::<u8>::new();
-                        let aa = codon_to_aa(&seq_amino[3 * p..3 * p + 3]);
-                        if ctl.gen_opt.color == "codon".to_string() {
-                            emit_codon_color_escape(&seq_amino[3 * p..3 * p + 3], &mut log);
-                            log.push(aa);
-                            emit_end_escape(&mut log);
-                        } else {
-                            color_by_property(&vec![aa], &mut log);
-                        }
+                        let x = &peer_groups[rsi.vids[col]];
+                        let last = k == show_aa[col].len() - 1;
+                        let log = color_codon(&ctl, &seq_amino, &x, p, &mut last_color, last);
                         cx[col][j] += strme(&log);
                     }
                 }

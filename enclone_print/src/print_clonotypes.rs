@@ -13,6 +13,7 @@ use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
 use enclone_core::defs::*;
+use enclone_core::mammalian_fixed_len::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
@@ -103,6 +104,10 @@ pub fn print_clonotypes(
         }
         n_vdj_gex.push(n);
     }
+
+    // Compute peer groups.
+
+    let peer_groups = mammalian_fixed_len_peer_groups(&refdata);
 
     // Traverse the orbits.
 
@@ -830,6 +835,7 @@ pub fn print_clonotypes(
                         &n_vdj_gex,
                         &lvars,
                         &nd_fields,
+                        &peer_groups,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -1345,6 +1351,7 @@ pub fn print_clonotypes(
                     &mut rows,
                     &exacts,
                     &exact_clonotypes,
+                    &peer_groups,
                 );
 
                 // Insert horizontal line.

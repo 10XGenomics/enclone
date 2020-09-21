@@ -130,6 +130,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
     ctl.gen_opt.peer_group_dist = "MFL".to_string();
+    ctl.gen_opt.color_by_rarity_pc = -1.0;
 
     // Set up clonotyping control parameters.
 
@@ -707,8 +708,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if ctl.gen_opt.color != "codon".to_string()
                 && ctl.gen_opt.color != "property".to_string()
             {
-                eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
-                std::process::exit(1);
+                let mut ok = false;
+                if arg.starts_with("COLOR=rarity:red.") {
+                    let pc = arg.after("COLOR=rarity:red.");
+                    if pc.parse::<f64>().is_ok() {
+                        let pc = pc.force_f64();
+                        if pc >= 0.0 && pc <= 100.0 {
+                            ok = true;
+                            ctl.gen_opt.color_by_rarity_pc = pc;
+                        }
+                    }
+                }
+                if !ok {
+                    eprintln!(
+                        "The specified value for COLOR is not allowed.  Please see \
+                        \"enclone help color\".\n"
+                    );
+                    std::process::exit(1);
+                }
             }
         } else if arg == "TREE" {
             ctl.gen_opt.tree = ".".to_string();

@@ -63,5 +63,15 @@ group,clonotype,chain,pos,distribution
 distribution, you could specify <code>PG_DIST=MFL</code>, but for now this is the only choice
 and the default!</p>
 
+<hr>
+
+<p>
+You can choose to color amino acids according to their frequency in their peer group, by specifying
+a command line argument of the form <code>COLOR=rarity:red.p</code> where <code>p</code>
+is a decimal number (at most <code>100</code>), representing a percentage.  For example, one
+could have <code>COLOR=rarity:red.1</code>, which would cause amino acids having general frequency 
+<code>≤ 1%</code> to be colored red, and all others colored black.
+</p>
+
 </body>
 </html>
