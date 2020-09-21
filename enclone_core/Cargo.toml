@@ -38,7 +38,3 @@ rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
 [build-dependencies]
 chrono = "0.4.15"
 string_utils = "0.1.1"
-
-
-
-
