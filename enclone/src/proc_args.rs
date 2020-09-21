@@ -709,8 +709,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 && ctl.gen_opt.color != "property".to_string()
             {
                 let mut ok = false;
-                if arg.starts_with("COLOR=rarity:red.") {
-                    let pc = arg.after("COLOR=rarity:red.");
+                if arg.starts_with("COLOR=peer.") {
+                    let pc = arg.after("COLOR=peer.");
                     if pc.parse::<f64>().is_ok() {
                         let pc = pc.force_f64();
                         if pc >= 0.0 && pc <= 100.0 {
