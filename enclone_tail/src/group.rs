@@ -187,22 +187,10 @@ pub fn group_and_print_clonotypes(
         } else {
             fwriteln!(f, "clonotype,chain,pos,distribution");
         }
+        let chain_types = ["IGH", "IGK", "IGL", "TRA", "TRB"];
         for i in 0..exacts.len() {
             for j in 0..rsi[i].mat.len() {
                 let id = rsi[i].vids[j];
-                let rtype = refdata.rtype[id];
-                let chain_type;
-                if rtype == 0 {
-                    chain_type = "IGH";
-                } else if rtype == 1 {
-                    chain_type = "IGK";
-                } else if rtype == 2 {
-                    chain_type = "IGL";
-                } else if rtype == 3 {
-                    chain_type = "TRA";
-                } else {
-                    chain_type = "TRB";
-                }
                 if !ctl.gen_opt.peer_group_readable {
                     for y in pg[id].iter() {
                         fwriteln!(
@@ -210,7 +198,7 @@ pub fn group_and_print_clonotypes(
                             "{},{},{},{},{},{}",
                             i + 1,
                             j + 1,
-                            chain_type,
+                            chain_types[refdata.rtype[id] as usize],
                             y.0,
                             y.1 as char,
                             y.2
@@ -229,7 +217,7 @@ pub fn group_and_print_clonotypes(
                             "{},{},{},{},{}",
                             i + 1,
                             j + 1,
-                            chain_type,
+                            chain_types[refdata.rtype[id] as usize],
                             pg[id][k].0,
                             s.iter().format(":")
                         );
