@@ -503,21 +503,29 @@ pub fn color_codon(
             }
         }
         let mut color = "black".to_string();
-        if 100.0 * this / total <= ctl.gen_opt.color_by_rarity_pc {
-            color = "red".to_string();
+        if total > 0.0 && 100.0 * this / total <= ctl.gen_opt.color_by_rarity_pc {
+            if this == 0.0 {
+                color = "red".to_string();
+            } else {
+                color = "blue".to_string();
+            }
         }
         if color != *last_color {
             if color == "black".to_string() {
                 emit_end_escape(&mut log);
             } else {
-                emit_red_escape(&mut log);
+                if color == "red".to_string() {
+                    emit_red_escape(&mut log);
+                } else {
+                    emit_eight_bit_color_escape(&mut log, 6);
+                }
                 emit_bold_escape(&mut log);
             }
             *last_color = color.clone();
         }
         fwrite!(log, "{}", aa as char);
     }
-    if last && *last_color == "red".to_string() {
+    if last && *last_color != "black".to_string() {
         emit_end_escape(&mut log);
     }
     log
