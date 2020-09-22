@@ -7,7 +7,7 @@
 
 <h1>Amino acid analysis</h1>
 
-<p>This page provides some preliminary material on amino acid analysis, under
+<p>This page provides some preliminary material on amino acid analysis for BCR, under
 development now.</p>
 
 <p>For every clonotype, and for every chain in that clonotype, and for every position in that
@@ -70,8 +70,8 @@ You can choose to color amino acids according to their frequency in their peer g
 a command line argument of the form <code>COLOR=peer.p</code> where <code>p</code>
 is a decimal number (at most <code>100</code>), representing a percentage.  For example, one
 could have <code>COLOR=peer.1</code>, which would cause amino acids having general frequency 
-zero to be colored light blue, those having general frequency
-<code>≤ 1%</code> to be colored red, and all others colored black.
+zero to be colored red, those having general frequency
+<code>≤ 1%</code> to be colored light blue, and all others colored black.
 </p>
 
 </body>
