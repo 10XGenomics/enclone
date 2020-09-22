@@ -1102,13 +1102,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // More argument sanity checking.
 
-    if ctl.gen_opt.const_igh.is_some() && !ctl.gen_opt.bcr {
-        eprintln!("\nThe option CONST_IGH does not make sense for TCR.\n");
-        std::process::exit(1);
-    }
-    if ctl.gen_opt.const_igkl.is_some() && !ctl.gen_opt.bcr {
-        eprintln!("\nThe option CONST_IGKL does not make sense for TCR.\n");
-        std::process::exit(1);
+    let bcr_only = [
+        "PEER_GROUP",
+        "PG_READABLE",
+        "PG_DIST",
+        "COLOR=peer",
+        "CONST_IGH",
+        "CONST_IGL",
+    ];
+    if !ctl.gen_opt.bcr {
+        for i in 1..args.len() {
+            let arg = &args[i];
+            for x in bcr_only.iter() {
+                if arg == x || arg.starts_with(&format!("{}=", x)) {
+                    eprintln!("\nThe option {} does not make sense for TCR.\n", x);
+                    std::process::exit(1);
+                }
+            }
+        }
     }
 
     // Proceed.
