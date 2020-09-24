@@ -803,6 +803,9 @@ pub fn fwr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     if cdr1.is_none() {
         return None;
     }
+    if fr1 > cdr1.unwrap() {
+        return None;
+    }
     Some(aa[fr1..cdr1.unwrap()].to_vec())
 }
 
@@ -817,6 +820,9 @@ pub fn fwr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     if cdr2.is_none() {
         return None;
     }
+    if fr2.unwrap() > cdr2.unwrap() {
+        return None;
+    }
     Some(aa[fr2.unwrap()..cdr2.unwrap()].to_vec())
 }
 
@@ -828,6 +834,9 @@ pub fn fwr3(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
         return None;
     }
     let cdr3 = cdr3_start(&aa, chain_type, verbose);
+    if fr3.unwrap() > cdr3 {
+        return None;
+    }
     Some(aa[fr3.unwrap()..cdr3].to_vec())
 }
 
