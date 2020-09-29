@@ -38,7 +38,7 @@ stats_utils = "0.1.1"
 string_utils = "0.1.1"
 tables = "0.1.2"
 tar = "0.4.29"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fe14ff4f5a6d33c8c28b753c8659f9ca08df9f78" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="e32a7bac3ff3d692978ab5e6d9526c2ed0832455" }
 vector_utils = "0.1.3"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
