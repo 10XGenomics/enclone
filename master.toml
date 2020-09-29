@@ -50,5 +50,5 @@ superslice = "1"
 tables = "0.1.2"
 tar = "0.4.29"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="e32a7bac3ff3d692978ab5e6d9526c2ed0832455" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="9b0c20a295166d8328cb22e1403441eeea7b3c99" }
 vector_utils = "0.1.3"
