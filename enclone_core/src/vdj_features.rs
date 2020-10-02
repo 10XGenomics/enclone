@@ -875,6 +875,39 @@ pub fn score_fwr3(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 
     score
 }
 
+pub fn score_fwr3_at_end(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 {
+    let chain_type;
+    if r == 0 {
+        chain_type = "IGH";
+    } else if r == 1 {
+        chain_type = "IGK";
+    } else if r == 2 {
+        chain_type = "IGL";
+    } else if r == 3 {
+        chain_type = "TRA";
+    } else {
+        chain_type = "TRB";
+    }
+    let cdr3 = aa.len();
+    let motif = freqs[0].len();
+    let mut score = 0.0;
+    for j in 0..motif {
+        let x = aa[cdr3 - j - 1];
+        let mut m = 0;
+        let mut total = 0;
+        for k in 0..freqs[r][j].len() {
+            let count = freqs[r][j][k].0;
+            let y = freqs[r][j][k].1;
+            total += count;
+            if y == x {
+                m += count;
+            }
+        }
+        score += m as f64 / total as f64;
+    }
+    score
+}
+
 pub fn score4(aa: &[u8], r: usize) -> usize {
     let chain_type;
     if r == 0 {
