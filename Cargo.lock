@@ -2281,7 +2281,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0227086223a927d625474be908ebb4be035d200a#0227086223a927d625474be908ebb4be035d200a"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=77f4753152eaa8ea4cc6198a611343740c003e70#77f4753152eaa8ea4cc6198a611343740c003e70"
 dependencies = [
  "align_tools",
  "amino",

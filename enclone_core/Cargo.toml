@@ -30,7 +30,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 string_utils = "0.1.1"
 superslice = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0227086223a927d625474be908ebb4be035d200a" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="77f4753152eaa8ea4cc6198a611343740c003e70" }
 vector_utils = "0.1.3"
 
 [dependencies.hdf5]
