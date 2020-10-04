@@ -536,7 +536,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Test for presence of a reference file in the VDJ directories.
 
     let mut refx = String::new();
-    if ctl.gen_opt.refname.len() == 0 {
+    if ctl.gen_opt.refname.len() == 0 && !ctl.gen_opt.imgt {
         let rpaths = [
             "outs/vdj_reference/fasta/regions.fa",
             "vdj_reference/fasta/regions.fa",
