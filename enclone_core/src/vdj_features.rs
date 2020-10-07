@@ -880,6 +880,9 @@ pub fn score_fwr3_at_end(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) 
     let motif = freqs[0].len();
     let mut score = 0.0;
     for j in 0..motif {
+        if cdr3 < j + 1 {
+            return 0.0;
+        }
         let x = aa[cdr3 - j - 1];
         let mut m = 0;
         let mut total = 0;
