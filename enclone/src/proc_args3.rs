@@ -222,7 +222,7 @@ fn get_path_or_internal_id(
     p: &str,
     ctl: &EncloneControl,
     source: &str,
-    current_ref: &mut bool,
+    _current_ref: &mut bool,
 ) -> String {
     let mut ok = false;
     let mut pp = get_path(&p, &ctl, &mut ok);
@@ -265,7 +265,6 @@ fn get_path_or_internal_id(
                 }
                 if m.contains("\"path\":\"") {
                     let path = m.between("\"path\":\"", "\"").to_string();
-                    *current_ref = true;
                     pp = format!("{}/outs", path);
                     if !path_exists(&pp) {
                         thread::sleep(time::Duration::from_millis(100));
@@ -668,9 +667,6 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     for i in 0..results.len() {
         ctl.origin_info.dataset_path.push(results[i].0.clone());
         ctl.origin_info.gex_path.push(results[i].1.clone());
-        if results[i].2 {
-            ctl.gen_opt.current_ref = true;
-        }
     }
     ctl.perf_stats(&t, "in proc_xcr 2");
 }
