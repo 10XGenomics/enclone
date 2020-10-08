@@ -101,7 +101,7 @@ pub const TESTS: [&str; 152] = [
     // 31. tests Cell Ranger 3.1 output
     r###"BCR=../3.1/123085 CDR3=CVKDRVTGTITELDYW ACCEPT_BROKEN"###,
     // 32. tests Cell Ranger 2.0 output and RE
-    r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE"###,
+    r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE ACCEPT_BROKEN"###,
     // 33. tests SCAN
     r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10 NGEX
      SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT H5"###,
