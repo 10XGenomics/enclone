@@ -681,13 +681,17 @@ pub fn main_enclone(args: &Vec<String>) {
     // first json file to find a distinguishing entry.
 
     if refx.len() == 0 {
-        let cr_ver = ["3.1", "4.0", "current"];
+        let cr_ver = ["2.0", "3.1", "4.0", "current"];
         let species = ["human", "mouse"];
-        let mut refhash = Vec::<(HashMap<usize, String>, String)>::new();
+        let mut refhash = Vec::<(HashMap<usize, (usize, String)>, String)>::new();
         for i in 0..cr_ver.len() {
             for j in 0..species.len() {
                 let refx;
-                if cr_ver[i] == "3.1" && species[j] == "human" {
+                if cr_ver[i] == "2.0" && species[j] == "human" {
+                    refx = human_ref_2_0();
+                } else if cr_ver[i] == "2.0" && species[j] == "mouse" {
+                    continue;
+                } else if cr_ver[i] == "3.1" && species[j] == "human" {
                     refx = human_ref_3_1();
                 } else if cr_ver[i] == "3.1" && species[j] == "mouse" {
                     refx = mouse_ref_3_1();
@@ -702,24 +706,31 @@ pub fn main_enclone(args: &Vec<String>) {
                 } else {
                     panic!("Failed match for reference.");
                 }
-                if i == cr_ver.len() - 2 {
-                    if species[j] == "human" && refx == human_ref() {
-                        continue;
-                    } else if species[j] == "mouse" && refx == mouse_ref() {
-                        continue;
-                    }
-                }
-                let mut h = HashMap::<usize, String>::new();
+                let mut h = HashMap::<usize, (usize, String)>::new();
+                let mut lines = Vec::<String>::new();
                 for line in refx.lines() {
-                    if line.starts_with('>') {
-                        let id = line.between(">", "|").force_usize();
-                        let gene = line.between("|", " ").to_string();
-                        h.insert(id, gene);
+                    lines.push(line.to_string());
+                }
+                for k in 0..lines.len() {
+                    if lines[k].starts_with('>') {
+                        let id = lines[k].between(">", "|").force_usize();
+                        let gene = lines[k].between("|", " ").to_string();
+                        let len = lines[k + 1].len();
+                        h.insert(id, (len, gene));
                     }
                 }
                 refhash.push((h, refx));
             }
         }
+        let mut to_delete = vec![false; refhash.len()];
+        for i1 in 0..refhash.len() {
+            for i2 in i1 + 1..refhash.len() {
+                if refhash[i1].0 == refhash[i2].0 {
+                    to_delete[i2] = true;
+                }
+            }
+        }
+        erase_if(&mut refhash, &to_delete);
         let mut f = BufReader::new(open_maybe_compressed(&jsonx));
         'json_entry: loop {
             let x = read_vector_entry_from_json(&mut f);
@@ -732,10 +743,11 @@ pub fn main_enclone(args: &Vec<String>) {
                 let a = &ann[i];
                 let id = a["feature"]["feature_id"].as_u64().unwrap() as usize;
                 let gene = a["feature"]["gene_name"].to_string();
-                let gene = gene.between("\"", "\"");
+                let gene = gene.between("\"", "\"").to_string();
+                let len = a["annotation_length"].as_u64().unwrap() as usize;
                 let mut matches = Vec::<usize>::new();
                 for j in 0..refhash.len() {
-                    if refhash[j].0.contains_key(&id) && refhash[j].0[&id] == gene {
+                    if refhash[j].0.contains_key(&id) && refhash[j].0[&id] == (len, gene.clone()) {
                         matches.push(j);
                     }
                 }
@@ -750,7 +762,7 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     if refx.len() == 0 {
         eprintln!(
-            "\nenclone was unable to determine the reference sequence that you used.  You\n\
+            "\nenclone was unable to determine the reference sequence that you used.  You \
             have two options:\n\
             1. If you used cellranger version 4.0 or later, copy the vdj_reference directory\n   \
                from there to the outs directory that contains your other enclone input data.\n\
