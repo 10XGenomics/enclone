@@ -1425,7 +1425,7 @@ Here is the color palette that enclone uses for amino acids:
 
 <span style="color:#3e7dd1;font-weight:bold;">█</span> <span style="color:#eb99c2;font-weight:bold;">█</span> <span style="color:#31c39a;">█</span> <span style="color:#f37721;font-weight:bold;">█</span> <span style="color:#72c0ff;font-weight:bold;">█</span> <span style="color:#e7bd20;">█</span> <span style="color:#eaec23;font-weight:bold;">█</span> 
 
-When enclone shows amino acids, it uses one of three coloring schemes.  The first scheme (the
+When enclone shows amino acids, it uses one of two coloring schemes.  The first scheme (the
 default, or using the argument <span style="font-weight:bold;">COLOR=codon</span>), colors amino acids by codon, according to the
 following scheme:
 
@@ -1463,14 +1463,7 @@ properties, according to the following scheme:
 6. Sulfurous: <span style="color:#31c39a;">C</span> <span style="color:#31c39a;">M</span>
 7. Amidic: <span style="color:#eaec23;font-weight:bold;">N</span> <span style="color:#eaec23;font-weight:bold;">Q</span>
 
-The third scheme for coloring amino acids is for BCR, and has the form <span style="font-weight:bold;">COLOR=peer.p</span> where p is a
-decimal number (at most 100), representing a percentage.  For example, one could have <span style="font-weight:bold;">COLOR=peer.1</span>,
-which would cause amino acids having general frequency zero to be colored red, those having
-general frequency ≤ 1% to be colored light blue, and all others colored black.  For more
-information about this, please see
-can just navigate to there from <span style="color:#25bc24;">bit.ly/enclone</span>.)
-
-In all three cases, the coloring is done using special characters, called ANSI escape characters. 
+In both cases, the coloring is done using special characters, called ANSI escape characters. 
 Color is used occasionally elsewhere by enclone, and there is also some bolding, accomplished
 using the same mechanism.
 

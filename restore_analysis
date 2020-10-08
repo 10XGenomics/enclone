@@ -1,0 +1,19 @@
+what was done to temporarily hide analysis / peer groups:
+
+1. git mv analysis.html.src analysis.html.src.aside
+2. git rm analysis.html
+3. html-comment-out link to analysis.html
+4. delete these lines from index.html.src:
+<tr>
+    <td align="left"><a href="pages/auto/analysis.html">amino acid analysis (just getting started)
+    </a></td> <td align="left">everyone</td>
+</tr>
+5. help5.rs: change "three coloring schemes" to "two coloring schemes"
+6. help5.rs: comment out third coloring scheme
+7. help5.rs: change "In all three cases" to "In both cases"
+8. delete from history.html.src:
+<p>
+<b>9/25/20</b>: Add initial
+<a href="../../pages/auto/analysis.html"><code>amino acid analysis</code></a> tools.  Work in
+progress.
+</p>
