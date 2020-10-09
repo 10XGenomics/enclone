@@ -170,7 +170,7 @@ pub fn load_gex(
                     }
                 } else {
                     // THE FOLLOWING LINE HAS BEEN OBSERVED TO FAIL SPORADICALLY.  THIS HAS
-                    // HAPPENED AT LEAST ONCE.  THE FAIL WAS IN
+                    // HAPPENED MULTIPLE TIMES.  THE FAIL WAS IN
                     // binary_read_to_ref::<u32>(&mut ff, &mut x[0], 11).unwrap();
                     // WHERE THE unwrap() FAILED ON
                     // UnexpectedEof, error: "failed to fill whole buffer".
