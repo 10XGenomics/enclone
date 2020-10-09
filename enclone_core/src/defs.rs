@@ -621,6 +621,7 @@ pub struct TigData {
     pub v_start: usize,                       // start of V on full contig sequence
     pub v_stop: usize,                        // stop of aligned V on full contig sequence
     pub v_stop_ref: usize,                    // stop of aligned V on reference V
+    pub d_start: Option<usize>,               // start of aligned D on full contig sequence
     pub j_start: usize,                       // start of aligned J on full contig sequence
     pub j_start_ref: usize,                   // start of aligned J on reference J
     pub j_stop: usize,                        // stop of J on full contig sequence
@@ -690,6 +691,7 @@ pub struct TigData1 {
     pub v_start: usize,                      // start of V on full contig sequence
     pub v_stop: usize,                       // stop of aligned V on full contig sequence
     pub v_stop_ref: usize,                   // stop of aligned V on reference V
+    pub d_start: Option<usize>,              // start of aligned D on full contig sequence
     pub j_start: usize,                      // start of aligned J on full contig sequence
     pub j_start_ref: usize,                  // start of aligned J on reference J
     pub j_stop: usize,                       // stop of J on full contig sequence

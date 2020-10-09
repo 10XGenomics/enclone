@@ -175,6 +175,10 @@ pub fn create_exact_subclonotype_core(
         // that all the entries are the same, which in principle they should be.
 
         let aa = aa_seq(&tig_bc[r][m].seq, 0);
+        let mut d_start = None;
+        if tig_bc[r][m].d_start.is_some() {
+            d_start = Some(tig_bc[r][m].d_start.unwrap() + utr.len() - tig_bc[r][m].v_start);
+        }
         share.push(TigData1 {
             cdr3_dna: tig_bc[r][m].cdr3_dna.clone(),
             seq: tig_bc[r][m].seq.clone(),
@@ -186,6 +190,7 @@ pub fn create_exact_subclonotype_core(
             v_start: utr.len(),
             v_stop: tig_bc[r][m].v_stop + utr.len() - tig_bc[r][m].v_start,
             v_stop_ref: tig_bc[r][m].v_stop_ref,
+            d_start: d_start,
             j_start: tig_bc[r][m].j_start + utr.len() - tig_bc[r][m].v_start,
             j_start_ref: tig_bc[r][m].j_start_ref,
             j_stop: tig_bc[r][m].j_stop + utr.len() - tig_bc[r][m].v_start,
