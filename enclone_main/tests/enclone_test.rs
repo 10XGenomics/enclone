@@ -844,7 +844,7 @@ fn test_for_broken_links_and_spellcheck() {
         bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
-        fixedtextbox foursie foursies frameshifts fwr \
+        fixedtextbox foursie foursies frameshifted frameshifts fwr \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \

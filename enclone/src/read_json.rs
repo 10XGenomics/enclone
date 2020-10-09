@@ -139,6 +139,7 @@ fn parse_vector_entry_from_json(
     let (mut tig_start, mut tig_stop) = (-1 as isize, -1 as isize);
     let mut v_stop = 0;
     let mut v_stop_ref = 0;
+    let mut d_start = None;
     let mut j_start = 0;
     let mut j_start_ref = 0;
     let mut c_start = None;
@@ -241,6 +242,7 @@ fn parse_vector_entry_from_json(
                 v_stop = (ann[i].0 + ann[i].1) as usize;
                 v_stop_ref = (ann[i].3 + ann[i].1) as usize;
             } else if refdata.is_d(t) {
+                d_start = Some(ann[i].0 as usize);
                 d_ref_id = Some(t);
             } else if refdata.is_j(t) {
                 j_ref_id = t;
@@ -330,6 +332,7 @@ fn parse_vector_entry_from_json(
                     u_ref_id = Some(feature_idx);
                 }
                 if region_type == "D-REGION" {
+                    d_start = Some(a["contig_match_start"].as_i64().unwrap() as usize);
                     d_ref_id = Some(feature_idx);
                 }
                 if region_type == "C-REGION" {
@@ -486,6 +489,7 @@ fn parse_vector_entry_from_json(
         v_start: tig_start,
         v_stop: v_stop,
         v_stop_ref: v_stop_ref,
+        d_start: d_start,
         j_start: j_start,
         j_start_ref: j_start_ref,
         j_stop: tig_stop,

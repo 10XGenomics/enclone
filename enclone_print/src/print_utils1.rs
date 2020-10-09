@@ -1,7 +1,9 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
+use amino::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
+use enclone_core::print_tools::*;
 use io_utils::*;
 use itertools::*;
 use std::cmp::max;
@@ -470,4 +472,61 @@ pub fn insert_position_rows(
         }
     }
     drows
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn color_codon(
+    ctl: &EncloneControl,
+    seq_amino: &Vec<u8>,
+    x: &Vec<(usize, u8, u32)>,
+    p: usize,
+    last_color: &mut String,
+    last: bool,
+) -> Vec<u8> {
+    let mut log = Vec::<u8>::new();
+    let codon = &seq_amino[3 * p..3 * p + 3];
+    let aa = codon_to_aa(&codon);
+    if ctl.gen_opt.color == "codon".to_string() {
+        emit_codon_color_escape(&codon, &mut log);
+        log.push(aa);
+        emit_end_escape(&mut log);
+    } else if ctl.gen_opt.color == "property".to_string() {
+        color_by_property(&vec![aa], &mut log);
+    } else {
+        let (low, high) = (lower_bound1_3(&x, &p), upper_bound1_3(&x, &p));
+        let (mut total, mut this) = (0.0, 0.0);
+        for u in low..high {
+            total += x[u as usize].2 as f64;
+            if x[u as usize].1 == aa {
+                this = x[u as usize].2 as f64;
+            }
+        }
+        let mut color = "black".to_string();
+        if total > 0.0 && 100.0 * this / total <= ctl.gen_opt.color_by_rarity_pc {
+            if this == 0.0 {
+                color = "red".to_string();
+            } else {
+                color = "blue".to_string();
+            }
+        }
+        if color != *last_color {
+            if color == "black".to_string() {
+                emit_end_escape(&mut log);
+            } else {
+                if color == "red".to_string() {
+                    emit_red_escape(&mut log);
+                } else {
+                    emit_eight_bit_color_escape(&mut log, 6);
+                }
+                emit_bold_escape(&mut log);
+            }
+            *last_color = color.clone();
+        }
+        fwrite!(log, "{}", aa as char);
+    }
+    if last && *last_color != "black".to_string() {
+        emit_end_escape(&mut log);
+    }
+    log
 }

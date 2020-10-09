@@ -21,8 +21,10 @@ pub fn species(refdata: &RefData) -> String {
     const K: usize = 60;
     let mut kmers = Vec::<Vec<u8>>::new();
     for i in 0..my_trac.len() {
-        for j in 0..=my_trac[i].len() - K {
-            kmers.push(my_trac[i][j..j + K].to_vec());
+        if my_trac[i].len() >= K {
+            for j in 0..=my_trac[i].len() - K {
+                kmers.push(my_trac[i][j..j + K].to_vec());
+            }
         }
     }
     unique_sort(&mut kmers);

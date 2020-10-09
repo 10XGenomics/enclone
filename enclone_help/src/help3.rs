@@ -239,6 +239,14 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
         h.ldoc(
+            "d_start<i>",
+            "start of D segment on full DNA sequence (or null)",
+        );
+        h.doc(
+            "d_frame<i>",
+            "reading frame of D segment, either 0 or 1 or 2 (or null)",
+        );
+        h.ldoc(
             "const_id<i>",
             "numerical identifier of constant region (or null, if not known)",
         );

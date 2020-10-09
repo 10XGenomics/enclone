@@ -1,10 +1,8 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use crate::print_utils1::*;
-use amino::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
-use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use itertools::Itertools;
@@ -392,6 +390,7 @@ pub fn insert_reference_rows(
     rows: &mut Vec<Vec<String>>,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    peer_groups: &Vec<Vec<(usize, u8, u32)>>,
 ) {
     let cols = rsi.seq_del_lens.len();
     if drows.len() >= 1 {
@@ -470,6 +469,7 @@ pub fn insert_reference_rows(
                     refseq.push(jseq[j + trim]);
                 }
                 let mut refx = String::new();
+                let mut last_color = "black".to_string();
                 for k in 0..show_aa[cz].len() {
                     let p = show_aa[cz][k];
                     if k > 0 && field_types[cz][k] != field_types[cz][k - 1] {
@@ -478,15 +478,9 @@ pub fn insert_reference_rows(
                     if 3 * p + 3 > refseq.len() || refseq[3 * p..3 * p + 3].contains(&b'-') {
                         refx += "◦";
                     } else {
-                        let mut log = Vec::<u8>::new();
-                        let aa = codon_to_aa(&refseq[3 * p..3 * p + 3]);
-                        if ctl.gen_opt.color == "codon".to_string() {
-                            emit_codon_color_escape(&refseq[3 * p..3 * p + 3], &mut log);
-                            log.push(aa);
-                            emit_end_escape(&mut log);
-                        } else {
-                            color_by_property(&vec![aa], &mut log);
-                        }
+                        let x = &peer_groups[rsi.vids[cz]];
+                        let last = k == show_aa[cz].len() - 1;
+                        let log = color_codon(&ctl, &refseq, &x, p, &mut last_color, last);
                         refx += strme(&log);
                     }
                 }

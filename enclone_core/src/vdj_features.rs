@@ -766,10 +766,11 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 
 pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr2 = fr2_start(&aa, chain_type, verbose);
-    if fr2.is_none() {
+    let cdr1 = cdr1_start(&aa, chain_type, verbose);
+    if fr2.is_none() || cdr1.is_none() || cdr1.unwrap() > fr2.unwrap() {
         return None;
     }
-    Some(aa[cdr1_start(&aa, chain_type, verbose).unwrap()..fr2.unwrap()].to_vec())
+    Some(aa[cdr1.unwrap()..fr2.unwrap()].to_vec())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -789,12 +790,54 @@ pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     }
     let stop = stop.unwrap();
     if start > stop {
-        panic!(
-            "Error in cdr2(...): cdr2_start = {} exceeds fr3_start = {}",
-            start, stop
-        );
+        return None;
     }
     Some(aa[start..stop].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn fwr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr1 = fr1_start(&aa, chain_type);
+    let cdr1 = cdr1_start(&aa, chain_type, verbose);
+    if cdr1.is_none() {
+        return None;
+    }
+    if fr1 > cdr1.unwrap() {
+        return None;
+    }
+    Some(aa[fr1..cdr1.unwrap()].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn fwr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr2 = fr2_start(&aa, chain_type, verbose);
+    if fr2.is_none() {
+        return None;
+    }
+    let cdr2 = cdr2_start(&aa, chain_type, verbose);
+    if cdr2.is_none() {
+        return None;
+    }
+    if fr2.unwrap() > cdr2.unwrap() {
+        return None;
+    }
+    Some(aa[fr2.unwrap()..cdr2.unwrap()].to_vec())
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn fwr3(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+    let fr3 = fr3_start(&aa, chain_type, verbose);
+    if fr3.is_none() {
+        return None;
+    }
+    let cdr3 = cdr3_start(&aa, chain_type, verbose);
+    if fr3.unwrap() > cdr3 {
+        return None;
+    }
+    Some(aa[fr3.unwrap()..cdr3].to_vec())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -816,6 +859,30 @@ pub fn score_fwr3(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 
     let motif = freqs[0].len();
     let mut score = 0.0;
     for j in 0..motif {
+        let x = aa[cdr3 - j - 1];
+        let mut m = 0;
+        let mut total = 0;
+        for k in 0..freqs[r][j].len() {
+            let count = freqs[r][j][k].0;
+            let y = freqs[r][j][k].1;
+            total += count;
+            if y == x {
+                m += count;
+            }
+        }
+        score += m as f64 / total as f64;
+    }
+    score
+}
+
+pub fn score_fwr3_at_end(aa: &[u8], r: usize, freqs: &Vec<Vec<Vec<(u32, u8)>>>) -> f64 {
+    let cdr3 = aa.len();
+    let motif = freqs[0].len();
+    let mut score = 0.0;
+    for j in 0..motif {
+        if cdr3 < j + 1 {
+            return 0.0;
+        }
         let x = aa[cdr3 - j - 1];
         let mut m = 0;
         let mut total = 0;

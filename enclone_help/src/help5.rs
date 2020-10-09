@@ -119,6 +119,18 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
                 );
             }
         }
+        /*
+        h.print(
+            "The third scheme for coloring amino acids is for BCR, and has the form \
+             \\bold{COLOR=peer.p} \
+             where p is a decimal number (at most 100), representing a percentage.  For example, \
+             one could have \\bold{COLOR=peer.1}, which would cause amino acids having \
+             general frequency zero to be colored red, those having \
+             general frequency ≤ 1% to be colored light blue, \
+             and all others colored black.  For more information about this, please see\n\
+             can just navigate to there from \\green{bit.ly/enclone}.)\n\n",
+        );
+        */
         h.print(
             "In both cases, \
              the coloring is done using special characters, called ANSI escape characters.  \

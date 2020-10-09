@@ -10,7 +10,7 @@ use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
-use std::{env, time::Instant};
+use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
@@ -58,7 +58,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.current_ref = true; // not sure this is right
         ctl.gen_opt.pre = vec![
             format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
             format!("enclone/test/inputs"),
@@ -70,6 +69,45 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];
+    }
+
+    // Process special option SPLIT_COMMAND.
+
+    let mut split = false;
+    for i in 1..args.len() {
+        if args[i] == "SPLIT_BY_COMMAND" {
+            split = true;
+        }
+    }
+    if split {
+        let (mut bcr, mut gex) = (Vec::<&str>::new(), Vec::<&str>::new());
+        let mut args2 = Vec::<String>::new();
+        for i in 1..args.len() {
+            if args[i] == "SPLIT_BY_COMMAND" {
+            } else if args[i].starts_with("BCR=") {
+                bcr = args[i].after("BCR=").split(',').collect::<Vec<&str>>();
+            } else if args[i].starts_with("GEX=") {
+                gex = args[i].after("GEX=").split(',').collect::<Vec<&str>>();
+            } else {
+                args2.push(args[i].to_string());
+            }
+        }
+        for i in 0..bcr.len() {
+            let mut args = args2.clone();
+            args.push(format!("BCR={}", bcr[i]));
+            args.push(format!("GEX={}", gex[i]));
+            println!("\nenclone {}\n", args.iter().format(" "));
+            let o = Command::new("enclone")
+                .args(&args)
+                .output()
+                .expect("failed to execute enclone");
+            print!("{}{}", strme(&o.stdout), strme(&o.stderr));
+            if o.status.code() != Some(0) {
+                println!("FAILED!\n");
+                std::process::exit(1);
+            }
+        }
+        std::process::exit(0);
     }
 
     // Set up general options.
@@ -90,6 +128,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.full_counts = true;
     ctl.gen_opt.color = "codon".to_string();
     ctl.silent = true;
+    ctl.gen_opt.peer_group_dist = "MFL".to_string();
+    ctl.gen_opt.color_by_rarity_pc = -1.0;
 
     // Set up clonotyping control parameters.
 
@@ -355,6 +395,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NWHITEF", &mut ctl.gen_opt.nwhitef),
         ("NWARN", &mut ctl.gen_opt.nwarn),
         ("PCELL", &mut ctl.parseable_opt.pbarcode),
+        ("PG_READABLE", &mut ctl.gen_opt.peer_group_readable),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
         ("RE", &mut ctl.gen_opt.reannotate),
@@ -438,6 +479,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let set_string_writeable = [
         ("BINARY", &mut ctl.gen_opt.binary),
         ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
+        ("PEER_GROUP", &mut ctl.gen_opt.peer_group_filename),
         ("PROTO", &mut ctl.gen_opt.proto),
     ];
 
@@ -610,6 +652,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.join_print_opt.seq = true;
 
         // Not movable.
+        } else if arg.starts_with("PG_DIST=") {
+            let dist = arg.after("PG_DIST=");
+            if dist != "MFL" {
+                eprintln!("\nCurrently the only allowed value for PG_DIST is MFL.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.peer_group_dist = dist.to_string();
         } else if is_simple_arg(&arg, "H5") {
             ctl.gen_opt.force_h5 = true;
         } else if is_simple_arg(&arg, "NH5") {
@@ -658,8 +707,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if ctl.gen_opt.color != "codon".to_string()
                 && ctl.gen_opt.color != "property".to_string()
             {
-                eprintln!("\nThe only allowed values for COLOR are codon and property.\n");
-                std::process::exit(1);
+                let mut ok = false;
+                if arg.starts_with("COLOR=peer.") {
+                    let pc = arg.after("COLOR=peer.");
+                    if pc.parse::<f64>().is_ok() {
+                        let pc = pc.force_f64();
+                        if pc >= 0.0 && pc <= 100.0 {
+                            ok = true;
+                            ctl.gen_opt.color_by_rarity_pc = pc;
+                        }
+                    }
+                }
+                if !ok {
+                    eprintln!(
+                        "The specified value for COLOR is not allowed.  Please see \
+                        \"enclone help color\".\n"
+                    );
+                    std::process::exit(1);
+                }
             }
         } else if arg == "TREE" {
             ctl.gen_opt.tree = ".".to_string();
@@ -1036,13 +1101,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // More argument sanity checking.
 
-    if ctl.gen_opt.const_igh.is_some() && !ctl.gen_opt.bcr {
-        eprintln!("\nThe option CONST_IGH does not make sense for TCR.\n");
-        std::process::exit(1);
-    }
-    if ctl.gen_opt.const_igkl.is_some() && !ctl.gen_opt.bcr {
-        eprintln!("\nThe option CONST_IGKL does not make sense for TCR.\n");
-        std::process::exit(1);
+    let bcr_only = [
+        "PEER_GROUP",
+        "PG_READABLE",
+        "PG_DIST",
+        "COLOR=peer",
+        "CONST_IGH",
+        "CONST_IGL",
+    ];
+    if !ctl.gen_opt.bcr {
+        for i in 1..args.len() {
+            let arg = &args[i];
+            for x in bcr_only.iter() {
+                if arg == x || arg.starts_with(&format!("{}=", x)) {
+                    eprintln!("\nThe option {} does not make sense for TCR.\n", x);
+                    std::process::exit(1);
+                }
+            }
+        }
     }
 
     // Proceed.

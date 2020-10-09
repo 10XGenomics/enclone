@@ -1,0 +1,78 @@
+<title>Amino acid analysisl</title>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>Amino acid analysis</h1>
+
+<p>This page provides some preliminary material on amino acid analysis for BCR, under
+development now.</p>
+
+<p>For every clonotype, and for every chain in that clonotype, and for every position in that
+chain, one may define in multiple ways a <b>peer group</b> of amino acids, which is a frequency
+distribution across the twenty standard amino acids.</p>
+
+<p>Such a distribution may then be used to determine if an amino acid in a given exact
+subclonotype is unusual in some fashion.  We will add functions around this later.</p>
+
+<p>Initially we provide a single choice for peer group: for a given position in
+FWR1..FWR3 (inclusive), it is the observed frequency, for IMGT mammalian reference sequences,
+of the amino acid, for the given chain type, for the given feature (e.g. FWR1 or CDR2), and 
+for the given feature length (as defined by the clonotype).  We call this peer group
+"mammalian-fixed-length" or "MFL" for short.  Reference sequences that appear defective are
+excluded.  Typically these appear truncated or frameshifted.</p>
+
+<p>Our motivation for using fixed lengths is that multiple alignment across different lengths
+appears in some cases to involve arbitrary choices, that may not be biologically meaningful.</p>
+
+<p>The amino acid peer groups may be outputted to a parseable file using the argument
+<code>PEER_GROUP=filename</code>, with structure like this:
+<pre>
+group,clonotype,chain,pos,amino_acid,count
+...
+12,1,2,35,G,902
+12,1,2,35,E,9
+12,1,2,35,D,6
+12,1,2,35,V,3
+12,1,2,35,W,2
+12,1,2,35,R,2
+12,1,2,35,A,2
+...
+</pre>
+Positions are zero-based.  Please be aware that the file is verbose.
+</p>
+
+<p>
+You can set <code>PEER_GROUP=stdout</code> if you want to see the peer group information interlaced
+with clonotypes.
+</p>
+
+<p>If you prefer a human-readable file, you can specify the additional argument 
+<code>PG_READABLE</code>, yielding output like this:
+<pre>
+group,clonotype,chain,pos,distribution
+..
+12,1,2,35,G=902:E=9:D=6:V=3:W=2:R=2:A=2
+...
+</pre>
+<p>
+
+<p>If we allow alternate distributions in the future, and you wanted the mammalian-fixed-length
+distribution, you could specify <code>PG_DIST=MFL</code>, but for now this is the only choice
+and the default!</p>
+
+<hr>
+
+<p>
+You can choose to color amino acids according to their frequency in their peer group, by specifying
+a command line argument of the form <code>COLOR=peer.p</code> where <code>p</code>
+is a decimal number (at most <code>100</code>), representing a percentage.  For example, one
+could have <code>COLOR=peer.1</code>, which would cause amino acids having general frequency 
+zero to be colored red, those having general frequency
+<code>≤ 1%</code> to be colored light blue, and all others colored black.
+</p>
+
+</body>
+</html>

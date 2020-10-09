@@ -68,7 +68,7 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 22] = [
+pub const PCVARS_ALLOWED: [&str; 24] = [
     "v_name",
     "d_name",
     "j_name",
@@ -80,6 +80,8 @@ pub const PCVARS_ALLOWED: [&str; 22] = [
     "share_indices_dna",
     "share_indices_aa",
     "v_start",
+    "d_start",
+    "d_frame",
     "const_id",
     "utr_id",
     "utr_name",
@@ -422,6 +424,7 @@ pub struct GeneralOpt {
     pub tree: String,
     pub allow_inconsistent: bool,
     pub color: String,
+    pub color_by_rarity_pc: f64,
     pub species: String, // human or mouse or unknown, determined from the reference sequence
     pub using_secmem: bool,
     pub const_igh: Option<Regex>,
@@ -431,6 +434,9 @@ pub struct GeneralOpt {
     pub require_unbroken_ok: bool,
     pub built_in: bool,
     pub reprod: bool,
+    pub peer_group_filename: String,
+    pub peer_group_dist: String,
+    pub peer_group_readable: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -617,6 +623,7 @@ pub struct TigData {
     pub v_start: usize,                       // start of V on full contig sequence
     pub v_stop: usize,                        // stop of aligned V on full contig sequence
     pub v_stop_ref: usize,                    // stop of aligned V on reference V
+    pub d_start: Option<usize>,               // start of aligned D on full contig sequence
     pub j_start: usize,                       // start of aligned J on full contig sequence
     pub j_start_ref: usize,                   // start of aligned J on reference J
     pub j_stop: usize,                        // stop of J on full contig sequence
@@ -686,6 +693,7 @@ pub struct TigData1 {
     pub v_start: usize,                      // start of V on full contig sequence
     pub v_stop: usize,                       // stop of aligned V on full contig sequence
     pub v_stop_ref: usize,                   // stop of aligned V on reference V
+    pub d_start: Option<usize>,              // start of aligned D on full contig sequence
     pub j_start: usize,                      // start of aligned J on full contig sequence
     pub j_start_ref: usize,                  // start of aligned J on reference J
     pub j_stop: usize,                       // stop of J on full contig sequence
@@ -956,6 +964,8 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "share_indices_dna",
             "share_indices_aa",
             "v_start",
+            "d_start",
+            "d_frame",
             "const_id",
             "utr_id",
             "utr_name",
