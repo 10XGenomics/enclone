@@ -1040,7 +1040,7 @@ pub fn row_fill(
         let (mut d_start, mut d_frame) = (String::new(), String::new());
         if xm.d_start.is_some() {
             d_start = format!("{}", xm.d_start.unwrap());
-            d_frame = format!("{}", xm.d_start.unwrap() % 3);
+            d_frame = format!("{}", (xm.d_start.unwrap() - xm.v_start) % 3);
         }
         speakc!(u, col, "d_start".to_string(), d_start);
         speakc!(u, col, "d_frame".to_string(), d_frame);
