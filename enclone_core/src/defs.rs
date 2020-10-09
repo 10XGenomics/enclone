@@ -68,7 +68,7 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 22] = [
+pub const PCVARS_ALLOWED: [&str; 24] = [
     "v_name",
     "d_name",
     "j_name",
@@ -80,6 +80,8 @@ pub const PCVARS_ALLOWED: [&str; 22] = [
     "share_indices_dna",
     "share_indices_aa",
     "v_start",
+    "d_start",
+    "d_frame",
     "const_id",
     "utr_id",
     "utr_name",
@@ -962,6 +964,8 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "share_indices_dna",
             "share_indices_aa",
             "v_start",
+            "d_start",
+            "d_frame",
             "const_id",
             "utr_id",
             "utr_name",

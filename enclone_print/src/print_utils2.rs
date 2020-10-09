@@ -1037,6 +1037,13 @@ pub fn row_fill(
         );
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
         speakc!(u, col, "v_start".to_string(), xm.v_start);
+        let (mut d_start, mut d_frame) = (String::new(), String::new());
+        if xm.d_start.is_some() {
+            d_start = format!("{}", xm.d_start.unwrap());
+            d_frame = format!("{}", xm.d_start.unwrap() % 3);
+        }
+        speakc!(u, col, "d_start".to_string(), d_start);
+        speakc!(u, col, "d_frame".to_string(), d_frame);
         let cid = xm.c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();
