@@ -222,11 +222,11 @@ pub fn make_loupe_clonotype(
 
             let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
             let mut aligner = Aligner::new(-6, -1, &score);
-            let al = aligner.semiglobal(&ex.share[m].seq, &xchains[cx].nt_sequence);
+            let al = aligner.semiglobal(&nt_sequence, &xchains[cx].nt_sequence);
             let clonotype_consensus_aln = Alignment::from(&al);
-            let al = aligner.semiglobal(&ex.share[m].seq, &concatu[cx]);
+            let al = aligner.semiglobal(&nt_sequence, &concatu[cx]);
             let universal_reference_aln = Alignment::from(&al);
-            let al = aligner.semiglobal(&ex.share[m].seq, &concatd[cx]);
+            let al = aligner.semiglobal(&nt_sequence, &concatd[cx]);
             let donor_reference_aln = Alignment::from(&al);
 
             // Finally, define the ExactClonotypeChain.
