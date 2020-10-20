@@ -4,7 +4,7 @@
 
 <img src="img/enclone_banner.png" alt="enclone banner" title="enclone banner" />
 
-Please go here <a href="https://bit.ly/enclone">bit.ly/enclone</a> for more information, including FAQs and documentation! The latest version of `enclone` is `v0.5.11`.
+Please go here <a href="https://bit.ly/enclone">bit.ly/enclone</a> for more information, including FAQs and documentation! The latest version of `enclone` is `v0.5.10`.
 
 
 
