@@ -42,13 +42,14 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 1. Test for redundancy of columns in parseable output.
+// 1. Test for redundancy of columns in parseable output.  While we're at it, test that if POUT
+// is set to a file name, then variables of the form abbr:name use the field label abbr.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_for_parseable_redundancy() {
-    let test = "BCR=85333 CDR3=CARDLRVEGFDYW POUT=testx/outputs/redundancy_out";
+    let test = r###"BCR=123085 GEX=123749 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
     let args = parse_bsv(&test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args)
@@ -62,6 +63,7 @@ fn test_for_parseable_redundancy() {
         std::process::exit(1);
     }
     let f = open_for_read!["testx/outputs/redundancy_out"];
+    let mut found = false;
     for line in f.lines() {
         let s = line.unwrap();
         let mut fields = s.split(',').collect::<Vec<&str>>();
@@ -78,6 +80,14 @@ fn test_for_parseable_redundancy() {
                 std::process::exit(1);
             }
             i = j;
+        }
+        for i in 0..fields.len() {
+            if fields[i] == "IG%" {
+                found = true;
+            }
+        }
+        if !found {
+            eprintln!("\nParseable output abbreviated field IG% not found.\n");
         }
         break;
     }

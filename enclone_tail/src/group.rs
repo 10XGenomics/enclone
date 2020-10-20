@@ -79,12 +79,6 @@ pub fn group_and_print_clonotypes(
     if pcols.is_empty() {
         pcols = parseable_fields.clone();
     }
-    if !ctl.parseable_opt.pout.is_empty()
-        && ctl.parseable_opt.pout != "stdout".to_string()
-        && ctl.parseable_opt.pout != "stdouth".to_string()
-    {
-        fwriteln!(pout, "{}", pcols.iter().format(","));
-    }
     let mut pcols2 = Vec::<String>::new();
     for i in 0..pcols.len() {
         if pcols[i].contains(":") {
@@ -94,6 +88,12 @@ pub fn group_and_print_clonotypes(
         }
     }
     pcols = pcols2;
+    if !ctl.parseable_opt.pout.is_empty()
+        && ctl.parseable_opt.pout != "stdout".to_string()
+        && ctl.parseable_opt.pout != "stdouth".to_string()
+    {
+        fwriteln!(pout, "{}", pcols.iter().format(","));
+    }
 
     // Set up for fasta output.
 
