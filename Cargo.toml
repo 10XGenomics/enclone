@@ -17,12 +17,14 @@ debruijn = { git = "https://github.com/10XGenomics/rust-debruijn.git" }
 equiv = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 failure = "0.1.5"
 graph_simple = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
+hdf5 = {path = "/Users/nigel.delaney/git/hdf5-rs" } 
+#hdf5-sys = {git = "https://github.com/evolvedmicrobe/hdf5-rs.git", branch="nd/update_hdf5" } #features = ["conda"] }
 io_utils = "0.2.4"
 itertools = "^0.7"
 load_feature_bc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 marsoc = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
-ndarray = "0.12.1"
+ndarray = "0.13"
 perf_stats = { git = "https://github.com/10XGenomics/rust-toolbox.git" }
 permutation = "0.2.5"
 petgraph = "0.4.13"
@@ -44,10 +46,6 @@ vector_utils = "0.1.0"
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.15.0"
 
-[dependencies.hdf5-rs]
-features = ["conda"]
-git = "https://github.com/pmarks/hdf5-rs.git"
-branch= "pmarks/linking"
 
 [build-dependencies]
 prost-build = "0.5.0"

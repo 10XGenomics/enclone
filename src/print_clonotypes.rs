@@ -125,8 +125,8 @@ pub fn print_clonotypes(
             Vec::<bool>::new(),
         ));
     }
-    let mut d_readers = Vec::<Option<h5::Reader>>::new();
-    let mut ind_readers = Vec::<Option<h5::Reader>>::new();
+    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
+    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
     if ctl.gen_opt.h5 {
         for li in 0..ctl.sample_info.n() {
             if ctl.sample_info.gex_path[li].len() > 0 {

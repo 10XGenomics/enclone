@@ -44,8 +44,8 @@ pub fn row_fill(
     rsi: &ColInfo,
     dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
-    d_readers: &Vec<Option<h5::Reader>>,
-    ind_readers: &Vec<Option<h5::Reader>>,
+    d_readers: &Vec<Option<hdf5::Reader>>,
+    ind_readers: &Vec<Option<hdf5::Reader>>,
     stats: &mut Vec<(String, Vec<f64>)>,
 ) {
     // Redefine some things to reduce dependencies.

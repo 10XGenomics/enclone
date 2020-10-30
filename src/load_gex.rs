@@ -4,7 +4,7 @@
 
 use crate::defs::*;
 use crate::proc_args2::*;
-use h5::Dataset;
+use hdf5::Dataset;
 use io_utils::*;
 use load_feature_bc::*;
 use mirror_sparse_matrix::*;
@@ -347,7 +347,7 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
                 }
-                let h = h5::File::open(&f, "r").unwrap();
+                let h = hdf5::File::open(&f).unwrap();
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));
                 let indptr = h.dataset("matrix/indptr").unwrap();
