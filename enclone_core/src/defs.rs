@@ -437,6 +437,7 @@ pub struct GeneralOpt {
     pub peer_group_filename: String,
     pub peer_group_dist: String,
     pub peer_group_readable: bool,
+    pub subset_json: String,
 }
 
 // Allele-finding algorithmic options.

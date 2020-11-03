@@ -2140,7 +2140,7 @@ pub fn main_enclone(args: &Vec<String>) {
     });
     ctl.perf_stats(&tdi, "setting up readers");
 
-    // Find and print clonotypes.
+    // Find and print clonotypes.  (But we don't actually print them here.)
 
     let torb = Instant::now();
     let mut pics = Vec::<String>::new();
@@ -2169,6 +2169,52 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut controls,
         &mut fate,
     );
+
+    // Process the SUBSET_JSON option.
+
+    if ctl.gen_opt.subset_json.len() > 0 {
+        let mut barcodes = Vec::<String>::new();
+        for l in 0..exacts.len() {
+            for u in 0..exacts[l].len() {
+                let ex = &exact_clonotypes[exacts[l][u]];
+                for j in 0..ex.clones.len() {
+                    barcodes.push(ex.clones[j][0].barcode.clone());
+                }
+            }
+        }
+        unique_sort(&mut barcodes);
+        let mut g = open_for_write_new![&ctl.gen_opt.subset_json];
+        fwriteln!(g, "[");
+        for li in 0..ctl.origin_info.dataset_path.len() {
+            let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
+            let mut jsonx = json.clone();
+            if !path_exists(&json) {
+                jsonx = format!("{}.lz4", json);
+            }
+            let mut xs = Vec::<Vec<u8>>::new();
+            let mut f = BufReader::new(open_maybe_compressed(&jsonx));
+            loop {
+                match read_vector_entry_from_json(&mut f) {
+                    None => break,
+                    Some(x) => {
+                        let v: Value = serde_json::from_str(strme(&x)).unwrap();
+                        let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
+                        if bin_member(&barcodes, &barcode) {
+                            xs.push(x);
+                        }
+                    }
+                }
+            }
+            for j in 0..xs.len() {
+                fwrite!(g, "{}", strme(&xs[j]));
+                if j < xs.len() - 1 {
+                    fwrite!(g, ",");
+                }
+                fwriteln!(g, "");
+            }
+        }
+        fwriteln!(g, "]");
+    }
     ctl.perf_stats(&torb, "making orbits");
 
     // Tail code.
