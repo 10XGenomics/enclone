@@ -1683,6 +1683,48 @@ fn test_annotated_example() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 23. Test SUBSET_JSON option.
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_subset_json() {
+    let _ = std::fs::create_dir("testx/outputs/woof");
+    let test = "BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW \
+        SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json";
+    let args = parse_bsv(&test);
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_subset_json 1"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\nsubset json test 1: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let o1 = new.stdout;
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .arg("BCR=testx/outputs/woof")
+        .output()
+        .expect(&format!("failed to execute test_subset_json 2"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\nsubset json test 2: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let o2 = new.stdout;
+    if o1 != o2 {
+        eprintln!("\nSubset json test failed: outputs are unequal.\n");
+        std::process::exit(1);
+    }
+    let _ = remove_dir_all("testx/outputs/woof");
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn valid_link(link: &str) -> bool {
     use attohttpc::*;
     let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
