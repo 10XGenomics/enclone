@@ -50,8 +50,13 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_for_parseable_redundancy() {
     let test = r###"BCR=123085 GEX=123749 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
+    let pre_arg = format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    );
     let args = parse_bsv(&test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .arg(&pre_arg)
         .args(&args)
         .output()
         .expect(&format!("failed to execute test_for_parseable_redundancy"));
@@ -1718,8 +1723,13 @@ fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
     std::fs::create_dir_all("testx/outputs/woof").unwrap();
     let test = r###"BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+    let pre_arg = format!(
+        "PRE=../enclone-data/big_inputs/version{}",
+        TEST_FILES_VERSION
+    );
     let args = parse_bsv(&test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .arg(&pre_arg)
         .args(&args)
         .output()
         .expect(&format!("failed to execute test_subset_json 1"));
