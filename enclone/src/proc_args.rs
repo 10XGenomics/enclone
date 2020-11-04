@@ -598,9 +598,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 let f = File::create(&val);
                 if f.is_err() {
                     eprintln!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+                        "\nYou've specified an output file\n{}\nthat cannot be written.",
                         val
                     );
+                    if var.contains("/") {
+                        let dir = var.rev_before("/");
+                        let msg;
+                        if path_exists(&dir) {
+                            msg = "exists";
+                        } else {
+                            msg = "does not exist";
+                        }
+                        eprintln!("Note that the path {} {}.", dir, msg);
+                    }
+                    eprintln!("");
                     std::process::exit(1);
                 }
                 remove_file(&val).unwrap();
