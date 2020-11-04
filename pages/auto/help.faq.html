@@ -245,7 +245,10 @@ Use filters to select a clonotype or clonotypes of interest.  Then you can cut a
 output into an email.  If you want the example to be reproducible by us, add the argument
 <span style="font-weight:bold;">SUBSET_JSON=filename</span> to the command line, which will create a json file containing only data for
 the barcodes in the clonotype.  Then send us the file as an email attachment.  This only works for
-VDJ data, and we do not have a parallel mechanism for gene expression and antibody data.
+VDJ data, and we do not have a parallel mechanism for gene expression and antibody data.  Please
+note also that running enclone on the barcodes from a single clonotype will not necessarily
+reproduce the results you observed, because the clonotyping algorithm uses all the data, even if
+only some clonotypes are selected.
 
 </span></pre>
 </body>

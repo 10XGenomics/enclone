@@ -418,7 +418,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             \\bold{SUBSET_JSON=filename} to the command line, which will create a json file \
             containing only data for the barcodes in the clonotype.  Then send us the file \
             as an email attachment.  This only works for VDJ data, and we do not have a \
-            parallel mechanism for gene expression and antibody data.\n\n",
+            parallel mechanism for gene expression and antibody data.  Please note also that \
+            running enclone on the barcodes from a single clonotype will not necessarily \
+            reproduce the results you observed, because the clonotyping algorithm uses all the \
+            data, even if only some clonotypes are selected.\n\n",
         );
 
         h.end_doc();
