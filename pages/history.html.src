@@ -31,8 +31,14 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>11/4/20</b>: Add SUBSET_JSON option, which allows construction of a small json file
-associated to specified clonotypes, which can be sent to the enclone developers.
+<b>11/4/20</b>: 
+<ul>
+<li>Add <code>SUBSET_JSON</code> option, which allows construction of a small json file
+associated to specified clonotypes, which can be sent to the enclone developers.</li>
+<li>The <code>NOPRINT</code> option no longer applies to parseable output generated using 
+<code>POUT=stdout</code> or <code>POUT=stdouth</code>.  This change facilitates piping of parseable 
+output to other programs.</li>
+</ul>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
