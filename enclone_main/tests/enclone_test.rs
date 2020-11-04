@@ -1715,17 +1715,9 @@ fn test_annotated_example() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_subset_json() {
-    // We canonicalize the path because otherwise we have trouble with GitHub Actions.
-    let dir = "testx/outputs/woof";
-    let _ = std::fs::create_dir(&dir);
-    let dir = std::fs::canonicalize(&dir).unwrap();
-    let dir = dir.as_path().to_str().unwrap();
-    assert!(dir.contains("woof")); // because we rm -rf this directory below, which is scary
-    let test = format!(
-        "BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW \
-        SUBSET_JSON={}/all_contig_annotations.json",
-        dir
-    );
+    let _ = std::fs::create_dir("testx/outputs/woof");
+    let test = "BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW \
+        SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json";
     let args = parse_bsv(&test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args)
@@ -1740,7 +1732,7 @@ fn test_subset_json() {
     }
     let o1 = new.stdout;
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-        .arg(&format!("BCR={}", dir))
+        .arg("BCR=testx/outputs/woof")
         .output()
         .expect(&format!("failed to execute test_subset_json 2"));
     if new.status.code() != Some(0) {
@@ -1755,7 +1747,7 @@ fn test_subset_json() {
         eprintln!("\nSubset json test failed: outputs are unequal.\n");
         std::process::exit(1);
     }
-    let _ = remove_dir_all(&dir);
+    let _ = remove_dir_all("testx/outputs/woof");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
