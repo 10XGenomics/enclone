@@ -410,13 +410,17 @@ pub const EXTENDED_TESTS: [&str; 8] = [
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 3] = [
+pub const INTERNAL_TESTS: [&str; 4] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
     // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
     // 3. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"70838 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN MOUSE NO_PRE NFORCE EXPECT_NULL"###,
+    // 4. this crashed; it is not exactly an internal feature test but uses an internal feature
+    // (IMGT) to exhibit the phenomenon
+    r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
+        EXPECT_OK"###,
 ];
 
 // List of examples in documentation.
