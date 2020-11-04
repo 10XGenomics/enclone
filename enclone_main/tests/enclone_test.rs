@@ -1715,10 +1715,9 @@ fn test_annotated_example() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_subset_json() {
-    // Note need create_dir_all because testx/outputs may not exist.
+    // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
     std::fs::create_dir_all("testx/outputs/woof").unwrap();
-    let test = "BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW \
-        SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json";
+    let test = r###"BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
     let args = parse_bsv(&test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args)
