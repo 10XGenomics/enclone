@@ -306,7 +306,7 @@ pub fn start_gen(
             for x in exact_clonotypes[exacts[u]].clones.iter() {
                 bc.push(x[0].barcode.clone());
             }
-            speak!(u, "barcode", format!("{}", bc.iter().format(";")));
+            speak!(u, "barcode", format!("{}", bc.iter().format(POUT_SEP)));
             for d in ctl.origin_info.dataset_list.iter() {
                 if d.len() > 0 {
                     let mut bc = Vec::<String>::new();
@@ -321,7 +321,7 @@ pub fn start_gen(
                     speak!(
                         u,
                         &format!("{}_barcode", d),
-                        format!("{}", bc.iter().format(";"))
+                        format!("{}", bc.iter().format(POUT_SEP))
                     );
                 }
             }

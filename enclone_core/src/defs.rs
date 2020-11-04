@@ -1011,3 +1011,5 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
         }
     }
 }
+
+pub const POUT_SEP: &str = ";";

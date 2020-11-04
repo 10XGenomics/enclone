@@ -1301,7 +1301,7 @@ pub fn group_and_print_clonotypes(
                                     // Test for whether the out_data contain the field.
                                     if y.contains_key(c) {
                                         let mut id = 0;
-                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        let vals = y[c].split(POUT_SEP).collect::<Vec<&str>>();
                                         if vals.len() > 1 {
                                             id = m;
                                         }
@@ -1352,7 +1352,7 @@ pub fn group_and_print_clonotypes(
                                 for c in pcols.iter() {
                                     if y.contains_key(c) {
                                         let mut id = 0;
-                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        let vals = y[c].split(POUT_SEP).collect::<Vec<&str>>();
                                         if vals.len() > 1 {
                                             id = m;
                                         }
