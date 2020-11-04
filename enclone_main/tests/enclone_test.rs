@@ -1715,7 +1715,7 @@ fn test_annotated_example() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_subset_json() {
-    let _ = std::fs::create_dir("testx/outputs/woof");
+    std::fs::create_dir_all("testx/outputs/woof").unwrap();
     let test = "BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW \
         SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json";
     let args = parse_bsv(&test);
