@@ -1287,7 +1287,9 @@ pub fn group_and_print_clonotypes(
                         let ex = &exact_clonotypes[exacts[oo][u]];
                         let n = ex.ncells();
                         if ctl.parseable_opt.pout != "stdouth".to_string() {
+                            // Traverse the cells in the exact subclonotype.
                             for m in 0..n {
+                                // Traverse the parseable fields to be displayed.
                                 for (i, c) in pcols.iter().enumerate() {
                                     if i > 0 {
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
@@ -1296,6 +1298,7 @@ pub fn group_and_print_clonotypes(
                                             fwrite!(logx, ",");
                                         }
                                     }
+                                    // Test for whether the out_data contain the field.
                                     if y.contains_key(c) {
                                         let mut id = 0;
                                         let vals = y[c].split(';').collect::<Vec<&str>>();
