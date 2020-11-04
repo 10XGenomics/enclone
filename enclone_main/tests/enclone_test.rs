@@ -847,6 +847,21 @@ fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
     use std::time::Duration;
 
+    // Set up link exceptions.  These are links that have been observed to break periodically.
+    // The web.archive.org one is probably just too slow, and we should allow for that rather
+    // than have it on the unreliable list.  The "period" version is because of a parsing bug.
+    // Also, obviously, these links should be retested to determine if they are permanently broken
+    // rather than just unreliable.
+
+    let unreliable_links = [
+        "http://www.abybank.org/abdb",
+        "http://www.abybank.org/abdb/Data/NR_LH_Combined_Martin.tar.bz2",
+        "http://www.bioinf.org.uk/abs/info.html",
+        "http://www.bioinf.org.uk/abs/info.html#martinnum",
+        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html",
+        "https://web.archive.org/web/20200803185732/http://www.bioinf.org.uk/abs/info.html.",
+    ];
+
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
 
@@ -1061,6 +1076,18 @@ fn test_for_broken_links_and_spellcheck() {
                 // Temporary workaround.
 
                 if link == "https://10xgenomics.github.io/enclone/install.sh" {
+                    continue;
+                }
+
+                // Test for known unreliable links.
+
+                let mut unreliable = false;
+                for l in unreliable_links.iter() {
+                    if *l == link {
+                        unreliable = true;
+                    }
+                }
+                if unreliable {
                     continue;
                 }
 
