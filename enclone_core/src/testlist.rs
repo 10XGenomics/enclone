@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 14;
 
-pub const TESTS: [&str; 153] = [
+pub const TESTS: [&str; 154] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -383,6 +383,8 @@ pub const TESTS: [&str; 153] = [
     // 153. test d_start and d_frame
     r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth
         PCOLS=d_start1,d_frame1,d_start2,d_frame2"###,
+    // 154. test POUT=stdout with NOPRINT
+    r###"BCR=85333 CDR3=CARTSNRGIVATIFRAFDIW NOPRINT POUT=stdout PCOLS=cdr3_aa1"###,
 ];
 
 // Test using the extended public dataset collection.  Or tests that require samtools.
@@ -410,13 +412,17 @@ pub const EXTENDED_TESTS: [&str; 8] = [
 
 // Tests of internal features.
 
-pub const INTERNAL_TESTS: [&str; 3] = [
+pub const INTERNAL_TESTS: [&str; 4] = [
     // 1. gave wrong result
     r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
     // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
     // 3. test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"70838 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN MOUSE NO_PRE NFORCE EXPECT_NULL"###,
+    // 4. this crashed; it is not exactly an internal feature test but uses an internal feature
+    // (IMGT) to exhibit the phenomenon
+    r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
+        EXPECT_OK"###,
 ];
 
 // List of examples in documentation.

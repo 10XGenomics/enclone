@@ -310,7 +310,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\\boldblue{12. Can enclone print summary stats?}\n\n");
         h.print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
-             printed.  If you only want to see the summary stats, then also add the option \
+             printed.  If you wish to suppress visual output, then also add the option \
              \\bold{NOPRINT}.\n\n",
         );
 
@@ -393,7 +393,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\\boldblue{18. Can enclone ingest multiple datasets from the same library?}\n\n");
         h.print(
             "If enclone detects significant (≥ 25%) barcode reuse between datasets, it will exit.  \
-            This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}.\n"
+            This behavior can be overridden using the argument \\bold{ACCEPT_REUSE}.\n\n"
         );
 
         h.print("\\boldblue{19. Can I turn off all the filters used in joining clonotypes?}\n\n");
@@ -407,7 +407,21 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             however this will in general be very slow and not produce useful results.  Depending \
             on what your goal is, you may find it helpful to use some of these arguments, and \
             with lower values.  You can see the meaning of the arguments and their default values \
-            by typing \"enclone help how\".\n",
+            by typing \"enclone help how\".\n\n",
+        );
+
+        h.print("\\boldblue{20. How can I send the developers an example?}\n\n");
+        h.print(
+            "Use filters to select a clonotype or clonotypes of interest.  \
+            Then you can cut and paste enclone output into an email.  If you want the example to \
+            be reproducible by us, add the argument\n\
+            \\bold{SUBSET_JSON=filename} to the command line, which will create a json file \
+            containing only data for the barcodes in the clonotype.  Then send us the file \
+            as an email attachment.  This only works for VDJ data, and we do not have a \
+            parallel mechanism for gene expression and antibody data.  Please note also that \
+            running enclone on the barcodes from a single clonotype will not necessarily \
+            reproduce the results you observed, because the clonotyping algorithm uses all the \
+            data, even if only some clonotypes are selected.\n\n",
         );
 
         h.end_doc();
@@ -430,7 +444,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "only want to see the computational performance stats, and with NOPAGER if you",
+            "want to suppress visual output, and with NOPAGER if you",
         );
         h.doc("", "want output to be unbuffered");
         h.doc(

@@ -576,7 +576,7 @@ pub fn row_fill(
                     for j in 0..credsx.len() {
                         r.push(format!("{:.1}", credsx[j]));
                     }
-                    speak!(u, x, format!("{}", r.iter().format(";")));
+                    speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
                 }
             }
         } else if bin_member(&alt_bcs, x) {
@@ -597,7 +597,7 @@ pub fn row_fill(
                     }
                     r.push(val);
                 }
-                speak!(u, x, format!("{}", r.iter().format(";")));
+                speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
             }
         } else if x.starts_with("n_") && !x.starts_with("n_gex") {
             let name = x.after("n_");
@@ -763,7 +763,7 @@ pub fn row_fill(
             lvar![i, x, format!("{}", gex_median)];
         } else if x == "gex_cell" {
             if pass == 2 {
-                speak!(u, x, format!("{}", count_unsorted.iter().format(";")));
+                speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
             }
         } else if x == "n_gex" {
             lvar![i, x, format!("{}", n_gex)];
@@ -775,7 +775,7 @@ pub fn row_fill(
                 speak!(
                     u,
                     "n_gex_cell".to_string(),
-                    format!("{}", n_gexs.iter().format(";"))
+                    format!("{}", n_gexs.iter().format(POUT_SEP))
                 );
             }
         } else if x == "entropy" {
@@ -785,7 +785,7 @@ pub fn row_fill(
             for x in entropies_unsorted.iter() {
                 e.push(format!("{:.2}", x));
             }
-            speak!(u, x, format!("{}", e.iter().format(";")));
+            speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
         } else if x == "gex_min" {
             lvar![i, x, format!("{}", gex_min)];
         } else if x == "gex_max" {
@@ -902,12 +902,12 @@ pub fn row_fill(
                         for j in 0..counts_sub.len() {
                             c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
                         }
-                        let val = format!("{}", c.iter().format(";"));
+                        let val = format!("{}", c.iter().format(POUT_SEP));
                         speak!(u, x, val);
                     }
                 } else if xorig.ends_with("_cell") {
                     if pass == 2 {
-                        let val = format!("{}", counts_sub.iter().format(";"));
+                        let val = format!("{}", counts_sub.iter().format(POUT_SEP));
                         speak!(u, x, val);
                     }
                 } else {
@@ -1747,7 +1747,7 @@ pub fn row_fill(
                         let mut vals = String::new();
                         for k in 0..ex.ncells() {
                             if k > 0 {
-                                vals += ";";
+                                vals += POUT_SEP;
                             }
                             vals += &format!("{}", ex.clones[k][mid].umi_count);
                         }
@@ -1780,7 +1780,7 @@ pub fn row_fill(
                         let mut vals = String::new();
                         for k in 0..ex.ncells() {
                             if k > 0 {
-                                vals += ";";
+                                vals += POUT_SEP;
                             }
                             vals += &format!("{}", ex.clones[k][mid].read_count);
                         }

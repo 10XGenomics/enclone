@@ -1213,11 +1213,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate parseable output.
 
-            if ctl.parseable_opt.pout.len() > 0
-                && (!ctl.gen_opt.noprint
-                    || (ctl.parseable_opt.pout != "stdout".to_string()
-                        && ctl.parseable_opt.pout != "stdouth".to_string()))
-            {
+            if ctl.parseable_opt.pout.len() > 0 {
                 let mut rows = Vec::<Vec<String>>::new();
                 for m in 0..out_datas[oo].len() {
                     out_datas[oo][m].insert("group_id".to_string(), format!("{}", groups));
@@ -1287,7 +1283,9 @@ pub fn group_and_print_clonotypes(
                         let ex = &exact_clonotypes[exacts[oo][u]];
                         let n = ex.ncells();
                         if ctl.parseable_opt.pout != "stdouth".to_string() {
+                            // Traverse the cells in the exact subclonotype.
                             for m in 0..n {
+                                // Traverse the parseable fields to be displayed.
                                 for (i, c) in pcols.iter().enumerate() {
                                     if i > 0 {
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
@@ -1296,9 +1294,10 @@ pub fn group_and_print_clonotypes(
                                             fwrite!(logx, ",");
                                         }
                                     }
+                                    // Test for whether the out_data contain the field.
                                     if y.contains_key(c) {
                                         let mut id = 0;
-                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        let vals = y[c].split(POUT_SEP).collect::<Vec<&str>>();
                                         if vals.len() > 1 {
                                             id = m;
                                         }
@@ -1349,7 +1348,7 @@ pub fn group_and_print_clonotypes(
                                 for c in pcols.iter() {
                                     if y.contains_key(c) {
                                         let mut id = 0;
-                                        let vals = y[c].split(';').collect::<Vec<&str>>();
+                                        let vals = y[c].split(POUT_SEP).collect::<Vec<&str>>();
                                         if vals.len() > 1 {
                                             id = m;
                                         }

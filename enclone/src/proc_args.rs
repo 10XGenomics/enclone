@@ -481,6 +481,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("DONOR_REF_FILE", &mut ctl.gen_opt.dref_file),
         ("PEER_GROUP", &mut ctl.gen_opt.peer_group_filename),
         ("PROTO", &mut ctl.gen_opt.proto),
+        ("SUBSET_JSON", &mut ctl.gen_opt.subset_json),
     ];
 
     // Define arguments that set something to a string that is an input file name.
@@ -597,9 +598,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 let f = File::create(&val);
                 if f.is_err() {
                     eprintln!(
-                        "\nYou've specified an output file\n{}\nthat cannot be written.\n",
+                        "\nYou've specified an output file\n{}\nthat cannot be written.",
                         val
                     );
+                    if val.contains("/") {
+                        let dir = val.rev_before("/");
+                        let msg;
+                        if path_exists(&dir) {
+                            msg = "exists";
+                        } else {
+                            msg = "does not exist";
+                        }
+                        eprintln!("Note that the path {} {}.", dir, msg);
+                    }
+                    eprintln!("");
                     std::process::exit(1);
                 }
                 remove_file(&val).unwrap();
