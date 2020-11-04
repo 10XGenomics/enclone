@@ -601,8 +601,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                         "\nYou've specified an output file\n{}\nthat cannot be written.",
                         val
                     );
-                    if var.contains("/") {
-                        let dir = var.rev_before("/");
+                    if val.contains("/") {
+                        let dir = val.rev_before("/");
                         let msg;
                         if path_exists(&dir) {
                             msg = "exists";
