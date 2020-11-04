@@ -310,7 +310,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print("\\boldblue{12. Can enclone print summary stats?}\n\n");
         h.print(
             "Yes, if you add the option \\bold{SUMMARY}, then some summary stats will be \
-             printed.  If you only want to see the summary stats, then also add the option \
+             printed.  If you wish to suppress visual output, then also add the option \
              \\bold{NOPRINT}.\n\n",
         );
 
@@ -444,7 +444,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "only want to see the computational performance stats, and with NOPAGER if you",
+            "want to suppress visual output, and with NOPAGER if you",
         );
         h.doc("", "want output to be unbuffered");
         h.doc(
