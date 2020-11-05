@@ -276,7 +276,11 @@ impl LinearCondition {
                 ok = false;
             }
             if ok {
-                lvars0.push(lvars[j].clone());
+                let mut x = lvars[j].clone();
+                if x.contains(":count_") {
+                    x = x.before(":count_").to_string();
+                }
+                lvars0.push(x);
             }
         }
         unique_sort(&mut lvars0);
