@@ -134,6 +134,7 @@ pub fn make_loupe_clonotype(
             if mat[cx][z].is_some() {
                 u0 = z;
                 m0 = mat[cx][z].unwrap();
+                break;
             }
         }
         let ex = &exact_clonotypes[exacts[u0]];
