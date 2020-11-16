@@ -42,8 +42,8 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,cdr3_len,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. this clonotype included a junk chain before we made a change, and test "/outs"
-    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
+    // 8. DUPLICATE; TO REPLACE WITH A NEW TEST
+    r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
     // 9. tests PER_CELL and unicode
     r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,origins,donors,datasets, and share
@@ -53,12 +53,12 @@ pub const TESTS: [&str; 155] = [
     // 11. tests META, and CONST_IGH + META, which was broken at one point
     r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex
      CONST_IGH=IGHD"###,
-    // 12. this added because it got better when a noise filter was added, also tests u_max
-    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
-    // 13. this added because it got better when a noise filter was added; also test FASTA
-    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
-    // 14. this added because it got better when a bug in bads detection was fixed
-    r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
+    // 12. DUPLICATE; TO REPLACE WITH A NEW TEST.
+    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 13. DUPLICATE; TO REPLACE WITH A NEW TEST.
+    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
+    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
     // it was fixed
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
@@ -126,8 +126,8 @@ pub const TESTS: [&str; 155] = [
     // 39. tests u and r fields in parseable output, and tests stdouth
     r###"BCR=85333 POUT=stdouth PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
-    // 40. test case where digit rows are just barely present
-    r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor"###,
+    // 40. DUPLICATE; TO REPLACE WITH A NEW TEST.
+    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
     // 41. test case for gex_cell
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
     // 42. test case that should fail because gex_cell doesn't make sense without gex data
@@ -389,10 +389,10 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
 ];
 
-// Test using datasets that are either in the extended public dataset collection, or which are 
+// Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 8] = [
+pub const EXTENDED_TESTS: [&str; 13] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -411,6 +411,16 @@ pub const EXTENDED_TESTS: [&str; 8] = [
     r###"BCR=99640 BARCODE=CAGTAACCATGTCGAT-1 NO_PRE NFORCE"###,
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
     r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
+    // 9. this clonotype included a junk chain before we made a change, and test "/outs"
+    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
+    // 10. test case where digit rows are just barely present
+    r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor"###,
+    // 11. this added because it got better when a noise filter was added, also tests u_max
+    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
+    // 12. this added because it got better when a noise filter was added; also test FASTA
+    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
+    // 13. this added because it got better when a bug in bads detection was fixed
+    r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
 ];
 
 // Tests of internal features.
