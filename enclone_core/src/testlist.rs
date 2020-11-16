@@ -389,7 +389,8 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
 ];
 
-// Test using the extended public dataset collection.  Or tests that require samtools.
+// Test using datasets that are either in the extended public dataset collection, or which are 
+// not publicly avaiable, or which require samtools.
 
 pub const EXTENDED_TESTS: [&str; 8] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
