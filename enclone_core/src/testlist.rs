@@ -206,8 +206,8 @@ pub const TESTS: [&str; 155] = [
         CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex NO_PRE"###,
     // 72. test SUMMARY_CSV
     r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
-    // 73. this crashed before a bug was fixed
-    r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D"###,
+    // 73. DUPLICATE; TO REPLACE WITH A NEW TEST
+    r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
     // 74. this changed after a bug was fixed; the RE can probably be dropped later when we
     // rerun all the datasets
     r###"BCR=123085 RE CDR3=CARGYEDFTMKYGMDVW POUT=stdouth PCOLS=utr_id2"###,
@@ -392,7 +392,7 @@ pub const TESTS: [&str; 155] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 13] = [
+pub const EXTENDED_TESTS: [&str; 14] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -421,6 +421,8 @@ pub const EXTENDED_TESTS: [&str; 13] = [
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
     // 13. this added because it got better when a bug in bads detection was fixed
     r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
+    // 14. this crashed before a bug was fixed
+    r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D"###,
 ];
 
 // Tests of internal features.
