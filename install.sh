@@ -14,7 +14,7 @@
 # If you run it a second time and forget the size, it will use the same size as last time,
 # and state that.
 #
-# Note that version14 is hardcoded!
+# Note that version15 is hardcoded!
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -259,7 +259,7 @@ main() {
             mkdir -p 123085/outs
             cd 123085/outs
             json="all_contig_annotations.json.lz4"
-            url="$raw_data_repo/big_inputs/version14/123085/outs/$json"
+            url="$raw_data_repo/big_inputs/version15/123085/outs/$json"
             if $_have_curl; then
                 curl -s $url -O
             else
@@ -283,10 +283,10 @@ main() {
             fi
             printf "This seems to take roughly thirty seconds, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
-            rm -rf enclone/datasets enclone/version14
+            rm -rf enclone/datasets enclone/version15
             cd enclone
             git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
-            mv enclone-data/big_inputs/version14 datasets
+            mv enclone-data/big_inputs/version15 datasets
             rm -rf enclone-data
             cd ..
             echo "$_datasets_medium_checksum_master" > enclone/datasets_medium_checksum

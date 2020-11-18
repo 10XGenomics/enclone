@@ -22,7 +22,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
     include_str!["testdata.public.gex.human"].to_string()
 }
 
-pub const TEST_FILES_VERSION: u8 = 14;
+pub const TEST_FILES_VERSION: u8 = 15;
 
 pub const TESTS: [&str; 155] = [
     // 1. tests variant base after CDR3, parseable output
