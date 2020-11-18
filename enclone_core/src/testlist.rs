@@ -371,11 +371,10 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=86237 GEX=85679 NALL_GEX LVARSP=n_gex,filter PER_CELL BARCODE=CTTGGCTGTTAAGACA-1"###,
     // 148. test that LVARSP=n_gex fails if only BCR provided
     r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
-    // 149. test that LVARSP=gex fails on Ab-only data
-    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL"###,
-    // 150. test Ab-only data
-    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
-        CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN"###,
+    // 149. DUPLICATE; TO REPLACE WITH A NEW TEST
+    r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
+    // 150. DUPLICATE; TO REPLACE WITH A NEW TEST
+    r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
     // 151. test PEER_GROUP
     r###"BCR=85333 CDR3=CAKGRYSSPQYYFDYW PEER_GROUP=stdout"###,
     // 152. test PEER_GROUP with PG_READABLE
@@ -392,7 +391,7 @@ pub const TESTS: [&str; 155] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 14] = [
+pub const EXTENDED_TESTS: [&str; 16] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -412,17 +411,22 @@ pub const EXTENDED_TESTS: [&str; 14] = [
     // 8. test MOUSE BCR + our reference (this crashed) -- LOOKS REDUNDANT NOW
     r###"BCR=70838 MOUSE NOPRINT NO_PRE NFORCE EXPECT_NULL"###,
     // 9. this clonotype included a junk chain before we made a change, and test "/outs"
-    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor"###,
+    r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###,
     // 10. test case where digit rows are just barely present
-    r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor"###,
+    r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###,
     // 11. this added because it got better when a noise filter was added, also tests u_max
-    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max"###,
+    r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
-    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout"###,
+    r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
     // 13. this added because it got better when a bug in bads detection was fixed
-    r###"TCR=163914 CDR3=CASRLGGEETQYF"###,
+    r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
     // 14. this crashed before a bug was fixed
-    r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D"###,
+    r###"BCR=1021341 NCELL CDR3=CQQANSYPLTF SEG=IGHV1-69D NO_PRE NFORCE"###,
+    // 15. test that LVARSP=gex fails on Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL NO_PRE NFORCE"###,
+    // 16. test Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
+        CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
