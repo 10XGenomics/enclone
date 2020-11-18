@@ -3,18 +3,18 @@ SUMMARY STATISTICS
 1. overall
    • number of datasets = 1
    • number of donors = 1
-   • original number of cells = 1661
+   • original number of cells = 1654
 2. barcode fate
    ┌──────────┬────────────────────────────┐
    │barcodes  │  why deleted               │
    ├──────────┼────────────────────────────┤
-   │     219  │  failed UMI filter         │
-   │      55  │  failed IMPROPER filter    │
+   │     223  │  failed UMI filter         │
+   │      54  │  failed IMPROPER filter    │
    │      25  │  failed FOURSIE_KILL filter│
-   │      13  │  failed QUAL filter        │
+   │      12  │  failed QUAL filter        │
    │       8  │  failed GRAPH_FILTER filter│
-   │       6  │  failed WHITEF filter      │
-   │       4  │  failed WEAK_CHAINS filter │
+   │       5  │  failed WHITEF filter      │
+   │       3  │  failed WEAK_CHAINS filter │
    │     330  │  total                     │
    └──────────┴────────────────────────────┘
 3. for the selected clonotypes
@@ -22,16 +22,16 @@ SUMMARY STATISTICS
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
-   │1       │                   138  │             139  │   10.4│
-   │2       │                   304  │             930  │   69.9│
-   │3       │                    14  │             256  │   19.2│
+   │1       │                   138  │             139  │   10.5│
+   │2       │                   303  │             927  │   70.0│
+   │3       │                    14  │             252  │   19.0│
    │4       │                     3  │               6  │    0.5│
-   │total   │                   459  │            1331  │  100.0│
+   │total   │                   458  │            1324  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
-   • number of clonotypes having at least two cells = 133
-   • number of cells having 1 chain = 179
-   • number of cells having 2 or 3 chains = 1149
-   • estimated B-B doublet rate = 0.3% = 3/935 = cells with 4 chains / cells with 2 or 4 chains
-   • mean over middle third of contig UMI counts (heavy chain) = 342.43
-   • mean over middle third of contig UMI counts (light chain) = 1977.48
+   • number of clonotypes having at least two cells = 135
+   • number of cells having 1 chain = 178
+   • number of cells having 2 or 3 chains = 1143
+   • estimated B-B doublet rate = 0.3% = 3/931 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (heavy chain) = 360.33
+   • mean over middle third of contig UMI counts (light chain) = 2035.81
 

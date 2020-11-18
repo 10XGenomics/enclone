@@ -103,7 +103,7 @@ pub const TESTS: [&str; 155] = [
     // 32. tests Cell Ranger 2.0 output and RE
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE ACCEPT_BROKEN"###,
     // 33. tests SCAN
-    r###"BCR=123085 GEX=123749 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10 NGEX
+    r###"BCR=123085 GEX=123217 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10 NGEX
      SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT H5"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
@@ -146,7 +146,7 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=85333 CDR3=CAREEYYYDSSGDAFDIW LVARSP=gex_mean EXPECT_FAIL"###,
     // 48. test gex_mean and gex_Σ and NGEX
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX H5"###,
+    r###"BCR=123085 GEX=123217 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX H5"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
         FASTA_AA=stdout HTML=CAAWDDSLNGWVF"###,
@@ -156,11 +156,11 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=123085 PLOT=/nonexistent/broken.svg NOPRINT MIN_CELLS=50 EXPECT_FAIL"###,
     // 52. add test for some gene patterns
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
+    r###"BCR=123085 GEX=123217 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
         LVARSP="(IGHV5-51|IGLV1-47)_g_%,IGH.*_g_%,IG(K|L).*_g_%""###,
     // 53. add test for _% with PER_CELL
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 LVARSP="gex,n_gex,JCHAIN_g_%,IG%:IG.*_g_%" CVARS=u_μ,const
+    r###"BCR=123085 GEX=123217 LVARSP="gex,n_gex,JCHAIN_g_%,IG%:IG.*_g_%" CVARS=u_μ,const
         MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL"###,
     // 54. make sure this fails gracefully
     r###"BCR=86237 GEX=85679 LVARSP=GERBULXXX123_g_% EXPECT_FAIL"###,
@@ -189,7 +189,7 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
     // 66. test BC in combination with PER_CELL and PCELL
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
+    r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
         POUT=stdouth PCOLS=barcode,T CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
     // 67. expect fail if garbage PRE
     r###"PRE=garbage_gerbil_stuff BCR=86237 CELLS=3 EXPECT_FAIL NO_PRE"###,
@@ -228,7 +228,7 @@ pub const TESTS: [&str; 155] = [
         PCOLS="barcode,IG:IG.*_g_%_cell,IG.*_g_%_cell,IGN:IG.*_g_%,IG.*_g_%""###,
     // 82. test entropy
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 LVARSP=entropy PER_CELL POUT=stdouth PCELL
+    r###"BCR=123085 GEX=123217 LVARSP=entropy PER_CELL POUT=stdouth PCELL
         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
     // 83. test COMPLETE and dref
     r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE LVARSP=dref"###,
@@ -246,11 +246,11 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
     // 90. test FCELL with non-null value
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
         CDR3=CARGYEDFTMKYGMDVW FCELL=keeper=yes"###,
     // 91. test FCELL with null value
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
         CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
@@ -400,7 +400,7 @@ pub const EXTENDED_TESTS: [&str; 14] = [
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
      NO_PRE NFORCE"###,
     // 3. test sec and mem [requires samtools]
-    r###"BCR=123085 GEX=123749 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
+    r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###,
     // 4. test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks
     r###"70838 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN NO_PRE NFORCE"###,
     // 5. this crashed (and didn't check if this is in extended public dataset collection)
@@ -447,7 +447,7 @@ pub const EXAMPLES: [&str; 2] = [
     r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###,
     // 2.
     // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123749 LVARSP=gex,IGHV2-5_g_μ,CD4_ab_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+    r###"BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
 ];
 
 // List of examples on site.
@@ -457,7 +457,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 12] = [
     // Do not use NH5 because the bin file is too big for git.
     (
         "pages/auto/clonotype_with_gex.html",
-        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab NUMI \
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123217 LVARSP=gex,IGHV3-49_g NUMI \
          HTML=\"enclone example with gex\"",
     ),
     // 2.

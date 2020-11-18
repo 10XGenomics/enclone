@@ -49,7 +49,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_for_parseable_redundancy() {
-    let test = r###"BCR=123085 GEX=123749 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
+    let test = r###"BCR=123085 GEX=123217 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -1298,7 +1298,7 @@ fn test_enclone_examples() {
         }
         if old != new2 {
             eprintln!(
-                "\nenclone_test_examples: the file example{} is not up to date\n",
+                "\nenclone_test_examples: the file enclone_help/src/example{} is not up to date\n",
                 t + 1
             );
             eprintln!("old output =\n{}", old);
@@ -1479,7 +1479,7 @@ fn test_enclone_prebuild() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
-        "../enclone-data/big_inputs/version{}/123749/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123217/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     );
     if path_exists(&mb) {
@@ -1521,7 +1521,7 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
     if !path_exists(&format!(
-        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     )) {
         panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
@@ -1560,7 +1560,7 @@ fn test_enclone_prebuild() {
     // Clean up: delete feature_barcode_matrix.bin.
 
     std::fs::remove_file(&format!(
-        "../enclone-data/big_inputs/version{}/123749/outs/feature_barcode_matrix.bin",
+        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
         TEST_FILES_VERSION
     ))
     .unwrap();

@@ -107,10 +107,10 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
             h.print_plain_unchecked(&format!("{}", strme(&x)));
         }
         h.print(
-            "This shows an invocation of enclone that takes VDJ, gene expression and feature \
-             barcode data as input, and exhibits all clonotypes for which some chain has the \
+            "This shows an invocation of enclone that takes VDJ, and gene expression \
+             data as input, and exhibits all clonotypes for which some chain has the \
              given CDR3 sequence.  As well the command requests UMI (molecule) counts for one \
-             hand-selected gene and one antibody.  You can use any gene(s) you like and any \
+             hand-selected gene.  You can use any gene(s) you like and any \
              antibodies for which you have feature barcodes.\n\n",
         );
         h.end_doc();

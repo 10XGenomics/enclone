@@ -8,7 +8,7 @@
 #
 # See also README.
 
-# WARNING: note harcoding of version14!
+# WARNING: note harcoding of version15!
 
 # import and update enclone-data
 
@@ -44,5 +44,5 @@ target/debug/merge_html
 
 # update dataset checksums
 
-git -C enclone-data write-tree --prefix=big_inputs/version14/123085 > datasets_small_checksum
-git -C enclone-data write-tree --prefix=big_inputs/version14 > datasets_medium_checksum
+git -C enclone-data write-tree --prefix=big_inputs/version15/123085 > datasets_small_checksum
+git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_checksum
