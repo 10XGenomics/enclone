@@ -503,6 +503,22 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             continue;
         }
 
+        // Check for [abbr:]count_<regex>.
+
+        if x.starts_with("count_") || x.contains(":count_") {
+            let y = x.after("count_");
+            let reg = Regex::new(&y);
+            if !reg.is_ok() {
+                eprintln!(
+                    "\nThe string after count_ in your lead variable {} is not a valid \
+                    regular expression.\n",
+                    x
+                );
+                std::process::exit(1);
+            }
+            continue;
+        }
+
         // Check for pe<n> and npe<n> and ppe<n>.
 
         if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {

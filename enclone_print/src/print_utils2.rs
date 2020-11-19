@@ -11,6 +11,7 @@ use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
+use regex::Regex;
 use stats_utils::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
@@ -759,6 +760,21 @@ pub fn row_fill(
             } else {
                 lvar![i, x, format!("{}", dist)];
             }
+        } else if x.starts_with("count_") || x.contains(":count_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_") {
+                x = x.before(":count_").to_string();
+            }
+            y = y.after("count_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            let z = vec![n as f64; ex.ncells()];
+            stats.push((x, z));
         } else if x == "gex" {
             lvar![i, x, format!("{}", gex_median)];
         } else if x == "gex_cell" {

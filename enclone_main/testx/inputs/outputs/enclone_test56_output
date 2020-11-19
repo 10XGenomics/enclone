@@ -5,7 +5,7 @@ xmlns="http://www.w3.org/2000/svg">
 <text x="0" y="19.1" font-family="Menlo" font-size="15" style="white-space: pre;">[1.1] CLONOTYPE = 1 CELLS</text>
 <text x="0" y="38.2" font-family="Menlo" font-size="15" style="white-space: pre;">┌───────────┬───────────────────────────────────┬──────────────────────────────┐</text>
 <text x="0" y="57.3" font-family="Menlo" font-size="15" style="white-space: pre;">│           │  <tspan style="font-weight: bold;">CHAIN 1</tspan>                          │  CHAIN 2                     │</text>
-<text x="0" y="76.4" font-family="Menlo" font-size="15" style="white-space: pre;">│           │  <tspan style="font-weight: bold;">67.1.1|IGHV1-2 ◆ 58|IGHJ6</tspan>        │  342|IGLV2-14 ◆ 312|IGLJ1    │</text>
+<text x="0" y="76.4" font-family="Menlo" font-size="15" style="white-space: pre;">│           │  <tspan style="font-weight: bold;">67.1.1|IGHV1-2 ◆ 58|IGHJ6</tspan>        │  339|IGLV2-14 ◆ 309|IGLJ1    │</text>
 <text x="0" y="95.5" font-family="Menlo" font-size="15" style="white-space: pre;">│           ├───────────────────────────────────┼──────────────────────────────┤</text>
 <text x="0" y="114.6" font-family="Menlo" font-size="15" style="white-space: pre;">│           │    1111111111111111111            │      1111111111111           │</text>
 <text x="0" y="133.7" font-family="Menlo" font-size="15" style="white-space: pre;">│           │  8 1111112222222222333            │    7 0011111111112           │</text>

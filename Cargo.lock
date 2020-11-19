@@ -690,6 +690,7 @@ dependencies = [
  "permutation",
  "pretty_trace",
  "rayon",
+ "regex",
  "serde",
  "serde_derive",
  "serde_json",

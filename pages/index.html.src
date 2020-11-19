@@ -316,7 +316,7 @@ see <a href="pages/auto/dang_i_cannot_install.html">here</a> if you have a probl
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-	do this for a large number of datasets (~120)
+	do this for a large number of datasets (~110)
        </p>
   </th>
   </tr>
@@ -610,14 +610,14 @@ to print clonotypes in machine-readable forms that are suitable for input to oth
 
 <p>Gene expression and Feature Barcode data can be displayed simultaneously alongside VDJ data.  For
 example, here we add columns for the same clonotype, showing the median number of UMIs detected
-for all genes, a particular gene, and a particular antibody:</p>
+for all genes, and a particular gene:</p>
 
 #include pages/auto/clonotype_with_gex.html
 
 <p>To obtain this, we added the extra arguments
-<code>GEX=123749 LVARSP=gex,IGHV3-49_g,CD19_ab</code>
+<code>GEX=123217 LVARSP=gex,IGHV3-49_g</code>
 to the previous command.  The <code>GEX</code> part points to the directory containing gene 
-expression and feature barcode data.  The <code>LVARSP</code> part defines the additional columns 
+expression data.  The <code>LVARSP</code> part defines the additional columns 
 to be displayed.</p>
 <p>Other types of data can be brought in via Feature Barcoding.  For example, the response to
 multiple antigens can be measured using 

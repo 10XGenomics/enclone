@@ -491,6 +491,30 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "region of recombination");
         h.ldoc(
+            "count_<regex>",
+            "Number of matches of the V..J amino acid sequences of all chains to the given",
+        );
+        h.doc(
+            "",
+            "regular expression, which is treated as a subset match, so for example,",
+        );
+        h.doc(
+            "",
+            "count_CAR would count the total number of occurrences of the string CAR in all",
+        );
+        h.doc(
+            "",
+            "the chains.  Please see \"enclone help filter\" for a discussion",
+        );
+        h.doc(
+            "",
+            "about regular expressions.  We also allow the form abbr:count_<regex>,",
+        );
+        h.doc(
+            "",
+            "where abbr is an abbreviation that will appear as the field label.",
+        );
+        h.ldoc(
             "inkt",
             "A string showing the extent to which the T cells in an exact subclonotype",
         );

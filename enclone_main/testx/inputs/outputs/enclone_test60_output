@@ -35,7 +35,7 @@
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 1 CELLS
 ┌──────┬──────────────────────────┐
 │      │  CHAIN 1                 │
-│      │  392|IGLV7-46 ◆ 316|IGLJ3│
+│      │  388|IGLV7-46 ◆ 313|IGLJ3│
 │      ├──────────────────────────┤
 │#  n  │  u  const                │
 │1  1  │  2  IGLC3                │
@@ -46,7 +46,7 @@
 [2.1] CLONOTYPE = 1 CELLS
 ┌──────┬──────────────────────────┐
 │      │  CHAIN 1                 │
-│      │  366|IGLV3-25 ◆ 316|IGLJ3│
+│      │  363|IGLV3-25 ◆ 313|IGLJ3│
 │      ├──────────────────────────┤
 │#  n  │   u  const               │
 │1  1  │  21  IGLC2               │
