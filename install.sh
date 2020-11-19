@@ -227,6 +227,8 @@ main() {
             echo 'PATH=~/bin:$PATH' >> .profile
     fi
 
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     # 8. Add ~/bin to zsh path if needed.
     #
     #    (a) If .zshrc exists and we have not already added ~/bin to the PATH in it, do so.
@@ -307,13 +309,13 @@ main() {
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
             if $_have_curl; then
-                curl -s $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz -O
+                curl -s $aws/10x.files/supp/cell-vdj/enclone_data_2.0.tar.gz -O
             else
-                wget -q $aws/10x.files/supp/cell-vdj/enclone_data_1.0.tar.gz
+                wget -q $aws/10x.files/supp/cell-vdj/enclone_data_2.0.tar.gz
             fi
-            cat enclone_data_1.0.tar.gz | zcat | tar xf -
-            rm enclone_data_1.0.tar.gz
-            mv enclone_data_1.0 datasets2
+            cat enclone_data_2.0.tar.gz | zcat | tar xf -
+            rm enclone_data_2.0.tar.gz
+            mv enclone_data_2.0 datasets2
             cd ..
             touch enclone/datasets2/download_complete
             printf "Done with that download.\n"
