@@ -255,7 +255,7 @@ pub const TESTS: [&str; 155] = [
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
     // 93. test MIN_DATASET_RATIO
-    r###"BCR=123085,123089 MIN_DATASET_RATIO=10 LVARSP=nd2"###,
+    r###"BCR=123085,123089 MIN_DATASET_RATIO=8 LVARSP=nd2"###,
     // 94. test use of SEG twice
     r###"BCR=123085 SEG=IGHV5-51 SEG=IGKV1D-39"###,
     // 95. test TREE=const
