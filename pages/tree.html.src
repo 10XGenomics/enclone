@@ -58,8 +58,7 @@ method 1, except that it outputs the resulting tree in
 <p>For example, running <code>enclone BCR=123085 NEWICK COMPLETE CDR3=CARDSWYSSGRNTPNWFDPW</code>
 will generate the following Newick tree for the largest clonotype:</p>
 
-<p><code>((((3:0.00,20:4.00)I5:1.00,11:0.00)I7:0.69,(5:0.82,((13:0.00,14:3.00)I4:4.89,(((((((2:0.00,19:0.00)I1:0.95,4:0.05)I2:0.50,18:0.50)I3:5.96,(7:0.00,12:0.00)I8:0.54)I12:0.32,((6:0.83,9:0.17)I6:0.94,10:0.06)I9:0.80)
-I15:0.13,((16:0.95,17:0.05)I10:0.03,21:2.98)I11:0.93)I17:0.04,(1:0.00,(8:1.00,15:0.00)I20:0.00)I19:0.02)I18:0.10)I16:0.11)I14:0.18)I13:0.00)0;</code></p>
+<p><code>(((4:0.00,(11:0.00,19:4.00)I4:1.00)I7:0.66,(6:0.80,((12:0.04,14:6.96)I6:0.96,(((((2:0.00,18:0.00)I1:0.94,5:0.06)I2:0.50,17:0.50)I3:5.95,(3:0.04,(8:0.00,9:1.00)I5:0.96)I8:0.55)I11:0.47,(((7:0.02,16:0.98)I9:0.04,20:2.96)I10:0.97,(1:0.00,(10:2.00,(13:1.00,15:0.00)I19:0.00)I18:0.00)I17:0.03)I16:0.00)I15:0.03)I14:0.17)I13:0.20)I12:0.00)0;</code></p>
 
 <p>This tree can be copied and pasted or otherwise exported to be viewed in tools such as <a href="https://itol.embl.de">iTOL</a>.</p> 
 
