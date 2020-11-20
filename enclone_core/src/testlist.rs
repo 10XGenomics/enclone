@@ -247,11 +247,11 @@ pub const TESTS: [&str; 155] = [
     // 90. test FCELL with non-null value
     // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
-        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper=yes"###,
+        CDR3=CARGYEDFTMKYGMDVW FCELL="keeper == 'yes'""###,
     // 91. test FCELL with null value
     // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
-        CDR3=CARGYEDFTMKYGMDVW FCELL=keeper="###,
+        CDR3=CARGYEDFTMKYGMDVW FCELL="keeper == ''""###,
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
     // 93. test MIN_DATASET_RATIO
@@ -371,10 +371,12 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=86237 GEX=85679 NALL_GEX LVARSP=n_gex,filter PER_CELL BARCODE=CTTGGCTGTTAAGACA-1"###,
     // 148. test that LVARSP=n_gex fails if only BCR provided
     r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
-    // 149. DUPLICATE; TO REPLACE WITH A NEW TEST
-    r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
-    // 150. DUPLICATE; TO REPLACE WITH A NEW TEST
-    r###"BCR=1031851 LVARSP=n_gex EXPECT_FAIL"###,
+    // 149. test FCELL with complex expression
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=keeper,rank
+        FCELL="keeper == 'no' && rank > 10""###,
+    // 150. test FCELL with a more complex expression
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=keeper,rank
+        FCELL="(keeper == 'no' && rank > 10) || keeper == 'maybe'""###,
     // 151. test PEER_GROUP
     r###"BCR=85333 CDR3=CAKGRYSSPQYYFDYW PEER_GROUP=stdout"###,
     // 152. test PEER_GROUP with PG_READABLE

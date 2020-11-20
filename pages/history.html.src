@@ -31,6 +31,18 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>11/20/20</b>: 
+<ul>
+<li>
+Generalize the <code>FCELL</code> argument to allow arbitrary expressions.  Please see
+<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+<span style="color:red">(This is a breaking change.)</span>
+</li>
+</ul>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>11/19/20</b>: 
 <ul>
 <li>Add lead variable <code>count_<regex></code> that counts the number of occurrences of a given

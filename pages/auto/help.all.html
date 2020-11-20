@@ -1060,25 +1060,34 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                        │  whose constant region gene name matches the given pattern              │
 │                        │  (meaning regular expression, see "enclone help filter")                │
 ├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│FCELL=var=value         │  Supposing that var has been specified as a field using the             │
-│                        │  BC option (or equivalently, using bc, via META), see                   │
-│                        │  "enclone help input", this option filters out all barcodes             │
-│                        │  that do not satisfy the given constraint.  Note that for               │
-│                        │  purposes of testing the constraint, if the value for a                 │
-│                        │  particular barcode has not been specified via BC or bc, then           │
-│                        │  its value is taken to be null.  Also multiple instances of             │
-│                        │  FCELL may be used to impose multiple filters.                          │
+│FCELL=constraint        │  Supposing that "constraint" is any constraint involving                │
+│                        │  arithmetic and boolean operators, and variables that are               │
+│                        │  specified as fields using the BC option (or equivalently,              │
+│                        │  using bc, via META), see "enclone help input", this option             │
+│                        │  filters out all barcodes that do not satisfy the given                 │
+│                        │  constraint.  Note that for purposes of testing the                     │
+│                        │  constraint, if the value for a particular barcode has not              │
+│                        │  been specified via BC or bc, then its value is taken to be             │
+│                        │  null.  Also multiple instances of FCELL may be used to                 │
+│                        │  impose multiple filters.  See the examples below, and be               │
+│                        │  very careful about syntax, which should match the given                │
+│                        │  examples exactly.  In particular,                                      │
+│                        │  • use == for equality, and not =                                       │
+│                        │  • put string values in single quotes                                   │
+│                        │  • put the entire expression in double quotes.                          │
 │                        │                                                                         │
 │                        │  As a toy example, suppose you had a CSV file f having five lines:      │
-│                        │  barcode,nice                                                           │
-│                        │  AGCATACTCAGAGGTG-1,true                                                │
-│                        │  CGTGAGCGTATATGGA-1,true                                                │
-│                        │  CGTTAGAAGGAGTAGA-1,false                                               │
-│                        │  CGTTAGAAGGAGTAGA-1,dunno                                               │
+│                        │  barcode,nice,rank                                                      │
+│                        │  AGCATACTCAGAGGTG-1,true,3                                              │
+│                        │  CGTGAGCGTATATGGA-1,true,7                                              │
+│                        │  CGTTAGAAGGAGTAGA-1,false,99                                            │
+│                        │  CGTTAGAAGGAGTAGA-1,dunno,43                                            │
 │                        │  then the command                                                       │
-│                        │  enclone BCR=123085 BC=f FCELL=nice=true                                │
+│                        │  enclone BCR=123085 BC=f FCELL="nice == 'true'"                         │
 │                        │  would cause enclone to use only the first two barcodes shown in        │
-│                        │  the file.                                                              │
+│                        │  the file, and the command                                              │
+│                        │  enclone BCR=123085 BC=f FCELL="nice == 'true' && rank &lt;= 5"            │
+│                        │  would cause only the first barcode to be used.                         │
 └────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
