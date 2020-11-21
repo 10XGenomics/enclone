@@ -34,6 +34,7 @@ use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
+use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
@@ -1986,24 +1987,41 @@ pub fn main_enclone(args: &Vec<String>) {
                     let bc = &ex.clones[k][0].barcode;
                     let mut keep = true;
                     for x in ctl.clono_filt_opt.fcell.iter() {
-                        let (var, val) = (&x.0, &x.1);
-                        let mut ok = false;
                         let alt = &ctl.origin_info.alt_bc_fields[li];
-                        let mut specified = false;
-                        for j in 0..alt.len() {
-                            if alt[j].0 == *var {
-                                if alt[j].1.contains_key(&bc.clone()) {
-                                    specified = true;
-                                    let given_val = &alt[j].1[&bc.clone()];
-                                    if given_val == val {
-                                        ok = true;
+                        let vars = x.iter_variable_identifiers().collect::<Vec<&str>>();
+                        let mut vals = Vec::<String>::new();
+                        for m in 0..vars.len() {
+                            let mut val = String::new();
+                            'uloop: for u in 0..alt.len() {
+                                if alt[u].0 == vars[m] {
+                                    if alt[u].1.contains_key(&bc.clone()) {
+                                        val = alt[u].1[&bc.clone()].clone();
+                                        break 'uloop;
                                     }
                                 }
                             }
+                            vals.push(val);
                         }
-                        if !specified && val.len() == 0 {
-                            ok = true;
+                        let mut c = HashMapContext::new();
+                        for m in 0..vars.len() {
+                            if vals[m].parse::<i64>().is_ok() {
+                                c.set_value(
+                                    vars[m].into(),
+                                    evalexpr::Value::from(vals[m].force_i64()),
+                                )
+                                .unwrap();
+                            } else if vals[m].parse::<f64>().is_ok() {
+                                c.set_value(
+                                    vars[m].into(),
+                                    evalexpr::Value::from(vals[m].force_f64()),
+                                )
+                                .unwrap();
+                            } else {
+                                c.set_value(vars[m].into(), vals[m].clone().into()).unwrap();
+                            }
                         }
+                        let res = x.eval_with_context(&c);
+                        let ok = res == Ok(evalexpr::Value::from(true));
                         if !ok {
                             keep = false;
                         }

@@ -1,6 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use debruijn::dna_string::*;
+use evalexpr::*;
 use hdf5::Dataset;
 use mirror_sparse_matrix::*;
 use perf_stats::*;
@@ -523,11 +524,11 @@ pub struct ClonoFiltOpt {
     pub umi_filt: bool,      // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
     pub non_cell_mark: bool,
-    pub marked: bool,                 // only print clonotypes having a mark
+    pub marked: bool,              // only print clonotypes having a mark
     pub marked_b: bool, // only print clonotypes having a mark and which are typed as B cells
     pub umi_ratio_filt: bool, // umi ratio filter
     pub umi_ratio_filt_mark: bool, // umi ratio filter (but only mark)
-    pub fcell: Vec<(String, String)>, // constaints from FCELL
+    pub fcell: Vec<Node>, // constraints from FCELL
     pub inkt: bool,
     pub mait: bool,
 }

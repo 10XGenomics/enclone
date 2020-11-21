@@ -245,33 +245,43 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
-            "FCELL=var=value",
-            "Supposing that var has been specified as a field using the BC option \
+            "FCELL=constraint",
+            "Supposing that \"constraint\" is any constraint involving arithmetic and \
+            boolean operators, and variables that are specified as fields using the BC option \
             (or equivalently, using bc, via META), see \"enclone help input\", this \
             option filters out all barcodes that do not satisfy the given constraint.  \
             Note that for purposes of testing the constraint, if the value for a \
             particular barcode has not been specified via BC or bc, then its value is \
             taken to be null.  Also multiple instances of FCELL may be used to impose \
-            multiple filters.",
+            multiple filters.  See the examples below, and be very careful about syntax, \
+            which should match the given examples exactly.  In particular,",
             60,
         );
+        h.doc("", "• use == for equality, and not =");
+        h.doc("", "• put string values in single quotes");
+        h.doc("", "• put the entire expression in double quotes.");
         h.doc("", "");
         h.doc(
             "",
             "As a toy example, suppose you had a CSV file f having five lines:",
         );
-        h.doc("", "barcode,nice");
-        h.doc("", "AGCATACTCAGAGGTG-1,true");
-        h.doc("", "CGTGAGCGTATATGGA-1,true");
-        h.doc("", "CGTTAGAAGGAGTAGA-1,false");
-        h.doc("", "CGTTAGAAGGAGTAGA-1,dunno");
+        h.doc("", "barcode,nice,rank");
+        h.doc("", "AGCATACTCAGAGGTG-1,true,3");
+        h.doc("", "CGTGAGCGTATATGGA-1,true,7");
+        h.doc("", "CGTTAGAAGGAGTAGA-1,false,99");
+        h.doc("", "CGTTAGAAGGAGTAGA-1,dunno,43");
         h.doc("", "then the command");
-        h.doc("", "enclone BCR=123085 BC=f FCELL=nice=true");
+        h.doc("", "enclone BCR=123085 BC=f FCELL=\"nice == 'true'\"");
         h.doc(
             "",
             "would cause enclone to use only the first two barcodes shown in",
         );
-        h.doc("", "the file.");
+        h.doc("", "the file, and the command");
+        h.doc(
+            "",
+            "enclone BCR=123085 BC=f FCELL=\"nice == 'true' && rank <= 5\"",
+        );
+        h.doc("", "would cause only the first barcode to be used.");
 
         // Done.
 

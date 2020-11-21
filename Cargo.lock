@@ -574,6 +574,7 @@ dependencies = [
  "dirs",
  "enclone_core",
  "equiv",
+ "evalexpr",
  "graph_simple",
  "hdf5",
  "io_utils",
@@ -606,6 +607,7 @@ dependencies = [
  "bytes",
  "chrono",
  "debruijn",
+ "evalexpr",
  "hdf5",
  "io_utils",
  "mirror_sparse_matrix",
@@ -646,6 +648,7 @@ dependencies = [
  "enclone_proto",
  "enclone_tail",
  "equiv",
+ "evalexpr",
  "failure",
  "file-lock",
  "flate2",
@@ -804,6 +807,12 @@ dependencies = [
  "serde",
  "serde_json",
 ]
+
+[[package]]
+name = "evalexpr"
+version = "5.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a8619223d40c23279f9120e2646712ec3eeeb68b546ed993c619d77682bdef8"
 
 [[package]]
 name = "exons"
@@ -2293,7 +2302,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2301,8 +2310,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
- "strum 0.18.0",
- "strum_macros 0.18.0",
+ "strum 0.19.2",
+ "strum_macros 0.19.2",
  "vdj_types",
  "vector_utils",
 ]

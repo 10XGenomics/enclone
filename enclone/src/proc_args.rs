@@ -5,6 +5,7 @@ use crate::proc_args3::*;
 use crate::proc_args_check::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
+use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
@@ -743,13 +744,25 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg == "TREE=const" {
             ctl.gen_opt.tree = "const".to_string();
         } else if arg.starts_with("FCELL=") {
-            let body = arg.after("FCELL=");
-            if !body.contains('=') {
+            let mut condition = arg.after("FCELL=").to_string();
+            let con = condition.as_bytes();
+            for i in 0..con.len() {
+                if i > 0 && i < con.len() - 1 && con[i] == b'=' {
+                    if con[i - 1] != b'=' && con[i + 1] != b'=' {
+                        eprintln!(
+                            "\nConstraints for FCELL cannot use =.  Please use == instead.\n"
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+            condition = condition.replace("'", "\"");
+            let compiled = build_operator_tree(&condition);
+            if !compiled.is_ok() {
                 eprintln!("\nFCELL usage incorrect.\n");
                 std::process::exit(1);
             }
-            let (var, val) = (body.before("=").to_string(), body.after("=").to_string());
-            ctl.clono_filt_opt.fcell.push((var, val));
+            ctl.clono_filt_opt.fcell.push(compiled.unwrap());
         } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
             ctl.clono_filt_opt.fail_only = true;
         } else if arg.starts_with("LEGEND=") {
@@ -1144,11 +1157,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     unique_sort(&mut alt_bcs);
     for con in ctl.clono_filt_opt.fcell.iter() {
-        if !bin_member(&alt_bcs, &con.0) {
-            eprintln!(
-                "\nYou've used a variable as part of an FCELL argument that has not\n\
-                been specified using BC or bc (via META).\n"
-            );
+        for var in con.iter_variable_identifiers() {
+            if !bin_member(&alt_bcs, &var.to_string()) {
+                eprintln!(
+                    "\nYou've used a variable {} as part of an FCELL argument that has not\n\
+                    been specified using BC or bc (via META).\n",
+                    var
+                );
+                std::process::exit(1);
+            }
+        }
+        for _ in con.iter_function_identifiers() {
+            eprintln!("\nSomething is wrong with your FCELL value.\n");
             std::process::exit(1);
         }
     }

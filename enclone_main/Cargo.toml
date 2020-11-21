@@ -24,6 +24,7 @@ enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 equiv = "0.1.2"
+evalexpr = "5.0.5"
 io_utils = "0.2"
 itertools = "0.9.0"
 perf_stats = "0.1.2"
