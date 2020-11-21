@@ -804,6 +804,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "the CDR*_AA sequence, or \"unknown\" if not computed",
         );
         h.doc(
+            "cdr*_aa_ref",
+            "same, for the universal reference sequence (but not for cdr3)",
+        );
+        h.doc(
             "cdr*_len",
             "number of amino acids in the CDR* sequence, or \"unknown\" if not computed",
         );
@@ -812,9 +816,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "the CDR*_DNA sequence, or \"unknown\" if not computed",
         );
         h.doc(
+            "cdr*_dna_ref",
+            "same, for the universal reference sequence (but not for cdr3)",
+        );
+        h.doc(
             "fwr*_aa",
             "the FWR*_AA sequence, or \"unknown\" if not computed",
         );
+        h.doc("fwr*_aa_ref", "same, for the universal reference sequence");
         h.doc(
             "fwr*_len",
             "number of amino acids in the FWR* sequence, or \"unknown\" if not computed",
@@ -822,6 +831,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc(
             "fwr*_dna",
             "the FWR*_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_dna_ref",
+            "same, for the universal reference sequences",
         );
         h.doc(
             "",

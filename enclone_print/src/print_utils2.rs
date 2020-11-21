@@ -1320,6 +1320,23 @@ pub fn row_fill(
                     }
                 }
                 cvar![j, var, y];
+            } else if *var == "cdr1_dna_ref".to_string() || *var == "cdr1_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr1_start.is_some()
+                    && x.fr2_start.is_some()
+                    && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
+                {
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                        [x.cdr1_start.unwrap()..x.fr2_start.unwrap()]
+                        .to_vec();
+                    if *var == "cdr1_dna_ref".to_string() {
+                        y = stringme(&dna);
+                    } else {
+                        y = stringme(&aa_seq(&dna, 0));
+                    }
+                }
+                cvar![j, var, y];
             } else if *var == "cdr2_dna".to_string()
                 || *var == "cdr2_aa".to_string()
                 || *var == "cdr2_len".to_string()
@@ -1365,6 +1382,23 @@ pub fn row_fill(
                         y = stringme(&aa_seq(&dna, 0));
                     } else {
                         y = format!("{}", dna.len() / 3);
+                    }
+                }
+                cvar![j, var, y];
+            } else if *var == "cdr2_dna_ref".to_string() || *var == "cdr2_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr2_start.is_some()
+                    && x.fr3_start.is_some()
+                    && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
+                {
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                        [x.cdr2_start.unwrap()..x.fr3_start.unwrap()]
+                        .to_vec();
+                    if *var == "cdr2_dna_ref".to_string() {
+                        y = stringme(&dna);
+                    } else {
+                        y = stringme(&aa_seq(&dna, 0));
                     }
                 }
                 cvar![j, var, y];
@@ -1419,6 +1453,20 @@ pub fn row_fill(
                     }
                 }
                 cvar![j, var, y];
+            } else if *var == "fwr1_dna_ref".to_string() || *var == "fwr1_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.cdr1_start.is_some() && x.fr1_start <= x.cdr1_start.unwrap() {
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                        [x.fr1_start..x.cdr1_start.unwrap()]
+                        .to_vec();
+                    if *var == "fwr1_dna_ref".to_string() {
+                        y = stringme(&dna);
+                    } else {
+                        y = stringme(&aa_seq(&dna, 0));
+                    }
+                }
+                cvar![j, var, y];
             } else if *var == "fwr2_dna".to_string()
                 || *var == "fwr2_aa".to_string()
                 || *var == "fwr2_len".to_string()
@@ -1461,6 +1509,20 @@ pub fn row_fill(
                         y = stringme(&aa_seq(&dna, 0));
                     } else {
                         y = format!("{}", dna.len() / 3);
+                    }
+                }
+                cvar![j, var, y];
+            } else if *var == "fwr2_dna_ref".to_string() || *var == "fwr2_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.fr2_start.unwrap() <= x.cdr2_start.unwrap() {
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                        [x.fr2_start.unwrap()..x.cdr2_start.unwrap()]
+                        .to_vec();
+                    if *var == "fwr2_dna_ref".to_string() {
+                        y = stringme(&dna);
+                    } else {
+                        y = stringme(&aa_seq(&dna, 0));
                     }
                 }
                 cvar![j, var, y];
@@ -1509,6 +1571,20 @@ pub fn row_fill(
                     }
                 }
                 cvar![j, var, y];
+            } else if *var == "fwr3_dna_ref".to_string() || *var == "fwr3_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let mut y = "unknown".to_string();
+                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start {
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
+                        [x.fr3_start.unwrap()..x.cdr3_start]
+                        .to_vec();
+                    if *var == "fwr3_dna_ref".to_string() {
+                        y = stringme(&dna);
+                    } else {
+                        y = stringme(&aa_seq(&dna, 0));
+                    }
+                }
+                cvar![j, var, y];
             } else if *var == "fwr4_dna".to_string()
                 || *var == "fwr4_aa".to_string()
                 || *var == "fwr4_len".to_string()
@@ -1524,6 +1600,24 @@ pub fn row_fill(
                     y = stringme(&aa_seq(&dna.to_vec(), 0));
                 } else {
                     y = format!("{}", dna.len() / 3);
+                }
+                cvar![j, var, y];
+            } else if *var == "fwr4_dna_ref".to_string() || *var == "fwr4_aa_ref".to_string() {
+                let x = &ex.share[mid];
+                let heavy = refdata.rtype[x.j_ref_id] == 0;
+                let aa_len;
+                if heavy {
+                    aa_len = 10;
+                } else {
+                    aa_len = 9;
+                }
+                let dna = refdata.refs[x.j_ref_id].to_ascii_vec();
+                let dna = dna[dna.len() - 1 - 3 * aa_len..dna.len() - 1].to_vec();
+                let y;
+                if *var == "fwr4_dna_ref".to_string() {
+                    y = stringme(&dna);
+                } else {
+                    y = stringme(&aa_seq(&dna.to_vec(), 0));
                 }
                 cvar![j, var, y];
             } else if *var == "ulen".to_string() {
