@@ -415,7 +415,7 @@ pub const TESTS: [&str; 166] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 16] = [
+pub const EXTENDED_TESTS: [&str; 17] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -451,6 +451,11 @@ pub const EXTENDED_TESTS: [&str; 16] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
         CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
+    // 17. test for very long (120 amino acid) CDR3
+    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
+    // there may be long productive CDR3 sequences in data from other species, although we do not
+    // have such data.
+    r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
