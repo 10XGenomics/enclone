@@ -24,6 +24,7 @@ debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1.2"
+hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
 mirror_sparse_matrix = "0.1.4"
@@ -42,9 +43,3 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", version = "
 vector_utils = "0.1.3"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
-
-[dependencies.hdf5]
-features = ["conda"]
-git = "https://github.com/pmarks/hdf5-rs.git"
-rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba"
-

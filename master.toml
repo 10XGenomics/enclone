@@ -28,6 +28,7 @@ file-lock = "1.1.20"
 flate2 = "1.0.17"
 git = "https://github.com/pmarks/hdf5-rs.git"
 graph_simple = "0.1.1"
+hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
 mirror_sparse_matrix = "0.1.4"
