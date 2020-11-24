@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 155] = [
+pub const TESTS: [&str; 166] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -388,12 +388,34 @@ pub const TESTS: [&str; 155] = [
     r###"BCR=85333 CDR3=CARTSNRGIVATIFRAFDIW NOPRINT POUT=stdout PCOLS=cdr3_aa1"###,
     // 155. test count_<regex> and F for that
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
+    // 156. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr1_aa1,fwr1_aa_ref1 AMINO=fwr1"###,
+    // 157. test ref variables
+    r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr1_dna1,fwr1_dna_ref1 AMINO=fwr1"##,
+    // 158. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr2_aa1,fwr2_aa_ref1 AMINO=fwr2"###,
+    // 159. test ref variables
+    r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr2_dna1,fwr2_dna_ref1 AMINO=fwr2"##,
+    // 160. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr3_aa1,fwr3_aa_ref1 AMINO=fwr3"###,
+    // 161. test ref variables
+    r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr3_dna1,fwr3_dna_ref1 AMINO=fwr3"##,
+    // 162. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr4_aa1,fwr4_aa_ref1 AMINO=fwr4"###,
+    // 163. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr1_aa2,cdr1_aa_ref2 AMINO=cdr1"###,
+    // 164. test ref variables
+    r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr1_dna2,cdr1_dna_ref2 AMINO=cdr1"##,
+    // 165. test ref variables
+    r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_aa2,cdr2_aa_ref2 AMINO=cdr2"###,
+    // 166. test ref variables
+    r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_dna2,cdr2_dna_ref2 AMINO=cdr2"##,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 16] = [
+pub const EXTENDED_TESTS: [&str; 17] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -429,6 +451,11 @@ pub const EXTENDED_TESTS: [&str; 16] = [
     // 16. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
         CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
+    // 17. test for very long (120 amino acid) CDR3
+    // Note that this long CDR3 is likely part of a nonproductive chain.  The test is here because
+    // there may be long productive CDR3 sequences in data from other species, although we do not
+    // have such data.
+    r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

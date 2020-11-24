@@ -1227,65 +1227,69 @@ Per-column variables are specified using
 <span style="font-weight:bold;">CVARS=x1,...,xn</span>
 where each xi is one of:
 
-┌────────────┬──────────────────────────────────────────────────────────────────────────────┐
-│var         │  bases at positions in chain that vary across the clonotype                  │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│u           │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
-│r           │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│const       │  constant region name                                                        │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│edit        │  a string that defines the edit of the reference V(D)J concatenation versus  │
-│            │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
-│            │  this uses a coordinate system in which 0 is the first base of the J ref     │
-│            │  segment (or the first base of the D ref segment for IGH and TRB); for       │
-│            │  example D-4:4 denotes the deletion of the last 4 bases of the V segment,    │
-│            │  I0:2 denotes an insertion of 2 bases after the V                            │
-│            │  and I0:2•S5 denotes that plus a substitution at position 5; in computing    │
-│            │  "edit", for IGH and TRB, we always test every possible D segment,           │
-│            │  regardless of whether one is annotated, and pick the best one; for this     │
-│            │  reason, "edit" may be slow                                                  │
-│comp        │  a measure of CDR3 complexity, which is the total number of S, D and I       │
-│            │  symbols in "edit" as defined above                                          │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│cdr*_aa     │  the CDR*_AA sequence, or "unknown" if not computed                          │
-│cdr*_len    │  number of amino acids in the CDR* sequence, or "unknown" if not computed    │
-│cdr*_dna    │  the CDR*_DNA sequence, or "unknown" if not computed                         │
-│fwr*_aa     │  the FWR*_AA sequence, or "unknown" if not computed                          │
-│fwr*_len    │  number of amino acids in the FWR* sequence, or "unknown" if not computed    │
-│fwr*_dna    │  the FWR*_DNA sequence, or "unknown" if not computed                         │
-│            │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
-│            │  For CDR1 and CDR2, please see "enclone help amino" and the page on          │
-│            │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│aa%         │  amino acid percent identity with donor reference, outside junction region   │
-│dna%        │  nucleotide percent identity with donor reference, outside junction region   │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│vjlen       │  number of bases from the start of the V region to the end of the J region   │
-│clen        │  length of observed constant region (usually truncated at primer start)      │
-│ulen        │  length of observed 5'-UTR sequence;                                         │
-│            │  note however that what report is just the start of the V segment            │
-│            │  on the contig, and thus the length may include junk before the UTR          │
-│cdiff       │  differences with universal reference constant region, shown in the          │
-│            │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10           │
-│            │  (same but contig has 10 additional bases beyond end of ref C region         │
-│            │  At most five differences are shown, and if there are more, ... is appended. │
-│udiff       │  like cdiff, but for the 5'-UTR                                              │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│notes       │  optional note if there is an insertion or the end of J does not exactly abut│
-│            │  the beginning of C; elided if empty; also single base overlaps between      │
-│            │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this     │
-│            │  because with some VDJ references, one nearly always has such an overlap     │
-├────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│ndiff&lt;n>vj  │  number of base differences within V..J between this exact subclonotype and  │
-│            │  exact subclonotype n                                                        │
-│d_univ      │  distance from universal reference, more specifically,                       │
-│            │  number of base differences within V..J between this exact                   │
-│            │  clonotype and universal reference, exclusive of indels, the last 15         │
-│            │  bases of the V and the first 15 bases of the J                              │
-│d_donor     │  distance from donor reference,                                              │
-│            │  as above but computed using donor reference                                 │
-└────────────┴──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────┬──────────────────────────────────────────────────────────────────────────────┐
+│var           │  bases at positions in chain that vary across the clonotype                  │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│u             │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
+│r             │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│const         │  constant region name                                                        │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│edit          │  a string that defines the edit of the reference V(D)J concatenation versus  │
+│              │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
+│              │  this uses a coordinate system in which 0 is the first base of the J ref     │
+│              │  segment (or the first base of the D ref segment for IGH and TRB); for       │
+│              │  example D-4:4 denotes the deletion of the last 4 bases of the V segment,    │
+│              │  I0:2 denotes an insertion of 2 bases after the V                            │
+│              │  and I0:2•S5 denotes that plus a substitution at position 5; in computing    │
+│              │  "edit", for IGH and TRB, we always test every possible D segment,           │
+│              │  regardless of whether one is annotated, and pick the best one; for this     │
+│              │  reason, "edit" may be slow                                                  │
+│comp          │  a measure of CDR3 complexity, which is the total number of S, D and I       │
+│              │  symbols in "edit" as defined above                                          │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cdr*_aa       │  the CDR*_AA sequence, or "unknown" if not computed                          │
+│cdr*_aa_ref   │  same, for the universal reference sequence (but not for cdr3)               │
+│cdr*_len      │  number of amino acids in the CDR* sequence, or "unknown" if not computed    │
+│cdr*_dna      │  the CDR*_DNA sequence, or "unknown" if not computed                         │
+│cdr*_dna_ref  │  same, for the universal reference sequence (but not for cdr3)               │
+│fwr*_aa       │  the FWR*_AA sequence, or "unknown" if not computed                          │
+│fwr*_aa_ref   │  same, for the universal reference sequence                                  │
+│fwr*_len      │  number of amino acids in the FWR* sequence, or "unknown" if not computed    │
+│fwr*_dna      │  the FWR*_DNA sequence, or "unknown" if not computed                         │
+│fwr*_dna_ref  │  same, for the universal reference sequences                                 │
+│              │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
+│              │  For CDR1 and CDR2, please see "enclone help amino" and the page on          │
+│              │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│aa%           │  amino acid percent identity with donor reference, outside junction region   │
+│dna%          │  nucleotide percent identity with donor reference, outside junction region   │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│vjlen         │  number of bases from the start of the V region to the end of the J region   │
+│clen          │  length of observed constant region (usually truncated at primer start)      │
+│ulen          │  length of observed 5'-UTR sequence;                                         │
+│              │  note however that what report is just the start of the V segment            │
+│              │  on the contig, and thus the length may include junk before the UTR          │
+│cdiff         │  differences with universal reference constant region, shown in the          │
+│              │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10           │
+│              │  (same but contig has 10 additional bases beyond end of ref C region         │
+│              │  At most five differences are shown, and if there are more, ... is appended. │
+│udiff         │  like cdiff, but for the 5'-UTR                                              │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│notes         │  optional note if there is an insertion or the end of J does not exactly abut│
+│              │  the beginning of C; elided if empty; also single base overlaps between      │
+│              │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this     │
+│              │  because with some VDJ references, one nearly always has such an overlap     │
+├──────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│ndiff&lt;n>vj    │  number of base differences within V..J between this exact subclonotype and  │
+│              │  exact subclonotype n                                                        │
+│d_univ        │  distance from universal reference, more specifically,                       │
+│              │  number of base differences within V..J between this exact                   │
+│              │  clonotype and universal reference, exclusive of indels, the last 15         │
+│              │  bases of the V and the first 15 bases of the J                              │
+│d_donor       │  distance from donor reference,                                              │
+│              │  as above but computed using donor reference                                 │
+└──────────────┴──────────────────────────────────────────────────────────────────────────────┘
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
 <span style="background-color:#cbcccd;"> </span> 

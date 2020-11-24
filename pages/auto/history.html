@@ -65,6 +65,28 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>11/24/20</b>: 
+<ul>
+<li>
+Allow arbitrarily long CDR3 sequences.  This change is not part of Cell Ranger 5.0, but may
+be part of a subsequent release.  In advance of that, in order to exploit this feature, you
+will need to add the option <code>REPROD</code> to the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line, to cause productive
+pairs to be recomputed.  Allowing very long CDR3 sequences likely introduces some artifacts.  For
+example, in human BCR data, we observe CDR3 sequences longer than <code>40</code> amino acids at
+a rate of about <code>1/10,000</code> cells, and these are typically part of a <i>third</i> chain
+for a given cell, suggesting that such chains are likely nonproductive.  However it may be that
+long CDR3 sequences occur as part of productive chains in other species.
+</li>
+<li>
+Add a chain variable <code>cdr2_aa_ref</code> the gives the value of the CDR2 amino acids
+for the universal reference sequence, and similarly for other cases, see
+<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.
+</li>
+</ul>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>11/20/20</b>: 
 <ul>
 <li>
