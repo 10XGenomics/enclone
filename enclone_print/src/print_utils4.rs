@@ -282,11 +282,12 @@ pub fn build_show_aa(
                 panic!(
                     "Something is wrong because gap is {}, which is negative.\n\
                     This is happening for chain {} of {} of the clonotype with \
-                    these barcodes:\n{}.",
+                    these barcodes:\n{}\nand with first V..J sequence\n{}.",
                     gap,
                     cx + 1,
                     cols,
-                    bcs.iter().format(",")
+                    bcs.iter().format(","),
+                    strme(&exact_clonotypes[exacts[0]].share[cx].seq)
                 );
             }
             for j in 0..vlen {
