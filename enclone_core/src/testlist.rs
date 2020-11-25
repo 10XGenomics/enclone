@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 166] = [
+pub const TESTS: [&str; 167] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -410,6 +410,11 @@ pub const TESTS: [&str; 166] = [
     r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_aa2,cdr2_aa_ref2 AMINO=cdr2"###,
     // 166. test ref variables
     r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_dna2,cdr2_dna_ref2 AMINO=cdr2"##,
+    // 167. Test that for TCR, the number of two-chain clonotypes does not change.  It is probably
+    // OK for it to change a little bit, but a big change would be indicative of a problem.  At
+    // one point we had a release with such a problem and this test is here to prevent that from
+    // happening again.
+    r###"TCR=101287 NOPRINT REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=848 EXPECT_OK"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
