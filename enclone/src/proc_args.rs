@@ -689,6 +689,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES") {
             ctl.gen_opt.required_two_cell_clonotypes =
                 Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());
+        } else if is_usize_arg(&arg, "REQUIRED_TWO_CHAIN_CLONOTYPES") {
+            ctl.gen_opt.required_two_chain_clonotypes =
+                Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
         } else if is_usize_arg(&arg, "REQUIRED_DATASETS") {
             ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
         } else if is_usize_arg(&arg, "EXACT") {

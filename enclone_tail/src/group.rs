@@ -1453,9 +1453,13 @@ pub fn group_and_print_clonotypes(
 
     let mut ncells = 0;
     let mut nclono2 = 0;
+    let mut two_chain = 0;
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     for i in 0..nclono {
+        if rsi[i].mat.len() == 2 {
+            two_chain += 1;
+        }
         let mut n = 0;
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
@@ -2036,6 +2040,19 @@ pub fn group_and_print_clonotypes(
                 "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
                 ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
                 nclono2,
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Test for required number of two chain clonotypes.
+
+    if ctl.gen_opt.required_two_chain_clonotypes.is_some() {
+        if ctl.gen_opt.required_two_chain_clonotypes.unwrap() != two_chain {
+            eprintln!(
+                "\nThe required number of two-chain clonotypes is {}, but you actually have {}.\n",
+                ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
+                two_chain,
             );
             std::process::exit(1);
         }

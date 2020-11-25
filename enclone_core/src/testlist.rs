@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 166] = [
+pub const TESTS: [&str; 167] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -410,12 +410,17 @@ pub const TESTS: [&str; 166] = [
     r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_aa2,cdr2_aa_ref2 AMINO=cdr2"###,
     // 166. test ref variables
     r##"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=cdr2_dna2,cdr2_dna_ref2 AMINO=cdr2"##,
+    // 167. Test that for TCR, the number of two-chain clonotypes does not change.  It is probably
+    // OK for it to change a little bit, but a big change would be indicative of a problem.  At
+    // one point we had a release with such a problem and this test is here to prevent that from
+    // happening again.
+    r###"TCR=101287 NOPRINT REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=848 EXPECT_OK"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 17] = [
+pub const EXTENDED_TESTS: [&str; 18] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -456,6 +461,9 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     // there may be long productive CDR3 sequences in data from other species, although we do not
     // have such data.
     r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
+    // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
+    // there are three chains and the middle one was the problem
+    r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

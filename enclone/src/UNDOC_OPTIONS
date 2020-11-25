@@ -209,4 +209,6 @@ REQUIRED_DONORS=n: exit(1) if the number of donors is not n
 
 REQUIRED_TWO_CELL_CLONOTYPES=n: exit(1) if the number of clonotypes having >= 2 cells is not n
 
+REQUIRED_TWO_CHAIN_CLONOTYPES=n: exit(1) if the number of two chain clonotypes is not n
+
 REQUIRED_DATASETS=n: exit(1) if the number of datasets is not n
