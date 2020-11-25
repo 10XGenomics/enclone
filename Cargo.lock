@@ -32,7 +32,7 @@ checksum = "61e5ca2ec70bbae7d4b08ab5d27fcb2fe82295321b4e956a882d26b6341be988"
 dependencies = [
  "bio",
  "debruijn",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "vector_utils",
 ]
 
@@ -195,7 +195,7 @@ dependencies = [
  "fnv",
  "fxhash",
  "getset",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "itertools-num",
  "lazy_static",
  "multimap",
@@ -488,7 +488,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "log",
  "num",
  "serde",
@@ -2148,7 +2148,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca5324a796d6617a460da3a2b60243a1361397e66dcea45d6a0c554358462a0a"
 dependencies = [
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "string_utils",
 ]
 
@@ -2290,8 +2290,8 @@ dependencies = [
 
 [[package]]
 name = "vdj_ann"
-version = "0.1.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#19580cd70bb0f96a13167c8ff4f8a6d69ddeb70c"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#5a756c36eb256550e807dd518fdc5d93c692df30"
 dependencies = [
  "align_tools",
  "amino",
@@ -2302,7 +2302,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.8.2",
  "kmer_lookup",
  "pretty_trace",
  "serde",

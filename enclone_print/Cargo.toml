@@ -44,5 +44,5 @@ serde_json = "*"
 stats_utils = "0.1.1"
 string_utils = "0.1.1"
 tables = "0.1.2"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", version = "0.1.4" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", version = "0.1.5" }
 vector_utils = "0.1.3"
