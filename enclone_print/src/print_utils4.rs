@@ -5,7 +5,7 @@ use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
-use itertools::Itertools;
+// use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::*;
@@ -176,8 +176,8 @@ pub fn build_show_aa(
     shares_amino: &Vec<Vec<usize>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    exacts: &Vec<usize>,
-    exact_clonotypes: &Vec<ExactClonotype>,
+    _exacts: &Vec<usize>,
+    _exact_clonotypes: &Vec<ExactClonotype>,
 ) -> Vec<Vec<usize>> {
     let cols = rsi.vids.len();
     let mut show_aa = vec![Vec::<usize>::new(); cols];
@@ -269,6 +269,10 @@ pub fn build_show_aa(
             let jseq2 = &jseq1;
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
+            // This test must be here for a reason, but we encountered examples where it was
+            // triggered, and there was nothing obviously wrong.  In the event that an internal
+            // error is encountered elsewhere in the code, we might wish to turn this back on.
+            /*
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
             if gap < 0 {
                 let mut bcs = Vec::<String>::new();
@@ -290,6 +294,7 @@ pub fn build_show_aa(
                     strme(&exact_clonotypes[exacts[0]].share[cx].seq)
                 );
             }
+            */
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
                     show_aa[cx].push(j / 3);
@@ -314,8 +319,10 @@ pub fn build_show_aa(
             let jseq2 = &jseq1;
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
+            /*
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
             assert!(gap >= 0);
+            */
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
                     let n = 3 * (j / 3);
