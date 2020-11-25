@@ -2291,7 +2291,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#a300b7db0b5a67df3885da90fea7b0f09f05a99e"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git#19580cd70bb0f96a13167c8ff4f8a6d69ddeb70c"
 dependencies = [
  "align_tools",
  "amino",
@@ -2302,7 +2302,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2310,8 +2310,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
- "strum 0.18.0",
- "strum_macros 0.18.0",
+ "strum 0.19.2",
+ "strum_macros 0.19.2",
  "vdj_types",
  "vector_utils",
 ]
