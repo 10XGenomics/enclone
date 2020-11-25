@@ -415,7 +415,7 @@ pub const TESTS: [&str; 166] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 17] = [
+pub const EXTENDED_TESTS: [&str; 18] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -456,6 +456,9 @@ pub const EXTENDED_TESTS: [&str; 17] = [
     // there may be long productive CDR3 sequences in data from other species, although we do not
     // have such data.
     r###"BCR=1020665 BUILT_IN REPROD CVARSP=cdr3_len CDR3=CARDGGGQPFDLW AMINO= NO_PRE NFORCE"###,
+    // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
+    // there are three chains and the middle one was the problem
+    r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
