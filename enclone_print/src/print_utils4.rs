@@ -281,8 +281,11 @@ pub fn build_show_aa(
                 bcs.sort();
                 panic!(
                     "Something is wrong because gap is {}, which is negative.\n\
-                    This is happening for the clonotype with these barcodes:\n{}.",
+                    This is happening for chain {} of {} of the clonotype with \
+                    these barcodes:\n{}.",
                     gap,
+                    cx + 1,
+                    cols,
                     bcs.iter().format(",")
                 );
             }
