@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 167] = [
+pub const TESTS: [&str; 168] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -415,6 +415,10 @@ pub const TESTS: [&str; 167] = [
     // one point we had a release with such a problem and this test is here to prevent that from
     // happening again.
     r###"TCR=101287 NOPRINT REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=848 EXPECT_OK"###,
+    // 168. Test POUT without PCELL, where a per-barcode variable is converted into a
+    // comma-separated list.
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv POUT=stdout PCOLS=rank
+        CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
