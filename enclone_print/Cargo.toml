@@ -1,6 +1,6 @@
 [package]
 name = "enclone_print"
-version = "0.5.18"
+version = "0.5.19"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
               Shaun Jackman <shaun.jackman@10xgenomics.com>,
