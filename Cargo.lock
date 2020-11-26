@@ -211,8 +211,8 @@ dependencies = [
  "serde_derive",
  "snafu",
  "statrs",
- "strum 0.18.0",
- "strum_macros 0.18.0",
+ "strum",
+ "strum_macros",
  "triple_accel",
  "vec_map",
 ]
@@ -564,7 +564,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -599,7 +599,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -624,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -635,7 +635,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -672,7 +672,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -706,7 +706,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "bio",
  "byteorder",
@@ -721,7 +721,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.17"
+version = "0.5.18"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -2083,28 +2083,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57bd81eb48f4c437cadc685403cad539345bf703d78e63707418431cecd4522b"
 
 [[package]]
-name = "strum"
-version = "0.19.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3924a58d165da3b7b2922c667ab0673c7b5fd52b5c19ea3442747bcb3cd15abe"
-
-[[package]]
 name = "strum_macros"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87c85aa3f8ea653bfd3ddf25f7ee357ee4d204731f6aa9ad04002306f6e2774c"
-dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "strum_macros"
-version = "0.19.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d2ab682ecdcae7f5f45ae85cd7c1e6c8e68ea42c8a612d47fedf831c037146a"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -2291,7 +2273,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git#5a756c36eb256550e807dd518fdc5d93c692df30"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=40c9ced428efa035478656ecb4a8d0ba712c45b2#40c9ced428efa035478656ecb4a8d0ba712c45b2"
 dependencies = [
  "align_tools",
  "amino",
@@ -2310,8 +2292,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
- "strum 0.19.2",
- "strum_macros 0.19.2",
+ "strum",
+ "strum_macros",
  "vdj_types",
  "vector_utils",
 ]
@@ -2319,13 +2301,12 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1ec381196298d13e83bfa7ad9391e9c7e759af43dce872ac910f22f2a5b8d72"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=40c9ced428efa035478656ecb4a8d0ba712c45b2#40c9ced428efa035478656ecb4a8d0ba712c45b2"
 dependencies = [
  "serde",
  "serde_json",
- "strum 0.19.2",
- "strum_macros 0.19.2",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
