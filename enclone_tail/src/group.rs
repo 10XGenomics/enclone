@@ -1241,6 +1241,7 @@ pub fn group_and_print_clonotypes(
                                 }
                                 if y.contains_key(c) {
                                     let val = &y[c];
+                                    let val = val.replace(POUT_SEP, ",");
                                     if !val.contains(',') {
                                         if ctl.parseable_opt.pout != "stdout".to_string() {
                                             fwrite!(pout, "{}", val);
