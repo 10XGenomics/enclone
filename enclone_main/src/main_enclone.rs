@@ -58,26 +58,6 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn binomial_sum(n: usize, k: usize, p: f64) -> f64 {
-    assert!(n >= 1);
-    assert!(k <= n);
-    let mut sum = 0.0;
-    let mut choose = 1.0;
-    for _ in 0..n {
-        choose *= 1.0 - p;
-    }
-    let q = p / (1.0 - p);
-    for i in 0..=k {
-        sum += choose;
-        choose *= (n - i) as f64;
-        choose /= (i + 1) as f64;
-        choose *= q;
-    }
-    sum
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let t = Instant::now();
     // Provide help if requested.

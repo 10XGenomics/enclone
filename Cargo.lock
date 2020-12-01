@@ -32,7 +32,7 @@ checksum = "61e5ca2ec70bbae7d4b08ab5d27fcb2fe82295321b4e956a882d26b6341be988"
 dependencies = [
  "bio",
  "debruijn",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "vector_utils",
 ]
 
@@ -195,7 +195,7 @@ dependencies = [
  "fnv",
  "fxhash",
  "getset",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "itertools-num",
  "lazy_static",
  "multimap",
@@ -488,7 +488,7 @@ checksum = "6e6824051de090778a86d069d8a40672337d9046a2da6a0a6f453e985db74853"
 dependencies = [
  "bit-set",
  "boomphf",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "log",
  "num",
  "serde",
@@ -2054,9 +2054,9 @@ dependencies = [
 
 [[package]]
 name = "stats_utils"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0f41d546028b75dfcebf71c01c8ed6d1537fa873341f62de41cb5695247c92d"
+checksum = "478469a6e6bccf8154ae5347a98b31533ce846a90425585f56f990b18ae676c2"
 
 [[package]]
 name = "stirling_numbers"
@@ -2130,7 +2130,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca5324a796d6617a460da3a2b60243a1361397e66dcea45d6a0c554358462a0a"
 dependencies = [
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "string_utils",
 ]
 
@@ -2284,7 +2284,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.8.2",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
