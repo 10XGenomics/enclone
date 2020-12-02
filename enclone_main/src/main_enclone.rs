@@ -46,6 +46,7 @@ use stats_utils::*;
 use std::{
     cmp::max,
     collections::HashMap,
+    env,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     process::Command,
@@ -55,26 +56,6 @@ use string_utils::*;
 use tables::*;
 use vdj_ann::*;
 use vector_utils::*;
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-fn binomial_sum(n: usize, k: usize, p: f64) -> f64 {
-    assert!(n >= 1);
-    assert!(k <= n);
-    let mut sum = 0.0;
-    let mut choose = 1.0;
-    for _ in 0..n {
-        choose *= 1.0 - p;
-    }
-    let q = p / (1.0 - p);
-    for i in 0..=k {
-        sum += choose;
-        choose *= (n - i) as f64;
-        choose /= (i + 1) as f64;
-        choose *= q;
-    }
-    sum
-}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -223,6 +204,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
+            let args: Vec<String> = env::args().collect();
             let exit_message: String;
             if !ctl.gen_opt.cellranger {
                 exit_message = format!(
@@ -231,9 +213,11 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     Please email us at enclone@10xgenomics.com, including the traceback shown\n\
                     above and also the following version information:\n\
                     {} : {}.\n\n\
-                    Thank you and have a nice day!",
+                    Your command was:\n\n{}\n\n\
+                    🌸 Thank you and have a nice day! 🌸",
                     env!("CARGO_PKG_VERSION"),
-                    version_string()
+                    version_string(),
+                    args.iter().format(" "),
                 );
             } else {
                 exit_message = format!(

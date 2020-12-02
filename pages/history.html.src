@@ -31,6 +31,15 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>12/2/20</b>: CDR3 sequences are now recomputed by #enclone, rather than taken from the value
+in <code>all_contig_annotations.json</code>.  This will result in changed values at a very low
+frequency, and only if the CDR3 calculation algorithm was changed between the time of the relevant
+<code>cellranger</code> release and the time of the #enclone release.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>11/24/20</b>: 
 <ul>
 <li>

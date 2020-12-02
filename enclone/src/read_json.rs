@@ -144,8 +144,8 @@ fn parse_vector_entry_from_json(
     let mut j_start_ref = 0;
     let mut c_start = None;
     let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
-    let cdr3_aa: String;
-    let cdr3_dna: String;
+    let mut cdr3_aa: String;
+    let mut cdr3_dna: String;
     let mut cdr3_start: usize;
     if v.get("version").is_some() {
         *cr_version = v["version"].to_string().between("\"", "\"").to_string();
@@ -386,6 +386,26 @@ fn parse_vector_entry_from_json(
             annv.push((start, len2, t, len1, 0));
         } else if del > 0 && del % 3 == 0 && ins == 0 && len2 > 0 {
             annv.push((len1, len2, t, len1 + del, 0));
+        }
+
+        // Check to see if the CDR3 sequence has changed.  This could happen if the cellranger
+        // version for all_contig_annotations.json used an older version of the CDR3 calculation
+        // than is used in the current version of enclone.  This could result in internal
+        // inconsistencies, leading to an assert somewhere downstream.
+
+        let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
+        let x = DnaString::from_dna_string(&full_seq);
+        get_cdr3_using_ann(&x, &refdata, &annv, &mut cdr3);
+        if cdr3.is_empty() {
+            return;
+        }
+        let cdr3_aa_alt = stringme(&cdr3[0].1);
+        if cdr3_aa != cdr3_aa_alt {
+            cdr3_aa = cdr3_aa_alt;
+            cdr3_dna = x
+                .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
+                .to_string();
+            cdr3_start = cdr3[0].0 - tig_start as usize;
         }
     }
 

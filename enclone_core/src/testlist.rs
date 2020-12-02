@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 168] = [
+pub const TESTS: [&str; 169] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -419,6 +419,9 @@ pub const TESTS: [&str; 168] = [
     // comma-separated list.
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv POUT=stdout PCOLS=rank
         CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
+    // 169. this crashed at one point because the heavy chain CDR3 computed by cellranger was
+    // different than the current one, resulting in an inconsistency
+    r###"BCR=85333 CDR3=CQQYNSYSYTF CVARSP=fwr3_aa_ref"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are

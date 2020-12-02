@@ -2008,6 +2008,7 @@ pub fn group_and_print_clonotypes(
 
     // Test for required number of clonotypes.
 
+    let mut fail = false;
     if ctl.gen_opt.required_clonotypes.is_some() {
         if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
             eprintln!(
@@ -2015,7 +2016,7 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_clonotypes.unwrap(),
                 nclono,
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
@@ -2029,7 +2030,7 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_donors.unwrap(),
                 ndonors,
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
@@ -2042,7 +2043,7 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
                 nclono2,
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
@@ -2055,7 +2056,7 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
                 two_chain,
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
@@ -2069,7 +2070,10 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_datasets.unwrap(),
                 ndatasets,
             );
-            std::process::exit(1);
+            fail = true;
         }
+    }
+    if fail {
+        std::process::exit(1);
     }
 }
