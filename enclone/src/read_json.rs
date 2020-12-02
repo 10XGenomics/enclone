@@ -396,6 +396,9 @@ fn parse_vector_entry_from_json(
         let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         let x = DnaString::from_dna_string(&full_seq);
         get_cdr3_using_ann(&x, &refdata, &annv, &mut cdr3);
+        if cdr3.is_empty() {
+            return;
+        }
         let cdr3_aa_alt = stringme(&cdr3[0].1);
         if cdr3_aa != cdr3_aa_alt {
             cdr3_aa = cdr3_aa_alt;
