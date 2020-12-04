@@ -1968,6 +1968,7 @@ pub fn group_and_print_clonotypes(
 
     // Test for required number of false positives.
 
+    let mut fail = false;
     if ctl.gen_opt.required_fps.is_some() {
         let mut fps = 0;
         for i in 0..pics.len() {
@@ -1983,7 +1984,7 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_fps.unwrap(),
                 fps
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
@@ -2002,13 +2003,12 @@ pub fn group_and_print_clonotypes(
                 ctl.gen_opt.required_cells.unwrap(),
                 ncells,
             );
-            std::process::exit(1);
+            fail = true;
         }
     }
 
     // Test for required number of clonotypes.
 
-    let mut fail = false;
     if ctl.gen_opt.required_clonotypes.is_some() {
         if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
             eprintln!(
