@@ -1575,13 +1575,14 @@ pub fn row_fill(
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
                 if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start {
-                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec()
-                        [x.fr3_start.unwrap()..x.cdr3_start]
-                        .to_vec();
-                    if *var == "fwr3_dna_ref".to_string() {
-                        y = stringme(&dna);
-                    } else {
-                        y = stringme(&aa_seq(&dna, 0));
+                    let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
+                    if x.cdr3_start <= dna.len() {
+                        let dna = dna[x.fr3_start.unwrap()..x.cdr3_start].to_vec();
+                        if *var == "fwr3_dna_ref".to_string() {
+                            y = stringme(&dna);
+                        } else {
+                            y = stringme(&aa_seq(&dna, 0));
+                        }
                     }
                 }
                 cvar![j, var, y];
