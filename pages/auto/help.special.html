@@ -51,152 +51,162 @@ normally should not be invoked.  Some of these options delete barcodes, and a su
 action is included in the SUMMARY option.  See also the lead variable "filter", see "enclone help
 lvars".  At the bottom of this page we provide some other options that are not noise filters.
 
-┌────────────────────────┬─────────────────────────────────────────────────────────────────────────┐
-│NALL                    │  Turn off all the noise filters shown below.  This may yield            │
-│                        │  quite a mess.                                                          │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NCELL                   │  Use contigs found by Cell Ranger even if they were not in a            │
-│                        │  called cell, or not called high confidence.                            │
-│NALL_CELL               │  turn off all the noise filters except for the cell filter              │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NGEX                    │  If gene expression and/or feature barcode data are provided,           │
-│                        │  if a barcode is called a cell by the VDJ part of the Cell              │
-│                        │  Ranger pipeline, but not called a cell by the gene                     │
-│                        │  expression and/or feature barcode part, then the default               │
-│                        │  behavior of enclone is to remove such cells from clonotypes.           │
-│                        │   This option disables that behavior.                                   │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NCROSS                  │  If you specify that two or more libraries arose from the               │
-│                        │  same origin (i.e. cells from the same tube or tissue), then            │
-│                        │  by default enclone will "cross filter" so as to remove                 │
-│                        │  expanded exact subclonotypes that are present in one library           │
-│                        │  but not another, in a fashion that would be highly                     │
-│                        │  improbable, assuming random draws of cells from the tube.              │
-│                        │  These are believed to arise when a plasma or plasmablast               │
-│                        │  cell breaks up during during or after pipetting from the               │
-│                        │  tube, and the resulting fragments seed GEMs, yielding                  │
-│                        │  expanded 'fake' clonotypes that are residues of real single            │
-│                        │  plasma cells.  The NCROSS options turns off this filter,               │
-│                        │  which could be useful so long as you interpret the restored            │
-│                        │  clonotypes as representing what are probably single cells.             │
-│                        │  There may also be other situations where the filter should             │
-│                        │  be turned off, and in particular the filter can do weird               │
-│                        │  things if inputs are somehow mis-specified to enclone.  Note           │
-│                        │  that for purposes of this option, enclone defines an origin            │
-│                        │  by the pair (origin name, donor name).                                 │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NUMI                    │  Filter out B cells based on low BCR UMI counts.  The heuristics        │
-│                        │  for this are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.          │
-│NUMI_RATIO              │  Filter out B cells based on low BCR UMI counts relative to another cell│
-│                        │  in a given clonotype.  The heuristics for this                         │
-│                        │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                   │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NGRAPH_FILTER           │  By default, enclone filters to remove exact subclonotypes              │
-│                        │  that by virtue of their relationship to other exact                    │
-│                        │  subclonotypes, appear to arise from background mRNA or a               │
-│                        │  phenotypically similar phenomenon.  The NGRAPH_FILTER option           │
-│                        │  turns off this filtering.                                              │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NQUAL                   │  By default, enclone filters out exact subclonotypes having a           │
-│                        │  base in V..J that looks like it might be wrong.  More                  │
-│                        │  specifically, enclone finds bases which are not Q60 for a              │
-│                        │  barcode, not Q40 for two barcodes, are not supported by                │
-│                        │  other exact subclonotypes, are variant within the clonotype,           │
-│                        │  and which disagree with the donor reference.  NQUAL turns              │
-│                        │  this off.                                                              │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NWEAK_CHAINS            │  By default, enclone filters chains from clonotypes that are            │
-│                        │  weak and appear to be artifacts, perhaps arising from a                │
-│                        │  stray mRNA molecule that floated into a GEM.  The                      │
-│                        │  NWEAK_CHAINS option turns off this filter.                             │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NWEAK_ONESIES           │  By default, enclone disintegrates certain untrusted                    │
-│                        │  clonotypes into single cell clonotypes.  The untrusted                 │
-│                        │  clonotypes are onesies that are light chain or TRA and whose           │
-│                        │  number of cells is less than 0.1% of the total number of               │
-│                        │  cells.  This operation reduces the likelihood of creating              │
-│                        │  clonotypes containing cells that arose from different                  │
-│                        │  recombination events.  NWEAK_ONESIES turns this operation off.         │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NMERGE_ONESIES          │  enclone merges certain onesie clonotypes into clonotypes               │
-│                        │  having two or more chains.  By default, this merger is                 │
-│                        │  prevented if the number of cells in the onesie is less than            │
-│                        │  0.01% of the total number of cells.  NMERGE_ONESIES causes             │
-│                        │  these merges to happen anyway.                                         │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NFOURSIE_KILL           │  Under certain circumstances, enclone will delete foursie exact         │
-│                        │  subclonotypes.  Please see                                             │
-│                        │  https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.      │
-│                        │   The foursies that are killed are believed to be artifacts             │
-│                        │  arising from repeated cell doublets or GEMs that contain two           │
-│                        │  cells and multiple gel beads.  The argument NFOURSIE_KILL turns        │
-│                        │  off this filtering.                                                    │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NWHITEF                 │  By default, enclone filters out rare artifacts arising from            │
-│                        │  contamination of oligos on gel beads.  The NWHITEF option              │
-│                        │  turns off this filter.                                                 │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NBC_DUP                 │  By default, enclone filters out duplicated barcodes within an exact    │
-│                        │  subclonotype.  The NBC_DUP option turns off this filter.               │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│MIX_DONORS              │  By default, enclone will prevent cells from different donors           │
-│                        │  from being placed in the same clonotype.  The MIX_DONORS               │
-│                        │  option turns off this behavior, thus allowing cells from               │
-│                        │  different donors to be placed in the same clonotype.  The              │
-│                        │  main use of this option is for specificity testing, in which           │
-│                        │  data from different donors are deliberately combined in an             │
-│                        │  attempt to find errors.  Use of the bc field for META input            │
-│                        │  specification automatically turns on this option.                      │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│NIMPROPER               │  enclone filters out exact subclonotypes having more than one           │
-│                        │  chain, but all of the same type.  For example, the filter              │
-│                        │  removes all exact subclonotypes having two TRA chains and no           │
-│                        │  other chains.  The NIMPROPER option turns off this filter.             │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│MIN_CHAINS_EXACT=n      │  Delete any exact subclonotype having less than n chains.               │
-│                        │  You can use this to "purify" a clonotype so as to display              │
-│                        │  only exact subclonotypes having all their chains.                      │
-│CHAINS_EXACT=n          │  Delete any exact subclonotype not having exactly n chains.             │
-│MIN_CELLS_EXACT=n       │  Delete any exact subclonotype having less than n cells.  You might want│
-│                        │  to use this if you have a very large and complex expanded clonotype,   │
-│COMPLETE                │  delete any exact subclonotype that has less chains than the clonotype  │
-│                        │  for which you would like to see a simplified view.                     │
-│CONST_IGH="&lt;pattern>"   │  for BCR, keep only exact subclonotypes having a heavy chain            │
-│                        │  whose constant region gene name matches the given pattern              │
-│                        │  (meaning regular expression, see "enclone help filter")                │
-│CONST_IGKL="&lt;pattern>"  │  for BCR, keep only exact subclonotypes having a light chain            │
-│                        │  whose constant region gene name matches the given pattern              │
-│                        │  (meaning regular expression, see "enclone help filter")                │
-├────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
-│FCELL=constraint        │  Supposing that "constraint" is any constraint involving                │
-│                        │  arithmetic and boolean operators, and variables that are               │
-│                        │  specified as fields using the BC option (or equivalently,              │
-│                        │  using bc, via META), see "enclone help input", this option             │
-│                        │  filters out all barcodes that do not satisfy the given                 │
-│                        │  constraint.  Note that for purposes of testing the                     │
-│                        │  constraint, if the value for a particular barcode has not              │
-│                        │  been specified via BC or bc, then its value is taken to be             │
-│                        │  null.  Also multiple instances of FCELL may be used to                 │
-│                        │  impose multiple filters.  See the examples below, and be               │
-│                        │  very careful about syntax, which should match the given                │
-│                        │  examples exactly.  In particular,                                      │
-│                        │  • use == for equality, and not =                                       │
-│                        │  • put string values in single quotes                                   │
-│                        │  • put the entire expression in double quotes.                          │
-│                        │                                                                         │
-│                        │  As a toy example, suppose you had a CSV file f having five lines:      │
-│                        │  barcode,nice,rank                                                      │
-│                        │  AGCATACTCAGAGGTG-1,true,3                                              │
-│                        │  CGTGAGCGTATATGGA-1,true,7                                              │
-│                        │  CGTTAGAAGGAGTAGA-1,false,99                                            │
-│                        │  CGTTAGAAGGAGTAGA-1,dunno,43                                            │
-│                        │  then the command                                                       │
-│                        │  enclone BCR=123085 BC=f FCELL="nice == 'true'"                         │
-│                        │  would cause enclone to use only the first two barcodes shown in        │
-│                        │  the file, and the command                                              │
-│                        │  enclone BCR=123085 BC=f FCELL="nice == 'true' && rank &lt;= 5"            │
-│                        │  would cause only the first barcode to be used.                         │
-└────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│NALL                     │  Turn off all the noise filters shown below.  This may                │
+│                         │  yield quite a mess.                                                  │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NCELL                    │  Use contigs found by Cell Ranger even if they were not               │
+│                         │  in a called cell, or not called high confidence.                     │
+│NALL_CELL                │  turn off all the noise filters except for the cell filter            │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NGEX                     │  If gene expression and/or feature barcode data are                   │
+│                         │  provided, if a barcode is called a cell by the VDJ part              │
+│                         │  of the Cell Ranger pipeline, but not called a cell by                │
+│                         │  the gene expression and/or feature barcode part, then                │
+│                         │  the default behavior of enclone is to remove such cells              │
+│                         │  from clonotypes.  This option disables that behavior.                │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NCROSS                   │  If you specify that two or more libraries arose from                 │
+│                         │  the same origin (i.e. cells from the same tube or                    │
+│                         │  tissue), then by default enclone will "cross filter" so              │
+│                         │  as to remove expanded exact subclonotypes that are                   │
+│                         │  present in one library but not another, in a fashion                 │
+│                         │  that would be highly improbable, assuming random draws               │
+│                         │  of cells from the tube.  These are believed to arise                 │
+│                         │  when a plasma or plasmablast cell breaks up during                   │
+│                         │  during or after pipetting from the tube, and the                     │
+│                         │  resulting fragments seed GEMs, yielding expanded 'fake'              │
+│                         │  clonotypes that are residues of real single plasma                   │
+│                         │  cells.  The NCROSS options turns off this filter, which              │
+│                         │  could be useful so long as you interpret the restored                │
+│                         │  clonotypes as representing what are probably single                  │
+│                         │  cells.  There may also be other situations where the                 │
+│                         │  filter should be turned off, and in particular the                   │
+│                         │  filter can do weird things if inputs are somehow                     │
+│                         │  mis-specified to enclone.  Note that for purposes of                 │
+│                         │  this option, enclone defines an origin by the pair                   │
+│                         │  (origin name, donor name).                                           │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NUMI                     │  Filter out B cells based on low BCR UMI counts.  The heuristics      │
+│                         │  for this are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.        │
+│NUMI_RATIO               │  Filter out B cells based on low BCR UMI counts relative to another   │
+│                         │  cell in a given clonotype.  The heuristics for this                  │
+│                         │  are described on the enclone site at <span style="color:#25bc24;">bit.ly/enclone</span>.                 │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NGRAPH_FILTER            │  By default, enclone filters to remove exact                          │
+│                         │  subclonotypes that by virtue of their relationship to                │
+│                         │  other exact subclonotypes, appear to arise from                      │
+│                         │  background mRNA or a phenotypically similar phenomenon.              │
+│                         │   The NGRAPH_FILTER option turns off this filtering.                  │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NQUAL                    │  By default, enclone filters out exact subclonotypes                  │
+│                         │  having a base in V..J that looks like it might be                    │
+│                         │  wrong.  More specifically, enclone finds bases which                 │
+│                         │  are not Q60 for a barcode, not Q40 for two barcodes,                 │
+│                         │  are not supported by other exact subclonotypes, are                  │
+│                         │  variant within the clonotype, and which disagree with                │
+│                         │  the donor reference.  NQUAL turns this off.                          │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NWEAK_CHAINS             │  By default, enclone filters chains from clonotypes that              │
+│                         │  are weak and appear to be artifacts, perhaps arising                 │
+│                         │  from a stray mRNA molecule that floated into a GEM.                  │
+│                         │  The NWEAK_CHAINS option turns off this filter.                       │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NWEAK_ONESIES            │  By default, enclone disintegrates certain untrusted                  │
+│                         │  clonotypes into single cell clonotypes.  The untrusted               │
+│                         │  clonotypes are onesies that are light chain or TRA and               │
+│                         │  whose number of cells is less than 0.1% of the total                 │
+│                         │  number of cells.  This operation reduces the likelihood              │
+│                         │  of creating clonotypes containing cells that arose from              │
+│                         │  different recombination events.  NWEAK_ONESIES turns                 │
+│                         │  this operation off.                                                  │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NMERGE_ONESIES           │  enclone merges certain onesie clonotypes into                        │
+│                         │  clonotypes having two or more chains.  By default, this              │
+│                         │  merger is prevented if the number of cells in the                    │
+│                         │  onesie is less than 0.01% of the total number of cells.              │
+│                         │   NMERGE_ONESIES causes these merges to happen anyway.                │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NFOURSIE_KILL            │  Under certain circumstances, enclone will delete foursie exact       │
+│                         │  subclonotypes.  Please see                                           │
+│                         │  https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.    │
+│                         │   The foursies that are killed are believed to be artifacts           │
+│                         │  arising from repeated cell doublets or GEMs that contain two         │
+│                         │  cells and multiple gel beads.  The argument NFOURSIE_KILL turns      │
+│                         │  off this filtering.                                                  │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NWHITEF                  │  By default, enclone filters out rare artifacts arising               │
+│                         │  from contamination of oligos on gel beads.  The NWHITEF              │
+│                         │  option turns off this filter.                                        │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NBC_DUP                  │  By default, enclone filters out duplicated barcodes within an exact  │
+│                         │  subclonotype.  The NBC_DUP option turns off this filter.             │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIX_DONORS               │  By default, enclone will prevent cells from different                │
+│                         │  donors from being placed in the same clonotype.  The                 │
+│                         │  MIX_DONORS option turns off this behavior, thus                      │
+│                         │  allowing cells from different donors to be placed in                 │
+│                         │  the same clonotype.  The main use of this option is for              │
+│                         │  specificity testing, in which data from different                    │
+│                         │  donors are deliberately combined in an attempt to find               │
+│                         │  errors.  Use of the bc field for META input                          │
+│                         │  specification automatically turns on this option.                    │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│NIMPROPER                │  enclone filters out exact subclonotypes having more                  │
+│                         │  than one chain, but all of the same type.  For example,              │
+│                         │  the filter removes all exact subclonotypes having two                │
+│                         │  TRA chains and no other chains.  The NIMPROPER option                │
+│                         │  turns off this filter.                                               │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_CHAINS_EXACT=n       │  Delete any exact subclonotype having less than n                     │
+│                         │  chains.  You can use this to "purify" a clonotype so as              │
+│                         │  to display only exact subclonotypes having all their chains.         │
+│CHAINS_EXACT=n           │  Delete any exact subclonotype not having exactly n chains.           │
+│MIN_CELLS_EXACT=n        │  Delete any exact subclonotype having less than n cells.  You might   │
+│                         │  want to use this if you have a very large and complex expanded.      │
+│                         │  clonotype.                                                           │
+│COMPLETE                 │  delete any exact subclonotype that has less chains than the clonotype│
+│                         │  for which you would like to see a simplified view.                   │
+│CONST_IGH="&lt;pattern>"    │  for BCR, keep only exact subclonotypes having a heavy                │
+│                         │  chain whose constant region gene name matches the given              │
+│                         │  pattern (meaning regular expression, see "enclone help filter")      │
+│CONST_IGKL="&lt;pattern>"   │  for BCR, keep only exact subclonotypes having a light                │
+│                         │  chain whose constant region gene name matches the given              │
+│                         │  pattern (meaning regular expression, see "enclone help filter")      │
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│KEEP_CELL_IF=constraint  │  Supposing that "constraint" is any constraint involving              │
+│                         │  arithmetic and boolean operators, and variables that                 │
+│                         │  are specified as fields using the BC option (or                      │
+│                         │  equivalently, using bc, via META), see "enclone help                 │
+│                         │  input", this option filters out all barcodes that do                 │
+│                         │  not satisfy the given constraint.  Note that for                     │
+│                         │  purposes of testing the constraint, if the value for a               │
+│                         │  particular barcode has not been specified via BC or bc,              │
+│                         │  then its value is taken to be null.  Also multiple                   │
+│                         │  instances of KEEP_CELL_IF may be used to impose                      │
+│                         │  multiple filters.  See the examples below, and be very               │
+│                         │  careful about syntax, which should match the given                   │
+│                         │  examples exactly.  In particular,                                    │
+│                         │  • use == for equality, and not =                                     │
+│                         │  • put string values in single quotes                                 │
+│                         │  • put the entire expression in double quotes.                        │
+│                         │                                                                       │
+│                         │  As a toy example, suppose you had a CSV file f having five lines:    │
+│                         │  barcode,nice,rank                                                    │
+│                         │  AGCATACTCAGAGGTG-1,true,3                                            │
+│                         │  CGTGAGCGTATATGGA-1,true,7                                            │
+│                         │  CGTTAGAAGGAGTAGA-1,false,99                                          │
+│                         │  CGTTAGAAGGAGTAGA-1,dunno,43                                          │
+│                         │  then the command                                                     │
+│                         │  enclone BCR=123085 BC=f KEEP_CELL_IF="nice == 'true'"                │
+│                         │  would cause enclone to use only the first two barcodes shown in      │
+│                         │  the file, and the command                                            │
+│                         │  enclone BCR=123085 BC=f KEEP_CELL_IF="nice == 'true' && rank &lt;= 5"   │
+│                         │  would cause only the first barcode to be used.                       │
+│                         │                                                                       │
+│                         │  See also KEEP_CLONO_IF_CELL_MEAN=... and                             │
+│                         │  KEEP_CLONO_IF_CELL_MAX=... at "enclone help filter".                 │
+└─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
 
 </span></pre>
 </body>

@@ -65,6 +65,24 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>12/7/20</b>: 
+<ul>
+<li>
+The argument <code>F</code> has been renamed to
+<code>KEEP_CLONO_IF_CELL_MEAN</code>, although for backward compatibility, <code>F</code>
+still works.  We have added the similar <code>KEEP_CLONO_IF_CELL_MAX</code>.  See
+<a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for both.
+</li>
+<li>
+Rename <code>FCELL</code> to <code>KEEP_CELL_IF</code>, but retain <code>FCELL</code> for
+backward compatibility.
+</li>
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>12/2/20</b>: CDR3 sequences are now recomputed by <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, rather than taken from the value
 in <code>all_contig_annotations.json</code>.  This will result in changed values at a very low
 frequency, and only if the CDR3 calculation algorithm was changed between the time of the relevant

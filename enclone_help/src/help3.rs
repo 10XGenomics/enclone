@@ -415,7 +415,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.docpr(
             "",
-            "the \\bold{FCELL} option, please see \"enclone help special\"",
+            "the \\bold{KEEP_CELL_IF} option, please see \"enclone help special\"",
         );
         // doc INKT and MAIT
 
@@ -512,12 +512,20 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "\\bold{filtering by linear conditions}\n\n\
              enclone has the capability to filter by bounding certain lead variables, using \
              the command-line argument:\n\
-             \\bold{F=\"L\"}\n\
+             \\bold{KEEP_CLONO_IF_CELL_MEAN=\"L\"}\n\
              where L is a linear condition (as defined above).  Currently this is limited to \
              the case where the lead variables have been selected using \\bold{LVARS} or \
              \\bold{LVARSP}!  Also it is not implemented for all lead variables, and you'll get \
-             an error message if it is not implemented.  Multiple bounds may be imposed by using\n\
-             multiple instances of \\bold{F=...} .\n\n",
+             an error message if it is not implemented.  Multiple bounds may be imposed by using \
+             multiple instances of \\bold{KEEP_CLONO_IF_CELL_MEAN=...} .  As explained above, \
+             note that \\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
+             filters by computing the mean across all cells in the clonotype.  See also \
+             \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
+        );
+        h.print(
+            "Similarly, to filter by the max across all cells in a clonotype, one may use\n\
+             \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
+             and otherwise as above.\n\n",
         );
 
         // feature scanning

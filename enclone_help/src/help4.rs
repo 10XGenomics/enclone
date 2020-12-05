@@ -27,7 +27,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.docf2(
             "NALL",
             "Turn off all the noise filters shown below.  This may yield quite a mess.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -35,7 +35,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "NCELL",
             "Use contigs found by Cell Ranger even if they were not in a called cell, \
             or not called high confidence.",
-            60,
+            55,
         );
 
         h.doc(
@@ -51,7 +51,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             called a cell by the gene expression and/or feature barcode part, then the \
             default behavior of enclone is to remove such cells from clonotypes.  This \
             option disables that behavior.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -72,7 +72,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             inputs are somehow mis-specified to enclone.  Note that for purposes of \
             this option, enclone defines an origin by the pair \
             (origin name, donor name).",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -88,9 +88,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "NUMI_RATIO",
-            "Filter out B cells based on low BCR UMI counts relative to another cell",
+            "Filter out B cells based on low BCR UMI counts relative to another",
         );
-        h.doc("", "in a given clonotype.  The heuristics for this");
+        h.doc("", "cell in a given clonotype.  The heuristics for this");
         h.docpr(
             "",
             "are described on the enclone site at \\green{bit.ly/enclone}.",
@@ -103,7 +103,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             their relationship to other exact subclonotypes, appear to arise from \
             background mRNA or a phenotypically similar phenomenon.  The \
             NGRAPH_FILTER option turns off this filtering.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -114,7 +114,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             which are not Q60 for a barcode, not Q40 for two barcodes, are not \
             supported by other exact subclonotypes, are variant within the clonotype, \
             and which disagree with the donor reference.  NQUAL turns this off.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -123,7 +123,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "By default, enclone filters chains from clonotypes that are \
             weak and appear to be artifacts, perhaps arising from a stray mRNA molecule \
             that floated into a GEM.  The NWEAK_CHAINS option turns off this filter.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -135,7 +135,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             number of cells.  This operation reduces the likelihood of creating clonotypes \
             containing cells that arose from different recombination events.  NWEAK_ONESIES turns \
             this operation off.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -145,7 +145,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             By default, this merger is prevented if the number of cells in the onesie is less \
             than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
             happen anyway.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -164,7 +164,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "NWHITEF",
             "By default, enclone filters out rare artifacts arising from contamination \
             of oligos on gel beads.  The NWHITEF option turns off this filter.",
-            60,
+            55,
         );
 
         h.ldoc(
@@ -186,7 +186,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             in which data from different donors are deliberately combined in an attempt \
             to find errors.  Use of the bc field for META input specification \
             automatically turns on this option.",
-            60,
+            55,
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -195,7 +195,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "enclone filters out exact subclonotypes having more than one chain, but all of the \
             same type.  For example, the filter removes all exact subclonotypes having two TRA \
             chains and no other chains.  The NIMPROPER option turns off this filter.",
-            60,
+            55,
         );
 
         // Documentation section.
@@ -206,7 +206,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Delete any exact subclonotype having less than n chains.  You can use this \
             to \"purify\" a clonotype so as to display only exact subclonotypes having \
             all their chains.",
-            60,
+            55,
         );
 
         h.doc(
@@ -215,12 +215,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc(
             "MIN_CELLS_EXACT=n",
-            "Delete any exact subclonotype having less than n cells.  You might want",
+            "Delete any exact subclonotype having less than n cells.  You might",
         );
         h.doc(
             "",
-            "to use this if you have a very large and complex expanded clonotype,",
+            "want to use this if you have a very large and complex expanded.",
         );
+        h.doc("", "clonotype.");
         h.doc(
             "COMPLETE",
             "delete any exact subclonotype that has less chains than the clonotype",
@@ -231,31 +232,31 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "for BCR, keep only exact subclonotypes having a heavy chain whose constant region \
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
-            60,
+            55,
         );
         h.docf2(
             "CONST_IGKL=\"<pattern>\"",
             "for BCR, keep only exact subclonotypes having a light chain whose constant region \
             gene name matches the given pattern (meaning regular expression, see \
             \"enclone help filter\")",
-            60,
+            55,
         );
 
         // Documentation section.
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
-            "FCELL=constraint",
+            "KEEP_CELL_IF=constraint",
             "Supposing that \"constraint\" is any constraint involving arithmetic and \
             boolean operators, and variables that are specified as fields using the BC option \
             (or equivalently, using bc, via META), see \"enclone help input\", this \
             option filters out all barcodes that do not satisfy the given constraint.  \
             Note that for purposes of testing the constraint, if the value for a \
             particular barcode has not been specified via BC or bc, then its value is \
-            taken to be null.  Also multiple instances of FCELL may be used to impose \
+            taken to be null.  Also multiple instances of KEEP_CELL_IF may be used to impose \
             multiple filters.  See the examples below, and be very careful about syntax, \
             which should match the given examples exactly.  In particular,",
-            60,
+            55,
         );
         h.doc("", "• use == for equality, and not =");
         h.doc("", "• put string values in single quotes");
@@ -271,7 +272,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "CGTTAGAAGGAGTAGA-1,false,99");
         h.doc("", "CGTTAGAAGGAGTAGA-1,dunno,43");
         h.doc("", "then the command");
-        h.doc("", "enclone BCR=123085 BC=f FCELL=\"nice == 'true'\"");
+        h.doc(
+            "",
+            "enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true'\"",
+        );
         h.doc(
             "",
             "would cause enclone to use only the first two barcodes shown in",
@@ -279,9 +283,12 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("", "the file, and the command");
         h.doc(
             "",
-            "enclone BCR=123085 BC=f FCELL=\"nice == 'true' && rank <= 5\"",
+            "enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true' && rank <= 5\"",
         );
         h.doc("", "would cause only the first barcode to be used.");
+        h.doc("", "");
+        h.doc("", "See also KEEP_CLONO_IF_CELL_MEAN=... and");
+        h.doc("", "KEEP_CLONO_IF_CELL_MAX=... at \"enclone help filter\".");
 
         // Done.
 

@@ -241,7 +241,11 @@ impl LinearCondition {
         }
         let mut coeff = Vec::<f64>::new();
         let mut var = Vec::<String>::new();
-        parts.push(lhs[last..].to_string());
+        if lhsx[last] != b'+' {
+            parts.push(stringme(&lhsx[last..]));
+        } else {
+            parts.push(stringme(&lhsx[last + 1..]));
+        }
         for i in 0..parts.len() {
             parts[i] = parts[i].replace("(", "");
             parts[i] = parts[i].replace(")", "");
@@ -331,8 +335,8 @@ impl LinearCondition {
             }
             if ok {
                 let mut x = lvars[j].clone();
-                if x.contains(":count_") {
-                    x = x.before(":count_").to_string();
+                if x.contains(":") {
+                    x = x.before(":").to_string();
                 }
                 lvars0.push(x);
             }
@@ -574,6 +578,7 @@ pub struct ClonoFiltOpt {
     pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
     pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
+    pub bound_type: Vec<String>, // types of those bounds
     pub barcode: Vec<String>, // requires one of these barcodes
     pub umi_filt: bool,      // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
