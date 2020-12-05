@@ -19,15 +19,17 @@ enclone \
         tr '\n' ';' | tr -s ';'` \
     NOPRINT \
     SUMMARY \
-    PRE=/mnt/assembly/vdj/current14 \
+    PRE=/mnt/assembly/vdj/current15 \
     MIX_DONORS \
     NOPAGER \
     \
-    REQUIRED_FPS=16 \
-    REQUIRED_CELLS=452175 \
-    REQUIRED_CLONOTYPES=394211 \
+    BUILT_IN \
+    \
+    REQUIRED_FPS=15 \
+    REQUIRED_CELLS=452153 \
+    REQUIRED_CLONOTYPES=394207 \
     REQUIRED_DONORS=30 \
-    REQUIRED_TWO_CELL_CLONOTYPES=9085 \
+    REQUIRED_TWO_CELL_CLONOTYPES=9075 \
     REQUIRED_DATASETS=442 \
     \
     $*

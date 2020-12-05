@@ -6,4 +6,4 @@ enclone \
     BCR=`cat $rootdir/../../enclone_core/src/testdata.public.bcr.human | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
     ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT PRINT_FAILED_JOINS \
-    MIX_DONORS PRE=/mnt/assembly/vdj/current14 $*
+    MIX_DONORS PRE=/mnt/assembly/vdj/current15 $*

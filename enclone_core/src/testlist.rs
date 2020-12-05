@@ -215,8 +215,8 @@ pub const TESTS: [&str; 169] = [
     r###"BCR=123085 CDR3=CQQSYSTPRTF RE"###,
     // 76. test PLOT_BY_ISOTYPE
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2"###,
-    // 77. make sure that POUT works on full dataset
-    r###"BCR=86237 POUT=stdout EXPECT_OK"###,
+    // 77. DUPLICATE, SHOULD BE DELETED
+    r###"BCR=86237 POUT=/dev/null NOPRINT EXPECT_OK"###,
     // 78. make sure that POUT with PCELL works on full dataset
     r###"BCR=86237 POUT=stdout PCELL EXPECT_OK"###,
     // 79. make sure that POUT works on full dataset with gex
@@ -427,7 +427,7 @@ pub const TESTS: [&str; 169] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 18] = [
+pub const EXTENDED_TESTS: [&str; 19] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -471,6 +471,9 @@ pub const EXTENDED_TESTS: [&str; 18] = [
     // 18. an example that triggered an internal inconsistency test, which we subsequently removed;
     // there are three chains and the middle one was the problem
     r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
+    // 19. Make sure that POUT works on full dataset.
+    // If we experience failurs on other lena ids, we can add them to this list.
+    r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

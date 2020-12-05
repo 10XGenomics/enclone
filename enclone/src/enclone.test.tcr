@@ -6,4 +6,4 @@ enclone \
     TCR=`cat $rootdir/../../enclone_core/src/enclone.testdata.tcr | tail -n +3 | grep -v '#' | \
         tr -d ' ' | head --bytes=-1 | tr '\n' ';' | tr -s ';'` \
     ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT PRINT_FAILED_JOINS \
-    PRE=/mnt/assembly/vdj/current14 $*
+    PRE=/mnt/assembly/vdj/current15 $*
