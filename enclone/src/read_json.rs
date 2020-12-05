@@ -12,6 +12,7 @@ use io_utils::*;
 use itertools::Itertools;
 use rayon::prelude::*;
 use serde_json::Value;
+use std::env;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader};
@@ -792,10 +793,12 @@ pub fn parse_json_annotations_files(
         if versions.len() > 1
             && versions != vec!["4.0".to_string(), "4009.52.0-82-g2244c685a".to_string()]
         {
+            let args: Vec<String> = env::args().collect();
             eprintln!(
                 "\nYou're using output from multiple Cell Ranger versions = {},\n\
-                 which is not allowed.\n",
-                versions.iter().format(", ")
+                 which is not allowed.  Your command was:\n{}\n",
+                versions.iter().format(", "),
+                args.iter().format(","),
             );
             std::process::exit(1);
         }
