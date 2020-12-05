@@ -53,8 +53,8 @@ pub const TESTS: [&str; 169] = [
     // 11. tests META, and CONST_IGH + META, which was broken at one point
     r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex
      CONST_IGH=IGHD"###,
-    // 12. DUPLICATE; TO REPLACE WITH A NEW TEST.
-    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 12. test colon lvar in F= and test for parsing error at +
+    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ F="n + g37 >= 5.5" MIN_CHAINS=2 NH5"###,
     // 13. DUPLICATE; TO REPLACE WITH A NEW TEST.
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
