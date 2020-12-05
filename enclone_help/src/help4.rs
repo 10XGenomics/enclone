@@ -282,6 +282,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "enclone BCR=123085 BC=f FCELL=\"nice == 'true' && rank <= 5\"",
         );
         h.doc("", "would cause only the first barcode to be used.");
+        h.doc("", "");
+        h.doc("", "See also F=... at \"enclone help filter\".");
 
         // Done.
 

@@ -517,7 +517,9 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              the case where the lead variables have been selected using \\bold{LVARS} or \
              \\bold{LVARSP}!  Also it is not implemented for all lead variables, and you'll get \
              an error message if it is not implemented.  Multiple bounds may be imposed by using\n\
-             multiple instances of \\bold{F=...} .\n\n",
+             multiple instances of \\bold{F=...} .  As explained above, note that \\bold{F=...}\n\
+             filters by computing the mean across all cells in the clonotype.  See also\n\
+             \\bold{FCELL=} at \"enclone help special\".\n\n",
         );
 
         // feature scanning

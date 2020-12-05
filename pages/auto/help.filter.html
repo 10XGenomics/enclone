@@ -142,7 +142,9 @@ where L is a linear condition (as defined above).  Currently this is limited to 
 lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Also it is not implemented for all lead
 variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
 imposed by using
-multiple instances of <span style="font-weight:bold;">F=...</span> .
+multiple instances of <span style="font-weight:bold;">F=...</span> .  As explained above, note that <span style="font-weight:bold;">F=...</span>
+filters by computing the mean across all cells in the clonotype.  See also
+<span style="font-weight:bold;">FCELL=</span> at "enclone help special".
 
 <span style="font-weight:bold;">feature scanning</span>
 
