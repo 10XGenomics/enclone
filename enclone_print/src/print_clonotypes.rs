@@ -1185,6 +1185,7 @@ pub fn print_clonotypes(
                 for i in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[i];
                     let mut means = Vec::<f64>::new();
+                    let mut maxs = Vec::<f64>::new();
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new();
                         let mut found = false;
@@ -1204,13 +1205,21 @@ pub fn print_clonotypes(
                             std::process::exit(1);
                         }
                         let mut mean = 0.0;
+                        let mut max = -1000_000_000.0_f64;
                         for j in 0..vals.len() {
                             mean += vals[j];
+                            max = max.max(vals[j]);
                         }
                         mean /= n as f64;
                         means.push(mean);
+                        maxs.push(max);
                     }
-                    if !x.satisfied(&means) {
+                    if ctl.clono_filt_opt.bound_type[i] == "mean" && !x.satisfied(&means) {
+                        for u in 0..nexacts {
+                            bads[u] = true;
+                        }
+                    }
+                    if ctl.clono_filt_opt.bound_type[i] == "max" && !x.satisfied(&maxs) {
                         for u in 0..nexacts {
                             bads[u] = true;
                         }

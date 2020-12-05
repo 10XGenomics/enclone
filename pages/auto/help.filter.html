@@ -137,14 +137,17 @@ this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
 
 enclone has the capability to filter by bounding certain lead variables, using the command-line
 argument:
-<span style="font-weight:bold;">F="L"</span>
+<span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN="L"</span>
 where L is a linear condition (as defined above).  Currently this is limited to the case where the
 lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Also it is not implemented for all lead
 variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
-imposed by using
-multiple instances of <span style="font-weight:bold;">F=...</span> .  As explained above, note that <span style="font-weight:bold;">F=...</span>
-filters by computing the mean across all cells in the clonotype.  See also
-<span style="font-weight:bold;">FCELL=</span> at "enclone help special".
+imposed by using multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note
+that <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype. 
+See also <span style="font-weight:bold;">FCELL=</span> at "enclone help special".
+
+Similarly, to filter by the max across all cells in a clonotype, one may use
+<span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MAX="L"</span>
+and otherwise as above.
 
 <span style="font-weight:bold;">feature scanning</span>
 

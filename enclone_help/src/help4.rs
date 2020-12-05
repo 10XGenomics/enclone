@@ -283,7 +283,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "would cause only the first barcode to be used.");
         h.doc("", "");
-        h.doc("", "See also F=... at \"enclone help filter\".");
+        h.doc("", "See also KEEP_CLONO_IF_CELL_MEAN=... and");
+        h.doc("", "KEEP_CLONO_IF_CELL_MAX=... at \"enclone help filter\".");
 
         // Done.
 

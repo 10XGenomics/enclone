@@ -53,8 +53,9 @@ pub const TESTS: [&str; 169] = [
     // 11. tests META, and CONST_IGH + META, which was broken at one point
     r###"META=testx/inputs/test11_meta CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex
      CONST_IGH=IGHD"###,
-    // 12. test colon lvar in F= and test for parsing error at +
-    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ F="n + g37 >= 5.5" MIN_CHAINS=2 NH5"###,
+    // 12. test colon lvar in KEEP_CLONO_IF_CELL_MEAN= and test for parsing error at +
+    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ KEEP_CLONO_IF_CELL_MEAN="n + g37 >= 5.5"
+        MIN_CHAINS=2 NH5"###,
     // 13. DUPLICATE; TO REPLACE WITH A NEW TEST.
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
@@ -93,9 +94,9 @@ pub const TESTS: [&str; 169] = [
     r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
-    // 29. tests parenthesized variable in F, SUM and MEAN; also indel was wrong
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
-     NH5"###,
+    // 29. tests KEEP_CLONO_IF_CELL_MAX and parenthesized variable in it, SUM and MEAN
+    r###"BCR=123085 GEX=123217 LVARSP=IGHV3-7_g,IGHV3-7_g_μ
+        KEEP_CLONO_IF_CELL_MAX="(IGHV3-7_g_μ)>=10000.0" MIN_CHAINS=2 SUM MEAN"###,
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
@@ -126,8 +127,9 @@ pub const TESTS: [&str; 169] = [
     // 39. tests u and r fields in parseable output, and tests stdouth
     r###"BCR=85333 POUT=stdouth PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
-    // 40. DUPLICATE; TO REPLACE WITH A NEW TEST.
-    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
+    // 40. indel was wrong
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
+        NH5"###,
     // 41. test case for gex_cell
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
     // 42. test case that should fail because gex_cell doesn't make sense without gex data

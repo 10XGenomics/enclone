@@ -794,8 +794,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             ctl.clono_filt_opt.barcode = x;
         } else if arg.starts_with("F=") {
+            // deprecated but retained for backward compatibility
             let filt = arg.after("F=").to_string();
             ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+            ctl.clono_filt_opt.bound_type.push("mean".to_string());
+        } else if arg.starts_with("KEEP_CLONO_IF_CELL_MEAN=") {
+            let filt = arg.after("KEEP_CLONO_IF_CELL_MEAN=").to_string();
+            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+            ctl.clono_filt_opt.bound_type.push("mean".to_string());
+        } else if arg.starts_with("KEEP_CLONO_IF_CELL_MAX=") {
+            let filt = arg.after("KEEP_CLONO_IF_CELL_MAX=").to_string();
+            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
+            ctl.clono_filt_opt.bound_type.push("max".to_string());
         } else if arg.starts_with("SCAN=") {
             let mut x = arg.after("SCAN=").to_string();
             x = x.replace(" ", "").to_string();
