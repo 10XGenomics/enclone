@@ -415,7 +415,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.docpr(
             "",
-            "the \\bold{FCELL} option, please see \"enclone help special\"",
+            "the \\bold{KEEP_CELL_IF} option, please see \"enclone help special\"",
         );
         // doc INKT and MAIT
 
@@ -520,7 +520,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              multiple instances of \\bold{KEEP_CLONO_IF_CELL_MEAN=...} .  As explained above, \
              note that \\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
              filters by computing the mean across all cells in the clonotype.  See also \
-             \\bold{FCELL=} at \"enclone help special\".\n\n",
+             \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
         );
         h.print(
             "Similarly, to filter by the max across all cells in a clonotype, one may use\n\

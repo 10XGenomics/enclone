@@ -746,14 +746,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.tree = ".".to_string();
         } else if arg == "TREE=const" {
             ctl.gen_opt.tree = "const".to_string();
-        } else if arg.starts_with("FCELL=") {
-            let mut condition = arg.after("FCELL=").to_string();
+        } else if arg.starts_with("FCELL=") // FCELL retained for backward compatibility
+            || arg.starts_with("KEEP_CELL_IF")
+        {
+            let mut condition;
+            if arg.starts_with("FCELL") {
+                condition = arg.after("FCELL=").to_string();
+            } else {
+                condition = arg.after("KEEP_CELL_IF=").to_string();
+            }
             let con = condition.as_bytes();
             for i in 0..con.len() {
                 if i > 0 && i < con.len() - 1 && con[i] == b'=' {
                     if con[i - 1] != b'=' && con[i + 1] != b'=' {
                         eprintln!(
-                            "\nConstraints for FCELL cannot use =.  Please use == instead.\n"
+                            "\nConstraints for {} cannot use =.  Please use == instead.\n",
+                            arg.before("="),
                         );
                         std::process::exit(1);
                     }
@@ -762,7 +770,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             condition = condition.replace("'", "\"");
             let compiled = build_operator_tree(&condition);
             if !compiled.is_ok() {
-                eprintln!("\nFCELL usage incorrect.\n");
+                eprintln!("\n{} usage incorrect.\n", arg.before("="));
                 std::process::exit(1);
             }
             ctl.clono_filt_opt.fcell.push(compiled.unwrap());

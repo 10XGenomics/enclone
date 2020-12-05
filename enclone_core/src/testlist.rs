@@ -246,10 +246,10 @@ pub const TESTS: [&str; 169] = [
     r###"BCR=123085 CDR3=CAADRQLWSRSPGDYIYYGMQVW PHYLIP_DNA=stdout COLOR=property"###,
     // 89. test TREE and NEWICK
     r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
-    // 90. test FCELL with non-null value
+    // 90. test KEEP_CELL_IF with non-null value
     // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
-        CDR3=CARGYEDFTMKYGMDVW FCELL="keeper == 'yes'""###,
+        CDR3=CARGYEDFTMKYGMDVW KEEP_CELL_IF="keeper == 'yes'""###,
     // 91. test FCELL with null value
     // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
