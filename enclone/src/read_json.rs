@@ -9,10 +9,10 @@ use crate::explore::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
-use itertools::Itertools;
+// use itertools::Itertools;
 use rayon::prelude::*;
 use serde_json::Value;
-use std::env;
+// use std::env;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader};
@@ -788,6 +788,7 @@ pub fn parse_json_annotations_files(
         gex_cells.push(results[i].6.clone());
         gex_cells_specified.push(results[i].7.clone());
     }
+    /*
     if !ctl.gen_opt.internal_run {
         unique_sort(&mut versions);
         if versions.len() > 1
@@ -803,4 +804,5 @@ pub fn parse_json_annotations_files(
             std::process::exit(1);
         }
     }
+    */
 }
