@@ -594,10 +594,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "with the given id or name; report the median UMI count for it; we allow",
         );
         h.doc(
-            "<antigen>_ag",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown;",
-        );
-        h.doc(
             "<crispr>_cr",
             "we also allow <regular expression>_g where g can be replaced by ab, ag, cr",
         );
