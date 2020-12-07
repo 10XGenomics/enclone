@@ -1541,16 +1541,9 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &mut join_info,
     );
-    /*
-    if ctl.comp {
-        if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
-            println!("");
-        }
-    }
-    */
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
-    // cell clonotypes.  This requires editing of exact_clonotypes, info and eq.
+    // cell clonotypes.  This requires editing of exact_clonotypes, info, eq and join_info.
 
     if ctl.clono_filt_opt.weak_onesies {
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
@@ -1582,6 +1575,20 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             to_exact_new.push(enew);
         }
+
+        let mut join_info2 = Vec::new();
+        for i in 0..join_info.len() {
+            let (u1, u2) = (join_info[i].0, join_info[i].1);
+            for v1 in to_exact_new[u1].iter() {
+                for v2 in to_exact_new[u2].iter() {
+                    let mut x = join_info[i].clone();
+                    x.0 = *v1;
+                    x.1 = *v2;
+                    join_info2.push(x);
+                }
+            }
+        }
+        join_info = join_info2;
         exact_clonotypes = exacts2;
         let mut info2 = Vec::<CloneInfo>::new();
         let mut to_info2 = Vec::<Vec<usize>>::new();
