@@ -344,11 +344,9 @@ pub fn main_enclone(args: &Vec<String>) {
     ctl.clono_print_opt.regex_match =
         vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
-    let ends1 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g", "_ab", "_ag", "_cr", "_cu", "_g",
-    ];
+    let ends1 = ["_g", "_ab", "_cr", "_cu", "_g", "_ab", "_cr", "_cu", "_g"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
     let mut endsz = Vec::<String>::new();
@@ -400,10 +398,6 @@ pub fn main_enclone(args: &Vec<String>) {
                                 let mut ok = false;
                                 if ff[2].starts_with("Antibody") {
                                     if y.contains("_ab") {
-                                        ok = true;
-                                    }
-                                } else if ff[2].starts_with("Antigen") {
-                                    if y.contains("_ag") {
                                         ok = true;
                                     }
                                 } else if ff[2].starts_with("CRISPR") {

@@ -546,8 +546,6 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
             for z in 0..2 {
                 if ff[2].starts_with(&"Antibody") {
                     x.insert(format!("{}_ab", ff[z]), j);
-                } else if ff[2].starts_with(&"Antigen") {
-                    x.insert(format!("{}_ag", ff[z]), j);
                 } else if ff[2].starts_with(&"CRISPR") {
                     x.insert(format!("{}_cr", ff[z]), j);
                 } else if ff[2].starts_with(&"CUSTOM") {

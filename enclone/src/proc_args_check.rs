@@ -11,7 +11,7 @@ use vector_utils::*;
 
 pub fn is_pattern(x: &String, parseable: bool) -> bool {
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
@@ -62,7 +62,7 @@ pub fn is_pattern(x: &String, parseable: bool) -> bool {
 
 fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String>, category: &str) {
     let g_ends0 = ["_g"];
-    let fb_ends0 = ["_ab", "_ag", "_cr", "_cu"];
+    let fb_ends0 = ["_ab", "_cr", "_cu"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let suffixes_g = ["", "_min", "_max", "_μ", "_Σ", "_%"];
     let (mut g_ends, mut fb_ends) = (Vec::<String>::new(), Vec::<String>::new());
@@ -162,10 +162,6 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 if ff[2].starts_with("Antibody") {
                     for s in suffixes.iter() {
                         known_features.push(format!("{}_ab{}", ff[z], s));
-                    }
-                } else if ff[2].starts_with("Antigen") {
-                    for s in suffixes.iter() {
-                        known_features.push(format!("{}_ag{}", ff[z], s));
                     }
                 } else if ff[2].starts_with("CRISPR") {
                     for s in suffixes.iter() {
@@ -437,7 +433,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let mut to_check = Vec::<String>::new();
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
