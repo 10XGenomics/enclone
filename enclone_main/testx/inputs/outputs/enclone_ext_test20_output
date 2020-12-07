@@ -43,6 +43,9 @@ CDR3 nucleotide diffs = 2
 in amino acid space:
 IGK:CMQSTHWPTWTF;IGH:CAFDFW
 IGK:CMQTTHWPTWTL;IGH:CAFDFW
+p1 = prob of getting so many shares by accident = 0.0000313719658309175
+mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = 13204
+p1 * mult = 0.4142354368314347
 difference pattern for chain 1
 --------------------------------------------------------------------------------
 ---------x-----------------------------x--------------------------▓▓▓-----------

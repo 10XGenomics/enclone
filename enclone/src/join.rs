@@ -318,7 +318,7 @@ pub fn join_exacts(
             }
             fwriteln!(
                 log,
-                "{}, mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = {}",
+                "{}, mult = {}",
                 mega1,
                 exact_clonotypes[info[k1].clonotype_index].ncells()
             );
@@ -370,7 +370,11 @@ pub fn join_exacts(
                 "p1 = prob of getting so many shares by accident = {}",
                 p1
             );
-            fwriteln!(log, "mult = {}", mult);
+            fwriteln!(
+                log,
+                "mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = {}",
+                mult
+            );
             fwriteln!(log, "p1 * mult = {}", p1 * mult);
 
             // Show difference patterns.  And x denotes a different base.  A ▓ denotes an
