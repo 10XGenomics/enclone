@@ -25,7 +25,7 @@ use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
 use stirling_numbers::*;
-use string_utils::*;
+// use string_utils::*;
 use vector_utils::*;
 
 pub fn join_exacts(
@@ -398,7 +398,7 @@ pub fn join_exacts(
                     let (tig1, tig2) = (&info[k1].tigs[m], &info[k2].tigs[m]);
                     let (otig1, otig2) = (&info[k1].orig_tigs[m], &info[k2].orig_tigs[m]);
                     if ctl.join_print_opt.seq {
-                        fwriteln!(log, "chain {}, tig 1 = {}", m + 1, otig1.to_string());
+                        fwriteln!(log, "\nchain {}, tig 1 = {}", m + 1, otig1.to_string());
                     }
                     if ctl.join_print_opt.ann0 {
                         // somewhat broken for the moment, because tig1 could have - characters
@@ -413,7 +413,7 @@ pub fn join_exacts(
                         print_annotations(&otig1, &refdata, &mut log, false, true, false);
                     }
                     if ctl.join_print_opt.seq {
-                        fwriteln!(log, "chain {}, tig 2 = {}", m + 1, otig2.to_string());
+                        fwriteln!(log, "\nchain {}, tig 2 = {}", m + 1, otig2.to_string());
                     }
                     if ctl.join_print_opt.ann0 {
                         // somewhat broken for the moment, because tig2 could have - characters
@@ -429,6 +429,8 @@ pub fn join_exacts(
                     }
                 }
             }
+            // not sure why this logging is here, so turned off for now
+            /*
             if ctl.join_print_opt.seq {
                 for x in 0..info[k1].lens.len() {
                     fwriteln!(log, "{}", strme(&info[k1].tigs[x]));
@@ -438,6 +440,7 @@ pub fn join_exacts(
                     fwriteln!(log, "{:?}", strme(&info[k2].tigs[x]));
                 }
             }
+            */
             logplus.push((info[k1].clonotype_index, info[k2].clonotype_index, err, log));
         }
     });
