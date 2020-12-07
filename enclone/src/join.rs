@@ -215,6 +215,8 @@ pub fn join_exacts(
             let share_pos_j = &pot[pj].share_pos_j;
             let score = pot[pj].score;
             let err = pot[pj].err;
+            let p1 = pot[pj].p1;
+            let mult = pot[pj].mult;
 
             // Do nothing if join could have no effect on equivalence relation.
 
@@ -316,7 +318,7 @@ pub fn join_exacts(
             }
             fwriteln!(
                 log,
-                "{}, mult = {}",
+                "{}, mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = {}",
                 mega1,
                 exact_clonotypes[info[k1].clonotype_index].ncells()
             );
@@ -363,6 +365,13 @@ pub fn join_exacts(
                 fwriteln!(log, "{}", mega1);
                 fwriteln!(log, "{}", mega2);
             }
+            fwriteln!(
+                log,
+                "p1 = prob of getting so many shares by accident = {}",
+                p1
+            );
+            fwriteln!(log, "mult = {}", mult);
+            fwriteln!(log, "p1 * mult = {}", p1 * mult);
 
             // Show difference patterns.  And x denotes a different base.  A ▓ denotes an
             // equal base that differs from the reference.  Otherwise - is shown.
