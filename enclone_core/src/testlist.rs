@@ -429,7 +429,7 @@ pub const TESTS: [&str; 169] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 20] = [
+pub const EXTENDED_TESTS: [&str; 21] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -479,6 +479,9 @@ pub const EXTENDED_TESTS: [&str; 20] = [
     // 20. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
     r###"BCR="131036;140707" ANN SHOW_BC FAIL_ONLY=true PRINT_FAILED_JOINS MIX_DONORS
+        NO_PRE NFORCE"###,
+    // 21. the result of this changed when sub_alts was changed
+    r###"BCR="40086;132888" SEG=IGHV3-43 MIX_DONORS MAX_DIFFS=80 CDR3=CVKGDWGSAFDIW
         NO_PRE NFORCE"###,
 ];
 

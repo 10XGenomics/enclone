@@ -31,9 +31,16 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>12/7/20</b>: Delete the <code>_ag</code> antigen feature label (which was documented at
+<b>12/9/20</b>: 
+<ul>
+<li>Delete the <code>_ag</code> antigen feature label (which was documented at
 <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>) because this
-was in fact never supported by <code>cellranger</code>.
+was in fact never supported by <code>cellranger</code>.</li>
+<li>Change the algorithm for deciding to use a donor reference allele, so that it checks all 
+donor reference alleles for all V genes having the same name as the one originally assigned to
+a contig.  In some cases this changes results.  Note that this change comes after Cell Ranger
+5.0 and with high probability will be integrated into the next major Cell Ranger release.</li>
+</ul>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->

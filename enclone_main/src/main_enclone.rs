@@ -1522,7 +1522,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 
-    sub_alts(&ctl, &alt_refs, &mut info, &mut exact_clonotypes);
+    sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
     // Form equivalence relation on exact subclonotypes.
 
