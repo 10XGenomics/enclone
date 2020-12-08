@@ -41,8 +41,10 @@ donor reference alleles for all V genes having the same name as the one original
 a contig.  In some cases this changes results.  Note that this change comes after Cell Ranger
 5.0 and with high probability will be integrated into the next major Cell Ranger release.</li>
 <li> Change the default value of <code>MAX_DIFFS</code> from <code>50</code> to <code>55</code>.  
-Change <code>MAX_DEGRADATION</code> from <code>3</code> to <code>2</code>.  Ditto comments about
-Cell Ranger.
+Change <code>MAX_DEGRADATION</code> from <code>3</code> to <code>2</code>.  Change the default
+value for <code>MAX_SCORE</code> from <code>1,000,000</code> to <code>500,000</code>.  Change
+the default value for <code>MAX_CDR3_DIFFS</code> from <code>10</code> to <code>15</code>.
+Ditto comments about Cell Ranger.
 </ul>
 </p>
 
