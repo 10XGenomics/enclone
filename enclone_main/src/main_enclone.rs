@@ -464,7 +464,7 @@ pub fn main_enclone(args: &Vec<String>) {
             There are various possible reasons for this, including an incorrectly \
             specified path, or incorrect\nspecification of PRE, or a partially copied outs \
             directory that does not include \
-            all the needed files,\nor a mixup between VDJ and GEX path names.\n",
+            all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
             json, json_lz4
         );
         std::process::exit(1);
