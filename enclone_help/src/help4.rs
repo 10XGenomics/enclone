@@ -40,7 +40,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         h.doc(
             "NALL_CELL",
-            "turn off all the noise filters except for the cell filter",
+            "Turn off all the noise filters except for the cell filter.",
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
