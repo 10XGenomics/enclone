@@ -375,7 +375,7 @@ pub fn join_exacts(
                 "mult = CDR3: partial_bernoulli_sum(3 * cn, cd as usize) = {}",
                 mult
             );
-            fwriteln!(log, "p1 * mult = {}", p1 * mult);
+            fwriteln!(log, "score = p1 * mult = {}", p1 * mult);
 
             // Show difference patterns.  And x denotes a different base.  A ▓ denotes an
             // equal base that differs from the reference.  Otherwise - is shown.
