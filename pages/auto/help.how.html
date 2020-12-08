@@ -115,9 +115,10 @@ of the two exact subclonotypes, for which V..J has the same length for the corre
 and the CDR3 segments have the same length for the corresponding chains, enclone considers joining
 the exact subclonotypes into the same clonotype.
 
-<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most 50 total
+<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most <span style="font-weight:bold;">55</span> total
 mismatches between the two exact subclonotypes, within the given two V..J segments.
-This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.
+This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.  (Note
+             that for CellRanger version 5.0, the value is instead <span style="font-weight:bold;">50</span>.)
 
 <span style="color:#c23621;font-weight:bold;">7</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
 for two exact subclonotypes, common mutations from the reference sequence, using the donor
@@ -152,11 +153,12 @@ empirically balancing sensitivity and specificity across a large collection of d
 discussion of performance below.
 
 <span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.  We do not join two clonotypes which were assigned different reference
-sequences unless those reference sequences differ by at most <span style="font-weight:bold;">3</span> positions.  This value can be
-controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  There is an additional restriction
-imposed when creating two-cell clonotypes: we require that that cd ≤ d, where cd is the number of
-CDR3 differences and d is the number of shared mutations, as above.  This filter may be turned off
-using the command-line argument <span style="font-weight:bold;">EASY</span>.
+sequences unless those reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be
+controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  (Note that for Cell Ranger 5.0, the
+value is instead <span style="font-weight:bold;">3</span>.)  There is an additional restriction imposed when creating two-cell
+clonotypes: we require that that cd ≤ d, where cd is the number of CDR3 differences and d is the
+number of shared mutations, as above.  This filter may be turned off using the command-line
+argument <span style="font-weight:bold;">EASY</span>.
 
 <span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.

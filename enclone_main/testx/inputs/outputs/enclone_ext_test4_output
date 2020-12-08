@@ -18,12 +18,13 @@ SUMMARY STATISTICS
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
    │1       │                   638  │            1453  │   42.1│
-   │2       │                  1643  │            1737  │   50.3│
+   │2       │                  1645  │            1737  │   50.3│
    │3       │                   204  │             228  │    6.6│
    │4       │                    32  │              37  │    1.1│
-   │total   │                  2517  │            3455  │  100.0│
+   │total   │                  2519  │            3455  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 203
+   • number of cell-cell merges = 936
    • number of cells having 1 chain = 1570
    • number of cells having 2 or 3 chains = 1853
    • estimated T-T doublet rate = 1.9% = 32/1681 = cells with 4 chains / cells with 2 or 4 chains

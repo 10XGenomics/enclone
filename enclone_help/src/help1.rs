@@ -279,9 +279,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
              \\boldred{6}.  Error bounding.  \
-             To proceed, as a minimum requirement, there must be at most 50 total \
+             To proceed, as a minimum requirement, there must be at most \\bold{55} total \
              mismatches between the two exact subclonotypes, within the given two V..J segments.\n\
-             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.\n\n\
+             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.  (Note
+             that for CellRanger version 5.0, the value is instead \\bold{50}.)\n\n\
              \
              \\boldred{7}.  Shared mutations.  \
              enclone next finds shared mutations betweens exact subclonotypes, that is, for \
@@ -324,8 +325,9 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              \
              \\boldred{11}.  Other join criteria.  We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
-             at most \\bold{3} positions.  This value can be controlled using the \
-             command-line argument \\bold{MAX_DEGRADATION}.  There is an additional restriction \
+             at most \\bold{2} positions.  This value can be controlled using the \
+             command-line argument \\bold{MAX_DEGRADATION}.  (Note that for Cell Ranger 5.0, \
+             the value is instead \\bold{3}.)  There is an additional restriction \
              imposed when creating two-cell clonotypes: we require that that \
              cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
              mutations, as above.  This filter may be turned off \

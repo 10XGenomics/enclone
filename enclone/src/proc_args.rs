@@ -23,8 +23,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
-        max_diffs: 50,
-        max_degradation: 3,
+        max_diffs: 55,
+        max_degradation: 2,
         ref_v_trim: 15,
         ref_j_trim: 15,
     };

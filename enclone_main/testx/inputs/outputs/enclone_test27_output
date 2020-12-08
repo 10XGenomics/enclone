@@ -29,6 +29,7 @@ SUMMARY STATISTICS
    │total   │                   458  │            1324  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 135
+   • number of cell-cell merges = 866
    • number of cells having 1 chain = 178
    • number of cells having 2 or 3 chains = 1143
    • estimated B-B doublet rate = 0.3% = 3/931 = cells with 4 chains / cells with 2 or 4 chains
