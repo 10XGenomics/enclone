@@ -660,8 +660,17 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         let (p, pg) = (&mut res.0, &mut res.1);
         let mut current_ref = &mut res.2;
         *p = get_path_or_internal_id(&p, &ctl, source, &mut current_ref);
+        if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
+            *p = format!("{}/vdj_b", p);
+        }
+        if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", p)) {
+            *p = format!("{}/vdj_t", p);
+        }
         if have_gex {
             *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &mut current_ref);
+            if path_exists(&format!("{}/count", pg)) {
+                *pg = format!("{}/count", pg);
+            }
         }
     });
     for i in 0..results.len() {
@@ -795,8 +804,17 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             parse_bc(bc.clone(), &mut ctl, "META");
             let mut current_ref = false;
             path = get_path_or_internal_id(&path, &ctl, "META", &mut current_ref);
+            if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
+                path = format!("{}/vdj_b", path);
+            }
+            if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", path)) {
+                path = format!("{}/vdj_t", path);
+            }
             if gpath.len() > 0 {
                 gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &mut current_ref);
+                if path_exists(&format!("{}/count", gpath)) {
+                    gpath = format!("{}/count", gpath);
+                }
             }
             if current_ref {
                 ctl.gen_opt.current_ref = true;
