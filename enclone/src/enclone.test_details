@@ -10,4 +10,4 @@ enclone \
     ANN SHOW_BC SEQ FAIL_ONLY=true PLAIN PRINT_FAILED_JOINS \
     PRE=/mnt/assembly/vdj/current15 MIX_DONORS \
     BUILT_IN \
-    NOPAGER $*
+    NOPAGER SUMMARY $*
