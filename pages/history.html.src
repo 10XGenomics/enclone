@@ -44,7 +44,8 @@ a contig.  In some cases this changes results.  Note that this change comes afte
 Change <code>MAX_DEGRADATION</code> from <code>3</code> to <code>2</code>.  Change the default
 value for <code>MAX_SCORE</code> from <code>1,000,000</code> to <code>500,000</code>.  Change
 the default value for <code>MAX_CDR3_DIFFS</code> from <code>10</code> to <code>15</code>.
-Ditto comments about Cell Ranger.
+Ditto comments about Cell Ranger.</li>
+<li>Allow up to 5 (instead of 4) amino acid differences when joining chains.</li>
 </ul>
 </p>
 
