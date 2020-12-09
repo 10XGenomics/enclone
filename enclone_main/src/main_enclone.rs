@@ -2038,7 +2038,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
         let mut pures = Vec::<Vec<usize>>::new();
         for i in 0..orbits.len() {
-            let mut o = orbits[i].clone();
+            let o = orbits[i].clone();
             let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
             for id in o.iter() {
                 let x: &CloneInfo = &info[*id as usize];
@@ -2071,19 +2071,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 j = k;
             }
             let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
-            let cols = mat.len();
             let nexacts = mat[0].len();
-            /*
-            let mut mat_transpose = vec![vec![None; cols]; nexacts];
-            for u in 0..cols {
-                for v in 0..nexacts {
-                    mat_transpose[v][u] = mat[u][v];
-                }
-            }
-            printme!(o.len(), mat_transpose.len()); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            */
-
-
             let mut priority = Vec::<Vec<bool>>::new();
             for u in 0..nexacts {
                 let mut typex = vec![false; mat.len()];
@@ -2094,9 +2082,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 priority.push(typex.clone());
             }
-
-
-
             sort_sync2(&mut priority, &mut exacts);
             let mut j = 0;
             while j < priority.len() {
@@ -2180,7 +2165,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let n1 = npure[v1];
             let n2 = npure[v2];
             if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
-                let mut ok = true;
+                let ok = true;
                 /*
                 let ex1 = &exact_clonotypes[v1];
                 let ex2 = &exact_clonotypes[v2];
@@ -2232,27 +2217,6 @@ pub fn main_enclone(args: &Vec<String>) {
                         println!("[{}] {}", u+1, cdrs.iter().format(","));
                     }
 
-
-                    /*
-                    let ex0 = &exact_clonotypes[v0];
-                    println!("");
-                    printme!(ex0.share.len(), ex1.share.len(), ex2.share.len());
-                    let mut cdrs = Vec::<String>::new();
-                    for k in 0..ex0.share.len() {
-                        cdrs.push(ex0.share[k].cdr3_aa.clone());
-                    }
-                    println!("{}", cdrs.iter().format(","));
-                    let mut cdrs = Vec::<String>::new();
-                    for k in 0..ex1.share.len() {
-                        cdrs.push(ex1.share[k].cdr3_aa.clone());
-                    }
-                    println!("{}", cdrs.iter().format(","));
-                    let mut cdrs = Vec::<String>::new();
-                    for k in 0..ex2.share.len() {
-                        cdrs.push(ex2.share[k].cdr3_aa.clone());
-                    }
-                    println!("{}", cdrs.iter().format(","));
-                    */
                     for m in pures[v0].iter() {
                         to_delete[*m] = true;
                     }
