@@ -2116,7 +2116,8 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     orbits = orbits2;
 
-    // Check for disjoint orbits.  This is an incomplete test.
+    // Check for disjoint orbits.  The test here should correspond exactly to the test in
+    // define_mat, but it probably doesn't.
 
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
@@ -2137,8 +2138,27 @@ pub fn main_enclone(args: &Vec<String>) {
                                 if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
                                     && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
                                 {
-                                    eqx.join(i1 as i32, i2 as i32);
-                                    break 'cloop;
+                                    let mut diffs = 0;
+                                    let c1 = &ex1.share[m1].cdr3_aa.as_bytes();
+                                    let c2 = &ex2.share[m2].cdr3_aa.as_bytes();
+                                    for k in 0..c1.len() {
+                                        if c1[k] != c2[k] {
+                                            diffs += 1;
+                                        }
+                                    }
+                                    if diffs <= MAX_CDR3_DIFFS_TO_JOIN {
+                                        let mut tdiffs = 0;
+                                        for k in 0..ex1.share[m1].seq_del.len() {
+                                            if ex1.share[m1].seq_del[k] != ex2.share[m2].seq_del[k]
+                                            {
+                                                tdiffs += 1;
+                                            }
+                                        }
+                                        if tdiffs <= ctl.heur.max_diffs {
+                                            eqx.join(i1 as i32, i2 as i32);
+                                            break 'cloop;
+                                        }
+                                    }
                                 }
                             }
                         }
