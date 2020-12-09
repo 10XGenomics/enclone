@@ -2041,7 +2041,6 @@ pub fn main_enclone(args: &Vec<String>) {
             results.push((i, Vec::new()));
         }
         let mut pures = Vec::<Vec<usize>>::new();
-        println!("start building pures"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         results.par_iter_mut().for_each(|res| {
             let i = res.0;
             let o = orbits[i].clone();
@@ -2106,7 +2105,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
         // Define the number of cells in each pure subclonotype.
 
-        println!("get numbers of cells"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let mut npure = vec![0; pures.len()];
         for j in 0..pures.len() {
             for id in pures[j].iter() {
@@ -2116,7 +2114,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
         // Find the pairs of pure subclonotypes that share identical CDR3 sequences.
 
-        println!("find shares"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let mut shares = Vec::<(usize, usize)>::new();
         {
             let mut content = Vec::<(String, usize)>::new();
@@ -2147,7 +2144,6 @@ pub fn main_enclone(args: &Vec<String>) {
         // Find triples of pure subclonotypes in which the first two have no share, but both
         // of the first two share with the third.
 
-        println!("find triples"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         const MIN_MULT_DOUBLET: usize = 5;
         let mut trips = Vec::<(usize, usize, usize)>::new();
         {
@@ -2193,7 +2189,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
         // Delete some of the third members of the triples.
 
-        println!("start deletions"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         // const MIN_DIST_DOUBLET: usize = 50;
         let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
@@ -2255,7 +2250,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
             }
         }
-        println!("rebuild orbits"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         let mut orbits2 = Vec::<Vec<i32>>::new();
         for i in 0..orbits.len() {
             let mut o = orbits[i].clone();
