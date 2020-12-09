@@ -2033,7 +2033,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
-
         // Find the exact subclonotypes.
 
         let mut o = orbits[i].clone();
@@ -2059,7 +2058,7 @@ pub fn main_enclone(args: &Vec<String>) {
             while j < content.len() {
                 let k = next_diff1_2(&content, j as i32) as usize;
                 for l1 in j..k {
-                    for l2 in j+1..k {
+                    for l2 in j + 1..k {
                         shares.push((content[l1].1, content[l2].1));
                         shares.push((content[l2].1, content[l1].1));
                     }
@@ -2079,7 +2078,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 let k = next_diff1_2(&shares, j as i32) as usize;
                 let u = shares[j].0;
                 for l1 in j..k {
-                    for l2 in j+1..k {
+                    for l2 in j + 1..k {
                         let (v1, v2) = (shares[l1].1, shares[l2].1);
                         if !bin_member(&shares, &(v1, v2)) {
                             trips.push((v1, v2, u));
