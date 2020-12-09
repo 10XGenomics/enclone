@@ -2032,7 +2032,6 @@ pub fn main_enclone(args: &Vec<String>) {
     // Delete exact subclonotypes that appear to represent doublets.
 
     if ctl.clono_filt_opt.doublet {
-
         // Define pure subclonotypes.  To do this we break each clonotype up by chain signature.
         // Note duplication of code with print_clonotypes.rs.
 
@@ -2195,7 +2194,7 @@ pub fn main_enclone(args: &Vec<String>) {
                         for k in 0..ex.share.len() {
                             cdrs.push(ex.share[k].cdr3_aa.clone());
                         }
-                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                        println!("[{}] {}", u + 1, cdrs.iter().format(","));
                     }
                     println!("USING");
                     for (u, m) in pures[v1].iter().enumerate() {
@@ -2204,7 +2203,7 @@ pub fn main_enclone(args: &Vec<String>) {
                         for k in 0..ex.share.len() {
                             cdrs.push(ex.share[k].cdr3_aa.clone());
                         }
-                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                        println!("[{}] {}", u + 1, cdrs.iter().format(","));
                     }
                     println!("AND");
                     for (u, m) in pures[v2].iter().enumerate() {
@@ -2213,7 +2212,7 @@ pub fn main_enclone(args: &Vec<String>) {
                         for k in 0..ex.share.len() {
                             cdrs.push(ex.share[k].cdr3_aa.clone());
                         }
-                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                        println!("[{}] {}", u + 1, cdrs.iter().format(","));
                     }
                 }
                 for m in pures[v0].iter() {
@@ -2224,7 +2223,7 @@ pub fn main_enclone(args: &Vec<String>) {
         let mut orbits2 = Vec::<Vec<i32>>::new();
         for i in 0..orbits.len() {
             let mut o = orbits[i].clone();
-    
+
             let mut del2 = vec![false; o.len()];
             for j in 0..o.len() {
                 let id = info[o[j] as usize].clonotype_index;

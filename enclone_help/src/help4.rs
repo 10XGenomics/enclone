@@ -161,6 +161,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
+            "NDOUBLET",
+            "Under certain circumstances, enclone will delete exact subclonotypes that appear \
+            to represent doublets.  \
+            Please see https://10xgenomics.github.io/enclone/pages/auto/heuristics.html.  \
+            The argument NDOUBLET turns off this filtering.",
+            65,
+        );
+
+        h.rows.push(vec!["\\hline".to_string(); 2]);
+        h.docf2(
             "NWHITEF",
             "By default, enclone filters out rare artifacts arising from contamination \
             of oligos on gel beads.  The NWHITEF option turns off this filter.",
