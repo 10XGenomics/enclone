@@ -2043,15 +2043,15 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         unique_sort(&mut exacts);
 
-        // Find the pairs of exact subclonotypes that share a chain sequence.
+        // Find the pairs of exact subclonotypes that share identical CDR3 sequences.
 
         let mut shares = Vec::<(usize, usize)>::new();
         {
-            let mut content = Vec::<(Vec<u8>,usize)>::new();
+            let mut content = Vec::<(String, usize)>::new();
             for j in 0..exacts.len() {
                 let ex = &exact_clonotypes[exacts[j]];
                 for k in 0..ex.share.len() {
-                    content.push((ex.share[k].seq.clone(), j));
+                    content.push((ex.share[k].cdr3_dna.clone(), j));
                 }
             }
             content.sort();
