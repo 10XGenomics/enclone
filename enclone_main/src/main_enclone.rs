@@ -45,7 +45,7 @@ use regex::Regex;
 use serde_json::Value;
 use stats_utils::*;
 use std::{
-    cmp::{max, min},
+    cmp::max,
     collections::HashMap,
     env,
     fs::File,
@@ -2148,6 +2148,7 @@ pub fn main_enclone(args: &Vec<String>) {
         // of the first two share with the third.
 
         // println!("find triples"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        const MIN_MULT_DOUBLET: usize = 5;
         let mut trips = Vec::<(usize, usize, usize)>::new();
         {
             let mut us = Vec::<usize>::new();
@@ -2155,10 +2156,14 @@ pub fn main_enclone(args: &Vec<String>) {
             let mut j = 0;
             while j < shares.len() {
                 let k = next_diff1_2(&shares, j as i32) as usize;
-                us.push(shares[j].0);
+                let u = shares[j].0;
+                us.push(u);
                 let mut x = Vec::<usize>::new();
                 for l in j..k {
-                    x.push(shares[l].1);
+                    let v = shares[l].1;
+                    if MIN_MULT_DOUBLET * npure[u] <= npure[v] {
+                        x.push(v);
+                    }
                 }
                 vs.push(x);
                 j = k;
@@ -2189,15 +2194,11 @@ pub fn main_enclone(args: &Vec<String>) {
         // Delete some of the third members of the triples.
 
         // println!("start deletions"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        const MIN_MULT_DOUBLET: usize = 5;
         // const MIN_DIST_DOUBLET: usize = 50;
         let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
             let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
-            let n0 = npure[v0];
-            let n1 = npure[v1];
-            let n2 = npure[v2];
-            if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
+            {
                 /*
                 let ex1 = &exact_clonotypes[v1];
                 let ex2 = &exact_clonotypes[v2];
