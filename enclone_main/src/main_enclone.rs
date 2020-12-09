@@ -2158,7 +2158,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 let k = next_diff1_2(&shares, j as i32) as usize;
                 let u = shares[j].0;
                 for l1 in j..k {
-                    for l2 in j + 1..k {
+                    for l2 in l1 + 1..k {
                         let (v1, v2) = (shares[l1].1, shares[l2].1);
                         if !bin_member(&shares, &(v1, v2)) {
                             trips.push((v1, v2, u));
@@ -2203,7 +2203,8 @@ pub fn main_enclone(args: &Vec<String>) {
                 if ok {
 
 
-                    println!("\nDELETING");
+                    println!("\n{}, {}, {}", v0, v1, v2);
+                    println!("DELETING");
                     for (u, m) in pures[v0].iter().enumerate() {
                         let ex = &exact_clonotypes[*m];
                         let mut cdrs = Vec::<String>::new();
