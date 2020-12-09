@@ -416,7 +416,7 @@ pub const TESTS: [&str; 169] = [
     // OK for it to change a little bit, but a big change would be indicative of a problem.  At
     // one point we had a release with such a problem and this test is here to prevent that from
     // happening again.
-    r###"TCR=101287 NOPRINT REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=848 EXPECT_OK"###,
+    r###"TCR=101287 NOPRINT REPROD REQUIRED_TWO_CHAIN_CLONOTYPES=849 EXPECT_OK"###,
     // 168. Test POUT without PCELL, where a per-barcode variable is converted into a
     // comma-separated list.
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv POUT=stdout PCOLS=rank
