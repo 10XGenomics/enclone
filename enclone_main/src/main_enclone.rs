@@ -2201,6 +2201,37 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 */
                 if ok {
+
+
+                    println!("\nDELETING");
+                    for (u, m) in pures[v0].iter().enumerate() {
+                        let ex = &exact_clonotypes[*m];
+                        let mut cdrs = Vec::<String>::new();
+                        for k in 0..ex.share.len() {
+                            cdrs.push(ex.share[k].cdr3_aa.clone());
+                        }
+                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                    }
+                    println!("USING");
+                    for (u, m) in pures[v1].iter().enumerate() {
+                        let ex = &exact_clonotypes[*m];
+                        let mut cdrs = Vec::<String>::new();
+                        for k in 0..ex.share.len() {
+                            cdrs.push(ex.share[k].cdr3_aa.clone());
+                        }
+                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                    }
+                    println!("AND");
+                    for (u, m) in pures[v2].iter().enumerate() {
+                        let ex = &exact_clonotypes[*m];
+                        let mut cdrs = Vec::<String>::new();
+                        for k in 0..ex.share.len() {
+                            cdrs.push(ex.share[k].cdr3_aa.clone());
+                        }
+                        println!("[{}] {}", u+1, cdrs.iter().format(","));
+                    }
+
+
                     /*
                     let ex0 = &exact_clonotypes[v0];
                     println!("");
