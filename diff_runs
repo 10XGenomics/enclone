@@ -6,9 +6,12 @@
 # usage:
 # diffruns dataset old_param
 #
+# example:
+# diffruns 123085 NDOUBLET
+#
 # Makes some temporary files.
 #
-# Assumes that you DiffFiles and Col in your path.
+# Assumes that you have DiffFiles in your path.
 #
 # Makes some imperfect assumptions to do the diff
 #
@@ -24,8 +27,8 @@ cat ~/old | sort > ~/olds
 enclone POUT=~/new PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT BCR=$dataset
 cat ~/new | sort > ~/news
 
-set bcs = \
-`DiffFiles FILE1= ~/olds FILE2= ~/news NH=True | tr ',' ' ' | Col 1 | tr '\n' ',' | sed 's/.$//'`
+set bcs = `DiffFiles FILE1= ~/olds FILE2= ~/news NH=True \
+    | tr ',' ' ' | awk '{ print $1 }' | tr '\n' ',' | sed 's/.$//'`
 
 echo OLD
 enclone BCR=$dataset BARCODE=$bcs $old_param
