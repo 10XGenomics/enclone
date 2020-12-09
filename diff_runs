@@ -1,0 +1,33 @@
+#!/bin/csh
+#
+# Find the difference between the results of two enclone runs, assuming that the difference
+# can be obtained by adding a parameter to the first run.
+#
+# usage:
+# diffruns dataset old_param
+#
+# Makes some temporary files.
+#
+# Assumes that you DiffFiles and Col in your path.
+#
+# Makes some imperfect assumptions to do the diff
+#
+# Hardcoded for BCR.
+
+set dataset = $1
+set old_param = $2
+
+enclone POUT=~/old PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT BCR=$dataset $old_param \
+    > /dev/null
+cat ~/old | sort > ~/olds
+
+enclone POUT=~/new PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT BCR=$dataset
+cat ~/new | sort > ~/news
+
+set bcs = \
+`DiffFiles FILE1= ~/olds FILE2= ~/news NH=True | tr ',' ' ' | Col 1 | tr '\n' ',' | sed 's/.$//'`
+
+echo OLD
+enclone BCR=$dataset BARCODE=$bcs $old_param
+echo NEW
+enclone BCR=$dataset BARCODE=$bcs
