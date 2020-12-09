@@ -468,6 +468,7 @@ pub fn find_alleles(
 // Computational performance dubious because of full alt_refs traversal.
 
 pub fn sub_alts(
+    refdata: &RefData,
     ctl: &EncloneControl,
     alt_refs: &Vec<(usize, usize, DnaString)>,
     info: &mut Vec<CloneInfo>,
@@ -504,7 +505,9 @@ pub fn sub_alts(
                 unique_sort(&mut donors);
                 for donor in donors {
                     for m in 0..alt_refs.len() {
-                        if alt_refs[m].0 == donor && alt_refs[m].1 == info[i].vsids[j] {
+                        if alt_refs[m].0 == donor
+                            && refdata.name[alt_refs[m].1] == refdata.name[info[i].vsids[j]]
+                        {
                             if alt_refs[m].2.len() - ctl.heur.ref_v_trim <= info[i].tigs[j].len() {
                                 let mut alt_errs = 0;
                                 for l in 0..alt_refs[m].2.len() - ctl.heur.ref_v_trim {
@@ -525,10 +528,12 @@ pub fn sub_alts(
                                 }
                                 if alt_errs < errs {
                                     info[i].vs[j] = alt_refs[m].2.clone();
+                                    info[i].vsids[j] = alt_refs[m].1;
                                     info[i].dref[j] = Some(m); // not sure we're actually using this
                                     let ex = &mut exact_clonotypes[info[i].clonotype_id];
                                     for z in 0..ex.share.len() {
                                         if ex.share[z].seq == info[i].tigs[j] {
+                                            ex.share[z].v_ref_id = alt_refs[m].1;
                                             ex.share[z].v_ref_id_donor = Some(m);
                                             ex.share[z].v_ref_id_donor_donor = Some(donor);
                                             let mut alts = 0;

@@ -1457,6 +1457,7 @@ pub fn group_and_print_clonotypes(
     let mut two_chain = 0;
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
+    let mut merges = 0;
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             two_chain += 1;
@@ -1473,6 +1474,7 @@ pub fn group_and_print_clonotypes(
         if n >= 2 {
             nclono2 += 1;
         }
+        merges += n - 1;
         ncells += n;
         ncc.push((rsi[i].mat.len(), n));
     }
@@ -1742,6 +1744,11 @@ pub fn group_and_print_clonotypes(
             logx,
             "• number of clonotypes having at least two cells = {}",
             nclono2
+        );
+        fwriteln!(
+            logx,
+            "   • number of cell-cell merges = {}",
+            add_commas(merges)
         );
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);

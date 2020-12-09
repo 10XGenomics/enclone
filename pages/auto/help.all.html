@@ -276,9 +276,10 @@ of the two exact subclonotypes, for which V..J has the same length for the corre
 and the CDR3 segments have the same length for the corresponding chains, enclone considers joining
 the exact subclonotypes into the same clonotype.
 
-<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most 50 total
+<span style="color:#c23621;font-weight:bold;">6</span>.  Error bounding.  To proceed, as a minimum requirement, there must be at most <span style="font-weight:bold;">55</span> total
 mismatches between the two exact subclonotypes, within the given two V..J segments.
-This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.
+This can be changed by setting <span style="font-weight:bold;">MAX_DIFFS=n</span> on the command line.  (Note
+             that for CellRanger version 5.0, the value is instead <span style="font-weight:bold;">50</span>.)
 
 <span style="color:#c23621;font-weight:bold;">7</span>.  Shared mutations.  enclone next finds shared mutations betweens exact subclonotypes, that is,
 for two exact subclonotypes, common mutations from the reference sequence, using the donor
@@ -299,25 +300,26 @@ from the given CDR3 sequences by at most the number of observed differences".  M
 if cd is the number of differences between the given CDR3 nucleotide sequences, and n is the total
 length in nucleotides of the CDR3 sequences (for the two chains), we compute the total number N of
 strings of length n that are obtainable by perturbing a given string of length n, which is
-sum( choose(n,m), m = 0..=cd) ).  We also require that cd is at most 10 (and this bound is
-adjustable via the command-line argument <span style="font-weight:bold;">MAX_CDR3_DIFFS</span>).
+sum( choose(n,m), m = 0..=cd) ).  We also require that cd is at most 15 (and this bound is
+adjustable via the command-line argument <span style="font-weight:bold;">MAX_CDR3_DIFFS</span>).  (The value for Cell Ranger 5.0 is 10.)
 
 <span style="color:#c23621;font-weight:bold;">10</span>.  Key join criteria.  Two cells sharing sufficiently many shared differences and sufficiently
 few CDR3 differences are deemed to be in the same clonotype.  That is, The lower p is, and the
 lower N is, the more likely it is that the shared mutations represent bona fide shared ancestry. 
 Accordingly, the smaller p*N is, the more likely it is that two cells lie in the same true
 clonotype.  To join two cells into the same clonotype, we require that the bound p*n ≤ C is
-satisfied, where C is the constant 1,000,000 (and adjustable via the command-line argument
-<span style="font-weight:bold;">MAX_LOG_SCORE</span>, the log10 of this, with default value 6).  This constant was arrived at by
-empirically balancing sensitivity and specificity across a large collection of datasets.  See
-discussion of performance below.
+satisfied, where C is the constant 500,000.  (The value for Cell Ranger 5.0 is 1,000,000.) The
+value may be adjusted using the command-line argument <span style="font-weight:bold;">MAX_SCORE</span>, or the log10 of this,
+<span style="font-weight:bold;">MAX_LOG_SCORE</span>.  This constant was arrived at by empirically balancing sensitivity and specificity
+across a large collection of datasets.  See results described at <span style="color:#25bc24;">bit.ly/enclone</span>.
 
 <span style="color:#c23621;font-weight:bold;">11</span>.  Other join criteria.  We do not join two clonotypes which were assigned different reference
-sequences unless those reference sequences differ by at most <span style="font-weight:bold;">3</span> positions.  This value can be
-controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  There is an additional restriction
-imposed when creating two-cell clonotypes: we require that that cd ≤ d, where cd is the number of
-CDR3 differences and d is the number of shared mutations, as above.  This filter may be turned off
-using the command-line argument <span style="font-weight:bold;">EASY</span>.
+sequences unless those reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be
+controlled using the command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.  (Note that for Cell Ranger 5.0, the
+value is instead <span style="font-weight:bold;">3</span>.)  There is an additional restriction imposed when creating two-cell
+clonotypes: we require that that cd ≤ d, where cd is the number of CDR3 differences and d is the
+number of shared mutations, as above.  This filter may be turned off using the command-line
+argument <span style="font-weight:bold;">EASY</span>.
 
 <span style="color:#c23621;font-weight:bold;">12</span>.  Junk.  Spurious chains are filtered out based on frequency and connections. See "enclone help
 special" for a description of the filters.
@@ -954,7 +956,7 @@ lvars".  At the bottom of this page we provide some other options that are not n
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │NCELL                    │  Use contigs found by Cell Ranger even if they were not               │
 │                         │  in a called cell, or not called high confidence.                     │
-│NALL_CELL                │  turn off all the noise filters except for the cell filter            │
+│NALL_CELL                │  Turn off all the noise filters except for the cell filter.           │
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │NGEX                     │  If gene expression and/or feature barcode data are                   │
 │                         │  provided, if a barcode is called a cell by the VDJ part              │
@@ -1165,7 +1167,6 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 ├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
 │&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type       │
 │&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow       │
-│&lt;antigen>_ag   │  the form e.g. &lt;abbr>:&lt;gene>_g where abbr is an abbreviation to be shown;      │
 │&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr    │
 │&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●    │
 ├───────────────┼────────────────────────────────────────────────────────────────────────────────┤

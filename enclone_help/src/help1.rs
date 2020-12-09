@@ -279,9 +279,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              enclone considers joining the exact subclonotypes into the same clonotype.\n\n\
              \
              \\boldred{6}.  Error bounding.  \
-             To proceed, as a minimum requirement, there must be at most 50 total \
+             To proceed, as a minimum requirement, there must be at most \\bold{55} total \
              mismatches between the two exact subclonotypes, within the given two V..J segments.\n\
-             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.\n\n\
+             This can be changed by setting \\bold{MAX_DIFFS=n} on the command line.  (Note
+             that for CellRanger version 5.0, the value is instead \\bold{50}.)\n\n\
              \
              \\boldred{7}.  Shared mutations.  \
              enclone next finds shared mutations betweens exact subclonotypes, that is, for \
@@ -306,8 +307,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              is the total length in nucleotides of the CDR3 sequences (for the two chains), we \
              compute the total number N of strings of length n that are obtainable by perturbing \
              a given string of length n, which is\nsum( choose(n,m), m = 0..=cd) ).  We also \
-             require that cd is at most 10 (and this bound is adjustable via the command-line \
-             argument \\bold{MAX_CDR3_DIFFS}).\n\n\
+             require that cd is at most 15 (and this bound is adjustable via the command-line \
+             argument \\bold{MAX_CDR3_DIFFS}).  (The value for Cell Ranger 5.0 is 10.)\n\n\
              \
              \\boldred{10}.  Key join criteria.  \
              Two cells sharing sufficiently many shared differences and sufficiently few \
@@ -316,16 +317,18 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              fide shared ancestry.  Accordingly, the smaller p*N is, the more likely it is that \
              two cells lie in the same true clonotype.  To join two cells into the same \
              clonotype, we require that the bound p*n ≤ C is satisfied, where C is the \
-             constant 1,000,000 (and adjustable via the command-line argument\n\
-             \\bold{MAX_LOG_SCORE}, the log10 of this, with default value 6).  This constant was \
-             arrived at by empirically balancing \
-             sensitivity and specificity across a large collection of datasets.  See discussion \
-             of performance below.\n\n\
+             constant 500,000.  (The value for Cell Ranger 5.0 is 1,000,000.) \
+             The value may be adjusted using the command-line argument \\bold{MAX_SCORE}, or the \
+             log10 of this,\n\
+             \\bold{MAX_LOG_SCORE}.  This constant was arrived at by empirically balancing \
+             sensitivity and specificity across a large collection of datasets.  See results \
+             described at \\green{bit.ly/enclone}.\n\n\
              \
              \\boldred{11}.  Other join criteria.  We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
-             at most \\bold{3} positions.  This value can be controlled using the \
-             command-line argument \\bold{MAX_DEGRADATION}.  There is an additional restriction \
+             at most \\bold{2} positions.  This value can be controlled using the \
+             command-line argument \\bold{MAX_DEGRADATION}.  (Note that for Cell Ranger 5.0, \
+             the value is instead \\bold{3}.)  There is an additional restriction \
              imposed when creating two-cell clonotypes: we require that that \
              cd ≤ d, where cd is the number of CDR3 differences and d is the number of shared \
              mutations, as above.  This filter may be turned off \
@@ -335,9 +338,6 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              Spurious chains are filtered out based on frequency and connections. See \
              \"enclone help special\" for a description of the filters.\n\n",
         );
-
-        // Finish.  Note that the numbers here also appear on the landing page.
-
         h.print(
             "We are actively working to improve the algorithm.  Test results for the current \
              version may be found at \\green{bit.ly/enclone}.\n\n",

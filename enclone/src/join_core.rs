@@ -344,6 +344,8 @@ pub fn join_core(
                 share_pos_j: share_pos_j,
                 score: score,
                 err: err,
+                p1: p1,
+                mult: mult,
             });
         }
     }

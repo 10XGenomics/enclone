@@ -344,11 +344,9 @@ pub fn main_enclone(args: &Vec<String>) {
     ctl.clono_print_opt.regex_match =
         vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
     let ends0 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g_μ", "_ab_μ", "_ag_μ", "_cr_μ", "_cu_μ", "_g_%",
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
-    let ends1 = [
-        "_g", "_ab", "_ag", "_cr", "_cu", "_g", "_ab", "_ag", "_cr", "_cu", "_g",
-    ];
+    let ends1 = ["_g", "_ab", "_cr", "_cu", "_g", "_ab", "_cr", "_cu", "_g"];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
     let mut endsz = Vec::<String>::new();
@@ -400,10 +398,6 @@ pub fn main_enclone(args: &Vec<String>) {
                                 let mut ok = false;
                                 if ff[2].starts_with("Antibody") {
                                     if y.contains("_ab") {
-                                        ok = true;
-                                    }
-                                } else if ff[2].starts_with("Antigen") {
-                                    if y.contains("_ag") {
                                         ok = true;
                                     }
                                 } else if ff[2].starts_with("CRISPR") {
@@ -470,7 +464,7 @@ pub fn main_enclone(args: &Vec<String>) {
             There are various possible reasons for this, including an incorrectly \
             specified path, or incorrect\nspecification of PRE, or a partially copied outs \
             directory that does not include \
-            all the needed files,\nor a mixup between VDJ and GEX path names.\n",
+            all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
             json, json_lz4
         );
         std::process::exit(1);
@@ -1528,7 +1522,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Update reference sequences for V segments by substituting in alt alleles if better.
 
-    sub_alts(&ctl, &alt_refs, &mut info, &mut exact_clonotypes);
+    sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
     // Form equivalence relation on exact subclonotypes.
 
@@ -1541,16 +1535,9 @@ pub fn main_enclone(args: &Vec<String>) {
         &info,
         &mut join_info,
     );
-    /*
-    if ctl.comp {
-        if ctl.clono_filt_opt.ncells_low < ctl.clono_filt_opt.ncells_high {
-            println!("");
-        }
-    }
-    */
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
-    // cell clonotypes.  This requires editing of exact_clonotypes, info and eq.
+    // cell clonotypes.  This requires editing of exact_clonotypes, info, eq and join_info.
 
     if ctl.clono_filt_opt.weak_onesies {
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
@@ -1582,6 +1569,20 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             to_exact_new.push(enew);
         }
+
+        let mut join_info2 = Vec::new();
+        for i in 0..join_info.len() {
+            let (u1, u2) = (join_info[i].0, join_info[i].1);
+            for v1 in to_exact_new[u1].iter() {
+                for v2 in to_exact_new[u2].iter() {
+                    let mut x = join_info[i].clone();
+                    x.0 = *v1;
+                    x.1 = *v2;
+                    join_info2.push(x);
+                }
+            }
+        }
+        join_info = join_info2;
         exact_clonotypes = exacts2;
         let mut info2 = Vec::<CloneInfo>::new();
         let mut to_info2 = Vec::<Vec<usize>>::new();

@@ -40,7 +40,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
 
         h.doc(
             "NALL_CELL",
-            "turn off all the noise filters except for the cell filter",
+            "Turn off all the noise filters except for the cell filter.",
         );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
@@ -592,10 +592,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc(
             "<antibody>_ab",
             "with the given id or name; report the median UMI count for it; we allow",
-        );
-        h.doc(
-            "<antigen>_ag",
-            "the form e.g. <abbr>:<gene>_g where abbr is an abbreviation to be shown;",
         );
         h.doc(
             "<crispr>_cr",

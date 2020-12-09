@@ -17,4 +17,6 @@ pub struct PotentialJoin {
     pub share_pos_j: Vec<Vec<usize>>,
     pub score: f64,
     pub err: bool,
+    pub p1: f64,
+    pub mult: f64,
 }

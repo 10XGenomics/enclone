@@ -1,25 +1,13 @@
 #!/bin/bash
 
-# This is the giant clonotyping specificity test, for internal use because the datasets
-# it uses are not all appropriate for public release (e.g. because we're not absolutely
-# certain that they're consented for that).
-#
-# The argument NOPAGER is included because of a trap: if the output is typed to less, then
-# it is relatively easy to think that the test succeeded, even though it failed, because you
-# may not see the failure message at the end.  This can cause great confusion.
-#
-# This is a modified version of enclone.test that shows more details.
+# This is an auxiliary program to enclone.test, that prints out details about false joins.
 
 rootdir=$(dirname $0)
 
 enclone \
     BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
-    ANN COMP SHOW_BC FAIL_ONLY=true PLAIN NSILENT PRINT_FAILED_JOINS \
+    ANN SHOW_BC SEQ FAIL_ONLY=true PLAIN PRINT_FAILED_JOINS \
     PRE=/mnt/assembly/vdj/current15 MIX_DONORS \
-    REQUIRED_FPS=16 \
-    NOPAGER $*
-
-# WARNING:
-# Please be very careful about changing the benchmark statistic for
-# REQUIRED_FPS.
+    BUILT_IN \
+    NOPAGER SUMMARY $*

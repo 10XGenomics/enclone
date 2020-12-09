@@ -23,8 +23,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
-        max_diffs: 50,
-        max_degradation: 3,
+        max_diffs: 55,
+        max_degradation: 2,
         ref_v_trim: 15,
         ref_j_trim: 15,
     };
@@ -161,10 +161,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.allele_alg_opt.min_mult = 4;
     ctl.allele_alg_opt.min_alt = 4;
 
-    ctl.join_alg_opt.max_score = 1_000_000.0;
+    ctl.join_alg_opt.max_score = 500_000.0;
     ctl.join_alg_opt.merge_onesies = true; // should just kill this as an option
     ctl.join_alg_opt.merge_onesies_ctl = true;
-    ctl.join_alg_opt.max_cdr3_diffs = 10;
+    ctl.join_alg_opt.max_cdr3_diffs = 15;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;

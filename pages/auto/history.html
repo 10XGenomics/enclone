@@ -65,6 +65,28 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>12/9/20</b>: 
+<ul>
+<li>Delete the <code>_ag</code> antigen feature label (which was documented at
+<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>) because this
+was in fact never supported by <code>cellranger</code>.</li>
+<li>Change the algorithm for deciding to use a donor reference allele, so that it checks all 
+donor reference alleles for all V genes having the same name as the one originally assigned to
+a contig.  In some cases this changes results.  Note that this change comes after Cell Ranger
+5.0 and with high probability will be integrated into the next major Cell Ranger release.</li>
+<li> Change the default value of <code>MAX_DIFFS</code> from <code>50</code> to <code>55</code>.  
+Change <code>MAX_DEGRADATION</code> from <code>3</code> to <code>2</code>.  Change the default
+value for <code>MAX_SCORE</code> from <code>1,000,000</code> to <code>500,000</code>.  Change
+the default value for <code>MAX_CDR3_DIFFS</code> from <code>10</code> to <code>15</code>.
+Ditto comments about Cell Ranger.</li>
+<li>Allow up to 5 (instead of 4) CDR3 amino acid differences when joining chains.</li>
+<li>Find input data correctly if the <code>cellranger multi</code> pipeline is used.</li>
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>12/5/20</b>: 
 <ul>
 <li>
