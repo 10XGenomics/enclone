@@ -4,30 +4,29 @@
 # can be obtained by adding a parameter to the first run.
 #
 # USAGE:
-# diffruns dataset(s) old_param | less -R
+# diffruns dataset-specification old_param | less -R
 #
 # EXAMPLE:
-# diffruns 123085 NDOUBLET | less -R
+# diffruns BCR=123085 NDOUBLET | less -R
 #
 # LIMITATIONS:
 # - makes some temporary files
 # - makes some imperfect assumptions to do the diff
-# - hardcoded for BCR
 
-set dataset = $1
+set dataset_spec = $1
 set old_param = $2
 
-enclone POUT=~/old PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT BCR=$dataset $old_param \
+enclone POUT=~/old PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT $dataset_spec $old_param \
     > /dev/null
 cat ~/old | sort > ~/olds
 
-enclone POUT=~/new PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT BCR=$dataset
+enclone POUT=~/new PCELL PCOLS=barcode,exact_subclonotype_id NOPRINT $dataset_spec
 cat ~/new | sort > ~/news
 
 set bcs = `diff ~/olds ~/news | grep "<" | tr ',' ' ' | awk '{ print $2 }' \
     | tr '\n' ',' | sed 's/.$//'`
 
 echo OLD
-enclone BCR=$dataset BARCODE=$bcs $old_param NOPAGER
+enclone $dataset_spec BARCODE=$bcs $old_param NOPAGER
 echo NEW
-enclone BCR=$dataset BARCODE=$bcs NOPAGER
+enclone $dataset_spec BARCODE=$bcs NOPAGER
