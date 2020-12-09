@@ -32,6 +32,7 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
+use enclone_print::print_utils4::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use evalexpr::*;
@@ -2028,21 +2029,110 @@ pub fn main_enclone(args: &Vec<String>) {
         orbits = orbits2;
     }
 
-    // Delete exact subclonotypes within them that appear to represent doublets.
+    // Delete exact subclonotypes that appear to represent doublets.
 
     if ctl.clono_filt_opt.doublet {
 
-        // Find the pairs of exact subclonotypes that share identical CDR3 sequences.
+        // Define pure subclonotypes.  To do this we break each clonotype up by chain signature.
+        // Note duplication of code with print_clonotypes.rs.
+
+        let mut pures = Vec::<Vec<usize>>::new();
+        for i in 0..orbits.len() {
+            let mut o = orbits[i].clone();
+            let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
+            for id in o.iter() {
+                let x: &CloneInfo = &info[*id as usize];
+                od.push((x.origin.clone(), x.clonotype_id, *id));
+            }
+            od.sort();
+            let mut exacts = Vec::<usize>::new();
+            let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
+            let mut js = Vec::<usize>::new();
+            let mut j = 0;
+            while j < od.len() {
+                let k = next_diff12_3(&od, j as i32) as usize;
+                let mut z_len = Vec::<(String, usize)>::new();
+                for l in j..k {
+                    let x: &CloneInfo = &info[od[l].2 as usize];
+                    for m in 0..x.cdr3_aa.len() {
+                        let mut c = x.chain_types[m].clone();
+                        if c.starts_with("TRB") {
+                            c = c.replacen("TRB", "TRX", 1);
+                        } else if c.starts_with("TRA") {
+                            c = c.replacen("TRA", "TRY", 1);
+                        }
+                        z_len.push((format!("{}:{}", c, x.cdr3_aa[m]), x.lens[m]));
+                    }
+                }
+                unique_sort(&mut z_len);
+                cdr3s_len.push(z_len);
+                js.push(j);
+                exacts.push(od[j].1);
+                j = k;
+            }
+            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let cols = mat.len();
+            let nexacts = mat[0].len();
+            /*
+            let mut mat_transpose = vec![vec![None; cols]; nexacts];
+            for u in 0..cols {
+                for v in 0..nexacts {
+                    mat_transpose[v][u] = mat[u][v];
+                }
+            }
+            printme!(o.len(), mat_transpose.len()); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            */
+
+
+            let mut priority = Vec::<Vec<bool>>::new();
+            for u in 0..nexacts {
+                let mut typex = vec![false; mat.len()];
+                for col in 0..mat.len() {
+                    if mat[col][u].is_some() {
+                        typex[col] = true;
+                    }
+                }
+                priority.push(typex.clone());
+            }
+
+
+
+            sort_sync2(&mut priority, &mut exacts);
+            let mut j = 0;
+            while j < priority.len() {
+                let k = next_diff(&priority, j);
+                let mut p = Vec::<usize>::new();
+                for l in j..k {
+                    p.push(exacts[l] as usize);
+                }
+                pures.push(p);
+                j = k;
+            }
+        }
+
+        // Define the number of cells in each pure subclonotype.
+
+        let mut npure = vec![0; pures.len()];
+        for j in 0..pures.len() {
+            for id in pures[j].iter() {
+                npure[j] += exact_clonotypes[*id].ncells();
+            }
+        }
+
+        // Find the pairs of pure subclonotypes that share identical CDR3 sequences.
 
         let mut shares = Vec::<(usize, usize)>::new();
         {
             let mut content = Vec::<(String, usize)>::new();
-            for j in 0..exact_clonotypes.len() {
-                let ex = &exact_clonotypes[j];
-                for k in 0..ex.share.len() {
-                    content.push((ex.share[k].cdr3_dna.clone(), j));
+            for j in 0..pures.len() {
+                for id in pures[j].iter() {
+                    let ex = &exact_clonotypes[*id];
+                    for k in 0..ex.share.len() {
+                        content.push((ex.share[k].cdr3_dna.clone(), j));
+                    }
                 }
             }
+            unique_sort(&mut content);
             content.sort();
             let mut j = 0;
             while j < content.len() {
@@ -2058,7 +2148,7 @@ pub fn main_enclone(args: &Vec<String>) {
             unique_sort(&mut shares);
         }
 
-        // Find triples of exact subclonotypes in which the first two have no share, but both
+        // Find triples of pure subclonotypes in which the first two have no share, but both
         // of the first two share with the third.
 
         let mut trips = Vec::<(usize, usize, usize)>::new();
@@ -2082,15 +2172,16 @@ pub fn main_enclone(args: &Vec<String>) {
         // Delete some of the third members of the triples.
 
         const MIN_MULT_DOUBLET: usize = 5;
-        const MIN_DIST_DOUBLET: usize = 50;
+        // const MIN_DIST_DOUBLET: usize = 50;
         let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
             let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
-            let n0 = exact_clonotypes[v0].ncells();
-            let n1 = exact_clonotypes[v1].ncells();
-            let n2 = exact_clonotypes[v2].ncells();
+            let n0 = npure[v0];
+            let n1 = npure[v1];
+            let n2 = npure[v2];
             if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
                 let mut ok = true;
+                /*
                 let ex1 = &exact_clonotypes[v1];
                 let ex2 = &exact_clonotypes[v2];
                 for i1 in 0..ex1.share.len() {
@@ -2108,9 +2199,10 @@ pub fn main_enclone(args: &Vec<String>) {
                         }
                     }
                 }
+                */
                 if ok {
-                    let ex0 = &exact_clonotypes[v0];
                     /*
+                    let ex0 = &exact_clonotypes[v0];
                     println!("");
                     printme!(ex0.share.len(), ex1.share.len(), ex2.share.len());
                     let mut cdrs = Vec::<String>::new();
@@ -2129,7 +2221,9 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                     println!("{}", cdrs.iter().format(","));
                     */
-                    to_delete[v0] = true;
+                    for m in pures[v0].iter() {
+                        to_delete[*m] = true;
+                    }
                 }
             }
         }
