@@ -2165,7 +2165,6 @@ pub fn main_enclone(args: &Vec<String>) {
             let n1 = npure[v1];
             let n2 = npure[v2];
             if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
-                let ok = true;
                 /*
                 let ex1 = &exact_clonotypes[v1];
                 let ex2 = &exact_clonotypes[v2];
@@ -2185,9 +2184,9 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                 }
                 */
-                if ok {
 
-
+                let verbose = false;
+                if verbose {
                     println!("\n{}, {}, {}", v0, v1, v2);
                     println!("DELETING");
                     for (u, m) in pures[v0].iter().enumerate() {
@@ -2216,10 +2215,9 @@ pub fn main_enclone(args: &Vec<String>) {
                         }
                         println!("[{}] {}", u+1, cdrs.iter().format(","));
                     }
-
-                    for m in pures[v0].iter() {
-                        to_delete[*m] = true;
-                    }
+                }
+                for m in pures[v0].iter() {
+                    to_delete[*m] = true;
                 }
             }
         }
