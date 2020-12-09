@@ -2028,27 +2028,17 @@ pub fn main_enclone(args: &Vec<String>) {
         orbits = orbits2;
     }
 
-    // Scan individual clonotypes, and delete exact subclonotypes within them that appear to
-    // represent doublets.
+    // Delete exact subclonotypes within them that appear to represent doublets.
 
-    let mut orbits2 = Vec::<Vec<i32>>::new();
-    for i in 0..orbits.len() {
-        // Find the exact subclonotypes.
-
-        let mut o = orbits[i].clone();
-        let mut exacts = Vec::<usize>::new();
-        for j in 0..o.len() {
-            exacts.push(info[o[j] as usize].clonotype_index);
-        }
-        unique_sort(&mut exacts);
+    if ctl.clono_filt_opt.doublet {
 
         // Find the pairs of exact subclonotypes that share identical CDR3 sequences.
 
         let mut shares = Vec::<(usize, usize)>::new();
         {
             let mut content = Vec::<(String, usize)>::new();
-            for j in 0..exacts.len() {
-                let ex = &exact_clonotypes[exacts[j]];
+            for j in 0..exact_clonotypes.len() {
+                let ex = &exact_clonotypes[j];
                 for k in 0..ex.share.len() {
                     content.push((ex.share[k].cdr3_dna.clone(), j));
                 }
@@ -2092,28 +2082,32 @@ pub fn main_enclone(args: &Vec<String>) {
         // Delete some of the third members of the triples.
 
         const MIN_MULT_DOUBLET: usize = 5;
-        let mut to_delete = vec![false; exacts.len()];
+        let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
             let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
-            let n0 = exact_clonotypes[exacts[v0]].ncells();
-            let n1 = exact_clonotypes[exacts[v1]].ncells();
-            let n2 = exact_clonotypes[exacts[v2]].ncells();
+            let n0 = exact_clonotypes[v0].ncells();
+            let n1 = exact_clonotypes[v1].ncells();
+            let n2 = exact_clonotypes[v2].ncells();
             if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
                 to_delete[v0] = true;
             }
         }
-        let mut del2 = vec![false; o.len()];
-        for j in 0..o.len() {
-            let id = info[o[j] as usize].clonotype_index;
-            let p = bin_position(&exacts, &id) as usize;
-            if to_delete[p] {
-                del2[j] = true;
+        let mut orbits2 = Vec::<Vec<i32>>::new();
+        for i in 0..orbits.len() {
+            let mut o = orbits[i].clone();
+    
+            let mut del2 = vec![false; o.len()];
+            for j in 0..o.len() {
+                let id = info[o[j] as usize].clonotype_index;
+                if to_delete[id] {
+                    del2[j] = true;
+                }
             }
+            erase_if(&mut o, &del2);
+            orbits2.push(o);
         }
-        erase_if(&mut o, &del2);
-        orbits2.push(o);
+        orbits = orbits2;
     }
-    orbits = orbits2;
 
     // Check for disjoint orbits.  The test here should correspond exactly to the test in
     // define_mat, but it probably doesn't.

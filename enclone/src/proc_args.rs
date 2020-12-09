@@ -142,6 +142,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.weak_chains = true;
     ctl.clono_filt_opt.weak_onesies = true;
     ctl.clono_filt_opt.weak_foursies = true;
+    ctl.clono_filt_opt.doublet = true;
     ctl.clono_filt_opt.bc_dup = true;
     ctl.clono_filt_opt.max_datasets = 1000000000;
     ctl.clono_filt_opt.umi_filt = true;
@@ -305,6 +306,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 "NCELL",
                 "NGEX",
                 "NCROSS",
+                "NDOUBLET",
                 "NUMI",
                 "NUMI_RATIO",
                 "NGRAPH_FILTER",
@@ -427,6 +429,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut set_false = vec![
         ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
         ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
+        ("NDOUBLET", &mut ctl.clono_filt_opt.doublet),
         ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
         ("NMERGE_ONESIES", &mut ctl.join_alg_opt.merge_onesies_ctl),
         ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),

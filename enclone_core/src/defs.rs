@@ -592,6 +592,7 @@ pub struct ClonoFiltOpt {
     pub fcell: Vec<Node>, // constraints from FCELL
     pub inkt: bool,
     pub mait: bool,
+    pub doublet: bool,       // filter putative doublets
 }
 
 // Clonotype printing options.
