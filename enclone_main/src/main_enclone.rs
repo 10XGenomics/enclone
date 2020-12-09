@@ -44,7 +44,7 @@ use regex::Regex;
 use serde_json::Value;
 use stats_utils::*;
 use std::{
-    cmp::max,
+    cmp::{max, min},
     collections::HashMap,
     env,
     fs::File,
@@ -2027,6 +2027,94 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         orbits = orbits2;
     }
+
+    // Scan individual clonotypes, and delete exact subclonotypes within them that appear to
+    // represent doublets.
+
+    let mut orbits2 = Vec::<Vec<i32>>::new();
+    for i in 0..orbits.len() {
+
+        // Find the exact subclonotypes.
+
+        let mut o = orbits[i].clone();
+        let mut exacts = Vec::<usize>::new();
+        for j in 0..o.len() {
+            exacts.push(info[o[j] as usize].clonotype_index);
+        }
+        unique_sort(&mut exacts);
+
+        // Find the pairs of exact subclonotypes that share a chain sequence.
+
+        let mut shares = Vec::<(usize, usize)>::new();
+        {
+            let mut content = Vec::<(Vec<u8>,usize)>::new();
+            for j in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[j]];
+                for k in 0..ex.share.len() {
+                    content.push((ex.share[k].seq.clone(), j));
+                }
+            }
+            content.sort();
+            let mut j = 0;
+            while j < content.len() {
+                let k = next_diff1_2(&content, j as i32) as usize;
+                for l1 in j..k {
+                    for l2 in j+1..k {
+                        shares.push((content[l1].1, content[l2].1));
+                        shares.push((content[l2].1, content[l1].1));
+                    }
+                }
+                j = k;
+            }
+            unique_sort(&mut shares);
+        }
+
+        // Find triples of exact subclonotypes in which the first two have no share, but both
+        // of the first two share with the third.
+
+        let mut trips = Vec::<(usize, usize, usize)>::new();
+        {
+            let mut j = 0;
+            while j < shares.len() {
+                let k = next_diff1_2(&shares, j as i32) as usize;
+                let u = shares[j].0;
+                for l1 in j..k {
+                    for l2 in j+1..k {
+                        let (v1, v2) = (shares[l1].1, shares[l2].1);
+                        if !bin_member(&shares, &(v1, v2)) {
+                            trips.push((v1, v2, u));
+                        }
+                    }
+                }
+                j = k;
+            }
+        }
+
+        // Delete some of the third members of the triples.
+
+        const MIN_MULT_DOUBLET: usize = 5;
+        let mut to_delete = vec![false; exacts.len()];
+        for j in 0..trips.len() {
+            let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
+            let n0 = exact_clonotypes[exacts[v0]].ncells();
+            let n1 = exact_clonotypes[exacts[v1]].ncells();
+            let n2 = exact_clonotypes[exacts[v2]].ncells();
+            if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
+                to_delete[v0] = true;
+            }
+        }
+        let mut del2 = vec![false; o.len()];
+        for j in 0..o.len() {
+            let id = info[o[j] as usize].clonotype_index;
+            let p = bin_position(&exacts, &id) as usize;
+            if to_delete[p] {
+                del2[j] = true;
+            }
+        }
+        erase_if(&mut o, &del2);
+        orbits2.push(o);
+    }
+    orbits = orbits2;
 
     // Check for disjoint orbits.  This is an incomplete test.
 
