@@ -2082,6 +2082,7 @@ pub fn main_enclone(args: &Vec<String>) {
         // Delete some of the third members of the triples.
 
         const MIN_MULT_DOUBLET: usize = 5;
+        const MIN_DIST_DOUBLET: usize = 50;
         let mut to_delete = vec![false; exact_clonotypes.len()];
         for j in 0..trips.len() {
             let (v0, v1, v2) = (trips[j].2, trips[j].0, trips[j].1);
@@ -2089,7 +2090,47 @@ pub fn main_enclone(args: &Vec<String>) {
             let n1 = exact_clonotypes[v1].ncells();
             let n2 = exact_clonotypes[v2].ncells();
             if n0 * MIN_MULT_DOUBLET <= min(n1, n2) {
-                to_delete[v0] = true;
+                let mut ok = true;
+                let ex1 = &exact_clonotypes[v1];
+                let ex2 = &exact_clonotypes[v2];
+                for i1 in 0..ex1.share.len() {
+                    for i2 in 0..ex2.share.len() {
+                        if ex1.share[i1].seq_del.len() == ex2.share[i2].seq_del.len() {
+                            let mut diffs = 0;
+                            for k in 0..ex1.share[i1].seq_del.len() {
+                                if ex1.share[i1].seq_del[k] != ex2.share[i2].seq_del[k] {
+                                    diffs += 1;
+                                }
+                            }
+                            if diffs < MIN_DIST_DOUBLET {
+                                ok = false;
+                            }
+                        }
+                    }
+                }
+                if ok {
+                    let ex0 = &exact_clonotypes[v0];
+                    /*
+                    println!("");
+                    printme!(ex0.share.len(), ex1.share.len(), ex2.share.len());
+                    let mut cdrs = Vec::<String>::new();
+                    for k in 0..ex0.share.len() {
+                        cdrs.push(ex0.share[k].cdr3_aa.clone());
+                    }
+                    println!("{}", cdrs.iter().format(","));
+                    let mut cdrs = Vec::<String>::new();
+                    for k in 0..ex1.share.len() {
+                        cdrs.push(ex1.share[k].cdr3_aa.clone());
+                    }
+                    println!("{}", cdrs.iter().format(","));
+                    let mut cdrs = Vec::<String>::new();
+                    for k in 0..ex2.share.len() {
+                        cdrs.push(ex2.share[k].cdr3_aa.clone());
+                    }
+                    println!("{}", cdrs.iter().format(","));
+                    */
+                    to_delete[v0] = true;
+                }
             }
         }
         let mut orbits2 = Vec::<Vec<i32>>::new();
