@@ -3,17 +3,16 @@
 # Find the difference between the results of two enclone runs, assuming that the difference
 # can be obtained by adding a parameter to the first run.
 #
-# usage:
-# diffruns dataset old_param
+# USAGE:
+# diffruns dataset(s) old_param | less -R
 #
-# example:
-# diffruns 123085 NDOUBLET
+# EXAMPLE:
+# diffruns 123085 NDOUBLET | less -R
 #
-# Makes some temporary files.
-#
-# Makes some imperfect assumptions to do the diff
-#
-# Hardcoded for BCR.
+# LIMITATIONS:
+# - makes some temporary files
+# - makes some imperfect assumptions to do the diff
+# - hardcoded for BCR
 
 set dataset = $1
 set old_param = $2
@@ -29,6 +28,6 @@ set bcs = `diff ~/olds ~/news | grep "<" | tr ',' ' ' | awk '{ print $2 }' \
     | tr '\n' ',' | sed 's/.$//'`
 
 echo OLD
-enclone BCR=$dataset BARCODE=$bcs $old_param
+enclone BCR=$dataset BARCODE=$bcs $old_param NOPAGER
 echo NEW
-enclone BCR=$dataset BARCODE=$bcs
+enclone BCR=$dataset BARCODE=$bcs NOPAGER
