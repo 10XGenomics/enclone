@@ -2033,10 +2033,16 @@ pub fn main_enclone(args: &Vec<String>) {
 
     if ctl.clono_filt_opt.doublet {
         // Define pure subclonotypes.  To do this we break each clonotype up by chain signature.
-        // Note duplication of code with print_clonotypes.rs.
+        // Note duplication of code with print_clonotypes.rs.  And this is doing some
+        // superfluous compute.
 
-        let mut pures = Vec::<Vec<usize>>::new();
+        let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
         for i in 0..orbits.len() {
+            results.push((i, Vec::new()));
+        }
+        let mut pures = Vec::<Vec<usize>>::new();
+        results.par_iter_mut().for_each(|res| {
+            let i = res.0;
             let o = orbits[i].clone();
             let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
             for id in o.iter() {
@@ -2089,9 +2095,12 @@ pub fn main_enclone(args: &Vec<String>) {
                 for l in j..k {
                     p.push(exacts[l] as usize);
                 }
-                pures.push(p);
+                res.1.push(p);
                 j = k;
             }
+        });
+        for i in 0..results.len() {
+            pures.append(&mut results[i].1);
         }
 
         // Define the number of cells in each pure subclonotype.
