@@ -154,7 +154,6 @@ main() {
     #
     #    This is quite hideous.  There must be a better way.
 
-
     local _current_version _enclone_is_current _is_update
     repo=https://github.com/10XGenomics/enclone
     if $_have_curl; then
@@ -244,10 +243,7 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 9. Download data.  
-    #
-    #    For the medium case, this is not optimal, because if anything changed,
-    #    all the files get re-downloaded.
+    # 9. Download small data.  
 
     raw_data_repo=https://raw.githubusercontent.com/10XGenomics/enclone-data
     if [ "$size" = small ]; then
@@ -274,6 +270,13 @@ main() {
             printf "\nSmall version of datasets already current so not downloading.\n"
         fi
     fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 10. Download medium data.  
+    #
+    #     This is not optimal, because if anything changed, all the files get re-downloaded.
+
     if [ "$size" = medium ] || [ "$size" = large ]; then
         if [ "$_datasets_medium_current" = false ]; then
             echo
@@ -300,6 +303,11 @@ main() {
             printf "\nMedium version of datasets already current so not downloading them.\n"
         fi
     fi
+
+    #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    # 11. Download large data.  
+
     if [ "$size" = large ]; then
         if [ "$_datasets_large_current" = false ]; then
             printf "\nDownloading large version of datasets.\n"
