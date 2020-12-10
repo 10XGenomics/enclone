@@ -279,7 +279,7 @@ fn test_curl_command() {
                 "enclone/datasets_small_checksum",
                 "enclone/version",
             ];
-            for f in req.iter() {
+            for (jf, f) in req.iter().enumerate() {
                 if !path_exists(&format!("testx/outputs/{}", f)) {
                     eprintln!(
                         "\nAttempt to run enclone install command using {} version of \
@@ -287,6 +287,19 @@ fn test_curl_command() {
                         version, f
                     );
                     std::process::exit(1);
+                }
+                // Make sure that the all contigs file is not "essentially empty".  This happened.
+
+                if pass == 2 && jf == 1 {
+                    let len = metadata(&format!("testx/outputs/{}", f)).unwrap().len();
+                    if len < 10_000_000 {
+                        eprintln!(
+                            "\nDownload yielded truncated all_contig_annotations.json.lz4 \
+                            file, size = {} bytes.\n",
+                            len
+                        );
+                        std::process::exit(1);
+                    }
                 }
             }
             if path_exists("testx/outputs/.subversion") {
