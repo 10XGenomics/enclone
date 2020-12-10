@@ -257,9 +257,9 @@ main() {
             mkdir -p 123085/outs
             cd 123085/outs
             json="all_contig_annotations.json.lz4"
-            url="$raw_data_repo/big_inputs/version15/123085/outs/$json"
+            url="https://github.com/10XGenomics/enclone-data/raw/master/big_inputs/version15/123085/outs/$json"
             if $_have_curl; then
-                curl -s $url -O
+                curl -s -L $url -O
             else
                 wget -q $url
             fi
