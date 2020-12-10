@@ -157,23 +157,23 @@ pub fn make_loupe_clonotype(
         let aa_sequence_universal = amino_acid(&universal_reference, vstartu[cx]);
         let aa_sequence_donor = amino_acid(&donor_reference, vstartd[cx]);
 
-        let v_start =ex.share[mu].v_start;
+        let v_start = ex.share[m0].v_start;
         let fwr1_start = Some((v_start + ex.share[m0].fr1_start) as u32);
         let mut cdr1_start = None;
         if ex.share[m0].cdr1_start.is_some() {
             cdr1_start = Some((v_start + ex.share[m0].cdr1_start.unwrap()) as u32);
         }
         let mut fwr2_start = None;
-        if ex.share[m0].fr2.is_some() {
-            fwr2_start = Some((v_start + ex.share[m0].fr2.unwrap()) as u32);
+        if ex.share[m0].fr2_start.is_some() {
+            fwr2_start = Some((v_start + ex.share[m0].fr2_start.unwrap()) as u32);
         }
         let mut cdr2_start = None;
         if ex.share[m0].cdr2_start.is_some() {
             cdr2_start = Some((v_start + ex.share[m0].cdr2_start.unwrap()) as u32);
         }
         let mut fwr3_start = None;
-        if ex.share[m0].fr3.is_some() {
-            fwr3_start = Some((v_start + ex.share[m0].fr3.unwrap()) as u32);
+        if ex.share[m0].fr3_start.is_some() {
+            fwr3_start = Some((v_start + ex.share[m0].fr3_start.unwrap()) as u32);
         }
         let fwr4_end = Some(ex.share[m0].full_seq.len() as u32);
 
@@ -241,16 +241,16 @@ pub fn make_loupe_clonotype(
                 cdr1_start = Some((v_start + ex.share[m].cdr1_start.unwrap()) as u32);
             }
             let mut fwr2_start = None;
-            if ex.share[m].fr2.is_some() {
-                fwr2_start = Some((v_start + ex.share[m].fr2.unwrap()) as u32);
+            if ex.share[m].fr2_start.is_some() {
+                fwr2_start = Some((v_start + ex.share[m].fr2_start.unwrap()) as u32);
             }
             let mut cdr2_start = None;
             if ex.share[m].cdr2_start.is_some() {
                 cdr2_start = Some((v_start + ex.share[m].cdr2_start.unwrap()) as u32);
             }
             let mut fwr3_start = None;
-            if ex.share[m].fr3.is_some() {
-                fwr3_start = Some((v_start + ex.share[m].fr3.unwrap()) as u32);
+            if ex.share[m].fr3_start.is_some() {
+                fwr3_start = Some((v_start + ex.share[m].fr3_start.unwrap()) as u32);
             }
             let cdr3_start = v_start + ex.share[m].cdr3_start;
             let cdr3_end = cdr3_start + ex.share[m].cdr3_dna.len();

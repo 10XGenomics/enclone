@@ -230,7 +230,7 @@ message ClonotypeChain {
   // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
   required uint32 cdr3_end = 25;
   // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
-  optional uint32 fwr4_end = 16;
+  optional uint32 fwr4_end = 26;
   // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
   required string chain_type = 27;
   // AA sequence of the clonotype chain consensus
