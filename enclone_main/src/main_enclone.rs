@@ -166,7 +166,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Test for happening mode and turn on pretty trace.
 
-    if !nopretty {
+    if !nopretty && !ctl.gen_opt.cellranger {
         let mut happening = 0;
         let mut ctrlc = false;
         for i in 1..args.len() {
@@ -206,28 +206,18 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
             let args: Vec<String> = env::args().collect();
-            let exit_message: String;
-            if !ctl.gen_opt.cellranger {
-                exit_message = format!(
-                    "Something has gone badly wrong.  You have probably encountered an internal \
-                    error in enclone.\n\n\
-                    Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-                    above and also the following version information:\n\
-                    {} : {}.\n\n\
-                    Your command was:\n\n{}\n\n\
-                    🌸 Thank you and have a nice day! 🌸",
-                    env!("CARGO_PKG_VERSION"),
-                    version_string(),
-                    args.iter().format(" "),
-                );
-            } else {
-                exit_message = format!(
-                    "Something has gone badly wrong.  You have probably \
-                     encountered an internal error\nin cellranger.  \
-                     Please email us at support@10xgenomics.com, including the traceback\nshown \
-                     above."
-                );
-            }
+            let exit_message = format!(
+                "Something has gone badly wrong.  You have probably encountered an internal \
+                error in enclone.\n\n\
+                Please email us at enclone@10xgenomics.com, including the traceback shown\n\
+                above and also the following version information:\n\
+                {} : {}.\n\n\
+                Your command was:\n\n{}\n\n\
+                🌸 Thank you and have a nice day! 🌸",
+                env!("CARGO_PKG_VERSION"),
+                version_string(),
+                args.iter().format(" "),
+            );
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
             for i in 1..args.len() {
