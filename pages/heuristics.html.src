@@ -15,6 +15,39 @@ The content here is geeky and technical.
 
 <hr>
 
+<p><b>Doublet filtering.</b>
+This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
+higher-order multiplets).  This was introduced after CellRanger 5.0 and is likely to be included
+in a subsequent release.
+
+<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
+clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
+have entries for particular chains (and not entries for the other chains) are merged together to
+form a pure subclonotype.</p>
+
+<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
+pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
+subclonotypes that have only one chain.</p>
+
+<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
+the following three conditions are all satisfied:
+<ul>
+<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
+<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
+<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
+</ul>
+</p>
+
+<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
+subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
+the original clonotypes may break up into separate clonotypes, as they may no longer be held 
+together by shared chains.</p>
+
+<p>If the argument <code>NDOUBLET</code> is supplied to #enclone, then doublet filtering is
+not applied.</p>
+
+<hr>
+
 <p><b>Foursie filtering.</b>  
 Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
 <i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 

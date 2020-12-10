@@ -41,7 +41,7 @@ pub fn define_mat(
 
     // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
     // 1. They have the same length and differ at no more than 5 positions.
-    // 2. Each has a V..J sequence such that the two differ by no more than 50 positions.
+    // 2. Each has a V..J sequence such that the two differ by no more than 60 positions.
 
     let mut ec: EquivRel = EquivRel::new(all_cdr3s.len() as i32);
     for m1 in 0..all_cdr3s.len() {
@@ -55,7 +55,7 @@ pub fn define_mat(
                         diffs += 1;
                     }
                 }
-                if diffs <= 5 {
+                if diffs <= MAX_CDR3_DIFFS_TO_JOIN {
                     'outer: for l1 in 0..od.len() {
                         let y1: &CloneInfo = &info[od[l1].2 as usize];
                         for u1 in 0..y1.cdr3_aa.len() {

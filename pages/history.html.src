@@ -47,6 +47,10 @@ the default value for <code>MAX_CDR3_DIFFS</code> from <code>10</code> to <code>
 Ditto comments about Cell Ranger.</li>
 <li>Allow up to 5 (instead of 4) CDR3 amino acid differences when joining chains.</li>
 <li>Find input data correctly if the <code>cellranger multi</code> pipeline is used.</li>
+<li>Add a new filter that removes some doublets, and which can be turned off by supplying the
+argument <code>NDOUBLET</code> (see
+<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a> and
+<a href="../../pages/auto/heuristics.html">notes on heuristics</a>).</li>
 </ul>
 </p>
 

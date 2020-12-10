@@ -17,17 +17,17 @@ SUMMARY STATISTICS
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
-   │1       │                   638  │            1453  │   42.1│
-   │2       │                  1645  │            1737  │   50.3│
-   │3       │                   204  │             228  │    6.6│
-   │4       │                    32  │              37  │    1.1│
-   │total   │                  2519  │            3455  │  100.0│
+   │1       │                   639  │            1457  │   42.8│
+   │2       │                  1645  │            1737  │   51.0│
+   │3       │                   164  │             188  │    5.5│
+   │4       │                    23  │              24  │    0.7│
+   │total   │                  2471  │            3406  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 203
-   • number of cell-cell merges = 936
+   • number of cell-cell merges = 935
    • number of cells having 1 chain = 1570
-   • number of cells having 2 or 3 chains = 1853
-   • estimated T-T doublet rate = 1.9% = 32/1681 = cells with 4 chains / cells with 2 or 4 chains
-   • mean over middle third of contig UMI counts (TRB) = 2.71
-   • mean over middle third of contig UMI counts (TRA) = 10.53
+   • number of cells having 2 or 3 chains = 1813
+   • estimated T-T doublet rate = 1.4% = 23/1672 = cells with 4 chains / cells with 2 or 4 chains
+   • mean over middle third of contig UMI counts (TRB) = 2.70
+   • mean over middle third of contig UMI counts (TRA) = 10.48
 

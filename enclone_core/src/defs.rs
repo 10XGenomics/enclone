@@ -12,6 +12,8 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
+pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
+
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
 pub const LVARS_ALLOWED: [&str; 30] = [
@@ -590,6 +592,7 @@ pub struct ClonoFiltOpt {
     pub fcell: Vec<Node>, // constraints from FCELL
     pub inkt: bool,
     pub mait: bool,
+    pub doublet: bool, // filter putative doublets
 }
 
 // Clonotype printing options.
