@@ -213,21 +213,33 @@ message ClonotypeChain {
   required uint32 j_start_ref = 17;
   // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
   required uint32 j_end = 18;
+  // Index of the start of the FWR1 sequence in the `nt_sequence`. 
+  optional uint32 fwr1_start = 19;
+  // Index of the start of the CDR1 sequence in the `nt_sequence`. 
+  optional uint32 cdr1_start = 20;
+  // Index of the start of the FWR2 sequence in the `nt_sequence`. 
+  optional uint32 fwr2_start = 21;
+  // Index of the start of the CDR2 sequence in the `nt_sequence`. 
+  optional uint32 cdr2_start = 22;
+  // Index of the start of the FWR3 sequence in the `nt_sequence`. 
+  optional uint32 fwr3_start = 23;
   // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
   // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
-  required uint32 cdr3_start = 19;
+  required uint32 cdr3_start = 24;
   // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
   // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
-  required uint32 cdr3_end = 20;
+  required uint32 cdr3_end = 25;
+  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
+  optional uint32 fwr4_end = 16;
   // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
-  required string chain_type = 21;
+  required string chain_type = 27;
   // AA sequence of the clonotype chain consensus
-  required bytes aa_sequence = 22;
+  required bytes aa_sequence = 28;
   // AA sequence of the concatenated universal reference starting from the V
   // regions
-  required bytes aa_sequence_universal = 23;
+  required bytes aa_sequence_universal = 29;
   // AA sequence of the concatenated donor reference starting from the V regions
-  required bytes aa_sequence_donor = 24;
+  required bytes aa_sequence_donor = 30;
 }
 
 // Definition of a clonotype.
