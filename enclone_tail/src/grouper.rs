@@ -5,6 +5,7 @@
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
 use equiv::EquivRel;
+use rayon::prelude::*;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -143,8 +144,12 @@ pub fn grouper(
         // Define the distance from center clonotypes to other clonotypes.
 
         let infinity = 1_000_000_000.0_f64;
-        let mut dist = vec![vec![infinity; exacts.len()]; center.len()];
+        let mut dist = Vec::<(usize, Vec<f64>)>::new();
         for i in 0..center.len() {
+            dist.push((i, vec![infinity; exacts.len()]));
+        }
+        dist.par_iter_mut().for_each(|res| {
+            let i = res.0;
             for j in 0..exacts.len() {
                 let (c1, c2) = (&exacts[center[i]], &exacts[j]);
                 for k1 in 0..c1.len() {
@@ -165,11 +170,11 @@ pub fn grouper(
                                 }
                             }
                         }
-                        dist[i][j] = dist[i][j].min(heavy + light);
+                        res.1[j] = res.1[j].min(heavy + light);
                     }
                 }
             }
-        }
+        });
 
         // Compute the groups.
 
@@ -188,7 +193,7 @@ pub fn grouper(
             g.push((center[i] as i32, "distance = 0".to_string()));
             let mut id = Vec::<(f64, usize)>::new();
             for j in 0..exacts.len() {
-                id.push((dist[i][j], j));
+                id.push((dist[i].1[j], j));
             }
             id.sort_by(|a, b| a.partial_cmp(b).unwrap());
             for j in 0..id.len() {
