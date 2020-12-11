@@ -171,7 +171,6 @@ pub fn group_and_print_clonotypes(
     outputs:
     last_width
     groupsx
-    grepsn
     */
 
     // Group clonotypes and make output.
@@ -248,14 +247,14 @@ pub fn group_and_print_clonotypes(
     // Gather groups and sort so that larger groups (as measured by cells) come first.
 
     let mut groupsx = Vec::<Vec<i32>>::new();
-    let mut grepsn = Vec::<(usize, usize)>::new();
+    let mut grepsn = Vec::<usize>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(greps[i], &mut o);
-        groupsx.push(o.clone());
         if o.len() < ctl.clono_group_opt.min_group {
             continue;
         }
+        groupsx.push(o.clone());
         let mut n = 0;
         for j in 0..o.len() {
             let x = o[j] as usize;
@@ -264,9 +263,10 @@ pub fn group_and_print_clonotypes(
                 n += exact_clonotypes[s[k]].clones.len();
             }
         }
-        grepsn.push((n, i));
+        grepsn.push(n);
     }
-    reverse_sort(&mut grepsn);
+    sort_sync2(&mut grepsn, &mut groupsx);
+    groupsx.reverse();
 
     // Echo command.
 
@@ -282,10 +282,16 @@ pub fn group_and_print_clonotypes(
     // Now print clonotypes.
 
     let mut groups = 0;
-    for z in 0..grepsn.len() {
-        let i = grepsn[z].1;
-        let n = grepsn[z].0;
+    for i in 0..groupsx.len() {
         let o = groupsx[i].clone();
+        let mut n = 0;
+        for j in 0..o.len() {
+            let x = o[j] as usize;
+            let s = &exacts[x];
+            for k in 0..s.len() {
+                n += exact_clonotypes[s[k]].clones.len();
+            }
+        }
         groups += 1;
 
         // Generate human readable output.  Getting the newlines right is tricky, so
@@ -353,7 +359,7 @@ pub fn group_and_print_clonotypes(
         for j in 0..o.len() {
             let oo = o[j] as usize;
             if !ctl.gen_opt.noprint {
-                if z > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
+                if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
                 }
                 if ctl.gen_opt.svg {
