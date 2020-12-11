@@ -956,7 +956,18 @@ pub fn row_fill(
     // Sanity check.  It's here because if it fails and that failure was not detected, something
     // exceptionally cryptic would happen downstream.
 
-    assert_eq!(row.len(), lvars.len() + 1);
+    if row.len() != lvars.len() + 1 {
+        let msg = format!("Oops, row.len() != lvars.len() + 1, as in fact we have\n\
+            row.len() = {} and lvars.len() = {}, and in more detail,\n\
+            row = {}\n\
+            and lvars = {}.",
+            row.len(),
+            lvars.len(),
+            row.iter().format(","),
+            lvars.iter().format(","),
+        );
+        panic!(msg);
+    }
 
     // Get the relevant barcodes.
 
