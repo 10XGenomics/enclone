@@ -131,11 +131,18 @@ pub fn grouper(
                 .force_usize();
             for i in 0..exacts.len() {
                 let mut n = 0;
+                let mut d1 = false;
                 let s = &exacts[i];
                 for k in 0..s.len() {
-                    n += exact_clonotypes[s[k]].clones.len();
+                    let ex = &exact_clonotypes[s[k]];
+                    n += ex.clones.len();
+                    for u in 0..ex.clones.len() {
+                        if ctl.origin_info.donor_id[ex.clones[u][0].dataset_index] == "d1" {
+                            d1 = true;
+                        }
+                    }
                 }
-                if n >= min_cells {
+                if n >= min_cells && d1 {
                     center.push(i);
                 }
             }

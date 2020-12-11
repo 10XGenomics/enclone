@@ -228,7 +228,8 @@ available as a parseable variable dist_center.
 
 Center clonotypes.  These are in principle any set of clonotypes.  Initially, we allow only
 AG_CENTER=min_cells=n
-specifying that a center clonotype is one having at least n cells.
+specifying that a center clonotype is one having at least n cells.  And we also only put
+clonotypes containing cells from donor d1 into the center.
 
 Please note that asymmetric grouping is very time consuming, and run time is roughly a linear
 function of (number of center clonotypes) * (number of clonotypes).  So it is advisable to
