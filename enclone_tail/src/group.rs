@@ -161,13 +161,27 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    /*
+    inputs:
+    ctl
+    exacts
+    exact_clonotypes
+    refdata
+
+    outputs:
+    last_width
+    groups
+    groupsx
+    grepsn
+    */
+
     // Group clonotypes and make output.
 
     let mut last_width = 0;
     let mut e: EquivRel = EquivRel::new(pics.len() as i32);
     if ctl.clono_group_opt.heavy_cdr3_aa {
         let mut all = Vec::<(String, usize)>::new();
-        for i in 0..pics.len() {
+        for i in 0..exacts.len() {
             for x in exacts[i].iter() {
                 for m in 0..exact_clonotypes[*x].share.len() {
                     let y = &exact_clonotypes[*x].share[m];
@@ -189,7 +203,7 @@ pub fn group_and_print_clonotypes(
     }
     if ctl.clono_group_opt.vj_refname || ctl.clono_group_opt.vj_refname_strong {
         let mut all = Vec::<(Vec<String>, usize)>::new();
-        for i in 0..pics.len() {
+        for i in 0..exacts.len() {
             let ex = &exact_clonotypes[exacts[i][0]];
             let mut s = Vec::<String>::new();
             for j in 0..ex.share.len() {
