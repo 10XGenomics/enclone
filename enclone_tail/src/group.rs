@@ -233,12 +233,14 @@ pub fn group_and_print_clonotypes(
     let mut greps = Vec::<i32>::new();
     e.orbit_reps(&mut greps);
 
-    // Sort so that larger groups (as measured by cells) come first.
+    // Gather groups and sort so that larger groups (as measured by cells) come first.
 
+    let mut groupsx = Vec::<Vec<i32>>::new();
     let mut grepsn = Vec::<(usize, usize)>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(greps[i], &mut o);
+        groupsx.push(o.clone());
         if o.len() < ctl.clono_group_opt.min_group {
             continue;
         }
@@ -270,8 +272,7 @@ pub fn group_and_print_clonotypes(
     for z in 0..grepsn.len() {
         let i = grepsn[z].1;
         let n = grepsn[z].0;
-        let mut o = Vec::<i32>::new();
-        e.orbit(greps[i], &mut o);
+        let o = groupsx[i].clone();
         groups += 1;
 
         // Generate human readable output.  Getting the newlines right is tricky, so
