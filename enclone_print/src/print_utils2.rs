@@ -957,7 +957,8 @@ pub fn row_fill(
     // exceptionally cryptic would happen downstream.
 
     if row.len() != lvars.len() + 1 {
-        let msg = format!("Oops, row.len() != lvars.len() + 1, as in fact we have\n\
+        let msg = format!(
+            "Oops, row.len() != lvars.len() + 1, as in fact we have\n\
             row.len() = {} and lvars.len() = {}, and in more detail,\n\
             row = {}\n\
             and lvars = {}.",
