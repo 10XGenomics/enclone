@@ -169,13 +169,11 @@ pub fn group_and_print_clonotypes(
     refdata
 
     outputs:
-    last_width
     groupsx
     */
 
     // Group clonotypes and make output.
 
-    let mut last_width = 0;
     let mut e: EquivRel = EquivRel::new(pics.len() as i32);
     if ctl.clono_group_opt.heavy_cdr3_aa {
         let mut all = Vec::<(String, usize)>::new();
@@ -270,6 +268,7 @@ pub fn group_and_print_clonotypes(
 
     // Echo command.
 
+    let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
         let args: Vec<String> = env::args().collect();
@@ -281,7 +280,6 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
-    let mut groups = 0;
     for i in 0..groupsx.len() {
         let o = groupsx[i].clone();
         let mut n = 0;
@@ -292,7 +290,6 @@ pub fn group_and_print_clonotypes(
                 n += exact_clonotypes[s[k]].clones.len();
             }
         }
-        groups += 1;
 
         // Generate human readable output.  Getting the newlines right is tricky, so
         // they're marked.
@@ -337,7 +334,7 @@ pub fn group_and_print_clonotypes(
                 fwrite!(
                     logx,
                     "[{}] GROUP = {} CLONOTYPES = {} CELLS",
-                    groups,
+                    i + 1,
                     o.len(),
                     n
                 );
@@ -364,7 +361,7 @@ pub fn group_and_print_clonotypes(
                 }
                 if ctl.gen_opt.svg {
                     const FONT_SIZE: usize = 15;
-                    let s = format!("[{}.{}] {}", groups, j + 1, pics[oo]);
+                    let s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);
 
                     // Generate svg.  This does not generate the shortest possible string.  One
                     // thing that could be done is to use only one text tag and instead use
@@ -379,7 +376,7 @@ pub fn group_and_print_clonotypes(
                         convert_text_with_ansi_escapes_to_svg(&s, "Menlo", FONT_SIZE)
                     );
                 } else {
-                    fwrite!(logx, "[{}.{}] {}", groups, j + 1, pics[oo]);
+                    fwrite!(logx, "[{}.{}] {}", i + 1, j + 1, pics[oo]);
                 }
             }
             let x = &pics[oo];
@@ -436,7 +433,7 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut z);
                         }
                     }
-                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    names.push(format!("{}.{}.{}", i + 1, j + 1, k + 1,));
                     aa.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 60;
@@ -554,7 +551,7 @@ pub fn group_and_print_clonotypes(
                     header.set_mode(0o0644);
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", groups, j + 1);
+                    let filename = format!("{}.{}", i + 1, j + 1);
                     clustal_aa
                         .as_mut()
                         .unwrap()
@@ -585,7 +582,7 @@ pub fn group_and_print_clonotypes(
                             seq.append(&mut s);
                         }
                     }
-                    names.push(format!("{}.{}.{}", groups, j + 1, k + 1,));
+                    names.push(format!("{}.{}.{}", i + 1, j + 1, k + 1,));
                     dna.append(&mut vec![seq; 1]);
                 }
                 const W: usize = 60;
@@ -660,7 +657,7 @@ pub fn group_and_print_clonotypes(
                     header.set_mode(0o0644);
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", groups, j + 1);
+                    let filename = format!("{}.{}", i + 1, j + 1);
                     clustal_dna
                         .as_mut()
                         .unwrap()
@@ -753,7 +750,7 @@ pub fn group_and_print_clonotypes(
                     header.set_mode(0o0644);
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", groups, j + 1);
+                    let filename = format!("{}.{}", i + 1, j + 1);
                     phylip_aa
                         .as_mut()
                         .unwrap()
@@ -838,7 +835,7 @@ pub fn group_and_print_clonotypes(
                     header.set_mode(0o0644);
                     let now = SystemTime::now();
                     header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", groups, j + 1);
+                    let filename = format!("{}.{}", i + 1, j + 1);
                     phylip_dna
                         .as_mut()
                         .unwrap()
@@ -1049,7 +1046,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     pgout,
                                     "{},{},{},{},{},{},{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     q + 1,
                                     chain_types[refdata.rtype[id] as usize],
@@ -1069,7 +1066,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     pgout,
                                     "{},{},{},{},{},{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     q + 1,
                                     chain_types[refdata.rtype[id] as usize],
@@ -1085,7 +1082,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     logx,
                                     "{},{},{},{},{},{},{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     q + 1,
                                     chain_types[refdata.rtype[id] as usize],
@@ -1105,7 +1102,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     logx,
                                     "{},{},{},{},{},{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     q + 1,
                                     chain_types[refdata.rtype[id] as usize],
@@ -1131,7 +1128,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     fout,
                                     ">group{}.clonotype{}.exact{}.chain{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     k + 1,
                                     m + 1
@@ -1140,7 +1137,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     logx,
                                     ">group{}.clonotype{}.exact{}.chain{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     k + 1,
                                     m + 1
@@ -1187,7 +1184,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     faaout,
                                     ">group{}.clonotype{}.exact{}.chain{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     k + 1,
                                     m + 1
@@ -1196,7 +1193,7 @@ pub fn group_and_print_clonotypes(
                                 fwriteln!(
                                     logx,
                                     ">group{}.clonotype{}.exact{}.chain{}",
-                                    groups,
+                                    i + 1,
                                     j + 1,
                                     k + 1,
                                     m + 1
@@ -1236,7 +1233,7 @@ pub fn group_and_print_clonotypes(
             if ctl.parseable_opt.pout.len() > 0 {
                 let mut rows = Vec::<Vec<String>>::new();
                 for m in 0..out_datas[oo].len() {
-                    out_datas[oo][m].insert("group_id".to_string(), format!("{}", groups));
+                    out_datas[oo][m].insert("group_id".to_string(), format!("{}", i + 1));
                     out_datas[oo][m]
                         .insert("group_ncells".to_string(), format!("{}", group_ncells));
                     out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
