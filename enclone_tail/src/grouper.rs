@@ -6,8 +6,8 @@ use edit_distance::edit_distance;
 use enclone_core::defs::*;
 use equiv::EquivRel;
 use std::cmp::min;
-use vdj_ann::refx::*;
 use string_utils::*;
+use vdj_ann::refx::*;
 use vector_utils::*;
 
 pub fn grouper(
@@ -16,14 +16,12 @@ pub fn grouper(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
 ) -> Vec<Vec<i32>> {
-
     // Case 1: symmetric grouping.
 
     println!("entering grouper");
     if !ctl.clono_group_opt.asymmetric {
-
         // Group clonotypes.
-    
+
         let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
         if ctl.clono_group_opt.heavy_cdr3_aa {
             let mut all = Vec::<(String, usize)>::new();
@@ -91,9 +89,9 @@ pub fn grouper(
         }
         let mut greps = Vec::<i32>::new();
         e.orbit_reps(&mut greps);
-    
+
         // Gather groups and sort so that larger groups (as measured by cells) come first.
-    
+
         let mut groups = Vec::<Vec<i32>>::new();
         let mut grepsn = Vec::<usize>::new();
         for i in 0..greps.len() {
@@ -118,14 +116,16 @@ pub fn grouper(
         return groups;
 
     // Case 2: asymmetric grouping.
-
     } else {
-
         // Define the center.
-        
+
         let mut center = Vec::<usize>::new();
         {
-            let min_cells = ctl.clono_group_opt.asymmetric_center.after("min_cells=").force_usize();
+            let min_cells = ctl
+                .clono_group_opt
+                .asymmetric_center
+                .after("min_cells=")
+                .force_usize();
             for i in 0..exacts.len() {
                 let mut n = 0;
                 let s = &exacts[i];
@@ -172,7 +172,11 @@ pub fn grouper(
         // Compute the groups.
 
         let mut groups = Vec::<Vec<i32>>::new();
-        let top = ctl.clono_group_opt.asymmetric_dist_bound.after("top=").force_usize();
+        let top = ctl
+            .clono_group_opt
+            .asymmetric_dist_bound
+            .after("top=")
+            .force_usize();
         for i in 0..center.len() {
             let mut g = Vec::<i32>::new();
             g.push(center[i] as i32);
