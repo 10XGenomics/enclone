@@ -254,3 +254,5 @@ which returns the top n clonotypes
 and
 AG_DIST_BOUND=max=d
 which returns all clonotypes having distance ≤ d from the center clonotype.
+
+Asymmetric group respects the MIN_GROUP option.

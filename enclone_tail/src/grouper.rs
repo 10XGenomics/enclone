@@ -17,7 +17,6 @@ pub fn grouper(
 ) -> Vec<Vec<(i32, String)>> {
     // Case 1: symmetric grouping.
 
-    println!("entering grouper");
     if !ctl.clono_group_opt.asymmetric {
         // Group clonotypes.
 
@@ -204,7 +203,9 @@ pub fn grouper(
                     g.push((id[j].1 as i32, format!("distance = {}", d)));
                 }
             }
-            groups.push(g);
+            if g.len() >= ctl.clono_group_opt.min_group {
+                groups.push(g);
+            }
         }
         groups
     }
