@@ -949,6 +949,8 @@ pub fn row_fill(
                         lvar![i, x, format!("{}", median)];
                     }
                 }
+            } else if i < lvars.len() {
+                lvar![i, x, "".to_string()];
             }
         }
     }
