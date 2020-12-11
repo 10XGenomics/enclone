@@ -726,6 +726,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "debruijn",
+ "edit-distance",
  "enclone_core",
  "enclone_proto",
  "equiv",

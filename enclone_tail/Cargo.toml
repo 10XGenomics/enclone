@@ -21,6 +21,7 @@ publish = false
 amino = "0.1.2"
 ansi_escape = "0.1.0"
 debruijn = "0.3.2"
+edit-distance = "2.1.0"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1.2"

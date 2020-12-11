@@ -1139,8 +1139,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
                     must also be specified, to turn on asymmetric grouping.\n"
             );
+            std::process::exit(1);
         }
-        std::process::exit(1);
     }
     if ctl.clono_group_opt.asymmetric {
         if !ctl
