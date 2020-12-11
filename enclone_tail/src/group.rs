@@ -180,7 +180,10 @@ pub fn group_and_print_clonotypes(
     // Now print clonotypes.
 
     for i in 0..groups.len() {
-        let o = groups[i].clone();
+        let mut o = Vec::<i32>::new();
+        for j in 0..groups[i].len() {
+            o.push(groups[i][j].0);
+        }
         let mut n = 0;
         for j in 0..o.len() {
             let x = o[j] as usize;
@@ -258,9 +261,12 @@ pub fn group_and_print_clonotypes(
                 if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
                 }
+                let mut s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);
+                if groups[i][j].1.len() > 0 {
+                    s = format!("{}\n{}\n{}", s.before("\n"), groups[i][j].1, s.after("\n"));
+                }
                 if ctl.gen_opt.svg {
                     const FONT_SIZE: usize = 15;
-                    let s = format!("[{}.{}] {}", i + 1, j + 1, pics[oo]);
 
                     // Generate svg.  This does not generate the shortest possible string.  One
                     // thing that could be done is to use only one text tag and instead use
@@ -275,7 +281,7 @@ pub fn group_and_print_clonotypes(
                         convert_text_with_ansi_escapes_to_svg(&s, "Menlo", FONT_SIZE)
                     );
                 } else {
-                    fwrite!(logx, "[{}.{}] {}", i + 1, j + 1, pics[oo]);
+                    fwrite!(logx, "{}", s);
                 }
             }
             let x = &pics[oo];

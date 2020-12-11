@@ -15,7 +15,7 @@ pub fn grouper(
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
-) -> Vec<Vec<i32>> {
+) -> Vec<Vec<(i32, String)>> {
     // Case 1: symmetric grouping.
 
     println!("entering grouper");
@@ -92,7 +92,7 @@ pub fn grouper(
 
         // Gather groups and sort so that larger groups (as measured by cells) come first.
 
-        let mut groups = Vec::<Vec<i32>>::new();
+        let mut groups = Vec::<Vec<(i32, String)>>::new();
         let mut grepsn = Vec::<usize>::new();
         for i in 0..greps.len() {
             let mut o = Vec::<i32>::new();
@@ -100,7 +100,11 @@ pub fn grouper(
             if o.len() < ctl.clono_group_opt.min_group {
                 continue;
             }
-            groups.push(o.clone());
+            let mut z = Vec::<(i32, String)>::new();
+            for j in 0..o.len() {
+                z.push((o[j], String::new()));
+            }
+            groups.push(z);
             let mut n = 0;
             for j in 0..o.len() {
                 let x = o[j] as usize;
@@ -171,15 +175,15 @@ pub fn grouper(
 
         // Compute the groups.
 
-        let mut groups = Vec::<Vec<i32>>::new();
+        let mut groups = Vec::<Vec<(i32, String)>>::new();
         let top = ctl
             .clono_group_opt
             .asymmetric_dist_bound
             .after("top=")
             .force_usize();
         for i in 0..center.len() {
-            let mut g = Vec::<i32>::new();
-            g.push(center[i] as i32);
+            let mut g = Vec::<(i32, String)>::new();
+            g.push((center[i] as i32, "distance = 0".to_string()));
             let mut id = Vec::<(f64, usize)>::new();
             for j in 0..exacts.len() {
                 id.push((dist[i][j], j));
@@ -187,7 +191,7 @@ pub fn grouper(
             id.sort_by(|a, b| a.partial_cmp(b).unwrap());
             for j in 0..min(top, id.len()) {
                 if id[j].1 != center[i] {
-                    g.push(id[j].1 as i32);
+                    g.push((id[j].1 as i32, format!("distance = {}", id[j].0)));
                 }
             }
             groups.push(g);
