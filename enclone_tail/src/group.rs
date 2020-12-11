@@ -169,7 +169,7 @@ pub fn group_and_print_clonotypes(
     refdata
 
     outputs:
-    groupsx
+    groups
     */
 
     // Group clonotypes and make output.
@@ -244,7 +244,7 @@ pub fn group_and_print_clonotypes(
 
     // Gather groups and sort so that larger groups (as measured by cells) come first.
 
-    let mut groupsx = Vec::<Vec<i32>>::new();
+    let mut groups = Vec::<Vec<i32>>::new();
     let mut grepsn = Vec::<usize>::new();
     for i in 0..greps.len() {
         let mut o = Vec::<i32>::new();
@@ -252,7 +252,7 @@ pub fn group_and_print_clonotypes(
         if o.len() < ctl.clono_group_opt.min_group {
             continue;
         }
-        groupsx.push(o.clone());
+        groups.push(o.clone());
         let mut n = 0;
         for j in 0..o.len() {
             let x = o[j] as usize;
@@ -263,8 +263,8 @@ pub fn group_and_print_clonotypes(
         }
         grepsn.push(n);
     }
-    sort_sync2(&mut grepsn, &mut groupsx);
-    groupsx.reverse();
+    sort_sync2(&mut grepsn, &mut groups);
+    groups.reverse();
 
     // Echo command.
 
@@ -280,8 +280,8 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
-    for i in 0..groupsx.len() {
-        let o = groupsx[i].clone();
+    for i in 0..groups.len() {
+        let o = groups[i].clone();
         let mut n = 0;
         for j in 0..o.len() {
             let x = o[j] as usize;
