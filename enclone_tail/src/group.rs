@@ -170,7 +170,6 @@ pub fn group_and_print_clonotypes(
 
     outputs:
     last_width
-    groups
     groupsx
     grepsn
     */
@@ -243,7 +242,6 @@ pub fn group_and_print_clonotypes(
             i = j;
         }
     }
-    let mut groups = 0;
     let mut greps = Vec::<i32>::new();
     e.orbit_reps(&mut greps);
 
@@ -283,6 +281,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
+    let mut groups = 0;
     for z in 0..grepsn.len() {
         let i = grepsn[z].1;
         let n = grepsn[z].0;
