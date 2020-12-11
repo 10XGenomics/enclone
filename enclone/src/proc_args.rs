@@ -1164,20 +1164,30 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             eprintln!("\nThe only allowed form for AG_DIST_FORMULA is cdr3_edit_distance.\n");
             std::process::exit(1);
         }
-        if !ctl
+        let ok1 = ctl
             .clono_group_opt
             .asymmetric_dist_bound
             .starts_with("top=")
-            || !ctl
+            && ctl
                 .clono_group_opt
                 .asymmetric_dist_bound
                 .after("top=")
                 .parse::<usize>()
-                .is_ok()
-        {
+                .is_ok();
+        let ok2 = ctl
+            .clono_group_opt
+            .asymmetric_dist_bound
+            .starts_with("max=")
+            && ctl
+                .clono_group_opt
+                .asymmetric_dist_bound
+                .after("max=")
+                .parse::<f64>()
+                .is_ok();
+        if !ok1 && !ok2 {
             eprintln!(
-                "\nThe only allowed form for AG_DIST_BOUND is top=n, where n is an \
-                integer.\n"
+                "\nThe only allowed forms for AG_DIST_BOUND are top=n, where n is an\n\
+                integer, and max=d, where d is a number.\n"
             );
             std::process::exit(1);
         }

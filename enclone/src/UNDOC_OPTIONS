@@ -248,6 +248,9 @@ Exact subclonotypes that lack a heavy or a light chain are ignored by this compu
 Also the distance between two clonotypes is declared infinite if one of them lacks a heavy chain
 or one of them lacks a light chain.
 
-Distance bound.  Initially we allow only
+Distance bound.  Initially we allow the following two forms:
 AG_DIST_BOUND=top=n
-which returns the top n clonotypes.
+which returns the top n clonotypes
+and
+AG_DIST_BOUND=max=d
+which returns all clonotypes having distance ≤ d from the center clonotype.

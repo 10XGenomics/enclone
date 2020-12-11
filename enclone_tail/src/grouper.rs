@@ -5,7 +5,6 @@
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
 use equiv::EquivRel;
-use std::cmp::min;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -176,11 +175,15 @@ pub fn grouper(
         // Compute the groups.
 
         let mut groups = Vec::<Vec<(i32, String)>>::new();
-        let top = ctl
-            .clono_group_opt
-            .asymmetric_dist_bound
-            .after("top=")
-            .force_usize();
+        let bound = &ctl.clono_group_opt.asymmetric_dist_bound;
+        let mut top_dist = None;
+        if bound.starts_with("top=") {
+            top_dist = Some(bound.after("top=").force_usize());
+        }
+        let mut max_dist = None;
+        if bound.starts_with("max=") {
+            max_dist = Some(bound.after("max=").force_f64());
+        }
         for i in 0..center.len() {
             let mut g = Vec::<(i32, String)>::new();
             g.push((center[i] as i32, "distance = 0".to_string()));
@@ -189,9 +192,16 @@ pub fn grouper(
                 id.push((dist[i][j], j));
             }
             id.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            for j in 0..min(top, id.len()) {
+            for j in 0..id.len() {
+                if top_dist.is_some() && j > top_dist.unwrap() {
+                    break;
+                }
+                let d = id[j].0;
+                if max_dist.is_some() && d > max_dist.unwrap() {
+                    break;
+                }
                 if id[j].1 != center[i] {
-                    g.push((id[j].1 as i32, format!("distance = {}", id[j].0)));
+                    g.push((id[j].1 as i32, format!("distance = {}", d)));
                 }
             }
             groups.push(g);
