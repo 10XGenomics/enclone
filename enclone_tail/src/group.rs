@@ -1397,7 +1397,9 @@ pub fn group_and_print_clonotypes(
         if n >= 2 {
             nclono2 += 1;
         }
-        merges += n - 1;
+        if n >= 1 { // not sure how n = 0 can happen but it does, maybe should trap this
+            merges += n - 1;
+        }
         ncells += n;
         ncc.push((rsi[i].mat.len(), n));
     }
