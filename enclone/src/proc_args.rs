@@ -461,7 +461,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_EXACTS", &mut ctl.clono_filt_opt.min_exacts),
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
-        ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
+        ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];
