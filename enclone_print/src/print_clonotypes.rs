@@ -1190,8 +1190,8 @@ pub fn print_clonotypes(
                     i = j;
                 }
                 stats = stats2;
-                for i in 0..ctl.clono_filt_opt.bounds.len() {
-                    let x = &ctl.clono_filt_opt.bounds[i];
+                for bi in 0..ctl.clono_filt_opt.bounds.len() {
+                    let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
                     for i in 0..x.n() {
@@ -1205,12 +1205,22 @@ pub fn print_clonotypes(
                             }
                         }
                         if !found {
+                            for u in 0..nexacts {
+                                let clonotype_id = exacts[u];
+                                let ex = &exact_clonotypes[clonotype_id];
+                                for _ in 0..ex.clones.len() {
+                                    vals.push(0.0);
+                                }
+                            }
+
+                            /*
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
                                  bound.  Please see \"enclone help filter\".\n",
                                 x.var[i]
                             );
                             std::process::exit(1);
+                            */
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
@@ -1222,12 +1232,12 @@ pub fn print_clonotypes(
                         means.push(mean);
                         maxs.push(max);
                     }
-                    if ctl.clono_filt_opt.bound_type[i] == "mean" && !x.satisfied(&means) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && !x.satisfied(&means) {
                         for u in 0..nexacts {
                             bads[u] = true;
                         }
                     }
-                    if ctl.clono_filt_opt.bound_type[i] == "max" && !x.satisfied(&maxs) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "max" && !x.satisfied(&maxs) {
                         for u in 0..nexacts {
                             bads[u] = true;
                         }
