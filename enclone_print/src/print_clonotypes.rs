@@ -1233,13 +1233,21 @@ pub fn print_clonotypes(
                         maxs.push(max);
                     }
                     if ctl.clono_filt_opt.bound_type[bi] == "mean" && !x.satisfied(&means) {
-                        for u in 0..nexacts {
-                            bads[u] = true;
+                        if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                            in_center = false;
+                        } else {
+                            for u in 0..nexacts {
+                                bads[u] = true;
+                            }
                         }
                     }
                     if ctl.clono_filt_opt.bound_type[bi] == "max" && !x.satisfied(&maxs) {
-                        for u in 0..nexacts {
-                            bads[u] = true;
+                        if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                            in_center = false;
+                        } else {
+                            for u in 0..nexacts {
+                                bads[u] = true;
+                            }
                         }
                     }
                 }
