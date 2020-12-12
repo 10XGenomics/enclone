@@ -316,7 +316,9 @@ pub fn print_clonotypes(
             // ◼ some unsavory workarounds below.
 
             let mut mlog = Vec::<u8>::new();
-            if n >= ctl.clono_filt_opt.ncells_low {
+            if n >= ctl.clono_filt_opt.ncells_low
+                || ctl.clono_group_opt.asymmetric_center == "from_filters"
+            {
                 // Start to generate parseable output.
 
                 if pass == 2 {
