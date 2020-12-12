@@ -2397,6 +2397,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let torb = Instant::now();
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
+    let mut in_center = Vec::<bool>::new();
     let mut rsi = Vec::<ColInfo>::new(); // ditto
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     let mut tests = Vec::<usize>::new();
@@ -2415,6 +2416,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &h5_data,
         &mut pics,
         &mut exacts,
+        &mut in_center,
         &mut rsi,
         &mut out_datas,
         &mut tests,
@@ -2477,6 +2479,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &refdata,
         &pics,
         &exacts,
+        &in_center,
         &rsi,
         &exact_clonotypes,
         &ctl,

@@ -13,9 +13,12 @@ use vector_utils::*;
 pub fn grouper(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
+    in_center: &Vec<bool>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
 ) -> Vec<Vec<(i32, String)>> {
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Case 1: symmetric grouping.
 
     if !ctl.clono_group_opt.asymmetric {
@@ -118,31 +121,26 @@ pub fn grouper(
         groups.reverse();
         return groups;
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Case 2: asymmetric grouping.
     } else {
         // Define the center.
 
         let mut center = Vec::<usize>::new();
-        {
-            let min_cells = ctl
-                .clono_group_opt
-                .asymmetric_center
-                .after("min_cells=")
-                .force_usize();
-            for i in 0..exacts.len() {
-                let mut n = 0;
+        for i in 0..exacts.len() {
+            if in_center[i] {
                 let mut d1 = false;
                 let s = &exacts[i];
                 for k in 0..s.len() {
                     let ex = &exact_clonotypes[s[k]];
-                    n += ex.clones.len();
                     for u in 0..ex.clones.len() {
                         if ctl.origin_info.donor_id[ex.clones[u][0].dataset_index] == "d1" {
                             d1 = true;
                         }
                     }
                 }
-                if n >= min_cells && d1 {
+                if d1 {
                     center.push(i);
                 }
             }

@@ -39,6 +39,7 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
+    in_center: &Vec<bool>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
@@ -163,7 +164,7 @@ pub fn group_and_print_clonotypes(
 
     // Group clonotypes.
 
-    let groups = grouper(&refdata, &exacts, &exact_clonotypes, &ctl);
+    let groups = grouper(&refdata, &exacts, &in_center, &exact_clonotypes, &ctl);
 
     // Echo command.
 
