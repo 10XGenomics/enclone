@@ -1145,7 +1145,9 @@ pub fn group_and_print_clonotypes(
                     out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
                 }
                 if ctl.parseable_opt.pout == "stdout".to_string() {
-                    fwriteln!(logx, "{}", pcols.iter().format(","));
+                    if !ctl.gen_opt.noprint || (i == 0 && j == 0) {
+                        fwriteln!(logx, "{}", pcols.iter().format(","));
+                    }
                 }
                 if ctl.parseable_opt.pout == "stdouth".to_string() {
                     rows.push(pcols.clone());

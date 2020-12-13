@@ -2538,7 +2538,9 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    println!("");
+    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
+        println!("");
+    }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {
         std::process::exit(0);

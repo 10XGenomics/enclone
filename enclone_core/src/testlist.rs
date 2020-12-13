@@ -387,7 +387,8 @@ pub const TESTS: [&str; 172] = [
     r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth
         PCOLS=d_start1,d_frame1,d_start2,d_frame2"###,
     // 154. test POUT=stdout with NOPRINT
-    r###"BCR=85333 CDR3=CARTSNRGIVATIFRAFDIW NOPRINT POUT=stdout PCOLS=cdr3_aa1"###,
+    r###"BCR=85333 CDR3="CARTSNRGIVATIFRAFDIW|CARDPRGWGVELLYYMDVW" NOPRINT POUT=stdout
+        PCOLS=cdr3_aa1"###,
     // 155. test count_<regex> and F for that
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
     // 156. test ref variables
