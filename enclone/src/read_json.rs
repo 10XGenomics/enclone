@@ -406,6 +406,15 @@ fn parse_vector_entry_from_json(
             cdr3_dna = x
                 .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
                 .to_string();
+
+            // This is particularly pathological and rare:
+
+            if tig_start as usize > cdr3[0].0 {
+                return;
+            }
+
+            // Define start.
+
             cdr3_start = cdr3[0].0 - tig_start as usize;
         }
     }
