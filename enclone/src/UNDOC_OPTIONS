@@ -226,10 +226,13 @@ formula), all those clonotypes that satisfy the distance bound (with ties broken
 For each clonotype in a group, we print its distance from the first clonotype, and this is also
 available as a parseable variable dist_center.
 
-Center clonotypes.  These are in principle any set of clonotypes.  Initially, we allow only
+Center clonotypes.  These are in principle any set of clonotypes.  Initially, we allow two options
 AG_CENTER=from_filters
 which causes all the filters described at "enclone help filters" to NOT filter clonotypes in
-the usual way, but instead filter to define the center.  In addition, only clonotypes containing
+the usual way, but instead filter to define the center, and
+AG_CENTER=copy_filters
+which effectively does nothing -- it just says that filters apply to all clonotypes, whether
+in the center or not.  In addition, in both cases, only clonotypes containing
 cells from donor d1 are placed in the center.
 
 Please note that asymmetric grouping is very time consuming, and run time is roughly a linear

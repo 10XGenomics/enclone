@@ -1143,8 +1143,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.clono_group_opt.asymmetric {
-        if ctl.clono_group_opt.asymmetric_center != "from_filters" {
-            eprintln!("\nThe only allowed form for AG_CENTER is AG_CENTER=from_filters.\n");
+        if ctl.clono_group_opt.asymmetric_center != "from_filters"
+            && ctl.clono_group_opt.asymmetric_center != "copy_filters"
+        {
+            eprintln!(
+                "\nThe only allowed forms for AG_CENTER are AG_CENTER=from_filters\n\
+                and AG_CENTER=copy_filters.\n"
+            );
             std::process::exit(1);
         }
         if ctl.clono_group_opt.asymmetric_dist_formula != "cdr3_edit_distance" {
