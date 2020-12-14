@@ -51,6 +51,7 @@ use std::{
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     process::Command,
+    thread, time,
     time::Instant,
 };
 use string_utils::*;
@@ -2354,6 +2355,8 @@ pub fn main_enclone(args: &Vec<String>) {
                 // CAUSING PUSH TO D_READERS BELOW TO FAIL.
                 eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
                 eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
+                let current = env::current_dir().unwrap();
+                println!("The current working directory is {}", current.display());
                 if path_exists(&ctl.origin_info.gex_path[li]) {
                     eprintln!("Path exists.");
                     let h5_path =
@@ -2361,6 +2364,18 @@ pub fn main_enclone(args: &Vec<String>) {
                     eprintln!("H5 path = {}.", h5_path);
                     if path_exists(&h5_path) {
                         eprintln!("h5 path does not exist.");
+                        eprintln!("Retrying a few times to see if it appears.");
+                        for _ in 0..3 {
+                            eprintln!("sleeping");
+                            thread::sleep(time::Duration::from_millis(100));
+                            if path_exists(&h5_path) {
+                                eprintln!("now h5 path does not exist.");
+                            } else {
+                                eprintln!("now h5 path exists.");
+                                break;
+                            }
+                        }
+                        std::process::exit(1);
                     } else {
                         eprintln!("h5 path exists.");
                     }
