@@ -2361,20 +2361,23 @@ pub fn main_enclone(args: &Vec<String>) {
                     current.canonicalize().unwrap().display()
                 );
                 if path_exists(&ctl.origin_info.gex_path[li]) {
-                    eprintln!("Directory path exists.");
+                    eprintln!("The directory containing raw_feature_bc_matrix.h5 exists.");
                     let list = dir_list(&ctl.origin_info.gex_path[li]);
-                    println!("Directory contents:");
+                    eprintln!(
+                        "This directory is {} and its contents are:",
+                        ctl.origin_info.gex_path[li]
+                    );
                     for i in 0..list.len() {
-                        println!("{}.  {}", i + 1, list[i]);
+                        eprintln!("{}.  {}", i + 1, list[i]);
                     }
                     let h5_path =
                         format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
                     eprintln!("H5 path = {}.", h5_path);
                     if path_exists(&h5_path) {
-                        eprintln!("H5 path does not exist.");
+                        eprintln!("H5 path {} does not exist.", h5_path);
                         eprintln!("Retrying a few times to see if it appears.");
-                        for _ in 0..3 {
-                            eprintln!("Sleeping.");
+                        for _ in 0..5 {
+                            eprintln!("Sleeping for 0.1 seconds.");
                             thread::sleep(time::Duration::from_millis(100));
                             if path_exists(&h5_path) {
                                 eprintln!("Now h5 path does not exist.");
@@ -2382,8 +2385,8 @@ pub fn main_enclone(args: &Vec<String>) {
                                 eprintln!("Now h5 path exists.");
                                 break;
                             }
-                            println!("Aborting.\n");
                         }
+                        eprintln!("Aborting.\n");
                         std::process::exit(1);
                     } else {
                         eprintln!("h5 path exists.");
