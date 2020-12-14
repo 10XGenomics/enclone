@@ -2361,22 +2361,28 @@ pub fn main_enclone(args: &Vec<String>) {
                     current.canonicalize().unwrap().display()
                 );
                 if path_exists(&ctl.origin_info.gex_path[li]) {
-                    eprintln!("Path exists.");
+                    eprintln!("Directory path exists.");
+                    let list = dir_list(&ctl.origin_info.gex_path[li]);
+                    println!("Directory contents:");
+                    for i in 0..list.len() {
+                        println!("{}.  {}", i + 1, list[i]);
+                    }
                     let h5_path =
                         format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
                     eprintln!("H5 path = {}.", h5_path);
                     if path_exists(&h5_path) {
-                        eprintln!("h5 path does not exist.");
+                        eprintln!("H5 path does not exist.");
                         eprintln!("Retrying a few times to see if it appears.");
                         for _ in 0..3 {
-                            eprintln!("sleeping");
+                            eprintln!("Sleeping.");
                             thread::sleep(time::Duration::from_millis(100));
                             if path_exists(&h5_path) {
-                                eprintln!("now h5 path does not exist.");
+                                eprintln!("Now h5 path does not exist.");
                             } else {
-                                eprintln!("now h5 path exists.");
+                                eprintln!("Now h5 path exists.");
                                 break;
                             }
+                            println!("Aborting.\n");
                         }
                         std::process::exit(1);
                     } else {
