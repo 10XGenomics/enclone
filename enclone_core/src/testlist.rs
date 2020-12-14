@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 171] = [
+pub const TESTS: [&str; 174] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -387,7 +387,8 @@ pub const TESTS: [&str; 171] = [
     r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth
         PCOLS=d_start1,d_frame1,d_start2,d_frame2"###,
     // 154. test POUT=stdout with NOPRINT
-    r###"BCR=85333 CDR3=CARTSNRGIVATIFRAFDIW NOPRINT POUT=stdout PCOLS=cdr3_aa1"###,
+    r###"BCR=85333 CDR3="CARTSNRGIVATIFRAFDIW|CARDPRGWGVELLYYMDVW" NOPRINT POUT=stdout
+        PCOLS=cdr3_aa1"###,
     // 155. test count_<regex> and F for that
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
     // 156. test ref variables
@@ -428,6 +429,13 @@ pub const TESTS: [&str; 171] = [
     r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW NDOUBLET"###,
     // 171. doublet filter, after
     r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW"###,
+    // 172. this crashed at one point
+    r###"META=testx/inputs/test11_meta LVARSP=CD56_ab NOPRINT EXPECT_OK"###,
+    // 173. test MIN_UMIS
+    r###"BCR=85333 MIN_UMIS=100"###,
+    // 174. test METAX, and also the origins printed by this was wrong at one point
+    r###"METAX="bcr,origin,donor;toast:86237,c,d;zip:123085,a,b" LVARSP=origins,donors
+        POUT=stdouth PCOLS=origins,donors CDR3=CARSFFGDTAMVMFQAFDPW"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are

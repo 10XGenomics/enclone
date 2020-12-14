@@ -49,6 +49,7 @@ pub fn print_clonotypes(
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     pics: &mut Vec<String>,
     exacts: &mut Vec<Vec<usize>>,
+    in_center: &mut Vec<bool>,
     rsi: &mut Vec<ColInfo>,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     tests: &mut Vec<usize>,
@@ -116,7 +117,7 @@ pub fn print_clonotypes(
     // 2: vector of some clonotype info
     //    [parallel to 1]
     // next to last three entries = whitelist contam, denominator for that, low gex count
-    // added out_datas
+    // added out_datas (used to be next to last three, now one more)
     let mut results = Vec::<(
         usize,
         Vec<String>,
@@ -130,6 +131,7 @@ pub fn print_clonotypes(
         Vec<bool>,
         Vec<bool>,
         Vec<(usize, String, String)>,
+        Vec<bool>,
     )>::new();
     for i in 0..orbits.len() {
         results.push((
@@ -144,6 +146,7 @@ pub fn print_clonotypes(
             0,
             Vec::<bool>::new(),
             Vec::<bool>::new(),
+            Vec::new(),
             Vec::new(),
         ));
     }
@@ -164,7 +167,7 @@ pub fn print_clonotypes(
         // exacts: the exact subclonotype ids
         // mults:  number of cells [redundant, might remove]
         // cdr3s:  sorted list of (chain_type:cdr3)
-        // js:     indices into od (BE VERY CARFUL ABOUT USING THIS)
+        // js:     indices into od (BE VERY CAREFUL ABOUT USING THIS)
 
         let mut exacts = Vec::<usize>::new();
         let mut mults = Vec::<usize>::new();
@@ -279,10 +282,15 @@ pub fn print_clonotypes(
 
             // Filter.
 
+            let mut in_center = true;
             if pass == 2
                 && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata, &gex_info)
             {
-                continue;
+                if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                    in_center = false;
+                } else {
+                    continue;
+                }
             }
 
             // Generate Loupe data.
@@ -308,7 +316,9 @@ pub fn print_clonotypes(
             // ◼ some unsavory workarounds below.
 
             let mut mlog = Vec::<u8>::new();
-            if n >= ctl.clono_filt_opt.ncells_low {
+            if n >= ctl.clono_filt_opt.ncells_low
+                || ctl.clono_group_opt.asymmetric_center == "from_filters"
+            {
                 // Start to generate parseable output.
 
                 if pass == 2 {
@@ -1182,8 +1192,8 @@ pub fn print_clonotypes(
                     i = j;
                 }
                 stats = stats2;
-                for i in 0..ctl.clono_filt_opt.bounds.len() {
-                    let x = &ctl.clono_filt_opt.bounds[i];
+                for bi in 0..ctl.clono_filt_opt.bounds.len() {
+                    let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
                     for i in 0..x.n() {
@@ -1197,12 +1207,22 @@ pub fn print_clonotypes(
                             }
                         }
                         if !found {
+                            for u in 0..nexacts {
+                                let clonotype_id = exacts[u];
+                                let ex = &exact_clonotypes[clonotype_id];
+                                for _ in 0..ex.clones.len() {
+                                    vals.push(0.0);
+                                }
+                            }
+
+                            /*
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
                                  bound.  Please see \"enclone help filter\".\n",
                                 x.var[i]
                             );
                             std::process::exit(1);
+                            */
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
@@ -1214,14 +1234,22 @@ pub fn print_clonotypes(
                         means.push(mean);
                         maxs.push(max);
                     }
-                    if ctl.clono_filt_opt.bound_type[i] == "mean" && !x.satisfied(&means) {
-                        for u in 0..nexacts {
-                            bads[u] = true;
+                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && !x.satisfied(&means) {
+                        if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                            in_center = false;
+                        } else {
+                            for u in 0..nexacts {
+                                bads[u] = true;
+                            }
                         }
                     }
-                    if ctl.clono_filt_opt.bound_type[i] == "max" && !x.satisfied(&maxs) {
-                        for u in 0..nexacts {
-                            bads[u] = true;
+                    if ctl.clono_filt_opt.bound_type[bi] == "max" && !x.satisfied(&maxs) {
+                        if ctl.clono_group_opt.asymmetric_center == "from_filters" {
+                            in_center = false;
+                        } else {
+                            for u in 0..nexacts {
+                                bads[u] = true;
+                            }
                         }
                     }
                 }
@@ -1666,6 +1694,7 @@ pub fn print_clonotypes(
 
                 res.1.push(logz);
                 res.2.push((exacts.clone(), rsi.clone()));
+                res.12.push(in_center);
                 for u in 0..exacts.len() {
                     res.8 += exact_clonotypes[exacts[u]].ncells() as isize;
                 }
@@ -1718,6 +1747,7 @@ pub fn print_clonotypes(
             pics.push(results[i].1[j].clone());
             exacts.push(results[i].2[j].0.clone());
             rsi.push(results[i].2[j].1.clone());
+            in_center.push(results[i].12[j]);
         }
         out_datas.append(&mut results[i].7);
     }

@@ -258,7 +258,11 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.ldoc3pr("bc", "null", "name of CSV file as in the \\bold{BC} option");
         h.print_tab3();
-        h.print("\n");
+        h.print(
+            "\nIn addition, metadata maybe fully specified on the command line via \
+            \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
+            otherwise put in the \\bold{META} file.\n",
+        );
         h.end_doc();
     }
 }

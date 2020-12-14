@@ -180,6 +180,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut gex = String::new();
     let mut bc = String::new();
     let mut metas = Vec::<String>::new();
+    let mut metaxs = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i].starts_with("BI=") {
@@ -191,7 +192,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             have_bcr = true;
         } else if args[i].starts_with("GEX=") {
             have_gex = true;
-        } else if args[i].starts_with("META=") {
+        } else if args[i].starts_with("META=") || args[i].starts_with("METAX=") {
             have_meta = true;
         }
         if args[i].starts_with("GEX=") {
@@ -342,6 +343,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("ACCEPT_BROKEN", &mut ctl.gen_opt.accept_broken),
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
+        ("AGROUP", &mut ctl.clono_group_opt.asymmetric),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
@@ -460,7 +462,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_EXACTS", &mut ctl.clono_filt_opt.min_exacts),
         ("MIN_GROUP", &mut ctl.clono_group_opt.min_group),
         ("MIN_MULT", &mut ctl.allele_alg_opt.min_mult),
-        ("MIN_UMI", &mut ctl.clono_filt_opt.min_umi),
+        ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];
@@ -468,6 +470,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that set something to a string.
 
     let set_string = [
+        ("AG_CENTER", &mut ctl.clono_group_opt.asymmetric_center),
+        (
+            "AG_DIST_BOUND",
+            &mut ctl.clono_group_opt.asymmetric_dist_bound,
+        ),
+        (
+            "AG_DIST_FORMULA",
+            &mut ctl.clono_group_opt.asymmetric_dist_formula,
+        ),
         ("CLUSTAL_AA", &mut ctl.gen_opt.clustal_aa),
         ("CLUSTAL_DNA", &mut ctl.gen_opt.clustal_dna),
         ("EXT", &mut ctl.gen_opt.ext),
@@ -1057,6 +1068,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg.starts_with("META=") {
             let f = arg.after("META=");
             metas.push(f.to_string());
+        } else if arg.starts_with("METAX=") {
+            let f = arg.after("METAX=");
+            metaxs.push(f.to_string());
         } else if arg.starts_with("TCR=")
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
@@ -1083,7 +1097,99 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         **f = stringme(&tilde_expand(&f.as_bytes()));
     }
 
-    // Sanity check arguments (and more below).
+    // Sanity check grouping arguments.
+
+    let mut group_styles = 0;
+    if ctl.clono_group_opt.heavy_cdr3_aa {
+        group_styles += 1;
+    }
+    if ctl.clono_group_opt.vj_refname {
+        group_styles += 1;
+    }
+    if ctl.clono_group_opt.vj_refname_strong {
+        group_styles += 1;
+    }
+    if ctl.clono_group_opt.asymmetric {
+        group_styles += 1;
+    }
+    if group_styles > 1 {
+        eprintln!(
+            "\nOnly one of the options\n\
+            GROUP_HEAVY_CDR3, GROUP_VJ_REFNAME, GROUP_VJ_REFNAME_STRONG, AGROUP\n\
+            may be specified at a time.\n"
+        );
+        std::process::exit(1);
+    }
+    if ctl.clono_group_opt.asymmetric {
+        if ctl.clono_group_opt.asymmetric_center.len() == 0
+            || ctl.clono_group_opt.asymmetric_dist_formula.len() == 0
+            || ctl.clono_group_opt.asymmetric_dist_bound.len() == 0
+        {
+            eprintln!(
+                "\nIf the AGROUP option is used to specify asymmetric grouping, then all\n\
+                of the options AG_CENTER, AG_DIST_FORMULA and AG_DIST_BOUND must also be \
+                specified.\n"
+            );
+            std::process::exit(1);
+        }
+    }
+    if ctl.clono_group_opt.asymmetric_center.len() > 0
+        || ctl.clono_group_opt.asymmetric_dist_formula.len() > 0
+        || ctl.clono_group_opt.asymmetric_dist_bound.len() > 0
+    {
+        if !ctl.clono_group_opt.asymmetric {
+            eprintln!(
+                "\nIf any of the asymmetric grouping options AG_CENTER or \
+                    AG_DIST_FORMULA or\nAG_DIST_BOUND are specified, then the option AGROUP \
+                    must also be specified, to turn on asymmetric grouping.\n"
+            );
+            std::process::exit(1);
+        }
+    }
+    if ctl.clono_group_opt.asymmetric {
+        if ctl.clono_group_opt.asymmetric_center != "from_filters"
+            && ctl.clono_group_opt.asymmetric_center != "copy_filters"
+        {
+            eprintln!(
+                "\nThe only allowed forms for AG_CENTER are AG_CENTER=from_filters\n\
+                and AG_CENTER=copy_filters.\n"
+            );
+            std::process::exit(1);
+        }
+        if ctl.clono_group_opt.asymmetric_dist_formula != "cdr3_edit_distance" {
+            eprintln!("\nThe only allowed form for AG_DIST_FORMULA is cdr3_edit_distance.\n");
+            std::process::exit(1);
+        }
+        let ok1 = ctl
+            .clono_group_opt
+            .asymmetric_dist_bound
+            .starts_with("top=")
+            && ctl
+                .clono_group_opt
+                .asymmetric_dist_bound
+                .after("top=")
+                .parse::<usize>()
+                .is_ok();
+        let ok2 = ctl
+            .clono_group_opt
+            .asymmetric_dist_bound
+            .starts_with("max=")
+            && ctl
+                .clono_group_opt
+                .asymmetric_dist_bound
+                .after("max=")
+                .parse::<f64>()
+                .is_ok();
+        if !ok1 && !ok2 {
+            eprintln!(
+                "\nThe only allowed forms for AG_DIST_BOUND are top=n, where n is an\n\
+                integer, and max=d, where d is a number.\n"
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Sanity check other arguments (and more below).
 
     if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
         eprintln!(
@@ -1142,6 +1248,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let f = get_path_fail(&f, &ctl, "META");
         proc_meta(&f, &mut ctl);
     }
+    if metaxs.len() > 0 {
+        let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();
+        let mut lines = Vec::<String>::new();
+        for i in 0..lines0.len() {
+            lines.push(lines0[i].to_string());
+        }
+        proc_meta_core(&lines, &mut ctl);
+    }
+
     ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];

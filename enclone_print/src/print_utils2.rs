@@ -386,7 +386,7 @@ pub fn row_fill(
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].origin_index.is_some() {
                     origins.push(
-                        ctl.origin_info.origin_id[ex.clones[j][0].origin_index.unwrap()].clone(),
+                        ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
                     );
                 } else {
                     origins.push("?".to_string());
@@ -949,6 +949,8 @@ pub fn row_fill(
                         lvar![i, x, format!("{}", median)];
                     }
                 }
+            } else if i < lvars.len() {
+                lvar![i, x, "".to_string()];
             }
         }
     }
@@ -956,7 +958,19 @@ pub fn row_fill(
     // Sanity check.  It's here because if it fails and that failure was not detected, something
     // exceptionally cryptic would happen downstream.
 
-    assert_eq!(row.len(), lvars.len() + 1);
+    if row.len() != lvars.len() + 1 {
+        let msg = format!(
+            "Oops, row.len() != lvars.len() + 1, as in fact we have\n\
+            row.len() = {} and lvars.len() = {}, and in more detail,\n\
+            row = {}\n\
+            and lvars = {}.",
+            row.len(),
+            lvars.len(),
+            row.iter().format(","),
+            lvars.iter().format(","),
+        );
+        panic!(msg);
+    }
 
     // Get the relevant barcodes.
 

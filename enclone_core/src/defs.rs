@@ -621,6 +621,10 @@ pub struct ClonoGroupOpt {
     pub vj_refname: bool,    // group by having the same VJ reference names
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
     pub min_group: usize,    // minimum number of clonotypes in group to print
+    pub asymmetric: bool,    // asymmetric grouping turned on
+    pub asymmetric_center: String, // definition of center for asymmetric grouping
+    pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
+    pub asymmetric_dist_bound: String, // definition of distance bound for asymmetric grouping
 }
 
 // Parseable output options.
@@ -924,6 +928,7 @@ pub fn justification(x: &str) -> u8 {
         || x == "edit"
         || x == "datasets"
         || x == "donors"
+        || x == "origins"
         || x == "ext"
         || x == "barcode"
         || x == "barcodes"

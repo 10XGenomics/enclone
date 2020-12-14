@@ -51,6 +51,7 @@ use std::{
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     process::Command,
+    thread, time,
     time::Instant,
 };
 use string_utils::*;
@@ -2354,13 +2355,39 @@ pub fn main_enclone(args: &Vec<String>) {
                 // CAUSING PUSH TO D_READERS BELOW TO FAIL.
                 eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
                 eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
+                let current = env::current_dir().unwrap();
+                println!(
+                    "The current working directory is {}",
+                    current.canonicalize().unwrap().display()
+                );
                 if path_exists(&ctl.origin_info.gex_path[li]) {
-                    eprintln!("Path exists.");
+                    eprintln!("The directory containing raw_feature_bc_matrix.h5 exists.");
+                    let list = dir_list(&ctl.origin_info.gex_path[li]);
+                    eprintln!(
+                        "This directory is {} and its contents are:",
+                        ctl.origin_info.gex_path[li]
+                    );
+                    for i in 0..list.len() {
+                        eprintln!("{}.  {}", i + 1, list[i]);
+                    }
                     let h5_path =
                         format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
                     eprintln!("H5 path = {}.", h5_path);
                     if path_exists(&h5_path) {
-                        eprintln!("h5 path does not exist.");
+                        eprintln!("H5 path {} does not exist.", h5_path);
+                        eprintln!("Retrying a few times to see if it appears.");
+                        for _ in 0..5 {
+                            eprintln!("Sleeping for 0.1 seconds.");
+                            thread::sleep(time::Duration::from_millis(100));
+                            if path_exists(&h5_path) {
+                                eprintln!("Now h5 path does not exist.");
+                            } else {
+                                eprintln!("Now h5 path exists.");
+                                break;
+                            }
+                        }
+                        eprintln!("Aborting.\n");
+                        std::process::exit(1);
                     } else {
                         eprintln!("h5 path exists.");
                     }
@@ -2397,6 +2424,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let torb = Instant::now();
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
+    let mut in_center = Vec::<bool>::new();
     let mut rsi = Vec::<ColInfo>::new(); // ditto
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     let mut tests = Vec::<usize>::new();
@@ -2415,6 +2443,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &h5_data,
         &mut pics,
         &mut exacts,
+        &mut in_center,
         &mut rsi,
         &mut out_datas,
         &mut tests,
@@ -2477,6 +2506,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &refdata,
         &pics,
         &exacts,
+        &in_center,
         &rsi,
         &exact_clonotypes,
         &ctl,
@@ -2535,7 +2565,9 @@ pub fn main_enclone(args: &Vec<String>) {
         }
     }
 
-    println!("");
+    if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
+        println!("");
+    }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {
         std::process::exit(0);
