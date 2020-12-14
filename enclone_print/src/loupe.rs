@@ -1,4 +1,5 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+//
 // This set of functions writes a protobuf data structure that
 // Loupe uses to access clonotype data.
 
@@ -155,6 +156,27 @@ pub fn make_loupe_clonotype(
         let aa_sequence = amino_acid(&nt_sequence, ex.share[m0].v_start);
         let aa_sequence_universal = amino_acid(&universal_reference, vstartu[cx]);
         let aa_sequence_donor = amino_acid(&donor_reference, vstartd[cx]);
+
+        let v_start = ex.share[m0].v_start;
+        let fwr1_start = Some((v_start + ex.share[m0].fr1_start) as u32);
+        let mut cdr1_start = None;
+        if ex.share[m0].cdr1_start.is_some() {
+            cdr1_start = Some((v_start + ex.share[m0].cdr1_start.unwrap()) as u32);
+        }
+        let mut fwr2_start = None;
+        if ex.share[m0].fr2_start.is_some() {
+            fwr2_start = Some((v_start + ex.share[m0].fr2_start.unwrap()) as u32);
+        }
+        let mut cdr2_start = None;
+        if ex.share[m0].cdr2_start.is_some() {
+            cdr2_start = Some((v_start + ex.share[m0].cdr2_start.unwrap()) as u32);
+        }
+        let mut fwr3_start = None;
+        if ex.share[m0].fr3_start.is_some() {
+            fwr3_start = Some((v_start + ex.share[m0].fr3_start.unwrap()) as u32);
+        }
+        let fwr4_end = Some(ex.share[m0].full_seq.len() as u32);
+
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
             aa_sequence: aa_sequence,
@@ -177,9 +199,15 @@ pub fn make_loupe_clonotype(
             j_start: ex.share[m0].j_start as u32,
             j_start_ref: ex.share[m0].j_start_ref as u32,
             j_end: ex.share[m0].j_stop as u32,
+            fwr1_start: fwr1_start,
+            cdr1_start: cdr1_start,
+            fwr2_start: fwr2_start,
+            cdr2_start: cdr2_start,
+            fwr3_start: fwr3_start,
             cdr3_start: ex.share[m0].v_start as u32 + ex.share[m0].cdr3_start as u32,
             cdr3_end: ex.share[m0].v_start as u32
                 + (ex.share[m0].cdr3_start + 3 * ex.share[m0].cdr3_aa.len()) as u32,
+            fwr4_end: fwr4_end,
             chain_type: chain_type,
         });
     }
@@ -207,8 +235,26 @@ pub fn make_loupe_clonotype(
             }
             let j_end = ex.share[m].j_stop;
             let c_region_idx = rsi.cids[cx];
+            let fwr1_start = Some((v_start + ex.share[m].fr1_start) as u32);
+            let mut cdr1_start = None;
+            if ex.share[m].cdr1_start.is_some() {
+                cdr1_start = Some((v_start + ex.share[m].cdr1_start.unwrap()) as u32);
+            }
+            let mut fwr2_start = None;
+            if ex.share[m].fr2_start.is_some() {
+                fwr2_start = Some((v_start + ex.share[m].fr2_start.unwrap()) as u32);
+            }
+            let mut cdr2_start = None;
+            if ex.share[m].cdr2_start.is_some() {
+                cdr2_start = Some((v_start + ex.share[m].cdr2_start.unwrap()) as u32);
+            }
+            let mut fwr3_start = None;
+            if ex.share[m].fr3_start.is_some() {
+                fwr3_start = Some((v_start + ex.share[m].fr3_start.unwrap()) as u32);
+            }
             let cdr3_start = v_start + ex.share[m].cdr3_start;
             let cdr3_end = cdr3_start + ex.share[m].cdr3_dna.len();
+            let fwr4_end = Some(ex.share[m].full_seq.len() as u32);
             let mut umi_counts = Vec::<u32>::new();
             let mut read_counts = Vec::<u32>::new();
             let mut contig_ids = Vec::<String>::new();
@@ -238,8 +284,14 @@ pub fn make_loupe_clonotype(
                 v_start: v_start as u32,
                 j_end: j_end as u32,
                 c_region_idx: c_region_idx.map(|idx| idx as u32),
+                fwr1_start: fwr1_start,
+                cdr1_start: cdr1_start,
+                fwr2_start: fwr2_start,
+                cdr2_start: cdr2_start,
+                fwr3_start: fwr3_start,
                 cdr3_start: cdr3_start as u32,
                 cdr3_end: cdr3_end as u32,
+                fwr4_end: fwr4_end,
                 umi_counts: umi_counts,
                 read_counts: read_counts,
                 contig_ids: contig_ids,
