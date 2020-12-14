@@ -2356,7 +2356,10 @@ pub fn main_enclone(args: &Vec<String>) {
                 eprintln!("\nWeird, gex_info.h5_data[li].as_ref() is None.");
                 eprintln!("Path = {}.", ctl.origin_info.gex_path[li]);
                 let current = env::current_dir().unwrap();
-                println!("The current working directory is {}", current.display());
+                println!(
+                    "The current working directory is {}",
+                    current.canonicalize().unwrap().display()
+                );
                 if path_exists(&ctl.origin_info.gex_path[li]) {
                     eprintln!("Path exists.");
                     let h5_path =
