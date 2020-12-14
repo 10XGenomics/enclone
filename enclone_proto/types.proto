@@ -63,38 +63,50 @@ message ExactSubClonotypeChain {
   // is not stored at this level is because all exact subclonotypes share the
   // same UVDJ regions.
   optional uint32 c_region_idx = 5;
+  // Index of the start of the FWR1 sequence in the `nt_sequence`. 
+  optional uint32 fwr1_start = 6;
+  // Index of the start of the CDR1 sequence in the `nt_sequence`. 
+  optional uint32 cdr1_start = 7;
+  // Index of the start of the FWR2 sequence in the `nt_sequence`. 
+  optional uint32 fwr2_start = 8;
+  // Index of the start of the CDR2 sequence in the `nt_sequence`. 
+  optional uint32 cdr2_start = 9;
+  // Index of the start of the FWR3 sequence in the `nt_sequence`. 
+  optional uint32 fwr3_start = 10;
   // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
-  // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
-  required uint32 cdr3_start = 6;
+  // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`.
+  required uint32 cdr3_start = 11;
   // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
-  // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
-  required uint32 cdr3_end = 7;
+  // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`.
+  required uint32 cdr3_end = 12;
+  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
+  optional uint32 fwr4_end = 13;
   // UMI counts of contigs associated with this exact subclonotype chain. The
   // number of elements in this vector is equal to the number of barcodes
   // associated with this exact subclonotype.
-  repeated uint32 umi_counts = 8;
+  repeated uint32 umi_counts = 14;
   // Read counts of contigs associated with this exact subclonotype chain. The
   // number of elements in this vector is equal to the number of barcodes
   // associated with this exact subclonotype.
-  repeated uint32 read_counts = 9;
+  repeated uint32 read_counts = 15;
   // Names of contigs associated with this exact subclonotype chain. The number
   // of elements in this vector is equal to the number of barcodes associated
   // with this exact subclonotype. The contig name would be of the form
   // `{barcode}_contig_{id}`.
-  repeated string contig_ids = 10;
+  repeated string contig_ids = 16;
   // Alignment of the `nt_sequence` to the nucleotide sequence of the clonotype
   // consensus of this chain.
   // TODO: Do we need amino acid alignment info?
-  required Alignment clonotype_consensus_aln = 11;
+  required Alignment clonotype_consensus_aln = 17;
   // Alignment of the `nt_sequence` to the nucleotide sequence of the
   // concatenated donor reference of this chain (defined elsewhere in this
   // file).
   // TODO: Default donor reference to universal reference?
-  required Alignment donor_reference_aln = 12;
+  required Alignment donor_reference_aln = 18;
   // Alignment of the `nt_sequence` to the nucleotide sequence of the
   // concatenated universal reference of this chain (defined elsewhere in this
   // file).
-  required Alignment universal_reference_aln = 13;
+  required Alignment universal_reference_aln = 19;
 }
 
 // The chains in a clonotype are ordered an hence they have a unique index.
@@ -201,21 +213,33 @@ message ClonotypeChain {
   required uint32 j_start_ref = 17;
   // Index of the end of the J-REGION in the `nt_sequence` (exclusive).
   required uint32 j_end = 18;
+  // Index of the start of the FWR1 sequence in the `nt_sequence`. 
+  optional uint32 fwr1_start = 19;
+  // Index of the start of the CDR1 sequence in the `nt_sequence`. 
+  optional uint32 cdr1_start = 20;
+  // Index of the start of the FWR2 sequence in the `nt_sequence`. 
+  optional uint32 fwr2_start = 21;
+  // Index of the start of the CDR2 sequence in the `nt_sequence`. 
+  optional uint32 cdr2_start = 22;
+  // Index of the start of the FWR3 sequence in the `nt_sequence`. 
+  optional uint32 fwr3_start = 23;
   // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
   // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`
-  required uint32 cdr3_start = 19;
+  required uint32 cdr3_start = 24;
   // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
   // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`
-  required uint32 cdr3_end = 20;
+  required uint32 cdr3_end = 25;
+  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
+  optional uint32 fwr4_end = 26;
   // IGH, IGK, IGL, TRA, TRB, TRD, TRG or conceivably something else.
-  required string chain_type = 21;
+  required string chain_type = 27;
   // AA sequence of the clonotype chain consensus
-  required bytes aa_sequence = 22;
+  required bytes aa_sequence = 28;
   // AA sequence of the concatenated universal reference starting from the V
   // regions
-  required bytes aa_sequence_universal = 23;
+  required bytes aa_sequence_universal = 29;
   // AA sequence of the concatenated donor reference starting from the V regions
-  required bytes aa_sequence_donor = 24;
+  required bytes aa_sequence_donor = 30;
 }
 
 // Definition of a clonotype.
