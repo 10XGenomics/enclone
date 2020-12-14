@@ -682,26 +682,10 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
-    if !path_exists(&f) {
-        eprintln!("\nCan't find the file referenced by your META argument.\n");
-        std::process::exit(1);
-    }
-    let fx = File::open(&f);
-    if fx.is_err() {
-        eprintln!(
-            "\nProblem with META: unable to read from the file\n\
-             \"{}\".\nPlease check that that path makes sense and that you have read \
-             permission for it.\n",
-            f
-        );
-        std::process::exit(1);
-    }
-    let f = BufReader::new(fx.unwrap());
+pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
     let mut fields = Vec::<String>::new();
     let mut donors = Vec::<String>::new();
-    for (count, line) in f.lines().enumerate() {
-        let s = line.unwrap();
+    for (count, s) in lines.iter().enumerate() {
         if count == 0 {
             let x = s.split(',').collect::<Vec<&str>>();
             for i in 0..x.len() {
@@ -711,7 +695,7 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             unique_sort(&mut fields_sorted);
             if fields_sorted.len() < fields.len() {
                 eprintln!(
-                    "\nThe CSV file that you specified using the META argument \
+                    "\nThe CSV file that you specified using the META or METAX argument \
                      has duplicate field names\nin its first line.\n"
                 );
                 std::process::exit(1);
@@ -728,7 +712,7 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             for x in fields.iter() {
                 if !allowed_fields.contains(&x) {
                     eprintln!(
-                        "\nThe CSV file that you specified using the META argument \
+                        "\nThe CSV file that you specified using the META or METAX argument \
                          has an illegal field name ({}) in its first line.\n",
                         x
                     );
@@ -739,14 +723,14 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             ctl.gen_opt.bcr = fields.contains(&"bcr".to_string());
             if !ctl.gen_opt.tcr && !ctl.gen_opt.bcr {
                 eprintln!(
-                    "\nThe CSV file that you specified using the META argument \
+                    "\nThe CSV file that you specified using the META or METAX argument \
                      has neither the field tcr or bcr in its first line.\n"
                 );
                 std::process::exit(1);
             }
             if ctl.gen_opt.tcr && ctl.gen_opt.bcr {
                 eprintln!(
-                    "\nThe CSV file that you specified using the META argument \
+                    "\nThe CSV file that you specified using the META or METAX argument \
                      has both the fields tcr and bcr in its first line.\n"
                 );
                 std::process::exit(1);
@@ -755,7 +739,7 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             let val = s.split(',').collect::<Vec<&str>>();
             if val.len() != fields.len() {
                 eprintln!(
-                    "\nMETA file line {} has a different number of fields than the \
+                    "\nMETA or METAX file line {} has a different number of fields than the \
                      first line of the file.\n",
                     count + 1
                 );
@@ -838,4 +822,28 @@ pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
             ctl.origin_info.color.push(color);
         }
     }
+}
+
+pub fn proc_meta(f: &str, mut ctl: &mut EncloneControl) {
+    if !path_exists(&f) {
+        eprintln!("\nCan't find the file referenced by your META argument.\n");
+        std::process::exit(1);
+    }
+    let fx = File::open(&f);
+    if fx.is_err() {
+        eprintln!(
+            "\nProblem with META: unable to read from the file\n\
+             \"{}\".\nPlease check that that path makes sense and that you have read \
+             permission for it.\n",
+            f
+        );
+        std::process::exit(1);
+    }
+    let f = BufReader::new(fx.unwrap());
+    let mut lines = Vec::<String>::new();
+    for line in f.lines() {
+        let s = line.unwrap();
+        lines.push(s);
+    }
+    proc_meta_core(&lines, &mut ctl);
 }

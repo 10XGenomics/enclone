@@ -180,6 +180,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut gex = String::new();
     let mut bc = String::new();
     let mut metas = Vec::<String>::new();
+    let mut metaxs = Vec::<String>::new();
     let mut xcrs = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i].starts_with("BI=") {
@@ -191,7 +192,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             have_bcr = true;
         } else if args[i].starts_with("GEX=") {
             have_gex = true;
-        } else if args[i].starts_with("META=") {
+        } else if args[i].starts_with("META=") || args[i].starts_with("METAX=") {
             have_meta = true;
         }
         if args[i].starts_with("GEX=") {
@@ -1067,6 +1068,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         } else if arg.starts_with("META=") {
             let f = arg.after("META=");
             metas.push(f.to_string());
+        } else if arg.starts_with("METAX=") {
+            let f = arg.after("METAX=");
+            metaxs.push(f.to_string());
         } else if arg.starts_with("TCR=")
             || arg.starts_with("BCR=")
             || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
@@ -1244,6 +1248,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let f = get_path_fail(&f, &ctl, "META");
         proc_meta(&f, &mut ctl);
     }
+    if metaxs.len() > 0 {
+        let lines0 = metaxs[metaxs.len() - 1].split(';').collect::<Vec<&str>>();
+        let mut lines = Vec::<String>::new();
+        for i in 0..lines0.len() {
+            lines.push(lines0[i].to_string());
+        }
+        proc_meta_core(&lines, &mut ctl);
+    }
+
     ctl.perf_stats(&t, "in proc_meta");
     if xcrs.len() > 0 {
         let arg = &xcrs[xcrs.len() - 1];
