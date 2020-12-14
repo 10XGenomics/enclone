@@ -38,9 +38,9 @@ dependencies = [
 
 [[package]]
 name = "amino"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c1365081b7610266f7b9bff01acbe30746246ddd620e398b61b74bbc1a999d2"
+checksum = "5e856bac57530227e5579f285fbec1964aa9524ad0d319e5139a215ec884aae8"
 dependencies = [
  "debruijn",
  "string_utils",

@@ -16,7 +16,7 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-amino = "0.1.2"
+amino = "0.1.3"
 ansi_escape = "0.1.0"
 assert_cmd = "0.12.0"
 bio = ">=0.31, <=0.32"
