@@ -386,7 +386,7 @@ pub fn row_fill(
             for j in 0..ex.clones.len() {
                 if ex.clones[j][0].origin_index.is_some() {
                     origins.push(
-                        ctl.origin_info.origin_id[ex.clones[j][0].origin_index.unwrap()].clone(),
+                        ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
                     );
                 } else {
                     origins.push("?".to_string());
