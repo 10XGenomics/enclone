@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 173] = [
+pub const TESTS: [&str; 174] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -433,6 +433,9 @@ pub const TESTS: [&str; 173] = [
     r###"META=testx/inputs/test11_meta LVARSP=CD56_ab NOPRINT EXPECT_OK"###,
     // 173. test MIN_UMIS
     r###"BCR=85333 MIN_UMIS=100"###,
+    // 174. test METAX, and also the origins printed by this was wrong at one point
+    r###"METAX="bcr,origin,donor;toast:86237,c,d;zip:123085,a,b" LVARSP=origins,donors
+        POUT=stdouth PCOLS=origins,donors CDR3=CARSFFGDTAMVMFQAFDPW"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
