@@ -928,6 +928,7 @@ pub fn justification(x: &str) -> u8 {
         || x == "edit"
         || x == "datasets"
         || x == "donors"
+        || x == "origins"
         || x == "ext"
         || x == "barcode"
         || x == "barcodes"
