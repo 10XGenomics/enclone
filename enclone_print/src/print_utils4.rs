@@ -269,6 +269,7 @@ pub fn build_show_aa(
             let jseq2 = &jseq1;
             let vlen = vseq2.len() - ctl.heur.ref_v_trim;
             let jlen = jseq2.len() - ctl.heur.ref_j_trim;
+            /*
             let gap = rsi.seq_lens[cx] as isize - vlen as isize - jlen as isize;
             if gap < 0 {
                 let mut bcs = Vec::<String>::new();
@@ -286,6 +287,7 @@ pub fn build_show_aa(
                     bcs.iter().format(",")
                 );
             }
+            */
             for j in 0..vlen {
                 if j < vseq1.len() && vseq1[j] != vseq2[j] {
                     show_aa[cx].push(j / 3);
