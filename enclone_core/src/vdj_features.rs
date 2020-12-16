@@ -934,3 +934,81 @@ pub fn score4(aa: &[u8], r: usize) -> usize {
     }
     score
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Determine the IG chain type of an amino acid sequence that goes up to at least the end of
+// the J segment, and also determine the stop position of the J segment.
+// These are designed to be perfect for human and mouse reference J segments,
+// but there could be SHM and/or germline changes, and other species might differ.
+
+pub fn ig_j_gene(aa: &[u8]) -> Option<(String, usize)> {
+    let iglj = [
+        [b'L', b'M', b'V'].to_vec(),
+        [b'F'].to_vec(),
+        [b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [b'K', b'Q'].to_vec(),
+        [b'L', b'V'].to_vec(),
+        [b'T'].to_vec(),
+        [b'V'].to_vec(),
+        [b'L'].to_vec(),
+    ];
+    let igkj = [
+        [b'R', b'S', b'T'].to_vec(),
+        [b'F'].to_vec(),
+        [b'R', b'S', b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [b'K', b'Q', b'R'].to_vec(),
+        [b'L', b'V', b'F'].to_vec(),
+        [b'D', b'E'].to_vec(),
+        [b'I', b'M', b'L'].to_vec(),
+        [b'K'].to_vec(),
+    ];
+    let ighj = [
+        [b'W'].to_vec(),
+        [b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [].to_vec(),
+        [b'L', b'V'].to_vec(),
+        [b'T'].to_vec(),
+        [b'V'].to_vec(),
+        [b'S'].to_vec(),
+        [b'A', b'S'].to_vec(),
+    ];
+    // A guess, not tested or optimized:
+    const MIN_MATCHES: usize = 7;
+    let len = iglj.len();
+    let mut max_matches = vec![0; 3];
+    let mut best_pos = vec![0; 3];
+    let chains = ["IGL".to_string(), "IGK".to_string(), "IGH".to_string()];
+    for (ip, x) in [&iglj, &igkj, &ighj].iter().enumerate() {
+        for p in 0..=aa.len() - len {
+            let mut matchesx = 0;
+            for j in 0..len {
+                for l in 0..x[j].len() {
+                    if aa[p + j] == x[j][l] {
+                        matchesx += 1;
+                    }
+                }
+            }
+            if matchesx > max_matches[ip] {
+                max_matches[ip] = matchesx;
+                best_pos[ip] = p;
+            }
+        }
+    }
+    let mut u = vec![0, 1, 2];
+    sort_sync3(&mut max_matches, &mut best_pos, &mut u);
+    if max_matches[2] >= MIN_MATCHES {
+        Some((chains[u[2]].clone(), best_pos[2] + len))
+    } else {
+        None
+    }
+}
