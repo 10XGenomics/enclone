@@ -983,6 +983,9 @@ pub fn ig_j_gene(aa: &[u8]) -> Option<(String, usize)> {
     // A guess, not tested or optimized:
     const MIN_MATCHES: usize = 7;
     let len = iglj.len();
+    if aa.len() < len {
+        return None;
+    }
     let mut max_matches = vec![0; 3];
     let mut best_pos = vec![0; 3];
     let chains = ["IGL".to_string(), "IGK".to_string(), "IGH".to_string()];
