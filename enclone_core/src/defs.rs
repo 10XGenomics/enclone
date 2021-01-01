@@ -689,31 +689,30 @@ impl EncloneControl {
 
 #[derive(Eq, Ord, PartialEq, PartialOrd, Default, Clone)] // not sure these are all needed
 pub struct TigData {
-    pub cdr3_dna: String,          // CDR3 DNA sequence
-    pub len: usize,                // length of V..J sequence
-    pub seq: Vec<u8>,              // V..J contig subsequence
-    pub v_start: usize,            // start of V on full contig sequence
-    pub v_stop: usize,             // stop of aligned V on full contig sequence
-    pub v_stop_ref: usize,         // stop of aligned V on reference V
-    pub d_start: Option<usize>,    // start of aligned D on full contig sequence
-    pub j_start: usize,            // start of aligned J on full contig sequence
-    pub j_start_ref: usize,        // start of aligned J on reference J
-    pub j_stop: usize,             // stop of J on full contig sequence
-    pub c_start: Option<usize>,    // start of C on full contig sequence
-    pub full_seq: Vec<u8>,         // full contig sequence
-    pub u_ref_id: Option<usize>,   // index of 5'-UTR in ref file if found
-    pub v_ref_id: usize,           // index of V segment reference sequence in ref file
-    pub d_ref_id: Option<usize>,   // index of D segment reference sequence in ref file
-    pub j_ref_id: usize,           // index of J segment reference sequence in ref file
-    pub c_ref_id: Option<usize>,   // index of C segment reference sequence in ref file
-    pub fr1_start: usize,          // start position in bases of FWR1 on V..J
-    pub cdr1_start: Option<usize>, // start position in bases of CDR1 on V..J
-    pub fr2_start: Option<usize>,  // start position in bases of FWR2 on V..J
-    pub cdr2_start: Option<usize>, // start position in bases of CDR2 on V..J
-    pub fr3_start: Option<usize>,  // start position in bases of FWR3 on V..J
-    pub cdr3_aa: String,           // CDR3 amino acid sequence
-    pub cdr3_start: usize,         // start position in bases of CDR3 on V..J
-    // after removing insertion, if any
+    pub cdr3_dna: String,                     // CDR3 DNA sequence
+    pub len: usize,                           // length of V..J sequence
+    pub seq: Vec<u8>,                         // V..J contig subsequence
+    pub v_start: usize,                       // start of V on full contig sequence
+    pub v_stop: usize,                        // stop of aligned V on full contig sequence
+    pub v_stop_ref: usize,                    // stop of aligned V on reference V
+    pub d_start: Option<usize>,               // start of aligned D on full contig sequence
+    pub j_start: usize,                       // start of aligned J on full contig sequence
+    pub j_start_ref: usize,                   // start of aligned J on reference J
+    pub j_stop: usize,                        // stop of J on full contig sequence
+    pub c_start: Option<usize>,               // start of C on full contig sequence
+    pub full_seq: Vec<u8>,                    // full contig sequence
+    pub u_ref_id: Option<usize>,              // index of 5'-UTR in ref file if found
+    pub v_ref_id: usize,                      // index of V segment reference sequence in ref file
+    pub d_ref_id: Option<usize>,              // index of D segment reference sequence in ref file
+    pub j_ref_id: usize,                      // index of J segment reference sequence in ref file
+    pub c_ref_id: Option<usize>,              // index of C segment reference sequence in ref file
+    pub fr1_start: usize,                     // start position in bases of FWR1 on V..J
+    pub cdr1_start: Option<usize>,            // start position in bases of CDR1 on V..J
+    pub fr2_start: Option<usize>,             // start position in bases of FWR2 on V..J
+    pub cdr2_start: Option<usize>,            // start position in bases of CDR2 on V..J
+    pub fr3_start: Option<usize>,             // start position in bases of FWR3 on V..J
+    pub cdr3_aa: String,                      // CDR3 amino acid sequence
+    pub cdr3_start: usize,                    // start position in bases of CDR3 on V..J
     pub quals: Vec<u8>,                       // quality scores, truncated to V..J
     pub full_quals: Vec<u8>,                  // quality scores
     pub barcode: String,                      // barcode
@@ -785,11 +784,10 @@ pub struct TigData1 {
     pub fr3_start: Option<usize>,            // start position in bases of FWR3 on V..J
     pub cdr3_aa: String,                     // CDR3 amino acid sequence
     pub cdr3_start: usize,                   // start position in bases of CDR3 on V..J
-    // after removing insertion, if any
-    pub left: bool,                           // true if this is IGH or TRB
-    pub chain_type: String,                   // e.g. IGH
+    pub left: bool,                          // true if this is IGH or TRB
+    pub chain_type: String,                  // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub vs: DnaString,                        // reference V segment (possibly donor allele)
+    pub vs: DnaString,                       // reference V segment (possibly donor allele)
     pub vs_notesx: String, // notes on reference V segment (probably to be replaced)
     pub js: DnaString,     // reference J segment
     pub inkt_alpha_chain_gene_match: bool,
