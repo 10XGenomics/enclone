@@ -402,11 +402,6 @@ fn parse_vector_entry_from_json(
         }
         let cdr3_aa_alt = stringme(&cdr3[0].1);
         if cdr3_aa != cdr3_aa_alt {
-            cdr3_aa = cdr3_aa_alt;
-            cdr3_dna = x
-                .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
-                .to_string();
-
             // This is particularly pathological and rare:
 
             if tig_start as usize > cdr3[0].0 {
@@ -416,6 +411,13 @@ fn parse_vector_entry_from_json(
             // Define start.
 
             cdr3_start = cdr3[0].0 - tig_start as usize;
+
+            // Define cdr3.
+
+            cdr3_aa = cdr3_aa_alt;
+            cdr3_dna = x
+                .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
+                .to_string();
         }
     }
 
