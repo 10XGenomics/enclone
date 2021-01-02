@@ -132,7 +132,7 @@ pub fn define_column_info(
                 } else {
                     fr3_starts.push(None);
                 }
-                let mut start = exm.cdr3_start;
+                let mut start = exm.cdr3_start - exm.ins_len();
                 for (i, c) in exm.seq_del.iter().enumerate() {
                     if i < start && *c == b'-' {
                         start += 1;

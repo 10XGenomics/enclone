@@ -434,13 +434,6 @@ fn parse_vector_entry_from_json(
         return;
     }
 
-    // Correct CDR3 start for insertion.
-
-    if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
-        let ins = annv[1].0 - annv[0].0 - annv[0].1;
-        cdr3_start -= ins as usize;
-    }
-
     // Keep going.
 
     if tig_start < 0 || tig_stop < 0 {
@@ -469,7 +462,6 @@ fn parse_vector_entry_from_json(
     }
     let full_quals = quals.clone();
     let quals = quals[tig_start..tig_stop].to_vec();
-    // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
     let umi_count = v["umi_count"].as_i64().unwrap() as usize;
     let read_count = v["read_count"].as_i64().unwrap() as usize;
     let mut origin = None;
