@@ -318,8 +318,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_dna,cdr2_dna AMINO="###,
     // 121. test cdr1_len and cdr2_len
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_len,cdr2_len AMINO="###,
-    // 122. test insertion in CDR1
-    r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa"###,
+    // 122. test insertion in CDR1 and test cdr3_start when there is an insertion
+    r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa
+        POUT=stdout PCOLS=cdr3_start1"###,
     // 123. test fwr1_dna and fwr2_dna
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_dna,fwr2_dna AMINO=cdr3"###,
     // 124. test fwr3_dna
