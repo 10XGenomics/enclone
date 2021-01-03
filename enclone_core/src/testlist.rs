@@ -42,8 +42,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,cdr3_len,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. DUPLICATE; TO REPLACE WITH A NEW TEST
-    r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
+    // 8. test KEEP_CELL_IF with >= and <=
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=rank
+        KEEP_CELL_IF="rank >= 2 && rank <= 3""###,
     // 9. tests PER_CELL and unicode
     r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,origins,donors,datasets, and share

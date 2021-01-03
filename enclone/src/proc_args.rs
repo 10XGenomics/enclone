@@ -772,12 +772,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             let con = condition.as_bytes();
             for i in 0..con.len() {
                 if i > 0 && i < con.len() - 1 && con[i] == b'=' {
-                    if con[i - 1] != b'=' && con[i + 1] != b'=' {
-                        eprintln!(
-                            "\nConstraints for {} cannot use =.  Please use == instead.\n",
-                            arg.before("="),
-                        );
-                        std::process::exit(1);
+                    if con[i - 1] != b'=' && con[i - 1] != b'<' && con[i - 1] != b'>' {
+                        if con[i + 1] != b'=' {
+                            eprintln!(
+                                "\nConstraints for {} cannot use =.  Please use == instead.\n",
+                                arg.before("="),
+                            );
+                            std::process::exit(1);
+                        }
                     }
                 }
             }
