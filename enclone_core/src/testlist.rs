@@ -218,8 +218,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=123085 CDR3=CQQSYSTPRTF RE"###,
     // 76. test PLOT_BY_ISOTYPE
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2"###,
-    // 77. DUPLICATE, SHOULD BE DELETED
-    r###"BCR=86237 POUT=/dev/null NOPRINT EXPECT_OK"###,
+    // 77. test PLOT_BY_ISOTYPE_COLOR
+    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2
+        PLOT_BY_ISOTYPE_COLOR=red,green,blue,yellow,black,orange,turquoise,pink,gray,purple"###,
     // 78. make sure that POUT with PCELL works on full dataset
     r###"BCR=86237 POUT=stdout PCELL EXPECT_OK"###,
     // 79. make sure that POUT works on full dataset with gex
