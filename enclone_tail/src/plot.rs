@@ -282,7 +282,18 @@ pub fn plot_clonotypes(
         }
     }
     unique_sort(&mut const_names);
-    if ctl.gen_opt.plot_by_isotype && const_names.len() > 12 {
+    if ctl.gen_opt.plot_by_isotype_color.len() > 0 {
+        if const_names.len() + 1 > ctl.gen_opt.plot_by_isotype_color.len() {
+            eprintln!(
+                "\nUsing the PLOT_BY_ISOTYPE_COLOR argument, you specified {} colors, \
+                but there are {} constant region\nnames, and one more color is needed for the \
+                \"undetermined\" case.  Please add more colors.\n",
+                ctl.gen_opt.plot_by_isotype_color.len(),
+                const_names.len()
+            );
+            std::process::exit(1);
+        }
+    } else if ctl.gen_opt.plot_by_isotype && const_names.len() > 12 {
         eprintln!(
             "\nCurrently PLOT_BY_ISOTYPE only works if there are at most 12 constant \
             region names.  If this is a problem, please let us know and we will generalize it.\n"
@@ -341,8 +352,12 @@ pub fn plot_clonotypes(
                         let p = bin_position(&const_names, &c) as usize;
                         color_id = 1 + p;
                     }
-                    let x = print_color13(color_id);
-                    color = format!("rgb({},{},{})", x.0, x.1, x.2);
+                    if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+                        let x = print_color13(color_id);
+                        color = format!("rgb({},{},{})", x.0, x.1, x.2);
+                    } else {
+                        color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                    }
 
                 // Determine color for PLOT_BY_MARK.
                 } else if ctl.gen_opt.plot_by_mark {
@@ -453,15 +468,25 @@ pub fn plot_clonotypes(
             for i in 0..const_names.len() {
                 labels.push(const_names[i].clone());
                 let color_id = i + 1;
-                let x = print_color13(color_id);
-                let color = format!("rgb({},{},{})", x.0, x.1, x.2);
-                colors.push(color);
+                if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+                    let x = print_color13(color_id);
+                    let color = format!("rgb({},{},{})", x.0, x.1, x.2);
+                    colors.push(color);
+                } else {
+                    let color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                    colors.push(color);
+                }
             }
             labels.push("undetermined".to_string());
             let color_id = 0;
-            let x = print_color13(color_id);
-            let color = format!("rgb({},{},{})", x.0, x.1, x.2);
-            colors.push(color);
+            if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+                let x = print_color13(color_id);
+                let color = format!("rgb({},{},{})", x.0, x.1, x.2);
+                colors.push(color);
+            } else {
+                let color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                colors.push(color);
+            }
         } else if ctl.gen_opt.plot_by_mark {
             colors.push("red".to_string());
             labels.push("in most common dataset, !marked".to_string());

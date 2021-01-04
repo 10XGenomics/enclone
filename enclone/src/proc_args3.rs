@@ -347,10 +347,18 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                     if call_type == "BC" {
                         origin = "from the BC argument";
                     }
-                    eprintln!(
-                        "\nThe file\n{}\n{}\nis missing the barcode field.\n",
-                        bc, origin,
-                    );
+                    if bc.ends_with(".tsv") {
+                        eprintln!(
+                            "\nThe file\n{}\n{}\nappears to be a TSV file rather than a \
+                            CSV file, as required.\n",
+                            bc, origin,
+                        );
+                    } else {
+                        eprintln!(
+                            "\nThe file\n{}\n{}\nis missing the barcode field.\n",
+                            bc, origin,
+                        );
+                    }
                     std::process::exit(1);
                 }
                 for x in fields.iter() {

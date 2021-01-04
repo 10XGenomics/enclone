@@ -460,6 +460,7 @@ pub struct GeneralOpt {
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
     pub plot_by_isotype: bool,
+    pub plot_by_isotype_color: Vec<String>,
     pub plot_by_mark: bool,
     pub origin_color_map: HashMap<String, String>,
     pub use_legend: bool,
@@ -759,7 +760,7 @@ pub struct TigData1 {
     pub seq_del: Vec<u8>,           // V..J, possibly with mod 3 del
     pub seq_del_amino: Vec<u8>,     // V..J, possibly with mod 3 del at mod 3 start
     pub aa_mod_indel: Vec<u8>,      // amino acid sequence, after removing indel if present
-    pub ins: Vec<(usize, Vec<u8>)>, // insertions in V..J (currently at most one)
+    pub ins: Vec<(usize, Vec<u8>)>, // insertions in V..J (currently at most one) = {(pos, seq)}
     // **before** the given position
     pub full_seq: Vec<u8>,                   // full contig sequence (consensus)
     pub v_start: usize,                      // start of V on full contig sequence
@@ -798,6 +799,16 @@ pub struct TigData1 {
     pub mait_alpha_chain_junction_match: bool,
     pub mait_beta_chain_gene_match: bool,
     pub mait_beta_chain_junction_match: bool,
+}
+
+impl TigData1 {
+    pub fn ins_len(&self) -> usize {
+        let mut x = 0;
+        for j in 0..self.ins.len() {
+            x += self.ins[j].1.len();
+        }
+        x
+    }
 }
 
 #[derive(Clone)]

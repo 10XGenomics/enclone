@@ -772,12 +772,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             let con = condition.as_bytes();
             for i in 0..con.len() {
                 if i > 0 && i < con.len() - 1 && con[i] == b'=' {
-                    if con[i - 1] != b'=' && con[i + 1] != b'=' {
-                        eprintln!(
-                            "\nConstraints for {} cannot use =.  Please use == instead.\n",
-                            arg.before("="),
-                        );
-                        std::process::exit(1);
+                    if con[i - 1] != b'=' && con[i - 1] != b'<' && con[i - 1] != b'>' {
+                        if con[i + 1] != b'=' {
+                            eprintln!(
+                                "\nConstraints for {} cannot use =.  Please use == instead.\n",
+                                arg.before("="),
+                            );
+                            std::process::exit(1);
+                        }
                     }
                 }
             }
@@ -869,6 +871,23 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if ctl.gen_opt.plot_file.is_empty() {
                 eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
                 std::process::exit(1);
+            }
+        } else if arg.starts_with("PLOT_BY_ISOTYPE_COLOR=") {
+            if arg.after("PLOT_BY_ISOTYPE_COLOR=").len() == 0 {
+                eprintln!(
+                    "\nA value needs to be specified for the PLOT_BY_ISOTYPE_COLOR \
+                    argument.\n"
+                );
+                std::process::exit(1);
+            }
+            let fields = arg
+                .after("PLOT_BY_ISOTYPE_COLOR=")
+                .split(',')
+                .collect::<Vec<&str>>();
+            for i in 0..fields.len() {
+                ctl.gen_opt
+                    .plot_by_isotype_color
+                    .push(fields[i].to_string());
             }
         } else if arg.starts_with("PLOT_BY_MARK=") {
             ctl.gen_opt.plot_by_mark = true;

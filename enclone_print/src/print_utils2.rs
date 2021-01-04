@@ -1238,7 +1238,7 @@ pub fn row_fill(
                     let mut pos = al.xstart;
                     let mut rpos = (al.ystart as isize) - (vref.len() as isize);
                     let mut count = 0;
-                    let start = td.cdr3_start;
+                    let start = td.cdr3_start - td.ins_len();
                     let stop = td.j_stop - td.v_start;
                     let mut edits = Vec::<String>::new();
                     while m < al.operations.len() {
@@ -1546,9 +1546,9 @@ pub fn row_fill(
             {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start {
+                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.fr3_start.unwrap()..x.cdr3_start {
+                    for p in x.fr3_start.unwrap()..x.cdr3_start - x.ins_len() {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1588,10 +1588,10 @@ pub fn row_fill(
             } else if *var == "fwr3_dna_ref".to_string() || *var == "fwr3_aa_ref".to_string() {
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
-                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start {
+                if x.fr3_start.is_some() && x.fr3_start.unwrap() <= x.cdr3_start - x.ins_len() {
                     let dna = refdata.refs[x.v_ref_id].to_ascii_vec();
                     if x.cdr3_start <= dna.len() {
-                        let dna = dna[x.fr3_start.unwrap()..x.cdr3_start].to_vec();
+                        let dna = dna[x.fr3_start.unwrap()..x.cdr3_start - x.ins_len()].to_vec();
                         if *var == "fwr3_dna_ref".to_string() {
                             y = stringme(&dna);
                         } else {
@@ -1605,7 +1605,7 @@ pub fn row_fill(
                 || *var == "fwr4_len".to_string()
             {
                 let x = &ex.share[mid];
-                let start = x.cdr3_start + 3 * x.cdr3_aa.len();
+                let start = x.cdr3_start - x.ins_len() + 3 * x.cdr3_aa.len();
                 let stop = x.seq_del_amino.len();
                 let dna = &x.seq_del_amino[start..stop];
                 let y;

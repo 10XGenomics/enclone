@@ -42,8 +42,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=86237 CELLS=3 AMINO= CVARS=u,r,cdr3_dna,cdr3_len,vjlen"###,
     // 7. tests SHM deletion
     r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
-    // 8. DUPLICATE; TO REPLACE WITH A NEW TEST
-    r###"BCR=123085 CVARSP=var,clen,cdiff CDR3=CAREPLYYDFWSAYFDYW LVARSP=near,far"###,
+    // 8. test KEEP_CELL_IF with >= and <=
+    r###"BCR=123085 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=rank
+        KEEP_CELL_IF="rank >= 2 && rank <= 3""###,
     // 9. tests PER_CELL and unicode
     r###"BCR=█≈ΠΠΠ≈█ CDR3=CAKGDRTGYSYGGGIFDYW PER_CELL"###,
     // 10. tests multiple datasets and also LVARS=n,origins,donors,datasets, and share
@@ -217,8 +218,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=123085 CDR3=CQQSYSTPRTF RE"###,
     // 76. test PLOT_BY_ISOTYPE
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2"###,
-    // 77. DUPLICATE, SHOULD BE DELETED
-    r###"BCR=86237 POUT=/dev/null NOPRINT EXPECT_OK"###,
+    // 77. test PLOT_BY_ISOTYPE_COLOR
+    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2
+        PLOT_BY_ISOTYPE_COLOR=red,green,blue,yellow,black,orange,turquoise,pink,gray,purple"###,
     // 78. make sure that POUT with PCELL works on full dataset
     r###"BCR=86237 POUT=stdout PCELL EXPECT_OK"###,
     // 79. make sure that POUT works on full dataset with gex
@@ -318,8 +320,9 @@ pub const TESTS: [&str; 174] = [
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_dna,cdr2_dna AMINO="###,
     // 121. test cdr1_len and cdr2_len
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARS=cdr1_len,cdr2_len AMINO="###,
-    // 122. test insertion in CDR1
-    r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa"###,
+    // 122. test insertion in CDR1 and test cdr3_start when there is an insertion
+    r###"BCR=123089 CDR3=CARARPYSSGWSLDAFDIW AMINO=cdr1,cdr3 CVARSP=cdr1_aa
+        POUT=stdout PCOLS=cdr3_start1"###,
     // 123. test fwr1_dna and fwr2_dna
     r###"BCR=85333 CDR3=CARDLRVEGFDYW CVARSP=fwr1_dna,fwr2_dna AMINO=cdr3"###,
     // 124. test fwr3_dna

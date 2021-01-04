@@ -91,7 +91,13 @@ PLOT_BY_ISOTYPE=plot.svg</code></p>
 
 <img src="../../img/iso.svg" alt="isotype honeycomb plot" title="isotype honeycomb plot">
 
-<br><br>
+<br>
+
+<p>If desired, an additional argument
+<code>PLOT_BY_ISOTYPE_COLOR=color1,...,colorn</code>
+maybe used to define an alternate color list.  The first color is for the undetermined case, and
+the subsequent colors are in order by constant region name.  #enclone will fail if the list is 
+not long enough.</p>
 
 <hr>
 

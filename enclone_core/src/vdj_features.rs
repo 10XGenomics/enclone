@@ -11,8 +11,6 @@
 // modified to add a fake leader sequence on the left (we use MXXXXXXXXXXXXXXXXXXXX), and to
 // truncate on the right to trim a bit beyond the start of the CDR3.
 
-// THIS IS A COPY FROM THE ENCLONE REPO TO FACILITATE EXPERIMENTATION!
-
 use string_utils::*;
 use vector_utils::*;
 
@@ -35,7 +33,7 @@ use vector_utils::*;
 //
 // If the starting amino acid is C, we add one to the start position.
 
-pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
+pub fn fr1_start(aa: &[u8], chain_type: &str) -> usize {
     // Define PWM.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -118,7 +116,7 @@ pub fn fr1_start(aa: &Vec<u8>, chain_type: &str) -> usize {
 // conventions appear to differ by fixed offsets.  The convention used here is for IMGT.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
+pub fn cdr1_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     // Define PWM for eight amino acids.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -198,7 +196,7 @@ pub fn cdr1_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // FR2 region.  Chain type is one of IGH, IGK, IGL, TRA or TRB'
 
-pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
+pub fn fr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     // Define PWM for six amino acids.
 
     let mut pwm = Vec::<Vec<(usize, u8)>>::new();
@@ -295,7 +293,7 @@ pub fn fr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // CDR2 region.  Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
+pub fn cdr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     let s2 = fr2_start(&aa, chain_type, false);
     if s2.is_none() {
         return None;
@@ -424,7 +422,7 @@ pub fn cdr2_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
+pub fn cdr3_start(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize {
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
     let nm = motif[0].len();
     let reach = 18;
@@ -451,7 +449,7 @@ pub fn cdr3_start(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
     scores[0].1
 }
 
-pub fn cdr3_score(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
+pub fn cdr3_score(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize {
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
     let nm = motif[0].len();
     let reach = 18;
@@ -479,7 +477,7 @@ pub fn cdr3_score(aa: &Vec<u8>, _chain_type: &str, _verbose: bool) -> usize {
 // Given the amino acid sequence for a V reference sequence, attempt to find the start of the
 // FR3 region.
 
-pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize> {
+pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
     // First find the start of the CDR3.
 
     let cdr3_start = cdr3_start(&aa, &chain_type, verbose);
@@ -764,7 +762,7 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
 // Given the amino acid sequence for a V reference sequence, return the CDR1 sequence.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB, and is not used at the moment.
 
-pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+pub fn cdr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr2 = fr2_start(&aa, chain_type, verbose);
     let cdr1 = cdr1_start(&aa, chain_type, verbose);
     if fr2.is_none() || cdr1.is_none() || cdr1.unwrap() > fr2.unwrap() {
@@ -778,7 +776,7 @@ pub fn cdr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 // Given the amino acid sequence for a V reference sequence, return the CDR2 sequence.
 // Chain type is one of IGH, IGK, IGL, TRA or TRB.
 
-pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+pub fn cdr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let start = cdr2_start(&aa, chain_type, verbose);
     if start.is_none() {
         return None;
@@ -797,7 +795,7 @@ pub fn cdr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn fwr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+pub fn fwr1(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr1 = fr1_start(&aa, chain_type);
     let cdr1 = cdr1_start(&aa, chain_type, verbose);
     if cdr1.is_none() {
@@ -811,7 +809,7 @@ pub fn fwr1(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn fwr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+pub fn fwr2(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr2 = fr2_start(&aa, chain_type, verbose);
     if fr2.is_none() {
         return None;
@@ -828,7 +826,7 @@ pub fn fwr2(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn fwr3(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
+pub fn fwr3(aa: &[u8], chain_type: &str, verbose: bool) -> Option<Vec<u8>> {
     let fr3 = fr3_start(&aa, chain_type, verbose);
     if fr3.is_none() {
         return None;
@@ -933,4 +931,85 @@ pub fn score4(aa: &[u8], r: usize) -> usize {
         score += 3;
     }
     score
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Determine the IG chain type of an amino acid sequence that goes up to at least the end of
+// the J segment, and also determine the stop position of the J segment.
+// These are designed to be perfect for human and mouse reference J segments,
+// but there could be SHM and/or germline changes, and other species might differ.
+
+pub fn ig_j_gene(aa: &[u8]) -> Option<(String, usize)> {
+    let iglj = [
+        [b'L', b'M', b'V'].to_vec(),
+        [b'F'].to_vec(),
+        [b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [b'K', b'Q'].to_vec(),
+        [b'L', b'V'].to_vec(),
+        [b'T'].to_vec(),
+        [b'V'].to_vec(),
+        [b'L'].to_vec(),
+    ];
+    let igkj = [
+        [b'R', b'S', b'T'].to_vec(),
+        [b'F'].to_vec(),
+        [b'R', b'S', b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [b'K', b'Q', b'R'].to_vec(),
+        [b'L', b'V', b'F'].to_vec(),
+        [b'D', b'E'].to_vec(),
+        [b'I', b'M', b'L'].to_vec(),
+        [b'K'].to_vec(),
+    ];
+    let ighj = [
+        [b'W'].to_vec(),
+        [b'G'].to_vec(),
+        [].to_vec(),
+        [b'G'].to_vec(),
+        [b'T'].to_vec(),
+        [].to_vec(),
+        [b'L', b'V'].to_vec(),
+        [b'T'].to_vec(),
+        [b'V'].to_vec(),
+        [b'S'].to_vec(),
+        [b'A', b'S'].to_vec(),
+    ];
+    // A guess, not tested or optimized:
+    const MIN_MATCHES: usize = 5;
+    let len = iglj.len();
+    if aa.len() < len {
+        return None;
+    }
+    let mut max_matches = vec![0; 3];
+    let mut best_pos = vec![0; 3];
+    let chains = ["IGL".to_string(), "IGK".to_string(), "IGH".to_string()];
+    for (ip, x) in [&iglj, &igkj, &ighj].iter().enumerate() {
+        for p in 0..=aa.len() - len {
+            let mut matchesx = 0;
+            for j in 0..len {
+                for l in 0..x[j].len() {
+                    if aa[p + j] == x[j][l] {
+                        matchesx += 1;
+                    }
+                }
+            }
+            if matchesx > max_matches[ip] {
+                max_matches[ip] = matchesx;
+                best_pos[ip] = p;
+            }
+        }
+    }
+    let mut u = vec![0, 1, 2];
+    sort_sync3(&mut max_matches, &mut best_pos, &mut u);
+    if max_matches[2] >= MIN_MATCHES {
+        Some((chains[u[2]].clone(), best_pos[2] + len))
+    } else {
+        None
+    }
 }

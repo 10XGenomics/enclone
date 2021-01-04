@@ -4,7 +4,7 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-amino = "0.1.2"
+amino = "0.1.3"
 ansi_escape = "0.1.0"
 assert_cmd = "0.12.0"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }

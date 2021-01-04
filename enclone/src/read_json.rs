@@ -402,11 +402,6 @@ fn parse_vector_entry_from_json(
         }
         let cdr3_aa_alt = stringme(&cdr3[0].1);
         if cdr3_aa != cdr3_aa_alt {
-            cdr3_aa = cdr3_aa_alt;
-            cdr3_dna = x
-                .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
-                .to_string();
-
             // This is particularly pathological and rare:
 
             if tig_start as usize > cdr3[0].0 {
@@ -416,6 +411,13 @@ fn parse_vector_entry_from_json(
             // Define start.
 
             cdr3_start = cdr3[0].0 - tig_start as usize;
+
+            // Define cdr3.
+
+            cdr3_aa = cdr3_aa_alt;
+            cdr3_dna = x
+                .slice(cdr3_start, cdr3_start + 3 * cdr3_aa.len())
+                .to_string();
         }
     }
 
@@ -430,13 +432,6 @@ fn parse_vector_entry_from_json(
     }
     if cdr3_start + 3 * cdr3_aa.len() > tig_stop as usize - tig_start as usize {
         return;
-    }
-
-    // Correct CDR3 start for insertion.
-
-    if annv.len() == 2 && annv[1].0 > annv[0].0 + annv[0].1 {
-        let ins = annv[1].0 - annv[0].0 - annv[0].1;
-        cdr3_start -= ins as usize;
     }
 
     // Keep going.
@@ -467,7 +462,6 @@ fn parse_vector_entry_from_json(
     }
     let full_quals = quals.clone();
     let quals = quals[tig_start..tig_stop].to_vec();
-    // let cdr3_dna = &v["cdr3_seq"].to_string().between("\"", "\"").to_string();
     let umi_count = v["umi_count"].as_i64().unwrap() as usize;
     let read_count = v["read_count"].as_i64().unwrap() as usize;
     let mut origin = None;
