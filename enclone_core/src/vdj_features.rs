@@ -981,7 +981,7 @@ pub fn ig_j_gene(aa: &[u8]) -> Option<(String, usize)> {
         [b'A', b'S'].to_vec(),
     ];
     // A guess, not tested or optimized:
-    const MIN_MATCHES: usize = 7;
+    const MIN_MATCHES: usize = 5;
     let len = iglj.len();
     if aa.len() < len {
         return None;
