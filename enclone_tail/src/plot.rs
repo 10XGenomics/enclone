@@ -132,7 +132,10 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     const SAMPLE: usize = 100000;
     const MUL: f64 = 1.5;
     for i in 1..r.len() {
-        let mut q = Vec::<(f64, f64, f64)>::new();
+        let mut found = false;
+        let mut best_r1 = 0.0;
+        let mut best_r2 = 0.0;
+        let mut best_val = 0.0;
         loop {
             for _ in 0..SAMPLE {
                 // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
@@ -160,15 +163,20 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                     }
                 }
                 if ok {
-                    q.push((r1 * r1 + r2 * r2, r1, r2));
+                    let val = r1 * r1 + r2 * r2;
+                    if !found || val < best_val {
+                        best_r1 = r1;
+                        best_r2 = r2;
+                        best_val = val;
+                    }
+                    found = true;
                 }
             }
-            q.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            if !q.is_empty() {
+            if found {
                 break;
             }
         }
-        c.push((q[0].1, q[0].2));
+        c.push((best_r1, best_r2));
         bigr = bigr.max(r[i] + (c[i].0 * c[i].0 + c[i].1 * c[i].1).sqrt());
     }
     c
