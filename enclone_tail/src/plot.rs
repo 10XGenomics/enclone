@@ -153,7 +153,8 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                 // See if circle at (r1,r2) overlaps any of the existing circles.
                 let mut ok = true;
                 for k in 0..i {
-                    // THE FOLLOWING LINE IS WHERE ALMOST ALL TIME IS SPENT IN HONEYCOMB PLOTS.
+                    // PROBABLY THE FOLLOWING LINE IS WHERE ALMOST ALL TIME IS SPENT IN 
+                    // HONEYCOMB PLOTS.
                     let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
                     if d < (r[i] + r[k]) * (r[i] + r[k]) {
                         ok = false;
