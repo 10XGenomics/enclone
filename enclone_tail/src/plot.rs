@@ -217,6 +217,9 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                     Err(i) => i,
                 };
                 for m in low..high {
+                    if m > low && ints[m].1 == ints[m - 1].1 {
+                        continue;
+                    }
                     let k = ints[m].1;
                     let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
                     if d < (r[i] + r[k]) * (r[i] + r[k]) {
