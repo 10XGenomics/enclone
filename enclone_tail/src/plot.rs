@@ -130,7 +130,8 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     // We track the starting point of each subinterval, and the index of the circle.
     //
     // The overall code would presumably be faster if we did not store the data in a sorted
-    // vector that needs to be sorted after each center is added.
+    // vector that needs to be sorted after each center is added.  However it's not actually
+    // clear that much time is spent in the sort.
 
     let mut ints = Vec::<(f64, usize)>::new();
     let radius0 = *r.last().unwrap();
