@@ -218,8 +218,8 @@ fn test_sync_master() {
 //
 // Runs with "small", and passes second argument so we can put outputs in a defined place.
 //
-// There are two passes.  The first pass tests the copy of install.sh that is one master, and
-// the second pass tests the local version.
+// There are three passes.  The first pass tests the copy of install.sh that is one master, and
+// the second pass tests the local version; the third tests with wget forced.
 //
 // Not sure if this needs to be internal-only.
 
@@ -242,7 +242,7 @@ fn test_curl_command() {
             );
             std::process::exit(1);
         }
-        for pass in 1..=2 {
+        for pass in 1..=3 {
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("testx/outputs/{}", f);
                 if path_exists(&g) {
@@ -256,10 +256,13 @@ fn test_curl_command() {
             let command;
             let version;
             if pass == 1 {
-                command = "curl -sSf -L bit.ly/enclone_install | sh -s small testx/outputs";
+                command = "curl -sSf -L bit.ly/enclone_install | bash -s small testx/outputs";
                 version = "master";
+            } else if pass == 2 {
+                command = "cat ../install.sh | bash -s small testx/outputs";
+                version = "local";
             } else {
-                command = "cat ../install.sh | sh -s small testx/outputs";
+                command = "cat ../install.sh | bash -s small testx/outputs force_wget";
                 version = "local";
             }
             let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
@@ -290,7 +293,7 @@ fn test_curl_command() {
                 }
                 // Make sure that the all contigs file is not "essentially empty".  This happened.
 
-                if pass == 2 && jf == 1 {
+                if pass >= 2 && jf == 1 {
                     let len = metadata(&format!("testx/outputs/{}", f)).unwrap().len();
                     if len < 10_000_000 {
                         eprintln!(

@@ -3,3 +3,5 @@ for use in the OpenSSL Toolkit (http://www.openssl.org/).
 
 Plain text tree visualization in enclone is based on
 https://gitlab.com/Noughmad/ptree, by Miha Čančula.
+
+The script install.sh reuses code from the rust language installation script.
