@@ -61,6 +61,12 @@ impl ClonotypeChain {
     pub fn cdr3_aa_string(&self) -> String {
         std::str::from_utf8(self.cdr3_aa()).unwrap().to_string()
     }
+    pub fn fwr4_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr4_end.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.cdr3_end as usize..self.fwr4_end.unwrap() as usize].to_vec())
+    }
 }
 
 impl ExactSubClonotypeChain {
@@ -107,5 +113,11 @@ impl ExactSubClonotypeChain {
     }
     pub fn cdr3_aa_string(&self) -> String {
         std::str::from_utf8(self.cdr3_aa()).unwrap().to_string()
+    }
+    pub fn fwr4_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr4_end.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.cdr3_end as usize..self.fwr4_end.unwrap() as usize].to_vec())
     }
 }
