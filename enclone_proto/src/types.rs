@@ -17,11 +17,23 @@ impl From<&bio::alignment::Alignment> for Alignment {
 }
 
 impl ClonotypeChain {
+    pub fn fwr1_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
+    }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
             return None;
         }
         Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
+    pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize].to_vec())
     }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
@@ -40,11 +52,23 @@ impl ClonotypeChain {
 }
 
 impl ExactSubClonotypeChain {
+    pub fn fwr1_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
+    }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
             return None;
         }
         Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
+    pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
+        if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize].to_vec())
     }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
