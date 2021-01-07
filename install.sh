@@ -18,11 +18,15 @@
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-# Get command line arguments.  The second argument is for testing.
+# Get command line arguments.  The second and third arguments are for testing.
+# The third argument can be force_wget.
 
 size=$1
 if ! [ -z "$2" ]; then
     HOME=$2
+fi
+if ! [ -z "$3" ]; then
+    MODE=$3
 fi
 
 #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -51,7 +55,7 @@ main() {
     need_cmd grep
     local _have_curl
     _have_curl=false
-    if check_cmd curl; then
+    if check_cmd curl && $MODE != force_wget; then
         _have_curl=true
     fi
     if ! $_have_curl && ! check_cmd wget; then
@@ -104,7 +108,7 @@ main() {
     _datasets_large_current=false
     raw_repo=https://raw.githubusercontent.com/10XGenomics/enclone
     if [ "$size" = small ]; then
-        if $_have_curl; then
+        if $_have_curl && MODE != force_wget ; then
             _datasets_small_checksum_master=$(curl -s $raw_repo/master/datasets_small_checksum)
         else
             _datasets_small_checksum_master=$(wget -q $raw_repo/master/datasets_small_checksum -O -)
