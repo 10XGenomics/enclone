@@ -24,10 +24,18 @@ impl ClonotypeChain {
         Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
     }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
-        if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
+        if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
         }
         Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
+    pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
+        if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
+            return None;
+        }
+        let start = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        let end = (self.fwr2_start.unwrap() as usize - self.v_start as usize) / 3;
+        Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
     pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
@@ -101,10 +109,18 @@ impl ExactSubClonotypeChain {
         Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
     }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
-        if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
+        if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
         }
         Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
+    pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
+        if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
+            return None;
+        }
+        let start = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        let end = (self.fwr2_start.unwrap() as usize - self.v_start as usize) / 3;
+        Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
     pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
