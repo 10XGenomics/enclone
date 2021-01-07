@@ -17,6 +17,12 @@ impl From<&bio::alignment::Alignment> for Alignment {
 }
 
 impl ClonotypeChain {
+    pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
+        if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
     }
@@ -34,6 +40,12 @@ impl ClonotypeChain {
 }
 
 impl ExactSubClonotypeChain {
+    pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
+        if self.cdr1_start.is_none() || self.fwr1_start.is_none() {
+            return None;
+        }
+        Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+    }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
     }
