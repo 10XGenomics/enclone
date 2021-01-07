@@ -114,9 +114,8 @@ fn hex_coord(n: usize, r: f64) -> (f64, f64) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Pack circles of given radii.  There is probably a literature on this, and this is probably
-// a very crappy algorithm.  The answer is certainly not optimal.  The run time is O(n^2) where
-// the constant includes a factor of 10^5.  Return centers for the circles.
+// Pack circles of given radii, which should be in descending order.  Return centers for the
+// circles.  There is probably a literature on this, and this is probably a very crappy algorithm.
 
 fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     let mut c = Vec::<(f64, f64)>::new();
