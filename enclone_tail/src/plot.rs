@@ -9,6 +9,7 @@ use crate::string_width::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
+use rayon::prelude::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
@@ -172,13 +173,14 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
     // (ideally) to increase symmetry.
     const SAMPLE: usize = 100000;
     const MUL: f64 = 1.5;
+    let mut centers = vec![(0.0, 0.0); SAMPLE];
     for i in 1..r.len() {
         let mut found = false;
         let mut best_r1 = 0.0;
         let mut best_r2 = 0.0;
         let mut best_val = 0.0;
         loop {
-            for _ in 0..SAMPLE {
+            for z in 0..SAMPLE {
                 // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
                 // generator (from the internet) for speed and reproducibility, although there
                 // might be something better in the standard packages.
@@ -197,6 +199,16 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
 
                 r1 *= (bigr + r[i]) * MUL;
                 r2 *= (bigr + r[i]) * MUL;
+                centers[z] = (r1, r2);
+            }
+            let mut results = Vec::<(usize, f64, f64, bool)>::new();
+            for z in 0..SAMPLE {
+                results.push((z, 0.0, 0.0, false));
+            }
+            results.par_iter_mut().for_each(|res| {
+                let z = res.0;
+                let r1 = centers[z].0;
+                let r2 = centers[z].1;
 
                 // See if circle at (r1,r2) overlaps any of the existing circles.
                 // This involves a binary search, which reduces the complexity of the algorithm.
@@ -229,6 +241,15 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                     }
                 }
                 if ok {
+                    res.1 = r1;
+                    res.2 = r2;
+                    res.3 = true;
+                }
+            });
+            for z in 0..SAMPLE {
+                if results[z].3 {
+                    let r1 = results[z].1;
+                    let r2 = results[z].2;
                     let val = r1 * r1 + r2 * r2;
                     if !found || val < best_val {
                         best_r1 = r1;
