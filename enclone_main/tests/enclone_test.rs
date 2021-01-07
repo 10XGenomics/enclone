@@ -256,13 +256,13 @@ fn test_curl_command() {
             let command;
             let version;
             if pass == 1 {
-                command = "curl -sSf -L bit.ly/enclone_install | sh -s small testx/outputs";
+                command = "curl -sSf -L bit.ly/enclone_install | bash -s small testx/outputs";
                 version = "master";
             } else if pass == 2 {
-                command = "cat ../install.sh | sh -s small testx/outputs";
+                command = "cat ../install.sh | bash -s small testx/outputs";
                 version = "local";
             } else {
-                command = "cat ../install.sh | sh -s small testx/outputs force_wget";
+                command = "cat ../install.sh | bash -s small testx/outputs force_wget";
                 version = "local";
             }
             let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
