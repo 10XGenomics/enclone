@@ -23,6 +23,14 @@ impl ClonotypeChain {
         }
         Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
     }
+    pub fn fwr1_aa(&self) -> Option<Vec<u8>> {
+        if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
+            return None;
+        }
+        let start = (self.fwr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        let end = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
@@ -115,6 +123,14 @@ impl ExactSubClonotypeChain {
             return None;
         }
         Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
+    }
+    pub fn fwr1_aa(&self) -> Option<Vec<u8>> {
+        if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
+            return None;
+        }
+        let start = (self.fwr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        let end = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
+        Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
