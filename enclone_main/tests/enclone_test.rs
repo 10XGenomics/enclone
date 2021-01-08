@@ -1310,6 +1310,7 @@ fn test_enclone_examples() {
                 t + 1,
                 strme(&new.stderr),
             );
+            eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
             std::process::exit(1);
         }
         if old != new2 {
