@@ -43,6 +43,9 @@ impl ClonotypeChain {
                 .to_vec(),
         )
     }
+    pub fn cdr1_nt_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr1_nt().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
@@ -164,6 +167,9 @@ impl ExactSubClonotypeChain {
             self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize]
                 .to_vec(),
         )
+    }
+    pub fn cdr1_nt_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr1_nt().as_deref().unwrap().to_vec()).ok()
     }
     pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
