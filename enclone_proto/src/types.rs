@@ -21,7 +21,10 @@ impl ClonotypeChain {
         if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn fwr1_aa(&self) -> Option<Vec<u8>> {
         if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
@@ -35,7 +38,10 @@ impl ClonotypeChain {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
@@ -49,7 +55,10 @@ impl ClonotypeChain {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn fwr2_aa(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
@@ -63,7 +72,10 @@ impl ClonotypeChain {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.cdr2_start.unwrap() as usize..self.fwr3_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.cdr2_start.unwrap() as usize..self.fwr3_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn cdr2_aa(&self) -> Option<Vec<u8>> {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
@@ -106,6 +118,9 @@ impl ClonotypeChain {
             return None;
         }
         Some(self.nt_sequence[self.cdr3_end as usize..self.fwr4_end.unwrap() as usize].to_vec())
+    }
+    pub fn fwr4_nt_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr4_nt().as_deref().unwrap().to_vec()).ok()
     }
     pub fn fwr4_aa(&self) -> Option<Vec<u8>> {
         if self.fwr4_end.is_none() {
@@ -122,7 +137,10 @@ impl ExactSubClonotypeChain {
         if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.fwr1_start.unwrap() as usize..self.cdr1_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn fwr1_aa(&self) -> Option<Vec<u8>> {
         if self.fwr1_start.is_none() || self.cdr1_start.is_none() {
@@ -136,7 +154,10 @@ impl ExactSubClonotypeChain {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.cdr1_start.unwrap() as usize..self.fwr2_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn cdr1_aa(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
@@ -150,7 +171,10 @@ impl ExactSubClonotypeChain {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.fwr2_start.unwrap() as usize..self.cdr2_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn fwr2_aa(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
@@ -164,7 +188,10 @@ impl ExactSubClonotypeChain {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
             return None;
         }
-        Some(self.nt_sequence[self.cdr2_start.unwrap() as usize..self.fwr3_start.unwrap() as usize].to_vec())
+        Some(
+            self.nt_sequence[self.cdr2_start.unwrap() as usize..self.fwr3_start.unwrap() as usize]
+                .to_vec(),
+        )
     }
     pub fn cdr2_aa(&self) -> Option<Vec<u8>> {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
@@ -207,6 +234,9 @@ impl ExactSubClonotypeChain {
             return None;
         }
         Some(self.nt_sequence[self.cdr3_end as usize..self.fwr4_end.unwrap() as usize].to_vec())
+    }
+    pub fn fwr4_nt_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr4_nt().as_deref().unwrap().to_vec()).ok()
     }
     pub fn fwr4_aa(&self) -> Option<Vec<u8>> {
         if self.fwr4_end.is_none() {
