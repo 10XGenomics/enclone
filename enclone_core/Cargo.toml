@@ -19,7 +19,7 @@ publish = false
 amino = "0.1.3"
 ansi_escape = "0.1.0"
 bio = ">=0.31, <=0.32"
-bytes = "0.5.5"
+bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 evalexpr = "5.0.5"
 hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
