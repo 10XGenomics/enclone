@@ -37,6 +37,9 @@ impl ClonotypeChain {
         let end = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn fwr1_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr1_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
@@ -56,6 +59,9 @@ impl ClonotypeChain {
         let start = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
         let end = (self.fwr2_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn cdr1_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr1_aa().as_deref().unwrap().to_vec()).ok()
     }
     pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
@@ -77,6 +83,9 @@ impl ClonotypeChain {
         let end = (self.cdr2_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn fwr2_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr2_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn cdr2_nt(&self) -> Option<Vec<u8>> {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
             return None;
@@ -97,6 +106,9 @@ impl ClonotypeChain {
         let end = (self.fwr3_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn cdr2_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr2_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn fwr3_nt(&self) -> Option<Vec<u8>> {
         if self.fwr3_start.is_none() {
             return None;
@@ -113,6 +125,9 @@ impl ClonotypeChain {
         let start = (self.fwr3_start.unwrap() as usize - self.v_start as usize) / 3;
         let end = (self.cdr3_start - self.v_start) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn fwr3_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr3_aa().as_deref().unwrap().to_vec()).ok()
     }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
@@ -144,6 +159,9 @@ impl ClonotypeChain {
         let start = (self.cdr3_end as usize - self.v_start as usize) / 3;
         let end = (self.fwr4_end.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn fwr4_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr4_aa().as_deref().unwrap().to_vec()).ok()
     }
 }
 
@@ -168,6 +186,9 @@ impl ExactSubClonotypeChain {
         let end = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn fwr1_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr1_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn cdr1_nt(&self) -> Option<Vec<u8>> {
         if self.cdr1_start.is_none() || self.fwr2_start.is_none() {
             return None;
@@ -187,6 +208,9 @@ impl ExactSubClonotypeChain {
         let start = (self.cdr1_start.unwrap() as usize - self.v_start as usize) / 3;
         let end = (self.fwr2_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn cdr1_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr1_aa().as_deref().unwrap().to_vec()).ok()
     }
     pub fn fwr2_nt(&self) -> Option<Vec<u8>> {
         if self.fwr2_start.is_none() || self.cdr2_start.is_none() {
@@ -208,6 +232,9 @@ impl ExactSubClonotypeChain {
         let end = (self.cdr2_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn fwr2_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr2_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn cdr2_nt(&self) -> Option<Vec<u8>> {
         if self.cdr2_start.is_none() || self.fwr3_start.is_none() {
             return None;
@@ -228,6 +255,9 @@ impl ExactSubClonotypeChain {
         let end = (self.fwr3_start.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
     }
+    pub fn cdr2_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.cdr2_aa().as_deref().unwrap().to_vec()).ok()
+    }
     pub fn fwr3_nt(&self) -> Option<Vec<u8>> {
         if self.fwr3_start.is_none() {
             return None;
@@ -244,6 +274,9 @@ impl ExactSubClonotypeChain {
         let start = (self.fwr3_start.unwrap() as usize - self.v_start as usize) / 3;
         let end = (self.cdr3_start - self.v_start) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn fwr3_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr3_aa().as_deref().unwrap().to_vec()).ok()
     }
     pub fn cdr3_nt(&self) -> &[u8] {
         &self.nt_sequence[self.cdr3_start as usize..self.cdr3_end as usize]
@@ -275,5 +308,8 @@ impl ExactSubClonotypeChain {
         let start = (self.cdr3_end as usize - self.v_start as usize) / 3;
         let end = (self.fwr4_end.unwrap() as usize - self.v_start as usize) / 3;
         Some(self.aa_sequence[start as usize..end as usize].to_vec())
+    }
+    pub fn fwr4_aa_string(&self) -> Option<String> {
+        String::from_utf8(self.fwr4_aa().as_deref().unwrap().to_vec()).ok()
     }
 }
