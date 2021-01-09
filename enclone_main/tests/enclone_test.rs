@@ -890,12 +890,12 @@ fn test_for_broken_links_and_spellcheck() {
         bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
-        fixedtextbox foursie foursies frameshifted frameshifts fwr \
+        fixedtextbox foursie foursies frameshifted frameshifts fwr ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
         moresies multiomic nall ncbi ncross ndoublet newick nimproper \
-        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phylip \
+        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phad phylip \
         plasmablast preinstalled prepends pwm pwms redownloads samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb twosie ubuntu \
@@ -1310,6 +1310,7 @@ fn test_enclone_examples() {
                 t + 1,
                 strme(&new.stderr),
             );
+            eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
             std::process::exit(1);
         }
         if old != new2 {

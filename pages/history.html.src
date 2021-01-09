@@ -31,11 +31,18 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>1/9/21</b>: Following a suggestion of Ganesh Phad, single-cell clonotypes in honeycomb
+plots are now localized by color.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>1/7/21</b>: 
 <ul>
 <li>Greatly speed up honeycomb plots for large numbers of clonotypes.</li>
-<li>Change the installation command to use `bash` rather than `sh` to avoid failures resulting
-from `sh` being instantiated as a different shell.</li>
+<li>Change the installation command to use <code>bash</code> rather than <code>sh</code> to avoid 
+failures resulting from <code>sh</code> being instantiated as a different shell.</li>
 </ul>
 </p>
 
