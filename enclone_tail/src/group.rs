@@ -1447,18 +1447,6 @@ pub fn group_and_print_clonotypes(
             fwriteln!(logx, "   • read pairs per cell = {}", rpc);
         }
 
-        // Print computational performance stats.
-
-        if !ctl.gen_opt.summary_clean {
-            fwriteln!(
-                logx,
-                "   • total elapsed time = {:.1} seconds",
-                elapsed(&tall)
-            );
-            #[cfg(not(target_os = "macos"))]
-            fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
-        }
-
         // Compute marking stats.
 
         let (mut nmarked, mut nmarked_good, mut ndubious) = (0, 0, 0);
@@ -1552,6 +1540,18 @@ pub fn group_and_print_clonotypes(
                     nfake_marked -= 1;
                 }
             }
+        }
+
+        // Print computational performance stats.
+
+        if !ctl.gen_opt.summary_clean {
+            fwriteln!(
+                logx,
+                "   • total elapsed time = {:.1} seconds",
+                elapsed(&tall)
+            );
+            #[cfg(not(target_os = "macos"))]
+            fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
 
         // Print barcode fate.
