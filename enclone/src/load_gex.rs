@@ -515,8 +515,10 @@ pub fn get_gex_info(mut ctl: &mut EncloneControl) -> GexInfo {
     if ctl.gen_opt.h5 {
         let gex_outs = &ctl.origin_info.gex_path;
         for i in 0..ctl.origin_info.dataset_path.len() {
-            let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
-            if gex_outs[i].len() > 0 && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) {
+            // let bin_file = format!("{}/feature_barcode_matrix.bin", gex_outs[i]);
+            if gex_outs[i].len() > 0
+            /* && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) */
+            {
                 let mut f = format!("{}/raw_feature_bc_matrix.h5", gex_outs[i]);
                 if !path_exists(&f) {
                     f = format!("{}/raw_gene_bc_matrices_h5.h5", gex_outs[i]);
