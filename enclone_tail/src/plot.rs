@@ -7,12 +7,8 @@
 
 use crate::string_width::*;
 use ansi_escape::*;
-use core::f64::consts::PI;
 use enclone_core::defs::*;
 use io_utils::*;
-use rand::prelude::SliceRandom;
-use rand::rngs::StdRng;
-use rand::SeedableRng;
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::Write;
@@ -538,11 +534,6 @@ pub fn plot_clonotypes(
     // Try to reorganize constant-color clusters so that like-colored clusters are proximate,
     // We got this idea from Ganesh Phad, who showed us a picture!
 
-    let mut mr = 0.0_f64;
-    for i in 0..centers.len() {
-        let z = radii[i] + (centers[i].0 * centers[i].0 + centers[i].1 * centers[i].1).sqrt();
-        mr = mr.max(z);
-    }
     let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
     let mut cs = Vec::<String>::new(); // colors that appear
     for i in 0..clusters.len() {
@@ -559,41 +550,20 @@ pub fn plot_clonotypes(
     make_freq(&cs, &mut freqs);
     unique_sort(&mut cs);
     reverse_sort(&mut freqs);
-    let n = freqs.len(); // number of colors appearing in constant-color clusters
-    let mut pin = vec![(0.0, 0.0); n]; // attraction points for each color
-    let mut cfrac = 0.0;
-    for p in 0..n {
-        let frac = freqs[p].0 as f64 / ccc.len() as f64;
-        cfrac += frac;
-        pin[p] = (mr * (2.0 * PI * cfrac).sin(), mr * (2.0 * PI * cfrac).cos());
-    }
-    let mut locked = vec![false; clusters.len()];
     let mut i = 0;
-    let mut rng = StdRng::seed_from_u64(0);
     while i < ccc.len() {
         let j = next_diff1_3(&ccc, i as i32) as usize;
-        let mut pin_dist = vec![vec![(0.0, 0); j - i]; n];
-        for p in 0..n {
-            for k in i..j {
-                let id = ccc[k].2;
-                let (d1, d2) = (centers[id].0 - pin[p].0, centers[id].1 - pin[p].1);
-                let dist = d1 * d1 + d2 * d2;
-                pin_dist[p][k - i] = (dist, id);
-            }
-            pin_dist[p].sort_by(|a, b| a.partial_cmp(b).unwrap());
-        }
-        let mut ptr = vec![0; n];
-        ccc[i..j].shuffle(&mut rng);
+        let mut angle = vec![(0.0, 0); j - i];
         for k in i..j {
-            let p = bin_position(&cs, &ccc[k].1) as usize;
-            while locked[pin_dist[p][ptr[p]].1] {
-                ptr[p] += 1;
-            }
-            let new_id = pin_dist[p][ptr[p]].1;
+            let id = ccc[k].2;
+            angle[k - i] = (centers[id].1.atan2(centers[id].0), id);
+        }
+        angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        for k in i..j {
+            let new_id = angle[k - i].1;
             for u in 0..clusters[new_id].0.len() {
                 clusters[new_id].0[u] = ccc[k].1.clone();
             }
-            locked[new_id] = true;
         }
         i = j;
     }
