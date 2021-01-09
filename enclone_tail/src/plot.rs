@@ -361,6 +361,7 @@ pub fn plot_clonotypes(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    svg: &mut String,
 ) {
     if ctl.gen_opt.plot_file.is_empty() {
         return;
@@ -586,7 +587,7 @@ pub fn plot_clonotypes(
     for i in 0..center.len() {
         center[i].1 = -center[i].1; // otherwise inverted, not sure why
     }
-    let mut svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+    *svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
 
     // Add legend.
 
@@ -674,8 +675,8 @@ pub fn plot_clonotypes(
         let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
         let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
-        svg = svg.rev_before("<").to_string();
-        svg += &format!(
+        *svg = svg.rev_before("<").to_string();
+        *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
             BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
@@ -684,7 +685,7 @@ pub fn plot_clonotypes(
             let y = legend_ystart as f64
                 + BOUNDARY as f64 * 2.5
                 + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
-            svg += &format!(
+            *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
                 BOUNDARY * 3,
@@ -692,7 +693,7 @@ pub fn plot_clonotypes(
                 FONT_SIZE,
                 labels[i]
             );
-            svg += &format!(
+            *svg += &format!(
                 "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
                 BOUNDARY * 2,
                 y - BOUNDARY as f64 / 2.0,
@@ -702,7 +703,7 @@ pub fn plot_clonotypes(
         }
         let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
         let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
-        svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+        *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
     }
 
     // Output the svg file.
@@ -718,10 +719,5 @@ pub fn plot_clonotypes(
         }
         let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
-    } else {
-        print!("{}", svg);
-        if !ctl.gen_opt.noprint {
-            println!("");
-        }
     }
 }
