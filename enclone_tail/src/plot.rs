@@ -531,25 +531,19 @@ pub fn plot_clonotypes(
     }
     let centers = pack_circles(&radii);
 
-    // Try to reorganize constant-color clusters so that like-colored clusters are proximate,
-    // We got this idea from Ganesh Phad, who showed us a picture!
+    // Reorganize constant-color clusters so that like-colored clusters are proximate,
+    // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
+    // single-cell clonotypes.
 
     let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-    let mut cs = Vec::<String>::new(); // colors that appear
     for i in 0..clusters.len() {
         let mut c = clusters[i].0.clone();
         unique_sort(&mut c);
         if c.solo() {
             ccc.push((clusters[i].0.len(), c[0].clone(), i));
-            cs.push(c[0].clone());
         }
     }
     ccc.sort();
-    cs.sort();
-    let mut freqs = Vec::<(u32, String)>::new();
-    make_freq(&cs, &mut freqs);
-    unique_sort(&mut cs);
-    reverse_sort(&mut freqs);
     let mut i = 0;
     while i < ccc.len() {
         let j = next_diff1_3(&ccc, i as i32) as usize;
