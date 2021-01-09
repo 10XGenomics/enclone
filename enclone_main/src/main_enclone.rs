@@ -51,7 +51,6 @@ use std::{
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     process::Command,
-    thread, time,
     time::Instant,
 };
 use string_utils::*;
@@ -2350,6 +2349,7 @@ pub fn main_enclone(args: &Vec<String>) {
     for li in 0..ctl.origin_info.n() {
         if ctl.origin_info.gex_path[li].len() > 0 && !gex_info.gex_matrices[li].initialized() {
             let x = gex_info.h5_data[li].as_ref();
+            /*
             if x.is_none() {
                 // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
                 // CAUSING PUSH TO D_READERS BELOW TO FAIL.
@@ -2399,8 +2399,11 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 eprintln!("");
             }
-            d_readers.push(Some(x.unwrap().as_reader()));
-            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            */
+            if x.is_some() {
+                d_readers.push(Some(x.unwrap().as_reader()));
+                ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
+            }
         } else {
             d_readers.push(None);
             ind_readers.push(None);
