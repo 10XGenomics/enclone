@@ -737,6 +737,7 @@ dependencies = [
  "ndarray",
  "perf_stats",
  "pretty_trace",
+ "rand 0.7.3",
  "rayon",
  "serde",
  "serde_derive",
