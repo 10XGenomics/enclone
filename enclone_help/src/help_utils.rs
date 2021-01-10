@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
