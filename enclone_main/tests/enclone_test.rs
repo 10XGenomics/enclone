@@ -280,9 +280,10 @@ fn test_curl_command() {
             // a nonzero exit code.
             if strme(&o.stderr).starts_with("bash:") {
                 eprintln!(
-                    "\nIt would appear that the install script failed, because \
+                    "\nOn pass {}, it would appear that the install script failed, because \
                     \"bash:\" appears in the stderr.\n\
                     Here is stderr:\n\n{}",
+                    pass,
                     strme(&o.stderr)
                 );
                 std::process::exit(1);
