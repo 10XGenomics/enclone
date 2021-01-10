@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10x Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 // This file contains functions that take as input an amino acid reference sequence for a V
 // segment, along with its chain type (IGH, IGK, IGL, TRA or TRB), and attempt to find features in
