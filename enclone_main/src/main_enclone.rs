@@ -2361,7 +2361,10 @@ pub fn main_enclone(args: &Vec<String>) {
                     current.canonicalize().unwrap().display()
                 );
                 if path_exists(&ctl.origin_info.gex_path[li]) {
-                    eprintln!("The directory containing raw_feature_bc_matrix.h5 exists.");
+                    eprintln!(
+                        "The directory that is supposed to contain \
+                        raw_feature_bc_matrix.h5 exists."
+                    );
                     let list = dir_list(&ctl.origin_info.gex_path[li]);
                     eprintln!(
                         "This directory is {} and its contents are:",
@@ -2373,13 +2376,13 @@ pub fn main_enclone(args: &Vec<String>) {
                     let h5_path =
                         format!("{}/raw_feature_bc_matrix.h5", ctl.origin_info.gex_path[li]);
                     eprintln!("H5 path = {}.", h5_path);
-                    if path_exists(&h5_path) {
+                    if !path_exists(&h5_path) {
                         eprintln!("H5 path {} does not exist.", h5_path);
                         eprintln!("Retrying a few times to see if it appears.");
                         for _ in 0..5 {
                             eprintln!("Sleeping for 0.1 seconds.");
                             thread::sleep(time::Duration::from_millis(100));
-                            if path_exists(&h5_path) {
+                            if !path_exists(&h5_path) {
                                 eprintln!("Now h5 path does not exist.");
                             } else {
                                 eprintln!("Now h5 path exists.");

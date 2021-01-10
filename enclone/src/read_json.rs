@@ -295,6 +295,10 @@ fn parse_vector_entry_from_json(
                          versions before 4.0.\n\n\
                          If this is mouse data, please use the argument MOUSE, and that may \
                          solve the problem.\n\n\
+                         If this is human or mouse data, and you are OK with using the current \
+                         built-in reference that\nenclone has, \
+                         you can instead add the argument BUILT_IN to the command line.  This \
+                         forces\nrecomputation of annotations and may be somewhat slower.\n\n\
                          A solution that should always work is to supply\n\
                          REF=vdj_reference_fasta_filename as an argument to enclone.\n",
                         json.rev_before("/"),

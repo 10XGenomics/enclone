@@ -276,6 +276,18 @@ fn test_curl_command() {
                 eprint!("stderr:\n{}", strme(&o.stderr));
                 std::process::exit(1);
             }
+            // The following test is there because a bash script can fail without setting
+            // a nonzero exit code.
+            if strme(&o.stderr).starts_with("bash:") {
+                eprintln!(
+                    "\nOn pass {}, it would appear that the install script failed, because \
+                    \"bash:\" appears in the stderr.\n\
+                    Here is stderr:\n\n{}",
+                    pass,
+                    strme(&o.stderr)
+                );
+                std::process::exit(1);
+            }
             let req = [
                 "bin/enclone",
                 "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
@@ -890,7 +902,7 @@ fn test_for_broken_links_and_spellcheck() {
         bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
-        fixedtextbox foursie foursies frameshifted frameshifts fwr \
+        fixedtextbox foursie foursies frameshifted frameshifts fwr ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
@@ -1310,6 +1322,7 @@ fn test_enclone_examples() {
                 t + 1,
                 strme(&new.stderr),
             );
+            eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
             std::process::exit(1);
         }
         if old != new2 {

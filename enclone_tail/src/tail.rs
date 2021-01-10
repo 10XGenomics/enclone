@@ -38,6 +38,11 @@ pub fn tail_code(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
+    // Plot clonotypes.
+
+    let mut svg = String::new();
+    plot_clonotypes(&ctl, &refdata, &exacts, &exact_clonotypes, &mut svg);
+
     // Group and print clonotypes.
 
     group_and_print_clonotypes(
@@ -229,7 +234,12 @@ pub fn tail_code(
         print!("{}", strme(&log));
     }
 
-    // Plot clonotypes.
+    // Output clonotype plot (if it was generated and directed to stdout).
 
-    plot_clonotypes(&ctl, &refdata, &exacts, &exact_clonotypes);
+    if ctl.gen_opt.plot_file == "stdout".to_string() {
+        print!("{}", svg);
+        if !ctl.gen_opt.noprint {
+            println!("");
+        }
+    }
 }

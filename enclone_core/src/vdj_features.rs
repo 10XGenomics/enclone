@@ -999,7 +999,7 @@ pub fn ig_j_gene(aa: &[u8]) -> Option<(String, usize)> {
                     }
                 }
             }
-            if matchesx > max_matches[ip] {
+            if matchesx >= max_matches[ip] {
                 max_matches[ip] = matchesx;
                 best_pos[ip] = p;
             }
