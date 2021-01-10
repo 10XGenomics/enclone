@@ -57,8 +57,10 @@ main() {
     need_cmd grep
     local _have_curl
     _have_curl=false
-    if check_cmd curl && $MODE != force_wget; then
-        _have_curl=true
+    if check_cmd curl; then
+        if [ "$MODE" != force_wget ]; then
+            _have_curl=true
+        fi
     fi
     if ! $_have_curl && ! check_cmd wget; then
         printf "\nenclone installation failed because neither the command curl nor the\n"
@@ -110,7 +112,7 @@ main() {
     _datasets_large_current=false
     raw_repo=https://raw.githubusercontent.com/10XGenomics/enclone
     if [ "$size" = small ]; then
-        if $_have_curl && MODE != force_wget ; then
+        if [ $_have_curl ] && [ "$MODE" != force_wget ]; then
             _datasets_small_checksum_master=$(curl -s $raw_repo/master/datasets_small_checksum)
         else
             _datasets_small_checksum_master=$(wget -q $raw_repo/master/datasets_small_checksum -O -)

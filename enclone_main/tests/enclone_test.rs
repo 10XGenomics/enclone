@@ -276,6 +276,18 @@ fn test_curl_command() {
                 eprint!("stderr:\n{}", strme(&o.stderr));
                 std::process::exit(1);
             }
+            // The following test is there because a bash script can fail without setting
+            // a nonzero exit code.
+            if strme(&o.stderr).starts_with("bash:") {
+                eprintln!(
+                    "\nOn pass {}, it would appear that the install script failed, because \
+                    \"bash:\" appears in the stderr.\n\
+                    Here is stderr:\n\n{}",
+                    pass,
+                    strme(&o.stderr)
+                );
+                std::process::exit(1);
+            }
             let req = [
                 "bin/enclone",
                 "enclone/datasets/123085/outs/all_contig_annotations.json.lz4",
