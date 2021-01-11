@@ -213,7 +213,7 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "In addition, barcode-level data may be specified using \\bold{BC=...}, whose right \
              side is a list of paths having the same structure as the \\bold{TCR} or \\bold{BCR} \
-             argument.  Each such path must be for a CSV file, which must include the field \
+             argument.  Each such path must be for a CSV or TSV file, which must include the field \
              \\bold{barcode}, may include special fields \\bold{origin}, \\bold{donor}, \
              \\bold{tag} and \\bold{color}, and may also include arbitrary other fields.  The \
              \\bold{origin} and \\bold{donor} fields allow a particular origin and donor to be \

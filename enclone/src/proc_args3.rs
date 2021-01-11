@@ -324,6 +324,15 @@ fn get_path_or_internal_id(
 // Parse barcode-level information file.
 
 fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
+    let delimiter;
+    let file_type;
+    if bc.ends_with(".tsv") {
+        delimiter = '\t';
+        file_type = "TSV";
+    } else {
+        delimiter = ',';
+        file_type = "CSV";
+    }
     let mut origin_for_bc = HashMap::<String, String>::new();
     let mut donor_for_bc = HashMap::<String, String>::new();
     let mut tag = HashMap::<String, String>::new();
@@ -340,25 +349,17 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
         for line in f.lines() {
             let s = line.unwrap();
             if first {
-                let fields = s.split(',').collect::<Vec<&str>>();
+                let fields = s.split(delimiter).collect::<Vec<&str>>();
                 to_alt = vec![-1 as isize; fields.len()];
                 if !fields.contains(&"barcode") {
                     let mut origin = "from the bc field used in META";
                     if call_type == "BC" {
                         origin = "from the BC argument";
                     }
-                    if bc.ends_with(".tsv") {
-                        eprintln!(
-                            "\nThe file\n{}\n{}\nappears to be a TSV file rather than a \
-                            CSV file, as required.\n",
-                            bc, origin,
-                        );
-                    } else {
-                        eprintln!(
-                            "\nThe file\n{}\n{}\nis missing the barcode field.\n",
-                            bc, origin,
-                        );
-                    }
+                    eprintln!(
+                        "\nThe file\n{}\n{}\nis missing the barcode field.\n",
+                        bc, origin,
+                    );
                     std::process::exit(1);
                 }
                 for x in fields.iter() {
@@ -383,17 +384,18 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
                 }
                 first = false;
             } else {
-                let fields = s.split(',').collect::<Vec<&str>>();
+                let fields = s.split(delimiter).collect::<Vec<&str>>();
                 if fields.len() != fieldnames.len() {
                     let mut origin = "bc in META";
                     if call_type == "BC" {
                         origin = "BC";
                     }
                     eprintln!(
-                        "\nThere is a line\n{}\nin a CSV file defined by {}\n\
+                        "\nThere is a line\n{}\nin a {} file defined by {}\n\
                          that has {} fields, which isn't right, because the header line \
                          has {} fields.  This is for the file\n{}.\n",
                         s,
+                        file_type,
                         origin,
                         fields.len(),
                         fieldnames.len(),

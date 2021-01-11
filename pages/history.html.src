@@ -31,6 +31,13 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>1/13/21</b>: The <code>BC</code> argument now may be either a <code>CSV</code> or 
+<code>TSV</code> file.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>1/9/21</b>: Following a suggestion of Ganesh Phad, single-cell clonotypes in honeycomb
 plots are now localized by color.
 </p>

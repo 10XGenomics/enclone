@@ -57,8 +57,8 @@ pub const TESTS: [&str; 174] = [
     // 12. test colon lvar in KEEP_CLONO_IF_CELL_MEAN= and test for parsing error at +
     r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ KEEP_CLONO_IF_CELL_MEAN="n + g37 >= 5.5"
         MIN_CHAINS=2 NH5"###,
-    // 13. DUPLICATE; TO REPLACE WITH A NEW TEST.
-    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 13. check TSV file with BC
+    r###"BCR=123085 BC=testx/inputs/123077_cells.tsv PER_CELL LVARSP=T CDR3=CARGYEDFTMKYGMDVW"###,
     // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
