@@ -30,11 +30,11 @@ package enclone.types;
 
 // Various regions within a VDJ transcript
 enum Region {
-  U = 0; // 5' untranslated region
-  V = 1; // Variable region
-  D = 2; // Diversity region
-  J = 3; // Joining region
-  C = 4; // Constant region
+  U = 0;  // 5' untranslated region
+  V = 1;  // Variable region
+  D = 2;  // Diversity region
+  J = 3;  // Joining region
+  C = 4;  // Constant region
 }
 
 // Evidence that a given cell is iNKT or MAIT.   Each ExactSubclonotype has one
@@ -74,8 +74,9 @@ message ExactSubClonotypeChain {
   // Index of the start of the CDR3 sequence in the `nt_sequence`. The start of
   // the CDR3 amino acid in the `aa_sequence` is `(cdr3_start - v_start)/3`.
   required uint32 cdr3_start = 6;
-  // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive). The
-  // end of the CDR3 amino acid in the `aa_sequence` is `(cdr3_end - v_start)/3`.
+  // Index of the end of the CDR3 sequence in the `nt_sequence` (exclusive).
+  // The end of the CDR3 amino acid in the `aa_sequence` is
+  // `(cdr3_end - v_start)/3`.
   required uint32 cdr3_end = 7;
   // UMI counts of contigs associated with this exact subclonotype chain. The
   // number of elements in this vector is equal to the number of barcodes
@@ -103,17 +104,17 @@ message ExactSubClonotypeChain {
   // concatenated universal reference of this chain (defined elsewhere in this
   // file).
   required Alignment universal_reference_aln = 13;
-  // Index of the start of the FWR1 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR1 sequence in the `nt_sequence`.
   optional uint32 fwr1_start = 14;
-  // Index of the start of the CDR1 sequence in the `nt_sequence`. 
+  // Index of the start of the CDR1 sequence in the `nt_sequence`.
   optional uint32 cdr1_start = 15;
-  // Index of the start of the FWR2 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR2 sequence in the `nt_sequence`.
   optional uint32 fwr2_start = 16;
-  // Index of the start of the CDR2 sequence in the `nt_sequence`. 
+  // Index of the start of the CDR2 sequence in the `nt_sequence`.
   optional uint32 cdr2_start = 17;
-  // Index of the start of the FWR3 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR3 sequence in the `nt_sequence`.
   optional uint32 fwr3_start = 18;
-  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
+  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive).
   optional uint32 fwr4_end = 19;
 }
 
@@ -236,17 +237,17 @@ message ClonotypeChain {
   required bytes aa_sequence_universal = 23;
   // AA sequence of the concatenated donor reference starting from the V regions
   required bytes aa_sequence_donor = 24;
-  // Index of the start of the FWR1 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR1 sequence in the `nt_sequence`.
   optional uint32 fwr1_start = 25;
-  // Index of the start of the CDR1 sequence in the `nt_sequence`. 
+  // Index of the start of the CDR1 sequence in the `nt_sequence`.
   optional uint32 cdr1_start = 26;
-  // Index of the start of the FWR2 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR2 sequence in the `nt_sequence`.
   optional uint32 fwr2_start = 27;
-  // Index of the start of the CDR2 sequence in the `nt_sequence`. 
+  // Index of the start of the CDR2 sequence in the `nt_sequence`.
   optional uint32 cdr2_start = 28;
-  // Index of the start of the FWR3 sequence in the `nt_sequence`. 
+  // Index of the start of the FWR3 sequence in the `nt_sequence`.
   optional uint32 fwr3_start = 29;
-  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive). 
+  // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive).
   optional uint32 fwr4_end = 30;
 }
 
