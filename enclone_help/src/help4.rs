@@ -144,7 +144,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "enclone merges certain onesie clonotypes into clonotypes having two or more chains.  \
             By default, this merger is prevented if the number of cells in the onesie is less \
             than 0.01% of the total number of cells.  NMERGE_ONESIES causes these merges to \
-            happen anyway.",
+            happen anyway.  The naming of this option is confusing.",
             55,
         );
 
