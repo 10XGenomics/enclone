@@ -687,6 +687,9 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             if path_exists(&format!("{}/count", pg)) {
                 *pg = format!("{}/count", pg);
             }
+            if path_exists(&format!("{}/count_pd", pg)) {
+                *pg = format!("{}/count_pd", pg);
+            }
         }
     });
     for i in 0..results.len() {
@@ -820,6 +823,9 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
                 gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &mut current_ref);
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
+                }
+                if path_exists(&format!("{}/count_pd", gpath)) {
+                    gpath = format!("{}/count_pd", gpath);
                 }
             }
             if current_ref {
