@@ -444,7 +444,7 @@ pub const TESTS: [&str; 174] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 22] = [
+pub const EXTENDED_TESTS: [&str; 23] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -500,6 +500,8 @@ pub const EXTENDED_TESTS: [&str; 22] = [
         NO_PRE NFORCE"###,
     // 22. clonotype that was two clonotypes before raising MAX_DIFFS to 60
     r###"BCR=1084461-1084462 CDR3=CAKEFGNGGFDTFDIW NO_PRE NFORCE"###,
+    // 23. test BCR_GEX and GD_BC
+    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
 ];
 
 // Tests of internal features.
