@@ -93,6 +93,7 @@ pub fn finish_join(
     // Merge onesies where totally unambiguous.  Possibly inefficient and should optimize.
 
     if ctl.join_alg_opt.merge_onesies {
+        // always true
         let mut ncells_total = 0;
         for i in 0..exact_clonotypes.len() {
             ncells_total += exact_clonotypes[i].ncells();
