@@ -39,6 +39,11 @@ The <code>BC</code> argument now may be either a <code>CSV</code> or <code>TSV</
 <li>
 Automatically find <code>multi/vdj_b</code> and <code>multi/vdj_t</code> subdirectories of outs.
 </li>
+<li>
+Allow <code>BCR_GEX=pcode> as a shorthand for <code>BCR=p</code> and <code>GEX=p</code>, which
+simplifies syntax when a <code>cellranger</code> multi run is used as input; ditto for
+<code>TCR_GEX</code>.
+</li>
 </ul>
 </p>
 

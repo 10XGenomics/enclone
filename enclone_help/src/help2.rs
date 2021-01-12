@@ -208,7 +208,9 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
             "Matching gene expression and/or feature barcode data may also be supplied using \
              an argument \\bold{GEX=...}, whose right side must have the exact same structure \
              as the \\bold{TCR} or \\bold{BCR} argument.  Specification of both \
-             \\bold{TCR} and \\bold{BCR} is not allowed.\n\n",
+             \\bold{TCR} and \\bold{BCR} is not allowed.  If both BCR and GEX data are in the \
+             same directory (from a multi run), and single argument \\bold{BCR_GEX=...} may be \
+             used, and similarly one may use \\bold{TCR_GEX}.\n\n",
         );
         h.print(
             "In addition, barcode-level data may be specified using \\bold{BC=...}, whose right \

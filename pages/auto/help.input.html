@@ -108,7 +108,8 @@ Examples:
 
 Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
 whose right side must have the exact same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Specification of
-both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.
+both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.  If both BCR and GEX data are in the same directory (from a multi
+run), and single argument <span style="font-weight:bold;">BCR_GEX=...</span> may be used, and similarly one may use <span style="font-weight:bold;">TCR_GEX</span>.
 
 In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
 having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV or TSV
