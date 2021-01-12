@@ -218,12 +218,7 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     pp
 }
 
-fn get_path_or_internal_id(
-    p: &str,
-    ctl: &EncloneControl,
-    source: &str,
-    _current_ref: &mut bool,
-) -> String {
+fn get_path_or_internal_id(p: &str, ctl: &EncloneControl, source: &str) -> String {
     let mut ok = false;
     let mut pp = get_path(&p, &ctl, &mut ok);
     if !ok {
@@ -234,9 +229,13 @@ fn get_path_or_internal_id(
             // just type an internal numerical id for a dataset and have it always
             // work.  The code that's used here should be placed somewhere else.
 
-            if p.parse::<usize>().is_ok() {
+            let mut q = p.to_string();
+            if q.contains('/') {
+                q = q.before("/").to_string();
+            }
+            if q.parse::<usize>().is_ok() {
                 // do not use xena.txgmesh.net, does not work from inside enclone
-                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", p);
+                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
                 let o = Command::new("curl")
                     .arg(url.clone())
                     .output()
@@ -249,7 +248,7 @@ fn get_path_or_internal_id(
                         \nhttp://xena.fuzzplex.com/api/analyses/{}\n\
                         failed with the following stderr:\n{}\n\
                         and the following stdout:\n{}\n",
-                        p, merr, m
+                        q, merr, m
                     );
                     std::process::exit(1);
                 }
@@ -259,13 +258,17 @@ fn get_path_or_internal_id(
                         "\nWell this is sad.  The URL \
                         http://xena.fuzzplex.com/api/analyses/{} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
-                        p
+                        q
                     );
                     std::process::exit(1);
                 }
                 if m.contains("\"path\":\"") {
                     let path = m.between("\"path\":\"", "\"").to_string();
-                    pp = format!("{}/outs", path);
+                    if !p.contains('/') {
+                        pp = format!("{}/outs", path);
+                    } else {
+                        pp = format!("{}/{}", path, p.after("/"));
+                    }
                     if !path_exists(&pp) {
                         thread::sleep(time::Duration::from_millis(100));
                         if path_exists(&pp) {
@@ -339,7 +342,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
     if bc != "".to_string() {
-        bc = get_path_fail(&bc, &ctl, call_type);
+        bc = get_path_or_internal_id(&bc, &ctl, call_type);
         let f = open_for_read![&bc];
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -668,8 +671,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
-        let mut current_ref = &mut res.2;
-        *p = get_path_or_internal_id(&p, &ctl, source, &mut current_ref);
+        *p = get_path_or_internal_id(&p, &ctl, source);
         if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
             *p = format!("{}/vdj_b", p);
         }
@@ -683,7 +685,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             *p = format!("{}/multi/vdj_t", p);
         }
         if have_gex {
-            *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &mut current_ref);
+            *pg = get_path_or_internal_id(&pg, &ctl, "GEX");
             if path_exists(&format!("{}/count", pg)) {
                 *pg = format!("{}/count", pg);
             }
@@ -805,8 +807,8 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
             // Parse bc and finish up.
 
             parse_bc(bc.clone(), &mut ctl, "META");
-            let mut current_ref = false;
-            path = get_path_or_internal_id(&path, &ctl, "META", &mut current_ref);
+            let current_ref = false;
+            path = get_path_or_internal_id(&path, &ctl, "META");
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
@@ -820,7 +822,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
                 path = format!("{}/multi/vdj_t", path);
             }
             if gpath.len() > 0 {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &mut current_ref);
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
                 }
