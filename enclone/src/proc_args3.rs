@@ -673,8 +673,14 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
             *p = format!("{}/vdj_b", p);
         }
+        if ctl.gen_opt.bcr && path_exists(&format!("{}/multi/vdj_b", p)) {
+            *p = format!("{}/multi/vdj_b", p);
+        }
         if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", p)) {
             *p = format!("{}/vdj_t", p);
+        }
+        if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", p)) {
+            *p = format!("{}/multi/vdj_t", p);
         }
         if have_gex {
             *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &mut current_ref);
@@ -801,8 +807,14 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
+            if ctl.gen_opt.bcr && path_exists(&format!("{}/multi/vdj_b", path)) {
+                path = format!("{}/multi/vdj_b", path);
+            }
             if ctl.gen_opt.tcr && path_exists(&format!("{}/vdj_t", path)) {
                 path = format!("{}/vdj_t", path);
+            }
+            if ctl.gen_opt.tcr && path_exists(&format!("{}/multi/vdj_t", path)) {
+                path = format!("{}/multi/vdj_t", path);
             }
             if gpath.len() > 0 {
                 gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &mut current_ref);

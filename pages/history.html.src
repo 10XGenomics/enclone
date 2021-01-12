@@ -31,8 +31,15 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>1/13/21</b>: The <code>BC</code> argument now may be either a <code>CSV</code> or 
-<code>TSV</code> file.
+<b>1/13/21</b>: 
+<ul>
+<li>
+The <code>BC</code> argument now may be either a <code>CSV</code> or <code>TSV</code> file.
+</li>
+<li>
+Automatically find <code>multi/vdj_b</code> and <code>multi/vdj_t</code> subdirectories of outs.
+</li>
+</ul>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
