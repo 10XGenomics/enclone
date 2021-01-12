@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // The purpose of this file is the function plot_clonotypes.  It plots clonotypes as partial
 // hexagonal closest packings.  This is visually kind of satisfying, but also a bit weird looking.

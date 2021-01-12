@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Get counts for secreted and membrane proteins.
 //

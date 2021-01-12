@@ -23,8 +23,7 @@ padding: 8px; font-size: 110%">
 #enclone (beta) is provided as a tool for use by the community to accelerate immunology research.  
 #enclone is only supported via
 <a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.
-The clonotype assignment algorithm that is part of #enclone will be integrated into a future 
-release of Cell Ranger.
+The clonotype assignment algorithm that is part of #enclone is integrated into Cell Ranger.
 </p>
 
 <p>#enclone has been designed for immunologists but anyone can download and experiment with it.</p>
@@ -617,10 +616,11 @@ for all genes, and a particular gene:</p>
 to the previous command.  The <code>GEX</code> part points to the directory containing gene 
 expression data.  The <code>LVARSP</code> part defines the additional columns 
 to be displayed.</p>
-<p>Other types of data can be brought in via Feature Barcoding.  For example, the response to
-multiple antigens can be measured using 
-<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
-and these data can be displayed as additional columns.</p>
+<p>Other types of data can be brought in via Feature Barcoding / Feature Barcode Technology.
+For example, the response to multiple antigens can be measured using approaches such as those
+mentioned in the <a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
+and <a href="https://www.researchsquare.com/article/rs-80476/v1" rel="nofollow">Wilson/Stamper/Dugan et al.</a>
+papers. These data can be displayed as additional columns.</p>
 <hr>
 
 <p><a name="honeycomb" style="display:block; position:relative; top:-20px;"></a></p>
@@ -666,8 +666,8 @@ a vaccine does not currently exist; different approaches may be employed in purs
 approach is to <b>identify patient and survivor B cell clonotypes that expand in response to the infectious
 disease.</b> These define antibodies that can be used to design passive or active vaccines.</p>
 <p>Additional power is added by mapping antigen specificity to multiple antigens directly via Feature 
-Barcoding (<a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>). These data
-are easy to display in #enclone.  Candidates can be selected directly for vaccine or therapeutic 
+Barcode Technology (one example of this is the <a href="https://www.ncbi.nlm.nih.gov/pubmed/31787378" rel="nofollow">LIBRA-seq</a>
+publication). These data are easy to display in #enclone.  Candidates can be selected directly for vaccine or therapeutic 
 development by picking large clonotypes with high antigen counts and single or multiple antigen specificities.</p>
 <p>We are actively working on further functionality that will make this process even more effective.</p> 
 <p>See <a href="pages/auto/tree.html">this vignette</a> to learn how to generate phylogenetic trees using

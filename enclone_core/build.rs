@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // The purpose of this file is to make some version information available so that it can be
 // printed out at appropriate points by enclone.  This files is a slightly modified version

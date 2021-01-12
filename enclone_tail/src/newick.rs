@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Convert a rooted directed tree into Newick format,
 // see https://en.wikipedia.org/wiki/Newick_format.
