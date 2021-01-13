@@ -458,5 +458,5 @@ pub fn join_exacts(
         }
     });
     ctl.perf_stats(&timer2, "in main part of join");
-    finish_join(&ctl, &exact_clonotypes, &info, &results, &mut join_info)
+    finish_join(&ctl, &info, &results, &mut join_info)
 }
