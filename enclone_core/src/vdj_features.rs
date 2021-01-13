@@ -528,6 +528,9 @@ pub fn fr3_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
 
         // Score positions.
 
+        if cdr3_start < 35 {
+            return None;
+        }
         let mut score_pos = Vec::<(usize, usize)>::new();
         for j in cdr3_start - 35..=cdr3_start - 28 {
             // changed to 39
