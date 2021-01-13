@@ -32,13 +32,14 @@
 </style>
 </head>
 <body>
-<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 2 CELLS
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">[1.1] CLONOTYPE = 3 CELLS
 ┌──────┬───────────────────────────────┬──────────────────────────┐
 │      │  CHAIN 1                      │  CHAIN 2                 │
 │      │  122.1.1|IGHV3-23 ◆ 55|IGHJ4  │  281|IGKV3-15 ◆ 213|IGKJ1│
 │      ├───────────────────────────────┼──────────────────────────┤
 │#  n  │  u  const                     │   u  const               │
 │1  2  │  2  IGHM                      │  17  IGKC                │
+│2  1  │                               │   4  IGKC                │
 └──────┴───────────────────────────────┴──────────────────────────┘
 
 [1.2] CLONOTYPE = 1 CELLS

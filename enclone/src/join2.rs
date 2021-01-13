@@ -29,7 +29,6 @@ pub fn partial_bernoulli_sum(n: usize, k: usize) -> f64 {
 
 pub fn finish_join(
     ctl: &EncloneControl,
-    exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     results: &Vec<(
         usize,
@@ -88,62 +87,6 @@ pub fn finish_join(
             eq.join(ox[k].1, ox[k + 1].1);
         }
         i = j;
-    }
-
-    // Merge onesies where totally unambiguous.  Possibly inefficient and should optimize.
-
-    if ctl.join_alg_opt.merge_onesies {
-        let mut ncells_total = 0;
-        for i in 0..exact_clonotypes.len() {
-            ncells_total += exact_clonotypes[i].ncells();
-        }
-        let mut onesies = Vec::<usize>::new();
-        for i in 0..info.len() {
-            if info[i].tigs.len() == 1 {
-                onesies.push(i);
-            }
-        }
-        let mut alltigs2 = Vec::<(Vec<u8>, usize)>::new();
-        for i in 0..info.len() {
-            if info[i].tigs.len() >= 2 {
-                for j in 0..info[i].tigs.len() {
-                    alltigs2.push((info[i].tigs[j].clone(), i));
-                }
-            }
-        }
-        alltigs2.sort();
-        for x in onesies.iter() {
-            let low = lower_bound1_2(&alltigs2, &info[*x].tigs[0]);
-            let high = upper_bound1_2(&alltigs2, &info[*x].tigs[0]);
-            let mut ms = Vec::<usize>::new();
-            for m in low..high {
-                if alltigs2[m as usize].0 == info[*x].tigs[0] {
-                    ms.push(m as usize);
-                }
-            }
-            let mut ok = ms.len() > 0;
-            let mut exacts = Vec::<usize>::new();
-            for j in 0..ms.len() {
-                if eq.class_id(alltigs2[ms[j]].1 as i32) != eq.class_id(alltigs2[ms[0]].1 as i32) {
-                    ok = false;
-                }
-                let mut o = Vec::<i32>::new();
-                eq.orbit(alltigs2[ms[j]].1 as i32, &mut o);
-                for z in o.iter() {
-                    exacts.push(info[*z as usize].clonotype_index);
-                }
-            }
-            unique_sort(&mut exacts);
-            if ctl.join_alg_opt.merge_onesies_ctl {
-                let ncells0 = exact_clonotypes[info[*x].clonotype_index].ncells();
-                if ncells0 * 10000 < ncells_total {
-                    ok = false;
-                }
-            }
-            if ok {
-                eq.join(*x as i32, alltigs2[ms[0]].1 as i32);
-            }
-        }
     }
 
     // Tally whitelist contamination.

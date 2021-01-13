@@ -1,6 +1,6 @@
 <svg version="1.1"
 baseProfile="full"
-width="400" height="634.51"
+width="400" height="639.7"
 xmlns="http://www.w3.org/2000/svg">
 <circle cx="131.06" cy="203.09" r="4.91" fill="rgb(0,110,130)" />
 <circle cx="135.97" cy="211.60" r="4.91" fill="rgb(250,120,250)" />
@@ -461,30 +461,33 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="184.65" cy="96.78" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="184.65" cy="79.77" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="189.56" cy="88.27" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="283.75" cy="142.67" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="288.66" cy="151.18" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="288.66" cy="134.17" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="293.57" cy="159.68" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="293.57" cy="142.67" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="293.57" cy="125.66" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="298.49" cy="151.18" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="298.49" cy="134.17" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="303.40" cy="159.68" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="303.40" cy="142.67" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="303.40" cy="125.66" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="308.31" cy="151.18" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="308.31" cy="134.17" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="313.22" cy="142.67" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="313.22" cy="125.66" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="318.13" cy="134.17" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="323.04" cy="142.67" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="283.75" cy="142.67" r="4.91" fill="rgb(0,0,0)" />
+<circle cx="288.66" cy="151.18" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="288.66" cy="134.17" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="293.57" cy="159.68" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="293.57" cy="142.67" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="293.57" cy="125.66" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="298.49" cy="151.18" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="298.49" cy="134.17" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="303.40" cy="159.68" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="303.40" cy="142.67" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="303.40" cy="125.66" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="308.31" cy="151.18" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="308.31" cy="134.17" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="313.22" cy="159.68" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="313.22" cy="142.67" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="313.22" cy="125.66" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="318.13" cy="134.17" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="323.04" cy="142.67" r="4.91" fill="rgb(170,10,60)" />
 <circle cx="204.56" cy="340.78" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="209.47" cy="349.29" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="209.47" cy="332.28" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="214.38" cy="357.79" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="214.38" cy="340.78" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="214.38" cy="323.77" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="219.29" cy="349.29" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="219.29" cy="332.28" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="224.20" cy="357.79" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="224.20" cy="340.78" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="224.20" cy="323.77" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="229.11" cy="349.29" r="4.91" fill="rgb(250,120,250)" />
@@ -493,20 +496,21 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="234.02" cy="323.77" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="238.93" cy="332.28" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="243.84" cy="340.78" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="45.62" cy="300.07" r="4.91" fill="rgb(0,0,0)" />
-<circle cx="50.53" cy="291.56" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="55.44" cy="300.07" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="55.44" cy="283.06" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="60.36" cy="308.57" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="60.36" cy="291.56" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="65.27" cy="300.07" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="65.27" cy="283.06" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="70.18" cy="308.57" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="70.18" cy="291.56" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="75.09" cy="300.07" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="75.09" cy="283.06" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="80.00" cy="291.56" r="4.91" fill="rgb(170,10,60)" />
-<circle cx="84.91" cy="300.07" r="4.91" fill="rgb(170,10,60)" />
+<circle cx="45.62" cy="300.07" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="50.53" cy="308.57" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="50.53" cy="291.56" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="55.44" cy="300.07" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="55.44" cy="283.06" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="60.36" cy="308.57" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="60.36" cy="291.56" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="65.27" cy="300.07" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="65.27" cy="283.06" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="70.18" cy="308.57" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="70.18" cy="291.56" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="75.09" cy="300.07" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="75.09" cy="283.06" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="80.00" cy="291.56" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="84.91" cy="300.07" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="98.36" cy="54.06" r="4.91" fill="rgb(0,110,130)" />
 <circle cx="103.27" cy="45.56" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="108.18" cy="54.06" r="4.91" fill="rgb(250,120,250)" />
@@ -545,11 +549,10 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="345.34" cy="75.92" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="350.25" cy="84.42" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="355.16" cy="92.93" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="345.68" cy="295.16" r="4.91" fill="rgb(0,0,0)" />
+<circle cx="345.68" cy="295.16" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="350.59" cy="303.66" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="350.59" cy="286.65" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="355.50" cy="295.16" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="355.50" cy="278.15" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="360.41" cy="303.66" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="360.41" cy="286.65" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="365.32" cy="295.16" r="4.91" fill="rgb(250,120,250)" />
@@ -566,7 +569,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="34.55" cy="166.76" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="39.46" cy="175.26" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="44.37" cy="183.77" r="4.91" fill="rgb(250,120,250)" />
-<circle cx="365.63" cy="141.82" r="4.91" fill="rgb(250,120,250)" />
+<circle cx="365.63" cy="141.82" r="4.91" fill="rgb(0,0,0)" />
 <circle cx="370.54" cy="150.33" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="370.54" cy="133.32" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="375.45" cy="141.82" r="4.91" fill="rgb(250,120,250)" />
@@ -576,25 +579,25 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="385.27" cy="124.81" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="390.18" cy="133.32" r="4.91" fill="rgb(250,120,250)" />
 <circle cx="395.09" cy="141.82" r="4.91" fill="rgb(250,120,250)" />
-<rect x="10" y="372.51000000000005" width="147.5" height="260" style="fill:white;stroke:black;stroke-width:2" />
-<text x="30" y="397.51000000000005" font-family="Arial" font-size="20">IGHA1</text>
-<circle cx="20" cy="392.51000000000005" r="4" fill="rgb(0,110,130)" />
-<text x="30" y="422.51000000000005" font-family="Arial" font-size="20">IGHA2</text>
-<circle cx="20" cy="417.51000000000005" r="4" fill="rgb(130,20,160)" />
-<text x="30" y="447.51000000000005" font-family="Arial" font-size="20">IGHD</text>
-<circle cx="20" cy="442.51000000000005" r="4" fill="rgb(0,90,200)" />
-<text x="30" y="472.51000000000005" font-family="Arial" font-size="20">IGHE</text>
-<circle cx="20" cy="467.51000000000005" r="4" fill="rgb(0,160,250)" />
-<text x="30" y="497.51000000000005" font-family="Arial" font-size="20">IGHG1</text>
-<circle cx="20" cy="492.51000000000005" r="4" fill="rgb(250,120,250)" />
-<text x="30" y="522.51" font-family="Arial" font-size="20">IGHG2</text>
-<circle cx="20" cy="517.51" r="4" fill="rgb(20,210,220)" />
-<text x="30" y="547.51" font-family="Arial" font-size="20">IGHG3</text>
-<circle cx="20" cy="542.51" r="4" fill="rgb(170,10,60)" />
-<text x="30" y="572.51" font-family="Arial" font-size="20">IGHG4</text>
-<circle cx="20" cy="567.51" r="4" fill="rgb(10,155,75)" />
-<text x="30" y="597.51" font-family="Arial" font-size="20">IGHM</text>
-<circle cx="20" cy="592.51" r="4" fill="rgb(255,130,95)" />
-<text x="30" y="622.51" font-family="Arial" font-size="20">undetermined</text>
-<circle cx="20" cy="617.51" r="4" fill="rgb(0,0,0)" />
+<rect x="10" y="377.70000000000005" width="147.5" height="260" style="fill:white;stroke:black;stroke-width:2" />
+<text x="30" y="402.70000000000005" font-family="Arial" font-size="20">IGHA1</text>
+<circle cx="20" cy="397.70000000000005" r="4" fill="rgb(0,110,130)" />
+<text x="30" y="427.70000000000005" font-family="Arial" font-size="20">IGHA2</text>
+<circle cx="20" cy="422.70000000000005" r="4" fill="rgb(130,20,160)" />
+<text x="30" y="452.70000000000005" font-family="Arial" font-size="20">IGHD</text>
+<circle cx="20" cy="447.70000000000005" r="4" fill="rgb(0,90,200)" />
+<text x="30" y="477.70000000000005" font-family="Arial" font-size="20">IGHE</text>
+<circle cx="20" cy="472.70000000000005" r="4" fill="rgb(0,160,250)" />
+<text x="30" y="502.70000000000005" font-family="Arial" font-size="20">IGHG1</text>
+<circle cx="20" cy="497.70000000000005" r="4" fill="rgb(250,120,250)" />
+<text x="30" y="527.7" font-family="Arial" font-size="20">IGHG2</text>
+<circle cx="20" cy="522.7" r="4" fill="rgb(20,210,220)" />
+<text x="30" y="552.7" font-family="Arial" font-size="20">IGHG3</text>
+<circle cx="20" cy="547.7" r="4" fill="rgb(170,10,60)" />
+<text x="30" y="577.7" font-family="Arial" font-size="20">IGHG4</text>
+<circle cx="20" cy="572.7" r="4" fill="rgb(10,155,75)" />
+<text x="30" y="602.7" font-family="Arial" font-size="20">IGHM</text>
+<circle cx="20" cy="597.7" r="4" fill="rgb(255,130,95)" />
+<text x="30" y="627.7" font-family="Arial" font-size="20">undetermined</text>
+<circle cx="20" cy="622.7" r="4" fill="rgb(0,0,0)" />
 </svg>

@@ -57,8 +57,8 @@ pub const TESTS: [&str; 174] = [
     // 12. test colon lvar in KEEP_CLONO_IF_CELL_MEAN= and test for parsing error at +
     r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ KEEP_CLONO_IF_CELL_MEAN="n + g37 >= 5.5"
         MIN_CHAINS=2 NH5"###,
-    // 13. DUPLICATE; TO REPLACE WITH A NEW TEST.
-    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 13. check TSV file with BC
+    r###"BCR=123085 BC=testx/inputs/123077_cells.tsv PER_CELL LVARSP=T CDR3=CARGYEDFTMKYGMDVW"###,
     // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
     // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
@@ -259,7 +259,7 @@ pub const TESTS: [&str; 174] = [
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
     // 93. test MIN_DATASET_RATIO
-    r###"BCR=123085,123089 MIN_DATASET_RATIO=8 LVARSP=nd2"###,
+    r###"BCR=123085,123089 MIN_DATASET_RATIO=6 LVARSP=nd2"###,
     // 94. test use of SEG twice
     r###"BCR=123085 SEG=IGHV5-51 SEG=IGKV1D-39"###,
     // 95. test TREE=const
@@ -444,7 +444,7 @@ pub const TESTS: [&str; 174] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 22] = [
+pub const EXTENDED_TESTS: [&str; 23] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -500,6 +500,8 @@ pub const EXTENDED_TESTS: [&str; 22] = [
         NO_PRE NFORCE"###,
     // 22. clonotype that was two clonotypes before raising MAX_DIFFS to 60
     r###"BCR=1084461-1084462 CDR3=CAKEFGNGGFDTFDIW NO_PRE NFORCE"###,
+    // 23. test BCR_GEX and GD_BC
+    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
 ];
 
 // Tests of internal features.

@@ -42,7 +42,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     for i in 1..args.len() {
-        args2.push(args[i].clone());
+        if args[i].starts_with("BCR_GEX=") {
+            args2.push(format!("BCR={}", args[i].after("BCR_GEX=")));
+            args2.push(format!("GEX={}", args[i].after("BCR_GEX=")));
+        } else if args[i].starts_with("TCR_GEX=") {
+            args2.push(format!("TCR={}", args[i].after("TCR_GEX=")));
+            args2.push(format!("GEX={}", args[i].after("TCR_GEX=")));
+        } else if args[i].starts_with("GD_BC=") {
+            args2.push(format!(
+                "BC={}/outs/genetic_demux_results/clusters.tsv",
+                args[i].after("GD_BC=")
+            ));
+        } else {
+            args2.push(args[i].clone());
+        }
     }
     args = args2;
 

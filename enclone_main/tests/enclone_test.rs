@@ -212,18 +212,13 @@ fn test_sync_master() {
 
 // 5.
 
-// NOT BASIC
-
 // Run the download command on the landing page and make sure it works.
 //
 // Runs with "small", and passes second argument so we can put outputs in a defined place.
 //
 // There are three passes.  The first pass tests the copy of install.sh that is one master, and
 // the second pass tests the local version; the third tests with wget forced.
-//
-// Not sure if this needs to be internal-only.
 
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_curl_command() {
@@ -910,7 +905,7 @@ fn test_for_broken_links_and_spellcheck() {
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phylip \
         plasmablast preinstalled prepends pwm pwms redownloads researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout subclonotype \
-        subclonotypes svg thresholding timepoint tracebacks trb twosie ubuntu \
+        subclonotypes svg thresholding timepoint tracebacks trb tsv twosie ubuntu \
         umi umis underperforming unicode untarring vdj website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();

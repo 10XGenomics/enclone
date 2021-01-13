@@ -108,17 +108,18 @@ Examples:
 
 Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
 whose right side must have the exact same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Specification of
-both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.
+both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.  If both BCR and GEX data are in the same directory (from a multi
+run), and single argument <span style="font-weight:bold;">BCR_GEX=...</span> may be used, and similarly one may use <span style="font-weight:bold;">TCR_GEX</span>.
 
 In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
-having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV file,
-which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
-may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular origin
-and donor to be associated to a given barcode.  A use case for this is genetic demultiplexing. 
-The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is used by the <span style="font-weight:bold;">PLOT</span>
-option.  All other fields are treated as lead variables, but values are only displayed in <span style="font-weight:bold;">PER_CELL</span>
-mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include existing lead variable
-names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
+having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV or TSV
+file, which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>,
+and may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular
+origin and donor to be associated to a given barcode.  A use case for this is genetic
+demultiplexing.  The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is
+used by the <span style="font-weight:bold;">PLOT</span> option.  All other fields are treated as lead variables, but values are only
+displayed in <span style="font-weight:bold;">PER_CELL</span> mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include
+existing lead variable names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
 
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>

@@ -432,9 +432,9 @@ Shown below is the output of the command:
 
 <span style="font-weight:bold;">enclone BCR=123089 CDR3=CARRYFGVVADAFDIW</span>
 
-<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 12 CELLS</span>
+<span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 13 CELLS</span>
 
-[1.1] CLONOTYPE = 12 CELLS
+[1.1] CLONOTYPE = 13 CELLS
 ┌───────────┬────────────────────────────────────────┬──────────────────────────────┐
 │           │  <span style="font-weight:bold;">CHAIN 1</span>                               │  CHAIN 2                     │
 │           │  <span style="font-weight:bold;">740.1.2|IGHV4-30-4 ◆ 53|IGHJ3</span>         │  253|IGKV1D-39 ◆ 217|IGKJ5   │
@@ -449,6 +449,7 @@ Shown below is the output of the command:
 │<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ...x.. ..............x.     u  const  </span>│<span style="font-weight:bold;">  x ......x.....      u  const</span>│
 │1  10      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">P</span><span style="color:#f37721;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4298  IGHM   │  <span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  11675  IGKC │
 │2   2      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#f37721;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">I</span><span style="color:#f37721;">W</span>  4381  IGHM   │  <span style="color:#72c0ff;font-weight:bold;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">S</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  14035  IGKC │
+│3   1      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#eb99c2;font-weight:bold;">P</span><span style="color:#f37721;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;">Y</span><span style="color:#f37721;">F</span><span style="color:#72c0ff;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;">W</span>     5  IGHM   │                              │
 └───────────┴────────────────────────────────────────┴──────────────────────────────┘
 
 This shows an invocation of enclone that takes one dataset as input and exhibits
@@ -580,17 +581,18 @@ Examples:
 
 Matching gene expression and/or feature barcode data may also be supplied using an argument <span style="font-weight:bold;">GEX=...</span>,
 whose right side must have the exact same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Specification of
-both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.
+both <span style="font-weight:bold;">TCR</span> and <span style="font-weight:bold;">BCR</span> is not allowed.  If both BCR and GEX data are in the same directory (from a multi
+run), and single argument <span style="font-weight:bold;">BCR_GEX=...</span> may be used, and similarly one may use <span style="font-weight:bold;">TCR_GEX</span>.
 
 In addition, barcode-level data may be specified using <span style="font-weight:bold;">BC=...</span>, whose right side is a list of paths
-having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV file,
-which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>, and
-may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular origin
-and donor to be associated to a given barcode.  A use case for this is genetic demultiplexing. 
-The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is used by the <span style="font-weight:bold;">PLOT</span>
-option.  All other fields are treated as lead variables, but values are only displayed in <span style="font-weight:bold;">PER_CELL</span>
-mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include existing lead variable
-names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
+having the same structure as the <span style="font-weight:bold;">TCR</span> or <span style="font-weight:bold;">BCR</span> argument.  Each such path must be for a CSV or TSV
+file, which must include the field <span style="font-weight:bold;">barcode</span>, may include special fields <span style="font-weight:bold;">origin</span>, <span style="font-weight:bold;">donor</span>, <span style="font-weight:bold;">tag</span> and <span style="font-weight:bold;">color</span>,
+and may also include arbitrary other fields.  The <span style="font-weight:bold;">origin</span> and <span style="font-weight:bold;">donor</span> fields allow a particular
+origin and donor to be associated to a given barcode.  A use case for this is genetic
+demultiplexing.  The <span style="font-weight:bold;">tag</span> field is intended to be used with tag demultiplexing.  The <span style="font-weight:bold;">color</span> field is
+used by the <span style="font-weight:bold;">PLOT</span> option.  All other fields are treated as lead variables, but values are only
+displayed in <span style="font-weight:bold;">PER_CELL</span> mode, or for parseable output using <span style="font-weight:bold;">PCELL</span>.  These fields should not include
+existing lead variable names.  Use of <span style="font-weight:bold;">BC</span> automatically turns on the <span style="font-weight:bold;">MIX_DONORS</span> option.
 
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
 <span style="font-weight:bold;">META=filename</span>
@@ -1027,6 +1029,7 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  merger is prevented if the number of cells in the                    │
 │                         │  onesie is less than 0.01% of the total number of cells.              │
 │                         │   NMERGE_ONESIES causes these merges to happen anyway.                │
+│                         │  The naming of this option is confusing.                              │
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │NFOURSIE_KILL            │  Under certain circumstances, enclone will delete foursie exact       │
 │                         │  subclonotypes.  Please see                                           │
