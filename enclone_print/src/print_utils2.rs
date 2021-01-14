@@ -1467,7 +1467,8 @@ pub fn row_fill(
             } else if *var == "cdr3_aa".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
             } else if (var.starts_with("cdr3_aa_") && var.ends_with("_ext"))
-                || var == "cdr3_aa_north" {
+                || var == "cdr3_aa_north"
+            {
                 let mut left = -1 * 3;
                 let mut right = -1 * 3;
                 if var.ends_with("_ext") {
