@@ -267,15 +267,3 @@ Asymmetric group respects the MIN_GROUP option.
 GD_BC=x
 translates into BC=x/outs/genetic_demux_results/clusters.tsv
 to allow for convenient use of genetic demux results in the PD pipeline
-
-cdr*_aa_<left>_<right>_ext: cvar which is the given CDR amino acid sequence plus left residues
-on the left, plus right residues on the right; left and right may be negative
-
-North definitions, 
-cdr1_aa_north etc.
-see 
-North B et al. (2011), A new clustering of antibody CDR loop conformations, J Mol Biol 406, 228-256.
-HEAVY              LIGHT
-cdr1_aa_3_3_ext    cdr1_aa
-cdr2_aa_2_3_ext    cdr2_aa_1_0_ext
-cdr3_aa_-1_-1_ext  cdr3_aa_-1_-1_ext
