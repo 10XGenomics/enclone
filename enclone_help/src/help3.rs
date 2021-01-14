@@ -262,16 +262,24 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "cdr3_start<i>",
             "base position start of CDR3 sequence on full contig",
         );
-        h.doc("cdr3_aa<i>", "amino acid sequence of CDR3");
         h.ldoc(
             "var_aa<i>",
             "amino acids that vary across the clonotype (synonymous changes included)",
         );
         h.ldoc(
-            "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
+            "In addition, every chain variable, after suffixing by <i>, may be used as a field.  \
+                However",
             "\\ext",
         );
-        h.doc("See \"enclone help cvars\".", "\\ext");
+        h.docpr(
+            "parametrizable chain variables e.g. \\bold{ndiff1vj1} must be explicitly \
+                listed using \\bold{PCOLS};",
+            "\\ext",
+        );
+        h.doc(
+            "they are not in the default list.  See \"enclone help cvars\".",
+            "\\ext",
+        );
         h.print_tab2();
         h.print("\n");
         h.end_doc();

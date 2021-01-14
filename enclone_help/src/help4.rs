@@ -817,8 +817,30 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "the CDR*_AA sequence, or \"unknown\" if not computed",
         );
         h.doc(
+            "cdr*_aa_L_R_ext",
+            "the CDR*_AA sequence, with L amino acids added on the left and R amino acids",
+        );
+        h.doc(
+            "",
+            "added on the right; either may be negative, denoting trimming instead",
+        );
+        h.doc("", "of extension");
+        h.doc(
+            "cdr*_aa_north",
+            "the CDR*_AA sequence for BCR defined by North B et al. (2011), A new",
+        );
+        h.doc(
+            "",
+            "clustering of antibody CDR loop conformations, J Mol Biol 406, 228-256.",
+        );
+        h.doc("", "cdr1_aa_north = cdr1_aa_3_3_ext for heavy chains");
+        h.doc("", "cdr1_aa_north = cdr1_aa for light chains");
+        h.doc("", "cdr2_aa_north = cdr2_aa_2_3_ext for heavy chains");
+        h.doc("", "cdr2_aa_north = cdr2_aa_1_0_ext for light chains");
+        h.doc("", "cdr3_aa_north = cdr3_aa_-1_-1_ext");
+        h.doc(
             "cdr*_aa_ref",
-            "same, for the universal reference sequence (but not for cdr3)",
+            "cdr*_aa, for the universal reference sequence (but not for cdr3)",
         );
         h.doc(
             "cdr*_len",
@@ -832,7 +854,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "cdr*_dna_ref",
             "same, for the universal reference sequence (but not for cdr3)",
         );
-        h.doc(
+        h.ldoc(
             "fwr*_aa",
             "the FWR*_AA sequence, or \"unknown\" if not computed",
         );

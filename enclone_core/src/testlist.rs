@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 174] = [
+pub const TESTS: [&str; 179] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -439,6 +439,17 @@ pub const TESTS: [&str; 174] = [
     // 174. test METAX, and also the origins printed by this was wrong at one point
     r###"METAX="bcr,origin,donor;toast:86237,c,d;zip:123085,a,b" LVARSP=origins,donors
         POUT=stdouth PCOLS=origins,donors CDR3=CARSFFGDTAMVMFQAFDPW"###,
+    // 175. test some variables
+    r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth PCOLS=cdr1_aa1,cdr1_aa_1_2_ext1"###,
+    // 176. test some variables
+    r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth PCOLS=cdr2_aa1,cdr2_aa_1_2_ext1"###,
+    // 177. test some variables
+    r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth PCOLS=cdr3_aa1,cdr3_aa_1_2_ext1"###,
+    // 178. test an ndiff variable as a parseable variable
+    r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth PCOLS=ndiff1vj1"###,
+    // 179. test cdr1_aa_north etc.
+    r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth
+        PCOLS=cdr1_aa_north1,cdr1_aa_north2,cdr2_aa_north1,cdr2_aa_north2,cdr3_aa_north1,cdr3_aa_north2"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are

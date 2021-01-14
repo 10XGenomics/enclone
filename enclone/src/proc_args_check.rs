@@ -294,7 +294,8 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 } else {
                     eprintln!(
                         "\nUnrecognized parseable variable {}.  Please type \
-                         \"enclone help parseable\".\n",
+                         \"enclone help parseable\".\nIf the variable is a chain variable (cvar), \
+                        please make sure it is suffixed with the chain index.\n",
                         x
                     );
                 }
@@ -388,6 +389,16 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
                     {
                         ok = true;
                         break;
+                    } else if (y.starts_with("cdr1_aa_")
+                        || y.starts_with("cdr2_aa_")
+                        || y.starts_with("cdr3_aa_"))
+                        && y.after("aa_").contains("_")
+                        && y.between("aa_", "_").parse::<isize>().is_ok()
+                        && y.after("aa_").after("_").ends_with("_ext")
+                        && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
+                    {
+                        ok = true;
+                        break;
                     }
                 }
             }
@@ -412,6 +423,14 @@ pub fn check_cvars(ctl: &EncloneControl) {
             && x.ends_with("vj")
             && x.between("ndiff", "vj").parse::<usize>().is_ok()
             && x.between("ndiff", "vj").force_usize() >= 1
+        {
+            ok = true;
+        }
+        if (x.starts_with("cdr1_aa_") || x.starts_with("cdr2_aa_") || x.starts_with("cdr3_aa_"))
+            && x.after("aa_").contains("_")
+            && x.between("aa_", "_").parse::<usize>().is_ok()
+            && x.after("aa_").after("_").ends_with("_ext")
+            && x.after("aa_").between("_", "_ext").parse::<usize>().is_ok()
         {
             ok = true;
         }

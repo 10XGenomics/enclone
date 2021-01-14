@@ -20,10 +20,10 @@
 │4  1       │  [38;5;36mG[1m[38;5;25mQ[38;5;175mG[0m[38;5;178mT[1m[38;5;25mL[38;5;75mV[0m[38;5;178mT[1m[38;5;75mV[0m[38;5;36mS[1m[38;5;175mS[0m  4715  IGHG1    │  [38;5;36mG[1m[38;5;166mQ[38;5;75mG[0m[38;5;178mTK[1m[38;5;166mV[0m[38;5;178mE[1m[38;5;175mI[38;5;75mK[0m  16479  IGKC  │
 │5  1       │  [38;5;36mG[1m[38;5;25mQ[38;5;175mG[0m[38;5;178mT[1m[38;5;25mL[38;5;75mV[0m[38;5;178mT[1m[38;5;75mV[0m[38;5;36mS[1m[38;5;175mS[0m   791  IGHG1    │  [38;5;36mG[1m[38;5;166mQ[38;5;75mG[0m[38;5;178mTK[1m[38;5;166mV[0m[38;5;178mE[1m[38;5;175mI[38;5;75mK[0m   1569  IGKC  │
 └───────────┴─────────────────────────────┴──────────────────────────┘
-  fwr4_aa1  fwr4_aa_ref1
-GQGTLVTVSS    GQGTLVTVSS
-GQGTLVTVSS    GQGTLVTVSS
-GQGTLVTVSS    GQGTLVTVSS
-GQGTLVTVSS    GQGTLVTVSS
-GQGTLVTVSS    GQGTLVTVSS
+fwr4_aa1    fwr4_aa_ref1
+GQGTLVTVSS  GQGTLVTVSS
+GQGTLVTVSS  GQGTLVTVSS
+GQGTLVTVSS  GQGTLVTVSS
+GQGTLVTVSS  GQGTLVTVSS
+GQGTLVTVSS  GQGTLVTVSS
 

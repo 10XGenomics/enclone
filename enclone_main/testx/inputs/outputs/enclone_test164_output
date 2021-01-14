@@ -19,7 +19,7 @@
 │4  1       │  [1m[38;5;175mGY[0m[38;5;178mT[1m[38;5;166mF[0m[38;5;178mT[38;5;36mG[1m[38;5;175mY[0m  4715  IGHG1       │  [1m[38;5;166mR[38;5;175mA[0m[38;5;178mS[1m[38;5;25mQ[0m[38;5;178mSV[1m[38;5;25mSSS[38;5;175mY[38;5;75mL[38;5;175mA[0m  16479  IGKC │
 │5  1       │  [1m[38;5;175mGY[0m[38;5;178mT[1m[38;5;166mF[0m[38;5;178mT[38;5;36mG[1m[38;5;175mY[0m   791  IGHG1       │  [1m[38;5;166mR[38;5;175mA[0m[38;5;178mS[1m[38;5;25mQ[0m[38;5;178mSV[1m[38;5;25mSSS[38;5;175mY[38;5;75mL[38;5;175mA[0m   1569  IGKC │
 └───────────┴─────────────────────────────┴────────────────────────────┘
-                           cdr1_dna2                         cdr1_dna_ref2
+cdr1_dna2                             cdr1_dna_ref2
 AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAGCC  AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAGCC
 AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAACC  AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAGCC
 AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAGCC  AGGGCCAGTCAGAGTGTTAGCAGCAGCTACTTAGCC

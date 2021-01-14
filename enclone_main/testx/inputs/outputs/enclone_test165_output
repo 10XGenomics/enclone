@@ -20,9 +20,9 @@
 │5  1       │  [1m[38;5;166mN[0m[38;5;36mP[1m[38;5;166mN[0m[38;5;178mS[1m[38;5;166mG[0m[38;5;36mG[0m   791  IGHG1        │  [1m[38;5;166mG[38;5;25mA[0m[38;5;36mS[1m[38;5;25mS[38;5;166mR[38;5;175mAT[0m   1569  IGKC    │
 └───────────┴─────────────────────────────┴──────────────────────────┘
 cdr2_aa2  cdr2_aa_ref2
- GASSRAT       GASSRAT
- GASSRAT       GASSRAT
- GASSRAT       GASSRAT
- GTSSRAT       GASSRAT
- GASSRAT       GASSRAT
+GASSRAT   GASSRAT
+GASSRAT   GASSRAT
+GASSRAT   GASSRAT
+GTSSRAT   GASSRAT
+GASSRAT   GASSRAT
 

@@ -51,7 +51,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 58] = [
+pub const CVARS_ALLOWED: [&str; 61] = [
     "var",
     "u",
     "u_min",
@@ -76,10 +76,13 @@ pub const CVARS_ALLOWED: [&str; 58] = [
     "cdr2_len",
     "cdr3_len",
     "cdr1_aa",
+    "cdr1_aa_north",
     "cdr1_aa_ref",
     "cdr2_aa",
+    "cdr2_aa_north",
     "cdr2_aa_ref",
     "cdr3_aa",
+    "cdr3_aa_north",
     "fwr1_dna",
     "fwr1_dna_ref",
     "fwr2_dna",
@@ -951,6 +954,8 @@ pub fn justification(x: &str) -> u8 {
         || x.starts_with("q")
         || x.ends_with("_barcode")
         || x.ends_with("_barcodes")
+        || (x.starts_with("cdr") && !x.ends_with("len"))
+        || (x.starts_with("fwr") && !x.ends_with("len"))
     {
         return b'l';
     } else {
