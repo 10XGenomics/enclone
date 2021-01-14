@@ -394,7 +394,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
                         && y.after("aa_").contains("_")
                         && y.between("aa_", "_").parse::<usize>().is_ok()
                         && y.after("aa_").after("_").ends_with("_ext")
-                        && y.after("aa_").between("_", "_ext").parse::<usize>().is_ok()
+                        && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
                     {
                         ok = true;
                         break;

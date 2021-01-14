@@ -1297,8 +1297,8 @@ pub fn row_fill(
             {
                 let (mut left, mut right) = (0, 0);
                 if var.ends_with("_ext") {
-                    left = var.between("aa_", "_").force_usize() * 3;
-                    right = var.after("aa_").between("_", "_").force_usize() * 3;
+                    left = var.between("aa_", "_").force_i64() * 3;
+                    right = var.after("aa_").between("_", "_").force_i64() * 3;
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1307,10 +1307,13 @@ pub fn row_fill(
                     && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    if x.cdr1_start.unwrap() >= left
-                        && x.fr2_start.unwrap() + right <= x.seq_del_amino.len()
+                    if x.cdr1_start.unwrap() as i64 - left >= 0
+                       && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                        && x.fr2_start.unwrap() as i64 + right > 0
+                        && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
                     {
-                        for p in x.cdr1_start.unwrap() - left..x.fr2_start.unwrap() + right {
+                        for p in x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right {
+                            let p = p as usize;
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
                                     let mut z = x.ins[j].1.clone();
@@ -1372,8 +1375,8 @@ pub fn row_fill(
             {
                 let (mut left, mut right) = (0, 0);
                 if var.ends_with("_ext") {
-                    left = var.between("aa_", "_").force_usize() * 3;
-                    right = var.after("aa_").between("_", "_").force_usize() * 3;
+                    left = var.between("aa_", "_").force_i64() * 3;
+                    right = var.after("aa_").between("_", "_").force_i64() * 3;
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1382,10 +1385,13 @@ pub fn row_fill(
                     && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    if x.cdr2_start.unwrap() >= left
-                        && x.fr3_start.unwrap() + right <= x.seq_del_amino.len()
+                    if x.cdr2_start.unwrap() as i64 - left >= 0
+                       && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                        && x.fr3_start.unwrap() as i64 + right > 0
+                        && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
                     {
-                        for p in x.cdr2_start.unwrap() - left..x.fr3_start.unwrap() + right {
+                        for p in x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right {
+                            let p = p as usize;
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
                                     let mut z = x.ins[j].1.clone();
@@ -1443,15 +1449,19 @@ pub fn row_fill(
             } else if *var == "cdr3_aa".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
             } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
-                let left = var.between("aa_", "_").force_usize() * 3;
-                let right = var.after("aa_").between("_", "_").force_usize() * 3;
+                let left = var.between("aa_", "_").force_i64() * 3;
+                let right = var.after("aa_").between("_", "_").force_i64() * 3;
                 let x = &ex.share[mid];
                 let mut dna = Vec::<u8>::new();
                 let mut y = "unknown".to_string();
-                if x.cdr3_start >= left
-                    && x.cdr3_start + 3 * x.cdr3_aa.len() + right <= x.seq_del_amino.len()
+                if x.cdr3_start as i64 - left >= 0
+                    && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
+                    && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
+                    && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right 
+                        <= x.seq_del_amino.len() as i64
                 {
-                    for p in x.cdr3_start - left..x.cdr3_start + 3 * x.cdr3_aa.len() + right {
+                    for p in x.cdr3_start as i64 - left..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right {
+                        let p = p as usize;
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
