@@ -267,10 +267,19 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "amino acids that vary across the clonotype (synonymous changes included)",
         );
         h.ldoc(
-            "In addition, every chain variable, after suffixing by <i>, may be used as a field.",
+            "In addition, every chain variable, after suffixing by <i>, may be used as a field.  \
+                However",
             "\\ext",
         );
-        h.doc("See \"enclone help cvars\".", "\\ext");
+        h.docpr(
+            "parametrizable chain variables e.g. \\bold{ndiff1vj1} must be explicitly \
+                listed using \\bold{PCOLS};",
+            "\\ext",
+        );
+        h.doc(
+            "they are not in the default list.  See \"enclone help cvars\".",
+            "\\ext",
+        );
         h.print_tab2();
         h.print("\n");
         h.end_doc();
