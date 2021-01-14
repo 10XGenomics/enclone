@@ -1292,6 +1292,7 @@ pub fn row_fill(
                 }
             } else if *var == "cdr1_dna".to_string()
                 || *var == "cdr1_aa".to_string()
+                || *var == "cdr1_aa_north".to_string()
                 || *var == "cdr1_len".to_string()
                 || (var.starts_with("cdr1_aa_") && var.ends_with("_ext"))
             {
@@ -1299,6 +1300,11 @@ pub fn row_fill(
                 if var.ends_with("_ext") {
                     left = var.between("aa_", "_").force_i64() * 3;
                     right = var.after("aa_").between("_", "_").force_i64() * 3;
+                } else if var.ends_with("_north") {
+                    if ex.share[mid].left {
+                        left = 3 * 3;
+                        right = 3 * 3;
+                    }
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1372,6 +1378,7 @@ pub fn row_fill(
                 cvar![j, var, y];
             } else if *var == "cdr2_dna".to_string()
                 || *var == "cdr2_aa".to_string()
+                || *var == "cdr2_aa_north".to_string()
                 || *var == "cdr2_len".to_string()
                 || (var.starts_with("cdr2_aa_") && var.ends_with("_ext"))
             {
@@ -1379,6 +1386,13 @@ pub fn row_fill(
                 if var.ends_with("_ext") {
                     left = var.between("aa_", "_").force_i64() * 3;
                     right = var.after("aa_").between("_", "_").force_i64() * 3;
+                } else if var.ends_with("_north") {
+                    if ex.share[mid].left {
+                        left = 2 * 3;
+                        right = 3 * 3;
+                    } else {
+                        left = 1 * 3;
+                    }
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1452,9 +1466,14 @@ pub fn row_fill(
                 cvar![j, var, y];
             } else if *var == "cdr3_aa".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
-            } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
-                let left = var.between("aa_", "_").force_i64() * 3;
-                let right = var.after("aa_").between("_", "_").force_i64() * 3;
+            } else if (var.starts_with("cdr3_aa_") && var.ends_with("_ext"))
+                || var == "cdr3_aa_north" {
+                let mut left = -1 * 3;
+                let mut right = -1 * 3;
+                if var.ends_with("_ext") {
+                    left = var.between("aa_", "_").force_i64() * 3;
+                    right = var.after("aa_").between("_", "_").force_i64() * 3;
+                }
                 let x = &ex.share[mid];
                 let mut dna = Vec::<u8>::new();
                 let mut y = "unknown".to_string();

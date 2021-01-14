@@ -294,7 +294,8 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
                 } else {
                     eprintln!(
                         "\nUnrecognized parseable variable {}.  Please type \
-                         \"enclone help parseable\".\n",
+                         \"enclone help parseable\".\nIf the variable is a chain variable (cvar), \
+                        please make sure it is suffixed with the chain index.\n",
                         x
                     );
                 }
@@ -392,7 +393,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
                         || y.starts_with("cdr2_aa_")
                         || y.starts_with("cdr3_aa_"))
                         && y.after("aa_").contains("_")
-                        && y.between("aa_", "_").parse::<usize>().is_ok()
+                        && y.between("aa_", "_").parse::<isize>().is_ok()
                         && y.after("aa_").after("_").ends_with("_ext")
                         && y.after("aa_").between("_", "_ext").parse::<isize>().is_ok()
                     {
