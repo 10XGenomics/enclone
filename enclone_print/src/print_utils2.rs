@@ -1289,7 +1289,13 @@ pub fn row_fill(
             } else if *var == "cdr1_dna".to_string()
                 || *var == "cdr1_aa".to_string()
                 || *var == "cdr1_len".to_string()
+                || (var.starts_with("cdr1_aa_") && var.ends_with("_ext"))
             {
+                let (mut left, mut right) = (0, 0);
+                if var.ends_with("_ext") {
+                    left = var.between("aa_", "_").force_usize() * 3;
+                    right = var.after("_").between("_", "_").force_usize() * 3;
+                }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
                 if x.cdr1_start.is_some()
@@ -1297,7 +1303,7 @@ pub fn row_fill(
                     && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.cdr1_start.unwrap()..x.fr2_start.unwrap() {
+                    for p in x.cdr1_start.unwrap() - left..x.fr2_start.unwrap() + right {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1327,7 +1333,7 @@ pub fn row_fill(
                     }
                     if *var == "cdr1_dna".to_string() {
                         y = stringme(&dna);
-                    } else if *var == "cdr1_aa".to_string() {
+                    } else if var.starts_with("cdr1_aa") {
                         y = stringme(&aa_seq(&dna, 0));
                     } else {
                         y = format!("{}", dna.len() / 3);
@@ -1354,7 +1360,13 @@ pub fn row_fill(
             } else if *var == "cdr2_dna".to_string()
                 || *var == "cdr2_aa".to_string()
                 || *var == "cdr2_len".to_string()
+                || (var.starts_with("cdr2_aa_") && var.ends_with("_ext"))
             {
+                let (mut left, mut right) = (0, 0);
+                if var.ends_with("_ext") {
+                    left = var.between("aa_", "_").force_usize() * 3;
+                    right = var.after("_").between("_", "_").force_usize() * 3;
+                }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
                 if x.cdr2_start.is_some()
@@ -1362,7 +1374,7 @@ pub fn row_fill(
                     && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    for p in x.cdr2_start.unwrap()..x.fr3_start.unwrap() {
+                    for p in x.cdr2_start.unwrap() - left..x.fr3_start.unwrap() + right {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
                                 let mut z = x.ins[j].1.clone();
@@ -1392,7 +1404,7 @@ pub fn row_fill(
                     }
                     if *var == "cdr2_dna".to_string() {
                         y = stringme(&dna);
-                    } else if *var == "cdr2_aa".to_string() {
+                    } else if var.starts_with("cdr2_aa") {
                         y = stringme(&aa_seq(&dna, 0));
                     } else {
                         y = format!("{}", dna.len() / 3);
@@ -1418,6 +1430,41 @@ pub fn row_fill(
                 cvar![j, var, y];
             } else if *var == "cdr3_aa".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
+            } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
+                let left = var.between("aa_", "_").force_usize() * 3;
+                let right = var.after("_").between("_", "_").force_usize() * 3;
+                let x = &ex.share[mid];
+                let mut dna = Vec::<u8>::new();
+                for p in x.cdr3_start - left..x.cdr3_start + 3 * x.cdr3_aa.len() + right {
+                    for j in 0..x.ins.len() {
+                        if x.ins[j].0 == p {
+                            let mut z = x.ins[j].1.clone();
+                            dna.append(&mut z);
+                        }
+                    }
+                    if x.seq_del_amino[p] != b'-' {
+                        dna.push(x.seq_del_amino[p]);
+                    }
+                }
+
+                // Test for internal error.
+
+                let mut found = false;
+                for i in 0..x.seq.len() {
+                    if x.seq[i..].starts_with(&dna) {
+                        found = true;
+                    }
+                }
+                if !found {
+                    eprintln!(
+                        "\nInternal error, failed to find {}, CDR3 = {}.\n",
+                        strme(&dna),
+                        x.cdr3_aa
+                    );
+                    std::process::exit(1);
+                }
+                let y = stringme(&aa_seq(&dna, 0));
+                cvar![j, var, y];
             } else if *var == "cdr3_dna".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "cdr3_len".to_string() {
