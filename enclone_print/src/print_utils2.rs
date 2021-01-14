@@ -1308,11 +1308,13 @@ pub fn row_fill(
                 {
                     let mut dna = Vec::<u8>::new();
                     if x.cdr1_start.unwrap() as i64 - left >= 0
-                       && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                        && x.cdr1_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
                         && x.fr2_start.unwrap() as i64 + right > 0
                         && x.fr2_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
                     {
-                        for p in x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right {
+                        for p in
+                            x.cdr1_start.unwrap() as i64 - left..x.fr2_start.unwrap() as i64 + right
+                        {
                             let p = p as usize;
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
@@ -1386,11 +1388,13 @@ pub fn row_fill(
                 {
                     let mut dna = Vec::<u8>::new();
                     if x.cdr2_start.unwrap() as i64 - left >= 0
-                       && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
+                        && x.cdr2_start.unwrap() as i64 - left < x.seq_del_amino.len() as i64
                         && x.fr3_start.unwrap() as i64 + right > 0
                         && x.fr3_start.unwrap() as i64 + right <= x.seq_del_amino.len() as i64
                     {
-                        for p in x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right {
+                        for p in
+                            x.cdr2_start.unwrap() as i64 - left..x.fr3_start.unwrap() as i64 + right
+                        {
                             let p = p as usize;
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
@@ -1457,10 +1461,12 @@ pub fn row_fill(
                 if x.cdr3_start as i64 - left >= 0
                     && x.cdr3_start as i64 - left < x.seq_del_amino.len() as i64
                     && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right > 0
-                    && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right 
+                    && x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
                         <= x.seq_del_amino.len() as i64
                 {
-                    for p in x.cdr3_start as i64 - left..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right {
+                    for p in x.cdr3_start as i64 - left
+                        ..x.cdr3_start as i64 + 3 * x.cdr3_aa.len() as i64 + right
+                    {
                         let p = p as usize;
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
