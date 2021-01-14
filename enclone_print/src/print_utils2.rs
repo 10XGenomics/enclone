@@ -1087,7 +1087,6 @@ pub fn row_fill(
             speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
         }
         speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
-        speakc!(u, col, "cdr3_aa".to_string(), xm.cdr3_aa);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);

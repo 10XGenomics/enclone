@@ -262,7 +262,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "cdr3_start<i>",
             "base position start of CDR3 sequence on full contig",
         );
-        h.doc("cdr3_aa<i>", "amino acid sequence of CDR3");
         h.ldoc(
             "var_aa<i>",
             "amino acids that vary across the clonotype (synonymous changes included)",
