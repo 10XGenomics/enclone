@@ -1308,8 +1308,9 @@ pub fn row_fill(
                     && x.cdr1_start.unwrap() <= x.fr2_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    if x.cdr1_start.unwrap() >= left 
-                        && x.fr2_start.unwrap() + right <= x.seq_del_amino.len() {
+                    if x.cdr1_start.unwrap() >= left
+                        && x.fr2_start.unwrap() + right <= x.seq_del_amino.len()
+                    {
                         for p in x.cdr1_start.unwrap() - left..x.fr2_start.unwrap() + right {
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
@@ -1321,9 +1322,9 @@ pub fn row_fill(
                                 dna.push(x.seq_del_amino[p]);
                             }
                         }
-    
+
                         // Test for internal error.
-    
+
                         let mut found = false;
                         for i in 0..x.seq.len() {
                             if x.seq[i..].starts_with(&dna) {
@@ -1382,9 +1383,9 @@ pub fn row_fill(
                     && x.cdr2_start.unwrap() <= x.fr3_start.unwrap()
                 {
                     let mut dna = Vec::<u8>::new();
-                    if x.cdr2_start.unwrap() >= left 
-                        && x.fr3_start.unwrap() + right <= x.seq_del_amino.len() {
-
+                    if x.cdr2_start.unwrap() >= left
+                        && x.fr3_start.unwrap() + right <= x.seq_del_amino.len()
+                    {
                         for p in x.cdr2_start.unwrap() - left..x.fr3_start.unwrap() + right {
                             for j in 0..x.ins.len() {
                                 if x.ins[j].0 == p {
@@ -1396,9 +1397,9 @@ pub fn row_fill(
                                 dna.push(x.seq_del_amino[p]);
                             }
                         }
-    
+
                         // Test for internal error.
-    
+
                         let mut found = false;
                         for i in 0..x.seq.len() {
                             if x.seq[i..].starts_with(&dna) {
@@ -1410,7 +1411,7 @@ pub fn row_fill(
                                 "\nInternal error, failed to find {}, CDR3 = {}.\n",
                                 strme(&dna),
                                 x.cdr3_aa
-                        );
+                            );
                             std::process::exit(1);
                         }
                         if *var == "cdr2_dna".to_string() {
@@ -1449,7 +1450,8 @@ pub fn row_fill(
                 let mut dna = Vec::<u8>::new();
                 let mut y = "unknown".to_string();
                 if x.cdr3_start >= left
-                    && x.cdr3_start + 3 * x.cdr3_aa.len() + right <= x.seq_del_amino.len() {
+                    && x.cdr3_start + 3 * x.cdr3_aa.len() + right <= x.seq_del_amino.len()
+                {
                     for p in x.cdr3_start - left..x.cdr3_start + 3 * x.cdr3_aa.len() + right {
                         for j in 0..x.ins.len() {
                             if x.ins[j].0 == p {
@@ -1461,9 +1463,9 @@ pub fn row_fill(
                             dna.push(x.seq_del_amino[p]);
                         }
                     }
-    
+
                     // Test for internal error.
-    
+
                     let mut found = false;
                     for i in 0..x.seq.len() {
                         if x.seq[i..].starts_with(&dna) {
