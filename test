@@ -1,0 +1,3 @@
+#!/bin/csh
+/usr/bin/time -f %E cargo t
+echo
