@@ -92,6 +92,7 @@ pub fn row_fill(
     lvarsc: &Vec<String>,
     nd_fields: &Vec<String>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
+    extra_parseables: &Vec<String>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -1105,7 +1106,7 @@ pub fn row_fill(
         }
         speakc!(u, col, "var_aa".to_string(), strme(&varaa));
 
-        // Create column entry.
+        // Define all_vars.
 
         let rsi_vars = &rsi.cvars[col];
         let mut all_vars = rsi_vars.clone();
@@ -1121,6 +1122,10 @@ pub fn row_fill(
                 all_vars.push(var.to_string());
             }
         }
+        all_vars.append(&mut extra_parseables.clone());
+
+        // Create column entry.
+
         let mut somelist = vec![false; all_vars.len()];
         for j in 0..all_vars.len() {
             let var = &all_vars[j];
@@ -1294,7 +1299,7 @@ pub fn row_fill(
                 let (mut left, mut right) = (0, 0);
                 if var.ends_with("_ext") {
                     left = var.between("aa_", "_").force_usize() * 3;
-                    right = var.after("_").between("_", "_").force_usize() * 3;
+                    right = var.after("aa_").between("_", "_").force_usize() * 3;
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1365,7 +1370,7 @@ pub fn row_fill(
                 let (mut left, mut right) = (0, 0);
                 if var.ends_with("_ext") {
                     left = var.between("aa_", "_").force_usize() * 3;
-                    right = var.after("_").between("_", "_").force_usize() * 3;
+                    right = var.after("aa_").between("_", "_").force_usize() * 3;
                 }
                 let x = &ex.share[mid];
                 let mut y = "unknown".to_string();
@@ -1432,7 +1437,7 @@ pub fn row_fill(
                 cvar![j, var, ex.share[mid].cdr3_aa.clone()];
             } else if var.starts_with("cdr3_aa_") && var.ends_with("_ext") {
                 let left = var.between("aa_", "_").force_usize() * 3;
-                let right = var.after("_").between("_", "_").force_usize() * 3;
+                let right = var.after("aa_").between("_", "_").force_usize() * 3;
                 let x = &ex.share[mid];
                 let mut dna = Vec::<u8>::new();
                 for p in x.cdr3_start - left..x.cdr3_start + 3 * x.cdr3_aa.len() + right {

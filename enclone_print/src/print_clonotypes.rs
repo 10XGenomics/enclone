@@ -74,6 +74,44 @@ pub fn print_clonotypes(
     set_speakers(&ctl, &mut parseable_fields);
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
 
+    // Identify certain extra parseable variables.  These arise from parameterizable cvars.
+
+    let mut extra_parseables = Vec::<String>::new();
+    {
+        let mut exclusions = ctl.clono_print_opt.cvars.clone();
+        for v in CVARS_ALLOWED.iter() {
+            exclusions.push(v.to_string());
+        }
+        for v in CVARS_ALLOWED_PCELL.iter() {
+            exclusions.push(v.to_string());
+        }
+        unique_sort(&mut exclusions);
+        for x in pcols_sort.iter() {
+            let mut chars = Vec::<char>::new();
+            for c in x.chars() {
+                chars.push(c);
+            }
+            let n = chars.len();
+            let mut trim = 0;
+            for i in (0..n).rev() {
+                if !chars[i].is_digit(10) {
+                    break;
+                }
+                trim += 1;
+            }
+            if trim > 0 {
+                let mut v = String::new();
+                for i in 0..n - trim {
+                    v.push(chars[i]);
+                }
+                if !bin_member(&exclusions, &v) {
+                    extra_parseables.push(v);
+                }
+            }
+        }
+        unique_sort(&mut extra_parseables);
+    }
+
     // Test for presence of GEX/FB data.
 
     let mut have_gex = false;
@@ -846,6 +884,7 @@ pub fn print_clonotypes(
                         &lvars,
                         &nd_fields,
                         &peer_groups,
+                        &extra_parseables,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
