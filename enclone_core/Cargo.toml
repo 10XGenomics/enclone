@@ -32,7 +32,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 string_utils = "0.1.1"
 superslice = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="40c9ced428efa035478656ecb4a8d0ba712c45b2" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="4fb1fab2c159a1e75d0c5ed009d11548e01cefbd" }
 vector_utils = "0.1.3"
 
 [build-dependencies]
