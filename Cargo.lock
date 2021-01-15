@@ -711,12 +711,12 @@ dependencies = [
  "bio",
  "byteorder",
  "bytes",
- "enclone_core",
  "failure",
  "prost",
  "prost-build",
  "serde",
  "serde_derive",
+ "vdj_ann",
 ]
 
 [[package]]
