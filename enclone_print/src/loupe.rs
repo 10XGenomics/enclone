@@ -175,7 +175,7 @@ pub fn make_loupe_clonotype(
         if ex.share[m0].fr3_start.is_some() {
             fwr3_start = Some((v_start + ex.share[m0].fr3_start.unwrap()) as u32);
         }
-        let fwr4_end = Some(ex.share[m0].full_seq.len() as u32);
+        let fwr4_end = Some((ex.share[m0].v_start + ex.share[m0].seq.len()) as u32);
 
         xchains.push(ClonotypeChain {
             nt_sequence: nt_sequence,
@@ -254,7 +254,7 @@ pub fn make_loupe_clonotype(
             }
             let cdr3_start = v_start + ex.share[m].cdr3_start;
             let cdr3_end = cdr3_start + ex.share[m].cdr3_dna.len();
-            let fwr4_end = Some(ex.share[m].full_seq.len() as u32);
+            let fwr4_end = Some((ex.share[m].v_start + ex.share[m].seq.len()) as u32);
             let mut umi_counts = Vec::<u32>::new();
             let mut read_counts = Vec::<u32>::new();
             let mut contig_ids = Vec::<String>::new();
