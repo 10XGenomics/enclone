@@ -828,7 +828,7 @@ pub fn row_fill(
             for j in 0..ex.share.len() {
                 if ex.share[j].cdr1_start.is_some() {
                     let fwr1 = ex.share[j].fr1_start;
-                    let cdr1 = ex.share[j].cdr2_start.unwrap();
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
                     if fwr1 < cdr1 {
                         let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
                         n += reg.find_iter(&strme(&aa)).count();
@@ -935,7 +935,7 @@ pub fn row_fill(
             for j in 0..ex.share.len() {
                 if ex.share[j].cdr1_start.is_some() {
                     let fwr1 = ex.share[j].fr1_start;
-                    let cdr1 = ex.share[j].cdr2_start.unwrap();
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
                     if fwr1 < cdr1 {
                         let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
                         n += reg.find_iter(&strme(&aa)).count();
