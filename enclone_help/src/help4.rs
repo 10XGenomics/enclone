@@ -538,18 +538,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "about regular expressions.  We also allow the form abbr:count_<regex>,",
         );
         h.doc(
-            "count_<f>_<reg>",
-            "where f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}",
-        );
-        h.doc(
-            "",
-            "similar to above but restricted to motifs lying entirely within a given",
-        );
-        h.doc("", "feature or feature set");
-        h.doc(
             "",
             "where abbr is an abbreviation that will appear as the field label.",
         );
+        h.doc(
+            "count_<f>_<reg>",
+            "Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar",
+        );
+        h.doc(
+            "",
+            "to the above but restricted to motifs lying entirely within",
+        );
+        h.doc("", "a given feature or feature set.");
         h.ldoc(
             "inkt",
             "A string showing the extent to which the T cells in an exact subclonotype",
