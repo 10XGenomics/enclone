@@ -18,7 +18,7 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
-amino = "0.1.3"
+amino = "0.1.4"
 ansi_escape = "0.1.0"
 debruijn = "0.3.2"
 edit-distance = "2.1.0"

@@ -518,16 +518,29 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             continue;
         }
 
-        // Check for [abbr:]count_<regex>.
+        // Check for [abbr:]count_<regex> and similar.
 
         if x.starts_with("count_") || x.contains(":count_") {
-            let y = x.after("count_");
+            let mut class = "count_".to_string();
+            if x.starts_with("count_cdr1_")
+                || x.starts_with("count_cdr2_")
+                || x.starts_with("count_cdr3_")
+                || x.starts_with("count_fwr1_")
+                || x.starts_with("count_fwr2_")
+                || x.starts_with("count_fwr3_")
+                || x.starts_with("count_fwr4_")
+                || x.starts_with("count_cdr_")
+                || x.starts_with("count_fwr_")
+            {
+                class = format!("count_{}_", x.between("_", "_"));
+            }
+            let y = x.after(&class);
             let reg = Regex::new(&y);
             if !reg.is_ok() {
                 eprintln!(
-                    "\nThe string after count_ in your lead variable {} is not a valid \
+                    "\nThe string after {} in your lead variable {} is not a valid \
                     regular expression.\n",
-                    x
+                    class, x
                 );
                 std::process::exit(1);
             }

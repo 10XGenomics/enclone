@@ -774,8 +774,209 @@ pub fn row_fill(
                 n += reg.find_iter(&strme(&aa)).count();
             }
             lvar![i, x, format!("{}", n)];
-            let z = vec![n as f64; ex.ncells()];
-            stats.push((x, z));
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_cdr1_") {
+                x = x.before(":count_cdr1_").to_string();
+            }
+            y = y.after("count_cdr1_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    if cdr1 < fwr2 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_cdr2_") || x.contains(":count_cdr2_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_cdr2_") {
+                x = x.before(":count_cdr2_").to_string();
+            }
+            y = y.after("count_cdr2_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    if cdr2 < fwr3 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_cdr3_") || x.contains(":count_cdr3_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_cdr3_") {
+                x = x.before(":count_cdr3_").to_string();
+            }
+            y = y.after("count_cdr3_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                let cdr3 = ex.share[j].cdr3_start;
+                let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_fwr1_") || x.contains(":count_fwr1_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_fwr1_") {
+                x = x.before(":count_fwr1_").to_string();
+            }
+            y = y.after("count_fwr1_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr2_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_fwr2_") || x.contains(":count_fwr2_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_fwr2_") {
+                x = x.before(":count_fwr2_").to_string();
+            }
+            y = y.after("count_fwr2_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_fwr3_") || x.contains(":count_fwr3_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_fwr3_") {
+                x = x.before(":count_fwr3_").to_string();
+            }
+            y = y.after("count_fwr3_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_fwr4_") || x.contains(":count_fwr4_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_fwr4_") {
+                x = x.before(":count_fwr4_").to_string();
+            }
+            y = y.after("count_fwr4_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_cdr_") || x.contains(":count_cdr_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_cdr_") {
+                x = x.before(":count_cdr_").to_string();
+            }
+            y = y.after("count_cdr_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() && ex.share[j].fr2_start.is_some() {
+                    let cdr1 = ex.share[j].cdr1_start.unwrap();
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    if cdr1 < fwr2 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr1..fwr2], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+                if ex.share[j].cdr2_start.is_some() && ex.share[j].fr3_start.is_some() {
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    if cdr2 < fwr3 {
+                        let aa = aa_seq(&ex.share[j].seq[cdr2..fwr3], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+                let cdr3 = ex.share[j].cdr3_start;
+                let fwr4 = cdr3 + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_fwr_") || x.contains(":count_fwr_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_fwr_") {
+                x = x.before(":count_fwr_").to_string();
+            }
+            y = y.after("count_fwr_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                if ex.share[j].cdr1_start.is_some() {
+                    let fwr1 = ex.share[j].fr1_start;
+                    let cdr1 = ex.share[j].cdr2_start.unwrap();
+                    if fwr1 < cdr1 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr1..cdr1], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+                if ex.share[j].fr2_start.is_some() && ex.share[j].cdr2_start.is_some() {
+                    let fwr2 = ex.share[j].fr2_start.unwrap();
+                    let cdr2 = ex.share[j].cdr2_start.unwrap();
+                    if fwr2 < cdr2 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr2..cdr2], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+                if ex.share[j].fr3_start.is_some() {
+                    let fwr3 = ex.share[j].fr3_start.unwrap();
+                    let cdr3 = ex.share[j].cdr3_start;
+                    if fwr3 < cdr3 {
+                        let aa = aa_seq(&ex.share[j].seq[fwr3..cdr3], 0);
+                        n += reg.find_iter(&strme(&aa)).count();
+                    }
+                }
+                let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
+                let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
         } else if x == "gex" {
             lvar![i, x, format!("{}", gex_median)];
         } else if x == "gex_cell" {

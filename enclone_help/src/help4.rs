@@ -518,7 +518,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("", "region of recombination");
         h.ldoc(
-            "count_<regex>",
+            "count_<reg>",
             "Number of matches of the V..J amino acid sequences of all chains to the given",
         );
         h.doc(
@@ -537,6 +537,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "about regular expressions.  We also allow the form abbr:count_<regex>,",
         );
+        h.doc(
+            "count_<f>_<reg>",
+            "where f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}",
+        );
+        h.doc(
+            "",
+            "similar to above but restricted to motifs lying entirely within a given",
+        );
+        h.doc("", "feature or feature set");
         h.doc(
             "",
             "where abbr is an abbreviation that will appear as the field label.",
