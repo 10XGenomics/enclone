@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 179] = [
+pub const TESTS: [&str; 184] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -450,6 +450,16 @@ pub const TESTS: [&str; 179] = [
     // 179. test cdr1_aa_north etc.
     r###"BCR=123085 CDR3=CAKDKVPRRSSWSVFDYYGMDVW POUT=stdouth
         PCOLS=cdr1_aa_north1,cdr1_aa_north2,cdr2_aa_north1,cdr2_aa_north2,cdr3_aa_north1,cdr3_aa_north2"###,
+    // 180. test some count vars
+    r###"BCR=85333 LVARS=all:count_C,c:count_cdr_C,c1:count_cdr1_C,c3:count_cdr3_C,f:count_fwr_C,f1:count_fwr1_C CDR3=CARDKEGLSGYAVERAFDYW"###,
+    // 181. test some count vars
+    r###"BCR=85333 LVARS=f2:count_fwr2_C CDR3=CVKDIRESSGPLLSHSFDLW"###,
+    // 182. test some count vars
+    r###"BCR=85333 LVARS=f3:count_fwr3_C CDR3=CARGGFSHAFDIW"###,
+    // 183. test some count vars
+    r###"BCR=123085 LVARS=f4:count_fwr4_V CDR3=CTRDRDLRGATDAFDIW"###,
+    // 184. test some count vars
+    r###"BCR=123085 LVARS=c2:count_cdr2_C CDR3=CARQQDVYTRSWYFDYW CELLS=1"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
