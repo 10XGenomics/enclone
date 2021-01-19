@@ -3,8 +3,8 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::proc_lvar::*;
 use crate::print_utils1::*;
+use crate::proc_lvar::*;
 use amino::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
@@ -351,12 +351,45 @@ pub fn row_fill(
     unique_sort(&mut alt_bcs);
     for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
-        proc_lvar(i, &x, pass, u, &ctl, &exacts, &mults, &exact_clonotypes, &gex_info,
-            &refdata, &varmat, &fp, row, out_data, d_all, ind_all,
-            &rsi, &dref, &groups, stats, &vdj_cells, &n_vdj_gex, &nd_fields,
-            &lvars, &lenas, &alt_bcs, n_gex, &n_gexs, 
-            gex_min, gex_max, gex_mean, gex_sum, gex_median, &count_unsorted, entropy, 
-            &entropies_unsorted, &fcounts);
+        proc_lvar(
+            i,
+            &x,
+            pass,
+            u,
+            &ctl,
+            &exacts,
+            &mults,
+            &exact_clonotypes,
+            &gex_info,
+            &refdata,
+            &varmat,
+            &fp,
+            row,
+            out_data,
+            d_all,
+            ind_all,
+            &rsi,
+            &dref,
+            &groups,
+            stats,
+            &vdj_cells,
+            &n_vdj_gex,
+            &nd_fields,
+            &lvars,
+            &lenas,
+            &alt_bcs,
+            n_gex,
+            &n_gexs,
+            gex_min,
+            gex_max,
+            gex_mean,
+            gex_sum,
+            gex_median,
+            &count_unsorted,
+            entropy,
+            &entropies_unsorted,
+            &fcounts,
+        );
     }
 
     // Sanity check.  It's here because if it fails and that failure was not detected, something

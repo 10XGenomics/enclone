@@ -48,7 +48,9 @@ pub fn get_gex_matrix_entry(
     raw_count
 }
 
-pub fn proc_lvar(i: usize, x: &String,
+pub fn proc_lvar(
+    i: usize,
+    x: &String,
     pass: usize,
     u: usize,
     ctl: &EncloneControl,
@@ -106,10 +108,10 @@ pub fn proc_lvar(i: usize, x: &String,
             }
         };
     }
-    
+
     // Set up lead variable macro.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
-    
+
     macro_rules! lvar {
         ($i: expr, $var:expr, $val:expr) => {
             if $i < lvars.len() {
@@ -145,9 +147,8 @@ pub fn proc_lvar(i: usize, x: &String,
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].donor_index.is_some() {
-                donors.push(
-                    ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone(),
-                );
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
             } else {
                 donors.push("?".to_string());
             }
