@@ -761,20 +761,6 @@ pub fn row_fill(
             } else {
                 lvar![i, x, format!("{}", dist)];
             }
-        } else if x.starts_with("count_") || x.contains(":count_") {
-            let (mut x, mut y) = (x.to_string(), x.to_string());
-            if x.contains(":count_") {
-                x = x.before(":count_").to_string();
-            }
-            y = y.after("count_").to_string();
-            let reg = Regex::new(&y).unwrap(); // seems inefficient
-            let mut n = 0;
-            for j in 0..ex.share.len() {
-                let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
-                n += reg.find_iter(&strme(&aa)).count();
-            }
-            lvar![i, x, format!("{}", n)];
-            stats.push((x, vec![n as f64; ex.ncells()]));
         } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
             let (mut x, mut y) = (x.to_string(), x.to_string());
             if x.contains(":count_cdr1_") {
@@ -973,6 +959,20 @@ pub fn row_fill(
                 }
                 let fwr4 = ex.share[j].cdr3_start + 3 * ex.share[j].cdr3_aa.len();
                 let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
+                n += reg.find_iter(&strme(&aa)).count();
+            }
+            lvar![i, x, format!("{}", n)];
+            stats.push((x, vec![n as f64; ex.ncells()]));
+        } else if x.starts_with("count_") || x.contains(":count_") {
+            let (mut x, mut y) = (x.to_string(), x.to_string());
+            if x.contains(":count_") {
+                x = x.before(":count_").to_string();
+            }
+            y = y.after("count_").to_string();
+            let reg = Regex::new(&y).unwrap(); // seems inefficient
+            let mut n = 0;
+            for j in 0..ex.share.len() {
+                let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
                 n += reg.find_iter(&strme(&aa)).count();
             }
             lvar![i, x, format!("{}", n)];
