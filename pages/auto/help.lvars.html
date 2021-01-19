@@ -51,78 +51,81 @@ clonotype, on the left side, and have one entry for each exact subclonotype row.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌───────────────┬────────────────────────────────────────────────────────────────────────────────┐
-│datasets       │  dataset identifiers                                                           │
-│origin         │  origin identifiers                                                            │
-│donors         │  donor identifiers                                                             │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│n              │  number of cells                                                               │
-│n_&lt;name>       │  number of cells associated to the given name, which can be a dataset          │
-│               │  or origin or donor or tag short name; may name only one such category         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│nd&lt;k>          │  For k a positive integer, this creates k+1 fields, that are specific to each  │
-│               │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset    │
-│               │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a          │
-│               │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however      │
-│               │  fields will be elided if they represent no cells.                             │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│near           │  Hamming distance of V..J DNA sequence to nearest neighbor                     │
-│far            │  Hamming distance of V..J DNA sequence to farthest neighbor                    │
-│               │  both compare to cells having chains in the same columns of the clonotype,     │
-│               │  with - shown if there is no other exact subclonotype to compare to            │
-│dref           │  Hamming distance of V..J DNA sequence to donor reference, excluding           │
-│               │  region of recombination                                                       │
-│dref_aa        │  Hamming distance of V..J amino acid sequence to donor reference, excluding    │
-│               │  region of recombination                                                       │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│count_&lt;regex>  │  Number of matches of the V..J amino acid sequences of all chains to the given │
-│               │  regular expression, which is treated as a subset match, so for example,       │
-│               │  count_CAR would count the total number of occurrences of the string CAR in all│
-│               │  the chains.  Please see "enclone help filter" for a discussion                │
-│               │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,        │
-│               │  where abbr is an abbreviation that will appear as the field label.            │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│inkt           │  A string showing the extent to which the T cells in an exact subclonotype     │
-│               │  have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,   │
-│               │  representing both gene name and junction sequence (CDR3) requirements for     │
-│               │  both chains.  See <span style="color:#25bc24;">bit.ly/enclone</span> for details on the requirements.             │
-│mait           │  Same as with inkt but for MAIT cells instead.                                 │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>           │  Here d is a nonnegative integer.  Then all the exact subclonotypes are        │
-│               │  grouped according to the Hamming distance of their V..J sequences.  Those     │
-│               │  within distance d are defined to be in the same group, and this is            │
-│               │  extended transitively.  The group identifier 1, 2, ... is shown.  The         │
-│               │  ordering of these identifiers is arbitrary.  This option is best applied      │
-│               │  to cases where all exact subclonotypes have a complete set of chains.         │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│gex            │  <span style="color:#c23621;">●</span> median gene expression UMI count                                            │
-│n_gex          │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                    │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g       │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type       │
-│&lt;antibody>_ab  │  with the given id or name; report the median UMI count for it; we allow       │
-│&lt;crispr>_cr    │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr    │
-│&lt;custom>_cu    │  or cu; this represents a sum of UMI counts across the matching features. ●    │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│cred           │  Short for credibility.  It is a measure of the extent to which cells          │
-│               │  having gene expression similar to a given putative B cell are themselves      │
-│               │  B cells.  (Or similarly for T cells.)  For the actual definition, let n       │
-│               │  be the number of VDJ cells that are also GEX cells.  For a given cell,        │
-│               │  find the n GEX cells that are closest to it in PCA space, and report the      │
-│               │  percent of those that are also VDJ cells.  For multiple datasets, it would    │
-│               │  be better to "aggr" the data, however that is not currently supported         │
-│               │  The computation is also inefficient, so let us know if it's causing           │
-│               │  problems for you.  And cred makes much better sense for datasets that         │
-│               │  consist of mixed cell types, rather than consisting of pure B or T cells.     │
-├───────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│filter         │  See "enclone help special".  Use with PER_CELL.  If you turn off some         │
-│               │  default filters (or all default filters, e.g. with NALL_CELL), and this       │
-│               │  cell would have been deleted by one of the default filters, then this will    │
-│               │  show the name of the last filter that would have been applied to delete the   │
-│               │  cell.  Note that there are complex interactions between filters, so the       │
-│               │  actual effect with all default filters on may be significantly different.     │
-│               │  Note also that use of NALL_CELL will typically result in peculiar             │
-│               │  artifacts, so this should only be used as an exploratory tool.                │
-└───────────────┴────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────┬────────────────────────────────────────────────────────────────────────────────┐
+│datasets         │  dataset identifiers                                                           │
+│origin           │  origin identifiers                                                            │
+│donors           │  donor identifiers                                                             │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│n                │  number of cells                                                               │
+│n_&lt;name>         │  number of cells associated to the given name, which can be a dataset          │
+│                 │  or origin or donor or tag short name; may name only one such category         │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│nd&lt;k>            │  For k a positive integer, this creates k+1 fields, that are specific to each  │
+│                 │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset    │
+│                 │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a          │
+│                 │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however      │
+│                 │  fields will be elided if they represent no cells.                             │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│near             │  Hamming distance of V..J DNA sequence to nearest neighbor                     │
+│far              │  Hamming distance of V..J DNA sequence to farthest neighbor                    │
+│                 │  both compare to cells having chains in the same columns of the clonotype,     │
+│                 │  with - shown if there is no other exact subclonotype to compare to            │
+│dref             │  Hamming distance of V..J DNA sequence to donor reference, excluding           │
+│                 │  region of recombination                                                       │
+│dref_aa          │  Hamming distance of V..J amino acid sequence to donor reference, excluding    │
+│                 │  region of recombination                                                       │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│count_&lt;reg>      │  Number of matches of the V..J amino acid sequences of all chains to the given │
+│                 │  regular expression, which is treated as a subset match, so for example,       │
+│                 │  count_CAR would count the total number of occurrences of the string CAR in all│
+│                 │  the chains.  Please see "enclone help filter" for a discussion                │
+│                 │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,        │
+│                 │  where abbr is an abbreviation that will appear as the field label.            │
+│count_&lt;f>_&lt;reg>  │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar   │
+│                 │  to the above but restricted to motifs lying entirely within                   │
+│                 │  a given feature or feature set.                                               │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│inkt             │  A string showing the extent to which the T cells in an exact subclonotype     │
+│                 │  have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,   │
+│                 │  representing both gene name and junction sequence (CDR3) requirements for     │
+│                 │  both chains.  See <span style="color:#25bc24;">bit.ly/enclone</span> for details on the requirements.             │
+│mait             │  Same as with inkt but for MAIT cells instead.                                 │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>             │  Here d is a nonnegative integer.  Then all the exact subclonotypes are        │
+│                 │  grouped according to the Hamming distance of their V..J sequences.  Those     │
+│                 │  within distance d are defined to be in the same group, and this is            │
+│                 │  extended transitively.  The group identifier 1, 2, ... is shown.  The         │
+│                 │  ordering of these identifiers is arbitrary.  This option is best applied      │
+│                 │  to cases where all exact subclonotypes have a complete set of chains.         │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│gex              │  <span style="color:#c23621;">●</span> median gene expression UMI count                                            │
+│n_gex            │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                    │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g         │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type       │
+│&lt;antibody>_ab    │  with the given id or name; report the median UMI count for it; we allow       │
+│&lt;crispr>_cr      │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr    │
+│&lt;custom>_cu      │  or cu; this represents a sum of UMI counts across the matching features. ●    │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│cred             │  Short for credibility.  It is a measure of the extent to which cells          │
+│                 │  having gene expression similar to a given putative B cell are themselves      │
+│                 │  B cells.  (Or similarly for T cells.)  For the actual definition, let n       │
+│                 │  be the number of VDJ cells that are also GEX cells.  For a given cell,        │
+│                 │  find the n GEX cells that are closest to it in PCA space, and report the      │
+│                 │  percent of those that are also VDJ cells.  For multiple datasets, it would    │
+│                 │  be better to "aggr" the data, however that is not currently supported         │
+│                 │  The computation is also inefficient, so let us know if it's causing           │
+│                 │  problems for you.  And cred makes much better sense for datasets that         │
+│                 │  consist of mixed cell types, rather than consisting of pure B or T cells.     │
+├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
+│filter           │  See "enclone help special".  Use with PER_CELL.  If you turn off some         │
+│                 │  default filters (or all default filters, e.g. with NALL_CELL), and this       │
+│                 │  cell would have been deleted by one of the default filters, then this will    │
+│                 │  show the name of the last filter that would have been applied to delete the   │
+│                 │  cell.  Note that there are complex interactions between filters, so the       │
+│                 │  actual effect with all default filters on may be significantly different.     │
+│                 │  Note also that use of NALL_CELL will typically result in peculiar             │
+│                 │  artifacts, so this should only be used as an exploratory tool.                │
+└─────────────────┴────────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
 ● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that

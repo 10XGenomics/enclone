@@ -4,6 +4,7 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::print_utils1::*;
+use crate::proc_lvar::*;
 use amino::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
@@ -11,9 +12,8 @@ use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
-use regex::Regex;
 use stats_utils::*;
-use std::cmp::{max, min};
+use std::cmp::min;
 use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -101,20 +101,6 @@ pub fn row_fill(
     let lvars = lvarsc.clone();
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
-    macro_rules! speak {
-        ($u:expr, $var:expr, $val:expr) => {
-            if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
-                let mut v = $var.to_string();
-                v = v.replace("_Σ", "_sum");
-                v = v.replace("_μ", "_mean");
-                if ctl.parseable_opt.pcols.is_empty()
-                    || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
-                {
-                    out_data[$u].insert(v, $val);
-                }
-            }
-        };
-    }
     let mut pcols_sort = ctl.parseable_opt.pcols_sort.clone();
     for i in 0..pcols_sort.len() {
         pcols_sort[i] = pcols_sort[i].replace("_Σ", "_sum");
@@ -164,20 +150,6 @@ pub fn row_fill(
         };
     }
     let cols = varmat[0].len();
-
-    // Set up lead variable macro.  This is the mechanism for generating
-    // both human-readable and parseable output for lead variables.
-
-    macro_rules! lvar {
-        ($i: expr, $var:expr, $val:expr) => {
-            if $i < lvars.len() {
-                row.push($val)
-            }
-            if pass == 2 {
-                speak!(u, $var.to_string(), $val);
-            }
-        };
-    }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
     // n_gex_cell, n_gex, entropy.
@@ -379,581 +351,45 @@ pub fn row_fill(
     unique_sort(&mut alt_bcs);
     for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
-        if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
-            let d = x.after("g").force_usize();
-            lvar![i, x, format!("{}", groups[&d][u] + 1)];
-        } else if x == "origins" {
-            let mut origins = Vec::<String>::new();
-            for j in 0..ex.clones.len() {
-                if ex.clones[j][0].origin_index.is_some() {
-                    origins.push(
-                        ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
-                    );
-                } else {
-                    origins.push("?".to_string());
-                }
-            }
-            unique_sort(&mut origins);
-            lvar![i, x, format!("{}", origins.iter().format(","))];
-        } else if x == "datasets" {
-            lvar![i, x, format!("{}", lenas.iter().format(","))];
-        } else if x == "donors" {
-            let mut donors = Vec::<String>::new();
-            for j in 0..ex.clones.len() {
-                if ex.clones[j][0].donor_index.is_some() {
-                    donors.push(
-                        ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone(),
-                    );
-                } else {
-                    donors.push("?".to_string());
-                }
-            }
-            unique_sort(&mut donors);
-            lvar![i, x, format!("{}", donors.iter().format(","))];
-        } else if x == "n" {
-            lvar![i, x, format!("{}", mults[u])];
-            let counts = vec![1.0; mults[u]];
-            stats.push((x.to_string(), counts));
-        } else if x == "clust" {
-            let mut clust = Vec::<usize>::new();
-            for j in 0..ex.clones.len() {
-                let mut cid = 0;
-                let bc = &ex.clones[j][0].barcode;
-                let li = ex.clones[j][0].dataset_index;
-                if gex_info.cluster[li].contains_key(&bc.clone()) {
-                    cid = gex_info.cluster[li][&bc.clone()];
-                }
-                clust.push(cid);
-            }
-            clust.sort();
-            lvar![i, x, format!("{}", abbrev_list(&clust))];
-        } else if x == "n_other" {
-            let mut n = 0;
-            for j in 0..ex.clones.len() {
-                let mut found = false;
-                let di = ex.clones[j][0].dataset_index;
-                let f = format!("n_{}", ctl.origin_info.dataset_id[di]);
-                for i in 0..nd_fields.len() {
-                    if f == nd_fields[i] {
-                        found = true;
-                    }
-                }
-                if !found {
-                    n += 1;
-                }
-            }
-            lvar![i, x, format!("{}", n)];
-        } else if x == "n_b" {
-            let mut n_b = 0;
-            for j in 0..ex.clones.len() {
-                let bc = &ex.clones[j][0].barcode;
-                let li = ex.clones[j][0].dataset_index;
-                if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                    if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
-                        n_b += 1;
-                    }
-                }
-            }
-            lvar![i, x, format!("{}", n_b)];
-        } else if x == "type" {
-            let mut cell_types = Vec::<String>::new();
-            /*
-            for j in 0..ex.clones.len() {
-                let mut cell_type = "".to_string();
-                let bc = &ex.clones[j][0].barcode;
-                let li = ex.clones[j][0].dataset_index;
-                if gex_info.cell_type[li].contains_key(&bc.clone()) {
-                    cell_type = gex_info.cell_type[li][&bc.clone()].clone();
-                }
-                cell_types.push(cell_type);
-            }
-            */
-            cell_types.sort();
-            lvar![i, x, format!("{}", abbrev_list(&cell_types))];
-        } else if x == "filter" {
-            lvar![i, x, String::new()];
-        } else if x == "mark" {
-            let mut n = 0;
-            for j in 0..ex.clones.len() {
-                if ex.clones[j][0].marked {
-                    n += 1;
-                }
-            }
-            lvar![i, x, format!("{}", n)];
-        } else if x == "inkt" {
-            let mut s = String::new();
-            let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;
-            let alpha_j = ex.share[0].inkt_alpha_chain_junction_match;
-            let beta_g = ex.share[0].inkt_beta_chain_gene_match;
-            let beta_j = ex.share[0].inkt_beta_chain_junction_match;
-            if alpha_g || alpha_j {
-                s += "𝝰";
-                if alpha_g {
-                    s += "g";
-                }
-                if alpha_j {
-                    s += "j";
-                }
-            }
-            if beta_g || beta_j {
-                s += "𝝱";
-                if beta_g {
-                    s += "g";
-                }
-                if beta_j {
-                    s += "j";
-                }
-            }
-            lvar![i, x, s.clone()];
-        } else if x == "mait" {
-            let mut s = String::new();
-            let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
-            let alpha_j = ex.share[0].mait_alpha_chain_junction_match;
-            let beta_g = ex.share[0].mait_beta_chain_gene_match;
-            let beta_j = ex.share[0].mait_beta_chain_junction_match;
-            if alpha_g || alpha_j {
-                s += "𝝰";
-                if alpha_g {
-                    s += "g";
-                }
-                if alpha_j {
-                    s += "j";
-                }
-            }
-            if beta_g || beta_j {
-                s += "𝝱";
-                if beta_g {
-                    s += "g";
-                }
-                if beta_j {
-                    s += "j";
-                }
-            }
-            lvar![i, x, s.clone()];
-        } else if x.starts_with("pe") {
-            lvar![i, x, format!("")];
-        } else if x.starts_with("npe") {
-            lvar![i, x, format!("")];
-        } else if x.starts_with("ppe") {
-            lvar![i, x, format!("")];
-        } else if x == "cred" || x == "cred_cell" {
-            let mut credsx = Vec::<f64>::new();
-            for l in 0..ex.clones.len() {
-                let bc = &ex.clones[l][0].barcode;
-                let li = ex.clones[l][0].dataset_index;
-                if gex_info.pca[li].contains_key(&bc.clone()) {
-                    let mut creds = 0;
-                    let mut z = Vec::<(f64, String)>::new();
-                    let x = &gex_info.pca[li][&bc.clone()];
-                    for y in gex_info.pca[li].iter() {
-                        let mut dist2 = 0.0;
-                        for m in 0..x.len() {
-                            dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
-                        }
-                        z.push((dist2, y.0.clone()));
-                    }
-                    z.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                    let top = n_vdj_gex[li];
-                    for i in 0..top {
-                        if bin_member(&vdj_cells[li], &z[i].1) {
-                            creds += 1;
-                        }
-                    }
-                    let pc = 100.0 * creds as f64 / top as f64;
-                    credsx.push(pc);
-                } else {
-                    credsx.push(0.0);
-                }
-            }
-            credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
-            if x == "cred" {
-                if credsx.is_empty() {
-                    lvar![i, x, format!("")];
-                } else {
-                    lvar![i, x, format!("{:.1}", credsx[credsx.len() / 2])];
-                }
-            } else {
-                if pass == 2 {
-                    let mut r = Vec::<String>::new();
-                    for j in 0..credsx.len() {
-                        r.push(format!("{:.1}", credsx[j]));
-                    }
-                    speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
-                }
-            }
-        } else if bin_member(&alt_bcs, x) {
-            lvar![i, x, format!("")];
-            if pass == 2 {
-                let mut r = Vec::<String>::new();
-                for l in 0..ex.clones.len() {
-                    let li = ex.clones[l][0].dataset_index;
-                    let bc = ex.clones[l][0].barcode.clone();
-                    let mut val = String::new();
-                    let alt = &ctl.origin_info.alt_bc_fields[li];
-                    for j in 0..alt.len() {
-                        if alt[j].0 == *x {
-                            if alt[j].1.contains_key(&bc.clone()) {
-                                val = alt[j].1[&bc.clone()].clone();
-                            }
-                        }
-                    }
-                    r.push(val);
-                }
-                speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
-            }
-        } else if x.starts_with("n_") && !x.starts_with("n_gex") {
-            let name = x.after("n_");
-            let mut count = 0;
-            let mut counts = Vec::<f64>::new();
-            for j in 0..ex.clones.len() {
-                let x = &ex.clones[j][0];
-                if ctl.origin_info.dataset_id[x.dataset_index] == name {
-                    count += 1;
-                    counts.push(1.0);
-                } else if x.origin_index.is_some()
-                    && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
-                {
-                    count += 1;
-                    counts.push(1.0);
-                } else if x.donor_index.is_some()
-                    && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
-                {
-                    count += 1;
-                    counts.push(1.0);
-                } else if x.tag_index.is_some()
-                    && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
-                {
-                    count += 1;
-                    counts.push(1.0);
-                }
-            }
-            lvar![i, x, format!("{}", count)];
-            stats.push((x.to_string(), counts));
-        } else if x == "sec" && ctl.gen_opt.using_secmem {
-            let mut n = 0;
-            let mut y = Vec::<f64>::new();
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].0;
-                    n += count;
-                }
-                y.push(count as f64);
-            }
-            lvar![i, x, format!("{}", n)];
-            stats.push((x.to_string(), y));
-        } else if x == "mem" && ctl.gen_opt.using_secmem {
-            let mut n = 0;
-            let mut y = Vec::<f64>::new();
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = &ex.clones[l][0].barcode;
-                let mut count = 0;
-                if ctl.origin_info.secmem[li].contains_key(&bc.clone()) {
-                    count = ctl.origin_info.secmem[li][&bc.clone()].1;
-                    n += count;
-                }
-                y.push(count as f64);
-            }
-            lvar![i, x, format!("{}", n)];
-            stats.push((x.to_string(), y));
-        } else if x == "dref" {
-            let mut diffs = 0;
-            for m in 0..cols {
-                if mat[m][u].is_some() {
-                    let r = mat[m][u].unwrap();
-                    let seq = &ex.share[r].seq_del_amino;
-                    let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                    if rsi.vpids[m].is_some() {
-                        vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                    }
-                    let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                    let z = seq.len();
-                    for p in 0..z {
-                        let b = seq[p];
-                        if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
-                            diffs += 1;
-                        }
-                        if p >= z - (jref.len() - ctl.heur.ref_j_trim)
-                            && b != jref[jref.len() - (z - p)]
-                        {
-                            diffs += 1;
-                        }
-                    }
-                }
-            }
-            lvar![i, x, format!("{}", diffs)];
-        } else if x == "dref_aa" {
-            let mut diffs = 0;
-            for m in 0..cols {
-                if mat[m][u].is_some() {
-                    let r = mat[m][u].unwrap();
-                    let aa_seq = &ex.share[r].aa_mod_indel;
-                    let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                    if rsi.vpids[m].is_some() {
-                        vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                    }
-                    let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                    let z = 3 * aa_seq.len() + 1;
-                    for p in 0..aa_seq.len() {
-                        if aa_seq[p] == b'-' {
-                            diffs += 1;
-                            continue;
-                        }
-                        if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim
-                            && aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3])
-                        {
-                            diffs += 1;
-                        }
-                        if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3
-                            && aa_seq[p]
-                                != codon_to_aa(
-                                    &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
-                                )
-                        {
-                            diffs += 1;
-                        }
-                    }
-                }
-            }
-            lvar![i, x, format!("{}", diffs)];
-        } else if x == "near" {
-            let mut dist = 1_000_000;
-            for i2 in 0..varmat.len() {
-                if i2 == u || fp[i2] != fp[u] {
-                    continue;
-                }
-                let mut d = 0;
-                for c in fp[u].iter() {
-                    for j in 0..varmat[u][*c].len() {
-                        if varmat[u][*c][j] != varmat[i2][*c][j] {
-                            d += 1;
-                        }
-                    }
-                }
-                dist = min(dist, d);
-            }
-            if dist == 1_000_000 {
-                lvar![i, x, "".to_string()];
-            } else {
-                lvar![i, x, format!("{}", dist)];
-            }
-        } else if x == "far" {
-            let mut dist = -1 as isize;
-            for i2 in 0..varmat.len() {
-                if i2 == u || fp[i2] != fp[u] {
-                    continue;
-                }
-                let mut d = 0 as isize;
-                for c in fp[u].iter() {
-                    for j in 0..varmat[u][*c].len() {
-                        if varmat[u][*c][j] != varmat[i2][*c][j] {
-                            d += 1;
-                        }
-                    }
-                }
-                dist = max(dist, d);
-            }
-            if dist == -1 as isize {
-                lvar![i, x, "".to_string()];
-            } else {
-                lvar![i, x, format!("{}", dist)];
-            }
-        } else if x.starts_with("count_") || x.contains(":count_") {
-            let (mut x, mut y) = (x.to_string(), x.to_string());
-            if x.contains(":count_") {
-                x = x.before(":count_").to_string();
-            }
-            y = y.after("count_").to_string();
-            let reg = Regex::new(&y).unwrap(); // seems inefficient
-            let mut n = 0;
-            for j in 0..ex.share.len() {
-                let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
-                n += reg.find_iter(&strme(&aa)).count();
-            }
-            lvar![i, x, format!("{}", n)];
-            let z = vec![n as f64; ex.ncells()];
-            stats.push((x, z));
-        } else if x == "gex" {
-            lvar![i, x, format!("{}", gex_median)];
-        } else if x == "gex_cell" {
-            if pass == 2 {
-                speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
-            }
-        } else if x == "n_gex" {
-            lvar![i, x, format!("{}", n_gex)];
-        } else if x == "n_gex_cell" {
-            if i < lvars.len() {
-                row.push("".to_string());
-            }
-            if pass == 2 {
-                speak!(
-                    u,
-                    "n_gex_cell".to_string(),
-                    format!("{}", n_gexs.iter().format(POUT_SEP))
-                );
-            }
-        } else if x == "entropy" {
-            lvar![i, x, format!("{:.2}", entropy)];
-        } else if x == "entropy_cell" {
-            let mut e = Vec::<String>::new();
-            for x in entropies_unsorted.iter() {
-                e.push(format!("{:.2}", x));
-            }
-            speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
-        } else if x == "gex_min" {
-            lvar![i, x, format!("{}", gex_min)];
-        } else if x == "gex_max" {
-            lvar![i, x, format!("{}", gex_max)];
-        } else if x == "gex_μ" {
-            lvar![i, x, format!("{}", gex_mean.round() as usize)];
-        } else if x == "gex_Σ" {
-            lvar![i, x, format!("{}", gex_sum.round() as usize)];
-        } else if x == "ext" {
-            let mut exts = Vec::<String>::new();
-            for l in 0..ex.clones.len() {
-                let li = ctl.origin_info.dataset_id[ex.clones[l][0].dataset_index].clone();
-                let bc = ex.clones[l][0].barcode.clone();
-                if ctl.gen_opt.extc.contains_key(&(li.clone(), bc.clone())) {
-                    exts.push(ctl.gen_opt.extc[&(li, bc)].clone());
-                }
-            }
-            exts.sort();
-            let mut s = String::new();
-            let mut j = 0;
-            while j < exts.len() {
-                let k = next_diff(&exts, j);
-                if j > 0 {
-                    s += ",";
-                }
-                s += &format!(
-                    "{}[{}/{}]",
-                    exts[j],
-                    k - j,
-                    ctl.gen_opt.extn[&exts[j].clone()]
-                );
-                j = k;
-            }
-            lvar![i, x, s.clone()];
-        } else {
-            let (mut counts_sub, mut fcounts_sub) = (Vec::<f64>::new(), Vec::<f64>::new());
-            let xorig = x.clone();
-            let (mut x, mut y) = (x.to_string(), x.to_string());
-            if x.contains(':') {
-                x = x.before(":").to_string();
-            }
-            if y.contains(':') {
-                y = y.after(":").to_string();
-            }
-            let y0 = y.clone();
-            for _ in 1..=2 {
-                let suffixes = ["_min", "_max", "_μ", "_Σ", "_cell", "_%"];
-                for s in suffixes.iter() {
-                    if y.ends_with(s) {
-                        y = y.rev_before(&s).to_string();
-                        break;
-                    }
-                }
-            }
-            let mut computed = false;
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = ex.clones[l][0].barcode.clone();
-                let mut ux = Vec::<usize>::new();
-                if ctl.clono_print_opt.regex_match[li].contains_key(&y) {
-                    ux = ctl.clono_print_opt.regex_match[li][&y].clone();
-                }
-                if ux.len() > 0 {
-                    let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                    if p >= 0 {
-                        computed = true;
-                        let mut raw_count = 0.0;
-                        for fid in ux.iter() {
-                            let raw_counti = get_gex_matrix_entry(
-                                &ctl, &gex_info, *fid, &d_all, &ind_all, li, l, p as usize, &y,
-                            );
-                            raw_count += raw_counti;
-                        }
-                        counts_sub.push(raw_count.round() as f64);
-                        fcounts_sub.push(raw_count);
-                    }
-                } else {
-                    if gex_info.feature_id[li].contains_key(&y) {
-                        computed = true;
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
-                        if p >= 0 {
-                            let fid = gex_info.feature_id[li][&y];
-                            let raw_count = get_gex_matrix_entry(
-                                &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
-                            );
-                            counts_sub.push(raw_count.round() as f64);
-                            fcounts_sub.push(raw_count);
-                        }
-                    }
-                }
-            }
-            if computed {
-                if !y0.ends_with("_%") {
-                    stats.push((x.clone(), fcounts_sub.clone()));
-                } else {
-                    let mut f = Vec::<f64>::new();
-                    for i in 0..fcounts_sub.len() {
-                        let mut x = 0.0;
-                        if gex_mean > 0.0 {
-                            x = 100.0 * fcounts_sub[i] / gex_mean;
-                        }
-                        f.push(x);
-                    }
-                    stats.push((x.clone(), f));
-                }
-                let mut counts_sub_sorted = counts_sub.clone();
-                counts_sub_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                let sum = fcounts_sub.iter().sum::<f64>();
-                let mean = sum / counts_sub.len() as f64;
-
-                if xorig.ends_with("_%_cell") {
-                    if pass == 2 {
-                        let mut c = Vec::<String>::new();
-                        for j in 0..counts_sub.len() {
-                            c.push(format!("{:.2}", 100.0 * counts_sub[j] as f64 / fcounts[j]));
-                        }
-                        let val = format!("{}", c.iter().format(POUT_SEP));
-                        speak!(u, x, val);
-                    }
-                } else if xorig.ends_with("_cell") {
-                    if pass == 2 {
-                        let val = format!("{}", counts_sub.iter().format(POUT_SEP));
-                        speak!(u, x, val);
-                    }
-                } else {
-                    if y0.ends_with("_min") {
-                        lvar![i, x, format!("{}", counts_sub_sorted[0].round())];
-                    } else if y0.ends_with("_max") {
-                        lvar![
-                            i,
-                            x,
-                            format!("{}", counts_sub_sorted[counts_sub.len() - 1].round())
-                        ];
-                    } else if y0.ends_with("_μ") {
-                        lvar![i, x, format!("{}", mean.round())];
-                    } else if y0.ends_with("_Σ") {
-                        lvar![i, x, format!("{}", sum.round())];
-                    } else if y0.ends_with("_%") {
-                        lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
-                    } else {
-                        let mut median = 0.0;
-                        if counts_sub_sorted.len() > 0 {
-                            median = counts_sub_sorted[counts_sub_sorted.len() / 2].round();
-                        }
-                        lvar![i, x, format!("{}", median)];
-                    }
-                }
-            } else if i < lvars.len() {
-                lvar![i, x, "".to_string()];
-            }
-        }
+        proc_lvar(
+            i,
+            &x,
+            pass,
+            u,
+            &ctl,
+            &exacts,
+            &mults,
+            &exact_clonotypes,
+            &gex_info,
+            &refdata,
+            &varmat,
+            &fp,
+            row,
+            out_data,
+            d_all,
+            ind_all,
+            &rsi,
+            &dref,
+            &groups,
+            stats,
+            &vdj_cells,
+            &n_vdj_gex,
+            &nd_fields,
+            &lvars,
+            &lenas,
+            &alt_bcs,
+            n_gex,
+            &n_gexs,
+            gex_min,
+            gex_max,
+            gex_mean,
+            gex_sum,
+            gex_median,
+            &count_unsorted,
+            entropy,
+            &entropies_unsorted,
+            &fcounts,
+        );
     }
 
     // Sanity check.  It's here because if it fails and that failure was not detected, something

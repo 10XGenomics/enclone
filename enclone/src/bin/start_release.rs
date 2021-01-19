@@ -165,9 +165,16 @@ fn main() {
     // Step 6. Edit README.md to reflect the upcoming version.
 
     {
-        let readme = include_str!["../../../README.md"].replace(&old_version, &version);
+        let readme = include_str!["../../../README.md"];
+        let new_readme = readme.replace(&old_version, &version);
+        if new_readme == readme {
+            eprintln!("\nFailed to update version in README.md.");
+            eprintln!("Please do this now and continue manually with the release.");
+            eprintln!("And figure out how this happened.\n");
+            std::process::exit(1);
+        }
         let mut g = open_for_write_new!["README.md"];
-        fwriteln!(g, "{}", readme);
+        fwriteln!(g, "{}", new_readme);
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
