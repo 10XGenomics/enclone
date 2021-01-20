@@ -301,7 +301,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Read external data.
 
     if ctl.gen_opt.ext.len() > 0 {
-        let f = open_for_read![&ctl.gen_opt.ext];
+        let f = open_userfile_for_read(&ctl.gen_opt.ext);
         let mut exts = Vec::<String>::new();
         for line in f.lines() {
             let s = line.unwrap();

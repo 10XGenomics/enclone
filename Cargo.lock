@@ -1115,9 +1115,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cd15063bab0636a45c1fa792a7b5c9843a65a8cbbbce6c8fd90f45299a01269"
+checksum = "d6a3adf861a0df157ce72e808a87a6290e8dd880be7d863f9a095a8a255f4bc8"
 dependencies = [
  "bincode",
  "flate2",

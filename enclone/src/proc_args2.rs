@@ -3,11 +3,7 @@
 use enclone_core::defs::*;
 use io_utils::*;
 use rayon::prelude::*;
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    time::Instant,
-};
+use std::{io::BufRead, time::Instant};
 use string_utils::*;
 use vector_utils::*;
 
@@ -178,7 +174,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) {
             }
             let invo = format!("{}/_invocation", dir);
             if path_exists(&invo) {
-                let f = open_for_read![invo];
+                let f = open_userfile_for_read(&invo);
                 for line in f.lines() {
                     let s = line.unwrap();
                     // Leave sample_desc alone for internal architecture!

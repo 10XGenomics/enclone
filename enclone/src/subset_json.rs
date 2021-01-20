@@ -4,15 +4,14 @@
 // in a given sorted vector.
 
 use io_utils::*;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::BufRead;
 use string_utils::*;
 use vector_utils::*;
 
 pub fn subset_all_contig_annotations_json(filename: &str, barcodes: &Vec<String>) -> String {
     let mut x = "[\n".to_string();
     let mut lines = Vec::<String>::new();
-    let f = open_for_read![&filename];
+    let f = open_userfile_for_read(&filename);
     let mut keep = false;
     for line in f.lines() {
         let s = line.unwrap();
