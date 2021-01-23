@@ -12,7 +12,7 @@ use rayon::prelude::*;
 use std::{
     collections::HashMap,
     fs::{remove_file, File},
-    io::{BufRead, BufReader},
+    io::BufRead,
     time::Instant,
 };
 use string_utils::*;
@@ -208,7 +208,7 @@ pub fn load_gex(
             // Read cell types.
 
             if path_exists(&types_file) {
-                let f = open_for_read![&types_file];
+                let f = open_userfile_for_read(&types_file);
                 let mut count = 0;
                 for line in f.lines() {
                     count += 1;
@@ -235,7 +235,7 @@ pub fn load_gex(
 
             // Read PCA file.
 
-            let f = open_for_read![&pca_file];
+            let f = open_userfile_for_read(&pca_file);
             let mut count = 0;
             for line in f.lines() {
                 count += 1;
@@ -256,7 +256,7 @@ pub fn load_gex(
 
             // Read graph clusters, and also get the cell barcodes from that.
 
-            let f = open_for_read![&cluster_file];
+            let f = open_userfile_for_read(&cluster_file);
             let mut count = 0;
             for line in f.lines() {
                 count += 1;
@@ -272,7 +272,7 @@ pub fn load_gex(
             // Get the multipliers gene and feature barcode counts.
 
             let mut gene_mult = None;
-            let f = open_for_read![&csv];
+            let f = open_userfile_for_read(&csv);
             let mut line_no = 0;
             let mut rpc_field = None;
             let mut rpc = None;

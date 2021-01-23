@@ -343,7 +343,7 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
     if bc != "".to_string() {
         bc = get_path_or_internal_id(&bc, &ctl, call_type);
-        let f = open_for_read![&bc];
+        let f = open_userfile_for_read(&bc);
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
         let mut barcode_pos = 0;

@@ -1115,9 +1115,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cd15063bab0636a45c1fa792a7b5c9843a65a8cbbbce6c8fd90f45299a01269"
+checksum = "d6a3adf861a0df157ce72e808a87a6290e8dd880be7d863f9a095a8a255f4bc8"
 dependencies = [
  "bincode",
  "flate2",
@@ -2285,7 +2285,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa#3987c956df6de3a3dcd6640445a84239865f13aa"
 dependencies = [
  "align_tools",
  "amino",
@@ -2313,7 +2313,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa#3987c956df6de3a3dcd6640445a84239865f13aa"
 dependencies = [
  "serde",
  "serde_json",

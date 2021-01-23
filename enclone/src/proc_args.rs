@@ -10,7 +10,7 @@ use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
-use std::io::{BufRead, BufReader};
+use std::io::BufRead;
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
@@ -1352,7 +1352,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 f = format!("{}/metrics_summary.csv", p);
             }
             if path_exists(&f) {
-                let f = open_for_read![&f];
+                let f = open_userfile_for_read(&f);
                 let mut count = 0;
                 let (mut cells_field, mut rpc_field) = (None, None);
                 for line in f.lines() {
