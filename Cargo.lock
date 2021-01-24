@@ -593,7 +593,7 @@ dependencies = [
  "stirling_numbers",
  "string_utils",
  "tilde-expand",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
  "vector_utils",
 ]
 
@@ -618,7 +618,7 @@ dependencies = [
  "serde_json",
  "string_utils",
  "superslice",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
  "vector_utils",
 ]
 
@@ -666,7 +666,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "tables",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
  "vector_utils",
 ]
 
@@ -700,7 +700,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "tables",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
  "vector_utils",
 ]
 
@@ -716,7 +716,7 @@ dependencies = [
  "prost-build",
  "serde",
  "serde_derive",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd)",
 ]
 
 [[package]]
@@ -745,7 +745,7 @@ dependencies = [
  "string_utils",
  "tables",
  "tar",
- "vdj_ann",
+ "vdj_ann 0.1.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
  "vector_utils",
 ]
 
@@ -2306,7 +2306,35 @@ dependencies = [
  "string_utils",
  "strum",
  "strum_macros",
- "vdj_types",
+ "vdj_types 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa)",
+ "vector_utils",
+]
+
+[[package]]
+name = "vdj_ann"
+version = "0.1.6"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
+dependencies = [
+ "align_tools",
+ "amino",
+ "bio",
+ "debruijn",
+ "exons",
+ "fasta_tools",
+ "flate2",
+ "hyperbase",
+ "io_utils",
+ "itertools",
+ "kmer_lookup",
+ "pretty_trace",
+ "serde",
+ "serde_json",
+ "sha2",
+ "stats_utils",
+ "string_utils",
+ "strum",
+ "strum_macros",
+ "vdj_types 0.1.0 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd)",
  "vector_utils",
 ]
 
@@ -2314,6 +2342,17 @@ dependencies = [
 name = "vdj_types"
 version = "0.1.0"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=3987c956df6de3a3dcd6640445a84239865f13aa#3987c956df6de3a3dcd6640445a84239865f13aa"
+dependencies = [
+ "serde",
+ "serde_json",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
+name = "vdj_types"
+version = "0.1.0"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
 dependencies = [
  "serde",
  "serde_json",
