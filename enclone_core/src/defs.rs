@@ -730,6 +730,7 @@ pub struct TigData {
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
+    pub validated_umis: Vec<String>,          // validated UMIs
 }
 
 // The ExactClonotype data structure stores information that could be exhibited as a
@@ -754,6 +755,7 @@ pub struct TigData0 {
     pub umi_count: usize,            // number of UMIs supporting contig
     pub read_count: usize,           // number of reads supporting contig
     pub marked: bool,                // if marked for possible deletion
+    pub validated_umis: Vec<String>, // validated UMIs
 }
 
 #[derive(Clone)]
