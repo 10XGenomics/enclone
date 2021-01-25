@@ -245,6 +245,7 @@ pub fn create_exact_subclonotype_core(
                     tag_index: tig_bc[t][m].tag_index,
                     umi_count: tig_bc[t][m].umi_count,
                     read_count: tig_bc[t][m].read_count,
+                    validated_umis: tig_bc[t][m].validated_umis.clone(),
                     marked: false,
                 });
             }

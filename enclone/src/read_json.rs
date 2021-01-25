@@ -152,6 +152,17 @@ fn parse_vector_entry_from_json(
         *cr_version = v["version"].to_string().between("\"", "\"").to_string();
     }
 
+    // Read validated UMIs.
+
+    let mut validated_umis = Vec::<String>::new();
+    let val = v["validated_umis"].as_array();
+    if val.is_some() {
+        let val = val.unwrap();
+        for i in 0..val.len() {
+            validated_umis.push(val[i].to_string().between("\"", "\"").to_string());
+        }
+    }
+
     // Reannotate.
 
     if reannotate || ctl.gen_opt.reprod {
@@ -548,6 +559,7 @@ fn parse_vector_entry_from_json(
         read_count: read_count,
         chain_type: chain_type.clone(),
         annv: annv.clone(),
+        validated_umis: validated_umis,
     });
 }
 
