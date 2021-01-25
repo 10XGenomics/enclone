@@ -1182,6 +1182,9 @@ pub fn print_clonotypes(
                                         } else if rsi.cvars[col][p] == "r".to_string() {
                                             let r = ex.clones[bcl.2][m].read_count;
                                             cx[cp + p] = format!("{}", r);
+                                        } else if rsi.cvars[col][p] == "nval".to_string() {
+                                            let n = ex.clones[bcl.2][m].validated_umis.len();
+                                            cx[cp + p] = format!("{}", n);
                                         }
                                     }
                                 }

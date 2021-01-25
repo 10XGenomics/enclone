@@ -1277,6 +1277,8 @@ pub fn row_fill(
                 } else {
                     cvar![j, *var, "_".to_string()];
                 }
+            } else if var == "nval" {
+                cvar![j, *var, "".to_string()];
             } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;
