@@ -145,7 +145,10 @@ pub fn enclosing_polygon(c: &Vec<(f64, f64, f64)>, d: f64, n: usize) -> Polygon 
                 let px = rho.cos() * r + x;
                 let py = rho.sin() * r + y;
                 let (dx, dy) = (px - mx, py - my);
-                let theta = dy.atan2(dx);
+                let mut theta = dy.atan2(dx);
+                if theta < 0.0 {
+                    theta += 2.0 * PI;
+                }
                 if theta1 <= theta && theta <= theta2 {
                     pr[i] = pr[i].max((dx * dx + dy * dy).sqrt() + d);
                     let mut ip = i + 1;
