@@ -2,6 +2,8 @@
 
 // Code for working with polygons.
 
+use std::f64::consts::PI;
+
 #[derive(Clone, Copy)]
 pub struct Point {
     x: f64,
@@ -100,4 +102,71 @@ impl Polygon {
         }
         inside
     }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Find an n-vertex polygon that encloses circles c = {(r, x, y)} with separation of at least
+// d from them.
+
+pub fn enclosing_polygon(c: &Vec<(f64, f64, f64)>, d: f64, n: usize) -> Polygon {
+    // First find the center of mass (mx, my);
+
+    let (mut m, mut mx, mut my) = (0.0, 0.0, 0.0);
+    for i in 0..c.len() {
+        let w = c[i].0 * c[i].0;
+        m += w;
+        mx += w * c[i].1;
+        my += w * c[i].2;
+    }
+    mx /= m;
+    my /= m;
+
+    // Initialize the distances of the polygonal vertices from the center of mass.
+
+    let mut pr = vec![0.0_f64; n];
+
+    // Traverse the polygonal vertices.
+
+    for i in 0..n {
+        let theta1 = 2.0 * PI * (i as f64) / (n as f64);
+        let theta2 = 2.0 * PI * ((i + 1) as f64) / (n as f64);
+        for j in 0..c.len() {
+            let (r, x, y) = (c[j].0, c[j].1, c[j].2);
+
+            // Find the maximum distance of a point on the circle from the center of mass, with the
+            // angle from the center of mass confined between theta1 and theta2.  However, instead
+            // of solving the math problem, do this for a bunch of points on the circle.  This is
+            // lazy.
+
+            let np = 100;
+            for k in 0..np {
+                let rho = 2.0 * PI * (k as f64) / (np as f64);
+                let px = rho.cos() * r + x;
+                let py = rho.sin() * r + y;
+                let (dx, dy) = (px - mx, py - my);
+                let theta = dy.atan2(dx);
+                if theta1 <= theta && theta <= theta2 {
+                    pr[i] = pr[i].max((dx * dx + dy * dy).sqrt() + d);
+                    let mut ip = i + 1;
+                    if ip == n {
+                        ip = 0;
+                    }
+                    pr[ip] = pr[ip].max((dx * dx + dy * dy).sqrt() + d);
+                }
+            }
+        }
+    }
+
+    // Form the polygon.
+
+    let mut p = Polygon::default();
+    for i in 0..n {
+        let theta = 2.0 * PI * (i as f64) / (n as f64);
+        p.v.push(Point {
+            x: mx + pr[i] * theta.cos(),
+            y: my + pr[i] * theta.sin(),
+        });
+    }
+    p
 }
