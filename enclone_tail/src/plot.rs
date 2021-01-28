@@ -306,12 +306,14 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
 
 // Given a collection of circles having specified colors, create an svg string that shows the
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
+// Also shades smoothed polygons.
 
 fn circles_to_svg(
-    shades: &str,
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
+    shades: &Vec<Polygon>,
+    shade_colors: &Vec<String>,
     width: usize,
     height: usize,
     boundary: usize,
@@ -332,7 +334,6 @@ fn circles_to_svg(
          xmlns=\"http://www.w3.org/2000/svg\">\n",
         width, height
     );
-    out += &shades;
     let mut center = center.clone();
     let mut radius = radius.clone();
     let mut xmin = center[0].0;
@@ -345,6 +346,14 @@ fn circles_to_svg(
         ymin = ymin.min(center[i].1 - radius[i]);
         ymax = ymax.max(center[i].1 + radius[i]);
     }
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            xmin = xmin.min(shades[i].v[j].x);
+            xmax = xmax.max(shades[i].v[j].x);
+            ymin = ymin.min(shades[i].v[j].y);
+            ymax = ymax.max(shades[i].v[j].y);
+        }
+    }
     let width = width - boundary;
     let height = height - boundary;
     let scale = ((width as f64) / (xmax - xmin)).min((height as f64) / (ymax - ymin));
@@ -356,6 +365,22 @@ fn circles_to_svg(
         radius[i] *= scale;
         center[i].0 += boundary as f64;
         center[i].1 += boundary as f64;
+    }
+    let mut shades = shades.clone();
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            shades[i].v[j].x -= xmin;
+            shades[i].v[j].y -= ymin;
+            shades[i].v[j].x *= scale;
+            shades[i].v[j].y *= scale;
+        }
+    }
+    for (g, p) in shades.iter().enumerate() {
+        out += "<path d=\"";
+        out += &format!("{}", p.catmull_bezier_svg());
+        out += "\" ";
+        out += &format!("fill=\"{}\"\n", shade_colors[g]);
+        out += "/>\n";
     }
     for i in 0..center.len() {
         out += &format!(
@@ -570,12 +595,14 @@ pub fn plot_clonotypes(
 
     let group_id = vec![0; radii.len()];
     let group_color = vec!["".to_string()];
+    // let group_color = vec!["#DCF7EE".to_string()];
     let ngroups = group_color.len();
 
     // Traverse the groups.
 
     let blacklist = Vec::<Polygon>::new();
-    let mut shades = String::new();
+    let mut shades = Vec::<Polygon>::new();
+    let mut shade_colors = Vec::<String>::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
         // Gather the group.
@@ -606,14 +633,8 @@ pub fn plot_clonotypes(
             let d = 5.0; // distance of polygon from the circles
             let n = 10; // number of vertices on polygon
             let p = enclosing_polygon(&z, d, n);
-
-            // Build shading.
-
-            shades += "<path d=\"";
-            shades += &format!("{}", p.catmull_bezier_svg());
-            shades += "\"";
-            shades += &format!("fill=\"{}\"\n", group_color[g]);
-            shades += "/>\n";
+            shades.push(p);
+            shade_colors.push(group_color[g].clone());
         }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
@@ -670,10 +691,30 @@ pub fn plot_clonotypes(
     const WIDTH: usize = 400;
     const HEIGHT: usize = 400;
     const BOUNDARY: usize = 10;
+
+    // Negate y coordinates, as otherwise images are inverted, not sure why.
+
     for i in 0..center.len() {
-        center[i].1 = -center[i].1; // otherwise inverted, not sure why
+        center[i].1 = -center[i].1;
     }
-    *svg = circles_to_svg(&shades, &center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            shades[i].v[j].y = -shades[i].v[j].y;
+        }
+    }
+
+    // Generate svg.
+
+    *svg = circles_to_svg(
+        &center,
+        &radius,
+        &color,
+        &shades,
+        &shade_colors,
+        WIDTH,
+        HEIGHT,
+        BOUNDARY,
+    );
 
     // Add legend.
 

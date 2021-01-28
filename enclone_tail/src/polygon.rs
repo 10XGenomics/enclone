@@ -45,7 +45,7 @@ impl Interval {
 // vertex at the end.  The polygon is not assumed to be convex.  We assume that the edges do not
 // cross each other, but that is not tested.
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Polygon {
     pub v: Vec<Point>,
 }
