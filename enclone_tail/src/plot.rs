@@ -165,11 +165,13 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
 
     // Define data for the first circle.
 
-    push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+    if blacklist.is_empty() {
+        push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+    }
 
     // Compute the maximum distance "bigr" from the origin.
 
-    let mut bigr = r[0];
+    let mut bigr = if blacklist.is_empty() { r[0] } else { 0.0 };
     for p in blacklist.iter() {
         for x in p.v.iter() {
             bigr = bigr.max(x.origin_dist());
@@ -185,7 +187,8 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     const SAMPLE: usize = 100000;
     const MUL: f64 = 1.5;
     let mut centers = vec![(0.0, 0.0); SAMPLE];
-    for i in 1..r.len() {
+    let start = if blacklist.is_empty() { 1 } else { 0 };
+    for i in start..r.len() {
         let mut found = false;
         let mut best_r1 = 0.0;
         let mut best_r2 = 0.0;
