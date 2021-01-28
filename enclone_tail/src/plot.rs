@@ -622,6 +622,12 @@ pub fn plot_clonotypes(
         for i in 0..freq.len() {
             names_uniq.push(freq[i].1.clone());
         }
+        for i in 0..names_uniq.len() - 1 {
+            if names_uniq[i] == "HIDE" {
+                let n = names_uniq.len();
+                names_uniq.swap(i, n - 1);
+            }
+        }
         group_id.clear();
         for i in 0..names.len() {
             let p = position(&names_uniq, &names[i]) as usize;
@@ -681,8 +687,11 @@ pub fn plot_clonotypes(
             let b = 255 - (fracs[i].2 * sum as f64).round() as usize;
             group_color.push(format!("rgb({},{},{})", r, g, b));
         }
+        if names_uniq.last().unwrap() == "HIDE" {
+            let n = group_color.len();
+            group_color.truncate(n - 1);
+        }
     }
-
     let ngroups = group_color.len();
 
     // Traverse the groups.
