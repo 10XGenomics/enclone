@@ -599,11 +599,20 @@ pub fn plot_clonotypes(
     let group_id = vec![0; radii.len()];
     let group_color = vec!["".to_string()];
     // let group_color = vec!["#DCF7EE".to_string()];
+
+    /*
+    let mut group_id = Vec::<usize>::new();
+    for i in 0..radii.len() {
+        group_id.push( i % 2 );
+    }
+    let group_color = vec!["#DCF7EE".to_string(), "#CFAECC".to_string()];
+    */
+
     let ngroups = group_color.len();
 
     // Traverse the groups.
 
-    let blacklist = Vec::<Polygon>::new();
+    let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
     let mut shade_colors = Vec::<String>::new();
     let mut shade_enclosures = Vec::<Polygon>::new();
@@ -634,13 +643,26 @@ pub fn plot_clonotypes(
             for i in 0..centersx.len() {
                 z.push((radiix[i], centersx[i].0, centersx[i].1));
             }
+            /*
+            if g == 1 {
+                for i in 0..centersx.len() {
+                    println!("{:.3} {:.3} {:.3}",
+                        radiix[i], 150.0 + centersx[i].0, 100.0 + centersx[i].1);
+                }
+            }
+            */
             let d = 5.0; // distance of polygon from the circles
-            let n = 10; // number of vertices on polygon
+            let n = 25; // number of vertices on polygon
             let mut p = enclosing_polygon(&z, d, n);
             shades.push(p.clone());
             shade_colors.push(group_color[g].clone());
-            p.enlarge(10.0);
-            shade_enclosures.push(p);
+
+            // Build an enlarged polygon that would hopefully include the smoothed polygonal
+            // curve.  We should actually calculate to enforce this.
+
+            p.enlarge(20.0);
+            shade_enclosures.push(p.clone());
+            blacklist.push(p);
         }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
