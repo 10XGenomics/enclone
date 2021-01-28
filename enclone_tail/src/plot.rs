@@ -308,6 +308,7 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
 
 fn circles_to_svg(
+    shades: &str,
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
@@ -331,6 +332,7 @@ fn circles_to_svg(
          xmlns=\"http://www.w3.org/2000/svg\">\n",
         width, height
     );
+    out += &shades;
     let mut center = center.clone();
     let mut radius = radius.clone();
     let mut xmin = center[0].0;
@@ -573,7 +575,7 @@ pub fn plot_clonotypes(
     // Traverse the groups.
 
     let blacklist = Vec::<Polygon>::new();
-    let mut _shades = String::new();
+    let mut shades = String::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
         // Gather the group.
@@ -607,11 +609,11 @@ pub fn plot_clonotypes(
 
             // Build shading.
 
-            _shades += "<path d=\"";
-            _shades += &format!("{}", p.catmull_bezier_svg());
-            _shades += "\"";
-            _shades += &format!("fill=\"{}\"\n", group_color[g]);
-            _shades += "/>\n";
+            shades += "<path d=\"";
+            shades += &format!("{}", p.catmull_bezier_svg());
+            shades += "\"";
+            shades += &format!("fill=\"{}\"\n", group_color[g]);
+            shades += "/>\n";
         }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
@@ -671,7 +673,7 @@ pub fn plot_clonotypes(
     for i in 0..center.len() {
         center[i].1 = -center[i].1; // otherwise inverted, not sure why
     }
-    *svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
+    *svg = circles_to_svg(&shades, &center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
 
     // Add legend.
 
