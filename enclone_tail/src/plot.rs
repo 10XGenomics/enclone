@@ -374,6 +374,8 @@ fn circles_to_svg(
             shades[i].v[j].y -= ymin;
             shades[i].v[j].x *= scale;
             shades[i].v[j].y *= scale;
+            shades[i].v[j].x += boundary as f64;
+            shades[i].v[j].y += boundary as f64;
         }
     }
     for (g, p) in shades.iter().enumerate() {
