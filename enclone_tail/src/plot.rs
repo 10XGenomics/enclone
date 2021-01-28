@@ -584,15 +584,17 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        centers = pack_circles(&radiix, &blacklist);
+        let centersx = pack_circles(&radiix, &blacklist);
+        centers.append(&mut centersx.clone());
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
         // single-cell clonotypes.
 
         let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-        for i in 0..clusters.len() {
-            let mut c = clusters[i].0.clone();
+        for i in 0..ids.len() {
+            let id = ids[i];
+            let mut c = clusters[id].0.clone();
             unique_sort(&mut c);
             if c.solo() {
                 ccc.push((clusters[i].0.len(), c[0].clone(), i));
@@ -610,8 +612,8 @@ pub fn plot_clonotypes(
             angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
             for k in i..j {
                 let new_id = angle[k - i].1;
-                for u in 0..clusters[new_id].0.len() {
-                    clusters[new_id].0[u] = ccc[k].1.clone();
+                for u in 0..clusters[ids[new_id]].0.len() {
+                    clusters[ids[new_id]].0[u] = ccc[k].1.clone();
                 }
             }
             i = j;
