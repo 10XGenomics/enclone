@@ -573,6 +573,7 @@ pub fn plot_clonotypes(
     // Traverse the groups.
 
     let blacklist = Vec::<Polygon>::new();
+    let mut _shades = String::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
         // Gather the group.
@@ -602,7 +603,15 @@ pub fn plot_clonotypes(
             }
             let d = 5.0; // distance of polygon from the circles
             let n = 10; // number of vertices on polygon
-            let _p = enclosing_polygon(&z, d, n);
+            let p = enclosing_polygon(&z, d, n);
+
+            // Build shading.
+
+            _shades += "<path d=\"";
+            _shades += &format!("{}", p.catmull_bezier_svg());
+            _shades += "\"";
+            _shades += &format!("fill=\"{}\"\n", group_color[g]);
+            _shades += "/>\n";
         }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
