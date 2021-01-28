@@ -277,9 +277,13 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
             });
             for z in 0..SAMPLE {
                 if results[z].3 {
-                    let r1 = results[z].1;
-                    let r2 = results[z].2;
-                    let val = r1 * r1 + r2 * r2;
+                    let (r1, r2) = (results[z].1, results[z].2);
+                    let val;
+                    if blacklist.is_empty() || i == 0 {
+                        val = r1 * r1 + r2 * r2;
+                    } else {
+                        val = (r1 - c[0].0) * (r1 - c[0].0) + (r2 - c[0].1) * (r2 - c[0].1);
+                    }
                     if !found || val < best_val {
                         best_r1 = r1;
                         best_r2 = r2;
