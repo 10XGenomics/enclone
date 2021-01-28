@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::polygon::*;
 use crate::string_width::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
@@ -117,8 +118,10 @@ fn hex_coord(n: usize, r: f64) -> (f64, f64) {
 
 // Pack circles of given radii, which should be in descending order.  Return centers for the
 // circles.  There is probably a literature on this, and this is probably a very crappy algorithm.
+//
+// Blacklisted polygons are avoided.
 
-fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
+fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     // Set up to track the centers of the circles.
 
     let mut c = Vec::<(f64, f64)>::new();
@@ -164,9 +167,17 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
 
     push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
 
-    // Proceed.
+    // Compute the maximum distance "bigr" from the origin.
 
     let mut bigr = r[0];
+    for p in blacklist.iter() {
+        for x in p.v.iter() {
+            bigr = bigr.max(x.origin_dist());
+        }
+    }
+
+    // Proceed.
+
     let mut rand = 0i64;
     // We use a ridiculously large sample.  Reducing it to 1000 substantially reduces symmetry.
     // Presumably as the number of clusters increases, the sample would need to be increased
@@ -179,6 +190,9 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
         let mut best_r1 = 0.0;
         let mut best_r2 = 0.0;
         let mut best_val = 0.0;
+
+        // Loop until we find a placement for the circle.
+
         loop {
             for z in 0..SAMPLE {
                 // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
@@ -210,34 +224,46 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                 let r1 = centers[z].0;
                 let r2 = centers[z].1;
 
-                // See if circle at (r1,r2) overlaps any of the existing circles.
-                // This involves a binary search, which reduces the complexity of the algorithm.
+                // Test for overlap with a blacklisted polygon.
 
                 let mut ok = true;
-                let low = ints.binary_search_by(|v| {
-                    v.partial_cmp(&(r1 - r[i] - radius0, 0))
-                        .expect("Comparison failed.")
-                });
-                let low = match low {
-                    Ok(i) => i,
-                    Err(i) => i,
-                };
-                let high = ints.binary_search_by(|v| {
-                    v.partial_cmp(&(r1 + r[i], 0)).expect("Comparison failed.")
-                });
-                let high = match high {
-                    Ok(i) => i,
-                    Err(i) => i,
-                };
-                for m in low..high {
-                    if m > low && ints[m].1 == ints[m - 1].1 {
-                        continue;
-                    }
-                    let k = ints[m].1;
-                    let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
-                    if d < (r[i] + r[k]) * (r[i] + r[k]) {
+                let m = Point { x: r1, y: r2 };
+                for p in blacklist.iter() {
+                    if p.touches_disk(m, r[i]) {
                         ok = false;
                         break;
+                    }
+                }
+
+                // See if circle at (r1,r2) with radius r[i] overlaps any of the existing circles.
+                // This involves a binary search, which reduces the complexity of the algorithm.
+
+                if ok {
+                    let low = ints.binary_search_by(|v| {
+                        v.partial_cmp(&(r1 - r[i] - radius0, 0))
+                            .expect("Comparison failed.")
+                    });
+                    let low = match low {
+                        Ok(i) => i,
+                        Err(i) => i,
+                    };
+                    let high = ints.binary_search_by(|v| {
+                        v.partial_cmp(&(r1 + r[i], 0)).expect("Comparison failed.")
+                    });
+                    let high = match high {
+                        Ok(i) => i,
+                        Err(i) => i,
+                    };
+                    for m in low..high {
+                        if m > low && ints[m].1 == ints[m - 1].1 {
+                            continue;
+                        }
+                        let k = ints[m].1;
+                        let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
+                        if d < (r[i] + r[k]) * (r[i] + r[k]) {
+                            ok = false;
+                            break;
+                        }
                     }
                 }
                 if ok {
@@ -530,7 +556,7 @@ pub fn plot_clonotypes(
         clusters.push((colors, coords));
         radii.push(radius);
     }
-    let centers = pack_circles(&radii);
+    let centers = pack_circles(&radii, &Vec::<Polygon>::new());
 
     // Reorganize constant-color clusters so that like-colored clusters are proximate,
     // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on

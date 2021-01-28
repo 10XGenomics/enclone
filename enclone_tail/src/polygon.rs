@@ -2,12 +2,43 @@
 
 // Code for working with polygons.
 
+use core::mem::swap;
 use std::f64::consts::PI;
 
 #[derive(Clone, Copy)]
 pub struct Point {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
+}
+
+impl Point {
+    pub fn origin_dist(&self) -> f64 {
+        ((self.x * self.x) + (self.y * self.y)).sqrt()
+    }
+
+    pub fn dist(&self, p: Point) -> f64 {
+        let (dx, dy) = (self.x - p.x, self.y - p.y);
+        (dx * dx + dy * dy).sqrt()
+    }
+}
+
+pub struct Interval {
+    pub x1: f64,
+    pub x2: f64,
+}
+
+impl Interval {
+    pub fn touches_interval(&self, m: Interval) -> bool {
+        // Does [p.y - d, p.y + d] overlap [y1, y2]?
+        if m.x1 <= self.x1 && m.x2 >= self.x1 {
+            return true;
+        } else if m.x1 <= self.x2 && m.x2 >= self.x2 {
+            return true;
+        } else if m.x1 >= self.x1 && m.x2 <= self.x2 {
+            return true;
+        }
+        false
+    }
 }
 
 // Polygon structure.  The vertices represent a clockwise traversal and do not repeat the first
@@ -101,6 +132,86 @@ impl Polygon {
             }
         }
         inside
+    }
+
+    // Determine if the disk centered at p with radius r touches the polygon.
+
+    pub fn touches_disk(&self, p: Point, r: f64) -> bool {
+        // Case 1: the point is inside the polygon.
+
+        if self.inside(p) {
+            return true;
+        }
+
+        // Case 2: the polygon is inside the disk.
+
+        let mut enclosed = true;
+        for i in 0..self.v.len() {
+            if p.dist(self.v[i]) > r {
+                enclosed = false;
+                break;
+            }
+        }
+        if enclosed {
+            return true;
+        }
+
+        // Case 3: the disk boundary (circle) touches an edge.
+
+        for i1 in 0..self.v.len() {
+            let i2 = (i1 + 1) % self.v.len();
+            let (p1, p2) = (self.v[i1], self.v[i2]);
+            if p1.x == p2.x {
+                if (p1.x - p.x).abs() <= r {
+                    let dx = p1.x - p.x;
+                    let d = (r * r - dx * dx).sqrt();
+                    let (mut y1, mut y2) = (p1.y, p2.y);
+                    if y1 > y2 {
+                        swap(&mut y1, &mut y2);
+                    }
+                    let i1 = Interval {
+                        x1: p.y - d,
+                        x2: p.y + d,
+                    };
+                    let i2 = Interval { x1: y1, x2: y2 };
+                    if i1.touches_interval(i2) {
+                        return true;
+                    }
+                }
+            } else {
+                // Let Y = mX + b be the line from p1 to p2.
+                let m = (p2.y - p1.y) / (p2.x - p1.x);
+                let b = p1.y - m * p1.x;
+                // Y = mX + b (from p1 to p2)  ==?overlaps?== (X - p.x)^2 + (Y - p.y)^2 = r^2
+                // ==> solve (X - p.x)^2 + (mX + b - p.y)^2 = r^2
+                // ==> X^2 - 2p.x*X + p.x^2 + m^2*X^2 + (b - p.y)^2 + 2 * mX * (b - p.y) = r^2
+                // ==> (1 + m^2)X^2 + (2m * (b - p.y) - 2p.x)*X = r^2 - p.x^2 - (b - p.y)^2
+                let c = 1.0 + m * m;
+                let mut d = m * (b - p.y) - p.x;
+                let mut u = r * r - p.x * p.x - (b - p.y) * (b - p.y);
+                // ==> c*X^2 + 2*d*X = u
+                d /= c;
+                u /= c;
+                // ==> X^2 + 2*d*X = u
+                // ==> (X + d)^2 = u + d^2
+                u += d * d;
+                // ==> (X + d)^2 = u
+                if u >= 0.0 {
+                    let z1 = -u.sqrt() - d;
+                    let z2 = u.sqrt() - d;
+                    let (mut x1, mut x2) = (p1.x, p2.x);
+                    if x1 > x2 {
+                        swap(&mut x1, &mut x2);
+                    }
+                    let i1 = Interval { x1: z1, x2: z2 };
+                    let i2 = Interval { x1: x1, x2: x2 };
+                    if i1.touches_interval(i2) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 }
 
