@@ -594,87 +594,94 @@ pub fn plot_clonotypes(
         radii.push(radius);
     }
 
-    // Set default group specification.
+    // Set group specification.
 
-    let group_id = vec![0; radii.len()];
-    let group_color = vec!["".to_string()];
-
-    /*
-    let mut names = Vec::<String>::new();
-    let f = open_for_read!["dataset_commands/m.clonotype_names"];
-    for line in f.lines() {
-        let s = line.unwrap();
-        names.push(s);
-    }
-    let mut names_sorted = names.clone();
-    names_sorted.sort();
-    let mut freq = Vec::<(u32, String)>::new();
-    make_freq(&names_sorted, &mut freq);
-    let mut names_uniq = Vec::<String>::new();
-    for i in 0..freq.len() {
-        names_uniq.push(freq[i].1.clone());
-    }
-    let mut group_id = Vec::<usize>::new();
-    for i in 0..names.len() {
-        let p = position(&names_uniq, &names[i]) as usize;
-        group_id.push(p);
-    }
-    let sum = 50; // a + b + c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
-    let mut rand = 0i64;
-    let mut points = Vec::<(f64, f64, f64)>::new();
-    while points.len() < 10_000 {
-        let rand1 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand2 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand1)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand3 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand2)
-            .wrapping_add(1_442_695_040_888_963_407);
-        rand = rand3;
-        let mut r1 = (rand1 % 1_000_000i64) as f64 / 1_000_000.0;
-        let mut r2 = (rand2 % 1_000_000i64) as f64 / 1_000_000.0;
-        let mut r3 = (rand3 % 1_000_000i64) as f64 / 1_000_000.0;
-        r1 = (r1 + 1.0) / 2.0;
-        r2 = (r2 + 1.0) / 2.0;
-        r3 = (r3 + 1.0) / 2.0;
-        let r = r1 + r2 + r3;
-        if r > 0.0 {
-            r1 /= r;
-            r2 /= r;
-            r3 /= r;
-            points.push((r1, r2, r3));
+    let mut group_id = vec![0; radii.len()];
+    let mut group_color = vec!["".to_string()];
+    if ctl.gen_opt.clonotype_group_names.is_some() {
+        let mut names = Vec::<String>::new();
+        let f = open_for_read![&ctl.gen_opt.clonotype_group_names.as_ref().unwrap()];
+        for line in f.lines() {
+            let s = line.unwrap();
+            names.push(s);
         }
-    }
-    let mut fracs = vec![points[0]];
-    for _ in 1..names_uniq.len() {
-        let mut max_dist = 0.0;
-        let mut best = (0.0, 0.0, 0.0);
-        for p in points.iter() {
-            let mut min_dist = 100.0_f64;
-            for q in fracs.iter() {
-                let d
-                    = (p.0 - q.0) * (p.0 - q.0)
-                    + (p.1 - q.1) * (p.1 - q.1)
-                    + (p.2 - q.2) * (p.2 - q.2);
-                min_dist = min_dist.min(d);
-            }
-            if min_dist > max_dist {
-                max_dist = min_dist;
-                best = *p;
+        if names.len() != radii.len() {
+            eprintln!(
+                "\nThe number of lines in your CLONOTYPE_GROUP_NAMES file is {}, whereas\n\
+                the number of clonotypes is {}.  These numbers have to be equal.\n",
+                names.len(),
+                radii.len()
+            );
+            std::process::exit(1);
+        }
+        let mut names_sorted = names.clone();
+        names_sorted.sort();
+        let mut freq = Vec::<(u32, String)>::new();
+        make_freq(&names_sorted, &mut freq);
+        let mut names_uniq = Vec::<String>::new();
+        for i in 0..freq.len() {
+            names_uniq.push(freq[i].1.clone());
+        }
+        group_id.clear();
+        for i in 0..names.len() {
+            let p = position(&names_uniq, &names[i]) as usize;
+            group_id.push(p);
+        }
+        let sum = 50; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
+        let mut rand = 0i64;
+        let mut points = Vec::<(f64, f64, f64)>::new();
+        while points.len() < 10_000 {
+            let rand1 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand2 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand1)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand3 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand2)
+                .wrapping_add(1_442_695_040_888_963_407);
+            rand = rand3;
+            let mut r1 = (rand1 % 1_000_000i64) as f64 / 1_000_000.0;
+            let mut r2 = (rand2 % 1_000_000i64) as f64 / 1_000_000.0;
+            let mut r3 = (rand3 % 1_000_000i64) as f64 / 1_000_000.0;
+            r1 = (r1 + 1.0) / 2.0;
+            r2 = (r2 + 1.0) / 2.0;
+            r3 = (r3 + 1.0) / 2.0;
+            let r = r1 + r2 + r3;
+            if r > 0.0 {
+                r1 /= r;
+                r2 /= r;
+                r3 /= r;
+                points.push((r1, r2, r3));
             }
         }
-        fracs.push(best);
+        let mut fracs = vec![points[0]];
+        for _ in 1..names_uniq.len() {
+            let mut max_dist = 0.0;
+            let mut best = (0.0, 0.0, 0.0);
+            for p in points.iter() {
+                let mut min_dist = 100.0_f64;
+                for q in fracs.iter() {
+                    let d = (p.0 - q.0) * (p.0 - q.0)
+                        + (p.1 - q.1) * (p.1 - q.1)
+                        + (p.2 - q.2) * (p.2 - q.2);
+                    min_dist = min_dist.min(d);
+                }
+                if min_dist > max_dist {
+                    max_dist = min_dist;
+                    best = *p;
+                }
+            }
+            fracs.push(best);
+        }
+        group_color.clear();
+        for i in 0..fracs.len() {
+            let r = 255 - (fracs[i].0 * sum as f64).round() as usize;
+            let g = 255 - (fracs[i].1 * sum as f64).round() as usize;
+            let b = 255 - (fracs[i].2 * sum as f64).round() as usize;
+            group_color.push(format!("rgb({},{},{})", r, g, b));
+        }
     }
-    let mut group_color = Vec::<String>::new();
-    for i in 0..fracs.len() {
-        let r = 255 - (fracs[i].0 * sum as f64).round() as usize;
-        let g = 255 - (fracs[i].1 * sum as f64).round() as usize;
-        let b = 255 - (fracs[i].2 * sum as f64).round() as usize;
-        group_color.push(format!("rgb({},{},{})", r, g, b));
-    }
-    */
 
     let ngroups = group_color.len();
 

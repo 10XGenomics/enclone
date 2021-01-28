@@ -514,7 +514,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Define arguments that set something to a string that is an input file name.
 
-    let set_string_readable = [("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata)];
+    let set_string_readable = [
+        (
+            "CLONOTYPE_GROUP_NAMES",
+            &mut ctl.gen_opt.clonotype_group_names,
+        ),
+        ("PROTO_METADATA", &mut ctl.gen_opt.proto_metadata),
+    ];
 
     // Define arguments that do nothing (because already parsed), and which have no "= value" part.
 

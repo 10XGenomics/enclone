@@ -269,3 +269,12 @@ translates into BC=x/outs/genetic_demux_results/clusters.tsv
 to allow for convenient use of genetic demux results in the PD pipeline
 
 cvar nval = number of validated umis
+
+===================================================================================================
+
+CLONOTYPE_GROUP_NAMES=filename
+* The file should have exactly n lines, where n is the number of clonotypes.  The idea is that
+  one would run enclone once to get the number of clonotypes, and gather information that would
+  allow grouping of clonotypes.  Then run it as second time with this argument.
+* The argument only does something if honeycomb plotting is used.  In that case, the honeycomb
+  plot is split by group and each group is given a different (light) background color.
