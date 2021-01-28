@@ -598,14 +598,51 @@ pub fn plot_clonotypes(
 
     let group_id = vec![0; radii.len()];
     let group_color = vec!["".to_string()];
-    // let group_color = vec!["#DCF7EE".to_string()];
 
     /*
-    let mut group_id = Vec::<usize>::new();
-    for i in 0..radii.len() {
-        group_id.push( i % 2 );
+    let mut names = Vec::<String>::new();
+    let f = open_for_read!["dataset_commands/m.clonotype_names"];
+    for line in f.lines() {
+        let s = line.unwrap();
+        names.push(s);
     }
-    let group_color = vec!["#DCF7EE".to_string(), "#CFAECC".to_string()];
+    let mut names_sorted = names.clone();
+    names_sorted.sort();
+    let mut freq = Vec::<(u32, String)>::new();
+    make_freq(&names_sorted, &mut freq);
+    let mut names_uniq = Vec::<String>::new();
+    for i in 0..freq.len() {
+        names_uniq.push(freq[i].1.clone());
+    }
+    let mut group_id = Vec::<usize>::new();
+    for i in 0..names.len() {
+        let p = position(&names_uniq, &names[i]) as usize;
+        group_id.push(p);
+    }
+    let sum = 50; // a + b + c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
+    let fracs = [
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 0.0, 1.0],
+        [0.5, 0.5, 0.0],
+        [0.5, 0.0, 0.5],
+        [0.0, 0.5, 0.5],
+        [0.2, 0.2, 0.6],
+        [0.2, 0.6, 0.2],
+        [0.6, 0.2, 0.2],
+        [0.3, 0.3, 0.4],
+        [0.3, 0.4, 0.3],
+        [0.4, 0.3, 0.3],
+        [0.7, 0.0, 0.3],
+        [0.0, 0.3, 0.7],
+    ];
+    let mut group_color = Vec::<String>::new();
+    for i in 0..fracs.len() {
+        let r = 255 - (fracs[i][0] * sum as f64).round() as usize;
+        let g = 255 - (fracs[i][1] * sum as f64).round() as usize;
+        let b = 255 - (fracs[i][2] * sum as f64).round() as usize;
+        group_color.push(format!("rgb({},{},{})", r, g, b));
+    }
     */
 
     let ngroups = group_color.len();
@@ -652,7 +689,7 @@ pub fn plot_clonotypes(
             }
             */
             let d = 5.0; // distance of polygon from the circles
-            let n = 25; // number of vertices on polygon
+            let n = 35; // number of vertices on polygon
             let mut p = enclosing_polygon(&z, d, n);
             shades.push(p.clone());
             shade_colors.push(group_color[g].clone());
@@ -660,7 +697,7 @@ pub fn plot_clonotypes(
             // Build an enlarged polygon that would hopefully include the smoothed polygonal
             // curve.  We should actually calculate to enforce this.
 
-            p.enlarge(20.0);
+            p.enlarge(25.0);
             shade_enclosures.push(p.clone());
             blacklist.push(p);
         }
@@ -685,7 +722,7 @@ pub fn plot_clonotypes(
             let mut angle = vec![(0.0, 0); j - i];
             for k in i..j {
                 let id = ccc[k].2;
-                angle[k - i] = (centers[id].1.atan2(centers[id].0), id);
+                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
             }
             angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
             for k in i..j {
