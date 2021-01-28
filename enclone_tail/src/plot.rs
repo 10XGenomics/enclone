@@ -573,7 +573,7 @@ pub fn plot_clonotypes(
     // Traverse the groups.
 
     let blacklist = Vec::<Polygon>::new();
-    let mut centers = Vec::<(f64, f64)>::new();
+    let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
         // Gather the group.
 
@@ -589,7 +589,21 @@ pub fn plot_clonotypes(
         // Find circle centers.
 
         let centersx = pack_circles(&radiix, &blacklist);
-        centers.append(&mut centersx.clone());
+        for i in 0..ids.len() {
+            centers[ids[i]] = centersx[i];
+        }
+
+        // Find polygon around the group.
+
+        if ngroups > 1 || group_color[0].len() > 0 {
+            let mut z = Vec::<(f64, f64, f64)>::new();
+            for i in 0..centersx.len() {
+                z.push((radiix[i], centersx[i].0, centersx[i].1));
+            }
+            let d = 5.0; // distance of polygon from the circles
+            let n = 10; // number of vertices on polygon
+            let _p = enclosing_polygon(&z, d, n);
+        }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
         // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
