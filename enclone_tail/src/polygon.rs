@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// Code for working with polygons.
+// Code for working with polygons.  Possibly rename to planar_objects.rs.
 
 use core::mem::swap;
 use std::f64::consts::PI;
