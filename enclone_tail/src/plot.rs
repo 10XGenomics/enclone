@@ -559,37 +559,63 @@ pub fn plot_clonotypes(
         clusters.push((colors, coords));
         radii.push(radius);
     }
-    let centers = pack_circles(&radii, &Vec::<Polygon>::new());
 
-    // Reorganize constant-color clusters so that like-colored clusters are proximate,
-    // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
-    // single-cell clonotypes.
+    // Set default group specification.
 
-    let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-    for i in 0..clusters.len() {
-        let mut c = clusters[i].0.clone();
-        unique_sort(&mut c);
-        if c.solo() {
-            ccc.push((clusters[i].0.len(), c[0].clone(), i));
-        }
-    }
-    ccc.sort();
-    let mut i = 0;
-    while i < ccc.len() {
-        let j = next_diff1_3(&ccc, i as i32) as usize;
-        let mut angle = vec![(0.0, 0); j - i];
-        for k in i..j {
-            let id = ccc[k].2;
-            angle[k - i] = (centers[id].1.atan2(centers[id].0), id);
-        }
-        angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        for k in i..j {
-            let new_id = angle[k - i].1;
-            for u in 0..clusters[new_id].0.len() {
-                clusters[new_id].0[u] = ccc[k].1.clone();
+    let group_id = vec![0; radii.len()];
+    let group_color = vec!["".to_string()];
+    let ngroups = group_color.len();
+
+    // Traverse the groups.
+
+    let blacklist = Vec::<Polygon>::new();
+    let mut centers = Vec::<(f64, f64)>::new();
+    for g in 0..ngroups {
+        // Gather the group.
+
+        let mut ids = Vec::<usize>::new();
+        let mut radiix = Vec::<f64>::new();
+        for i in 0..group_id.len() {
+            if group_id[i] == g {
+                ids.push(i);
+                radiix.push(radii[i]);
             }
         }
-        i = j;
+
+        // Find circle centers.
+
+        centers = pack_circles(&radiix, &blacklist);
+
+        // Reorganize constant-color clusters so that like-colored clusters are proximate,
+        // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
+        // single-cell clonotypes.
+
+        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+        for i in 0..clusters.len() {
+            let mut c = clusters[i].0.clone();
+            unique_sort(&mut c);
+            if c.solo() {
+                ccc.push((clusters[i].0.len(), c[0].clone(), i));
+            }
+        }
+        ccc.sort();
+        let mut i = 0;
+        while i < ccc.len() {
+            let j = next_diff1_3(&ccc, i as i32) as usize;
+            let mut angle = vec![(0.0, 0); j - i];
+            for k in i..j {
+                let id = ccc[k].2;
+                angle[k - i] = (centers[id].1.atan2(centers[id].0), id);
+            }
+            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            for k in i..j {
+                let new_id = angle[k - i].1;
+                for u in 0..clusters[new_id].0.len() {
+                    clusters[new_id].0[u] = ccc[k].1.clone();
+                }
+            }
+            i = j;
+        }
     }
 
     // Build the svg file.
