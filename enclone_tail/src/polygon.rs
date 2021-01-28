@@ -51,6 +51,28 @@ pub struct Polygon {
 }
 
 impl Polygon {
+    // Enlarge the polygon by a specified distance d.  This moves each vertex d farther away
+    // from the center of mass, as defined by the vertices.  Not sure that makes sense.
+
+    pub fn enlarge(&mut self, d: f64) {
+        let (mut cx, mut cy) = (0.0, 0.0);
+        for i in 0..self.v.len() {
+            cx += self.v[i].x;
+            cy += self.v[i].y;
+        }
+        cx /= self.v.len() as f64;
+        cy /= self.v.len() as f64;
+        let c = Point { x: cx, y: cy };
+        for i in 0..self.v.len() {
+            let x = self.v[i].x;
+            let y = self.v[i].y;
+            let dc = self.v[i].dist(c);
+            let r = (dc + d) / dc;
+            self.v[i].x = cx + (x - cx) * r;
+            self.v[i].y = cy + (y - cy) * r;
+        }
+    }
+
     // Generate an svg path for the polygon.
 
     pub fn to_svg(&self) -> String {

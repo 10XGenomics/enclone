@@ -314,6 +314,7 @@ fn circles_to_svg(
     color: &Vec<String>,
     shades: &Vec<Polygon>,
     shade_colors: &Vec<String>,
+    shade_enclosures: &Vec<Polygon>,
     width: usize,
     height: usize,
     boundary: usize,
@@ -348,10 +349,10 @@ fn circles_to_svg(
     }
     for i in 0..shades.len() {
         for j in 0..shades[i].v.len() {
-            xmin = xmin.min(shades[i].v[j].x);
-            xmax = xmax.max(shades[i].v[j].x);
-            ymin = ymin.min(shades[i].v[j].y);
-            ymax = ymax.max(shades[i].v[j].y);
+            xmin = xmin.min(shade_enclosures[i].v[j].x);
+            xmax = xmax.max(shade_enclosures[i].v[j].x);
+            ymin = ymin.min(shade_enclosures[i].v[j].y);
+            ymax = ymax.max(shade_enclosures[i].v[j].y);
         }
     }
     let width = width - boundary;
@@ -603,6 +604,7 @@ pub fn plot_clonotypes(
     let blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
     let mut shade_colors = Vec::<String>::new();
+    let mut shade_enclosures = Vec::<Polygon>::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
         // Gather the group.
@@ -632,9 +634,11 @@ pub fn plot_clonotypes(
             }
             let d = 5.0; // distance of polygon from the circles
             let n = 10; // number of vertices on polygon
-            let p = enclosing_polygon(&z, d, n);
-            shades.push(p);
+            let mut p = enclosing_polygon(&z, d, n);
+            shades.push(p.clone());
             shade_colors.push(group_color[g].clone());
+            p.enlarge(10.0);
+            shade_enclosures.push(p);
         }
 
         // Reorganize constant-color clusters so that like-colored clusters are proximate,
@@ -702,6 +706,11 @@ pub fn plot_clonotypes(
             shades[i].v[j].y = -shades[i].v[j].y;
         }
     }
+    for i in 0..shade_enclosures.len() {
+        for j in 0..shade_enclosures[i].v.len() {
+            shade_enclosures[i].v[j].y = -shade_enclosures[i].v[j].y;
+        }
+    }
 
     // Generate svg.
 
@@ -711,6 +720,7 @@ pub fn plot_clonotypes(
         &color,
         &shades,
         &shade_colors,
+        &shade_enclosures,
         WIDTH,
         HEIGHT,
         BOUNDARY,
