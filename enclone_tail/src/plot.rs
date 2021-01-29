@@ -900,6 +900,7 @@ pub fn plot_clonotypes(
 
     const FONT_SIZE: usize = 20;
     const LEGEND_BOX_STROKE_WIDTH: usize = 2;
+    let mut legend_xstop_shading = 0.0;
     if using_shading {
         let n = ngroups;
         let mut max_string_width = 0.0f64;
@@ -910,13 +911,14 @@ pub fn plot_clonotypes(
         let legend_height = ((FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY) as f64;
         let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 20.0;
         let legend_xstart = actual_width + BOUNDARY as f64 + 20.0;
-        let legend_ystart = 50;
+        let legend_ystart = 50.0;
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
             legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
+        legend_xstop_shading = legend_xstart + legend_width;
         for i in 0..n {
             let y = legend_ystart as f64
                 + BOUNDARY as f64 * 2.5
@@ -1011,8 +1013,12 @@ pub fn plot_clonotypes(
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let legend_xstart = BOUNDARY as f64;
-        let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        let mut legend_xstart = BOUNDARY as f64;
+        let mut legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        if using_shading {
+            legend_xstart = legend_xstop_shading + 10.0;
+            legend_ystart = 50.0;
+        }
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
@@ -1042,6 +1048,11 @@ pub fn plot_clonotypes(
         let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
         let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
         *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+        if using_shading {
+            let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
+            let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
+            *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+        }
     }
 
     // Output the svg file.
