@@ -633,7 +633,7 @@ pub fn plot_clonotypes(
             let p = position(&names_uniq, &names[i]) as usize;
             group_id.push(p);
         }
-        let sum = 50; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
+        let sum = 40; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
         let mut rand = 0i64;
         let mut points = Vec::<(f64, f64, f64)>::new();
         while points.len() < 10_000 {
