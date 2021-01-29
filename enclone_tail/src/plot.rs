@@ -867,6 +867,21 @@ pub fn plot_clonotypes(
         BOUNDARY,
     );
 
+    // Calculate the actual width of the svg.
+
+    let mut actual_width = 0.0f64;
+    let fields = svg.split(' ').collect::<Vec<&str>>();
+    let mut x = 0.0;
+    for i in 0..fields.len() {
+        if fields[i].starts_with("cx=") {
+            x = fields[i].between("\"", "\"").force_f64();
+        }
+        if fields[i].starts_with("r=") {
+            let r = fields[i].between("\"", "\"").force_f64();
+            actual_width = actual_width.max(x + r);
+        }
+    }
+
     // Add legend for shading.
 
     const FONT_SIZE: usize = 20;
@@ -880,7 +895,7 @@ pub fn plot_clonotypes(
         let color_bar_width = 100.0;
         let legend_height = ((FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY) as f64;
         let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 20.0;
-        let legend_xstart = (400 + BOUNDARY) as f64;
+        let legend_xstart = actual_width + BOUNDARY as f64 + 20.0;
         let legend_ystart = 50;
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
