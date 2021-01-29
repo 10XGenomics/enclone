@@ -729,6 +729,7 @@ pub fn plot_clonotypes(
 
     // Traverse the groups.
 
+    let using_shading = ngroups > 1 || group_color[0].len() > 0;
     let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
     let mut shade_colors = Vec::<String>::new();
@@ -755,7 +756,7 @@ pub fn plot_clonotypes(
 
         // Find polygon around the group.
 
-        if ngroups > 1 || group_color[0].len() > 0 {
+        if using_shading {
             let mut z = Vec::<(f64, f64, f64)>::new();
             for i in 0..centersx.len() {
                 z.push((radiix[i], centersx[i].0, centersx[i].1));
@@ -867,7 +868,20 @@ pub fn plot_clonotypes(
         BOUNDARY,
     );
 
-    // Calculate the actual width of the svg.
+    // Calculate the actual height and width of the svg.
+
+    let mut actual_height = 0.0f64;
+    let fields = svg.split(' ').collect::<Vec<&str>>();
+    let mut y = 0.0;
+    for i in 0..fields.len() {
+        if fields[i].starts_with("cy=") {
+            y = fields[i].between("\"", "\"").force_f64();
+        }
+        if fields[i].starts_with("r=") {
+            let r = fields[i].between("\"", "\"").force_f64();
+            actual_height = actual_height.max(y + r);
+        }
+    }
 
     let mut actual_width = 0.0f64;
     let fields = svg.split(' ').collect::<Vec<&str>>();
@@ -886,7 +900,7 @@ pub fn plot_clonotypes(
 
     const FONT_SIZE: usize = 20;
     const LEGEND_BOX_STROKE_WIDTH: usize = 2;
-    if ngroups > 1 || group_color[0].len() > 0 {
+    if using_shading {
         let n = ngroups;
         let mut max_string_width = 0.0f64;
         for s in group_name.iter() {
@@ -991,33 +1005,19 @@ pub fn plot_clonotypes(
             max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
         }
 
-        // Calculate the actual height of the svg.
-
-        let mut actual_height = 0.0f64;
-        let fields = svg.split(' ').collect::<Vec<&str>>();
-        let mut y = 0.0;
-        for i in 0..fields.len() {
-            if fields[i].starts_with("cy=") {
-                y = fields[i].between("\"", "\"").force_f64();
-            }
-            if fields[i].starts_with("r=") {
-                let r = fields[i].between("\"", "\"").force_f64();
-                actual_height = actual_height.max(y + r);
-            }
-        }
-
         // Build the legend.
 
         let n = labels.len();
         const LEGEND_CIRCLE_RADIUS: usize = 4;
         let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
+        let legend_xstart = BOUNDARY as f64;
         let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
-            BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+            legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..labels.len() {
             let y = legend_ystart as f64
@@ -1026,14 +1026,14 @@ pub fn plot_clonotypes(
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
-                BOUNDARY * 3,
+                legend_xstart + BOUNDARY as f64 * 2.0,
                 y,
                 FONT_SIZE,
                 labels[i]
             );
             *svg += &format!(
                 "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
-                BOUNDARY * 2,
+                legend_xstart + BOUNDARY as f64,
                 y - BOUNDARY as f64 / 2.0,
                 LEGEND_CIRCLE_RADIUS,
                 colors[i]
