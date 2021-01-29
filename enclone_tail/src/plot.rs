@@ -600,6 +600,7 @@ pub fn plot_clonotypes(
 
     let mut group_id = vec![0; radii.len()];
     let mut group_color = vec!["".to_string()];
+    let mut group_name = vec!["".to_string()];
     if ctl.gen_opt.clonotype_group_names.is_some() {
         let mut names = Vec::<String>::new();
         let f = open_for_read![&ctl.gen_opt.clonotype_group_names.as_ref().unwrap()];
@@ -620,15 +621,15 @@ pub fn plot_clonotypes(
         names_sorted.sort();
         let mut freq = Vec::<(u32, String)>::new();
         make_freq(&names_sorted, &mut freq);
-        let mut names_uniq = Vec::<String>::new();
+        group_name.clear();
         for i in 0..freq.len() {
             if freq[i].1 != "HIDE" {
-                names_uniq.push(freq[i].1.clone());
+                group_name.push(freq[i].1.clone());
             }
         }
         group_id.clear();
         for i in 0..names.len() {
-            let p = position(&names_uniq, &names[i]);
+            let p = position(&group_name, &names[i]);
             if p >= 0 {
                 group_id.push(p as usize);
             }
@@ -692,12 +693,12 @@ pub fn plot_clonotypes(
             (3.0 / 9.0, 4.0 / 9.0, 2.0 / 9.0),
             (5.0 / 9.0, 3.0 / 9.0, 1.0 / 9.0),
         ];
-        if fracs.len() >= names_uniq.len() {
-            fracs.truncate(names_uniq.len());
+        if fracs.len() >= group_name.len() {
+            fracs.truncate(group_name.len());
 
         // Add more colors if needed.
         } else {
-            for _ in fracs.len()..names_uniq.len() {
+            for _ in fracs.len()..group_name.len() {
                 let mut max_dist = 0.0;
                 let mut best = (0.0, 0.0, 0.0);
                 for p in points.iter() {
@@ -866,7 +867,54 @@ pub fn plot_clonotypes(
         BOUNDARY,
     );
 
-    // Add legend.
+    // Add legend for shading.
+
+    const FONT_SIZE: usize = 20;
+    const LEGEND_BOX_STROKE_WIDTH: usize = 2;
+    if ngroups > 1 || group_color[0].len() > 0 {
+        let n = ngroups;
+        let mut max_string_width = 0.0f64;
+        for s in group_name.iter() {
+            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
+        }
+        let color_bar_width = 100.0;
+        let legend_height = ((FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY) as f64;
+        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 20.0;
+        let legend_xstart = (400 + BOUNDARY) as f64;
+        let legend_ystart = 50;
+        *svg = svg.rev_before("<").to_string();
+        *svg += &format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+             style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
+            legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+        );
+        for i in 0..n {
+            let y = legend_ystart as f64
+                + BOUNDARY as f64 * 2.5
+                + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
+            *svg += &format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                legend_xstart + color_bar_width + BOUNDARY as f64 * 3.0,
+                y,
+                FONT_SIZE,
+                group_name[i]
+            );
+            *svg += &format!(
+                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{}\" />\n",
+                legend_xstart + (BOUNDARY * 2) as f64,
+                y - BOUNDARY as f64 * 2.0,
+                color_bar_width,
+                FONT_SIZE + BOUNDARY / 2,
+                group_color[i]
+            );
+        }
+        let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
+        let new_width = legend_xstart + legend_width + 5.0;
+        *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+    }
+
+    // Add main legend.
 
     if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype || ctl.gen_opt.plot_by_mark {
         let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
@@ -946,9 +994,7 @@ pub fn plot_clonotypes(
         // Build the legend.
 
         let n = labels.len();
-        const FONT_SIZE: usize = 20;
         const LEGEND_CIRCLE_RADIUS: usize = 4;
-        const LEGEND_BOX_STROKE_WIDTH: usize = 2;
         let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
         let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
