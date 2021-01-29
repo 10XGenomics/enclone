@@ -661,24 +661,60 @@ pub fn plot_clonotypes(
                 points.push((r1, r2, r3));
             }
         }
-        let mut fracs = vec![points[0]];
-        for _ in 1..names_uniq.len() {
-            let mut max_dist = 0.0;
-            let mut best = (0.0, 0.0, 0.0);
-            for p in points.iter() {
-                let mut min_dist = 100.0_f64;
-                for q in fracs.iter() {
-                    let d = (p.0 - q.0) * (p.0 - q.0)
-                        + (p.1 - q.1) * (p.1 - q.1)
-                        + (p.2 - q.2) * (p.2 - q.2);
-                    min_dist = min_dist.min(d);
+
+        // Prepopulate colors with what appear to be an optimal sequence.  This is as measured by
+        // distance from each other.  These colors are not optimal relative to color blindness.
+
+        let mut fracs = vec![
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0),
+            (0.0, 1.0 / 3.0, 2.0 / 3.0),
+            (1.0 / 3.0, 2.0 / 3.0, 0.0),
+            (2.0 / 3.0, 1.0 / 3.0, 0.0),
+            (2.0 / 3.0, 0.0, 1.0 / 3.0),
+            (0.0, 2.0 / 3.0, 1.0 / 3.0),
+            (1.0 / 3.0, 0.0, 2.0 / 3.0),
+            (5.0 / 9.0, 2.0 / 9.0, 2.0 / 9.0),
+            (4.0 / 9.0, 1.0 / 9.0, 4.0 / 9.0),
+            (7.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0),
+            (1.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0),
+            (2.0 / 9.0, 5.0 / 9.0, 2.0 / 9.0),
+            (4.0 / 9.0, 4.0 / 9.0, 1.0 / 9.0),
+            (2.0 / 9.0, 2.0 / 9.0, 5.0 / 9.0),
+            (1.0 / 9.0, 1.0 / 9.0, 7.0 / 9.0),
+            (1.0 / 9.0, 7.0 / 9.0, 1.0 / 9.0),
+            (1.0 / 9.0, 2.0 / 9.0, 6.0 / 9.0),
+            (3.0 / 9.0, 1.0 / 9.0, 5.0 / 9.0),
+            (3.0 / 9.0, 2.0 / 9.0, 4.0 / 9.0),
+            (1.0 / 9.0, 8.0 / 9.0, 0.0 / 9.0),
+            (3.0 / 9.0, 4.0 / 9.0, 2.0 / 9.0),
+            (5.0 / 9.0, 3.0 / 9.0, 1.0 / 9.0),
+        ];
+        if fracs.len() >= names_uniq.len() {
+            fracs.truncate(names_uniq.len());
+
+        // Add more colors if needed.
+        } else {
+            for _ in fracs.len()..names_uniq.len() {
+                let mut max_dist = 0.0;
+                let mut best = (0.0, 0.0, 0.0);
+                for p in points.iter() {
+                    let mut min_dist = 100.0_f64;
+                    for q in fracs.iter() {
+                        let d = (p.0 - q.0) * (p.0 - q.0)
+                            + (p.1 - q.1) * (p.1 - q.1)
+                            + (p.2 - q.2) * (p.2 - q.2);
+                        min_dist = min_dist.min(d);
+                    }
+                    if min_dist > max_dist {
+                        max_dist = min_dist;
+                        best = *p;
+                    }
                 }
-                if min_dist > max_dist {
-                    max_dist = min_dist;
-                    best = *p;
-                }
+                fracs.push(best);
             }
-            fracs.push(best);
         }
         group_color.clear();
         for i in 0..fracs.len() {
