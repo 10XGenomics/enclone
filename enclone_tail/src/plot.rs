@@ -929,7 +929,7 @@ pub fn plot_clonotypes(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
                 legend_xstart + color_bar_width + BOUNDARY as f64 * 3.0,
-                y,
+                y - BOUNDARY as f64 * 0.5,
                 font_size,
                 group_name[i]
             );
