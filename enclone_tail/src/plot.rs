@@ -617,16 +617,37 @@ pub fn plot_clonotypes(
             );
             std::process::exit(1);
         }
-        let mut names_sorted = names.clone();
-        names_sorted.sort();
-        let mut freq = Vec::<(u32, String)>::new();
-        make_freq(&names_sorted, &mut freq);
-        group_name.clear();
-        for i in 0..freq.len() {
-            if freq[i].1 != "HIDE" {
-                group_name.push(freq[i].1.clone());
+
+        // Reverse sort by total number of cells associated to a name.  This defines group names.
+
+        {
+            let mut nx = Vec::<(String, usize)>::new();
+            for i in 0..names.len() {
+                nx.push((names[i].clone(), clusters[i].1.len()));
+            }
+            nx.sort();
+            let mut ny = Vec::<(usize, String)>::new();
+            let mut i = 0;
+            while i < nx.len() {
+                let j = next_diff1_2(&nx, i as i32) as usize;
+                let mut n = 0;
+                for k in i..j {
+                    n += nx[k].1;
+                }
+                ny.push((n, nx[i].0.clone()));
+                i = j;
+            }
+            reverse_sort(&mut ny);
+            group_name.clear();
+            for i in 0..ny.len() {
+                if ny[i].1 != "HIDE" {
+                    group_name.push(ny[i].1.clone());
+                }
             }
         }
+
+        // Define group ids.
+
         group_id.clear();
         for i in 0..names.len() {
             let p = position(&group_name, &names[i]);
