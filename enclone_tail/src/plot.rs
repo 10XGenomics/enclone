@@ -177,10 +177,6 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
             bigr = bigr.max(x.origin_dist());
         }
     }
-    if blacklist.is_empty() { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        eprintln!("first circle has radius {:.2}", radius0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        eprintln!("bigr = {:.2}", bigr); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Proceed.
 
@@ -300,9 +296,6 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
                 break;
             }
         }
-        if blacklist.is_empty() && i == 1 { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            eprintln!("second circle at ({:.2}, {:.2}) with r ={}", best_r1, best_r2, r[i]); // XXX
-        } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         push_center(best_r1, best_r2, i, r[i], radius0, &mut c, &mut ints);
         bigr = bigr.max(r[i] + (c[i].0 * c[i].0 + c[i].1 * c[i].1).sqrt());
     }
@@ -629,13 +622,10 @@ pub fn plot_clonotypes(
         make_freq(&names_sorted, &mut freq);
         let mut names_uniq = Vec::<String>::new();
         for i in 0..freq.len() {
-            eprintln!("{} has freq {}", freq[i].1, freq[i].0); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             if freq[i].1 != "HIDE" {
                 names_uniq.push(freq[i].1.clone());
             }
         }
-        use itertools::Itertools; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        eprintln!("\nnames are {}", names_uniq.iter().format(", ")); // XXXXXXXXXXXXXXXXXXXXXXXXXXX
         group_id.clear();
         for i in 0..names.len() {
             let p = position(&names_uniq, &names[i]);
@@ -744,7 +734,6 @@ pub fn plot_clonotypes(
     let mut shade_enclosures = Vec::<Polygon>::new();
     let mut centers = vec![(0.0, 0.0); radii.len()];
     for g in 0..ngroups {
-        eprintln!("processing group {} with color {}", g, group_color[g]); // XXXXXXXXXXXXXXXXXXXXX
         // Gather the group.
 
         let mut ids = Vec::<usize>::new();
@@ -755,7 +744,6 @@ pub fn plot_clonotypes(
                 radiix.push(radii[i]);
             }
         }
-        eprintln!("top radius = {:.2}", radiix[0]); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         // Find circle centers.
 
