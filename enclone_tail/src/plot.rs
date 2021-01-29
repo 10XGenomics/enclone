@@ -604,28 +604,85 @@ pub fn plot_clonotypes(
     let mut group_color = vec!["".to_string()];
     let mut group_name = vec!["".to_string()];
     if ctl.gen_opt.clonotype_group_names.is_some() {
-        let mut names = Vec::<String>::new();
         let f = open_for_read![&ctl.gen_opt.clonotype_group_names.as_ref().unwrap()];
+        let mut first = true;
+        let mut group_id_field = 0;
+        let mut new_group_name_field = 0;
+        let mut new_group_names = vec![None; radii.len()];
         for line in f.lines() {
             let s = line.unwrap();
-            names.push(s);
-        }
-        if names.len() != radii.len() {
-            eprintln!(
-                "\nThe number of lines in your CLONOTYPE_GROUP_NAMES file is {}, whereas\n\
-                the number of clonotypes is {}.  These numbers have to be equal.\n",
-                names.len(),
-                radii.len()
-            );
-            std::process::exit(1);
+            for c in s.chars() {
+                if c.is_control() || c == '\u{FEFF}' {
+                    eprintln!("\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
+                        nonprinting character.\n");
+                    std::process::exit(1);
+                }
+            }
+            let fields = s.split(',').collect::<Vec<&str>>();
+            if first {
+                let p = position(&fields, &"group_id");
+                if p < 0 {
+                    eprintln!("\nThe CLONOTYPE_GROUP_NAMES file does not have a group_id field.\n");
+                    std::process::exit(1);
+                }
+                group_id_field = p as usize;
+                let p = position(&fields, &"new_group_name");
+                if p < 0 {
+                    eprintln!(
+                        "\nThe CLONOTYPE_GROUP_NAMES file does not have a \
+                         new_group_name field.\n"
+                    );
+                    std::process::exit(1);
+                }
+                new_group_name_field = p as usize;
+                first = false;
+            } else {
+                let group_id = &fields[group_id_field];
+                if !group_id.parse::<usize>().is_ok() || group_id.force_usize() == 0 {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is not a \
+                        positive integer.\n",
+                        group_id
+                    );
+                    std::process::exit(1);
+                }
+                let group_id = group_id.force_usize() - 1;
+                if group_id > radii.len() {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is larger \
+                        than the number of clonotypes, which is {}.\n",
+                        group_id,
+                        radii.len()
+                    );
+                    std::process::exit(1);
+                }
+                let new_group_name = fields[new_group_name_field].to_string();
+                if new_group_names[group_id].is_none() {
+                    new_group_names[group_id] = Some(new_group_name.clone());
+                } else if *new_group_names[group_id].as_ref().unwrap() != new_group_name {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is assigned \
+                        the different new_group_names {} and {}.\n",
+                        group_id,
+                        new_group_names[group_id].as_ref().unwrap(),
+                        new_group_name,
+                    );
+                    std::process::exit(1);
+                }
+            }
         }
 
         // Reverse sort by total number of cells associated to a name.  This defines group names.
 
         {
             let mut nx = Vec::<(String, usize)>::new();
-            for i in 0..names.len() {
-                nx.push((names[i].clone(), clusters[i].1.len()));
+            for i in 0..new_group_names.len() {
+                if new_group_names[i].is_some() {
+                    nx.push((
+                        new_group_names[i].as_ref().unwrap().to_string(),
+                        clusters[i].1.len(),
+                    ));
+                }
             }
             nx.sort();
             let mut ny = Vec::<(usize, String)>::new();
@@ -642,21 +699,22 @@ pub fn plot_clonotypes(
             reverse_sort(&mut ny);
             group_name.clear();
             for i in 0..ny.len() {
-                if ny[i].1 != "HIDE" {
-                    group_name.push(ny[i].1.clone());
-                }
+                group_name.push(ny[i].1.clone());
             }
         }
 
         // Define group ids.
 
         group_id.clear();
-        for i in 0..names.len() {
-            let p = position(&group_name, &names[i]);
-            if p >= 0 {
+        for i in 0..new_group_names.len() {
+            if new_group_names[i].is_some() {
+                let p = position(&group_name, &new_group_names[i].as_ref().unwrap());
                 group_id.push(p as usize);
             }
         }
+
+        // Build colors.
+
         let sum = 40; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
         let mut rand = 0i64;
         let mut points = Vec::<(f64, f64, f64)>::new();
