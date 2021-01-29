@@ -910,7 +910,7 @@ pub fn plot_clonotypes(
         }
         let color_bar_width = 50.0;
         let legend_height = ((font_size + BOUNDARY / 2) * n + BOUNDARY) as f64;
-        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 15.0;
+        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 5.0;
         let legend_xstart = actual_width + BOUNDARY as f64 + 10.0;
         let legend_ystart = 50.0;
         *svg = svg.rev_before("<").to_string();
@@ -928,7 +928,7 @@ pub fn plot_clonotypes(
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
-                legend_xstart + color_bar_width + BOUNDARY as f64 * 3.0,
+                legend_xstart + color_bar_width + BOUNDARY as f64 * 2.0,
                 y - BOUNDARY as f64 * 0.5,
                 font_size,
                 group_name[i]
