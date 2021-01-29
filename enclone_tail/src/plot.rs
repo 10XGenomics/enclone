@@ -902,16 +902,16 @@ pub fn plot_clonotypes(
     const LEGEND_BOX_STROKE_WIDTH: usize = 2;
     let mut legend_xstop_shading = 0.0;
     if using_shading {
-        font_size = 17;
+        font_size = 16;
         let n = ngroups;
         let mut max_string_width = 0.0f64;
         for s in group_name.iter() {
             max_string_width = max_string_width.max(arial_width(s, font_size));
         }
-        let color_bar_width = 75.0;
+        let color_bar_width = 50.0;
         let legend_height = ((font_size + BOUNDARY / 2) * n + BOUNDARY) as f64;
-        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 20.0;
-        let legend_xstart = actual_width + BOUNDARY as f64 + 15.0;
+        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 15.0;
+        let legend_xstart = actual_width + BOUNDARY as f64 + 10.0;
         let legend_ystart = 50.0;
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
