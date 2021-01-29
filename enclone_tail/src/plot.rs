@@ -383,6 +383,8 @@ fn circles_to_svg(
         out += &format!("{}", p.catmull_bezier_svg());
         out += "\" ";
         out += &format!("fill=\"{}\"\n", shade_colors[g]);
+        out += " stroke=\"rgb(150,150,150)\"";
+        out += " stroke-width=\"0.2\"";
         out += "/>\n";
     }
     for i in 0..center.len() {
