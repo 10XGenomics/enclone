@@ -14,6 +14,7 @@ use rayon::prelude::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -428,6 +429,7 @@ pub fn plot_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     svg: &mut String,
 ) {
+    let t = Instant::now();
     if ctl.gen_opt.plot_file.is_empty() {
         return;
     }
@@ -747,9 +749,11 @@ pub fn plot_clonotypes(
         }
     }
     let ngroups = group_color.len();
+    ctl.perf_stats(&t, "in preamble to plotting clonotypes");
 
     // Traverse the groups.
 
+    let t = Instant::now();
     let using_shading = ngroups > 1 || group_color[0].len() > 0;
     let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
@@ -782,14 +786,6 @@ pub fn plot_clonotypes(
             for i in 0..centersx.len() {
                 z.push((radiix[i], centersx[i].0, centersx[i].1));
             }
-            /*
-            if g == 1 {
-                for i in 0..centersx.len() {
-                    println!("{:.3} {:.3} {:.3}",
-                        radiix[i], 150.0 + centersx[i].0, 100.0 + centersx[i].1);
-                }
-            }
-            */
             let d = 5.0; // distance of polygon from the circles
             let n = 35; // number of vertices on polygon
             let mut p = enclosing_polygon(&z, d, n);
@@ -836,9 +832,11 @@ pub fn plot_clonotypes(
             i = j;
         }
     }
+    ctl.perf_stats(&t, "plotting clonotypes");
 
     // Build the svg file.
 
+    let t = Instant::now();
     for i in 0..clusters.len() {
         for j in 0..clusters[i].1.len() {
             clusters[i].1[j].0 += centers[i].0;
@@ -1093,4 +1091,5 @@ pub fn plot_clonotypes(
         let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
     }
+    ctl.perf_stats(&t, "building svg file");
 }

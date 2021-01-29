@@ -636,12 +636,14 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
         }
     }
+    ctl.perf_stats(&t, "in proc_xcr 2");
 
     // Get paths.  This will need to change when cellranger switches to multi.  This code is
     // parallelized because this code can indirectly make many calls to path_exists, and the wall
     // clock time for these can add up.  There should be a way to do this that does not involve
     // multithreading.
 
+    let t = Instant::now();
     let mut source = f.clone();
     if f.contains('=') {
         source = f.before("=");
@@ -669,6 +671,8 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             }
         }
     }
+    ctl.perf_stats(&t, "in proc_xcr 3");
+    let t = Instant::now();
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
         *p = get_path_or_internal_id(&p, &ctl, source);
@@ -698,7 +702,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
         ctl.origin_info.dataset_path.push(results[i].0.clone());
         ctl.origin_info.gex_path.push(results[i].1.clone());
     }
-    ctl.perf_stats(&t, "in proc_xcr 2");
+    ctl.perf_stats(&t, "in proc_xcr 4");
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

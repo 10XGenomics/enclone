@@ -45,6 +45,7 @@ pub fn tail_code(
 
     // Group and print clonotypes.
 
+    let t = Instant::now();
     group_and_print_clonotypes(
         &tall,
         &refdata,
@@ -242,4 +243,5 @@ pub fn tail_code(
             println!("");
         }
     }
+    ctl.perf_stats(&t, "in rest of tail code");
 }
