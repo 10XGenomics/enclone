@@ -924,6 +924,7 @@ pub fn plot_clonotypes(
             let y = legend_ystart as f64
                 + BOUNDARY as f64 * 2.5
                 + ((font_size + BOUNDARY / 2) * i) as f64;
+            // Add group name.
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
@@ -932,9 +933,10 @@ pub fn plot_clonotypes(
                 font_size,
                 group_name[i]
             );
+            // Add color bar.
             *svg += &format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{}\" />\n",
-                legend_xstart + (BOUNDARY * 2) as f64,
+                legend_xstart + (BOUNDARY * 1) as f64,
                 y - BOUNDARY as f64 * 2.0,
                 color_bar_width,
                 font_size + BOUNDARY / 2,
