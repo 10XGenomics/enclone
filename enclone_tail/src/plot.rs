@@ -21,6 +21,20 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// Change the width or height of an svg document.
+
+fn set_svg_width(svg: &mut String, new_width: f64) {
+    let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
+    *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+}
+
+fn set_svg_height(svg: &mut String, new_height: f64) {
+    let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
+    *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
 // radius r, starting at the origin and going first to the right.  Return the coordinates of the
 // center of the nth disk.  See this picture:
@@ -613,8 +627,10 @@ pub fn plot_clonotypes(
             let s = line.unwrap();
             for c in s.chars() {
                 if c.is_control() || c == '\u{FEFF}' {
-                    eprintln!("\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
-                        nonprinting character.\n");
+                    eprintln!(
+                        "\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
+                        nonprinting character.\n"
+                    );
                     std::process::exit(1);
                 }
             }
@@ -1020,9 +1036,8 @@ pub fn plot_clonotypes(
                 group_color[i]
             );
         }
-        let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
         let new_width = legend_xstart + legend_width + 5.0;
-        *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+        set_svg_width(svg, new_width);
     }
 
     // Add main legend.
@@ -1125,13 +1140,11 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
         let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
-        *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+        set_svg_height(svg, new_height);
         if using_shading {
-            let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
             let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
-            *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+            set_svg_width(svg, new_width);
         }
     }
 
