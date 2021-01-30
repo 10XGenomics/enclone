@@ -25,12 +25,12 @@ use vector_utils::*;
 
 fn set_svg_width(svg: &mut String, new_width: f64) {
     let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
-    *svg = format!("{}width=\"{}\"{}</svg>", svg1, new_width, svg2);
+    *svg = format!("{}width=\"{}\"{}", svg1, new_width, svg2);
 }
 
 fn set_svg_height(svg: &mut String, new_height: f64) {
     let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
-    *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+    *svg = format!("{}height=\"{}\"{}", svg1, new_height, svg2);
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -408,7 +408,6 @@ fn circles_to_svg(
             center[i].0, center[i].1, radius[i], color[i]
         );
     }
-
     out += "</svg>\n";
     out
 }
@@ -975,7 +974,6 @@ pub fn plot_clonotypes(
             actual_height = actual_height.max(y + r);
         }
     }
-
     let mut actual_width = 0.0f64;
     let fields = svg.split(' ').collect::<Vec<&str>>();
     let mut x = 0.0;
@@ -1038,6 +1036,7 @@ pub fn plot_clonotypes(
         }
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
+        *svg += "</svg>";
     }
 
     // Add main legend.
@@ -1140,12 +1139,14 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
-        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
-        set_svg_height(svg, new_height);
-        if using_shading {
+        if !using_shading {
+            let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+            set_svg_height(svg, new_height);
+        } else {
             let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
             set_svg_width(svg, new_width);
         }
+        *svg += "</svg>";
     }
 
     // Output the svg file.
