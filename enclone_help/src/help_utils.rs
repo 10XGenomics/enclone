@@ -36,6 +36,9 @@ impl HelpDesk {
     pub fn doc(&mut self, x1: &str, x2: &str) {
         self.rows.push(vec![x1.to_string(), x2.to_string()]);
     }
+    pub fn doc2(&mut self, x2: &str) {
+        self.rows.push(vec!["".to_string(), x2.to_string()]);
+    }
 
     // docf2: like doc, but fold x2 to n2 chars.
 

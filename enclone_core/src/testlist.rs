@@ -59,8 +59,8 @@ pub const TESTS: [&str; 184] = [
         MIN_CHAINS=2 NH5"###,
     // 13. check TSV file with BC
     r###"BCR=123085 BC=testx/inputs/123077_cells.tsv PER_CELL LVARSP=T CDR3=CARGYEDFTMKYGMDVW"###,
-    // 14. DUPLICATE; TO REPLACE WITH A NEW TEST.
-    r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
+    // 14. test cdr3_aa_conp
+    r###"BCR=123085 CVARSP=cdr3_aa_conp CDR3=CAKTGDLELRYFDWDMDVW"###,
     // 15. tests insertion and AMINO range; also this incorrectly reported an insertion before
     // it was fixed
     r###"BCR=86233 CDR3=CARGLVVVYAIFDYW CVARS=notes AMINO=cdr3,105-113"###,
@@ -209,8 +209,8 @@ pub const TESTS: [&str; 184] = [
         CDR3=CARSFFGDTAMVMFQAFDPW LVARSP=donors,gex NO_PRE"###,
     // 72. test SUMMARY_CSV
     r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
-    // 73. DUPLICATE; TO REPLACE WITH A NEW TEST
-    r###"BCR=86237 NOPRINT SUMMARY_CSV"###,
+    // 73. test cdr3_aa_conx
+    r###"BCR=123085 CVARSP=cdr3_aa_conx CDR3=CAKTGDLELRYFDWDMDVW"###,
     // 74. this changed after a bug was fixed; the RE can probably be dropped later when we
     // rerun all the datasets
     r###"BCR=123085 RE CDR3=CARGYEDFTMKYGMDVW POUT=stdouth PCOLS=utr_id2"###,
