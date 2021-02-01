@@ -672,17 +672,26 @@ pub struct EncloneControl {
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;
+pub static mut LAST_IPEAK: f64 = -0.0;
 
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(&t);
         if self.comp {
-            println!(
-                "used {:.2} seconds {}, peak mem = {:.2} GB",
-                used,
-                msg,
-                peak_mem_usage_gb()
-            );
+            let peak = peak_mem_usage_gb();
+            let ipeak = (100.0 * peak).round();
+            let peak_mem = format!("peak mem = {:.2} GB", peak);
+            let usedx = format!("{:.2}", used);
+            let mut ipeak_changed = false;
+            unsafe {
+                if ipeak != LAST_IPEAK {
+                    ipeak_changed = true;
+                    LAST_IPEAK = ipeak;
+                }
+            }
+            if usedx != "0.00" || ipeak_changed {
+                println!("used {} seconds {}, {}", usedx, msg, peak_mem);
+            }
         }
         unsafe {
             WALLCLOCK += used;
