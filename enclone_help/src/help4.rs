@@ -863,6 +863,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "cdr*_dna_ref",
             "same, for the universal reference sequence (but not for cdr3)",
         );
+        h.doc(
+            "cdr3_conx",
+            "consensus for CDR3 across the clonotype, showing X for each variant residue",
+        );
         h.ldoc(
             "fwr*_aa",
             "the FWR*_AA sequence, or \"unknown\" if not computed",

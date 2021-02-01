@@ -958,6 +958,29 @@ pub fn row_fill(
                 cvar![j, var, ex.share[mid].cdr3_dna.clone()];
             } else if *var == "cdr3_len".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
+            } else if *var == "cdr3_aa_conx".to_string() {
+                let mut cdr3s = Vec::<String>::new();
+                for v in 0..exacts.len() {
+                    let m = mat[col][v];
+                    if m.is_some() {
+                        let ex = &exact_clonotypes[exacts[v]];
+                        cdr3s.push(ex.share[m.unwrap()].cdr3_aa.clone());
+                    }
+                }
+                let mut c = Vec::<u8>::new();
+                for i in 0..cdr3s[0].len() {
+                    let mut vals = Vec::<u8>::new();
+                    for j in 0..cdr3s.len() {
+                        vals.push(cdr3s[j].as_bytes()[i]);
+                    }
+                    unique_sort(&mut vals);
+                    if vals.solo() {
+                        c.push(vals[0]);
+                    } else {
+                        c.push(b'X');
+                    }
+                }
+                cvar![j, var, stringme(&c)];
             } else if *var == "fwr1_dna".to_string()
                 || *var == "fwr1_aa".to_string()
                 || *var == "fwr1_len".to_string()
