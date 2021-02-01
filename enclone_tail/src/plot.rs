@@ -196,7 +196,7 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     // Proceed.
 
     let mut rand = 0i64;
-    // We use a ridiculously large sample.  Reducing it to 1000 substantially reduces symmetry.
+    // We use a ridiculously large sample.  Reducing it to 10,000 noticeably reduces symmetry.
     // Presumably as the number of clusters increases, the sample would need to be increased
     // (ideally) to increase symmetry.
     const SAMPLE: usize = 100000;
