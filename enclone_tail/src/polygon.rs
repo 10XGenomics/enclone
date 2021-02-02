@@ -5,6 +5,8 @@
 use core::mem::swap;
 use std::f64::consts::PI;
 
+// Point in two-space.
+
 #[derive(Clone, Copy)]
 pub struct Point {
     pub x: f64,
@@ -20,7 +22,59 @@ impl Point {
         let (dx, dy) = (self.x - p.x, self.y - p.y);
         (dx * dx + dy * dy).sqrt()
     }
+
+    pub fn dist_to_segment(&self, s: Segment) -> f64 {
+        let mut d = self.dist(s.p1).min(self.dist(s.p2));
+        if s.p1.x == s.p2.x {
+            if (self.y >= s.p1.y && self.y <= s.p2.y) || (self.y >= s.p2.y && self.y <= s.p1.y) {
+                d = d.min((self.x - s.p1.x).abs());
+            }
+        } else {
+            // The line L extending the segment is Y = mX + b.
+            let m = (s.p2.y - s.p1.y) / (s.p2.x - s.p1.x);
+            let b = s.p1.y - m * s.p1.x;
+            let x;
+            let y;
+            // Find the intersection (x, y) of the line M orthogonal to L and passing through self.
+            // First suppose L is horizontal.
+            if m == 0.0 {
+                // The line M is given by X = self.x.
+                x = self.x;
+                y = m * x + b;
+            // Now suppose L is not horizontal.
+            } else {
+                // The line M is given by Y = nX + c.
+                let n = -1.0 / m;
+                let c = self.y - n * self.x;
+                x = (c - b) / (m - n);
+                y = m * x + b;
+            }
+            // Determine if the intersection lies on the segment.
+            if (x >= s.p1.x && x <= s.p2.x) || (x >= s.p2.x && x <= s.p1.x) {
+                d = d.min(self.dist(Point { x: x, y: y }));
+            }
+        }
+        d
+    }
 }
+
+// Line segment in two-space.
+
+pub struct Segment {
+    pub p1: Point,
+    pub p2: Point,
+}
+
+impl Segment {
+    pub fn mid(&self) -> Point {
+        Point {
+            x: (self.p1.x + self.p2.x) / 2.0,
+            y: (self.p1.y + self.p2.y) / 2.0,
+        }
+    }
+}
+
+// Interval in one-space.
 
 pub struct Interval {
     pub x1: f64,
@@ -111,6 +165,84 @@ impl Polygon {
             );
         }
         return svg;
+    }
+
+    // Generate an svg representation of a smooth path that passes through the vertices of the
+    // polygon, and whose points lie within distance d of the polygon.  This is based on
+    // catmull_bezier_svg.  The code is ridiculously inefficient and yields a suboptimal solution.
+
+    pub fn catmull_bezier_bounded_svg(&self, d: f64) -> String {
+        let mut p = self.clone();
+        'loop_loop: loop {
+            let last = p.v.len() - 1;
+            for i in 0..=last + 1 {
+                let mut is = Vec::<usize>::new();
+                if i == 0 {
+                    is.push(last);
+                } else {
+                    is.push(i - 1);
+                }
+                is.push(i % p.v.len());
+                is.push((i + 1) % p.v.len());
+                is.push((i + 2) % p.v.len());
+                let (p0, p1, p2, p3) = (p.v[is[0]], p.v[is[1]], p.v[is[2]], p.v[is[3]]);
+
+                // Define the control points.
+
+                let c1 = Point {
+                    x: (-p0.x + 6.0 * p1.x + p2.x) / 6.0,
+                    y: (-p0.y + 6.0 * p1.y + p2.y) / 6.0,
+                };
+                let c2 = Point {
+                    x: (p1.x + 6.0 * p2.x - p3.x) / 6.0,
+                    y: (p1.y + 6.0 * p2.y - p3.y) / 6.0,
+                };
+
+                // Determine if the control points are farther than d from the three edges defined
+                // by p0 ==> p1 ==> p2 ==> p3.  This is what makes the solution suboptimal.
+                // Optimally, we would compute the distance of the farthest point on the actual
+                // Bezier curve from the entire polygon (although that may not be worth the
+                // effort).
+
+                let mut dp1 = c1.dist_to_segment(Segment { p1: p0, p2: p1 });
+                dp1 = dp1.min(c1.dist_to_segment(Segment { p1: p1, p2: p2 }));
+                dp1 = dp1.min(c1.dist_to_segment(Segment { p1: p2, p2: p3 }));
+                let mut dp2 = c2.dist_to_segment(Segment { p1: p0, p2: p1 });
+                dp2 = dp2.min(c2.dist_to_segment(Segment { p1: p1, p2: p2 }));
+                dp2 = dp2.min(c2.dist_to_segment(Segment { p1: p2, p2: p3 }));
+                if dp1 > d || dp2 > d {
+                    // Add three points to the polygon and start over.
+
+                    let mut p_new = Polygon::default();
+                    for j in 0..p.v.len() {
+                        p_new.v.push(p.v[j]);
+                        let mut k = None;
+                        if j == is[0] {
+                            k = Some(0);
+                        } else if j == is[1] {
+                            k = Some(1);
+                        } else if j == is[2] {
+                            k = Some(2);
+                        }
+                        if k.is_some() {
+                            let k = k.unwrap();
+                            // Add point halfway between pj and p[is[k+1]].
+                            p_new.v.push(
+                                Segment {
+                                    p1: p.v[j],
+                                    p2: p.v[is[k + 1]],
+                                }
+                                .mid(),
+                            );
+                        }
+                    }
+                    p = p_new;
+                    continue 'loop_loop;
+                }
+            }
+            break;
+        }
+        p.catmull_bezier_svg()
     }
 
     // Determine if a point lies inside the polygon (including the boundary).  This function is
