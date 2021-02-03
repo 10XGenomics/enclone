@@ -730,6 +730,7 @@ dependencies = [
  "enclone_core",
  "enclone_proto",
  "equiv",
+ "float-ord",
  "hdf5",
  "io_utils",
  "itertools",
@@ -743,6 +744,7 @@ dependencies = [
  "serde_json",
  "stats_utils",
  "string_utils",
+ "superslice",
  "tables",
  "tar",
  "vdj_ann",
@@ -913,6 +915,12 @@ dependencies = [
  "libc",
  "miniz_oxide",
 ]
+
+[[package]]
+name = "float-ord"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7bad48618fdb549078c333a7a8528acb57af271d0433bdecd523eb620628364e"
 
 [[package]]
 name = "fnv"

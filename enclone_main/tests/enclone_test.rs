@@ -910,7 +910,7 @@ fn test_for_broken_links_and_spellcheck() {
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb tsv twosie ubuntu \
-        umi umis underperforming unicode untarring vdj vilfwym vilm website wget wikimedia \
+        umi umis underperforming unicode untarring vdj vilella vilfwym vilm website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 

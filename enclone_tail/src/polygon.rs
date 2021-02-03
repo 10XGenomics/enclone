@@ -3,7 +3,10 @@
 // Code for working with polygons.  Possibly rename to planar_objects.rs.
 
 use core::mem::swap;
+use float_ord::*;
 use std::f64::consts::PI;
+use superslice::Ext;
+use vector_utils::*;
 
 // Point in two-space.
 
@@ -92,6 +95,57 @@ impl Interval {
             return true;
         }
         false
+    }
+}
+
+// Interval vector with fast lookup of which closed intervals a number lies in.  We allow
+// degenerate intervals [x, x].
+
+pub struct IntervalVec {
+    // PUBLIC
+    pub is: Vec<Interval>,
+    // PRIVATE
+    ends: Vec<FloatOrd<f64>>,
+    locs: Vec<Vec<usize>>,
+}
+
+impl IntervalVec {
+    // precompute is O(n * ln(n)).  Call this before calling get_containers.
+
+    pub fn precompute(&mut self) {
+        self.ends.clear();
+        self.locs.clear();
+        for i in 0..self.is.len() {
+            assert!(self.is[i].x1 <= self.is[i].x2);
+            self.ends.push(FloatOrd(self.is[i].x1));
+            self.ends.push(FloatOrd(self.is[i].x2));
+        }
+        unique_sort(&mut self.ends);
+        self.locs = vec![Vec::new(); self.ends.len() + 2];
+        for i in 0..self.is.len() {
+            let p1 = self.ends.lower_bound(&FloatOrd(self.is[i].x1));
+            let p2 = self.ends.lower_bound(&FloatOrd(self.is[i].x2));
+            for j in p1..=p2 {
+                self.locs[j + 1].push(i);
+            }
+        }
+    }
+
+    // Find the indices of the closed intervals that contain a given number.  You need to have
+    // called precompute first.  This function is O(ln(n) + c), where n is the total number of
+    // intervals in the vector and c is the number of intervals that contain the number.
+
+    pub fn get_containers(&self, x: f64) -> &Vec<usize> {
+        let x = FloatOrd(x);
+        if self.is.is_empty() {
+            return &self.locs[0];
+        } else if x > *self.ends.last().unwrap() {
+            return &self.locs[0];
+        } else if x == *self.ends.last().unwrap() {
+            return &self.locs.last().unwrap();
+        }
+        let m = self.ends.upper_bound(&x);
+        &self.locs[m]
     }
 }
 
