@@ -149,6 +149,15 @@ impl IntervalVec {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        println!("WORKING");
+        assert_eq!(2 + 2, 4);
+    }
+}
+
 // Polygon structure.  The vertices represent a clockwise traversal and do not repeat the first
 // vertex at the end.  The polygon is not assumed to be convex.  We assume that the edges do not
 // cross each other, but that is not tested.
