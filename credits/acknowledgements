@@ -8,5 +8,7 @@ The script install.sh reuses code from the rust language installation script.
 
 We thank Ganesh Phad for suggesting localization by color in honeycomb plots.
 
+We thank Albert Vilella for suggesting the column variables cdr3_aa_conx and cdr3_aa_conp.
+
 The file polygon.rs uses code taken from the lorikeet-dash crate version 0.1.0, whose license 
 is MIT/Apache-2.0.

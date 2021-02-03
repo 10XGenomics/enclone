@@ -65,11 +65,14 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>2/1/21</b>: Add chain variable <code>cdr3_aa_conx</code> that is the consensus of the
+<b>2/3/21</b>: Add chain variable <code>cdr3_aa_conx</code> that is the consensus of the
 CDR3 amino acid sequences across the clonotype, showing <code>X</code> for each variant residue,
 and <code>cdr3_aa_conp</code>, which instead of <code>X</code> shows an amino acid property
 symbol.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.
+We thank Albert Vilella for suggesting these features.
 </p>
+
+<hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -94,13 +97,13 @@ sequences, and North versions.  Please see
 <li>Move onesie merger to a later stage in the process, after certain "junk" deletion steps,
 to increase the likelihood of merges happening.  This significantly increases the number of
 merges, so that after this change, many more clonotypes contain onesies.</li>
-</ul>
 <li>The <code>BC</code> argument now may be either a <code>CSV</code> or <code>TSV</code> file.</li>
 <li>Automatically find <code>multi/vdj_b</code> and <code>multi/vdj_t</code> subdirectories of 
 outs.</li>
 <li>Allow <code>BCR_GEX=p</code> as a shorthand for <code>BCR=p</code> and <code>GEX=p</code>, which
 simplifies syntax when a <code>cellranger</code> multi run is used as input; ditto for
 <code>TCR_GEX</code>.</li>
+</ul>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
@@ -136,6 +139,8 @@ Add an option <code>PLOT_BY_ISOTYPE_COLOR</code> to allow color specification fo
 </li>
 </ul>
 </p>
+
+<hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -197,6 +202,8 @@ frequency, and only if the CDR3 calculation algorithm was changed between the ti
 <code>cellranger</code> release and the time of the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> release.
 </p>
 
+<hr>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
@@ -254,6 +261,8 @@ output to other programs.</li>
 </ul>
 </p>
 
+<hr>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
@@ -267,6 +276,8 @@ set to a file name, then the field label that is shown is now <code>abbr</code>,
 <p>
 <b>10/9/20</b>: Add parseable variables for the start and frame of the D region.
 </p>
+
+<hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -333,7 +344,9 @@ outside junction region.</li>
 outside junction region.</li>
 <li>Add summary of barcode fate if SUMMARY option is used.</li>
 </ul>
-</p>
+</p
+
+<hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -443,6 +456,8 @@ if Cell Ranger version 4.0 or greater was used.</li>
 </ol>
 </p>
 
+<hr>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
@@ -511,6 +526,8 @@ datasets obtained as part of the <code>large</code> download.
 </ol>
 </p>
 
+<hr>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
@@ -543,6 +560,8 @@ alignment from the beginning of the CDR3 up to the end of the J, rather than sto
 the end of the CDR3.  The intention is to capture the full region of recombination, which
 may not have been done before.
 </p>
+
+<hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
