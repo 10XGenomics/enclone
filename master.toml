@@ -27,7 +27,7 @@ failure = "0.1.6"
 file-lock = "1.1.20"
 flate2 = "1.0.17"
 float-ord = "0.2.0"
-git = "https://github.com/pmarks/hdf5-rs.git"
+git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = "0.1.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "055a68abff31b0e9b8f66ff0814caae6ad0ccbda", features = ["conda"] }
 io_utils = "0.2"
