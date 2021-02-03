@@ -88,6 +88,24 @@ where each xi is one of:
 │cdr*_dna         │  the CDR*_DNA sequence, or "unknown" if not computed                         │
 │cdr*_dna_ref     │  same, for the universal reference sequence (but not for cdr3)               │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cdr3_aa_conx     │  consensus for CDR3 across the clonotype, showing X for each variant residue │
+│cdr3_aa_conp     │  consensus for CDR3 across the clonotype, showing a property symbol whenever │
+│                 │  two different amino acids are observed, per the following table:            │
+│                 │  --------------------------------------------------------------------        │
+│                 │  asparagine or aspartic acid   B   DN                                        │
+│                 │  glutamine or glutamic acid    Z   EQ                                        │
+│                 │  leucine or isoleucine         J   IL                                        │
+│                 │  negatively charged            -   DE                                        │
+│                 │  positively charged            +   KRH                                       │
+│                 │  aliphatic (non-aromatic)      Ψ   VILM                                      │
+│                 │  small                         π   PGAS                                      │
+│                 │  aromatic                      Ω   FWYH                                      │
+│                 │  hydrophobic                   Φ   VILFWYM                                   │
+│                 │  hydrophilic                   ζ   STHNQEDKR                                 │
+│                 │  any                           X   ADEFGHIKLMNPQRSTVWY                       │
+│                 │  --------------------------------------------------------------------        │
+│                 │  The table is searched top to bottom until a matching class is found.        │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │fwr*_aa          │  the FWR*_AA sequence, or "unknown" if not computed                          │
 │fwr*_aa_ref      │  same, for the universal reference sequence                                  │
 │fwr*_len         │  number of amino acids in the FWR* sequence, or "unknown" if not computed    │

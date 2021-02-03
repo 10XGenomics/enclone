@@ -51,7 +51,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 61] = [
+pub const CVARS_ALLOWED: [&str; 64] = [
     "var",
     "u",
     "u_min",
@@ -83,6 +83,8 @@ pub const CVARS_ALLOWED: [&str; 61] = [
     "cdr2_aa_ref",
     "cdr3_aa",
     "cdr3_aa_north",
+    "cdr3_aa_conx",
+    "cdr3_aa_conp",
     "fwr1_dna",
     "fwr1_dna_ref",
     "fwr2_dna",
@@ -113,6 +115,7 @@ pub const CVARS_ALLOWED: [&str; 61] = [
     "d_donor",
     "aa%",
     "dna%",
+    "nval",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -465,6 +468,7 @@ pub struct GeneralOpt {
     pub plot_by_isotype: bool,
     pub plot_by_isotype_color: Vec<String>,
     pub plot_by_mark: bool,
+    pub clonotype_group_names: Option<String>,
     pub origin_color_map: HashMap<String, String>,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
@@ -670,17 +674,26 @@ pub struct EncloneControl {
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;
+pub static mut LAST_IPEAK: f64 = -0.0;
 
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(&t);
         if self.comp {
-            println!(
-                "used {:.2} seconds {}, peak mem = {:.2} GB",
-                used,
-                msg,
-                peak_mem_usage_gb()
-            );
+            let peak = peak_mem_usage_gb();
+            let ipeak = (100.0 * peak).round();
+            let peak_mem = format!("peak mem = {:.2} GB", peak);
+            let usedx = format!("{:.2}", used);
+            let mut ipeak_changed = false;
+            unsafe {
+                if ipeak != LAST_IPEAK {
+                    ipeak_changed = true;
+                    LAST_IPEAK = ipeak;
+                }
+            }
+            if usedx != "0.00" || ipeak_changed {
+                println!("used {} seconds {}, {}", usedx, msg, peak_mem);
+            }
         }
         unsafe {
             WALLCLOCK += used;

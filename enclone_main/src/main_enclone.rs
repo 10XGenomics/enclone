@@ -2609,7 +2609,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Tail code.
 
-    let ttail = Instant::now();
     tail_code(
         &tall,
         &refdata,
@@ -2631,7 +2630,6 @@ pub fn main_enclone(args: &Vec<String>) {
         &ind_readers,
         &drefs,
     );
-    ctl.perf_stats(&ttail, "in tail code");
 
     // Report computational performance.
 

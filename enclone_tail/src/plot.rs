@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::polygon::*;
 use crate::string_width::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
@@ -13,9 +14,24 @@ use rayon::prelude::*;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
+use std::time::Instant;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Change the width or height of an svg document.
+
+fn set_svg_width(svg: &mut String, new_width: f64) {
+    let (svg1, svg2) = (svg.before("width="), svg.after("width=\"").after("\""));
+    *svg = format!("{}width=\"{}\"{}", svg1, new_width, svg2);
+}
+
+fn set_svg_height(svg: &mut String, new_height: f64) {
+    let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
+    *svg = format!("{}height=\"{}\"{}", svg1, new_height, svg2);
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -117,8 +133,10 @@ fn hex_coord(n: usize, r: f64) -> (f64, f64) {
 
 // Pack circles of given radii, which should be in descending order.  Return centers for the
 // circles.  There is probably a literature on this, and this is probably a very crappy algorithm.
+//
+// Blacklisted polygons are avoided.
 
-fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
+fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     // Set up to track the centers of the circles.
 
     let mut c = Vec::<(f64, f64)>::new();
@@ -162,23 +180,37 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
 
     // Define data for the first circle.
 
-    push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+    if blacklist.is_empty() {
+        push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+    }
+
+    // Compute the maximum distance "bigr" from the origin.
+
+    let mut bigr = if blacklist.is_empty() { r[0] } else { 0.0 };
+    for p in blacklist.iter() {
+        for x in p.v.iter() {
+            bigr = bigr.max(x.origin_dist());
+        }
+    }
 
     // Proceed.
 
-    let mut bigr = r[0];
     let mut rand = 0i64;
-    // We use a ridiculously large sample.  Reducing it to 1000 substantially reduces symmetry.
+    // We use a ridiculously large sample.  Reducing it to 10,000 noticeably reduces symmetry.
     // Presumably as the number of clusters increases, the sample would need to be increased
     // (ideally) to increase symmetry.
     const SAMPLE: usize = 100000;
     const MUL: f64 = 1.5;
     let mut centers = vec![(0.0, 0.0); SAMPLE];
-    for i in 1..r.len() {
+    let start = if blacklist.is_empty() { 1 } else { 0 };
+    for i in start..r.len() {
         let mut found = false;
         let mut best_r1 = 0.0;
         let mut best_r2 = 0.0;
         let mut best_val = 0.0;
+
+        // Loop until we find a placement for the circle.
+
         loop {
             for z in 0..SAMPLE {
                 // Get a random point in [-1,+1] x [-1,+1].  Using a hand-rolled random number
@@ -210,34 +242,46 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
                 let r1 = centers[z].0;
                 let r2 = centers[z].1;
 
-                // See if circle at (r1,r2) overlaps any of the existing circles.
-                // This involves a binary search, which reduces the complexity of the algorithm.
+                // Test for overlap with a blacklisted polygon.
 
                 let mut ok = true;
-                let low = ints.binary_search_by(|v| {
-                    v.partial_cmp(&(r1 - r[i] - radius0, 0))
-                        .expect("Comparison failed.")
-                });
-                let low = match low {
-                    Ok(i) => i,
-                    Err(i) => i,
-                };
-                let high = ints.binary_search_by(|v| {
-                    v.partial_cmp(&(r1 + r[i], 0)).expect("Comparison failed.")
-                });
-                let high = match high {
-                    Ok(i) => i,
-                    Err(i) => i,
-                };
-                for m in low..high {
-                    if m > low && ints[m].1 == ints[m - 1].1 {
-                        continue;
-                    }
-                    let k = ints[m].1;
-                    let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
-                    if d < (r[i] + r[k]) * (r[i] + r[k]) {
+                let m = Point { x: r1, y: r2 };
+                for p in blacklist.iter() {
+                    if p.touches_disk(m, r[i]) {
                         ok = false;
                         break;
+                    }
+                }
+
+                // See if circle at (r1,r2) with radius r[i] overlaps any of the existing circles.
+                // This involves a binary search, which reduces the complexity of the algorithm.
+
+                if ok {
+                    let low = ints.binary_search_by(|v| {
+                        v.partial_cmp(&(r1 - r[i] - radius0, 0))
+                            .expect("Comparison failed.")
+                    });
+                    let low = match low {
+                        Ok(i) => i,
+                        Err(i) => i,
+                    };
+                    let high = ints.binary_search_by(|v| {
+                        v.partial_cmp(&(r1 + r[i], 0)).expect("Comparison failed.")
+                    });
+                    let high = match high {
+                        Ok(i) => i,
+                        Err(i) => i,
+                    };
+                    for m in low..high {
+                        if m > low && ints[m].1 == ints[m - 1].1 {
+                            continue;
+                        }
+                        let k = ints[m].1;
+                        let d = (c[k].0 - r1) * (c[k].0 - r1) + (c[k].1 - r2) * (c[k].1 - r2);
+                        if d < (r[i] + r[k]) * (r[i] + r[k]) {
+                            ok = false;
+                            break;
+                        }
                     }
                 }
                 if ok {
@@ -248,9 +292,13 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
             });
             for z in 0..SAMPLE {
                 if results[z].3 {
-                    let r1 = results[z].1;
-                    let r2 = results[z].2;
-                    let val = r1 * r1 + r2 * r2;
+                    let (r1, r2) = (results[z].1, results[z].2);
+                    let val;
+                    if blacklist.is_empty() || i == 0 {
+                        val = r1 * r1 + r2 * r2;
+                    } else {
+                        val = (r1 - c[0].0) * (r1 - c[0].0) + (r2 - c[0].1) * (r2 - c[0].1);
+                    }
                     if !found || val < best_val {
                         best_r1 = r1;
                         best_r2 = r2;
@@ -273,11 +321,15 @@ fn pack_circles(r: &Vec<f64>) -> Vec<(f64, f64)> {
 
 // Given a collection of circles having specified colors, create an svg string that shows the
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
+// Also shades smoothed polygons.
 
 fn circles_to_svg(
     center: &Vec<(f64, f64)>,
     radius: &Vec<f64>,
     color: &Vec<String>,
+    shades: &Vec<Polygon>,
+    shade_colors: &Vec<String>,
+    shade_enclosures: &Vec<Polygon>,
     width: usize,
     height: usize,
     boundary: usize,
@@ -310,6 +362,14 @@ fn circles_to_svg(
         ymin = ymin.min(center[i].1 - radius[i]);
         ymax = ymax.max(center[i].1 + radius[i]);
     }
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            xmin = xmin.min(shade_enclosures[i].v[j].x);
+            xmax = xmax.max(shade_enclosures[i].v[j].x);
+            ymin = ymin.min(shade_enclosures[i].v[j].y);
+            ymax = ymax.max(shade_enclosures[i].v[j].y);
+        }
+    }
     let width = width - boundary;
     let height = height - boundary;
     let scale = ((width as f64) / (xmax - xmin)).min((height as f64) / (ymax - ymin));
@@ -322,13 +382,32 @@ fn circles_to_svg(
         center[i].0 += boundary as f64;
         center[i].1 += boundary as f64;
     }
+    let mut shades = shades.clone();
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            shades[i].v[j].x -= xmin;
+            shades[i].v[j].y -= ymin;
+            shades[i].v[j].x *= scale;
+            shades[i].v[j].y *= scale;
+            shades[i].v[j].x += boundary as f64;
+            shades[i].v[j].y += boundary as f64;
+        }
+    }
+    for (g, p) in shades.iter().enumerate() {
+        out += "<path d=\"";
+        out += &format!("{}", p.catmull_bezier_svg());
+        out += "\" ";
+        out += &format!("fill=\"{}\"\n", shade_colors[g]);
+        out += " stroke=\"rgb(150,150,150)\"";
+        out += " stroke-width=\"0.2\"";
+        out += "/>\n";
+    }
     for i in 0..center.len() {
         out += &format!(
             "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
             center[i].0, center[i].1, radius[i], color[i]
         );
     }
-
     out += "</svg>\n";
     out
 }
@@ -363,6 +442,7 @@ pub fn plot_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     svg: &mut String,
 ) {
+    let t = Instant::now();
     if ctl.gen_opt.plot_file.is_empty() {
         return;
     }
@@ -530,41 +610,306 @@ pub fn plot_clonotypes(
         clusters.push((colors, coords));
         radii.push(radius);
     }
-    let centers = pack_circles(&radii);
 
-    // Reorganize constant-color clusters so that like-colored clusters are proximate,
-    // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
-    // single-cell clonotypes.
+    // Set group specification.
 
-    let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
-    for i in 0..clusters.len() {
-        let mut c = clusters[i].0.clone();
-        unique_sort(&mut c);
-        if c.solo() {
-            ccc.push((clusters[i].0.len(), c[0].clone(), i));
-        }
-    }
-    ccc.sort();
-    let mut i = 0;
-    while i < ccc.len() {
-        let j = next_diff1_3(&ccc, i as i32) as usize;
-        let mut angle = vec![(0.0, 0); j - i];
-        for k in i..j {
-            let id = ccc[k].2;
-            angle[k - i] = (centers[id].1.atan2(centers[id].0), id);
-        }
-        angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        for k in i..j {
-            let new_id = angle[k - i].1;
-            for u in 0..clusters[new_id].0.len() {
-                clusters[new_id].0[u] = ccc[k].1.clone();
+    let mut group_id = vec![0; radii.len()];
+    let mut group_color = vec!["".to_string()];
+    let mut group_name = vec!["".to_string()];
+    if ctl.gen_opt.clonotype_group_names.is_some() {
+        let f = open_for_read![&ctl.gen_opt.clonotype_group_names.as_ref().unwrap()];
+        let mut first = true;
+        let mut group_id_field = 0;
+        let mut new_group_name_field = 0;
+        let mut new_group_names = vec![None; radii.len()];
+        for line in f.lines() {
+            let s = line.unwrap();
+            for c in s.chars() {
+                if c.is_control() || c == '\u{FEFF}' {
+                    eprintln!(
+                        "\nThe first line in your CLONOTYPE_GROUP_NAMES file contains a \
+                        nonprinting character.\n"
+                    );
+                    std::process::exit(1);
+                }
+            }
+            let fields = s.split(',').collect::<Vec<&str>>();
+            if first {
+                let p = position(&fields, &"group_id");
+                if p < 0 {
+                    eprintln!("\nThe CLONOTYPE_GROUP_NAMES file does not have a group_id field.\n");
+                    std::process::exit(1);
+                }
+                group_id_field = p as usize;
+                let p = position(&fields, &"new_group_name");
+                if p < 0 {
+                    eprintln!(
+                        "\nThe CLONOTYPE_GROUP_NAMES file does not have a \
+                         new_group_name field.\n"
+                    );
+                    std::process::exit(1);
+                }
+                new_group_name_field = p as usize;
+                first = false;
+            } else {
+                let group_id = &fields[group_id_field];
+                if !group_id.parse::<usize>().is_ok() || group_id.force_usize() == 0 {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is not a \
+                        positive integer.\n",
+                        group_id
+                    );
+                    std::process::exit(1);
+                }
+                let group_id = group_id.force_usize() - 1;
+                if group_id > radii.len() {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is larger \
+                        than the number of clonotypes, which is {}.\n",
+                        group_id,
+                        radii.len()
+                    );
+                    std::process::exit(1);
+                }
+                let new_group_name = fields[new_group_name_field].to_string();
+                if new_group_names[group_id].is_none() {
+                    new_group_names[group_id] = Some(new_group_name.clone());
+                } else if *new_group_names[group_id].as_ref().unwrap() != new_group_name {
+                    eprintln!(
+                        "\nThe group_id {} in your CLONOTYPE_GROUP_NAMES file is assigned \
+                        the different new_group_names {} and {}.\n",
+                        group_id,
+                        new_group_names[group_id].as_ref().unwrap(),
+                        new_group_name,
+                    );
+                    std::process::exit(1);
+                }
             }
         }
-        i = j;
+
+        // Reverse sort by total number of cells associated to a name.  This defines group names.
+
+        {
+            let mut nx = Vec::<(String, usize)>::new();
+            for i in 0..new_group_names.len() {
+                if new_group_names[i].is_some() {
+                    nx.push((
+                        new_group_names[i].as_ref().unwrap().to_string(),
+                        clusters[i].1.len(),
+                    ));
+                }
+            }
+            nx.sort();
+            let mut ny = Vec::<(usize, String)>::new();
+            let mut i = 0;
+            while i < nx.len() {
+                let j = next_diff1_2(&nx, i as i32) as usize;
+                let mut n = 0;
+                for k in i..j {
+                    n += nx[k].1;
+                }
+                ny.push((n, nx[i].0.clone()));
+                i = j;
+            }
+            reverse_sort(&mut ny);
+            group_name.clear();
+            for i in 0..ny.len() {
+                group_name.push(ny[i].1.clone());
+            }
+        }
+
+        // Define group ids.
+
+        group_id.clear();
+        for i in 0..new_group_names.len() {
+            if new_group_names[i].is_some() {
+                let p = position(&group_name, &new_group_names[i].as_ref().unwrap());
+                group_id.push(p as usize);
+            }
+        }
+
+        // Build colors.
+
+        let sum = 40; // a+b+c, where color is rgb(255-a, 255-b, 255-c); smaller is closer to white
+        let mut rand = 0i64;
+        let mut points = Vec::<(f64, f64, f64)>::new();
+        while points.len() < 10_000 {
+            let rand1 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand2 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand1)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand3 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand2)
+                .wrapping_add(1_442_695_040_888_963_407);
+            rand = rand3;
+            let mut r1 = (rand1 % 1_000_000i64) as f64 / 1_000_000.0;
+            let mut r2 = (rand2 % 1_000_000i64) as f64 / 1_000_000.0;
+            let mut r3 = (rand3 % 1_000_000i64) as f64 / 1_000_000.0;
+            r1 = (r1 + 1.0) / 2.0;
+            r2 = (r2 + 1.0) / 2.0;
+            r3 = (r3 + 1.0) / 2.0;
+            let r = r1 + r2 + r3;
+            if r > 0.0 {
+                r1 /= r;
+                r2 /= r;
+                r3 /= r;
+                points.push((r1, r2, r3));
+            }
+        }
+
+        // Prepopulate colors with what appear to be an optimal sequence.  This is as measured by
+        // distance from each other.  These colors are not optimal relative to color blindness.
+
+        let mut fracs = vec![
+            (1.0, 0.0, 0.0),
+            (0.0, 1.0, 0.0),
+            (0.0, 0.0, 1.0),
+            (1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0),
+            (0.0, 1.0 / 3.0, 2.0 / 3.0),
+            (1.0 / 3.0, 2.0 / 3.0, 0.0),
+            (2.0 / 3.0, 1.0 / 3.0, 0.0),
+            (2.0 / 3.0, 0.0, 1.0 / 3.0),
+            (0.0, 2.0 / 3.0, 1.0 / 3.0),
+            (1.0 / 3.0, 0.0, 2.0 / 3.0),
+            (5.0 / 9.0, 2.0 / 9.0, 2.0 / 9.0),
+            (4.0 / 9.0, 1.0 / 9.0, 4.0 / 9.0),
+            (7.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0),
+            (1.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0),
+            (2.0 / 9.0, 5.0 / 9.0, 2.0 / 9.0),
+            (4.0 / 9.0, 4.0 / 9.0, 1.0 / 9.0),
+            (2.0 / 9.0, 2.0 / 9.0, 5.0 / 9.0),
+            (1.0 / 9.0, 1.0 / 9.0, 7.0 / 9.0),
+            (1.0 / 9.0, 7.0 / 9.0, 1.0 / 9.0),
+            (1.0 / 9.0, 2.0 / 9.0, 6.0 / 9.0),
+            (3.0 / 9.0, 1.0 / 9.0, 5.0 / 9.0),
+            (3.0 / 9.0, 2.0 / 9.0, 4.0 / 9.0),
+            (1.0 / 9.0, 8.0 / 9.0, 0.0 / 9.0),
+            (3.0 / 9.0, 4.0 / 9.0, 2.0 / 9.0),
+            (5.0 / 9.0, 3.0 / 9.0, 1.0 / 9.0),
+        ];
+        if fracs.len() >= group_name.len() {
+            fracs.truncate(group_name.len());
+
+        // Add more colors if needed.
+        } else {
+            for _ in fracs.len()..group_name.len() {
+                let mut max_dist = 0.0;
+                let mut best = (0.0, 0.0, 0.0);
+                for p in points.iter() {
+                    let mut min_dist = 100.0_f64;
+                    for q in fracs.iter() {
+                        let d = (p.0 - q.0) * (p.0 - q.0)
+                            + (p.1 - q.1) * (p.1 - q.1)
+                            + (p.2 - q.2) * (p.2 - q.2);
+                        min_dist = min_dist.min(d);
+                    }
+                    if min_dist > max_dist {
+                        max_dist = min_dist;
+                        best = *p;
+                    }
+                }
+                fracs.push(best);
+            }
+        }
+        group_color.clear();
+        for i in 0..fracs.len() {
+            let r = 255 - (fracs[i].0 * sum as f64).round() as usize;
+            let g = 255 - (fracs[i].1 * sum as f64).round() as usize;
+            let b = 255 - (fracs[i].2 * sum as f64).round() as usize;
+            group_color.push(format!("rgb({},{},{})", r, g, b));
+        }
     }
+    let ngroups = group_color.len();
+    ctl.perf_stats(&t, "in preamble to plotting clonotypes");
+
+    // Traverse the groups.
+
+    let t = Instant::now();
+    let using_shading = ngroups > 1 || group_color[0].len() > 0;
+    let mut blacklist = Vec::<Polygon>::new();
+    let mut shades = Vec::<Polygon>::new();
+    let mut shade_colors = Vec::<String>::new();
+    let mut shade_enclosures = Vec::<Polygon>::new();
+    let mut centers = vec![(0.0, 0.0); radii.len()];
+    for g in 0..ngroups {
+        // Gather the group.
+
+        let mut ids = Vec::<usize>::new();
+        let mut radiix = Vec::<f64>::new();
+        for i in 0..group_id.len() {
+            if group_id[i] == g {
+                ids.push(i);
+                radiix.push(radii[i]);
+            }
+        }
+
+        // Find circle centers.
+
+        let centersx = pack_circles(&radiix, &blacklist);
+        for i in 0..ids.len() {
+            centers[ids[i]] = centersx[i];
+        }
+
+        // Find polygon around the group.
+
+        if using_shading {
+            let mut z = Vec::<(f64, f64, f64)>::new();
+            for i in 0..centersx.len() {
+                z.push((radiix[i], centersx[i].0, centersx[i].1));
+            }
+            let d = 5.0; // distance of polygon from the circles
+            let n = 35; // number of vertices on polygon
+            let mut p = enclosing_polygon(&z, d, n);
+            shades.push(p.clone());
+            shade_colors.push(group_color[g].clone());
+
+            // Build an enlarged polygon that would hopefully include the smoothed polygonal
+            // curve.  We should actually calculate to enforce this.
+
+            p.enlarge(25.0);
+            shade_enclosures.push(p.clone());
+            blacklist.push(p);
+        }
+
+        // Reorganize constant-color clusters so that like-colored clusters are proximate,
+        // We got this idea from Ganesh Phad, who showed us a picture!  The primary effect is on
+        // single-cell clonotypes.
+
+        let mut ccc = Vec::<(usize, String, usize)>::new(); // (cluster size, color, index)
+        for i in 0..ids.len() {
+            let id = ids[i];
+            let mut c = clusters[id].0.clone();
+            unique_sort(&mut c);
+            if c.solo() {
+                ccc.push((clusters[i].0.len(), c[0].clone(), i));
+            }
+        }
+        ccc.sort();
+        let mut i = 0;
+        while i < ccc.len() {
+            let j = next_diff1_3(&ccc, i as i32) as usize;
+            let mut angle = vec![(0.0, 0); j - i];
+            for k in i..j {
+                let id = ccc[k].2;
+                angle[k - i] = (centersx[id].1.atan2(centersx[id].0), id);
+            }
+            angle.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            for k in i..j {
+                let new_id = angle[k - i].1;
+                for u in 0..clusters[ids[new_id]].0.len() {
+                    clusters[ids[new_id]].0[u] = ccc[k].1.clone();
+                }
+            }
+            i = j;
+        }
+    }
+    ctl.perf_stats(&t, "plotting clonotypes");
 
     // Build the svg file.
 
+    let t = Instant::now();
     for i in 0..clusters.len() {
         for j in 0..clusters[i].1.len() {
             clusters[i].1[j].0 += centers[i].0;
@@ -584,12 +929,120 @@ pub fn plot_clonotypes(
     const WIDTH: usize = 400;
     const HEIGHT: usize = 400;
     const BOUNDARY: usize = 10;
-    for i in 0..center.len() {
-        center[i].1 = -center[i].1; // otherwise inverted, not sure why
-    }
-    *svg = circles_to_svg(&center, &radius, &color, WIDTH, HEIGHT, BOUNDARY);
 
-    // Add legend.
+    // Negate y coordinates, as otherwise images are inverted, not sure why.
+
+    for i in 0..center.len() {
+        center[i].1 = -center[i].1;
+    }
+    for i in 0..shades.len() {
+        for j in 0..shades[i].v.len() {
+            shades[i].v[j].y = -shades[i].v[j].y;
+        }
+    }
+    for i in 0..shade_enclosures.len() {
+        for j in 0..shade_enclosures[i].v.len() {
+            shade_enclosures[i].v[j].y = -shade_enclosures[i].v[j].y;
+        }
+    }
+
+    // Generate svg.
+
+    *svg = circles_to_svg(
+        &center,
+        &radius,
+        &color,
+        &shades,
+        &shade_colors,
+        &shade_enclosures,
+        WIDTH,
+        HEIGHT,
+        BOUNDARY,
+    );
+
+    // Calculate the actual height and width of the svg.
+
+    let mut actual_height = 0.0f64;
+    let fields = svg.split(' ').collect::<Vec<&str>>();
+    let mut y = 0.0;
+    for i in 0..fields.len() {
+        if fields[i].starts_with("cy=") {
+            y = fields[i].between("\"", "\"").force_f64();
+        }
+        if fields[i].starts_with("r=") {
+            let r = fields[i].between("\"", "\"").force_f64();
+            actual_height = actual_height.max(y + r);
+        }
+    }
+    let mut actual_width = 0.0f64;
+    let fields = svg.split(' ').collect::<Vec<&str>>();
+    let mut x = 0.0;
+    for i in 0..fields.len() {
+        if fields[i].starts_with("cx=") {
+            x = fields[i].between("\"", "\"").force_f64();
+        }
+        if fields[i].starts_with("r=") {
+            let r = fields[i].between("\"", "\"").force_f64();
+            actual_width = actual_width.max(x + r);
+        }
+    }
+
+    // Add legend for shading.
+
+    let mut font_size = 20;
+    const LEGEND_BOX_STROKE_WIDTH: usize = 2;
+    let mut legend_xstop_shading = 0.0;
+    if using_shading {
+        font_size = 16;
+        let n = ngroups;
+        let mut max_string_width = 0.0f64;
+        for s in group_name.iter() {
+            max_string_width = max_string_width.max(arial_width(s, font_size));
+        }
+        let color_bar_width = 50.0;
+        let vsep = 3.0;
+        let legend_height = ((font_size + BOUNDARY / 2) * n + BOUNDARY) as f64 + n as f64 * vsep;
+        let legend_width = BOUNDARY as f64 * 2.5 + color_bar_width + max_string_width + 5.0;
+        let legend_xstart = actual_width + BOUNDARY as f64 + 10.0;
+        let legend_ystart = 50.0;
+        *svg = svg.rev_before("<").to_string();
+        *svg += &format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
+             style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
+            legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+        );
+        legend_xstop_shading = legend_xstart + legend_width;
+        for i in 0..n {
+            // Determine y start.
+            let y = legend_ystart as f64
+                + BOUNDARY as f64 * 2.5
+                + ((font_size + BOUNDARY / 2) * i) as f64
+                + i as f64 * vsep;
+            // Add group name.
+            *svg += &format!(
+                "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
+                 font-size=\"{}\">{}</text>\n",
+                legend_xstart + color_bar_width + BOUNDARY as f64 * 2.0,
+                y - BOUNDARY as f64 * 0.5,
+                font_size,
+                group_name[i]
+            );
+            // Add color bar.
+            *svg += &format!(
+                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{}\" />\n",
+                legend_xstart + (BOUNDARY * 1) as f64,
+                y - BOUNDARY as f64 * 2.0,
+                color_bar_width,
+                font_size + BOUNDARY / 2,
+                group_color[i]
+            );
+        }
+        let new_width = legend_xstart + legend_width + 5.0;
+        set_svg_width(svg, new_width);
+        *svg += "</svg>";
+    }
+
+    // Add main legend.
 
     if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype || ctl.gen_opt.plot_by_mark {
         let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
@@ -648,62 +1101,55 @@ pub fn plot_clonotypes(
             labels = origins.clone();
         }
         for s in labels.iter() {
-            max_string_width = max_string_width.max(arial_width(s, FONT_SIZE));
-        }
-
-        // Calculate the actual height of the svg.
-
-        let mut actual_height = 0.0f64;
-        let fields = svg.split(' ').collect::<Vec<&str>>();
-        let mut y = 0.0;
-        for i in 0..fields.len() {
-            if fields[i].starts_with("cy=") {
-                y = fields[i].between("\"", "\"").force_f64();
-            }
-            if fields[i].starts_with("r=") {
-                let r = fields[i].between("\"", "\"").force_f64();
-                actual_height = actual_height.max(y + r);
-            }
+            max_string_width = max_string_width.max(arial_width(s, font_size));
         }
 
         // Build the legend.
 
         let n = labels.len();
-        const FONT_SIZE: usize = 20;
         const LEGEND_CIRCLE_RADIUS: usize = 4;
-        const LEGEND_BOX_STROKE_WIDTH: usize = 2;
-        let legend_height = (FONT_SIZE + BOUNDARY / 2) * n + BOUNDARY;
+        let legend_height = (font_size + BOUNDARY / 2) * n + BOUNDARY;
         let legend_width = BOUNDARY as f64 * 2.5 + max_string_width;
-        let legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        let mut legend_xstart = BOUNDARY as f64;
+        let mut legend_ystart = actual_height + (BOUNDARY as f64) * 1.5;
+        if using_shading {
+            legend_xstart = legend_xstop_shading + 10.0;
+            legend_ystart = 50.0;
+        }
         *svg = svg.rev_before("<").to_string();
         *svg += &format!(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" \
              style=\"fill:white;stroke:black;stroke-width:{}\" />\n",
-            BOUNDARY, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
+            legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..labels.len() {
             let y = legend_ystart as f64
                 + BOUNDARY as f64 * 2.5
-                + ((FONT_SIZE + BOUNDARY / 2) * i) as f64;
+                + ((font_size + BOUNDARY / 2) * i) as f64;
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
-                BOUNDARY * 3,
+                legend_xstart + BOUNDARY as f64 * 2.0,
                 y,
-                FONT_SIZE,
+                font_size,
                 labels[i]
             );
             *svg += &format!(
                 "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" fill=\"{}\" />\n",
-                BOUNDARY * 2,
+                legend_xstart + BOUNDARY as f64,
                 y - BOUNDARY as f64 / 2.0,
                 LEGEND_CIRCLE_RADIUS,
                 colors[i]
             );
         }
-        let (svg1, svg2) = (svg.before("height="), svg.after("height=\"").after("\""));
-        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
-        *svg = format!("{}height=\"{}\"{}</svg>", svg1, new_height, svg2);
+        if !using_shading {
+            let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
+            set_svg_height(svg, new_height);
+        } else {
+            let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
+            set_svg_width(svg, new_width);
+        }
+        *svg += "</svg>";
     }
 
     // Output the svg file.
@@ -720,4 +1166,5 @@ pub fn plot_clonotypes(
         let mut f = BufWriter::new(f.unwrap());
         fwriteln!(f, "{}", svg);
     }
+    ctl.perf_stats(&t, "building svg file");
 }

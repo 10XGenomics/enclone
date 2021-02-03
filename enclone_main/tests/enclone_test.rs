@@ -893,20 +893,24 @@ fn test_for_broken_links_and_spellcheck() {
     // Set up dictionary exceptions.  We should rewrite the code to avoid looking in certain
     // places and reduce the dictionary exceptions accordingly.
 
-    let extra_words = "abybank amazonaws anarci barcode barcodes barcoding bcn \
+    let extra_words =
+        "abybank adefghiklmnpqrstvwy amazonaws anarci barcode barcodes barcoding bcn \
         bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
-        fixedtextbox foursie foursies frameshifted frameshifts fwr ganesh \
+        fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
-        indel indels inkt jsdelivr json levenshtein linux loh lvars macbook mait metadata mkdir \
+        indel indels inkt jsdelivr json krh levenshtein linux loh lvars \
+        macbook mait metadata mkdir \
         moresies multiomic nall ncbi ncross ndoublet newick nimproper \
-        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc pcell pdb phad phylip \
-        plasmablast preinstalled prepends pwm pwms redownloads researchsquare samtools screenshot segn \
-        sloooooooow spacebar stackexchange standalone stdout subclonotype \
+        nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
+        pcell pdb pgas phad phylip \
+        plasmablast preinstalled prepends pwm pwms redownloads \
+        researchsquare samtools screenshot segn \
+        sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
         subclonotypes svg thresholding timepoint tracebacks trb tsv twosie ubuntu \
-        umi umis underperforming unicode untarring vdj website wget wikimedia \
+        umi umis underperforming unicode untarring vdj vilfwym vilm website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 

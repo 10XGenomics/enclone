@@ -864,6 +864,29 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "same, for the universal reference sequence (but not for cdr3)",
         );
         h.ldoc(
+            "cdr3_aa_conx",
+            "consensus for CDR3 across the clonotype, showing X for each variant residue",
+        );
+        h.doc(
+            "cdr3_aa_conp",
+            "consensus for CDR3 across the clonotype, showing a property symbol whenever",
+        );
+        h.doc2("two different amino acids are observed, per the following table:");
+        h.doc2("--------------------------------------------------------------------");
+        h.doc2("asparagine or aspartic acid   B   DN");
+        h.doc2("glutamine or glutamic acid    Z   EQ");
+        h.doc2("leucine or isoleucine         J   IL");
+        h.doc2("negatively charged            -   DE");
+        h.doc2("positively charged            +   KRH");
+        h.doc2("aliphatic (non-aromatic)      Ψ   VILM");
+        h.doc2("small                         π   PGAS");
+        h.doc2("aromatic                      Ω   FWYH");
+        h.doc2("hydrophobic                   Φ   VILFWYM");
+        h.doc2("hydrophilic                   ζ   STHNQEDKR");
+        h.doc2("any                           X   ADEFGHIKLMNPQRSTVWY");
+        h.doc2("--------------------------------------------------------------------");
+        h.doc2("The table is searched top to bottom until a matching class is found.");
+        h.ldoc(
             "fwr*_aa",
             "the FWR*_AA sequence, or \"unknown\" if not computed",
         );

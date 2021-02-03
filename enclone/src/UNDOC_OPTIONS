@@ -267,3 +267,21 @@ Asymmetric group respects the MIN_GROUP option.
 GD_BC=x
 translates into BC=x/outs/genetic_demux_results/clusters.tsv
 to allow for convenient use of genetic demux results in the PD pipeline
+
+cvar nval = number of validated umis
+
+===================================================================================================
+
+CLONOTYPE_GROUP_NAMES=filename
+* The file should be a a CSV file with that includes fields new_group_name and group_id.  This is
+  confusing nomenclature, see what follows.
+* The group_id should be obtained by running enclone WITHOUT grouping, so that there is exactly 
+  one clonotype per group.
+* The new_group_name is the name of a group (of your own concoction) that you are assigning a 
+  clonotype to.
+* A clonotype may not be assigned to more than one group.
+* The idea is that one would run enclone once to gather information that would
+  allow grouping of clonotypes.  Then run it as second time with this argument.
+* The argument only does something if honeycomb plotting is used.  In that case, the honeycomb
+  plot is split by group and each group is given a different (light) background color.
+* Clonotypes that are not assigned to a group are not displayed.
