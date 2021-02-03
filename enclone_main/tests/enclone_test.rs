@@ -567,6 +567,7 @@ fn test_cpu() {
 // 7. ring OK because we acknowledge OpenSSL in the file acknowledgements and because we include
 //    the ring license.
 // 8. webpki OK because we include the webpki license and also that for chromium.
+// 9. instant OK because we include the license.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -583,8 +584,14 @@ fn test_licenses() {
         "exons",
         "vdj_ann",
     ];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 5] =
-        ["arrayref", "cloudabi", "fuchsia-cprng", "ring", "webpki"];
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 6] = [
+        "arrayref",
+        "cloudabi",
+        "fuchsia-cprng",
+        "instant",
+        "ring",
+        "webpki",
+    ];
     let new = Command::new("cargo-license").arg("-d").arg("-j").output();
     if new.is_err() {
         eprintln!(
