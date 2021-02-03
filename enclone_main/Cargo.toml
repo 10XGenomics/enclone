@@ -25,7 +25,7 @@ enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
-hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "055a68abff31b0e9b8f66ff0814caae6ad0ccbda", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
 perf_stats = "0.1.2"
