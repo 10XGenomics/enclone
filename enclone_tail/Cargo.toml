@@ -25,6 +25,7 @@ edit-distance = "2.1.0"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1.2"
+float-ord = "0.2.0"
 hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
@@ -38,6 +39,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 stats_utils = "0.1.2"
 string_utils = "0.1.1"
+superslice = "1"
 tables = "0.1.2"
 tar = "0.4.29"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }

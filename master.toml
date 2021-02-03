@@ -26,6 +26,7 @@ evalexpr = "5.0.5"
 failure = "0.1.6"
 file-lock = "1.1.20"
 flate2 = "1.0.17"
+float-ord = "0.2.0"
 git = "https://github.com/pmarks/hdf5-rs.git"
 graph_simple = "0.1.1"
 hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
