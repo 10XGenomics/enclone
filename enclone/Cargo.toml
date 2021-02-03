@@ -19,7 +19,7 @@ publish = false
 amino = "0.1.4"
 ansi_escape = "0.1.0"
 assert_cmd = "0.12.0"
-bio = ">=0.31, <=0.32"
+bio = ">=0.32"
 debruijn = "0.3.2"
 dirs = "2.0.2"
 enclone_core = { path = "../enclone_core" }
