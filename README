@@ -1,20 +1,19 @@
 Notes on building and testing:
 
-1. Run ./build to build.  See notes there.
+1. Run ./build to build, and ./test to test.    
+   See notes in both those files.
 
-2. Test speed with ./speed.  This uses datasets that are not available externally.  The 
-   particular data used have a very large clonotype that causes the code to be slow.
-
-3. Test other things with
-   cargo t
-   assuming that you have installed enclone with the "large" option.
-   This automatically runs with -- --nocapture.
+2. Tests assume that you have installed enclone with the "large" option.
    If you have only "medium" and not "large, you can use instead:
    cd enclone_main; cargo test --features basic -- --nocapture
+   which tests lots of things but not everything.
 
-4. This does not include the very large test given by enclone/src/enclone.test.
+3. ./test does not include the very large test given by enclone/src/enclone.test.
    That test can only be run at 10x Genomics because it includes datasets that we don't
    distribute (for example because they're not unambiguously consented for public release).
+
+4. Test speed with ./speed.  This uses datasets that are not available externally.  The 
+   particular data used have a very large clonotype that causes the code to be slow.
 
 5. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:
