@@ -214,7 +214,7 @@ impl Polygon {
             let i2 = (i1 + 1) % self.v.len();
             let mut x1 = self.v[i1].x;
             let mut x2 = self.v[i2].x;
-            if x2 > x1 {
+            if x1 > x2 {
                 swap(&mut x1, &mut x2);
             }
             self.xranges.is.push(Interval { x1: x1, x2: x2 });
@@ -444,12 +444,13 @@ impl Polygon {
         inside
     }
 
-    // Determine if the disk centered at p with radius r touches the polygon.
+    // Determine if the disk centered at p with radius r touches the polygon.  This assumes that
+    // you've run precompute on the polygon.
 
     pub fn touches_disk(&self, p: Point, r: f64) -> bool {
         // Case 1: the point is inside the polygon.
 
-        if self.inside(p) {
+        if self.inside_log(p) {
             return true;
         }
 
