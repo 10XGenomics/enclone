@@ -869,6 +869,7 @@ pub fn plot_clonotypes(
             // curve.  We should actually calculate to enforce this.
 
             p.enlarge(25.0);
+            p.precompute();
             shade_enclosures.push(p.clone());
             blacklist.push(p);
         }

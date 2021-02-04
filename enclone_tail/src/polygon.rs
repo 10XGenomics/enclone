@@ -79,6 +79,7 @@ impl Segment {
 
 // Interval in one-space.
 
+#[derive(Clone)]
 pub struct Interval {
     pub x1: f64,
     pub x2: f64,
@@ -101,7 +102,7 @@ impl Interval {
 // Interval vector with fast lookup of which closed intervals a number lies in.  We allow
 // degenerate intervals [x, x].
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct IntervalVec {
     // PUBLIC
     pub is: Vec<Interval>,
@@ -197,12 +198,30 @@ mod tests {
 // vertex at the end.  The polygon is not assumed to be convex.  We assume that the edges do not
 // cross each other, but that is not tested.
 
-#[derive(Default, Clone)]
+#[derive(Clone, Default)]
 pub struct Polygon {
+    // PUBLIC
     pub v: Vec<Point>,
+    // PRIVATE
+    xranges: IntervalVec,
 }
 
 impl Polygon {
+    // Precompute xranges.
+
+    pub fn precompute(&mut self) {
+        for i1 in 0..self.v.len() {
+            let i2 = (i1 + 1) % self.v.len();
+            let mut x1 = self.v[i1].x;
+            let mut x2 = self.v[i2].x;
+            if x1 > x2 {
+                swap(&mut x1, &mut x2);
+            }
+            self.xranges.is.push(Interval { x1: x1, x2: x2 });
+        }
+        self.xranges.precompute();
+    }
+
     // Enlarge the polygon by a specified distance d.  This moves each vertex d farther away
     // from the center of mass, as defined by the vertices.  Not sure that makes sense.
 
@@ -344,8 +363,7 @@ impl Polygon {
     }
 
     // Determine if a point lies inside the polygon (including the boundary).  This function is
-    // O(n) where n is the number of vertices of the polygon.  Note that with some precompute for
-    // the polygon, this could probably be made O(ln(n)), at least for non-pathological cases.
+    // O(n) where n is the number of vertices of the polygon.  See also inside_log.
     // Reference: http://geomalgorithms.com/a03-_inclusion.html (not used).
 
     pub fn inside(&self, p: Point) -> bool {
@@ -386,12 +404,53 @@ impl Polygon {
         inside
     }
 
-    // Determine if the disk centered at p with radius r touches the polygon.
+    // Determine if a point lies inside the polygon (including the boundary), in O(ln(n)) time,
+    // where n is the number of vertices of the polygon, except in pathological cases.  You need
+    // to call precompute first.  See also inside.
+
+    pub fn inside_log(&self, p: Point) -> bool {
+        let (x, y) = (p.x, p.y);
+        let hits = self.xranges.get_containers(x);
+        let mut inside = false;
+        let mut d = None;
+        for j in 0..hits.len() {
+            let i1 = hits[j];
+            let i2 = (i1 + 1) % self.v.len();
+            let (x1, y1) = (self.v[i1].x, self.v[i1].y);
+            let (x2, y2) = (self.v[i2].x, self.v[i2].y);
+            if x1 == x2 {
+                if x1 == x {
+                    if (y >= y1 && y <= y2) || (y >= y2 && y <= y1) {
+                        return true; // special case: on a vertical boundary edge
+                    }
+                }
+            } else {
+                let m = (y1 - y2) / (x1 - x2);
+                let b = y2 - m * x2;
+                let yy = m * x + b;
+                if (yy >= y1 && yy <= y2) || (yy >= y2 && yy <= y1) {
+                    if yy == y && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1)) {
+                        return true; // special case: on a non-vertical boundary edge
+                    }
+                    if yy >= y {
+                        if d.is_none() || (d.is_some() && d.unwrap() > yy - y) {
+                            d = Some(yy - y);
+                            inside = x2 < x1;
+                        }
+                    }
+                }
+            }
+        }
+        inside
+    }
+
+    // Determine if the disk centered at p with radius r touches the polygon.  This assumes that
+    // you've run precompute on the polygon.
 
     pub fn touches_disk(&self, p: Point, r: f64) -> bool {
         // Case 1: the point is inside the polygon.
 
-        if self.inside(p) {
+        if self.inside_log(p) {
             return true;
         }
 
