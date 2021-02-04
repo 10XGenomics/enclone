@@ -4,6 +4,8 @@
 # also does some tidying and reports time used.  Note that the effect of cargo t is defined 
 # by .cargo/config.
 #
+# This prints two times, which need to be added.  Not clear how to automatically do this.
+#
 # If you change the tests here, make sure to edit the GitHub Actions accordingly.
 
 /usr/bin/time -f %E \
