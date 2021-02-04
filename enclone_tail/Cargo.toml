@@ -26,11 +26,11 @@ enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
 equiv = "0.1.2"
 float-ord = "0.2.0"
-hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "055a68abff31b0e9b8f66ff0814caae6ad0ccbda", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
 mirror_sparse_matrix = "0.1.4"
-ndarray = "0.13"
+ndarray = ">= 0.14"
 perf_stats = "0.1.2"
 pretty_trace = "0.3.2"
 rayon = "1.3"

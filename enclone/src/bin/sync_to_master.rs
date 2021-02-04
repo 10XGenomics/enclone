@@ -1,4 +1,4 @@
-// Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Sync all the crate versions in the workspace to the versions defined in the file master.toml
 // in the top-level of the workspace.
@@ -33,7 +33,7 @@ fn main() {
                 for line in g.lines() {
                     let s = line.unwrap();
                     let mut t = s.clone();
-                    if s.contains(" =") && !s.contains(" = [") {
+                    if s.contains(" =") && !s.after(" =").starts_with(" [") {
                         let cratex = s.before(" =").to_string();
                         if version.contains_key(&cratex) {
                             t = format!("{} = {}", cratex, version[&cratex]);

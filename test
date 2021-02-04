@@ -1,3 +1,34 @@
 #!/bin/csh
-/usr/bin/time -f %E cargo t
+
+# Run cargo t and another test which it's not clear how to encapsulate within cargo t.  This
+# also does some tidying and reports time used.  Note that the effect of cargo t is defined 
+# by .cargo/config.
+#
+# This prints two times, which need to be added.  Not clear how to automatically do this.
+#
+# Note that .github/workflows/test.yaml does not test everything that is tested here.
+#
+# enclone/enclone.test is a much longer test that is not included here and can only be run at 10x.
+#
+# See also README.
+
+/usr/bin/time -f %E \
+    cargo t \
+    |& grep --line-buffered -v "^running" \
+    | grep --line-buffered -v " Running "
+
+if ( $status != 0 ) then
+    echo "FAILED!"
+    exit 1
+endif
+
+/usr/bin/time -f %E \
+    cargo test -p enclone_tail --lib -- --nocapture \
+    |& egrep -v "Finished|Running" | grep -v "^running"
+
+if ( $status != 0 ) then
+    echo "FAILED!"
+    exit 1
+endif
+
 echo

@@ -466,6 +466,7 @@ pub struct GeneralOpt {
     pub gene_scan_threshold: Option<LinearCondition>,
     pub plot_file: String,
     pub plot_by_isotype: bool,
+    pub plot_by_isotype_nolegend: bool,
     pub plot_by_isotype_color: Vec<String>,
     pub plot_by_mark: bool,
     pub clonotype_group_names: Option<String>,

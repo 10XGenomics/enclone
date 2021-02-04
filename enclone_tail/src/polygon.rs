@@ -101,12 +101,14 @@ impl Interval {
 // Interval vector with fast lookup of which closed intervals a number lies in.  We allow
 // degenerate intervals [x, x].
 
+#[derive(Default)]
 pub struct IntervalVec {
     // PUBLIC
     pub is: Vec<Interval>,
     // PRIVATE
     ends: Vec<FloatOrd<f64>>,
     locs: Vec<Vec<usize>>,
+    locsi: Vec<Vec<usize>>,
 }
 
 impl IntervalVec {
@@ -122,11 +124,15 @@ impl IntervalVec {
         }
         unique_sort(&mut self.ends);
         self.locs = vec![Vec::new(); self.ends.len() + 2];
+        self.locsi = vec![Vec::new(); self.ends.len() + 2];
         for i in 0..self.is.len() {
             let p1 = self.ends.lower_bound(&FloatOrd(self.is[i].x1));
             let p2 = self.ends.lower_bound(&FloatOrd(self.is[i].x2));
             for j in p1..=p2 {
                 self.locs[j + 1].push(i);
+            }
+            for j in p1..p2 {
+                self.locsi[j + 1].push(i);
             }
         }
     }
@@ -145,7 +151,45 @@ impl IntervalVec {
             return &self.locs.last().unwrap();
         }
         let m = self.ends.upper_bound(&x);
-        &self.locs[m]
+        if m == 0 || self.ends[m - 1] == x {
+            &self.locs[m]
+        } else {
+            &self.locsi[m]
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_trace::*;
+    #[test]
+    fn test_interval_vec() {
+        PrettyTrace::new().on();
+        let mut v = IntervalVec::default();
+        v.is.push(Interval { x1: 1.1, x2: 1.2 });
+        v.is.push(Interval { x1: 1.0, x2: 2.0 });
+        v.is.push(Interval { x1: 0.0, x2: 1.0 });
+        v.is.push(Interval {
+            x1: 10.0,
+            x2: 10.01,
+        });
+        v.is.push(Interval { x1: 3.0, x2: 3.0 });
+        v.is.push(Interval { x1: 1.0, x2: 1.0 });
+        v.precompute();
+        for x in [
+            -1.0, 0.0, 0.5, 1.0, 1.01, 1.15, 1.8, 2.0, 3.1, 10.0, 10.05, 10.5,
+        ]
+        .iter()
+        {
+            let mut y = Vec::<usize>::new();
+            for i in 0..v.is.len() {
+                if *x >= v.is[i].x1 && *x <= v.is[i].x2 {
+                    y.push(i);
+                }
+            }
+            assert!(*v.get_containers(*x) == y);
+        }
     }
 }
 

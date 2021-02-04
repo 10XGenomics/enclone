@@ -18,11 +18,11 @@ publish = false
 [dependencies]
 amino = "0.1.4"
 ansi_escape = "0.1.0"
-bio = ">=0.31, <=0.32"
+bio = ">=0.32"
 bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 evalexpr = "5.0.5"
-hdf5 = { git = "https://github.com/pmarks/hdf5-rs.git", rev = "0c98e57b2af1f4247708c198b324ba3a8bc18dba", features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "055a68abff31b0e9b8f66ff0814caae6ad0ccbda", features = ["conda"] }
 io_utils = "0.2"
 mirror_sparse_matrix = "0.1.4"
 perf_stats = "0.1.2"

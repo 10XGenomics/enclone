@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 184] = [
+pub const TESTS: [&str; 185] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -460,6 +460,9 @@ pub const TESTS: [&str; 184] = [
     r###"BCR=123085 LVARS=f4:count_fwr4_V CDR3=CTRDRDLRGATDAFDIW"###,
     // 184. test some count vars
     r###"BCR=123085 LVARS=c2:count_cdr2_C CDR3=CARQQDVYTRSWYFDYW CELLS=1"###,
+    // 185. test SUPPRESS_ISOTYPE_LEGEND
+    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2
+        SUPPRESS_ISOTYPE_LEGEND"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
