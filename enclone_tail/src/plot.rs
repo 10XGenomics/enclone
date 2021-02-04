@@ -1044,7 +1044,10 @@ pub fn plot_clonotypes(
 
     // Add main legend.
 
-    if ctl.gen_opt.use_legend || ctl.gen_opt.plot_by_isotype || ctl.gen_opt.plot_by_mark {
+    if ctl.gen_opt.use_legend
+        || (ctl.gen_opt.plot_by_isotype && !ctl.gen_opt.plot_by_isotype_nolegend)
+        || ctl.gen_opt.plot_by_mark
+    {
         let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
         let mut max_string_width = 0.0f64;
         if ctl.gen_opt.plot_by_isotype {

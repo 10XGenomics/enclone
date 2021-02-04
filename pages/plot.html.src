@@ -99,6 +99,8 @@ maybe used to define an alternate color list.  The first color is for the undete
 the subsequent colors are in order by constant region name.  #enclone will fail if the list is 
 not long enough.</p>
 
+<p>The legend may be suppressed using the argument <code>SUPPRESS_ISOTYPE_LEGEND</code>.</p>
+
 <hr>
 
 <p>
