@@ -107,7 +107,6 @@ pub struct IntervalVec {
     pub is: Vec<Interval>,
     // PRIVATE
     ends: Vec<FloatOrd<f64>>,
-    endsx: Vec<f64>, // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     locs: Vec<Vec<usize>>,
     locsi: Vec<Vec<usize>>,
 }
@@ -122,12 +121,8 @@ impl IntervalVec {
             assert!(self.is[i].x1 <= self.is[i].x2);
             self.ends.push(FloatOrd(self.is[i].x1));
             self.ends.push(FloatOrd(self.is[i].x2));
-            self.endsx.push(self.is[i].x1); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            self.endsx.push(self.is[i].x2); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         }
         unique_sort(&mut self.ends);
-        self.endsx.sort_by(|a, b| a.partial_cmp(b).unwrap()); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        self.endsx.dedup(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         self.locs = vec![Vec::new(); self.ends.len() + 2];
         self.locsi = vec![Vec::new(); self.ends.len() + 2];
         for i in 0..self.is.len() {
@@ -156,9 +151,6 @@ impl IntervalVec {
             return &self.locs.last().unwrap();
         }
         let m = self.ends.upper_bound(&x);
-
-        // self.ends[m] > x // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
         if m == 0 || self.ends[m-1] == x {
             &self.locs[m]
         } else {
@@ -169,7 +161,6 @@ impl IntervalVec {
 
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     use pretty_trace::*;
     use super::*;
     #[test]
@@ -183,10 +174,6 @@ mod tests {
         v.is.push(Interval { x1: 3.0, x2: 3.0 });
         v.is.push(Interval { x1: 1.0, x2: 1.0 });
         v.precompute();
-        for i in 0..v.ends.len() { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            println!("end {} = {}, locs = {}", i, v.endsx[i], v.locs[i+1].iter().format(",")); //XXX
-        } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
         for x in [-1.0, 0.0, 0.5, 1.0, 1.01, 1.15, 1.8, 2.0, 3.1, 10.0, 10.05, 10.5].iter() {
             let mut y = Vec::<usize>::new();
             for i in 0..v.is.len() {
