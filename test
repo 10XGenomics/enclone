@@ -6,7 +6,11 @@
 #
 # This prints two times, which need to be added.  Not clear how to automatically do this.
 #
-# If you change the tests here, make sure to edit the GitHub Actions accordingly.
+# Note that .github/workflows/test.yaml does not test everything that is tested here.
+#
+# enclone/enclone.test is a much longer test that is not included here and can only be run at 10x.
+#
+# See also README.
 
 /usr/bin/time -f %E \
     cargo t \
