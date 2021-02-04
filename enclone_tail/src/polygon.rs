@@ -151,7 +151,7 @@ impl IntervalVec {
             return &self.locs.last().unwrap();
         }
         let m = self.ends.upper_bound(&x);
-        if m == 0 || self.ends[m-1] == x {
+        if m == 0 || self.ends[m - 1] == x {
             &self.locs[m]
         } else {
             &self.locsi[m]
@@ -161,8 +161,8 @@ impl IntervalVec {
 
 #[cfg(test)]
 mod tests {
-    use pretty_trace::*;
     use super::*;
+    use pretty_trace::*;
     #[test]
     fn test_interval_vec() {
         PrettyTrace::new().on();
@@ -170,18 +170,25 @@ mod tests {
         v.is.push(Interval { x1: 1.1, x2: 1.2 });
         v.is.push(Interval { x1: 1.0, x2: 2.0 });
         v.is.push(Interval { x1: 0.0, x2: 1.0 });
-        v.is.push(Interval { x1: 10.0, x2: 10.01 });
+        v.is.push(Interval {
+            x1: 10.0,
+            x2: 10.01,
+        });
         v.is.push(Interval { x1: 3.0, x2: 3.0 });
         v.is.push(Interval { x1: 1.0, x2: 1.0 });
         v.precompute();
-        for x in [-1.0, 0.0, 0.5, 1.0, 1.01, 1.15, 1.8, 2.0, 3.1, 10.0, 10.05, 10.5].iter() {
+        for x in [
+            -1.0, 0.0, 0.5, 1.0, 1.01, 1.15, 1.8, 2.0, 3.1, 10.0, 10.05, 10.5,
+        ]
+        .iter()
+        {
             let mut y = Vec::<usize>::new();
             for i in 0..v.is.len() {
                 if *x >= v.is[i].x1 && *x <= v.is[i].x2 {
                     y.push(i);
                 }
             }
-            assert!( *v.get_containers(*x) == y );
+            assert!(*v.get_containers(*x) == y);
         }
     }
 }
