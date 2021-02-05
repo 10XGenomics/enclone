@@ -1623,10 +1623,19 @@ pub fn main_enclone(args: &Vec<String>) {
         eq = eq2;
     }
 
-    // Lock some variables that can't change from now on.
+    // Restructure raw joins.
+
+    raw_joins.sort();
+    let mut raw_joins2 = vec![Vec::<usize>::new(); info.len()];
+    for i in 0..raw_joins.len() {
+        raw_joins2[raw_joins[i].0 as usize].push(raw_joins[i].1 as usize);
+        raw_joins2[raw_joins[i].1 as usize].push(raw_joins[i].0 as usize);
+    }
+    let _raw_joins = raw_joins2;
+
+    // Lock info.
 
     let info = &info;
-    let _raw_joins = &raw_joins;
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
