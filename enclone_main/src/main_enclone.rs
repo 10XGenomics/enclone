@@ -1516,10 +1516,11 @@ pub fn main_enclone(args: &Vec<String>) {
 
     sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
-    // Form equivalence relation on exact subclonotypes.
+    // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
+    // of pairs of info indices, that were originally joined.
 
     let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
-    let mut _raw_joins = Vec::<(i32, i32)>::new();
+    let mut raw_joins = Vec::<(i32, i32)>::new();
     let mut eq: EquivRel = join_exacts(
         is_bcr,
         &refdata,
@@ -1527,11 +1528,11 @@ pub fn main_enclone(args: &Vec<String>) {
         &exact_clonotypes,
         &info,
         &mut join_info,
-        &mut _raw_joins,
+        &mut raw_joins,
     );
 
-    // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
-    // cell clonotypes.  This requires editing of exact_clonotypes, info, eq and join_info.
+    // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
+    // clonotypes.  This requires editing of exact_clonotypes, info, eq, join_info and raw_joins.
 
     let mut disintegrated = Vec::<bool>::new();
     if ctl.clono_filt_opt.weak_onesies {
@@ -1612,6 +1613,10 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         eq = eq2;
     }
+
+    // After this point, info is not changed, so locking it.
+
+    let info = &info;
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
