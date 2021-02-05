@@ -15,7 +15,7 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Note confusing notation.  The object cdr3 contains pairs (String,usize) consisting of
-// the cdr3_aa and the length of seq_del.
+// chain_type:cdr3_aa and the length of seq_del.
 
 pub fn define_mat(
     ctl: &EncloneControl,
