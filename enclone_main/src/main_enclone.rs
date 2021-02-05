@@ -1519,6 +1519,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Form equivalence relation on exact subclonotypes.
 
     let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
+    let mut _raw_joins = Vec::<(i32, i32)>::new();
     let mut eq: EquivRel = join_exacts(
         is_bcr,
         &refdata,
@@ -1526,6 +1527,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &exact_clonotypes,
         &info,
         &mut join_info,
+        &mut _raw_joins,
     );
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
