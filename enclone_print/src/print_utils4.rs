@@ -81,6 +81,11 @@ pub fn define_mat(
             let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
             let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
 
+            if x1 == x2 && y1 == y2 {
+                ec.join(m1 as i32, m2 as i32);
+                continue;
+            }
+
             let (r1, r2) = (&info_locs[m1], &info_locs[m2]);
             'r1r2: for j1 in r1.iter() {
                 for j2 in r2.iter() {
