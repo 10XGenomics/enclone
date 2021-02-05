@@ -22,6 +22,7 @@ pub fn define_mat(
     exact_clonotypes: &Vec<ExactClonotype>,
     cdr3s: &Vec<Vec<(String, usize)>>,
     js: &Vec<usize>,
+    ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
@@ -51,12 +52,7 @@ pub fn define_mat(
                 &(cdr3s[u][k].0.as_bytes().to_vec(), cdr3s[u][k].1),
             );
             let j1 = js[u];
-            let j2;
-            if u + 1 < js.len() {
-                j2 = js[u + 1];
-            } else {
-                j2 = od.len();
-            }
+            let j2 = ks[u];
             for kx in j1..j2 {
                 let mut index = None;
                 let z = &info[od[kx].2 as usize];
