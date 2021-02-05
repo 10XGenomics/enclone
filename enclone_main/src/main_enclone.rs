@@ -2069,7 +2069,7 @@ pub fn main_enclone(args: &Vec<String>) {
                 exacts.push(od[j].1);
                 j = k;
             }
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info, &o);
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();
             for u in 0..nexacts {
