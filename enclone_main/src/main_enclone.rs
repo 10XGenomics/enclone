@@ -1596,6 +1596,15 @@ pub fn main_enclone(args: &Vec<String>) {
             to_info2.push(x);
         }
         info = info2;
+        let mut raw_joins2 = Vec::<(i32, i32)>::new();
+        for i in 0..raw_joins.len() {
+            let (j1, j2) = (
+                &to_info2[raw_joins[i].0 as usize],
+                &to_info2[raw_joins[i].1 as usize],
+            );
+            raw_joins2.push((j1[0] as i32, j2[0] as i32));
+        }
+        raw_joins = raw_joins2;
         let mut reps = Vec::<i32>::new();
         eq.orbit_reps(&mut reps);
         let mut eq2 = EquivRel::new(info.len() as i32);
@@ -1614,9 +1623,10 @@ pub fn main_enclone(args: &Vec<String>) {
         eq = eq2;
     }
 
-    // After this point, info is not changed, so locking it.
+    // Lock some variables that can't change from now on.
 
     let info = &info;
+    let _raw_joins = &raw_joins;
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
