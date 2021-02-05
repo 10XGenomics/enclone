@@ -1631,7 +1631,7 @@ pub fn main_enclone(args: &Vec<String>) {
         raw_joins2[raw_joins[i].0 as usize].push(raw_joins[i].1 as usize);
         raw_joins2[raw_joins[i].1 as usize].push(raw_joins[i].0 as usize);
     }
-    let _raw_joins = raw_joins2;
+    let raw_joins = raw_joins2;
 
     // Lock info.
 
@@ -2095,7 +2095,15 @@ pub fn main_enclone(args: &Vec<String>) {
                 exacts.push(od[j].1);
                 j = k;
             }
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();
             for u in 0..nexacts {
@@ -2571,6 +2579,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &exact_clonotypes,
         &info,
         &orbits,
+        &raw_joins,
         &gex_info,
         &vdj_cells,
         &d_readers,

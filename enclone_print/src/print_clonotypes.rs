@@ -42,6 +42,7 @@ pub fn print_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     orbits: &Vec<Vec<i32>>,
+    raw_joins: &Vec<Vec<usize>>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
     d_readers: &Vec<Option<hdf5::Reader>>,
@@ -268,7 +269,15 @@ pub fn print_clonotypes(
 
             // Sort exact subclonotypes.
 
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
                 let mut typex = vec![false; mat.len()];
@@ -308,7 +317,15 @@ pub fn print_clonotypes(
             // reference sequence identifiers, CDR3 start positions, and the like.
 
             let nexacts = exacts.len();
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let cols = mat.len();
             let mut rsi = define_column_info(&ctl, &exacts, &exact_clonotypes, &mat, &refdata);
             rsi.mat = mat;
