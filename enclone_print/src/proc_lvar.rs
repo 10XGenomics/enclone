@@ -14,6 +14,15 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+fn median_f64(x: &[f64]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        (x[h - 1] + x[h]) / 2.0
+    }
+}
+
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
@@ -891,7 +900,7 @@ pub fn proc_lvar(
                 } else {
                     let mut median = 0.0;
                     if counts_sub_sorted.len() > 0 {
-                        median = counts_sub_sorted[counts_sub_sorted.len() / 2].round();
+                        median = median_f64(&counts_sub_sorted);
                     }
                     lvar![i, x, format!("{}", median)];
                 }

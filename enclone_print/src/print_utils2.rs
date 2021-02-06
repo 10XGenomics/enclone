@@ -19,6 +19,29 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+fn rounded_median(x: &[usize]) -> usize {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        let s = x[h - 1] + x[h];
+        if s % 2 == 0 {
+            s / 2
+        } else {
+            s / 2 + 1
+        }
+    }
+}
+
+fn median_f64(x: &[f64]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        (x[h - 1] + x[h]) / 2.0
+    }
+}
+
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
@@ -310,7 +333,7 @@ pub fn row_fill(
     }
     let (mut gex_median, mut gex_min, mut gex_max, mut gex_mean, mut gex_sum) = (0, 0, 0, 0.0, 0.0);
     if counts.len() > 0 {
-        gex_median = counts[counts.len() / 2];
+        gex_median = rounded_median(&counts);
         gex_min = counts[0];
         gex_max = counts[counts.len() - 1];
         gex_sum = fcounts.iter().sum::<f64>();
@@ -320,7 +343,7 @@ pub fn row_fill(
     entropies.sort_by(|a, b| a.partial_cmp(b).unwrap());
     let mut entropy = 0.0;
     if entropies.len() > 0 {
-        entropy = entropies[entropies.len() / 2];
+        entropy = median_f64(&entropies);
     }
 
     // Output lead variable columns.
@@ -441,7 +464,7 @@ pub fn row_fill(
             nreads.push(ex.clones[j][mid].read_count);
         }
         numis.sort();
-        let median_numis = numis[numis.len() / 2];
+        let median_numis = rounded_median(&numis);
         let utot: usize = numis.iter().sum();
         let u_mean = (utot as f64 / numis.len() as f64).round() as usize;
         let u_min = *numis.iter().min().unwrap();
@@ -451,7 +474,7 @@ pub fn row_fill(
         let r_mean = (rtot as f64 / nreads.len() as f64).round() as usize;
         let r_min = *nreads.iter().min().unwrap();
         let r_max = *nreads.iter().max().unwrap();
-        let median_nreads = nreads[nreads.len() / 2];
+        let median_nreads = rounded_median(&nreads);
 
         // Set up chain variable macro.  This is the mechanism for generating
         // both human-readable and parseable output for chain variables.

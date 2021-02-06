@@ -565,7 +565,7 @@ title="enclone annotated example" style="max-width:100%;"></a>
 <p>Approximately the same output would be obtained by typing:</p>
 <pre><code>enclone BCR=123085 CDR3=CTRDRDLRGATDAFDIW
 </code></pre>
-(As we change the algorithm, results are perturbed slightly, and we have not updated the
+(As we change the algorithm, results are perturbed, and we have not updated the
 diagram each time.  All other outputs shown on this site are kept current.)
 
 <p>The directory <code>123085</code> is in the directory <code>~/enclone/datasets</code> and 
