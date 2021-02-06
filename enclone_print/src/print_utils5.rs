@@ -350,4 +350,29 @@ pub fn delete_weaks(
             }
         }
     }
+
+    // Remove onesies that do not have an exact match.
+
+    if cols > 1 {
+        for u1 in 0..nexacts {
+            let ex1 = &exact_clonotypes[exacts[u1]];
+            if ex1.share.len() == 1 && !bads[u1] {
+                let mut perf = false;
+                'u2: for u2 in 0..nexacts {
+                    let ex2 = &exact_clonotypes[exacts[u2]];
+                    if ex2.share.len() > 1 && !bads[u2] {
+                        for i in 0..ex2.share.len() {
+                            if ex1.share[0].seq == ex2.share[i].seq {
+                                perf = true;
+                                break 'u2;
+                            }
+                        }
+                    }
+                }
+                if !perf {
+                    bads[u1] = true;
+                }
+            }
+        }
+    }
 }
