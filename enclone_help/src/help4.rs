@@ -317,7 +317,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "{}",
             gray_left_bar(&print_to(
                 "\\red{●} These variables have some alternate versions, \
-                 as shown in the table below:\n\n"
+                 as shown in the table below.\n\n"
             ))
         ));
         let mut rows = Vec::<Vec<String>>::new();
@@ -456,7 +456,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print(
             "These options define lead variables, which correspond to columns that \
              appear once in each clonotype, on the left side, and have one entry for each \
-             exact subclonotype row.\n\n",
+             exact subclonotype row.  Please note that for medians of integers, \
+             we actually report the \"rounded median\", the result of rounding the \
+             true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
         h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
@@ -758,7 +760,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print(
             "\n\\bold{per-chain column options}: These options define per-chain variables, \
              which correspond to columns that appear once for each chain in each clonotype, and \
-             have one entry for each exact subclonotype.\n\n",
+             have one entry for each exact subclonotype.  Please note that for medians of \
+             integers, we actually report the \"rounded median\", the result of rounding the \
+             true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
         h.print(
             "Per-column variables are specified using\n\

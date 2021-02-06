@@ -31,6 +31,18 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>2/6/21</b>: Fix the computations of median of a vector.  For a vector <code>x</code> of length 
+<code>n</code>, these were computed as <code>x[n/2]</code>, which is incorrect in the case where
+<code>x</code> has an even number of elements: it should be the mean of the innermost two
+elements.  However, in cases where the vector elements are integers, we now round this mean up to
+the nearest integer, yielding a "rounded median", as the advantage of presenting the exact
+median is outweighed by the loss of readability resulting from adding <code>.5</code> or 
+<code>.0</code> to the display.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>2/4/21</b>: Add option <code>SUPPRESS_ISOTYPE_LEGEND</code>.
 </p>
 

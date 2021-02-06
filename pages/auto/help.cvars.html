@@ -46,6 +46,8 @@ gtag('config', 'UA-58278925-3');
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">per-chain column options</span>: These options define per-chain variables, which correspond to columns
 that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
+ Please note that for medians of integers, we actually report the "rounded median", the result of
+rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
 Per-column variables are specified using
 <span style="font-weight:bold;">CVARS=x1,...,xn</span>
@@ -144,7 +146,7 @@ where each xi is one of:
 │                 │  as above but computed using donor reference                                 │
 └─────────────────┴──────────────────────────────────────────────────────────────────────────────┘
 
-<span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below:
+<span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below.
 <span style="background-color:#cbcccd;"> </span> 
 <span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
 <span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
