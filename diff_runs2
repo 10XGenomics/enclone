@@ -28,9 +28,11 @@ enclone POUT=~/new PCELL PCOLS=$pcols NOPRINT $dataset_spec $all
 cat ~/new | sort > ~/news
 
 set bcs = `diff ~/olds ~/news | grep "<" | tr ',' ' ' | awk '{ print $2 }' \
-    | tr '\n' ',' | sed 's/.$//'`
+    | tr '\n' ' ' | sed 's/.$//'`
 
-echo OLD
-~/bin/enclone $dataset_spec BARCODE=$bcs $all NOPAGER
-echo NEW
-enclone $dataset_spec BARCODE=$bcs $all NOPAGER
+foreach barcode ($bcs)
+    echo OLD
+    ~/bin/enclone $dataset_spec BARCODE=$barcode $all NOPAGER
+    echo NEW
+    enclone $dataset_spec BARCODE=$barcode $all NOPAGER
+end
