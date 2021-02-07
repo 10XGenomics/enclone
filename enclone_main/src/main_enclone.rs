@@ -2678,6 +2678,7 @@ pub fn main_enclone(args: &Vec<String>) {
     ctl.perf_stats(&tall, "total");
     if ctl.comp {
         println!("used {:.2} seconds unaccounted for", delta);
+        println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
 
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
