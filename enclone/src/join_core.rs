@@ -12,7 +12,6 @@ use vector_utils::*;
 
 pub fn join_one(
     is_bcr: bool,
-    i: usize,
     k1: usize,
     k2: usize,
     ctl: &EncloneControl,
@@ -20,9 +19,8 @@ pub fn join_one(
     info: &Vec<CloneInfo>,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<f64>>,
-    eq: &mut EquivRel,
     pot: &mut Vec<PotentialJoin>,
-) {
+) -> bool {
     // Do not merge onesies or foursies with anything.  Deferred until later.
     // Note that perhaps some foursies should be declared doublets and deleted.
     // Note onesies merging above is turned off so this appears to be moot.
@@ -31,14 +29,14 @@ pub fn join_one(
     let chains1 = exact_clonotypes[clono1].share.len();
     let chains2 = exact_clonotypes[clono2].share.len();
     if chains1 < 2 || chains1 > 3 || chains2 < 2 || chains2 > 3 {
-        return;
+        return false;
     }
     // NEED FOR THIS SEEMS LIKE A BUG:
     if info[k1].vs.len() == 1 || info[k2].vs.len() == 4 {
-        return;
+        return false;
     }
     if info[k1].vs.len() > 2 {
-        return;
+        return false;
     }
 
     // Require that CDR3s have the same length.  Ugly.
@@ -46,11 +44,11 @@ pub fn join_one(
 
     let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
     if x1.len() != x2.len() {
-        return;
+        return false;
     }
     for i in 0..x1.len() {
         if x1[i].len() != x2[i].len() {
-            return;
+            return false;
         }
     }
 
@@ -81,10 +79,10 @@ pub fn join_one(
     // Another test for acceptable join.
 
     if diffs > ctl.heur.max_diffs {
-        return;
+        return false;
     }
     if !is_bcr && diffs > 5 {
-        return;
+        return false;
     }
 
     // Unless MIX_DONORS specified, do not join across donors.
@@ -113,7 +111,7 @@ pub fn join_one(
     unique_sort(&mut donors2);
     if !ctl.clono_filt_opt.donor {
         if donors1.len() > 0 && donors2.len() > 0 && donors1 != donors2 {
-            return;
+            return false;
         }
     }
     let err = donors1 != donors2 || donors1.len() != 1 || donors2.len() != 1;
@@ -168,7 +166,7 @@ pub fn join_one(
                         // Ugly bailout arising very rarely if the two reference
                         // sequences have different lengths.
                         if p >= tig1.len() || p >= tig2.len() {
-                            return;
+                            return false;
                         }
                         t1 = tig1[p];
                         t2 = tig2[p];
@@ -230,7 +228,7 @@ pub fn join_one(
     if nrefs == 2 {
         for m in 0..2 {
             if abs_diff(total[0][m], total[1][m]) > ctl.heur.max_degradation {
-                return;
+                return false;
             }
         }
     }
@@ -249,7 +247,7 @@ pub fn join_one(
     // Cap CDR3 diffs.
 
     if cd > ctl.join_alg_opt.max_cdr3_diffs as isize || (!is_bcr && cd > 0) {
-        return;
+        return false;
     }
 
     // Another test for acceptable join.  (not fully documented)
@@ -269,7 +267,7 @@ pub fn join_one(
     unique_sort(&mut bcs1);
     unique_sort(&mut bcs2);
     if meet(&bcs1, &bcs2) {
-        return;
+        return false;
     }
 
     // Estimate the probability p1 that drawing k = min_indeps + 2 * min_shares
@@ -296,14 +294,13 @@ pub fn join_one(
     // Threshold on score.
 
     if score > ctl.join_alg_opt.max_score {
-        return;
+        return false;
     }
 
     // Save potential joins.  Note that this jacks up memory usage significantly,
     // so it would likely be more efficient to duplicate some of the computations
     // during the analysis phase.
 
-    eq.join((k1 - i) as i32, (k2 - i) as i32);
     if !ctl.join_print_opt.show_bc {
         bcs1.clear();
         bcs2.clear();
@@ -326,6 +323,7 @@ pub fn join_one(
         p1: p1,
         mult: mult,
     });
+    return true;
 }
 
 pub fn join_core(
@@ -352,9 +350,8 @@ pub fn join_core(
                 continue;
             }
 
-            join_one(
+            if join_one(
                 is_bcr,
-                i,
                 k1,
                 k2,
                 &ctl,
@@ -362,9 +359,10 @@ pub fn join_core(
                 &info,
                 &to_bc,
                 &sr,
-                &mut eq,
                 pot,
-            );
+            ) {
+                eq.join((k1 - i) as i32, (k2 - i) as i32);
+            }
         }
     }
 }
