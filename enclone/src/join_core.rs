@@ -337,9 +337,9 @@ pub fn join_core(
     info: &Vec<CloneInfo>,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
     sr: &Vec<Vec<f64>>,
-    eq: &mut EquivRel,
     pot: &mut Vec<PotentialJoin>,
 ) {
+    let mut eq: EquivRel = EquivRel::new((j - i) as i32);
     for k1 in i..j {
         for k2 in k1 + 1..j {
             // Do nothing if join could have no effect on equivalence relation.
@@ -362,7 +362,7 @@ pub fn join_core(
                 &info,
                 &to_bc,
                 &sr,
-                eq,
+                &mut eq,
                 pot,
             );
         }
