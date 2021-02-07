@@ -1516,9 +1516,11 @@ pub fn main_enclone(args: &Vec<String>) {
 
     sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
-    // Form equivalence relation on exact subclonotypes.
+    // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
+    // of pairs of info indices, that were originally joined.
 
     let mut join_info = Vec::<(usize, usize, bool, Vec<u8>)>::new();
+    let mut raw_joins = Vec::<(i32, i32)>::new();
     let mut eq: EquivRel = join_exacts(
         is_bcr,
         &refdata,
@@ -1526,10 +1528,11 @@ pub fn main_enclone(args: &Vec<String>) {
         &exact_clonotypes,
         &info,
         &mut join_info,
+        &mut raw_joins,
     );
 
-    // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single
-    // cell clonotypes.  This requires editing of exact_clonotypes, info, eq and join_info.
+    // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
+    // clonotypes.  This requires editing of exact_clonotypes, info, eq, join_info and raw_joins.
 
     let mut disintegrated = Vec::<bool>::new();
     if ctl.clono_filt_opt.weak_onesies {
@@ -1593,6 +1596,15 @@ pub fn main_enclone(args: &Vec<String>) {
             to_info2.push(x);
         }
         info = info2;
+        let mut raw_joins2 = Vec::<(i32, i32)>::new();
+        for i in 0..raw_joins.len() {
+            let (j1, j2) = (
+                &to_info2[raw_joins[i].0 as usize],
+                &to_info2[raw_joins[i].1 as usize],
+            );
+            raw_joins2.push((j1[0] as i32, j2[0] as i32));
+        }
+        raw_joins = raw_joins2;
         let mut reps = Vec::<i32>::new();
         eq.orbit_reps(&mut reps);
         let mut eq2 = EquivRel::new(info.len() as i32);
@@ -1610,6 +1622,20 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         eq = eq2;
     }
+
+    // Restructure raw joins.
+
+    raw_joins.sort();
+    let mut raw_joins2 = vec![Vec::<usize>::new(); info.len()];
+    for i in 0..raw_joins.len() {
+        raw_joins2[raw_joins[i].0 as usize].push(raw_joins[i].1 as usize);
+        raw_joins2[raw_joins[i].1 as usize].push(raw_joins[i].0 as usize);
+    }
+    let raw_joins = raw_joins2;
+
+    // Lock info.
+
+    let info = &info;
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
@@ -2047,6 +2073,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let mut exacts = Vec::<usize>::new();
             let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
             let mut js = Vec::<usize>::new();
+            let mut ks = Vec::<usize>::new();
             let mut j = 0;
             while j < od.len() {
                 let k = next_diff12_3(&od, j as i32) as usize;
@@ -2066,10 +2093,20 @@ pub fn main_enclone(args: &Vec<String>) {
                 unique_sort(&mut z_len);
                 cdr3s_len.push(z_len);
                 js.push(j);
+                ks.push(k);
                 exacts.push(od[j].1);
                 j = k;
             }
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &ks,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();
             for u in 0..nexacts {
@@ -2545,6 +2582,7 @@ pub fn main_enclone(args: &Vec<String>) {
         &exact_clonotypes,
         &info,
         &orbits,
+        &raw_joins,
         &gex_info,
         &vdj_cells,
         &d_readers,

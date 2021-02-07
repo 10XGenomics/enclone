@@ -15,15 +15,17 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // Note confusing notation.  The object cdr3 contains pairs (String,usize) consisting of
-// the cdr3_aa and the length of seq_del.
+// chain_type:cdr3_aa and the length of seq_del.
 
 pub fn define_mat(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     cdr3s: &Vec<Vec<(String, usize)>>,
     js: &Vec<usize>,
+    ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
+    raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
     // Form the flattened list of all CDR3_AAs.
 
@@ -35,9 +37,39 @@ pub fn define_mat(
         }
     }
 
-    // Sort the CDR3s.
+    // Unique sort the CDR3s.
 
     unique_sort(&mut all_cdr3s);
+
+    // Find the info entries corresponding to each entry in all_cdr3s.
+    // An entry in info_locs is (index in info, index in that info entry).
+
+    let mut info_locs = vec![Vec::<(usize, usize)>::new(); all_cdr3s.len()];
+    for u in 0..nexacts {
+        for k in 0..cdr3s[u].len() {
+            let p = bin_position(
+                &all_cdr3s,
+                &(cdr3s[u][k].0.as_bytes().to_vec(), cdr3s[u][k].1),
+            );
+            let j1 = js[u];
+            let j2 = ks[u];
+            for kx in j1..j2 {
+                let mut index = None;
+                let z = &info[od[kx].2 as usize];
+                for l in 0..z.cdr3_aa.len() {
+                    if z.cdr3_aa[l] == cdr3s[u][k].0.after(":") {
+                        index = Some(l);
+                    }
+                }
+                if index.is_some() {
+                    info_locs[p as usize].push((od[kx].2 as usize, index.unwrap()));
+                }
+            }
+        }
+    }
+    for i in 0..info_locs.len() {
+        unique_sort(&mut info_locs[i]);
+    }
 
     // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
     // 1. They have the same length and differ at no more than 5 positions.
@@ -48,6 +80,41 @@ pub fn define_mat(
         for m2 in m1 + 1..all_cdr3s.len() {
             let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
             let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
+
+            if x1 == x2 && y1 == y2 {
+                ec.join(m1 as i32, m2 as i32);
+                continue;
+            }
+
+            let (r1, r2) = (&info_locs[m1], &info_locs[m2]);
+            'r1r2: for j1 in r1.iter() {
+                for j2 in r2.iter() {
+                    let j1 = *j1;
+                    let j2 = *j2;
+                    // if strme(&x1).before(":") == strme(&x2).before(":") {
+                    if info[j1.0].cdr3_aa[j1.1] == strme(&x1).after(":")
+                        && info[j2.0].cdr3_aa[j2.1] == strme(&x2).after(":")
+                        && j1.1 == j2.1
+                    {
+                        if bin_member(&raw_joins[j1.0], &j2.0) {
+                            /*
+                            // XXX:
+                            let z1 = format!("{}:{}", info[j1.0].cdr3_aa[0], info[j1.0].cdr3_aa[1]);
+                            let z2 = format!("{}:{}", info[j2.0].cdr3_aa[0], info[j2.0].cdr3_aa[1]);
+                            eprintln!(
+                            "joining {} to {}, lens = {} and {}, j = {}.{} and {}.{}, info = {} and {}",
+                                strme(&x1),
+                                strme(&x2), r1.len(), r2.len(), j1.0, j1.1, j2.0, j2.1, z1, z2);
+                            */
+
+                            ec.join(m1 as i32, m2 as i32);
+                            break 'r1r2;
+                        }
+                    }
+                }
+            }
+
+            /*
             if x1.len() == x2.len() && y1 == y2 {
                 let mut diffs = 0;
                 for u in 0..x1.len() {
@@ -91,6 +158,7 @@ pub fn define_mat(
                     }
                 }
             }
+            */
         }
     }
 

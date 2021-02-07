@@ -42,6 +42,7 @@ pub fn print_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     orbits: &Vec<Vec<i32>>,
+    raw_joins: &Vec<Vec<usize>>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
     d_readers: &Vec<Option<hdf5::Reader>>,
@@ -212,6 +213,7 @@ pub fn print_clonotypes(
         let mut cdr3s = Vec::<Vec<String>>::new();
         let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
         let mut js = Vec::<usize>::new();
+        let mut ks = Vec::<usize>::new();
         let mut j = 0;
         let loupe_clonotypes = &mut res.6;
         while j < od.len() {
@@ -242,6 +244,7 @@ pub fn print_clonotypes(
             cdr3s.push(z);
             cdr3s_len.push(z_len);
             js.push(j);
+            ks.push(k);
             let mut x = Vec::<usize>::new();
             for l in j..k {
                 x.push(l);
@@ -262,13 +265,23 @@ pub fn print_clonotypes(
                 erase_if(&mut cdr3s, &bads);
                 erase_if(&mut cdr3s_len, &bads);
                 erase_if(&mut js, &bads);
+                erase_if(&mut ks, &bads);
                 erase_if(&mut mults, &bads);
                 erase_if(&mut exacts, &bads);
             }
 
             // Sort exact subclonotypes.
 
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &ks,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
                 let mut typex = vec![false; mat.len()];
@@ -296,11 +309,13 @@ pub fn print_clonotypes(
             cdr3s = permutation.apply_slice(&cdr3s[..]);
             cdr3s_len = permutation.apply_slice(&cdr3s_len[..]);
             js = permutation.apply_slice(&js[..]);
+            ks = permutation.apply_slice(&ks[..]);
             exacts.reverse();
             mults.reverse();
             cdr3s.reverse();
             cdr3s_len.reverse();
             js.reverse();
+            ks.reverse();
 
             // Define a matrix mat[col][ex] which is the column of the exact subclonotype
             // corresponding to the given column col of the clonotype, which may or may not be
@@ -308,7 +323,16 @@ pub fn print_clonotypes(
             // reference sequence identifiers, CDR3 start positions, and the like.
 
             let nexacts = exacts.len();
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                &ctl,
+                &exact_clonotypes,
+                &cdr3s_len,
+                &js,
+                &ks,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let cols = mat.len();
             let mut rsi = define_column_info(&ctl, &exacts, &exact_clonotypes, &mat, &refdata);
             rsi.mat = mat;
