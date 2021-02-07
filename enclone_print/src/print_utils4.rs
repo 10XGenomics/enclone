@@ -72,6 +72,11 @@ pub fn define_mat(
     }
 
     // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
+    // In a first pass, we use the original correspondence between chains that we obtained we
+    // we did joins.  This information comes to us raw_joins.  Note that this is quite convoluted
+    // and quite possibly unnecessarily so as the raw join information has nothing to do with
+    // CDR3 sequences per se so this information could presumably have been applied more directly.
+
     // 1. They have the same length and differ at no more than 5 positions.
     // 2. Each has a V..J sequence such that the two differ by no more than 60 positions.
 
@@ -116,6 +121,23 @@ pub fn define_mat(
         }
     }
 
+    // Continue forming an equivalence relation on the CDR3_AAs, requiring that they are
+    // "close enough".  This is the second pass.  A problem with the first pass is that the raw
+    // joins were incomplete, because in joining as soon as two orbits were connected, we stopped
+    // looking for individual raw joins.  The specific case where this is a problem is where we
+    // have two threesies, which are partially joined, and there is a third chain that should
+    // be joined, but is not.  In this pass we do a sloppy job of fixing this.  We consider only
+    // the case where there are two threesies, but we don't bother to check that they are already
+    // joined along two of their chains.  Then these criteria are applied to determine
+    // "close enough":
+    //
+    // 1. They have the same length and differ at no more than 5 positions.
+    // 2. Each has a V..J sequence such that the two differ by no more than 60 positions.
+    //
+    // Note that another approach to this might be to force the raw joins to be more complete,
+    // for the special case of two threesies.  This completion step could be here or in the join
+    // code itself.
+
     for m1 in 0..all_cdr3s.len() {
         for m2 in m1 + 1..all_cdr3s.len() {
             let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
@@ -142,8 +164,6 @@ pub fn define_mat(
                                     if ex2.share.len() != 3 {
                                         continue;
                                     }
-
-
                                     for u2 in 0..y2.cdr3_aa.len() {
                                         if y2.cdr3_aa[u2] == strme(&x2).after(":") {
                                             if y1.tigs[u1].len() == y2.tigs[u2].len() {
