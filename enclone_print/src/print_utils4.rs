@@ -140,6 +140,9 @@ pub fn define_mat(
 
     for m1 in 0..all_cdr3s.len() {
         for m2 in m1 + 1..all_cdr3s.len() {
+            if ec.class_id(m1 as i32) == ec.class_id(m2 as i32) {
+                continue;
+            }
             let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
             let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
             if x1.len() == x2.len() && y1 == y2 {
