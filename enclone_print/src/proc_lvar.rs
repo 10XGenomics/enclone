@@ -14,12 +14,17 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
-fn median_f64(x: &[f64]) -> f64 {
+fn rounded_median(x: &[usize]) -> usize {
     let h = x.len() / 2;
     if x.len() % 2 == 1 {
         x[h]
     } else {
-        (x[h - 1] + x[h]) / 2.0
+        let s = x[h - 1] + x[h];
+        if s % 2 == 0 {
+            s / 2
+        } else {
+            s / 2 + 1
+        }
     }
 }
 
@@ -793,7 +798,7 @@ pub fn proc_lvar(
         }
         lvar![i, x, s.clone()];
     } else {
-        let (mut counts_sub, mut fcounts_sub) = (Vec::<f64>::new(), Vec::<f64>::new());
+        let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(':') {
@@ -831,7 +836,7 @@ pub fn proc_lvar(
                         );
                         raw_count += raw_counti;
                     }
-                    counts_sub.push(raw_count.round() as f64);
+                    counts_sub.push(raw_count.round() as usize);
                     fcounts_sub.push(raw_count);
                 }
             } else {
@@ -843,7 +848,7 @@ pub fn proc_lvar(
                         let raw_count = get_gex_matrix_entry(
                             &ctl, &gex_info, fid, &d_all, &ind_all, li, l, p as usize, &y,
                         );
-                        counts_sub.push(raw_count.round() as f64);
+                        counts_sub.push(raw_count.round() as usize);
                         fcounts_sub.push(raw_count);
                     }
                 }
@@ -864,7 +869,7 @@ pub fn proc_lvar(
                 stats.push((x.clone(), f));
             }
             let mut counts_sub_sorted = counts_sub.clone();
-            counts_sub_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            counts_sub_sorted.sort();
             let sum = fcounts_sub.iter().sum::<f64>();
             let mean = sum / counts_sub.len() as f64;
 
@@ -884,13 +889,9 @@ pub fn proc_lvar(
                 }
             } else {
                 if y0.ends_with("_min") {
-                    lvar![i, x, format!("{}", counts_sub_sorted[0].round())];
+                    lvar![i, x, format!("{}", counts_sub_sorted[0])];
                 } else if y0.ends_with("_max") {
-                    lvar![
-                        i,
-                        x,
-                        format!("{}", counts_sub_sorted[counts_sub.len() - 1].round())
-                    ];
+                    lvar![i, x, format!("{}", counts_sub_sorted[counts_sub.len() - 1])];
                 } else if y0.ends_with("_μ") {
                     lvar![i, x, format!("{}", mean.round())];
                 } else if y0.ends_with("_Σ") {
@@ -898,9 +899,9 @@ pub fn proc_lvar(
                 } else if y0.ends_with("_%") {
                     lvar![i, x, format!("{:.2}", (100.0 * sum) / gex_sum)];
                 } else {
-                    let mut median = 0.0;
+                    let mut median = 0;
                     if counts_sub_sorted.len() > 0 {
-                        median = median_f64(&counts_sub_sorted);
+                        median = rounded_median(&counts_sub_sorted);
                     }
                     lvar![i, x, format!("{}", median)];
                 }
