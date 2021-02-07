@@ -1,15 +1,15 @@
 #!/bin/csh
 #
-# Find the difference between the results of two enclone runs, assuming that the difference
-# can be obtained by adding a parameter to the first run.
+# Find the difference between the results of two enclone runs, assuming that one run is given
+# by using the current binary and the other run is given by the binary in ~/bin.
 #
-# See also diff_runs2.
+# See also diff_runs.
 #
 # USAGE:
-# ./diff_runs dataset-specification old_param <up to four optional args for all> | less -R
+# ./diff_runs2 dataset-specification <up to four optional args for all> | less -R
 #
 # EXAMPLE:
-# ./diff_runs BCR=123085 NDOUBLET | less -R
+# diff_runs2 BCR=123085 | less -R
 #
 # LIMITATIONS:
 # - makes some temporary files
@@ -17,12 +17,11 @@
 # - fails inscrutably if there is no change
 
 set dataset_spec = $1
-set old_param = $2
-set all = "$3 $4 $5 $6"
+set all = "$2 $3 $4 $5"
 
 set pcols = "barcode,exact_subclonotype_id,nchains"
 
-enclone POUT=~/old PCELL PCOLS=$pcols NOPRINT $dataset_spec $old_param $all > /dev/null
+~/bin/enclone POUT=~/old PCELL PCOLS=$pcols NOPRINT $dataset_spec $all > /dev/null
 cat ~/old | sort > ~/olds
 
 enclone POUT=~/new PCELL PCOLS=$pcols NOPRINT $dataset_spec $all
@@ -32,6 +31,6 @@ set bcs = `diff ~/olds ~/news | grep "<" | tr ',' ' ' | awk '{ print $2 }' \
     | tr '\n' ',' | sed 's/.$//'`
 
 echo OLD
-enclone $dataset_spec BARCODE=$bcs $old_param $all NOPAGER
+~/bin/enclone $dataset_spec BARCODE=$bcs $all NOPAGER
 echo NEW
 enclone $dataset_spec BARCODE=$bcs $all NOPAGER
