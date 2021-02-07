@@ -113,8 +113,13 @@ pub fn define_mat(
                     }
                 }
             }
+        }
+    }
 
-            /*
+    for m1 in 0..all_cdr3s.len() {
+        for m2 in m1 + 1..all_cdr3s.len() {
+            let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
+            let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
             if x1.len() == x2.len() && y1 == y2 {
                 let mut diffs = 0;
                 for u in 0..x1.len() {
@@ -125,10 +130,20 @@ pub fn define_mat(
                 if diffs <= MAX_CDR3_DIFFS_TO_JOIN {
                     'outer: for l1 in 0..od.len() {
                         let y1: &CloneInfo = &info[od[l1].2 as usize];
+                        let ex1 = &exact_clonotypes[y1.clonotype_id];
+                        if ex1.share.len() != 3 {
+                            continue;
+                        }
                         for u1 in 0..y1.cdr3_aa.len() {
                             if y1.cdr3_aa[u1] == strme(&x1).after(":") {
                                 for l2 in 0..od.len() {
                                     let y2: &CloneInfo = &info[od[l2].2 as usize];
+                                    let ex2 = &exact_clonotypes[y2.clonotype_id];
+                                    if ex2.share.len() != 3 {
+                                        continue;
+                                    }
+
+
                                     for u2 in 0..y2.cdr3_aa.len() {
                                         if y2.cdr3_aa[u2] == strme(&x2).after(":") {
                                             if y1.tigs[u1].len() == y2.tigs[u2].len() {
@@ -158,7 +173,6 @@ pub fn define_mat(
                     }
                 }
             }
-            */
         }
     }
 
