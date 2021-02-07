@@ -48,14 +48,10 @@ pub fn join_one(
     if x1.len() != x2.len() {
         return;
     }
-    let mut unequal = false;
     for i in 0..x1.len() {
         if x1[i].len() != x2[i].len() {
-            unequal = true;
+            return;
         }
-    }
-    if unequal {
-        return;
     }
 
     // Compute number of differences.
@@ -132,7 +128,6 @@ pub fn join_one(
             nrefs = 2;
         }
     }
-    let mut fail = false;
     let mut shares = vec![0; nrefs]; // shared mutations from reference
     let mut indeps = vec![0; nrefs]; // independent mutations from reference
     let mut total = vec![vec![0; 2]; nrefs]; // total differences from reference
@@ -173,8 +168,7 @@ pub fn join_one(
                         // Ugly bailout arising very rarely if the two reference
                         // sequences have different lengths.
                         if p >= tig1.len() || p >= tig2.len() {
-                            fail = true;
-                            break;
+                            return;
                         }
                         t1 = tig1[p];
                         t2 = tig2[p];
@@ -236,12 +230,9 @@ pub fn join_one(
     if nrefs == 2 {
         for m in 0..2 {
             if abs_diff(total[0][m], total[1][m]) > ctl.heur.max_degradation {
-                fail = true;
+                return;
             }
         }
-    }
-    if fail {
-        return;
     }
 
     // Compute junction diffs.  Ugly.
