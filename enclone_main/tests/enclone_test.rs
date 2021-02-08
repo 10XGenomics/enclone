@@ -47,6 +47,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_parseable_redundancy() {
     let test = r###"BCR=123085 GEX=123217 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
@@ -110,6 +111,7 @@ fn test_for_parseable_redundancy() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_pages_edited() {
     let all = read_dir("../pages/auto").unwrap();
@@ -160,6 +162,7 @@ fn test_help_pages_edited() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_css_existence() {
     let _ = include_str!["../../pages/enclone.css"];
@@ -173,6 +176,7 @@ fn test_css_existence() {
 // A bit ugly because of duplicated code.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_sync_master() {
     let mut version = HashMap::<String, String>::new();
@@ -220,6 +224,7 @@ fn test_sync_master() {
 // the second pass tests the local version; the third tests with wget forced.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_curl_command() {
     let mut internal_run = false;
@@ -344,6 +349,7 @@ fn test_curl_command() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
@@ -420,6 +426,7 @@ fn test_datasets_sha256() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(feature = "cpu")]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu() {
     // Introductory comments.
@@ -571,6 +578,7 @@ fn test_cpu() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
@@ -701,6 +709,7 @@ fn test_licenses() {
 // 9. Test that files are rustfmt'ed.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_formatting() {
     let new = Command::new("cargo-fmt")
@@ -725,6 +734,7 @@ fn test_formatting() {
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -772,6 +782,7 @@ fn test_enclone() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_extended() {
     PrettyTrace::new().on();
@@ -818,6 +829,7 @@ fn test_extended() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_internal() {
     PrettyTrace::new().on();
@@ -877,6 +889,7 @@ fn test_internal() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
@@ -1196,6 +1209,7 @@ fn test_for_broken_links_and_spellcheck() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
@@ -1301,6 +1315,7 @@ fn test_site_examples() {
 // 15. Test that examples are what we claim they are.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -1348,6 +1363,7 @@ fn test_enclone_examples() {
 // 16. Test that references to the dataset version in README.md are current.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -1376,6 +1392,7 @@ fn test_version_number_in_readme() {
 // Only works with high probability.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -1412,6 +1429,7 @@ fn test_dejavu() {
 // 18. Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
@@ -1486,6 +1504,7 @@ fn test_help_output() {
 // 19. Test that enclone help all HTML works (without STABLE_DOC).
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
@@ -1509,6 +1528,7 @@ fn test_help_no_stable() {
 // 20. Test that PREBUILD works.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -1640,6 +1660,7 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
@@ -1711,6 +1732,7 @@ fn test_proto_write() -> Result<(), Error> {
 // example on the landing page.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_annotated_example() {
     PrettyTrace::new().on();
@@ -1753,6 +1775,7 @@ fn test_annotated_example() {
 // 23. Test SUBSET_JSON option.
 
 #[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
 #[test]
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
@@ -1793,6 +1816,97 @@ fn test_subset_json() {
         std::process::exit(1);
     }
     let _ = remove_dir_all("testx/outputs/woof");
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 24. Test peak memory.
+// You can run this test along by typing
+// cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
+// from the root of the repo.
+// However this also runs the doc tests.  There must be a better way.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(feature = "mem")]
+#[test]
+fn test_peak_memory() {
+    PrettyTrace::new().on();
+
+    // Specify mem requirements.
+
+    let dataset = "BCR=123085";
+    let expected_mb = 365.6;
+    let max_percent_dev = 0.5;
+
+    // Define function to get mem.
+
+    fn mem_val(dataset: &str) -> f64 {
+        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+            .arg(&dataset)
+            .args(&["NOPRINT", "COMP"])
+            .output()
+            .expect(&format!("failed to execute peak mem test"));
+        if new.status.code() != Some(0) {
+            eprint!(
+                "\nenclone_site_examples: nonzero status code for peak mem test, stderr =\n{}",
+                strme(&new.stderr),
+            );
+            std::process::exit(1);
+        }
+        let out = strme(&new.stdout);
+        let mut mem = None;
+        for line in out.lines() {
+            if line.starts_with("peak mem usage = ") && line.ends_with(" MB") {
+                mem = Some(line.between("peak mem usage = ", " MB").force_f64());
+            }
+        }
+        if mem.is_none() {
+            eprintln!("\nfailed to find mem usage for peak mem\n");
+            std::process::exit(1);
+        }
+        mem.unwrap()
+    }
+
+    // Run the test.
+
+    let mut ok = false;
+    let mut mems = Vec::<f64>::new();
+    for _tries in 0..3 {
+        let mem = mem_val(&dataset);
+        mems.push(mem);
+        let dev = 100.0 * (mem - expected_mb).abs() / expected_mb;
+        if dev <= max_percent_dev {
+            ok = true;
+            break;
+        }
+    }
+    if !ok {
+        for _tries in 3..10 {
+            mems.push(mem_val(&dataset));
+        }
+    }
+    let mut mean = 0.0;
+    for i in 0..mems.len() {
+        mean += mems[i];
+    }
+    mean /= mems.len() as f64;
+    let dev = 100.0 * (mean - expected_mb).abs() / expected_mb;
+    if dev > max_percent_dev {
+        eprintln!(
+            "\nPeak mem of {:.1} MB observed, which differs from expected value of {} \
+            by {:.2}%.",
+            mean, expected_mb, dev
+        );
+        eprintln!(
+            "Your options are:\n\
+            1. Change the value of expected_mb in enclone_test.rs to {:.1}.\n\
+            2. Optimize to reduce mem usage (if value exceeds expected).\n\
+            3. Repeat the test, but this is very unlikely to succeed.\n",
+            mean
+        );
+        std::process::exit(1);
+    }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

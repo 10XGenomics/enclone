@@ -54,3 +54,4 @@ sha2 = "0.9.1"
 [features]
 basic = []
 cpu = []
+mem = []
