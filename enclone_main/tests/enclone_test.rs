@@ -1839,6 +1839,18 @@ fn test_peak_memory() {
     let expected_mb = 365.6;
     let max_percent_dev = 0.5;
 
+    // Only run internally.
+
+    let mut internal_run = false;
+    for (key, value) in env::vars() {
+        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+            internal_run = true;
+        }
+    }
+    if !internal_run {
+        return;
+    }
+
     // Define function to get mem.
 
     fn mem_val(dataset: &str) -> f64 {
@@ -1899,7 +1911,10 @@ fn test_peak_memory() {
             mean, expected_mb, dev
         );
         eprintln!(
-            "Your options are:\n\
+            "Please note that this test was designed to work correctly from a single server\n\
+            named bespin1.  If you're running from a different server, the expected memory value\n\
+            may need to be changed.  This might also be the case if that server was changed.\n\
+            Otherwise, your options are:\n\
             1. Change the value of expected_mb in enclone_test.rs to {:.1}.\n\
             2. Optimize to reduce mem usage (if value exceeds expected).\n\
             3. Repeat the test, but this is very unlikely to succeed.\n",
