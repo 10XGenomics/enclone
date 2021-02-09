@@ -25,6 +25,7 @@ pub fn define_mat(
     ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
+    _info_index: &Vec<Vec<usize>>,
     raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
     // Form the flattened list of all CDR3_AAs.
@@ -35,6 +36,13 @@ pub fn define_mat(
         for k in 0..cdr3s[j].len() {
             all_cdr3s.push((cdr3s[j][k].0.as_bytes().to_vec(), cdr3s[j][k].1));
         }
+    }
+
+    // Get the info indices corresponding to this clonotype.
+
+    let mut _ii = Vec::<usize>::new();
+    for i in 0..od.len() {
+        _ii.push(od[i].2 as usize);
     }
 
     // Unique sort the CDR3s.

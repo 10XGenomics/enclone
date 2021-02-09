@@ -41,6 +41,7 @@ pub fn print_clonotypes(
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
+    info_index: &Vec<Vec<usize>>,
     orbits: &Vec<Vec<i32>>,
     raw_joins: &Vec<Vec<usize>>,
     gex_info: &GexInfo,
@@ -280,6 +281,7 @@ pub fn print_clonotypes(
                 &ks,
                 &od,
                 &info,
+                &info_index,
                 &raw_joins,
             );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
@@ -331,6 +333,7 @@ pub fn print_clonotypes(
                 &ks,
                 &od,
                 &info,
+                &info_index,
                 &raw_joins,
             );
             let cols = mat.len();
