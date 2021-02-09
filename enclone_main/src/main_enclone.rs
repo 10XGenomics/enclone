@@ -1633,13 +1633,9 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     let raw_joins = raw_joins2;
 
-    // Lock info and index it.
+    // Lock info.
 
     let info = &info;
-    let mut info_index = vec![Vec::<usize>::new(); exact_clonotypes.len()];
-    for i in 0..info.len() {
-        info_index[info[i].clonotype_index].push(i);
-    }
 
     // Lookup for heavy chain reuse (special purpose experimental option).
 
@@ -2109,7 +2105,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 &ks,
                 &od,
                 &info,
-                &info_index,
                 &raw_joins,
             );
             let nexacts = mat[0].len();
@@ -2586,7 +2581,6 @@ pub fn main_enclone(args: &Vec<String>) {
         &ctl,
         &exact_clonotypes,
         &info,
-        &info_index,
         &orbits,
         &raw_joins,
         &gex_info,

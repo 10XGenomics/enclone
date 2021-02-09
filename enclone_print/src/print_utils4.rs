@@ -25,7 +25,6 @@ pub fn define_mat(
     ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
-    _info_index: &Vec<Vec<usize>>,
     raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
     // Form the flattened list of all CDR3_AAs.
