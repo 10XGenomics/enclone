@@ -13,7 +13,6 @@ use self::annotate::*;
 use self::refx::*;
 use crate::join2::*;
 use crate::join_core::*;
-use crate::join_utils::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use equiv::EquivRel;

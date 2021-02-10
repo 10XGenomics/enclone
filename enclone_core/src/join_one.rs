@@ -1,13 +1,28 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::join2::*;
-use crate::join_utils::*;
+use crate::defs::*;
 use debruijn::{dna_string::*, Mer};
-use enclone_core::defs::*;
 use stats_utils::*;
 use std::collections::HashMap;
 use stirling_numbers::*;
 use vector_utils::*;
+
+// partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
+//
+// Beware of overflow.
+
+pub fn partial_bernoulli_sum(n: usize, k: usize) -> f64 {
+    assert!(n >= 1);
+    assert!(k <= n);
+    let mut sum = 0.0;
+    let mut choose = 1.0;
+    for i in 0..=k {
+        sum += choose;
+        choose *= (n - i) as f64;
+        choose /= (i + 1) as f64;
+    }
+    sum
+}
 
 pub fn join_one(
     is_bcr: bool,

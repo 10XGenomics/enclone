@@ -619,6 +619,8 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "stats_utils",
+ "stirling_numbers",
  "string_utils",
  "superslice",
  "vdj_ann",

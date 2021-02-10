@@ -1,8 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::join_one::*;
-use crate::join_utils::*;
 use enclone_core::defs::*;
+use enclone_core::join_one::*;
 use equiv::EquivRel;
 use std::collections::HashMap;
 
