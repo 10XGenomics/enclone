@@ -165,9 +165,9 @@ fn main() {
         let bc_arg = format!("{}", b.iter().format(","));
         for pass in 1..=2 {
             if pass == 1 {
-                println!("OLD");
+                println!("OLD {}", i + 1);
             } else {
-                println!("NEW");
+                println!("NEW {}", i + 1);
             }
             let mut argsp = args.clone();
             if pass == 1 && old_param.clone().is_some() {
