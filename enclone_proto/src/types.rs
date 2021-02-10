@@ -24,6 +24,9 @@ fn make_ann_region(
     v_start: u32,
     aa_seq: &[u8],
 ) -> Option<AnnRegion> {
+    if start.is_some() && end.is_some() && start.unwrap() >= end.unwrap() {
+        return None;
+    }
     let v = v_start as usize;
     match (start, end) {
         (Some(s), Some(e)) => {

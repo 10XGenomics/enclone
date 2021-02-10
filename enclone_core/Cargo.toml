@@ -16,9 +16,9 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-amino = "0.1.3"
+amino = "0.1.4"
 ansi_escape = "0.1.0"
-bio = ">=0.31, <=0.32"
+bio = ">=0.32"
 bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 evalexpr = "5.0.5"
@@ -32,7 +32,7 @@ serde_derive = "1.0.102"
 serde_json = "*"
 string_utils = "0.1.1"
 superslice = "1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="4fb1fab2c159a1e75d0c5ed009d11548e01cefbd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }
 vector_utils = "0.1.3"
 
 [build-dependencies]

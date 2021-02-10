@@ -15,7 +15,7 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-amino = "0.1.3"
+amino = "0.1.4"
 debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
@@ -38,7 +38,7 @@ serde_json = "*"
 stats_utils = "0.1.2"
 string_utils = "0.1.1"
 tables = "0.1.2"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="4fb1fab2c159a1e75d0c5ed009d11548e01cefbd" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }
 vector_utils = "0.1.3"
 
 [dev-dependencies]

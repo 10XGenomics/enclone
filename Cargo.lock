@@ -38,9 +38,9 @@ dependencies = [
 
 [[package]]
 name = "amino"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e856bac57530227e5579f285fbec1964aa9524ad0d319e5139a215ec884aae8"
+checksum = "cbe7a1e5a80734862aa78b92af3249221cf5a40f4de9684e05f8df42c0246cc1"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -199,7 +199,7 @@ dependencies = [
  "itertools-num",
  "lazy_static",
  "multimap",
- "ndarray",
+ "ndarray 0.13.1",
  "newtype_derive",
  "num-integer",
  "num-traits",
@@ -686,7 +686,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
- "ndarray",
+ "ndarray 0.14.0",
  "permutation",
  "pretty_trace",
  "rayon",
@@ -731,7 +731,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
- "ndarray",
+ "ndarray 0.14.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1003,7 +1003,7 @@ dependencies = [
  "hdf5-types",
  "lazy_static",
  "libc",
- "ndarray",
+ "ndarray 0.14.0",
  "num-integer",
  "num-traits",
  "parking_lot",
@@ -1326,6 +1326,19 @@ checksum = "ac06db03ec2f46ee0ecdca1a1c34a99c0d188a0d83439b84bf0cb4b386e4ab09"
 dependencies = [
  "matrixmultiply",
  "num-complex 0.2.4",
+ "num-integer",
+ "num-traits",
+ "rawpointer",
+]
+
+[[package]]
+name = "ndarray"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c0d5c9540a691d153064dc47a4db2504587a75eae07bf1d73f7a596ebc73c04"
+dependencies = [
+ "matrixmultiply",
+ "num-complex 0.3.0",
  "num-integer",
  "num-traits",
  "rawpointer",
@@ -2292,7 +2305,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0fc3f83b280ed4a11de489b4fdbc755f8cd53783#0fc3f83b280ed4a11de489b4fdbc755f8cd53783"
 dependencies = [
  "align_tools",
  "amino",
@@ -2320,7 +2333,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=4fb1fab2c159a1e75d0c5ed009d11548e01cefbd#4fb1fab2c159a1e75d0c5ed009d11548e01cefbd"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0fc3f83b280ed4a11de489b4fdbc755f8cd53783#0fc3f83b280ed4a11de489b4fdbc755f8cd53783"
 dependencies = [
  "serde",
  "serde_json",
