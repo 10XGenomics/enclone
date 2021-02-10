@@ -24,25 +24,6 @@ pub fn define_mat(
     raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
 
-    /*
-    // XXX:
-    let mut tracking = false;
-    for u in 0..exacts.len() {
-        let ex = &exact_clonotypes[exacts[u]];
-        for m in 0..ex.share.len() {
-            if ex.share[m].cdr3_aa == "CARHVGGKYSSGWYEFDYW" {
-                tracking = true;
-            }
-        }
-    }
-    if tracking {
-        eprintln!("\ntracking");
-        eprintln!("there are {} exact subclonotypes", exacts.len());
-        let ex = &exact_clonotypes[exacts[0]];
-        eprintln!("the first has {} chains", ex.share.len());
-    }
-    */
-
     // Define map to indices into exacts.
 
     let nexacts = exacts.len();
@@ -61,7 +42,6 @@ pub fn define_mat(
         }
     }
     infos.sort();
-    // if tracking { eprintln!("there are {} info entries", infos.len()); } // XXXXXXXXXXXXXXXXXXXXXXX
 
     // Form the set of all chains that appear in an exact subclonotypes of this clonotype, and
     // also track the V..J sequences for the chains.
@@ -118,7 +98,6 @@ pub fn define_mat(
 
     let mut r = Vec::<i32>::new();
     e.orbit_reps(&mut r);
-    // if tracking { eprintln!("there are {} orbits", r.len()); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Reorder the chains.  This is done to get the heavy chains before the light chains and also
     // to mimic the behavior of the previous version of this algorithm, to minimiize churn.  Then
