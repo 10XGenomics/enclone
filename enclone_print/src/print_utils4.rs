@@ -1,11 +1,9 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use amino::*;
-use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
-// use itertools::Itertools;
 use std::cmp::max;
 use std::collections::HashMap;
 use string_utils::*;
@@ -14,224 +12,165 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Note confusing notation.  The object cdr3 contains pairs (String,usize) consisting of
-// chain_type:cdr3_aa and the length of seq_del.
-
 pub fn define_mat(
-    ctl: &EncloneControl,
+    _ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
-    cdr3s: &Vec<Vec<(String, usize)>>,
-    js: &Vec<usize>,
-    ks: &Vec<usize>,
+    exacts: &Vec<usize>,
+    _cdr3s: &Vec<Vec<(String, usize)>>,
+    _js: &Vec<usize>,
+    _ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
-    // Form the flattened list of all CDR3_AAs.
 
-    let nexacts = cdr3s.len();
-    let mut all_cdr3s = Vec::<(Vec<u8>, usize)>::new();
-    for j in 0..nexacts {
-        for k in 0..cdr3s[j].len() {
-            all_cdr3s.push((cdr3s[j][k].0.as_bytes().to_vec(), cdr3s[j][k].1));
+    /*
+    // XXX:
+    let mut tracking = false;
+    for u in 0..exacts.len() {
+        let ex = &exact_clonotypes[exacts[u]];
+        for m in 0..ex.share.len() {
+            if ex.share[m].cdr3_aa == "CARHVGGKYSSGWYEFDYW" {
+                tracking = true;
+            }
         }
+    }
+    if tracking {
+        eprintln!("\ntracking");
+        eprintln!("there are {} exact subclonotypes", exacts.len());
+        let ex = &exact_clonotypes[exacts[0]];
+        eprintln!("the first has {} chains", ex.share.len());
+    }
+    */
+
+    // Define map to indices into exacts.
+
+    let nexacts = exacts.len();
+    let mut to_exacts = HashMap::<usize, usize>::new();
+    for u in 0..nexacts {
+        to_exacts.insert(exacts[u], u);
     }
 
     // Get the info indices corresponding to this clonotype.
 
-    let mut _ii = Vec::<usize>::new();
+    let mut infos = Vec::<usize>::new();
     for i in 0..od.len() {
-        _ii.push(od[i].2 as usize);
+        let x = od[i].2 as usize;
+        if to_exacts.contains_key(&info[x].clonotype_index) {
+            infos.push(x);
+        }
     }
+    infos.sort();
+    // if tracking { eprintln!("there are {} info entries", infos.len()); } // XXXXXXXXXXXXXXXXXXXXXXX
 
-    // Unique sort the CDR3s.
+    // Form the set of all chains that appear in an exact subclonotypes of this clonotype, and
+    // also track the V..J sequences for the chains.
 
-    unique_sort(&mut all_cdr3s);
-
-    // Find the info entries corresponding to each entry in all_cdr3s.
-    // An entry in info_locs is (index in info, index in that info entry).
-
-    let mut info_locs = vec![Vec::<(usize, usize)>::new(); all_cdr3s.len()];
+    let mut chains = Vec::<(usize, usize)>::new();
+    let mut seq_chains = Vec::<(Vec<u8>, usize, usize)>::new();
     for u in 0..nexacts {
-        for k in 0..cdr3s[u].len() {
-            let p = bin_position(
-                &all_cdr3s,
-                &(cdr3s[u][k].0.as_bytes().to_vec(), cdr3s[u][k].1),
-            );
-            let j1 = js[u];
-            let j2 = ks[u];
-            for kx in j1..j2 {
-                let mut index = None;
-                let z = &info[od[kx].2 as usize];
-                for l in 0..z.cdr3_aa.len() {
-                    if z.cdr3_aa[l] == cdr3s[u][k].0.after(":") {
-                        index = Some(l);
-                    }
-                }
-                if index.is_some() {
-                    info_locs[p as usize].push((od[kx].2 as usize, index.unwrap()));
+        let ex = &exact_clonotypes[exacts[u]];
+        for m in 0..ex.share.len() {
+            chains.push((u, m));
+            seq_chains.push((ex.share[m].seq.clone(), u, m));
+        }
+    }
+    seq_chains.sort();
+
+    // Define an equivalence relation on the chains, introducing connections defined by the
+    // raw joins.  Also join where there are identical V..J sequences.
+
+    let mut e = EquivRel::new(chains.len() as i32);
+    for i1 in 0..infos.len() {
+        let j1 = infos[i1];
+        let u1 = info[j1].clonotype_index;
+        let v1 = to_exacts[&u1];
+        let m1s = &info[j1].exact_cols;
+        for x in raw_joins[j1].iter() {
+            let i2 = bin_position(&infos, &*x);
+            if i2 >= 0 {
+                let i2 = i2 as usize;
+                let j2 = infos[i2];
+                let u2 = info[j2].clonotype_index;
+                let v2 = to_exacts[&u2];
+                let m2s = &info[j2].exact_cols;
+                for j in 0..2 {
+                    let z1 = bin_position(&chains, &(v1, m1s[j]));
+                    let z2 = bin_position(&chains, &(v2, m2s[j]));
+                    e.join(z1, z2);
                 }
             }
         }
     }
-    for i in 0..info_locs.len() {
-        unique_sort(&mut info_locs[i]);
+    let mut i = 0;
+    while i < seq_chains.len() {
+        let j = next_diff1_3(&seq_chains, i as i32) as usize;
+        for k in i+1..j {
+            let (x1, x2) = (&seq_chains[i], &seq_chains[k]);
+            let z1 = bin_position(&chains, &(x1.1, x1.2));
+            let z2 = bin_position(&chains, &(x2.1, x2.2));
+            e.join(z1, z2);
+        }
+        i = j;
     }
 
-    // Form an equivalence relation on the CDR3_AAs, requiring that they are "close enough":
-    // In a first pass, we use the original correspondence between chains that we obtained we
-    // we did joins.  This information comes to us raw_joins.  Note that this is quite convoluted
-    // and quite possibly unnecessarily so as the raw join information has nothing to do with
-    // CDR3 sequences per se so this information could presumably have been applied more directly.
+    // Get representatives for the chain orbits.
 
-    // 1. They have the same length and differ at no more than 5 positions.
-    // 2. Each has a V..J sequence such that the two differ by no more than 60 positions.
+    let mut r = Vec::<i32>::new();
+    e.orbit_reps(&mut r);
+    // if tracking { eprintln!("there are {} orbits", r.len()); } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    let mut ec: EquivRel = EquivRel::new(all_cdr3s.len() as i32);
-    for m1 in 0..all_cdr3s.len() {
-        for m2 in m1 + 1..all_cdr3s.len() {
-            let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
-            let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
+    // Reorder the chains.  This is done to get the heavy chains before the light chains and also
+    // to mimic the behavior of the previous version of this algorithm, to minimiize churn.  Then
+    // update the representatives.
 
-            if x1 == x2 && y1 == y2 {
-                ec.join(m1 as i32, m2 as i32);
-                continue;
+    let mut chainsp = Vec::<(String, usize, usize, usize)>::new();
+    for u in 0..nexacts {
+        let ex = &exact_clonotypes[exacts[u]];
+        for m in 0..ex.share.len() {
+            let mut c = ex.share[m].chain_type.clone();
+            if c.starts_with("TRB") {
+                c = c.replacen("TRB", "TRX", 1);
+            } else if c.starts_with("TRA") {
+                c = c.replacen("TRA", "TRY", 1);
             }
-
-            let (r1, r2) = (&info_locs[m1], &info_locs[m2]);
-            'r1r2: for j1 in r1.iter() {
-                for j2 in r2.iter() {
-                    let j1 = *j1;
-                    let j2 = *j2;
-                    // if strme(&x1).before(":") == strme(&x2).before(":") {
-                    if info[j1.0].cdr3_aa[j1.1] == strme(&x1).after(":")
-                        && info[j2.0].cdr3_aa[j2.1] == strme(&x2).after(":")
-                        && j1.1 == j2.1
-                    {
-                        if bin_member(&raw_joins[j1.0], &j2.0) {
-                            /*
-                            // XXX:
-                            let z1 = format!("{}:{}", info[j1.0].cdr3_aa[0], info[j1.0].cdr3_aa[1]);
-                            let z2 = format!("{}:{}", info[j2.0].cdr3_aa[0], info[j2.0].cdr3_aa[1]);
-                            eprintln!(
-                            "joining {} to {}, lens = {} and {}, j = {}.{} and {}.{}, info = {} and {}",
-                                strme(&x1),
-                                strme(&x2), r1.len(), r2.len(), j1.0, j1.1, j2.0, j2.1, z1, z2);
-                            */
-
-                            ec.join(m1 as i32, m2 as i32);
-                            break 'r1r2;
-                        }
-                    }
-                }
-            }
+            chainsp.push((format!("{}:{}", c, ex.share[m].cdr3_aa), ex.share[m].seq.len(), u, m));
         }
     }
-
-    // Continue forming an equivalence relation on the CDR3_AAs, requiring that they are
-    // "close enough".  This is the second pass.  A problem with the first pass is that the raw
-    // joins were incomplete, because in joining as soon as two orbits were connected, we stopped
-    // looking for individual raw joins.  The specific case where this is a problem is where we
-    // have two threesies, which are partially joined, and there is a third chain that should
-    // be joined, but is not.  In this pass we do a sloppy job of fixing this.  We consider only
-    // the case where there are two threesies, but we don't bother to check that they are already
-    // joined along two of their chains.  Then these criteria are applied to determine
-    // "close enough":
-    //
-    // 1. They have the same length and differ at no more than 5 positions.
-    // 2. Each has a V..J sequence such that the two differ by no more than 60 positions.
-    //
-    // Note that another approach to this might be to force the raw joins to be more complete,
-    // for the special case of two threesies.  This completion step could be here or in the join
-    // code itself.
-
-    for m1 in 0..all_cdr3s.len() {
-        for m2 in m1 + 1..all_cdr3s.len() {
-            if ec.class_id(m1 as i32) == ec.class_id(m2 as i32) {
-                continue;
-            }
-            let (x1, x2) = (&all_cdr3s[m1].0, &all_cdr3s[m2].0);
-            let (y1, y2) = (all_cdr3s[m1].1, all_cdr3s[m2].1);
-            if x1.len() == x2.len() && y1 == y2 {
-                let mut diffs = 0;
-                for u in 0..x1.len() {
-                    if x1[u] != x2[u] {
-                        diffs += 1;
-                    }
-                }
-                if diffs <= MAX_CDR3_DIFFS_TO_JOIN {
-                    'outer: for l1 in 0..od.len() {
-                        let y1: &CloneInfo = &info[od[l1].2 as usize];
-                        let ex1 = &exact_clonotypes[y1.clonotype_id];
-                        if ex1.share.len() != 3 {
-                            continue;
-                        }
-                        for u1 in 0..y1.cdr3_aa.len() {
-                            if y1.cdr3_aa[u1] == strme(&x1).after(":") {
-                                for l2 in 0..od.len() {
-                                    let y2: &CloneInfo = &info[od[l2].2 as usize];
-                                    let ex2 = &exact_clonotypes[y2.clonotype_id];
-                                    if ex2.share.len() != 3 {
-                                        continue;
-                                    }
-                                    for u2 in 0..y2.cdr3_aa.len() {
-                                        if y2.cdr3_aa[u2] == strme(&x2).after(":") {
-                                            if y1.tigs[u1].len() == y2.tigs[u2].len() {
-                                                // Could be we're spending a lot of time
-                                                // finding diffs.
-
-                                                let mut vj_diffs = 0;
-                                                if !y1.has_del[u1] && !y2.has_del[u2] {
-                                                    vj_diffs = ndiffs(&y1.tigsp[u1], &y2.tigsp[u2]);
-                                                } else {
-                                                    for j in 0..y1.tigs[u1].len() {
-                                                        if y1.tigs[u1][j] != y2.tigs[u2][j] {
-                                                            vj_diffs += 1;
-                                                        }
-                                                    }
-                                                }
-                                                if vj_diffs <= ctl.heur.max_diffs {
-                                                    ec.join(m1 as i32, m2 as i32);
-                                                    break 'outer;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    chainsp.sort();
+    let mut chainso = Vec::<(usize, usize)>::new();
+    let mut chainsox = Vec::<(usize, usize, usize)>::new();
+    for i in 0..chainsp.len() {
+        chainso.push((chainsp[i].2, chainsp[i].3));
+        chainsox.push((chainsp[i].2, chainsp[i].3, i));
     }
+    chainsox.sort();
+    for i in 0..r.len() {
+        r[i] = chainsox[r[i] as usize].2 as i32;
+    }
+    r.sort();
 
     // Create rmap, that sends
     // (index into exact subclonotypes for this clonotype,
     //  index into chains for one of these exact subclonotypes)
-    // to an index into the orbit reps for the CDR3s.
+    // to an index into the orbit reps for the chains.
 
-    let mut r = Vec::<i32>::new();
-    ec.orbit_reps(&mut r);
     let mut rpos = HashMap::<(usize, usize), usize>::new();
-    for u in 0..nexacts {
-        let x = &cdr3s[u];
-        for (iy, y) in x.iter().enumerate() {
-            let p = bin_position(&all_cdr3s, &(y.0.as_bytes().to_vec(), y.1));
-            let c = ec.class_id(p);
-            let q = bin_position(&r, &c) as usize;
-            rpos.insert((u, iy), q);
-        }
+    for i in 0..chains.len() {
+        let c = e.class_id(i as i32);
+        let f = chainsox[c as usize].2 as i32;
+        let q = bin_position(&r, &f) as usize;
+        rpos.insert((chains[i].0, chains[i].1), q);
     }
 
     // Find the maximum multiplicity of each orbit, and the number of columns.
 
     let mut mm = vec![0; r.len()];
-    for (u, x) in cdr3s.iter().enumerate() {
+    for u in 0..nexacts {
+        let ex = &exact_clonotypes[exacts[u]];
         let mut mm0 = vec![0; r.len()];
-        for iy in 0..x.len() {
-            let q = rpos[&(u, iy)];
-            mm0[q] += 1;
+        for m in 0..ex.share.len() {
+            mm0[rpos[&(u, m)]] += 1;
         }
         for i in 0..r.len() {
             mm[i] = max(mm[i], mm0[i]);
@@ -239,37 +178,27 @@ pub fn define_mat(
     }
     let cols = mm.iter().sum();
 
-    // Define a matrix mat[col][ex] which is the column of the exact subclonotype ex
-    // corresponding to the given column col of the clonotype, which may or may not be
-    // defined.
-    // ◼ This should be propagated so we don't compute something equivalent
-    //   over and over.
+    // Define a matrix mat[col][ex] which is the column of the exact subclonotype ex corresponding
+    // to the given column col of the clonotype, which may or may not be defined.
 
     let mut mat = vec![vec![None; nexacts]; cols];
     for cx in 0..cols {
         // for every column
         'exact: for u in 0..nexacts {
             // for every exact subclonotype
-            let clonotype_id = od[js[u]].1;
-            let ex = &exact_clonotypes[clonotype_id];
-            let x = &cdr3s[u];
+            let ex = &exact_clonotypes[exacts[u]];
             let mut mm0 = vec![0; r.len()];
-            // for every chain in the exact subclonotype:
-            for (iy, y) in x.iter().enumerate() {
-                let q = rpos[&(u, iy)];
+            for m in 0..ex.share.len() {
+                // for every chain in the exact subclonotype:
+                let q = rpos[&(u, m)];
                 let mut col = mm0[q];
                 for j in 0..q {
                     col += mm[j];
                 }
                 mm0[q] += 1;
-                if col != cx {
-                    continue;
-                }
-                for m in 0..ex.share.len() {
-                    if ex.share[m].cdr3_aa == y.0.after(":") && ex.share[m].seq_del.len() == y.1 {
-                        mat[cx][u] = Some(m);
-                        continue 'exact;
-                    }
+                if col == cx {
+                    mat[cx][u] = Some(m);
+                    continue 'exact;
                 }
             }
         }

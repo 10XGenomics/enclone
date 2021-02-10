@@ -275,6 +275,7 @@ pub fn print_clonotypes(
             let mat = define_mat(
                 &ctl,
                 &exact_clonotypes,
+                &exacts,
                 &cdr3s_len,
                 &js,
                 &ks,
@@ -326,6 +327,7 @@ pub fn print_clonotypes(
             let mat = define_mat(
                 &ctl,
                 &exact_clonotypes,
+                &exacts,
                 &cdr3s_len,
                 &js,
                 &ks,

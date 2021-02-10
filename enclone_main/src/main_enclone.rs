@@ -2100,6 +2100,7 @@ pub fn main_enclone(args: &Vec<String>) {
             let mat = define_mat(
                 &ctl,
                 &exact_clonotypes,
+                &exacts,
                 &cdr3s_len,
                 &js,
                 &ks,
