@@ -995,7 +995,7 @@ checksum = "00d63df3d41950fb462ed38308eea019113ad1508da725bbedcd0fa5a85ef5f7"
 [[package]]
 name = "hdf5"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=055a68abff31b0e9b8f66ff0814caae6ad0ccbda#055a68abff31b0e9b8f66ff0814caae6ad0ccbda"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
  "bitflags",
  "hdf5-derive",
@@ -1012,7 +1012,7 @@ dependencies = [
 [[package]]
 name = "hdf5-derive"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=055a68abff31b0e9b8f66ff0814caae6ad0ccbda#055a68abff31b0e9b8f66ff0814caae6ad0ccbda"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1022,7 +1022,7 @@ dependencies = [
 [[package]]
 name = "hdf5-sys"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=055a68abff31b0e9b8f66ff0814caae6ad0ccbda#055a68abff31b0e9b8f66ff0814caae6ad0ccbda"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
  "attohttpc",
  "bzip2",
@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "hdf5-types"
 version = "0.7.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=055a68abff31b0e9b8f66ff0814caae6ad0ccbda#055a68abff31b0e9b8f66ff0814caae6ad0ccbda"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
  "ascii",
  "libc",
