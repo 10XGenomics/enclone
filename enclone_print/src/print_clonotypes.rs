@@ -37,6 +37,9 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
+    is_bcr: bool,
+    to_bc: &HashMap<(usize, usize), Vec<String>>,
+    sr: &Vec<Vec<f64>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
@@ -274,6 +277,9 @@ pub fn print_clonotypes(
             // Sort exact subclonotypes.
 
             let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
                 &ctl,
                 &exact_clonotypes,
                 &exacts,
@@ -326,6 +332,9 @@ pub fn print_clonotypes(
 
             let nexacts = exacts.len();
             let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
                 &ctl,
                 &exact_clonotypes,
                 &exacts,

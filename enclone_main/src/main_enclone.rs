@@ -54,6 +54,7 @@ use std::{
     thread, time,
     time::Instant,
 };
+use stirling_numbers::*;
 use string_utils::*;
 use tables::*;
 use vdj_ann::*;
@@ -1516,6 +1517,28 @@ pub fn main_enclone(args: &Vec<String>) {
 
     sub_alts(&refdata, &ctl, &alt_refs, &mut info, &mut exact_clonotypes);
 
+    // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
+    // This is intended as a replacement for some old code below.
+
+    let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
+    for i in 0..exact_clonotypes.len() {
+        for j in 0..exact_clonotypes[i].clones.len() {
+            let x = &exact_clonotypes[i].clones[j][0];
+            if !to_bc.contains_key(&(x.dataset_index, i)) {
+                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
+            } else {
+                to_bc
+                    .get_mut(&(x.dataset_index, i))
+                    .unwrap()
+                    .push(x.barcode.clone());
+            }
+        }
+    }
+
+    // Make stirling ratio table.  Not sure that fixing the size of this is safe.
+
+    let sr = stirling2_ratio_table::<f64>(3000);
+
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
 
@@ -1523,12 +1546,14 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut raw_joins = Vec::<(i32, i32)>::new();
     let mut eq: EquivRel = join_exacts(
         is_bcr,
+        &to_bc,
         &refdata,
         &ctl,
         &exact_clonotypes,
         &info,
         &mut join_info,
         &mut raw_joins,
+        &sr,
     );
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
@@ -2098,6 +2123,9 @@ pub fn main_enclone(args: &Vec<String>) {
                 j = k;
             }
             let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
                 &ctl,
                 &exact_clonotypes,
                 &exacts,
@@ -2577,6 +2605,9 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut tests = Vec::<usize>::new();
     let mut controls = Vec::<usize>::new();
     print_clonotypes(
+        is_bcr,
+        &to_bc,
+        &sr,
         &refdata,
         &drefs,
         &ctl,
