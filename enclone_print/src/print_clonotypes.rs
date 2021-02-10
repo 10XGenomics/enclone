@@ -7,6 +7,7 @@
 
 use crate::filter::*;
 use crate::loupe::*;
+use crate::define_mat::*;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
 use crate::print_utils3::*;

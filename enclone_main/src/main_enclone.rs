@@ -32,7 +32,7 @@ use enclone_help::help5::*;
 use enclone_help::help_utils::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
-use enclone_print::print_utils4::*;
+use enclone_print::define_mat::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use evalexpr::*;
