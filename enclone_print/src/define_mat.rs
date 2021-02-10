@@ -7,6 +7,49 @@ use std::cmp::max;
 use std::collections::HashMap;
 use vector_utils::*;
 
+// Define an equivalence relation on the chains, introducing connections defined by the
+// raw joins.  Also join where there are identical V..J sequences.
+
+fn joiner(
+    infos: &Vec<usize>,
+    info: &Vec<CloneInfo>,
+    to_exacts: &HashMap<usize, usize>,
+    raw_joinsx: &Vec<Vec<usize>>,
+    chains: &Vec<(usize, usize)>,
+    seq_chains: &Vec<(Vec<u8>, usize, usize)>,
+) -> EquivRel {
+    let mut e = EquivRel::new(chains.len() as i32);
+    for i1 in 0..infos.len() {
+        let j1 = infos[i1];
+        let u1 = info[j1].clonotype_index;
+        let v1 = to_exacts[&u1];
+        let m1s = &info[j1].exact_cols;
+        for i2 in raw_joinsx[i1].iter() {
+            let j2 = infos[*i2];
+            let u2 = info[j2].clonotype_index;
+            let v2 = to_exacts[&u2];
+            let m2s = &info[j2].exact_cols;
+            for j in 0..2 {
+                let z1 = bin_position(&chains, &(v1, m1s[j]));
+                let z2 = bin_position(&chains, &(v2, m2s[j]));
+                e.join(z1, z2);
+            }
+        }
+    }
+    let mut i = 0;
+    while i < seq_chains.len() {
+        let j = next_diff1_3(&seq_chains, i as i32) as usize;
+        for k in i+1..j {
+            let (x1, x2) = (&seq_chains[i], &seq_chains[k]);
+            let z1 = bin_position(&chains, &(x1.1, x1.2));
+            let z2 = bin_position(&chains, &(x2.1, x2.2));
+            e.join(z1, z2);
+        }
+        i = j;
+    }
+    e
+}
+
 pub fn define_mat(
     is_bcr: bool,
     to_bc: &HashMap<(usize, usize), Vec<String>>,
@@ -76,10 +119,13 @@ pub fn define_mat(
         }
     }
 
-    // Look for additional raw joins.  The reason why might be missing raw joins is that in the
-    // join stage, for efficiency reasons, we don't try to make a join if two info elements are 
-    // already in the same equivalence class.  In the case where we have two exact subclonotypes, 
-    // and at least one has more than two chains, then we may miss a raw join that is needed here.
+    // Look for additional raw joins.  In the join stage, for efficiency reasons, we don't try to
+    // make a join if two info elements are already in the same equivalence class.  This causes
+    // us to miss raw joins for two reasons:
+    // • One reason is that where we have two exact subclonotypes, and at least one one has more
+    //   than two chains, then we may miss a raw join that is needed here.
+    // • Another reason is that exact subclonotypes may have been deleted since the original
+    //   equivalence relation was built.  This we address partially.
 
     let mut extras = Vec::<(usize, usize)>::new();
     for i1 in 0..raw_joinsx.len() {
@@ -115,39 +161,74 @@ pub fn define_mat(
         raw_joinsx[x.0].push(x.1);
     }
 
-    // Define an equivalence relation on the chains, introducing connections defined by the
-    // raw joins.  Also join where there are identical V..J sequences.
+    // Now deal with the second reason.  First define a provisional equivalence relation on the
+    // chains.
 
-    let mut e = EquivRel::new(chains.len() as i32);
-    for i1 in 0..infos.len() {
-        let j1 = infos[i1];
-        let u1 = info[j1].clonotype_index;
-        let v1 = to_exacts[&u1];
-        let m1s = &info[j1].exact_cols;
-        for i2 in raw_joinsx[i1].iter() {
-            let j2 = infos[*i2];
-            let u2 = info[j2].clonotype_index;
-            let v2 = to_exacts[&u2];
-            let m2s = &info[j2].exact_cols;
-            for j in 0..2 {
-                let z1 = bin_position(&chains, &(v1, m1s[j]));
-                let z2 = bin_position(&chains, &(v2, m2s[j]));
-                e.join(z1, z2);
+    let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
+    let mut r = Vec::<i32>::new();
+    e.orbit_reps(&mut r);
+    if r.len() > 2 {
+        for i1 in 0..r.len() {
+            let c1 = chains[r[i1] as usize];
+            let (u1, m1) = (c1.0, c1.1);
+            let ex1 = &exact_clonotypes[exacts[u1]];
+            for i2 in 0..r.len() {
+                if i1 == i2 {
+                    continue;
+                }
+                let c2 = chains[r[i2] as usize];
+                let (u2, m2) = (c2.0, c2.1);
+                let ex2 = &exact_clonotypes[exacts[u2]];
+                if ex1.share[m1].left != ex2.share[m2].left {
+                    continue;
+                }
+
+                // Now we have two chains that should possibly lie in the same column, but
+                // do not.  See if the corresponding clonotypes share a different chain, of
+                // the opposite type.
+
+                for z1 in 0..ex1.share.len() {
+                    if ex1.share[z1].left == ex1.share[m1].left {
+                        continue;
+                    }
+                    for z2 in 0..ex2.share.len() {
+                        if ex2.share[z2].left == ex2.share[m2].left {
+                            continue;
+                        }
+                        let p1 = bin_position(&chains, &(u1, z1));
+                        let p2 = bin_position(&chains, &(u2, z2));
+                        if e.class_id(p1) != e.class_id(p2) {
+                            continue;
+                        }
+                        // Locate the info entries that might be joined.
+                        for l1 in to_infos[u1].iter() {
+                            let w1 = info[infos[*l1]].exact_cols[0];
+                            let w2 = info[infos[*l1]].exact_cols[1];
+                            if (w1 == m1 && w2 == z1) || (w1 == z1 && w2 == m1) {
+                                for l2 in to_infos[u2].iter() {
+                                    let v1 = info[infos[*l2]].exact_cols[0];
+                                    let v2 = info[infos[*l2]].exact_cols[1];
+                                    if (v1 == m2 && v2 == z2) || (v1 == z2 && v2 == m2) {
+                                        // Try to join l1 to l2.
+                                        let (q1, q2) = (infos[*l1], infos[*l2]);
+                                        if info[q1].lens != info[q2].lens {
+                                            continue;
+                                        }
+                                        let mut pot = Vec::<PotentialJoin>::new();
+                                        if join_one( is_bcr, q1, q2, &ctl, &exact_clonotypes, 
+                                            &info, &to_bc, &sr, &mut pot) {
+                                                e.join(r[i1], r[i2]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-    let mut i = 0;
-    while i < seq_chains.len() {
-        let j = next_diff1_3(&seq_chains, i as i32) as usize;
-        for k in i+1..j {
-            let (x1, x2) = (&seq_chains[i], &seq_chains[k]);
-            let z1 = bin_position(&chains, &(x1.1, x1.2));
-            let z2 = bin_position(&chains, &(x2.1, x2.2));
-            e.join(z1, z2);
-        }
-        i = j;
-    }
-
+                                            
     // Get representatives for the chain orbits.
 
     let mut r = Vec::<i32>::new();
