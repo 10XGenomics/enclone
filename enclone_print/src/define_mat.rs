@@ -98,11 +98,13 @@ pub fn define_mat(
                             continue;
                         }
                         let (l1, l2) = (infos[k1], infos[k2]);
-                        let mut pot = Vec::<PotentialJoin>::new();
-                        if join_one(
-                            is_bcr, l1, l2, &ctl, &exact_clonotypes, &info, &to_bc, &sr, &mut pot
-                        ) {
-                            extras.push((k1, k2));
+                        if info[l1].lens == info[l2].lens {
+                            let mut pot = Vec::<PotentialJoin>::new();
+                            if join_one( is_bcr, l1, l2, &ctl, &exact_clonotypes, &info, 
+                                &to_bc, &sr, &mut pot
+                            ) {
+                                extras.push((k1, k2));
+                            }
                         }
                     }
                 }
