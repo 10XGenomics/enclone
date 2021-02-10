@@ -51,6 +51,19 @@ pub fn define_mat(
     }
     seq_chains.sort();
 
+    // Gather the raw joins.
+
+    let mut raw_joinsx = vec![Vec::<usize>::new(); infos.len()];
+    for i1 in 0..infos.len() {
+        let j1 = infos[i1];
+        for x in raw_joins[j1].iter() {
+            let i2 = bin_position(&infos, &*x);
+            if i2 >= 0 {
+                raw_joinsx[i1].push(i2 as usize);
+            }
+        }
+    }
+
     // Define an equivalence relation on the chains, introducing connections defined by the
     // raw joins.  Also join where there are identical V..J sequences.
 
@@ -60,19 +73,15 @@ pub fn define_mat(
         let u1 = info[j1].clonotype_index;
         let v1 = to_exacts[&u1];
         let m1s = &info[j1].exact_cols;
-        for x in raw_joins[j1].iter() {
-            let i2 = bin_position(&infos, &*x);
-            if i2 >= 0 {
-                let i2 = i2 as usize;
-                let j2 = infos[i2];
-                let u2 = info[j2].clonotype_index;
-                let v2 = to_exacts[&u2];
-                let m2s = &info[j2].exact_cols;
-                for j in 0..2 {
-                    let z1 = bin_position(&chains, &(v1, m1s[j]));
-                    let z2 = bin_position(&chains, &(v2, m2s[j]));
-                    e.join(z1, z2);
-                }
+        for i2 in raw_joinsx[i1].iter() {
+            let j2 = infos[*i2];
+            let u2 = info[j2].clonotype_index;
+            let v2 = to_exacts[&u2];
+            let m2s = &info[j2].exact_cols;
+            for j in 0..2 {
+                let z1 = bin_position(&chains, &(v1, m1s[j]));
+                let z2 = bin_position(&chains, &(v2, m2s[j]));
+                e.join(z1, z2);
             }
         }
     }
