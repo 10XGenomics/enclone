@@ -209,12 +209,9 @@ pub fn print_clonotypes(
         // Capture these data into parallel data structures, one per exact subclonotype:
         // exacts: the exact subclonotype ids
         // mults:  number of cells [redundant, might remove]
-        // cdr3s:  sorted list of (chain_type:cdr3)
 
         let mut exacts = Vec::<usize>::new();
         let mut mults = Vec::<usize>::new();
-        let mut cdr3s = Vec::<Vec<String>>::new();
-        let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
         let mut j = 0;
         let loupe_clonotypes = &mut res.6;
         while j < od.len() {
@@ -242,8 +239,6 @@ pub fn print_clonotypes(
             }
             unique_sort(&mut z);
             unique_sort(&mut z_len);
-            cdr3s.push(z);
-            cdr3s_len.push(z_len);
             let mut x = Vec::<usize>::new();
             for l in j..k {
                 x.push(l);
@@ -256,13 +251,11 @@ pub fn print_clonotypes(
         // There are two passes.  On the first pass we only identify the exact subclonotypes that
         // are junk.  On the second pass we remove those and then print the orbit.
 
-        let mut bads = vec![false; cdr3s.len()];
+        let mut bads = vec![false; exacts.len()];
         for pass in 1..=2 {
             // Delete weak exact subclonotypes.
 
             if pass == 2 && !ctl.clono_filt_opt.protect_bads {
-                erase_if(&mut cdr3s, &bads);
-                erase_if(&mut cdr3s_len, &bads);
                 erase_if(&mut mults, &bads);
                 erase_if(&mut exacts, &bads);
             }
@@ -276,7 +269,6 @@ pub fn print_clonotypes(
                 &ctl,
                 &exact_clonotypes,
                 &exacts,
-                &cdr3s_len,
                 &od,
                 &info,
                 &raw_joins,
@@ -305,12 +297,8 @@ pub fn print_clonotypes(
             let permutation = permutation::sort(&priority[..]);
             exacts = permutation.apply_slice(&exacts[..]);
             mults = permutation.apply_slice(&mults[..]);
-            cdr3s = permutation.apply_slice(&cdr3s[..]);
-            cdr3s_len = permutation.apply_slice(&cdr3s_len[..]);
             exacts.reverse();
             mults.reverse();
-            cdr3s.reverse();
-            cdr3s_len.reverse();
 
             // Define a matrix mat[col][ex] which is the column of the exact subclonotype
             // corresponding to the given column col of the clonotype, which may or may not be
@@ -325,7 +313,6 @@ pub fn print_clonotypes(
                 &ctl,
                 &exact_clonotypes,
                 &exacts,
-                &cdr3s_len,
                 &od,
                 &info,
                 &raw_joins,

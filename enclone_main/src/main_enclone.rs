@@ -2120,7 +2120,6 @@ pub fn main_enclone(args: &Vec<String>) {
             }
             od.sort();
             let mut exacts = Vec::<usize>::new();
-            let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
             let mut j = 0;
             while j < od.len() {
                 let k = next_diff12_3(&od, j as i32) as usize;
@@ -2138,7 +2137,6 @@ pub fn main_enclone(args: &Vec<String>) {
                     }
                 }
                 unique_sort(&mut z_len);
-                cdr3s_len.push(z_len);
                 exacts.push(od[j].1);
                 j = k;
             }
@@ -2149,7 +2147,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 &ctl,
                 &exact_clonotypes,
                 &exacts,
-                &cdr3s_len,
                 &od,
                 &info,
                 &raw_joins,
