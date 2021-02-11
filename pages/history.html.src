@@ -27,6 +27,16 @@ source code that's available).  We apologize for this asynchrony!  Note however 
 command-line help that comes with your copy of #enclone will always match its behavior.</p>
 
 <hr>
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
+<b>2/?/21</b>: We have redesigned the algorithm the determines the columns in clonotype tables,
+see <a href="../../pages/auto/heuristics.html">notes on heuristics</a>.  This addresses some
+very rare cases where chains were incorrectly placed in the same column.  There is an additional
+change that came about.  In rare cases, a cell will have two contigs with identical CDR3 sequences.
+This could be the "other" allele or more likely an artifact.  Previously one of these contigs
+was suppressed in the clonotype table.  Now they both appear.
+</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
