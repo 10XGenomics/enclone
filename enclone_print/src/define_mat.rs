@@ -39,7 +39,7 @@ fn joiner(
     let mut i = 0;
     while i < seq_chains.len() {
         let j = next_diff1_3(&seq_chains, i as i32) as usize;
-        for k in i+1..j {
+        for k in i + 1..j {
             let (x1, x2) = (&seq_chains[i], &seq_chains[k]);
             let z1 = bin_position(&chains, &(x1.1, x1.2));
             let z2 = bin_position(&chains, &(x2.1, x2.2));
@@ -64,7 +64,6 @@ pub fn define_mat(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
 ) -> Vec<Vec<Option<usize>>> {
-
     // Define map of indices into exacts.
 
     let nexacts = exacts.len();
@@ -132,7 +131,10 @@ pub fn define_mat(
         for i2 in raw_joinsx[i1].iter() {
             let i2 = *i2;
             let (j1, j2) = (infos[i1], infos[i2]);
-            let (u1, u2) = (info[j1].clonotype_index as usize, info[j2].clonotype_index as usize);
+            let (u1, u2) = (
+                info[j1].clonotype_index as usize,
+                info[j2].clonotype_index as usize,
+            );
             let (ex1, ex2) = (&exact_clonotypes[u1], &exact_clonotypes[u2]);
             let (v1, v2) = (to_exacts[&u1], to_exacts[&u2]);
             if ex1.share.len() > 2 || ex2.share.len() > 2 {
@@ -146,8 +148,16 @@ pub fn define_mat(
                         let (l1, l2) = (infos[k1], infos[k2]);
                         if info[l1].lens == info[l2].lens {
                             let mut pot = Vec::<PotentialJoin>::new();
-                            if join_one( is_bcr, l1, l2, &ctl, &exact_clonotypes, &info, 
-                                &to_bc, &sr, &mut pot
+                            if join_one(
+                                is_bcr,
+                                l1,
+                                l2,
+                                &ctl,
+                                &exact_clonotypes,
+                                &info,
+                                &to_bc,
+                                &sr,
+                                &mut pot,
                             ) {
                                 extras.push((k1, k2));
                             }
@@ -161,83 +171,13 @@ pub fn define_mat(
         raw_joinsx[x.0].push(x.1);
     }
 
-    // Now deal with the second reason.  First define a provisional equivalence relation on the
-    // chains.
-
-    /*
-    let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
-    let mut r = Vec::<i32>::new();
-    e.orbit_reps(&mut r);
-    if r.len() > 2 {
-        for i1 in 0..r.len() {
-            let c1 = chains[r[i1] as usize];
-            let (u1, m1) = (c1.0, c1.1);
-            let ex1 = &exact_clonotypes[exacts[u1]];
-            for i2 in 0..r.len() {
-                if i1 == i2 {
-                    continue;
-                }
-                let c2 = chains[r[i2] as usize];
-                let (u2, m2) = (c2.0, c2.1);
-                let ex2 = &exact_clonotypes[exacts[u2]];
-                if ex1.share[m1].left != ex2.share[m2].left {
-                    continue;
-                }
-
-                // Now we have two chains that should possibly lie in the same column, but
-                // do not.  See if the corresponding clonotypes share a different chain, of
-                // the opposite type.
-
-                for z1 in 0..ex1.share.len() {
-                    if ex1.share[z1].left == ex1.share[m1].left {
-                        continue;
-                    }
-                    for z2 in 0..ex2.share.len() {
-                        if ex2.share[z2].left == ex2.share[m2].left {
-                            continue;
-                        }
-                        let p1 = bin_position(&chains, &(u1, z1));
-                        let p2 = bin_position(&chains, &(u2, z2));
-                        if e.class_id(p1) != e.class_id(p2) {
-                            continue;
-                        }
-                        // Locate the info entries that might be joined.
-                        for l1 in to_infos[u1].iter() {
-                            let w1 = info[infos[*l1]].exact_cols[0];
-                            let w2 = info[infos[*l1]].exact_cols[1];
-                            if (w1 == m1 && w2 == z1) || (w1 == z1 && w2 == m1) {
-                                for l2 in to_infos[u2].iter() {
-                                    let v1 = info[infos[*l2]].exact_cols[0];
-                                    let v2 = info[infos[*l2]].exact_cols[1];
-                                    if (v1 == m2 && v2 == z2) || (v1 == z2 && v2 == m2) {
-                                        // Try to join l1 to l2.
-                                        let (q1, q2) = (infos[*l1], infos[*l2]);
-                                        if info[q1].lens != info[q2].lens {
-                                            continue;
-                                        }
-                                        let mut pot = Vec::<PotentialJoin>::new();
-                                        if join_one( is_bcr, q1, q2, &ctl, &exact_clonotypes, 
-                                            &info, &to_bc, &sr, &mut pot) {
-                                                e.join(r[i1], r[i2]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
-
     // Define an initial equivalence relation on the chains, and get orbit representatives.
 
     let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
     let mut r = Vec::<i32>::new();
     e.orbit_reps(&mut r);
 
-    // First for each pair of chain orbits with one "heavy" and one "light", pick an info 
+    // First for each pair of chain orbits with one "heavy" and one "light", pick an info
     // entry, if one exists.  This is effectively at random.
 
     let mut rxi = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, infos index)
@@ -280,7 +220,17 @@ pub fn define_mat(
                     continue;
                 }
                 let mut pot = Vec::<PotentialJoin>::new();
-                if join_one(is_bcr, i1, i2, &ctl, &exact_clonotypes, &info, &to_bc, &sr, &mut pot) {
+                if join_one(
+                    is_bcr,
+                    i1,
+                    i2,
+                    &ctl,
+                    &exact_clonotypes,
+                    &info,
+                    &to_bc,
+                    &sr,
+                    &mut pot,
+                ) {
                     e.join(r[f1.0], r[f2.0]);
                     e.join(r[f1.1], r[f2.1]);
                 }
@@ -298,7 +248,14 @@ pub fn define_mat(
     for u in 0..nexacts {
         let ex = &exact_clonotypes[exacts[u]];
         if ex.share.len() == 3 {
-            let zs = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+            let zs = [
+                [0, 1, 2],
+                [0, 2, 1],
+                [1, 0, 2],
+                [1, 2, 0],
+                [2, 0, 1],
+                [2, 1, 0],
+            ];
             for z in zs.iter() {
                 if ex.share[z[0]].left && !ex.share[z[2]].left {
                     let p1 = e.class_id(bin_position(&chains, &(u, z[0])));
@@ -366,7 +323,7 @@ pub fn define_mat(
             }
         }
     }
-                                            
+
     // Get representatives for the chain orbits.
 
     let mut r = Vec::<i32>::new();
@@ -386,7 +343,12 @@ pub fn define_mat(
             } else if c.starts_with("TRA") {
                 c = c.replacen("TRA", "TRY", 1);
             }
-            chainsp.push((format!("{}:{}", c, ex.share[m].cdr3_aa), ex.share[m].seq.len(), u, m));
+            chainsp.push((
+                format!("{}:{}", c, ex.share[m].cdr3_aa),
+                ex.share[m].seq.len(),
+                u,
+                m,
+            ));
         }
     }
     chainsp.sort();
