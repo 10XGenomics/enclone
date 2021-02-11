@@ -164,6 +164,7 @@ pub fn define_mat(
     // Now deal with the second reason.  First define a provisional equivalence relation on the
     // chains.
 
+    /*
     let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
     let mut r = Vec::<i32>::new();
     e.orbit_reps(&mut r);
@@ -224,6 +225,64 @@ pub fn define_mat(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+    */
+
+    // Define an initial equivalence relation on the chains, and get orbit representatives.
+
+    let mut e = joiner(&infos, &info, &to_exacts, &raw_joinsx, &chains, &seq_chains);
+    let mut r = Vec::<i32>::new();
+    e.orbit_reps(&mut r);
+
+    // First for each pair of chain orbits with one "heavy" and one "light", pick an info 
+    // entry, if one exists.  This is effectively at random.
+
+    let mut rxi = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, infos index)
+    for i in 0..infos.len() {
+        let z = &info[infos[i]];
+        let u = z.clonotype_index;
+        let v = to_exacts[&u];
+        if z.exact_cols.len() != 2 {
+            continue;
+        }
+        let (m1, m2) = (z.exact_cols[0], z.exact_cols[1]);
+        let ex = &exact_clonotypes[u];
+        if !ex.share[m1].left || ex.share[m2].left {
+            continue; // maybe never happens
+        }
+        let p1 = e.class_id(bin_position(&chains, &(v, m1)));
+        let p2 = e.class_id(bin_position(&chains, &(v, m2)));
+        let q1 = bin_position(&r, &p1) as usize;
+        let q2 = bin_position(&r, &p2) as usize;
+        rxi.push((q1, q2, i));
+    }
+    rxi.sort();
+    let mut rxir = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, info index)
+    let mut i = 0;
+    while i < rxi.len() {
+        let j = next_diff12_3(&rxi, i as i32) as usize;
+        rxir.push(rxi[i]);
+        i = j;
+    }
+
+    // Now for each pair of these, if they are not effectively joined, attempt to join them.
+    // This partially addresses the "second reason" described above.  It is partial because we
+    // picked an info entry above at random, rather than trying them all.
+
+    for f1 in rxir.iter() {
+        for f2 in rxir.iter() {
+            if f1.0 != f2.0 || f1.1 != f2.1 {
+                let (i1, i2) = (infos[f1.2], infos[f2.2]);
+                if info[i1].lens != info[i2].lens {
+                    continue;
+                }
+                let mut pot = Vec::<PotentialJoin>::new();
+                if join_one(is_bcr, i1, i2, &ctl, &exact_clonotypes, &info, &to_bc, &sr, &mut pot) {
+                    e.join(r[f1.0], r[f2.0]);
+                    e.join(r[f1.1], r[f2.1]);
                 }
             }
         }
