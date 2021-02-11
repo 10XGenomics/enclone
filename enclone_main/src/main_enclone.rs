@@ -30,9 +30,9 @@ use enclone_help::help3::*;
 use enclone_help::help4::*;
 use enclone_help::help5::*;
 use enclone_help::help_utils::*;
+use enclone_print::define_mat::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
-use enclone_print::define_mat::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use evalexpr::*;
@@ -1615,6 +1615,13 @@ pub fn main_enclone(args: &Vec<String>) {
             for k in 0..to_exact_new[j].len() {
                 info[i].clonotype_index = to_exact_new[j][k];
                 info[i].clonotype_id = to_exact_new[j][k];
+                let mut origins = Vec::<usize>::new();
+                let ex = &exact_clonotypes[info[i].clonotype_index];
+                for i in 0..ex.clones.len() {
+                    origins.push(ex.clones[i][0].dataset_index);
+                }
+                unique_sort(&mut origins);
+                info[i].origin = origins;
                 x.push(info2.len());
                 info2.push(info[i].clone());
             }
@@ -1646,6 +1653,23 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
         eq = eq2;
+    }
+
+    // Update to_bc.
+
+    let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
+    for i in 0..exact_clonotypes.len() {
+        for j in 0..exact_clonotypes[i].clones.len() {
+            let x = &exact_clonotypes[i].clones[j][0];
+            if !to_bc.contains_key(&(x.dataset_index, i)) {
+                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
+            } else {
+                to_bc
+                    .get_mut(&(x.dataset_index, i))
+                    .unwrap()
+                    .push(x.barcode.clone());
+            }
+        }
     }
 
     // Restructure raw joins.
