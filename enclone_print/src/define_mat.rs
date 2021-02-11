@@ -177,8 +177,9 @@ pub fn define_mat(
     let mut r = Vec::<i32>::new();
     e.orbit_reps(&mut r);
 
-    // First for each pair of chain orbits with one "heavy" and one "light", pick an info
-    // entry, if one exists.  This is effectively at random.
+    // First for each pair of chain orbits with one "heavy" and one "light", pick some info
+    // entries, if there are any.  This is effectively at random.  A parameter governs how
+    // much we pick.
 
     let mut rxi = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, infos index)
     for i in 0..infos.len() {
@@ -200,11 +201,16 @@ pub fn define_mat(
         rxi.push((q1, q2, i));
     }
     rxi.sort();
+    const MAX_USE: usize = 5; // knob set empirically
     let mut rxir = Vec::<(usize, usize, usize)>::new(); // (heavy orbit, light orbit, info index)
     let mut i = 0;
     while i < rxi.len() {
         let j = next_diff12_3(&rxi, i as i32) as usize;
-        rxir.push(rxi[i]);
+        for k in i..j {
+            if k < i + MAX_USE {
+                rxir.push(rxi[k]);
+            }
+        }
         i = j;
     }
 
