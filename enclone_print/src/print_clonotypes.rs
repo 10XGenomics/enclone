@@ -217,31 +217,10 @@ pub fn print_clonotypes(
         while j < od.len() {
             let k = next_diff12_3(&od, j as i32) as usize;
             let mut mult = 0 as usize;
-            let mut z = Vec::<String>::new();
-            let mut z_len = Vec::<(String, usize)>::new();
             for l in j..k {
                 let x: &CloneInfo = &info[od[l].2 as usize];
                 let m = x.clonotype_index;
                 mult = exact_clonotypes[m].clones.len();
-                for m in 0..x.cdr3_aa.len() {
-                    // Do something EXTREMELY ugly.  To force TRB columns to come before TRA
-                    // columns, rename then TRX and TRY.  This is reversed at the very end.
-
-                    let mut c = x.chain_types[m].clone();
-                    if c.starts_with("TRB") {
-                        c = c.replacen("TRB", "TRX", 1);
-                    } else if c.starts_with("TRA") {
-                        c = c.replacen("TRA", "TRY", 1);
-                    }
-                    z.push(format!("{}:{}", c, x.cdr3_aa[m]));
-                    z_len.push((format!("{}:{}", c, x.cdr3_aa[m]), x.lens[m]));
-                }
-            }
-            unique_sort(&mut z);
-            unique_sort(&mut z_len);
-            let mut x = Vec::<usize>::new();
-            for l in j..k {
-                x.push(l);
             }
             mults.push(mult);
             exacts.push(od[j].1);

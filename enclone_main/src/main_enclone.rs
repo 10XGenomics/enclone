@@ -2123,20 +2123,6 @@ pub fn main_enclone(args: &Vec<String>) {
             let mut j = 0;
             while j < od.len() {
                 let k = next_diff12_3(&od, j as i32) as usize;
-                let mut z_len = Vec::<(String, usize)>::new();
-                for l in j..k {
-                    let x: &CloneInfo = &info[od[l].2 as usize];
-                    for m in 0..x.cdr3_aa.len() {
-                        let mut c = x.chain_types[m].clone();
-                        if c.starts_with("TRB") {
-                            c = c.replacen("TRB", "TRX", 1);
-                        } else if c.starts_with("TRA") {
-                            c = c.replacen("TRA", "TRY", 1);
-                        }
-                        z_len.push((format!("{}:{}", c, x.cdr3_aa[m]), x.lens[m]));
-                    }
-                }
-                unique_sort(&mut z_len);
                 exacts.push(od[j].1);
                 j = k;
             }
