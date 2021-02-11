@@ -266,7 +266,9 @@ pub const TESTS: [&str; 185] = [
     r###"BCR=123085 TREE=const CDR3=CARPKSDYIIDAFDIW MIN_CELLS=2"###,
     // 96. test MAX_LOG_SCORE
     r###"BCR=123085 CDR3=CARDQNFDESSGYDAFDIW MAX_LOG_SCORE=0.0"###,
-    // 97. test MAX_CDR3_DIFFS
+    // 97. Test MAX_CDR3_DIFFS.  This is also an instance where an exact subclonotype has
+    // two chains with indentical CDR3s, and this is the right answer, until and unless we change
+    // cellranger to somehow not emit two such chains.
     r###"BCR=123085 CDR3=CARESVVGLLPIFDYW MAX_CDR3_DIFFS=1"###,
     // 98. test reduced stringency D alignment
     // (RE can be removed once cellranger rerun)

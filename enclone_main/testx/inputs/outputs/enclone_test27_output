@@ -14,25 +14,25 @@ SUMMARY STATISTICS
    │      12  │  failed QUAL filter        │
    │       8  │  failed GRAPH_FILTER filter│
    │       5  │  failed WHITEF filter      │
-   │       3  │  failed WEAK_CHAINS filter │
-   │     292  │  total                     │
+   │       4  │  failed WEAK_CHAINS filter │
+   │     293  │  total                     │
    └──────────┴────────────────────────────┘
 3. for the selected clonotypes
    ┌────────┬────────────────────────┬──────────────────┬───────┐
    │chains  │  clonotypes with this  │  cells in these  │      %│
    │        │      number of chains  │      clonotypes  │       │
    ├────────┼────────────────────────┼──────────────────┼───────┤
-   │1       │                   138  │             138  │   10.1│
-   │2       │                   304  │             967  │   71.1│
-   │3       │                    12  │             250  │   18.4│
-   │4       │                     3  │               6  │    0.4│
-   │total   │                   457  │            1361  │  100.0│
+   │1       │                   138  │             138  │   10.2│
+   │2       │                   300  │             951  │   70.0│
+   │3       │                    15  │             258  │   19.0│
+   │4       │                     4  │              12  │    0.9│
+   │total   │                   457  │            1359  │  100.0│
    └────────┴────────────────────────┴──────────────────┴───────┘
    • number of clonotypes having at least two cells = 143
-   • number of cell-cell merges = 904
-   • number of cells having 1 chain = 215
-   • number of cells having 2 or 3 chains = 1143
+   • number of cell-cell merges = 902
+   • number of cells having 1 chain = 214
+   • number of cells having 2 or 3 chains = 1142
    • estimated B-B doublet rate = 0.3% = 3/933 = cells with 4 chains / cells with 2 or 4 chains
-   • mean over middle third of contig UMI counts (heavy chain) = 342.26
-   • mean over middle third of contig UMI counts (light chain) = 1915.40
+   • mean over middle third of contig UMI counts (heavy chain) = 342.76
+   • mean over middle third of contig UMI counts (light chain) = 1925.10
 
