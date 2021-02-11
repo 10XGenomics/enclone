@@ -287,6 +287,85 @@ pub fn define_mat(
             }
         }
     }
+
+    // Find the exact subclonotypes having three chains and list their orbits, allowing for order
+    // to vary.
+
+    let mut r = Vec::<i32>::new();
+    e.orbit_reps(&mut r);
+    let mut threes = Vec::<Vec<usize>>::new();
+    let mut threesp = HashMap::<Vec<usize>, usize>::new();
+    for u in 0..nexacts {
+        let ex = &exact_clonotypes[exacts[u]];
+        if ex.share.len() == 3 {
+            let zs = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+            for z in zs.iter() {
+                if ex.share[z[0]].left && !ex.share[z[2]].left {
+                    let p1 = e.class_id(bin_position(&chains, &(u, z[0])));
+                    let p2 = e.class_id(bin_position(&chains, &(u, z[1])));
+                    let p3 = e.class_id(bin_position(&chains, &(u, z[2])));
+                    let q1 = bin_position(&r, &p1) as usize;
+                    let q2 = bin_position(&r, &p2) as usize;
+                    let q3 = bin_position(&r, &p3) as usize;
+                    threes.push(vec![q1, q2, q3]);
+                    threesp.insert(vec![q1, q2, q3], u);
+                }
+            }
+        }
+    }
+    unique_sort(&mut threes);
+
+    // There is one more case to deal with.  This is where we have two exact subclonotypes, each
+    // with three chains, and we joined two of their chains, but not the third.  And where the
+    // join algorithm would not have joined the third.  In this case, if the third chains are
+    // "close enough", we join them anyway.  As before, we only test representatives.
+
+    for t1 in threes.iter() {
+        't2_loop: for t2 in threes.iter() {
+            if t1 == t2 {
+                continue;
+            }
+            let (mut matches, mut mismatch) = (0, 0);
+            for i in 0..3 {
+                if t1[i] == t2[i] {
+                    matches += 1;
+                } else {
+                    mismatch = i;
+                }
+            }
+            if matches != 2 {
+                continue;
+            }
+            let (u1, u2) = (threesp[t1], threesp[t2]);
+            let (ex1, ex2) = (&exact_clonotypes[exacts[u1]], &exact_clonotypes[exacts[u2]]);
+            for m1 in 0..ex1.share.len() {
+                let p1 = bin_position(&chains, &(u1, m1));
+                let q1 = bin_position(&r, &p1) as usize;
+                if q1 == t1[mismatch] {
+                    for m2 in 0..ex2.share.len() {
+                        let p2 = bin_position(&chains, &(u2, m2));
+                        let q2 = bin_position(&r, &p2) as usize;
+                        if q2 == t2[mismatch] {
+                            let (seq1, seq2) = (&ex1.share[m1].seq, &ex2.share[m2].seq);
+                            if seq1.len() == seq2.len() {
+                                const MAX_DIFFS: usize = 10;
+                                let mut diffs = 0;
+                                for j in 0..seq1.len() {
+                                    if seq1[j] != seq2[j] {
+                                        diffs += 1;
+                                    }
+                                }
+                                if diffs <= MAX_DIFFS {
+                                    e.join(p1, p2);
+                                    break 't2_loop;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
                                             
     // Get representatives for the chain orbits.
 
