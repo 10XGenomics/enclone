@@ -58,8 +58,6 @@ pub fn define_mat(
     exact_clonotypes: &Vec<ExactClonotype>,
     exacts: &Vec<usize>,
     _cdr3s: &Vec<Vec<(String, usize)>>,
-    _js: &Vec<usize>,
-    _ks: &Vec<usize>,
     od: &Vec<(Vec<usize>, usize, i32)>,
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
