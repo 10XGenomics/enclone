@@ -2431,56 +2431,217 @@ pub fn main_enclone(args: &Vec<String>) {
         orbits = orbits2;
     }
 
-    // Check for disjoint orbits.  The test here should correspond exactly to the test in
-    // define_mat, but it probably doesn't.
+    // Check for disjoint orbits.  
 
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
         let o = orbits[i].clone();
+        let mut od = Vec::<(Vec<usize>, usize, i32)>::new();
+        for id in o.iter() {
+            let x: &CloneInfo = &info[*id as usize];
+            od.push((x.origin.clone(), x.clonotype_id, *id));
+        }
+        od.sort();
+        let mut exacts = Vec::<usize>::new();
+        let mut j = 0;
+        while j < od.len() {
+            let k = next_diff12_3(&od, j as i32) as usize;
+            exacts.push(od[j].1);
+            j = k;
+        }
+        let mat = define_mat(
+            is_bcr,
+            &to_bc,
+            &sr,
+            &ctl,
+            &exact_clonotypes,
+            &exacts,
+            &od,
+            &info,
+            &raw_joins,
+        );
+        let cols = mat.len();
+
+        // Define map of indices into exacts.
+
+        let nexacts = exacts.len();
+        let mut to_exacts = HashMap::<usize, usize>::new();
+        for u in 0..nexacts {
+            to_exacts.insert(exacts[u], u);
+        }
+
+        // XXX:
+        let mut tracking = false;
+        for u in 0..nexacts {
+            let ex = &exact_clonotypes[exacts[u]];
+            for m in 0..ex.share.len() {
+                if ex.share[m].cdr3_aa == "CASSETGSSSYEQYF" {
+                    tracking = true;
+                }
+            }
+        }
+        if tracking { println!("there are {} exact subclonotypes", nexacts) }
+        let mut cells = Vec::<usize>::new();
+        for u in 0..nexacts {
+            cells.push(exact_clonotypes[exacts[u]].ncells());
+        }
+        if tracking { println!("cells = {}", cells.iter().format(",")); }
+
+        // Get the info indices corresponding to this clonotype.
+
+        let mut infos = Vec::<usize>::new();
+        for i in 0..o.len() {
+            infos.push(o[i] as usize);
+        }
+        /*
+        for i in 0..od.len() {
+            let x = od[i].2 as usize;
+            if to_exacts.contains_key(&info[x].clonotype_index) {
+                infos.push(x);
+            }
+        }
+        */
+
+        // Define map of exacts to infos.
+    
+        let mut to_infos = vec![Vec::<usize>::new(); nexacts];
+        for i in 0..infos.len() {
+            let u = to_exacts[&info[infos[i]].clonotype_index];
+            to_infos[u].push(i);
+        }
+
+        // Determine which columns are "left", meaning IGH or TRB.
+
+        let mut left = vec![false; cols];
+        for m in 0..cols {
+            for u in 0..mat[0].len() {
+                if mat[m][u].is_some() {
+                    let c = mat[m][u].unwrap();
+                    let ex = &exact_clonotypes[exacts[u]];
+                    if ex.share[c].left {
+                        left[m] = true;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Determine which pairs of configurations share both chain types, and if so, call
+        // them joined.
+
+        let mut matu = Vec::<Vec<Option<usize>>>::new();
+        for u in 0..nexacts {
+            let mut m = Vec::<Option<usize>>::new();
+            for c in 0..cols {
+                m.push(mat[c][u]);
+            }
+            matu.push(m);
+        }
+        unique_sort(&mut matu);
+        let mut eqm = vec![vec![false; matu.len()]; matu.len()];
+        for j1 in 0..matu.len() {
+            for j2 in 0..matu.len() {
+                let (mut l, mut r) = (false, false);
+                for m in 0..cols {
+                    if matu[j1][m].is_some() && matu[j2][m].is_some() {
+                        if left[m] {
+                            l = true;
+                        } else {
+                            r = true;
+                        }
+                    }
+                }
+                if l && r {
+                    eqm[j1][j2] = true;
+
+                    // XXX:
+                    if tracking { 
+                        let (mut p1, mut p2) = (String::new(), String::new());
+                        for c in 0..cols {
+                            if matu[j1][c].is_some() {
+                                p1.push('x');
+                            } else {
+                                p1.push('.');
+                            }
+                            if matu[j2][c].is_some() {
+                                p2.push('x');
+                            } else {
+                                p2.push('.');
+                            }
+                        }
+                        println!("should join {} to {}", p1, p2);
+                    }
+
+                }
+            }
+        }
+
+        // Propagate this to an equivalence relation on the orbit elements.
+
         let mut eqx = EquivRel::new(o.len() as i32);
-        for i1 in 0..o.len() {
-            for i2 in i1 + 1..o.len() {
-                if eqx.class_id(i1 as i32) != eqx.class_id(i2 as i32) {
-                    let x1: &CloneInfo = &info[o[i1] as usize];
-                    let x2: &CloneInfo = &info[o[i2] as usize];
-                    if x1.clonotype_index == x2.clonotype_index {
-                        eqx.join(i1 as i32, i2 as i32);
-                    } else {
-                        let ex1 = &exact_clonotypes[x1.clonotype_index];
-                        let ex2 = &exact_clonotypes[x2.clonotype_index];
-                        'cloop: for m1 in 0..ex1.nchains() {
-                            for m2 in 0..ex2.nchains() {
-                                if ex1.share[m1].seq_del.len() == ex2.share[m2].seq_del.len()
-                                    && ex1.share[m1].cdr3_aa.len() == ex2.share[m2].cdr3_aa.len()
-                                {
-                                    let mut diffs = 0;
-                                    let c1 = &ex1.share[m1].cdr3_aa.as_bytes();
-                                    let c2 = &ex2.share[m2].cdr3_aa.as_bytes();
-                                    for k in 0..c1.len() {
-                                        if c1[k] != c2[k] {
-                                            diffs += 1;
-                                        }
-                                    }
-                                    if diffs <= MAX_CDR3_DIFFS_TO_JOIN {
-                                        let mut tdiffs = 0;
-                                        for k in 0..ex1.share[m1].seq_del.len() {
-                                            if ex1.share[m1].seq_del[k] != ex2.share[m2].seq_del[k]
-                                            {
-                                                tdiffs += 1;
-                                            }
-                                        }
-                                        if tdiffs <= ctl.heur.max_diffs {
-                                            eqx.join(i1 as i32, i2 as i32);
-                                            break 'cloop;
-                                        }
-                                    }
-                                }
+        let mut lists = vec![Vec::<usize>::new(); matu.len()];
+        for u in 0..nexacts {
+            let mut m = Vec::<Option<usize>>::new();
+            for c in 0..cols {
+                m.push(mat[c][u]);
+            }
+            lists[bin_position(&matu, &m) as usize].push(u);
+        }
+        for j1 in 0..matu.len() {
+            for j2 in j1..matu.len() {
+                if eqm[j1][j2] {
+                    let u1 = lists[j1][0];
+                    for u2 in lists[j2].iter() {
+                        if tracking { println!("joining {} to {}", u1, u2); } // XXXXXXXXXXXXXXXXXX
+                        for i1 in to_infos[u1].iter() {
+                            for i2 in to_infos[*u2].iter() {
+                                eqx.join(*i1 as i32, *i2 as i32);
                             }
                         }
                     }
                 }
             }
         }
+        let mut reps = Vec::<i32>::new();
+        eqx.orbit_reps(&mut reps);
+        if tracking { println!("initially there are {} orbits", eqx.norbits()); } // XXXXXXXXXXXXXX
+
+        // Join onesies where possible.  This should probably be more efficient.
+
+        for u1 in 0..nexacts {
+            let ex1 = &exact_clonotypes[exacts[u1]];
+            if ex1.share.solo() {
+                let mut is = Vec::<usize>::new();
+                for u2 in 0..nexacts {
+                    let ex2 = &exact_clonotypes[exacts[u2]];
+                    if ex2.share.solo() {
+                        if ex1.share[0].seq == ex2.share[0].seq {
+                            eqx.join(to_infos[u1][0] as i32, to_infos[u2][0] as i32);
+                        }
+                    } else {
+                        for j in 0..ex2.share.len() {
+                            if ex2.share[j].seq == ex1.share[0].seq {
+                                is.push(to_infos[u2][0]);
+                                if tracking { println!("maybe joining {} to {}", u1, u2); } // XXXX
+                            }
+                        }
+                    }
+                }
+                let mut rs = Vec::<usize>::new();
+                for j in 0..is.len() {
+                    rs.push(eqx.class_id(is[j] as i32) as usize);
+                }
+                unique_sort(&mut rs);
+                if rs.solo() {
+                    if tracking { println!("joining onesie {}", u1); } // XXXXXXXXXXXXXXXXXXXXXXXXX
+                    eqx.join(to_infos[u1][0] as i32, is[0] as i32);
+                }
+            }
+        }
+        if tracking { println!("there are {} orbits", eqx.norbits()); } // XXXXXXXXXXXXXXXXXXXXXXXX
+
+        // Divide the orbit if needed.
+
         if eqx.norbits() == 1 {
             orbits2.push(o.clone());
         } else {
