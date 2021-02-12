@@ -2470,37 +2470,12 @@ pub fn main_enclone(args: &Vec<String>) {
             to_exacts.insert(exacts[u], u);
         }
 
-        // XXX:
-        let mut tracking = false;
-        for u in 0..nexacts {
-            let ex = &exact_clonotypes[exacts[u]];
-            for m in 0..ex.share.len() {
-                if ex.share[m].cdr3_aa == "CASSETGSSSYEQYF" {
-                    tracking = true;
-                }
-            }
-        }
-        if tracking { println!("there are {} exact subclonotypes", nexacts) }
-        let mut cells = Vec::<usize>::new();
-        for u in 0..nexacts {
-            cells.push(exact_clonotypes[exacts[u]].ncells());
-        }
-        if tracking { println!("cells = {}", cells.iter().format(",")); }
-
         // Get the info indices corresponding to this clonotype.
 
         let mut infos = Vec::<usize>::new();
         for i in 0..o.len() {
             infos.push(o[i] as usize);
         }
-        /*
-        for i in 0..od.len() {
-            let x = od[i].2 as usize;
-            if to_exacts.contains_key(&info[x].clonotype_index) {
-                infos.push(x);
-            }
-        }
-        */
 
         // Define map of exacts to infos.
     
@@ -2553,25 +2528,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 if l && r {
                     eqm[j1][j2] = true;
-
-                    // XXX:
-                    if tracking { 
-                        let (mut p1, mut p2) = (String::new(), String::new());
-                        for c in 0..cols {
-                            if matu[j1][c].is_some() {
-                                p1.push('x');
-                            } else {
-                                p1.push('.');
-                            }
-                            if matu[j2][c].is_some() {
-                                p2.push('x');
-                            } else {
-                                p2.push('.');
-                            }
-                        }
-                        println!("should join {} to {}", p1, p2);
-                    }
-
                 }
             }
         }
@@ -2592,7 +2548,6 @@ pub fn main_enclone(args: &Vec<String>) {
                 if eqm[j1][j2] {
                     let u1 = lists[j1][0];
                     for u2 in lists[j2].iter() {
-                        if tracking { println!("joining {} to {}", u1, u2); } // XXXXXXXXXXXXXXXXXX
                         for i1 in to_infos[u1].iter() {
                             for i2 in to_infos[*u2].iter() {
                                 eqx.join(*i1 as i32, *i2 as i32);
@@ -2604,7 +2559,6 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         let mut reps = Vec::<i32>::new();
         eqx.orbit_reps(&mut reps);
-        if tracking { println!("initially there are {} orbits", eqx.norbits()); } // XXXXXXXXXXXXXX
 
         // Join onesies where possible.  This should probably be more efficient.
 
@@ -2622,7 +2576,6 @@ pub fn main_enclone(args: &Vec<String>) {
                         for j in 0..ex2.share.len() {
                             if ex2.share[j].seq == ex1.share[0].seq {
                                 is.push(to_infos[u2][0]);
-                                if tracking { println!("maybe joining {} to {}", u1, u2); } // XXXX
                             }
                         }
                     }
@@ -2633,12 +2586,10 @@ pub fn main_enclone(args: &Vec<String>) {
                 }
                 unique_sort(&mut rs);
                 if rs.solo() {
-                    if tracking { println!("joining onesie {}", u1); } // XXXXXXXXXXXXXXXXXXXXXXXXX
                     eqx.join(to_infos[u1][0] as i32, is[0] as i32);
                 }
             }
         }
-        if tracking { println!("there are {} orbits", eqx.norbits()); } // XXXXXXXXXXXXXXXXXXXXXXXX
 
         // Divide the orbit if needed.
 
