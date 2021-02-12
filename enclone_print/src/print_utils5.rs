@@ -333,7 +333,7 @@ pub fn delete_weaks(
         }
         let total_cells: usize = mults.iter().sum();
         for j in 0..cols {
-            if ncells[j] <= 5 && 8 * ncells[j] < total_cells {
+            if ncells[j] <= 20 && 8 * ncells[j] < total_cells {
                 for d in col_entries[j].iter() {
                     if ctl.clono_filt_opt.weak_chains {
                         bads[*d] = true;

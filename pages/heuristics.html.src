@@ -105,8 +105,8 @@ and which are deleted if the foursie filtering is on:
 <p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
 is a chain that appears in a relatively small number of cells, we delete all the cells that support
 that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
-condition is that the number of cells supporting the chain is at most <code>5</code>, and 
-<code>8</code> times that number of cell is less than the total number of cells in the clonotype.
+condition is that the number of cells supporting the chain is at most <code>20</code>, and 
+<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
 
 <hr>
 
