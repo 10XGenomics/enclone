@@ -477,6 +477,7 @@ fn test_cpu() {
     run_test(
         env!("CARGO_BIN_EXE_enclone"),
         it,
+        "",
         &test,
         "cpu",
         &mut ok,
@@ -531,6 +532,7 @@ fn test_cpu() {
     run_test(
         env!("CARGO_BIN_EXE_enclone"),
         it,
+        "",
         &test,
         "cpu",
         &mut ok,
@@ -745,6 +747,31 @@ fn test_enclone() {
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
     }
+    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let mut tracking = false;
+    let mut comments = Vec::<String>::new();
+    let mut lines = Vec::<String>::new();
+    for line in this.lines() {
+        if line.starts_with("pub const TESTS: ") {
+            tracking = true;
+        }
+        if tracking {
+            if line == "];" {
+                break;
+            }
+            lines.push(line.to_string());
+        }
+    }
+    let mut i = 0;
+    while i < lines.len() {
+        let mut j = i + 1;
+        while j < lines.len() && !lines[j].starts_with("    //") {
+            j += 1;
+        }
+        comments.push(lines[i..j].iter().format("\n").to_string());
+        i = j;
+    }
+
     results.par_iter_mut().for_each(|res| {
         let it = res.0;
         let test = TESTS[it].to_string();
@@ -752,6 +779,7 @@ fn test_enclone() {
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
             it,
+            &comments[it],
             &test,
             "test",
             &mut res.1,
@@ -799,6 +827,7 @@ fn test_extended() {
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
             it,
+            "",
             &test,
             "ext_test",
             &mut res.1,
@@ -846,6 +875,7 @@ fn test_internal() {
         run_test(
             env!("CARGO_BIN_EXE_enclone"),
             it,
+            "",
             &test,
             "internal_test",
             &mut res.1,
@@ -1744,6 +1774,7 @@ fn test_annotated_example() {
     run_test(
         env!("CARGO_BIN_EXE_enclone"),
         it,
+        "",
         &test,
         "annotated_example_test",
         &mut ok,
