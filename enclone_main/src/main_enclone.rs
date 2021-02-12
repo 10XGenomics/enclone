@@ -2431,7 +2431,7 @@ pub fn main_enclone(args: &Vec<String>) {
         orbits = orbits2;
     }
 
-    // Check for disjoint orbits.  
+    // Check for disjoint orbits.
 
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
@@ -2478,7 +2478,7 @@ pub fn main_enclone(args: &Vec<String>) {
         }
 
         // Define map of exacts to infos.
-    
+
         let mut to_infos = vec![Vec::<usize>::new(); nexacts];
         for i in 0..infos.len() {
             let u = to_exacts[&info[infos[i]].clonotype_index];
