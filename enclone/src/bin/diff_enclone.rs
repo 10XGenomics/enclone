@@ -96,15 +96,18 @@ fn main() {
         }
         outs.push(lines);
     }
+    let outs_orig = outs.clone();
 
     // Map barcodes to groups and then remove the groups.  And sort.
 
     let mut to_group = vec![HashMap::<String, String>::new(); 2];
+    let mut to_groupx = HashMap::<String, (String, usize)>::new();
     for v in 0..2 {
         for i in 0..outs[v].len() {
             let barcode = outs[v][i].before(",").to_string();
             let group = outs[v][i].after(",").before(",").to_string();
-            to_group[v].insert(barcode, group);
+            to_group[v].insert(barcode.clone(), group.clone());
+            to_groupx.insert(barcode, (group, v));
             outs[v][i] = format!(
                 "{},{}",
                 outs[v][i].before(","),
@@ -153,7 +156,6 @@ fn main() {
     // Define the groups.
 
     let mut groups = Vec::<Vec<String>>::new();
-
     let mut reps = Vec::<i32>::new();
     e.orbit_reps(&mut reps);
     for i in 0..reps.len() {
@@ -164,6 +166,26 @@ fn main() {
             b.push(bc[o[j] as usize].clone());
         }
         groups.push(b);
+    }
+
+    // Expand the groups to include the full clonotypes.
+
+    for j in 0..groups.len() {
+        let mut groupsx = Vec::<(String, usize)>::new();
+        for i in 0..groups[j].len() {
+            groupsx.push(to_groupx[&groups[j][i]].clone());
+        }
+        unique_sort(&mut groupsx);
+        for v in 0..2 {
+            for i in 0..outs_orig[v].len() {
+                let barcode = outs_orig[v][i].before(",").to_string();
+                let group = outs_orig[v][i].after(",").before(",").to_string();
+                if bin_member(&groupsx, &(group, v)) {
+                    groups[j].push(barcode.clone());
+                }
+            }
+        }
+        unique_sort(&mut groups[j]);
     }
 
     // For each group of barcodes, run enclone using the group, for both old and new.
