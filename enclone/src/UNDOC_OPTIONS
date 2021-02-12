@@ -285,8 +285,3 @@ CLONOTYPE_GROUP_NAMES=filename
 * The argument only does something if honeycomb plotting is used.  In that case, the honeycomb
   plot is split by group and each group is given a different (light) background color.
 * Clonotypes that are not assigned to a group are not displayed.
-
-===================================================================================================
-
-FOLD_HEADERS: fold CHAIN headers to take up less horizontal space, useful when there are
-a ridiculously large number of chains.
