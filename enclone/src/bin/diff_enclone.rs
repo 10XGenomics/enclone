@@ -150,11 +150,12 @@ fn main() {
         }
     }
 
-    // For each group of barcodes, run enclone using the group, for both old and new.
+    // Define the groups.
+
+    let mut groups = Vec::<Vec<String>>::new();
 
     let mut reps = Vec::<i32>::new();
     e.orbit_reps(&mut reps);
-    println!("");
     for i in 0..reps.len() {
         let mut o = Vec::<i32>::new();
         e.orbit(reps[i], &mut o);
@@ -162,7 +163,14 @@ fn main() {
         for j in 0..o.len() {
             b.push(bc[o[j] as usize].clone());
         }
-        let bc_arg = format!("{}", b.iter().format(","));
+        groups.push(b);
+    }
+
+    // For each group of barcodes, run enclone using the group, for both old and new.
+
+    println!("");
+    for i in 0..groups.len() {
+        let bc_arg = format!("{}", groups[i].iter().format(","));
         for pass in 1..=2 {
             if pass == 1 {
                 println!("OLD {}", i + 1);
