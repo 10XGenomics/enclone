@@ -377,6 +377,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
         ("EXP", &mut ctl.gen_opt.exp),
+        ("FOLD_HEADERS", &mut ctl.gen_opt.fold_headers),
         ("FORCE", &mut ctl.force),
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
         ("GRAPH", &mut ctl.gen_opt.graph),
