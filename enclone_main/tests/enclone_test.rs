@@ -754,6 +754,7 @@ fn test_enclone() {
     for line in this.lines() {
         if line.starts_with("pub const TESTS: ") {
             tracking = true;
+            continue;
         }
         if tracking {
             if line == "];" {
@@ -765,7 +766,13 @@ fn test_enclone() {
     let mut i = 0;
     while i < lines.len() {
         let mut j = i + 1;
-        while j < lines.len() && !lines[j].starts_with("    //") {
+        while j < lines.len() {
+            if lines[j].starts_with("    // ") {
+                let c = lines[j].after("    // ").as_bytes()[0];
+                if c >= b'0' && c <= b'9' {
+                    break;
+                }
+            }
             j += 1;
         }
         comments.push(lines[i..j].iter().format("\n").to_string());
