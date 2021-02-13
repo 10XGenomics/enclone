@@ -286,6 +286,9 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             }
             if !n_var {
                 if category == "lead" {
+                    if x == "" {
+                        continue;
+                    }
                     eprintln!(
                         "\nThe variable {} for LVARS is unrecognized.  Please type \
                          \"enclone help lvars\".\n",
@@ -472,7 +475,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                     specified = true;
                 }
             }
-            if !ctl.gen_opt.internal_run {
+            if !ctl.gen_opt.internal_run && x != "" {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",
@@ -595,7 +598,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
                     end_ok = true;
                 }
             }
-            if !end_ok && !x.starts_with("n_") {
+            if !end_ok && !x.starts_with("n_") && x != "" {
                 eprintln!(
                     "\nUnrecognized variable {} for LVARS.  Please type \
                      \"enclone help lvars\".\n",

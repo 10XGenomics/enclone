@@ -5,6 +5,7 @@
 //
 // Problem: stack traces from this file consistently do not go back to the main program.
 
+use crate::define_mat::*;
 use crate::filter::*;
 use crate::loupe::*;
 use crate::print_utils1::*;
@@ -36,12 +37,16 @@ use vector_utils::*;
 // eq                     = equivalence relation on info
 
 pub fn print_clonotypes(
+    is_bcr: bool,
+    to_bc: &HashMap<(usize, usize), Vec<String>>,
+    sr: &Vec<Vec<f64>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     orbits: &Vec<Vec<i32>>,
+    raw_joins: &Vec<Vec<usize>>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
     d_readers: &Vec<Option<hdf5::Reader>>,
@@ -204,47 +209,18 @@ pub fn print_clonotypes(
         // Capture these data into parallel data structures, one per exact subclonotype:
         // exacts: the exact subclonotype ids
         // mults:  number of cells [redundant, might remove]
-        // cdr3s:  sorted list of (chain_type:cdr3)
-        // js:     indices into od (BE VERY CAREFUL ABOUT USING THIS)
 
         let mut exacts = Vec::<usize>::new();
         let mut mults = Vec::<usize>::new();
-        let mut cdr3s = Vec::<Vec<String>>::new();
-        let mut cdr3s_len = Vec::<Vec<(String, usize)>>::new();
-        let mut js = Vec::<usize>::new();
         let mut j = 0;
         let loupe_clonotypes = &mut res.6;
         while j < od.len() {
             let k = next_diff12_3(&od, j as i32) as usize;
             let mut mult = 0 as usize;
-            let mut z = Vec::<String>::new();
-            let mut z_len = Vec::<(String, usize)>::new();
             for l in j..k {
                 let x: &CloneInfo = &info[od[l].2 as usize];
                 let m = x.clonotype_index;
                 mult = exact_clonotypes[m].clones.len();
-                for m in 0..x.cdr3_aa.len() {
-                    // Do something EXTREMELY ugly.  To force TRB columns to come before TRA
-                    // columns, rename then TRX and TRY.  This is reversed at the very end.
-
-                    let mut c = x.chain_types[m].clone();
-                    if c.starts_with("TRB") {
-                        c = c.replacen("TRB", "TRX", 1);
-                    } else if c.starts_with("TRA") {
-                        c = c.replacen("TRA", "TRY", 1);
-                    }
-                    z.push(format!("{}:{}", c, x.cdr3_aa[m]));
-                    z_len.push((format!("{}:{}", c, x.cdr3_aa[m]), x.lens[m]));
-                }
-            }
-            unique_sort(&mut z);
-            unique_sort(&mut z_len);
-            cdr3s.push(z);
-            cdr3s_len.push(z_len);
-            js.push(j);
-            let mut x = Vec::<usize>::new();
-            for l in j..k {
-                x.push(l);
             }
             mults.push(mult);
             exacts.push(od[j].1);
@@ -254,21 +230,28 @@ pub fn print_clonotypes(
         // There are two passes.  On the first pass we only identify the exact subclonotypes that
         // are junk.  On the second pass we remove those and then print the orbit.
 
-        let mut bads = vec![false; cdr3s.len()];
+        let mut bads = vec![false; exacts.len()];
         for pass in 1..=2 {
             // Delete weak exact subclonotypes.
 
             if pass == 2 && !ctl.clono_filt_opt.protect_bads {
-                erase_if(&mut cdr3s, &bads);
-                erase_if(&mut cdr3s_len, &bads);
-                erase_if(&mut js, &bads);
                 erase_if(&mut mults, &bads);
                 erase_if(&mut exacts, &bads);
             }
 
             // Sort exact subclonotypes.
 
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
+                &ctl,
+                &exact_clonotypes,
+                &exacts,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
                 let mut typex = vec![false; mat.len()];
@@ -293,14 +276,8 @@ pub fn print_clonotypes(
             let permutation = permutation::sort(&priority[..]);
             exacts = permutation.apply_slice(&exacts[..]);
             mults = permutation.apply_slice(&mults[..]);
-            cdr3s = permutation.apply_slice(&cdr3s[..]);
-            cdr3s_len = permutation.apply_slice(&cdr3s_len[..]);
-            js = permutation.apply_slice(&js[..]);
             exacts.reverse();
             mults.reverse();
-            cdr3s.reverse();
-            cdr3s_len.reverse();
-            js.reverse();
 
             // Define a matrix mat[col][ex] which is the column of the exact subclonotype
             // corresponding to the given column col of the clonotype, which may or may not be
@@ -308,7 +285,17 @@ pub fn print_clonotypes(
             // reference sequence identifiers, CDR3 start positions, and the like.
 
             let nexacts = exacts.len();
-            let mat = define_mat(&ctl, &exact_clonotypes, &cdr3s_len, &js, &od, &info);
+            let mat = define_mat(
+                is_bcr,
+                &to_bc,
+                &sr,
+                &ctl,
+                &exact_clonotypes,
+                &exacts,
+                &od,
+                &info,
+                &raw_joins,
+            );
             let cols = mat.len();
             let mut rsi = define_column_info(&ctl, &exacts, &exact_clonotypes, &mat, &refdata);
             rsi.mat = mat;

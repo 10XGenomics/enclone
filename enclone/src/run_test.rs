@@ -18,6 +18,7 @@ use string_utils::*;
 pub fn run_test(
     enclone: &str,     // name of the enclone executable
     it: usize,         // test number
+    comments: &str,    // info about the test
     test: &str,        // arguments for the test
     testname: &str,    // test category e.g. "test" or "ext_test"
     ok: &mut bool,     // true if test passes
@@ -288,13 +289,25 @@ pub fn run_test(
             // }
             // println!( "The size of {} is {} bytes.", f, fs::metadata(&f).unwrap().len() );
 
-            fwriteln!(
-                log,
-                "enclone subtest {} failed.  If you are happy with the new output, \
-                 you can replace the\noutput by executing the following command from \
-                 the top level of the enclone repo (essential):\n",
-                it + 1
-            );
+            if comments.len() > 0 {
+                fwriteln!(
+                    log,
+                    "enclone subtest {} failed.  Here are the comments for that test:\n\n{}\n\n\
+                     If you are happy with the new output, \
+                     you can replace the\noutput by executing the following command from \
+                     the top level of the enclone repo (essential):\n",
+                    it + 1,
+                    comments
+                );
+            } else {
+                fwriteln!(
+                    log,
+                    "enclone subtest {} failed.  If you are happy with the new output, \
+                     you can replace the\noutput by executing the following command from \
+                     the top level of the enclone repo (essential):\n",
+                    it + 1
+                );
+            }
             if set_in_stone {
                 fwriteln!(
                     log,

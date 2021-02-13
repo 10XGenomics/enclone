@@ -15,10 +15,39 @@ The content here is geeky and technical.
 
 <hr>
 
+<p>
+<b>Clonotype chain grouping.</b>
+After exact subclonotypes have been grouped into clonotypes, we decide which chains from which 
+exact subclonotypes are placed in the same column of the table for the clonotype.  While in most
+particular instances the answer is "obvious", the general problem is complicated.  We proceed by
+"joining" chains, i.e. deciding that they will go in the same column.  There are several steps:
+<ol>
+<li>At the earlier point in the algorithm where we decide that two exact subclonotypes go in the 
+same clonotype, we align a heavy or TRB chain from each (one from each exact subclonotype) to the
+other, and likewise for the light or TRA chains.  This defines a correspondence between chains,
+and at the subsequent point when we generate clonotype tables, this information is carried forward 
+to join chains.</li>
+<li>The initial process misses some joins for two reasons: (1) because in the initial join step,
+for computational performance reasons, we only test as many joins as are needed to form the
+clonotypes, so some joins are not seen, and this is compounded by filtering steps that delete
+putatively artifactual exact subclonotypes; (2) when we join two exact subclonotypes, and one or
+both have three chains, we stop looking once we've joined them and thus do not look at all the 
+chains.  To mitigate these two problems, at the time of forming clonotype tables, we recover some 
+of the "lost" joins.</li>
+<li>In the special case where two exact subclonotypes are joined, and both have three chains, we
+apply a lower threshold for merging the "third" chain.  This threshold is that the V..J sequences
+have the same length and differ at at most 10 bases.</li>
+<li>We also connect onesie exact subclonotypes to other chains by matching based on exact identity 
+of V..J.</li>
+</ol>
+</p>
+
+<hr>
+
 <p><b>Doublet filtering.</b>
 This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
 higher-order multiplets).  This was introduced after CellRanger 5.0 and is likely to be included
-in a subsequent release.
+in a subsequent release.</p>
 
 <p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
 clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
@@ -76,8 +105,8 @@ and which are deleted if the foursie filtering is on:
 <p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
 is a chain that appears in a relatively small number of cells, we delete all the cells that support
 that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
-condition is that the number of cells supporting the chain is at most <code>5</code>, and 
-<code>8</code> times that number of cell is less than the total number of cells in the clonotype.
+condition is that the number of cells supporting the chain is at most <code>20</code>, and 
+<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
 
 <hr>
 

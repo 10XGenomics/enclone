@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 185] = [
+pub const TESTS: [&str; 187] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -266,7 +266,9 @@ pub const TESTS: [&str; 185] = [
     r###"BCR=123085 TREE=const CDR3=CARPKSDYIIDAFDIW MIN_CELLS=2"###,
     // 96. test MAX_LOG_SCORE
     r###"BCR=123085 CDR3=CARDQNFDESSGYDAFDIW MAX_LOG_SCORE=0.0"###,
-    // 97. test MAX_CDR3_DIFFS
+    // 97. Test MAX_CDR3_DIFFS.  This is also an instance where an exact subclonotype has
+    // two chains with indentical CDR3s, and this is the right answer, until and unless we change
+    // cellranger to somehow not emit two such chains.
     r###"BCR=123085 CDR3=CARESVVGLLPIFDYW MAX_CDR3_DIFFS=1"###,
     // 98. test reduced stringency D alignment
     // (RE can be removed once cellranger rerun)
@@ -463,12 +465,16 @@ pub const TESTS: [&str; 185] = [
     // 185. test SUPPRESS_ISOTYPE_LEGEND
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2
         SUPPRESS_ISOTYPE_LEGEND"###,
+    // 186. test LVAR= (with no value)
+    r###"BCR=123085 CDR3=CAREPLYYDFWSAYFDYW LVARS="###,
+    // 187. test FOLD_HEADERS
+    r###"BCR=123085 CDR3=CAREADYCSGGSCYFSDW FOLD_HEADERS AMINO=cdr3 CVARS=u"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 23] = [
+pub const EXTENDED_TESTS: [&str; 24] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -526,6 +532,8 @@ pub const EXTENDED_TESTS: [&str; 23] = [
     r###"BCR=1084461-1084462 CDR3=CAKEFGNGGFDTFDIW NO_PRE NFORCE"###,
     // 23. test BCR_GEX and GD_BC
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
+    // 24. This used to appear as a four-chain clonotype, and is now split.
+    r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

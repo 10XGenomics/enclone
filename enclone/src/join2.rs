@@ -8,23 +8,6 @@ use stats_utils::*;
 use std::time::Instant;
 use vector_utils::*;
 
-// partial_bernoulli_sum( n, k ): return sum( choose(n,i), i = 0..=k ).
-//
-// Beware of overflow.
-
-pub fn partial_bernoulli_sum(n: usize, k: usize) -> f64 {
-    assert!(n >= 1);
-    assert!(k <= n);
-    let mut sum = 0.0;
-    let mut choose = 1.0;
-    for i in 0..=k {
-        sum += choose;
-        choose *= (n - i) as f64;
-        choose /= (i + 1) as f64;
-    }
-    sum
-}
-
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn finish_join(

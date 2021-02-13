@@ -36,6 +36,7 @@ serde = "1.0.90"
 serde_derive = "1.0.102"
 serde_json = "*"
 stats_utils = "0.1.2"
+stirling_numbers = "0.1.2"
 string_utils = "0.1.1"
 tables = "0.1.2"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }
@@ -54,3 +55,4 @@ sha2 = "0.9.1"
 [features]
 basic = []
 cpu = []
+mem = []

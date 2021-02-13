@@ -31,6 +31,33 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>2/?/21</b>: 
+<ol>
+<li>
+We redesigned the algorithm the determines the columns in clonotype tables,
+see <a href="../../pages/auto/heuristics.html">notes on heuristics</a>.  This addresses some
+very rare cases where chains were incorrectly placed in the same column.  This also results in
+better disintegration of "merged" clonotypes in some cases.  There is an additional
+change that came about.  In rare cases, a cell will have two contigs with identical CDR3 sequences.
+This could be the "other" allele or more likely an artifact.  Previously one of these contigs
+was suppressed in the clonotype table.  Now they both appear.
+</li>
+<li>
+For weak chain filtering, we now allow deletion of chains having up to <code>20</code> cells, 
+rather than <code>5</code>.  See <a href="../../pages/auto/heuristics.html">notes on heuristics</a>.
+This fixes some pathological examples involving clonotypes having many chains.
+</li>
+<li>
+Added option <code>FOLD_HEADERS</code> to reduce horizontal space usage.  See also the discussion
+of line wrapping in
+<a href="../../pages/auto/help.faq.html"><code>frequently asked questions</code></a>.
+</li>
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>2/6/21</b>: Fix the computations of median of a vector.  For a vector <code>x</code> of length 
 <code>n</code>, these were computed as <code>x[n/2]</code>, which is incorrect in the case where
 <code>x</code> has an even number of elements: it should be the mean of the innermost two

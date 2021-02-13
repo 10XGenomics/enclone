@@ -547,18 +547,78 @@ pub fn build_table_stuff(
     rows.push(row);
     let mut row = vec!["".to_string(); row1.len()];
     for j in 0..cols {
-        if rsi.chain_descrip[j].contains(&"IGH".to_string())
-            || rsi.chain_descrip[j].contains(&"TRB".to_string())
-        {
-            row.push(bold(&format!("{}", rsi.chain_descrip[j])));
+        if !ctl.gen_opt.fold_headers {
+            if rsi.chain_descrip[j].contains(&"IGH".to_string())
+                || rsi.chain_descrip[j].contains(&"TRB".to_string())
+            {
+                row.push(bold(&format!("{}", rsi.chain_descrip[j])));
+            } else {
+                row.push(format!("{}", rsi.chain_descrip[j]));
+            }
         } else {
-            row.push(format!("{}", rsi.chain_descrip[j]));
+            if rsi.chain_descrip[j].contains(&"IGH".to_string())
+                || rsi.chain_descrip[j].contains(&"TRB".to_string())
+            {
+                row.push(bold(&format!("{}", rsi.chain_descrip[j].before(" ◆ "))));
+            } else {
+                row.push(format!("{}", rsi.chain_descrip[j].before(" ◆ ")));
+            }
         }
         for _ in 1..rsi.cvars[j].len() {
             row.push("\\ext".to_string());
         }
     }
     rows.push(row);
+    if ctl.gen_opt.fold_headers {
+        let mut row = vec!["".to_string(); row1.len()];
+        for j in 0..cols {
+            let mut next = rsi.chain_descrip[j].after(" ◆ ").to_string();
+            if next.contains(" ◆ ") {
+                next = next.before(" ◆ ").to_string();
+            }
+            if rsi.chain_descrip[j].contains(&"IGH".to_string())
+                || rsi.chain_descrip[j].contains(&"TRB".to_string())
+            {
+                row.push(bold(&format!("◆ {}", next)));
+            } else {
+                row.push(format!("◆ {}", next));
+            }
+            for _ in 1..rsi.cvars[j].len() {
+                row.push("\\ext".to_string());
+            }
+        }
+        rows.push(row);
+        let mut have_last = false;
+        for j in 0..cols {
+            if rsi.chain_descrip[j].after(" ◆ ").contains(" ◆ ") {
+                have_last = true;
+            }
+        }
+        if have_last {
+            let mut row = vec!["".to_string(); row1.len()];
+            for j in 0..cols {
+                let mut last = String::new();
+                if rsi.chain_descrip[j].after(" ◆ ").contains(" ◆ ") {
+                    last = rsi.chain_descrip[j].after(" ◆ ").after(" ◆ ").to_string();
+                }
+                if last.len() == 0 {
+                    row.push(String::new());
+                } else {
+                    if rsi.chain_descrip[j].contains(&"IGH".to_string())
+                        || rsi.chain_descrip[j].contains(&"TRB".to_string())
+                    {
+                        row.push(bold(&format!("◆ {}", last)));
+                    } else {
+                        row.push(format!("◆ {}", last));
+                    }
+                }
+                for _ in 1..rsi.cvars[j].len() {
+                    row.push("\\ext".to_string());
+                }
+            }
+            rows.push(row);
+        }
+    }
 
     // Insert divider row (horizontal line across the chains).
 

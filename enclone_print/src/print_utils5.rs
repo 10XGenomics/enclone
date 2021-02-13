@@ -333,7 +333,7 @@ pub fn delete_weaks(
         }
         let total_cells: usize = mults.iter().sum();
         for j in 0..cols {
-            if ncells[j] <= 5 && 8 * ncells[j] < total_cells {
+            if ncells[j] <= 20 && 8 * ncells[j] < total_cells {
                 for d in col_entries[j].iter() {
                     if ctl.clono_filt_opt.weak_chains {
                         bads[*d] = true;
@@ -346,6 +346,31 @@ pub fn delete_weaks(
                             "failed WEAK_CHAINS filter".to_string(),
                         ));
                     }
+                }
+            }
+        }
+    }
+
+    // Remove onesies that do not have an exact match.
+
+    if cols > 1 {
+        for u1 in 0..nexacts {
+            let ex1 = &exact_clonotypes[exacts[u1]];
+            if ex1.share.len() == 1 && !bads[u1] {
+                let mut perf = false;
+                'u2: for u2 in 0..nexacts {
+                    let ex2 = &exact_clonotypes[exacts[u2]];
+                    if ex2.share.len() > 1 && !bads[u2] {
+                        for i in 0..ex2.share.len() {
+                            if ex1.share[0].seq == ex2.share[i].seq {
+                                perf = true;
+                                break 'u2;
+                            }
+                        }
+                    }
+                }
+                if !perf {
+                    bads[u1] = true;
                 }
             }
         }

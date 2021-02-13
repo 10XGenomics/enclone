@@ -424,6 +424,15 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             data, even if only some clonotypes are selected.\n\n",
         );
 
+        h.print("\\boldblue{21. What can I do to keep the clonotype tables from wrapping?}\n\n");
+        h.print(
+            "Here are three things you can do:\n\
+            1. Make your terminal window as wide as possible.\n\
+            2. Reduce your font size.\n\
+            3. Use options that reduce horizontal space usage, notably \
+               \\bold{AMINO=cdr3 CVARS=u FOLD_HEADERS}.\n\n",
+        );
+
         h.end_doc();
     }
 

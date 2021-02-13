@@ -23,6 +23,7 @@ fn main() {
         run_test(
             "enclone",
             res.0,
+            "",
             &TESTS[res.0],
             "test",
             &mut res.1,

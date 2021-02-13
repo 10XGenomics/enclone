@@ -65,8 +65,8 @@ pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool
              other way.\n\n\
              If you're stuck, please write to us at enclone@10xgenomics.com.\n"
         );
-        std::process::exit(1);
     }
+    std::process::exit(1);
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -13,7 +13,6 @@ use self::annotate::*;
 use self::refx::*;
 use crate::join2::*;
 use crate::join_core::*;
-use crate::join_utils::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use equiv::EquivRel;
@@ -24,20 +23,22 @@ use std::cmp::*;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
-use stirling_numbers::*;
-// use string_utils::*;
 use vector_utils::*;
 
 pub fn join_exacts(
     is_bcr: bool,
+    to_bc: &HashMap<(usize, usize), Vec<String>>,
     refdata: &RefData,
     ctl: &EncloneControl,
     exact_clonotypes: &Vec<ExactClonotype>,
     info: &Vec<CloneInfo>,
     mut join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
+    raw_joins: &mut Vec<(i32, i32)>,
+    sr: &Vec<Vec<f64>>,
 ) -> EquivRel {
     // Run special option for joining by barcode identity.
 
+    let timer1 = Instant::now();
     if ctl.join_alg_opt.bcjoin {
         let mut eq: EquivRel = EquivRel::new(info.len() as i32);
         let mut bcx = Vec::<(String, usize)>::new(); // {(barcode, info_index)}
@@ -57,25 +58,6 @@ pub fn join_exacts(
             i = j;
         }
         return eq;
-    }
-
-    // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
-    // This is intended as a replacement for some old code below.
-
-    let timer1 = Instant::now();
-    let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
-    for i in 0..exact_clonotypes.len() {
-        for j in 0..exact_clonotypes[i].clones.len() {
-            let x = &exact_clonotypes[i].clones[j][0];
-            if !to_bc.contains_key(&(x.dataset_index, i)) {
-                to_bc.insert((x.dataset_index, i), vec![x.barcode.clone()]);
-            } else {
-                to_bc
-                    .get_mut(&(x.dataset_index, i))
-                    .unwrap()
-                    .push(x.barcode.clone());
-            }
-        }
     }
 
     // Find potential joins.
@@ -107,8 +89,6 @@ pub fn join_exacts(
         ));
         i = j;
     }
-    // Not sure that fixing the size of this is safe.
-    let sr = stirling2_ratio_table::<f64>(3000);
     if !ctl.silent {
         println!("comparing {} simple clonotypes", info.len());
     }
@@ -120,7 +100,6 @@ pub fn join_exacts(
         let errors = &mut r.3;
         let logplus = &mut r.4;
         let mut pot = Vec::<PotentialJoin>::new();
-        let mut eq: EquivRel = EquivRel::new((j - i) as i32);
 
         // Main join logic.  If you change par_iter_mut to iter_mut above, and run happening,
         // a lot of time shows up on the following line.  If further you manually inline join_core
@@ -136,7 +115,6 @@ pub fn join_exacts(
             &info,
             &to_bc,
             &sr,
-            &mut eq,
             &mut pot,
         );
 
@@ -458,5 +436,10 @@ pub fn join_exacts(
         }
     });
     ctl.perf_stats(&timer2, "in main part of join");
+    for l in 0..results.len() {
+        for j in 0..results[l].5.len() {
+            raw_joins.push((results[l].5[j].0 as i32, results[l].5[j].1 as i32));
+        }
+    }
     finish_join(&ctl, &info, &results, &mut join_info)
 }
