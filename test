@@ -21,7 +21,8 @@ set start = `date +%s`
 cargo t \
     |& grep --line-buffered -v "^running" \
     | grep --line-buffered -v " Running " \
-    | grep --line-buffered -v " Finished "
+    | grep --line-buffered -v " Finished " \
+    | grep --line-buffered -v " Compiling " \
 
 if ( $status != 0 ) then
     echo "FAILED!"
@@ -50,6 +51,7 @@ cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
     | grep --line-buffered -v " Doc-tests " \
     | grep --line-buffered -v " filtered out" \
     | grep --line-buffered -v " Finished " \
+    | grep --line-buffered -v " Compiling " \
     | tr -s '\n'
 
 if ( $status != 0 ) then
