@@ -3,9 +3,13 @@
 // Code to test responsiveness of xena.  Uses hardcoded ids.  It was observed that in some
 // cases an individual https call would take about a minute.  This happened sporadically
 
+// Cargo.toml:
+// perf_stats = "0.1.2"
+// rayon = "1.3"
+// reqwest = { version = "0.11.0", features = ["blocking"] }
+
 use perf_stats::*;
 use rayon::prelude::*;
-use std::process::Command;
 use std::time::Instant;
 
 fn main() {
@@ -13,6 +17,19 @@ fn main() {
     for i in 1096913..=1096926 {
         ids.push(i);
     }
+
+    ids.par_iter_mut().for_each(|q| {
+        let t = Instant::now();
+        let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
+        let _body = reqwest::blocking::get(&url)
+            .expect(&format!("1 failed to execute access to xena {}", q))
+            .text()
+            .expect(&format!("2 failed to execute access to xena {}", q));
+        println!("xena call for {} took {:.2} seconds", q, elapsed(&t));
+    });
+
+/*
+    use std::process::Command;
     ids.par_iter_mut().for_each(|q| {
         let t = Instant::now();
         let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
@@ -34,4 +51,6 @@ fn main() {
         }   
         println!("xena call for {} took {:.2} seconds", q, elapsed(&t));
     });
+*/
+
 }
