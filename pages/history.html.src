@@ -31,10 +31,10 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>2/?/21</b>: 
-<ol>
+<b>2/13/21</b>: 
+<ul>
 <li>
-We redesigned the algorithm the determines the columns in clonotype tables,
+We redesigned the algorithm that determines the columns in clonotype tables,
 see <a href="../../pages/auto/heuristics.html">notes on heuristics</a>.  This addresses some
 very rare cases where chains were incorrectly placed in the same column.  This also results in
 better disintegration of "merged" clonotypes in some cases.  There is an additional

@@ -2,11 +2,11 @@
 
 // Run enclone twice on the same dataset, where the two runs differ either by
 // • an extra command-line argument (specified by OLD_PARAM=...)
-// • or a code version (specified by OLD_DIR=..., as comparsed to whatever PATH gives).
+// • or a code version (specified by OLD_EXEC=..., as comparsed to whatever PATH gives).
 // Then diff the outputs, piping an organized version of visual output to less.
 //
 // usage diff_clonotypes <argument list>
-// where exactly one of OLD_PARAM=... or OLD_DIR... must appear in the list.
+// where exactly one of OLD_PARAM=... or OLD_EXEC... must appear in the list.
 //
 // As implemented, this only detects differences where a clonotype changes either its
 // barcodes or its number of chains.
@@ -30,7 +30,7 @@ fn main() {
     PrettyTrace::new().on();
     setup_pager(true);
     let mut args: Vec<String> = env::args().collect();
-    let (mut old_param, mut old_dir) = (None, None);
+    let (mut old_param, mut old_exec) = (None, None);
     let mut args2 = Vec::<String>::new();
     let blacklist = ["PCELL", "POUT", "PCOLS", "BARCODE", "NOPAGER", "NOPRINT"];
     for i in 1..args.len() {
@@ -46,15 +46,15 @@ fn main() {
         }
         if args[i].starts_with("OLD_PARAM=") {
             old_param = Some(args[i].after("OLD_PARAM=").to_string());
-        } else if args[i].starts_with("OLD_DIR=") {
-            old_dir = Some(args[i].after("OLD_DIR=").to_string());
+        } else if args[i].starts_with("OLD_EXEC=") {
+            old_exec = Some(args[i].after("OLD_EXEC=").to_string());
         } else {
             args2.push(args[i].clone());
         }
     }
     args = args2;
-    if !(old_param.is_some() ^ old_dir.is_some()) {
-        eprintln!("\nExactly one of OLD_PARAM=... or OLD_DIR=... must be specified.\n");
+    if !(old_param.is_some() ^ old_exec.is_some()) {
+        eprintln!("\nExactly one of OLD_PARAM=... or OLD_EXEC=... must be specified.\n");
         std::process::exit(1);
     }
     let pcols = "barcode,group_id,exact_subclonotype_id,nchains";
@@ -72,7 +72,7 @@ fn main() {
         if pass == 2 || old_param.is_some() {
             new = Command::new("enclone");
         } else {
-            new = Command::new(format!("{}/enclone", old_dir.clone().unwrap()));
+            new = Command::new(old_exec.clone().unwrap());
         }
         let new = new
             .args(&argsp)
@@ -207,7 +207,7 @@ fn main() {
             if pass == 2 || old_param.is_some() {
                 new = Command::new("enclone")
             } else {
-                new = Command::new(format!("{}/enclone", old_dir.clone().unwrap()));
+                new = Command::new(old_exec.clone().unwrap());
             }
             let new = new
                 .args(&argsp)

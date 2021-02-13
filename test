@@ -20,7 +20,8 @@ set start = `date +%s`
 
 cargo t \
     |& grep --line-buffered -v "^running" \
-    | grep --line-buffered -v " Running "
+    | grep --line-buffered -v " Running " \
+    | grep --line-buffered -v " Finished "
 
 if ( $status != 0 ) then
     echo "FAILED!"
@@ -30,7 +31,11 @@ endif
 ##### RUN TEST GROUP 2 #####
 
 cargo test -p enclone_tail --lib -- --nocapture \
-    |& egrep -v "Finished|Running" | grep -v "^running"
+    |& egrep -v "Finished|Running" | grep -v "^running" \
+    | grep --line-buffered -v " filtered out" \
+    | grep --line-buffered -v " Compiling " \
+    | grep --line-buffered -v " Finished " \
+    | tr -s '\n'
 
 if ( $status != 0 ) then
     echo "FAILED!"
@@ -44,6 +49,7 @@ cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
     | grep --line-buffered -v " Running " \
     | grep --line-buffered -v " Doc-tests " \
     | grep --line-buffered -v " filtered out" \
+    | grep --line-buffered -v " Finished " \
     | tr -s '\n'
 
 if ( $status != 0 ) then
@@ -55,5 +61,5 @@ endif
 
 set end = `date +%s`
 set elapsed = `expr $end - $start`
-echo "used $elapsed seconds total"
+echo "\nused $elapsed seconds total"
 echo
