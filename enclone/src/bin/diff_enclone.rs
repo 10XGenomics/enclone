@@ -72,7 +72,7 @@ fn main() {
         if pass == 2 || old_param.is_some() {
             new = Command::new("enclone");
         } else {
-            new = Command::new(format!("{}/enclone", old_exec.clone().unwrap()));
+            new = Command::new(old_exec.clone().unwrap());
         }
         let new = new
             .args(&argsp)
