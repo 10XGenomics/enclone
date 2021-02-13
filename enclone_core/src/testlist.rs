@@ -474,7 +474,7 @@ pub const TESTS: [&str; 187] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 24] = [
+pub const EXTENDED_TESTS: [&str; 25] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -534,6 +534,8 @@ pub const EXTENDED_TESTS: [&str; 24] = [
     r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
     // 24. This used to appear as a four-chain clonotype, and is now split.
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
+    // 25. Test a tweak to the weak chains filter.  This should have two chains.
+    r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
