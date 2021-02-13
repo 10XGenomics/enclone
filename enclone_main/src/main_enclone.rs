@@ -449,45 +449,48 @@ pub fn main_enclone(args: &Vec<String>) {
     } else {
         ann = "contig_annotations.json";
     }
-    let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
-    let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[0], ann);
-    if !path_exists(&json) && !path_exists(&json_lz4) {
-        eprintln!(
-            "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
-            There are various possible reasons for this, including an incorrectly \
-            specified path, or incorrect\nspecification of PRE, or a partially copied outs \
-            directory that does not include \
-            all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
-            json, json_lz4
-        );
-        std::process::exit(1);
-    }
-    let mut jsonx = json.clone();
-    if !path_exists(&json) {
-        jsonx = format!("{}.lz4", json);
-    }
-    if jsonx.contains('/') {
-        let p = jsonx.rev_before("/");
-        if !path_exists(&p) {
+    let mut jsonx = String::new();
+    if ctl.origin_info.n() > 0 {
+        let json = format!("{}/{}", ctl.origin_info.dataset_path[0], ann);
+        let json_lz4 = format!("{}/{}.lz4", ctl.origin_info.dataset_path[0], ann);
+        if !path_exists(&json) && !path_exists(&json_lz4) {
             eprintln!(
-                "\nThere should be a directory\n\
-                 \"{}\"\n\
-                 but it does not exist.  Please check how you have specified the\n\
-                 input files to enclone, including the PRE argument.\n",
-                p
+                "\nUnable to find a VDJ input file: can't find\n{}\nor {}.\n\n\
+                There are various possible reasons for this, including an incorrectly \
+                specified path, or incorrect\nspecification of PRE, or a partially copied outs \
+                directory that does not include \
+                all the needed\nfiles, or a mixup between VDJ and GEX path names.\n",
+                json, json_lz4
             );
             std::process::exit(1);
         }
-    }
-    if !path_exists(&jsonx) {
-        eprintln!(
-            "\nThe path\n\
-             \"{}\"\n\
-             does not exist.  Please check how you have specified the\n\
-             input files to enclone, including the PRE argument.\n",
-            jsonx
-        );
-        std::process::exit(1);
+        jsonx = json.clone();
+        if !path_exists(&json) {
+            jsonx = format!("{}.lz4", json);
+        }
+        if jsonx.contains('/') {
+            let p = jsonx.rev_before("/");
+            if !path_exists(&p) {
+                eprintln!(
+                    "\nThere should be a directory\n\
+                     \"{}\"\n\
+                     but it does not exist.  Please check how you have specified the\n\
+                     input files to enclone, including the PRE argument.\n",
+                    p
+                );
+                std::process::exit(1);
+            }
+        }
+        if !path_exists(&jsonx) {
+            eprintln!(
+                "\nThe path\n\
+                 \"{}\"\n\
+                 does not exist.  Please check how you have specified the\n\
+                 input files to enclone, including the PRE argument.\n",
+                jsonx
+            );
+            std::process::exit(1);
+        }
     }
 
     // Step 1.  Test to see if CURRENT_REF or BUILT_IN is specified.  Kind of a mess that we
@@ -1293,6 +1296,13 @@ pub fn main_enclone(args: &Vec<String>) {
             x.cdr1_start = cdr1_starts[x.v_ref_id];
             x.cdr2_start = cdr2_starts[x.v_ref_id];
         }
+    }
+
+    // Test for no data.
+
+    if ctl.origin_info.n() == 0 {
+        eprintln!("\nNo TCR or BCR data have been specified.\n");
+        std::process::exit(1);
     }
 
     // Search for SHM indels.
