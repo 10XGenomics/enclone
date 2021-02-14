@@ -33,6 +33,10 @@ fn set_svg_height(svg: &mut String, new_height: f64) {
     *svg = format!("{}height=\"{}\"{}", svg1, new_height, svg2);
 }
 
+fn get_svg_height(svg: &String) -> f64 {
+    svg.between("height=\"", "\"").force_f64()
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
@@ -1041,6 +1045,10 @@ pub fn plot_clonotypes(
         }
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
+        let legend_height_plus = legend_height + vsep + 15.0;
+        if legend_height_plus > get_svg_height(&svg) {
+            set_svg_height(svg, legend_height_plus);
+        }
         *svg += "</svg>";
     }
 
