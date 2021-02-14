@@ -395,7 +395,8 @@ fn circles_to_svg(
     }
     for (g, p) in shades.iter().enumerate() {
         out += "<path d=\"";
-        out += &format!("{}", p.catmull_bezier_svg());
+        const BOUNDING_CURVE_BOUND: f64 = 15.0; // must be smaller than POLYGON_ENLARGEMENT
+        out += &format!("{}", p.catmull_bezier_bounded_svg(BOUNDING_CURVE_BOUND));
         out += "\" ";
         out += &format!("fill=\"{}\"\n", shade_colors[g]);
         out += " stroke=\"rgb(150,150,150)\"";
@@ -865,10 +866,10 @@ pub fn plot_clonotypes(
             shades.push(p.clone());
             shade_colors.push(group_color[g].clone());
 
-            // Build an enlarged polygon that would hopefully include the smoothed polygonal
-            // curve.  We should actually calculate to enforce this.
+            // Build an enlarged polygon that includes the smoothed polygonal curve.
 
-            p.enlarge(25.0);
+            const POLYGON_ENLARGEMENT: f64 = 22.5; // must be larger than BOUNDING_CURVE_BOUND
+            p.enlarge(POLYGON_ENLARGEMENT);
             p.precompute();
             shade_enclosures.push(p.clone());
             blacklist.push(p);
