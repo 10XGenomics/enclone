@@ -2026,7 +2026,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 19.0174;
+    const REQUIRED_GI: f64 = 19.0258;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
