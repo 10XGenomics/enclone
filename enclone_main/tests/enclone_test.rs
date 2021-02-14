@@ -1967,6 +1967,10 @@ fn test_peak_memory() {
     );
     if dev > max_percent_dev {
         eprintln!("\n{}\n", msg);
+        eprintln!("observed values:\n");
+        for i in 0..mems.len() {
+            eprintln!("{:.1}", mems[i]);
+        }
         eprintln!(
             "Please note that this test was designed to work correctly from a single server\n\
             named bespin1.  If you're running from a different server, the expected memory value\n\
