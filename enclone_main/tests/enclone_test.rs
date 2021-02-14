@@ -1982,7 +1982,8 @@ fn test_peak_memory() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 24. Test cpu usage.  This is designed for one server, bespin1.
+// 24. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
+// measures total instructions used.
 
 // NOT BASIC
 
