@@ -41,14 +41,14 @@ have the same length and differ at at most 10 bases.</li>
 of V..J.</li>
 </ol>
 This description is accurate for the current #enclone, and corresponds to changes that will appear
-in CellRanger in a version after 6.0
+in Cell Ranger in a version after 6.0
 </p>
 
 <hr>
 
 <p><b>Doublet filtering.</b>
 This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
-higher-order multiplets).  This was introduced after CellRanger 5.0 and is likely to be included
+higher-order multiplets).  This was introduced after Cell Ranger 5.0 and is likely to be included
 in a subsequent release.</p>
 
 <p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
@@ -112,8 +112,8 @@ condition is that the number of cells supporting the chain is at most <code>20</
 
 <br>
 
-For the current CellRanger, replace <code>20</code> by <code>5</code>.  This will change at some
-point after CellRanger 6.0.
+For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
+point after Cell Ranger 6.0.
 
 <hr>
 
