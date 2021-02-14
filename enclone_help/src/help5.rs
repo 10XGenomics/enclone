@@ -190,8 +190,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "\\bold{AMINO=cdr3}\n\
              may help, or even\n\
-             \\bold{AMINO=}\n\n",
+             \\bold{AMINO=}\n",
         );
+        h.print("These options may also help: \\bold{CVARS=u FOLD_HEADERS}.\n\n");
 
         h.print("\\boldblue{2. Can I convert the enclone visual output into other forms?}\n\n");
         h.print(
@@ -422,15 +423,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             running enclone on the barcodes from a single clonotype will not necessarily \
             reproduce the results you observed, because the clonotyping algorithm uses all the \
             data, even if only some clonotypes are selected.\n\n",
-        );
-
-        h.print("\\boldblue{21. What can I do to keep the clonotype tables from wrapping?}\n\n");
-        h.print(
-            "Here are three things you can do:\n\
-            1. Make your terminal window as wide as possible.\n\
-            2. Reduce your font size.\n\
-            3. Use options that reduce horizontal space usage, notably \
-               \\bold{AMINO=cdr3 CVARS=u FOLD_HEADERS}.\n\n",
         );
 
         h.end_doc();

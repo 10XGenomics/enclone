@@ -74,13 +74,15 @@ have the same length and differ at at most 10 bases.</li>
 <li>We also connect onesie exact subclonotypes to other chains by matching based on exact identity 
 of V..J.</li>
 </ol>
+This description is accurate for the current <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and corresponds to changes that will appear
+in Cell Ranger in a version after 6.0
 </p>
 
 <hr>
 
 <p><b>Doublet filtering.</b>
 This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
-higher-order multiplets).  This was introduced after CellRanger 5.0 and is likely to be included
+higher-order multiplets).  This was introduced after Cell Ranger 5.0 and is likely to be included
 in a subsequent release.</p>
 
 <p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
@@ -215,6 +217,11 @@ is a chain that appears in a relatively small number of cells, we delete all the
 that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
 condition is that the number of cells supporting the chain is at most <code>20</code>, and 
 <code>8</code> times that number of cells is less than the total number of cells in the clonotype.
+
+<br>
+
+For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
+point after Cell Ranger 6.0.
 
 <hr>
 

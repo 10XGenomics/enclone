@@ -32,7 +32,7 @@ graph_simple = "0.1.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
 itertools = "0.9.0"
-mirror_sparse_matrix = "0.1.4"
+mirror_sparse_matrix = "0.1.7"
 ndarray = ">= 0.14"
 pager = "0.15.0"
 perf_stats = "0.1.2"

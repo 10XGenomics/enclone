@@ -1427,10 +1427,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         eprintln!("\nIt does not make sense to specify PCELL unless POUT is also specified.\n");
         std::process::exit(1);
     }
-    if ctl.origin_info.n() == 0 {
-        eprintln!("\nNo TCR or BCR data have been specified.\n");
-        std::process::exit(1);
-    }
     let mut donors = Vec::<String>::new();
     let mut origins = Vec::<String>::new();
     let mut tags = Vec::<String>::new();

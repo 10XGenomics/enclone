@@ -33,6 +33,10 @@ fn set_svg_height(svg: &mut String, new_height: f64) {
     *svg = format!("{}height=\"{}\"{}", svg1, new_height, svg2);
 }
 
+fn get_svg_height(svg: &String) -> f64 {
+    svg.between("height=\"", "\"").force_f64()
+}
+
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
@@ -395,7 +399,8 @@ fn circles_to_svg(
     }
     for (g, p) in shades.iter().enumerate() {
         out += "<path d=\"";
-        out += &format!("{}", p.catmull_bezier_svg());
+        const BOUNDING_CURVE_BOUND: f64 = 15.0; // must be smaller than POLYGON_ENLARGEMENT
+        out += &format!("{}", p.catmull_bezier_bounded_svg(BOUNDING_CURVE_BOUND));
         out += "\" ";
         out += &format!("fill=\"{}\"\n", shade_colors[g]);
         out += " stroke=\"rgb(150,150,150)\"";
@@ -865,10 +870,10 @@ pub fn plot_clonotypes(
             shades.push(p.clone());
             shade_colors.push(group_color[g].clone());
 
-            // Build an enlarged polygon that would hopefully include the smoothed polygonal
-            // curve.  We should actually calculate to enforce this.
+            // Build an enlarged polygon that includes the smoothed polygonal curve.
 
-            p.enlarge(25.0);
+            const POLYGON_ENLARGEMENT: f64 = 22.5; // must be larger than BOUNDING_CURVE_BOUND
+            p.enlarge(POLYGON_ENLARGEMENT);
             p.precompute();
             shade_enclosures.push(p.clone());
             blacklist.push(p);
@@ -1040,6 +1045,10 @@ pub fn plot_clonotypes(
         }
         let new_width = legend_xstart + legend_width + 5.0;
         set_svg_width(svg, new_width);
+        let legend_height_plus = legend_height + vsep + 15.0;
+        if legend_height_plus > get_svg_height(&svg) {
+            set_svg_height(svg, legend_height_plus);
+        }
         *svg += "</svg>";
     }
 
@@ -1146,10 +1155,13 @@ pub fn plot_clonotypes(
                 colors[i]
             );
         }
+        let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
         if !using_shading {
-            let new_height = legend_ystart + (legend_height + LEGEND_BOX_STROKE_WIDTH) as f64;
             set_svg_height(svg, new_height);
         } else {
+            if new_height > get_svg_height(&svg) {
+                set_svg_height(svg, new_height);
+            }
             let new_width = legend_xstart + legend_width + LEGEND_BOX_STROKE_WIDTH as f64;
             set_svg_width(svg, new_width);
         }
