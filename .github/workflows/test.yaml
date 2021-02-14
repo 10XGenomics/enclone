@@ -18,6 +18,7 @@ jobs:
       # get prerequisite code in place (duplicated verbatim below)
 
       - name: rust version
+        # note that rust version appears in two places in this file
         run: rustup default 1.49.0
       - name: add rustfmt
         run: rustup component add rustfmt
