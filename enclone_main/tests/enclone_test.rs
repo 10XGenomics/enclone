@@ -1894,7 +1894,7 @@ fn test_peak_memory() {
     let dataset = "BCR=123085";
     let expected_mb = 364.6;
 
-    let max_percent_dev = 0.65;
+    let max_percent_dev = 0.5;
 
     // Only run internally.
 
@@ -1965,7 +1965,7 @@ fn test_peak_memory() {
         "Peak mem of {:.1} MB observed, which differs from expected value of {} by {:.2}%.",
         mean, expected_mb, dev
     );
-    if dev > max_percent_dev {
+    if !ok && dev > max_percent_dev {
         eprintln!("\n{}\n", msg);
         eprintln!("observed values:\n");
         for i in 0..mems.len() {
