@@ -161,11 +161,12 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "binary_vec_io"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97cbd8e15596b0ef480f40c37072802baee8c3595669c818c29f630d7262e64b"
+checksum = "6d3929ef0181264695ab2c61666c292445e4b7543218dbebfa900631e9143d52"
 dependencies = [
  "failure",
+ "itertools 0.9.0",
 ]
 
 [[package]]
@@ -1537,9 +1538,9 @@ dependencies = [
 
 [[package]]
 name = "mirror_sparse_matrix"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e7221da9b3017c742693fa853b31ac53dc41d665ca17a6f0763ca9b1405013a"
+checksum = "3316b6d9fe050517621f0d112299f4adf661f53f1b2e3d214a583f8e960430fe"
 dependencies = [
  "binary_vec_io",
  "io_utils",
