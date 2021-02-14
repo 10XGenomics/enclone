@@ -1960,12 +1960,12 @@ fn test_peak_memory() {
     }
     mean /= mems.len() as f64;
     let dev = 100.0 * (mean - expected_mb).abs() / expected_mb;
+    let msg = format!(
+        "Peak mem of {:.1} MB observed, which differs from expected value of {} by {:.2}%.",
+        mean, expected_mb, dev
+    );
     if dev > max_percent_dev {
-        eprintln!(
-            "\nPeak mem of {:.1} MB observed, which differs from expected value of {} \
-            by {:.2}%.",
-            mean, expected_mb, dev
-        );
+        eprintln!("\n{}\n", msg);
         eprintln!(
             "Please note that this test was designed to work correctly from a single server\n\
             named bespin1.  If you're running from a different server, the expected memory value\n\
@@ -1977,6 +1977,8 @@ fn test_peak_memory() {
             mean
         );
         std::process::exit(1);
+    } else {
+        println!("{}", msg);
     }
 }
 
