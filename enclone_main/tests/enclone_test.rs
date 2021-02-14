@@ -2027,15 +2027,15 @@ fn test_cpu_usage() {
     }
     const REQUIRED_GI: f64 = 19.0174;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
-    println!("error for cpu test = {:.2}%", 100.0 * err);
+    let report = format!(
+        "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
+        allowed err = 0.10%.",
+        gi,
+        REQUIRED_GI,
+        100.0 * err
+    );
     if err > 0.001 {
-        eprintln!(
-            "\nObserved GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
-            allowed err = 0.10%.\n",
-            gi,
-            REQUIRED_GI,
-            100.0 * err
-        );
+        eprintln!("\n{}\n", report);
         eprintln!(
             "Possible causes of failure:\n\
             1. You running on a server other than bespin1.  Won't work.\n\
@@ -2045,5 +2045,7 @@ fn test_cpu_usage() {
         );
         eprintln!("\nIf it makes sense, you can change REQUIRED_GI.\n");
         std::process::exit(1);
+    } else {
+        println!("{}", report);
     }
 }
