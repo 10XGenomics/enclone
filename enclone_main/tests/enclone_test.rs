@@ -42,6 +42,23 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+fn valid_link(link: &str) -> bool {
+    use attohttpc::*;
+    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
+    let response = req.send();
+    if response.is_err() {
+        return false;
+    } else {
+        let response = response.unwrap();
+        if response.is_success() {
+            return true;
+        }
+        return false;
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // 1. Test for redundancy of columns in parseable output.  While we're at it, test that if POUT
 // is set to a file name, then variables of the form abbr:name use the field label abbr.
 
@@ -1858,7 +1875,8 @@ fn test_subset_json() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 24. Test peak memory.
+// 24. Test peak memory.  This is designed for one server, bespin1.
+//
 // You can run this test along by typing
 // cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
 // from the root of the repo.
@@ -1964,17 +1982,68 @@ fn test_peak_memory() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn valid_link(link: &str) -> bool {
-    use attohttpc::*;
-    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
-    let response = req.send();
-    if response.is_err() {
-        return false;
-    } else {
-        let response = response.unwrap();
-        if response.is_success() {
-            return true;
+// 24. Test cpu usage.  This is designed for one server, bespin1.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_cpu_usage() {
+    PrettyTrace::new().on();
+    let args = [
+        "stat",
+        "-e",
+        "instructions:u",
+        "enclone",
+        "BCR=123085",
+        "NOPRINT",
+        "MAX_CORES=1",
+    ];
+    let new = Command::new("perf")
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_cpu_usage"));
+    if new.status.code() != Some(0) {
+        eprint!(
+            "\netest_cpu_usage: failed to execute, stderr =\n{}",
+            strme(&new.stderr),
+        );
+        std::process::exit(1);
+    }
+    let mut gi = 0.0;
+    let out = strme(&new.stderr);
+    for line in out.lines() {
+        let mut line = line.to_string();
+        if line.contains("instructions:u") {
+            for _ in 0..3 {
+                line = line.replace("  ", " ");
+            }
+            line = line.replace(",", "");
+            line = line.between(" ", " ").to_string();
+            gi = line.force_f64() / 1_000_000_000.0;
         }
-        return false;
+    }
+    const REQUIRED_GI: f64 = 19.0174;
+    let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
+    println!("error for cpu test = {:.2}%", 100.0 * err);
+    if err > 0.001 {
+        eprintln!(
+            "\nObserved GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
+            allowed err = 0.10%.\n",
+            gi,
+            REQUIRED_GI,
+            100.0 * err
+        );
+        eprintln!(
+            "Possible causes of failure:\n\
+            1. You running on a server other than bespin1.  Won't work.\n\
+            2. The server bespin1 was changed.\n\
+            3. A code change altered its performance.\n\
+            4. You got very unlucky."
+        );
+        eprintln!("\nIf it makes sense, you can change REQUIRED_GI.\n");
+        std::process::exit(1);
     }
 }
