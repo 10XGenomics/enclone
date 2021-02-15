@@ -1272,6 +1272,9 @@ fn test_site_examples() {
         let in_file = format!("../{}", example_name);
         let in_stuff = read_to_string(&in_file).expect(&format!("couldn't find {}", in_file));
         let args = parse_bsv(&test);
+        if args.contains(&"GEX=123217".to_string()) && !args.contains(&"H5".to_string()) {
+            panic!("Oops please fix this, to prevent sporadic failures.");
+        }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
@@ -1378,6 +1381,9 @@ fn test_enclone_examples() {
         let out_file = format!("../enclone_help/src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
+        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
+            panic!("Oops please fix this, to prevent sporadic failures.");
+        }
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
@@ -1579,7 +1585,9 @@ fn test_help_no_stable() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 20. Test that PREBUILD works.
+// 20. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
+// would play havoc with any test that runs with GEX=123217, unless it also has H5, resulting
+// in sporadic (rare) test failures.  So don't do that.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
