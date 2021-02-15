@@ -1997,7 +1997,35 @@ fn test_peak_memory() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 24. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
+// 25. Test running with just reference.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_ref_only() {
+    let test = "REF=../enclone-data/big_inputs/version15/█≈ΠΠΠ≈█/outs/\
+        vdj_reference/fasta/regions.fa";
+    let args = parse_bsv(&test);
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_subset_json 1"));
+    if new.status.code() == Some(0) {
+        eprint!("\ntest_ref_only: enclone command should not have succeeded.\n");
+        std::process::exit(1);
+    }
+    if !strme(&new.stderr).contains("No TCR or BCR data have been specified.") {
+        eprintln!("\ntest_ref_only: unexpected error message\n");
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 26. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
 // measures total instructions used.
 
 // NOT BASIC
