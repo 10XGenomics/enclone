@@ -651,6 +651,7 @@ dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
+ "itertools 0.9.0",
  "string_utils",
  "tables",
 ]

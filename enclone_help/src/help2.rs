@@ -5,6 +5,7 @@
 use crate::help_utils::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
+use itertools::Itertools;
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -85,7 +86,23 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
     if (args.len() == 3 && args[1] == "help" && args[2] == "example2") || h.help_all {
         h.begin_doc("example2");
         h.print("\nShown below is the output of the command:\n");
-        h.print(&format!("\n\\bold{{enclone {}}}\n", EXAMPLES[1]));
+
+        // Remove H5.
+
+        let ex2_args = EXAMPLES[1].split(' ').collect::<Vec<&str>>();
+        let mut ex2_args2 = Vec::<&str>::new();
+        for i in 0..ex2_args.len() {
+            if ex2_args[i] != "H5" {
+                ex2_args2.push(ex2_args[i].clone());
+            }
+        }
+
+        // Proceed.
+
+        h.print(&format!(
+            "\n\\bold{{enclone {}}}\n",
+            ex2_args2.iter().format(" ")
+        ));
         if !h.plain {
             h.print_plain_unchecked(include_str!("example2"));
         } else {
