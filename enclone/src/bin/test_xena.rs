@@ -10,9 +10,9 @@
 
 use perf_stats::*;
 use rayon::prelude::*;
-use std::time::{Duration, Instant};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 fn main() {
     let mut ids = Vec::<usize>::new();
@@ -20,7 +20,7 @@ fn main() {
         ids.push(i);
     }
     let tall = Instant::now();
-    let spinlock = Arc::new(AtomicUsize::new(0));
+    let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     ids.par_iter_mut().for_each(|q| {
         let t = Instant::now();
         while spinlock.load(Ordering::SeqCst) != 0 {}

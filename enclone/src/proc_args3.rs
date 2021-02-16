@@ -10,6 +10,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::process::Command;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 use std::thread;
 use std::time;
 use std::time::Instant;
@@ -218,7 +220,12 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     pp
 }
 
-fn get_path_or_internal_id(p: &str, ctl: &EncloneControl, source: &str) -> String {
+fn get_path_or_internal_id(
+    p: &str,
+    ctl: &EncloneControl,
+    source: &str,
+    spinlock: &Arc<AtomicUsize>,
+) -> String {
     let mut ok = false;
     let mut pp = get_path(&p, &ctl, &mut ok);
     if !ok {
@@ -236,10 +243,13 @@ fn get_path_or_internal_id(p: &str, ctl: &EncloneControl, source: &str) -> Strin
             if q.parse::<usize>().is_ok() {
                 // do not use xena.txgmesh.net, does not work from inside enclone
                 let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
+                while spinlock.load(Ordering::SeqCst) != 0 {}
+                spinlock.store(1, Ordering::SeqCst);
                 let o = Command::new("curl")
                     .arg(url.clone())
                     .output()
                     .expect("failed to execute xena http");
+                spinlock.store(0, Ordering::SeqCst);
                 let m = String::from_utf8(o.stdout).unwrap();
                 if o.status.code() != Some(0) {
                     let merr = String::from_utf8(o.stderr).unwrap();
@@ -341,8 +351,9 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut tag = HashMap::<String, String>::new();
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
+    let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     if bc != "".to_string() {
-        bc = get_path_or_internal_id(&bc, &ctl, call_type);
+        bc = get_path_or_internal_id(&bc, &ctl, call_type, &spinlock);
         let f = open_userfile_for_read(&bc);
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -673,9 +684,10 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     ctl.perf_stats(&t, "in proc_xcr 3");
     let t = Instant::now();
+    let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
-        *p = get_path_or_internal_id(&p, &ctl, source);
+        *p = get_path_or_internal_id(&p, &ctl, source, &spinlock);
         if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
             *p = format!("{}/vdj_b", p);
         }
@@ -689,7 +701,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             *p = format!("{}/multi/vdj_t", p);
         }
         if have_gex {
-            *pg = get_path_or_internal_id(&pg, &ctl, "GEX");
+            *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &spinlock);
             if path_exists(&format!("{}/count", pg)) {
                 *pg = format!("{}/count", pg);
             }
@@ -812,7 +824,8 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
 
             parse_bc(bc.clone(), &mut ctl, "META");
             let current_ref = false;
-            path = get_path_or_internal_id(&path, &ctl, "META");
+            let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
+            path = get_path_or_internal_id(&path, &ctl, "META", &spinlock);
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
@@ -826,7 +839,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
                 path = format!("{}/multi/vdj_t", path);
             }
             if gpath.len() > 0 {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock);
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
                 }
