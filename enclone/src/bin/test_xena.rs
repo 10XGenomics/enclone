@@ -11,22 +11,30 @@
 use perf_stats::*;
 use rayon::prelude::*;
 use std::time::{Duration, Instant};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 fn main() {
     let mut ids = Vec::<usize>::new();
-    for i in 1096913..=1096926 {
+    for i in 1096800..=1097000 {
         ids.push(i);
     }
+    let tall = Instant::now();
+    let spinlock = Arc::new(AtomicUsize::new(0));
     ids.par_iter_mut().for_each(|q| {
         let t = Instant::now();
+        while spinlock.load(Ordering::SeqCst) != 0 {}
         let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
         const TIMEOUT: u64 = 120; // timeout in seconds
+        spinlock.store(1, Ordering::SeqCst);
         let req = attohttpc::get(url).read_timeout(Duration::new(TIMEOUT, 0));
         let response = req.send();
         if response.is_err() || !response.unwrap().is_success() {
             eprintln!("\nfailed to execute access to xena {}\n", q);
             std::process::exit(1);
         }
+        spinlock.store(0, Ordering::SeqCst);
         println!("xena call for {} took {:.2} seconds", q, elapsed(&t));
     });
+    eprintln!("used {:.2} seconds total", elapsed(&tall));
 }
