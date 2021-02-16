@@ -20,6 +20,9 @@ bytes = ">=0.5.5, <2"
 byteorder = "1.3.2"
 failure = "0.1.6"
 prost = ">=0.6.1, <0.8"
+# The crate prost-build is present in an attempt to fix a problem with Mac builds through 
+# GitHub Actions, however it is possible that the broken Mac builds problem is sporadic and
+# unrelated to adding prost-build.
 prost-build = ">=0.6.1, <0.8"
 serde = "1.0.90"
 serde_derive = "1.0.102"
