@@ -9,15 +9,28 @@ use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::process::Command;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
+
+fn fetch_url(url: &str) -> String {
+    const TIMEOUT: u64 = 120; // timeout in seconds
+    let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
+    let response = req.send();
+    if response.is_err() {
+        panic!("Failed to access URL {} at step 1.", url);
+    }
+    let response = response.unwrap();
+    if !response.is_success() {
+        panic!("Failed to access URL {} at step 2.", url);
+    }
+    response.text().unwrap()
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -86,27 +99,11 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
     for i in 0..tokens.len() {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
-            // do not use xena.txgmesh.net, does not work from inside enclone
             let url = format!(
                 "https://xena.{}/api/analysis_sets/{}",
                 ctl.gen_opt.domain, setid
             );
-            let o = Command::new("curl")
-                .arg(url)
-                .output()
-                .expect("failed to execute xena http");
-            let m = String::from_utf8(o.stdout).unwrap();
-            if m.contains("502 Bad Gateway") {
-                // do not use xena.txgmesh.net, does not work from inside enclone
-                eprintln!(
-                    "\nWell, this is sad.  The URL \
-                    http://xena.{}/api/analysis_sets/{} returned a 502 Bad Gateway \
-                    message.  Please try again later or ask someone for help.\n\n",
-                    ctl.gen_opt.domain, setid
-                );
-                std::process::exit(1);
-            }
-            // printme!(m);
+            let m = fetch_url(&url);
             if m.contains("\"analysis_ids\":[") {
                 let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
                 ids = ids.replace(" ", "");
@@ -117,18 +114,12 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
                 // Remove wiped analysis IDs.
 
                 for j in 0..ids.len() {
-                    // do not use xena.txgmesh.net, does not work from inside enclone
                     let url = format!(
                         "https://xena.{}/api/analyses/{}",
                         ctl.gen_opt.domain, ids[j]
                     );
-                    let o = Command::new("curl")
-                        .arg(url)
-                        .output()
-                        .expect("failed to execute xena http");
-                    let m = String::from_utf8(o.stdout).unwrap();
+                    let m = fetch_url(&url);
                     if m.contains("502 Bad Gateway") {
-                        // do not use xena.txgmesh.net, does not work from inside enclone
                         eprintln!(
                             "\nWell, this is sad.  The URL \
                             http://xena.{}/api/analyses/{} returned a 502 Bad Gateway \
@@ -247,31 +238,14 @@ fn get_path_or_internal_id(
                 q = q.before("/").to_string();
             }
             if q.parse::<usize>().is_ok() {
-                // do not use xena.txgmesh.net, does not work from inside enclone
                 let url = format!("https://xena.{}/api/analyses/{}", ctl.gen_opt.domain, q);
                 // We force single threading around the https access because we observed
                 // intermittently very slow access without it.
                 while spinlock.load(Ordering::SeqCst) != 0 {}
                 spinlock.store(1, Ordering::SeqCst);
-                let o = Command::new("curl")
-                    .arg(url.clone())
-                    .output()
-                    .expect("failed to execute xena http");
+                let m = fetch_url(&url);
                 spinlock.store(0, Ordering::SeqCst);
-                let m = String::from_utf8(o.stdout).unwrap();
-                if o.status.code() != Some(0) {
-                    let merr = String::from_utf8(o.stderr).unwrap();
-                    eprintln!(
-                        "\nSomething went wrong. the URL \
-                        \nhttp://xena.{}/api/analyses/{}\n\
-                        failed with the following stderr:\n{}\n\
-                        and the following stdout:\n{}\n",
-                        ctl.gen_opt.domain, q, merr, m
-                    );
-                    std::process::exit(1);
-                }
                 if m.contains("502 Bad Gateway") {
-                    // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
                         "\nWell this is sad.  The URL \
                         http://xena.{}/api/analyses/{} yielded a 502 Bad Gateway \
