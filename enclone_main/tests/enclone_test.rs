@@ -246,7 +246,7 @@ fn test_sync_master() {
 fn test_curl_command() {
     let mut internal_run = false;
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             internal_run = true;
         }
     }
@@ -1908,7 +1908,7 @@ fn test_peak_memory() {
 
     let mut internal_run = false;
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             internal_run = true;
         }
     }

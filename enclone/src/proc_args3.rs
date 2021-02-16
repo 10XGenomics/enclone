@@ -65,7 +65,7 @@ fn expand_integer_ranges(x: &str) -> String {
     y
 }
 
-fn expand_analysis_sets(x: &str) -> String {
+fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
     let mut tokens = Vec::<String>::new();
     let mut token = String::new();
     for c in x.chars() {
@@ -87,7 +87,10 @@ fn expand_analysis_sets(x: &str) -> String {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
             // do not use xena.txgmesh.net, does not work from inside enclone
-            let url = format!("https://xena.fuzzplex.com/api/analysis_sets/{}", setid);
+            let url = format!(
+                "https://xena.{}/api/analysis_sets/{}",
+                ctl.gen_opt.domain, setid
+            );
             let o = Command::new("curl")
                 .arg(url)
                 .output()
@@ -97,9 +100,9 @@ fn expand_analysis_sets(x: &str) -> String {
                 // do not use xena.txgmesh.net, does not work from inside enclone
                 eprintln!(
                     "\nWell, this is sad.  The URL \
-                    http://xena.fuzzplex.com/api/analysis_sets/{} returned a 502 Bad Gateway \
+                    http://xena.{}/api/analysis_sets/{} returned a 502 Bad Gateway \
                     message.  Please try again later or ask someone for help.\n\n",
-                    setid
+                    ctl.gen_opt.domain, setid
                 );
                 std::process::exit(1);
             }
@@ -115,7 +118,10 @@ fn expand_analysis_sets(x: &str) -> String {
 
                 for j in 0..ids.len() {
                     // do not use xena.txgmesh.net, does not work from inside enclone
-                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", ids[j]);
+                    let url = format!(
+                        "https://xena.{}/api/analyses/{}",
+                        ctl.gen_opt.domain, ids[j]
+                    );
                     let o = Command::new("curl")
                         .arg(url)
                         .output()
@@ -125,9 +131,9 @@ fn expand_analysis_sets(x: &str) -> String {
                         // do not use xena.txgmesh.net, does not work from inside enclone
                         eprintln!(
                             "\nWell, this is sad.  The URL \
-                            http://xena.fuzzplex.com/api/analyses/{} returned a 502 Bad Gateway \
+                            http://xena.{}/api/analyses/{} returned a 502 Bad Gateway \
                             message.  Please try again later or ask someone for help.\n",
-                            ids[j]
+                            ctl.gen_opt.domain, ids[j]
                         );
                         std::process::exit(1);
                     }
@@ -242,7 +248,7 @@ fn get_path_or_internal_id(
             }
             if q.parse::<usize>().is_ok() {
                 // do not use xena.txgmesh.net, does not work from inside enclone
-                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
+                let url = format!("https://xena.{}/api/analyses/{}", ctl.gen_opt.domain, q);
                 // We force single threading around the https access because we observed
                 // intermittently very slow access without it.
                 while spinlock.load(Ordering::SeqCst) != 0 {}
@@ -257,10 +263,10 @@ fn get_path_or_internal_id(
                     let merr = String::from_utf8(o.stderr).unwrap();
                     eprintln!(
                         "\nSomething went wrong. the URL \
-                        \nhttp://xena.fuzzplex.com/api/analyses/{}\n\
+                        \nhttp://xena.{}/api/analyses/{}\n\
                         failed with the following stderr:\n{}\n\
                         and the following stdout:\n{}\n",
-                        q, merr, m
+                        ctl.gen_opt.domain, q, merr, m
                     );
                     std::process::exit(1);
                 }
@@ -268,9 +274,9 @@ fn get_path_or_internal_id(
                     // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena.fuzzplex.com/api/analyses/{} yielded a 502 Bad Gateway \
+                        http://xena.{}/api/analyses/{} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
-                        q
+                        ctl.gen_opt.domain, q
                     );
                     std::process::exit(1);
                 }
@@ -501,7 +507,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     val = expand_integer_ranges(&val);
     if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val);
+        val = expand_analysis_sets(&val, &ctl);
     }
     let donor_groups;
     if ctl.gen_opt.cellranger {
@@ -511,7 +517,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     let mut gex2 = expand_integer_ranges(&gex);
     if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2);
+        gex2 = expand_analysis_sets(&gex2, &ctl);
     }
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {

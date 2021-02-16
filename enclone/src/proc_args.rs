@@ -62,8 +62,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Test for internal run.
 
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             ctl.gen_opt.internal_run = true;
+        }
+    }
+    if ctl.gen_opt.internal_run {
+        for (key, value) in env::vars() {
+            if key == "HOST" || key == "HOSTNAME" {
+                if value.ends_with(".com") && value.rev_before(".com").contains(".") {
+                    let d = value.rev_before(".com").rev_after(".");
+                    ctl.gen_opt.domain = format!("{}.com", d);
+                }
+            }
         }
     }
     for i in 1..args.len() {
