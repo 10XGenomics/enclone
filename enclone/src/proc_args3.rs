@@ -243,6 +243,8 @@ fn get_path_or_internal_id(
             if q.parse::<usize>().is_ok() {
                 // do not use xena.txgmesh.net, does not work from inside enclone
                 let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
+                // We force single threading around the https access because we observed
+                // intermittently very slow access without it.
                 while spinlock.load(Ordering::SeqCst) != 0 {}
                 spinlock.store(1, Ordering::SeqCst);
                 let o = Command::new("curl")
