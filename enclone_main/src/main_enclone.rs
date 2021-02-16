@@ -325,8 +325,8 @@ pub fn main_enclone(args: &Vec<String>) {
     }
 
     // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
-    // has to occur after loading GEX data.  This could also occur after loading only
-    // the feature list, which would be better.
+    // has to occur after loading GEX data.  This could also occur after loading only the
+    // feature list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
     let twoof = Instant::now();
