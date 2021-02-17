@@ -26,4 +26,3 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f8
 
 [build-dependencies]
 prost-build = ">=0.6.1, <0.8"
-

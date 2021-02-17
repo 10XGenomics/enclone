@@ -246,7 +246,7 @@ fn test_sync_master() {
 fn test_curl_command() {
     let mut internal_run = false;
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             internal_run = true;
         }
     }
@@ -1272,6 +1272,9 @@ fn test_site_examples() {
         let in_file = format!("../{}", example_name);
         let in_stuff = read_to_string(&in_file).expect(&format!("couldn't find {}", in_file));
         let args = parse_bsv(&test);
+        if args.contains(&"GEX=123217".to_string()) && !args.contains(&"H5".to_string()) {
+            panic!("Oops please fix this, to prevent sporadic failures.");
+        }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
@@ -1378,6 +1381,9 @@ fn test_enclone_examples() {
         let out_file = format!("../enclone_help/src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
+        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
+            panic!("Oops please fix this, to prevent sporadic failures.");
+        }
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
@@ -1579,7 +1585,9 @@ fn test_help_no_stable() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 20. Test that PREBUILD works.
+// 20. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
+// would play havoc with any test that runs with GEX=123217, unless it also has H5, resulting
+// in sporadic (rare) test failures.  So don't do that.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1900,7 +1908,7 @@ fn test_peak_memory() {
 
     let mut internal_run = false;
     for (key, value) in env::vars() {
-        if (key == "HOST" || key == "HOSTNAME") && value.ends_with(".fuzzplex.com") {
+        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             internal_run = true;
         }
     }
@@ -1989,7 +1997,35 @@ fn test_peak_memory() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 24. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
+// 25. Test running with just reference.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_ref_only() {
+    let test = "REF=../enclone-data/big_inputs/version15/█≈ΠΠΠ≈█/outs/\
+        vdj_reference/fasta/regions.fa";
+    let args = parse_bsv(&test);
+    let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+        .args(&args)
+        .output()
+        .expect(&format!("failed to execute test_subset_json 1"));
+    if new.status.code() == Some(0) {
+        eprint!("\ntest_ref_only: enclone command should not have succeeded.\n");
+        std::process::exit(1);
+    }
+    if !strme(&new.stderr).contains("No TCR or BCR data have been specified.") {
+        eprintln!("\ntest_ref_only: unexpected error message\n");
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 26. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
 // measures total instructions used.
 
 // NOT BASIC

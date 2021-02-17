@@ -25,6 +25,7 @@ pub fn run_test(
     logx: &mut String, // logging from test
     out: &mut String,  // stdout of test
 ) {
+    let orig_test = test.to_string();
     let mut test = test.replace("\n", "");
     for _ in 0..3 {
         test = test.replace("  ", " ");
@@ -106,6 +107,25 @@ pub fn run_test(
             old = read_to_string(&out_file).unwrap();
         }
         let args = parse_bsv(&test);
+
+        // Try to prevent a sporadic failure mode.
+
+        let (mut p1, mut p2) = (false, false);
+        for i in 0..args.len() {
+            if args[i] == "GEX=123217" {
+                p1 = true;
+            } else if args[i] == "H5" {
+                p2 = true;
+            }
+        }
+        if p1 && !p2 {
+            eprintln!(
+                "\nFound GEX=123217 without H5.  Because of the PREBUILD test, this \
+                can cause sporadic failures.\nHere is the test:\n{}\n",
+                orig_test
+            );
+            std::process::exit(1);
+        }
 
         // Form the command and execute it.
 

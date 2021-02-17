@@ -9,13 +9,28 @@ use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::process::Command;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 use std::thread;
 use std::time;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use string_utils::*;
 use tilde_expand::*;
 use vector_utils::*;
+
+fn fetch_url(url: &str) -> String {
+    const TIMEOUT: u64 = 120; // timeout in seconds
+    let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
+    let response = req.send();
+    if response.is_err() {
+        panic!("Failed to access URL {} at step 1.", url);
+    }
+    let response = response.unwrap();
+    if !response.is_success() {
+        panic!("Failed to access URL {} at step 2.", url);
+    }
+    response.text().unwrap()
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -63,7 +78,7 @@ fn expand_integer_ranges(x: &str) -> String {
     y
 }
 
-fn expand_analysis_sets(x: &str) -> String {
+fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
     let mut tokens = Vec::<String>::new();
     let mut token = String::new();
     for c in x.chars() {
@@ -84,24 +99,11 @@ fn expand_analysis_sets(x: &str) -> String {
     for i in 0..tokens.len() {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
-            // do not use xena.txgmesh.net, does not work from inside enclone
-            let url = format!("https://xena.fuzzplex.com/api/analysis_sets/{}", setid);
-            let o = Command::new("curl")
-                .arg(url)
-                .output()
-                .expect("failed to execute xena http");
-            let m = String::from_utf8(o.stdout).unwrap();
-            if m.contains("502 Bad Gateway") {
-                // do not use xena.txgmesh.net, does not work from inside enclone
-                eprintln!(
-                    "\nWell, this is sad.  The URL \
-                    http://xena.fuzzplex.com/api/analysis_sets/{} returned a 502 Bad Gateway \
-                    message.  Please try again later or ask someone for help.\n\n",
-                    setid
-                );
-                std::process::exit(1);
-            }
-            // printme!(m);
+            let url = format!(
+                "https://xena.{}/api/analysis_sets/{}",
+                ctl.gen_opt.domain, setid
+            );
+            let m = fetch_url(&url);
             if m.contains("\"analysis_ids\":[") {
                 let mut ids = m.between("\"analysis_ids\":[", "]").to_string();
                 ids = ids.replace(" ", "");
@@ -112,20 +114,17 @@ fn expand_analysis_sets(x: &str) -> String {
                 // Remove wiped analysis IDs.
 
                 for j in 0..ids.len() {
-                    // do not use xena.txgmesh.net, does not work from inside enclone
-                    let url = format!("https://xena.fuzzplex.com/api/analyses/{}", ids[j]);
-                    let o = Command::new("curl")
-                        .arg(url)
-                        .output()
-                        .expect("failed to execute xena http");
-                    let m = String::from_utf8(o.stdout).unwrap();
+                    let url = format!(
+                        "https://xena.{}/api/analyses/{}",
+                        ctl.gen_opt.domain, ids[j]
+                    );
+                    let m = fetch_url(&url);
                     if m.contains("502 Bad Gateway") {
-                        // do not use xena.txgmesh.net, does not work from inside enclone
                         eprintln!(
                             "\nWell, this is sad.  The URL \
-                            http://xena.fuzzplex.com/api/analyses/{} returned a 502 Bad Gateway \
+                            http://xena.{}/api/analyses/{} returned a 502 Bad Gateway \
                             message.  Please try again later or ask someone for help.\n",
-                            ids[j]
+                            ctl.gen_opt.domain, ids[j]
                         );
                         std::process::exit(1);
                     }
@@ -218,7 +217,12 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     pp
 }
 
-fn get_path_or_internal_id(p: &str, ctl: &EncloneControl, source: &str) -> String {
+fn get_path_or_internal_id(
+    p: &str,
+    ctl: &EncloneControl,
+    source: &str,
+    spinlock: &Arc<AtomicUsize>,
+) -> String {
     let mut ok = false;
     let mut pp = get_path(&p, &ctl, &mut ok);
     if !ok {
@@ -234,31 +238,19 @@ fn get_path_or_internal_id(p: &str, ctl: &EncloneControl, source: &str) -> Strin
                 q = q.before("/").to_string();
             }
             if q.parse::<usize>().is_ok() {
-                // do not use xena.txgmesh.net, does not work from inside enclone
-                let url = format!("https://xena.fuzzplex.com/api/analyses/{}", q);
-                let o = Command::new("curl")
-                    .arg(url.clone())
-                    .output()
-                    .expect("failed to execute xena http");
-                let m = String::from_utf8(o.stdout).unwrap();
-                if o.status.code() != Some(0) {
-                    let merr = String::from_utf8(o.stderr).unwrap();
-                    eprintln!(
-                        "\nSomething went wrong. the URL \
-                        \nhttp://xena.fuzzplex.com/api/analyses/{}\n\
-                        failed with the following stderr:\n{}\n\
-                        and the following stdout:\n{}\n",
-                        q, merr, m
-                    );
-                    std::process::exit(1);
-                }
+                let url = format!("https://xena.{}/api/analyses/{}", ctl.gen_opt.domain, q);
+                // We force single threading around the https access because we observed
+                // intermittently very slow access without it.
+                while spinlock.load(Ordering::SeqCst) != 0 {}
+                spinlock.store(1, Ordering::SeqCst);
+                let m = fetch_url(&url);
+                spinlock.store(0, Ordering::SeqCst);
                 if m.contains("502 Bad Gateway") {
-                    // do not use xena.txgmesh.net, does not work from inside enclone
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena.fuzzplex.com/api/analyses/{} yielded a 502 Bad Gateway \
+                        http://xena.{}/api/analyses/{} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
-                        q
+                        ctl.gen_opt.domain, q
                     );
                     std::process::exit(1);
                 }
@@ -341,8 +333,9 @@ fn parse_bc(mut bc: String, ctl: &mut EncloneControl, call_type: &str) {
     let mut tag = HashMap::<String, String>::new();
     let mut barcode_color = HashMap::<String, String>::new();
     let mut alt_bc_fields = Vec::<(String, HashMap<String, String>)>::new();
+    let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     if bc != "".to_string() {
-        bc = get_path_or_internal_id(&bc, &ctl, call_type);
+        bc = get_path_or_internal_id(&bc, &ctl, call_type, &spinlock);
         let f = open_userfile_for_read(&bc);
         let mut first = true;
         let mut fieldnames = Vec::<String>::new();
@@ -488,7 +481,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     val = expand_integer_ranges(&val);
     if ctl.gen_opt.internal_run {
-        val = expand_analysis_sets(&val);
+        val = expand_analysis_sets(&val, &ctl);
     }
     let donor_groups;
     if ctl.gen_opt.cellranger {
@@ -498,7 +491,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     let mut gex2 = expand_integer_ranges(&gex);
     if ctl.gen_opt.internal_run {
-        gex2 = expand_analysis_sets(&gex2);
+        gex2 = expand_analysis_sets(&gex2, &ctl);
     }
     let donor_groups_gex;
     if ctl.gen_opt.cellranger {
@@ -673,9 +666,10 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
     }
     ctl.perf_stats(&t, "in proc_xcr 3");
     let t = Instant::now();
+    let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
     results.par_iter_mut().for_each(|res| {
         let (p, pg) = (&mut res.0, &mut res.1);
-        *p = get_path_or_internal_id(&p, &ctl, source);
+        *p = get_path_or_internal_id(&p, &ctl, source, &spinlock);
         if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", p)) {
             *p = format!("{}/vdj_b", p);
         }
@@ -689,7 +683,7 @@ pub fn proc_xcr(f: &str, gex: &str, bc: &str, have_gex: bool, mut ctl: &mut Encl
             *p = format!("{}/multi/vdj_t", p);
         }
         if have_gex {
-            *pg = get_path_or_internal_id(&pg, &ctl, "GEX");
+            *pg = get_path_or_internal_id(&pg, &ctl, "GEX", &spinlock);
             if path_exists(&format!("{}/count", pg)) {
                 *pg = format!("{}/count", pg);
             }
@@ -812,7 +806,8 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
 
             parse_bc(bc.clone(), &mut ctl, "META");
             let current_ref = false;
-            path = get_path_or_internal_id(&path, &ctl, "META");
+            let spinlock: Arc<AtomicUsize> = Arc::new(AtomicUsize::new(0));
+            path = get_path_or_internal_id(&path, &ctl, "META", &spinlock);
             if ctl.gen_opt.bcr && path_exists(&format!("{}/vdj_b", path)) {
                 path = format!("{}/vdj_b", path);
             }
@@ -826,7 +821,7 @@ pub fn proc_meta_core(lines: &Vec<String>, mut ctl: &mut EncloneControl) {
                 path = format!("{}/multi/vdj_t", path);
             }
             if gpath.len() > 0 {
-                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META");
+                gpath = get_path_or_internal_id(&gpath, &mut ctl, "META", &spinlock);
                 if path_exists(&format!("{}/count", gpath)) {
                     gpath = format!("{}/count", gpath);
                 }

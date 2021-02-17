@@ -174,6 +174,8 @@ pub fn load_gex(
                     // binary_read_to_ref::<u32>(&mut ff, &mut x[0], 11).unwrap();
                     // WHERE THE unwrap() FAILED ON
                     // UnexpectedEof, error: "failed to fill whole buffer".
+                    //
+                    // 2/15/21: this should now be fixed.
 
                     let v = get_code_version_from_file(&bin_file);
                     if v == 1 {

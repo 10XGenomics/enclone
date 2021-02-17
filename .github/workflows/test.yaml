@@ -31,27 +31,28 @@ jobs:
         uses: actions/checkout@master
 
       # set up caching (duplicated verbatim below)
+      # TURNED OFF BECAUSE IT FAILS INTERMITTENTLY.
 
-      - name: Cache cargo registry
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/registry
-          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-registry-
-      - name: Cache cargo git index
-        uses: actions/cache@v1
-        with:
-          path: ~/.cargo/git
-          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-git-
-      - name: Cache cargo build
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
-          restore-keys: |
-            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
-            ${{runner.os}}-cargo-target-
+      # - name: Cache cargo registry
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.cargo/registry
+      #     key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
+      #     restore-keys: ${{runner.os}}-cargo-registry-
+      # - name: Cache cargo git index
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.cargo/git
+      #     key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
+      #     restore-keys: ${{runner.os}}-cargo-git-
+      # - name: Cache cargo build
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: target
+      #     key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+      #     restore-keys: |
+      #       ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
+      #       ${{runner.os}}-cargo-target-
 
       # start the real work
 
@@ -89,19 +90,19 @@ jobs:
       # set up caching (duplicated verbatim below)
 
       - name: Cache cargo registry
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.cargo/registry
           key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
           restore-keys: ${{runner.os}}-cargo-registry-
       - name: Cache cargo git index
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.cargo/git
           key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
           restore-keys: ${{runner.os}}-cargo-git-
       - name: Cache cargo build
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: target
           key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
