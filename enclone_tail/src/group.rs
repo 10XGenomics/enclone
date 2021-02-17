@@ -1739,6 +1739,8 @@ pub fn group_and_print_clonotypes(
         let mut missing_valid = false;
         let mut left_valids = Vec::<usize>::new();
         let mut right_valids = Vec::<usize>::new();
+        let mut lefts = 0;
+        let mut rights = 0;
         for i in 0..nclono {
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
@@ -1750,9 +1752,11 @@ pub fn group_and_print_clonotypes(
                             if ex.share[m].left {
                                 left_valids
                                     .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                                lefts += ex.clones[k][m].umi_count;
                             } else {
                                 right_valids
                                     .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                                rights += ex.clones[k][m].umi_count;
                             }
                         }
                     }
@@ -1762,13 +1766,22 @@ pub fn group_and_print_clonotypes(
         if !missing_valid && left_valids.len() > 0 && right_valids.len() > 0 {
             left_valids.sort();
             right_valids.sort();
+            let (mut left_sum, mut right_sum) = (0, 0);
+            for i in 0..left_valids.len() {
+                left_sum += left_valids[i];
+            }
+            for i in 0..right_valids.len() {
+                right_sum += right_valids[i];
+            }
             fwriteln!(
                 logx,
-                "   • median validated UMIs: {} = {}, {} = {}",
+                "   • median validated UMIs: {} = {} ({:.1}%), {} = {} ({:.1}%)",
                 hchain,
                 median(&left_valids),
+                100.0 * left_sum as f64 / lefts as f64,
                 lchain,
                 median(&right_valids),
+                100.0 * right_sum as f64 / rights as f64,
             );
         }
 
