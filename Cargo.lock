@@ -722,6 +722,7 @@ dependencies = [
  "failure",
  "prost",
  "prost-build",
+ "prost-derive",
  "serde",
  "serde_derive",
  "vdj_ann",
