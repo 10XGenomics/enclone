@@ -155,11 +155,13 @@ fn parse_vector_entry_from_json(
     // Read validated UMIs.
 
     let mut validated_umis = Vec::<String>::new();
+    let mut validated_umis_present = false;
     let val = v["validated_umis"].as_array();
     if val.is_some() {
         let val = val.unwrap();
         for i in 0..val.len() {
             validated_umis.push(val[i].to_string().between("\"", "\"").to_string());
+            validated_umis_present = true;
         }
     }
 
@@ -521,6 +523,10 @@ fn parse_vector_entry_from_json(
     if tag.is_some() {
         tag_index = Some(bin_position(&origin_info.tag_list, &tag.unwrap()) as usize);
     }
+    let mut valu = None;
+    if validated_umis_present {
+        valu = Some(validated_umis);
+    }
     tigs.push(TigData {
         cdr3_dna: cdr3_dna.to_string(),
         len: seq.len(),
@@ -559,7 +565,7 @@ fn parse_vector_entry_from_json(
         read_count: read_count,
         chain_type: chain_type.clone(),
         annv: annv.clone(),
-        validated_umis: validated_umis,
+        validated_umis: valu,
     });
 }
 

@@ -746,7 +746,7 @@ pub struct TigData {
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub validated_umis: Vec<String>,          // validated UMIs
+    pub validated_umis: Option<Vec<String>>,  // validated UMIs
 }
 
 // The ExactClonotype data structure stores information that could be exhibited as a
@@ -757,21 +757,21 @@ pub struct TigData {
 
 #[derive(Clone)]
 pub struct TigData0 {
-    pub quals: Vec<u8>,              // quality scores, truncated to V..J
-    pub v_start: usize,              // start of V on full contig sequence
-    pub j_stop: usize,               // stop of J on full contig sequence
-    pub c_start: Option<usize>,      // start of C on full contig sequence
-    pub full_seq: Vec<u8>,           // full contig sequence
-    pub barcode: String,             // barcode
-    pub tigname: String,             // name of contig
-    pub dataset_index: usize,        // index of dataset
-    pub origin_index: Option<usize>, // index of origin (sample)
-    pub donor_index: Option<usize>,  // index of donor
-    pub tag_index: Option<usize>,    // index of tag
-    pub umi_count: usize,            // number of UMIs supporting contig
-    pub read_count: usize,           // number of reads supporting contig
-    pub marked: bool,                // if marked for possible deletion
-    pub validated_umis: Vec<String>, // validated UMIs
+    pub quals: Vec<u8>,                      // quality scores, truncated to V..J
+    pub v_start: usize,                      // start of V on full contig sequence
+    pub j_stop: usize,                       // stop of J on full contig sequence
+    pub c_start: Option<usize>,              // start of C on full contig sequence
+    pub full_seq: Vec<u8>,                   // full contig sequence
+    pub barcode: String,                     // barcode
+    pub tigname: String,                     // name of contig
+    pub dataset_index: usize,                // index of dataset
+    pub origin_index: Option<usize>,         // index of origin (sample)
+    pub donor_index: Option<usize>,          // index of donor
+    pub tag_index: Option<usize>,            // index of tag
+    pub umi_count: usize,                    // number of UMIs supporting contig
+    pub read_count: usize,                   // number of reads supporting contig
+    pub marked: bool,                        // if marked for possible deletion
+    pub validated_umis: Option<Vec<String>>, // validated UMIs
 }
 
 #[derive(Clone)]
