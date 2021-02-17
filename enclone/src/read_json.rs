@@ -158,10 +158,10 @@ fn parse_vector_entry_from_json(
     let mut validated_umis_present = false;
     let val = v["validated_umis"].as_array();
     if val.is_some() {
+        validated_umis_present = true;
         let val = val.unwrap();
         for i in 0..val.len() {
             validated_umis.push(val[i].to_string().between("\"", "\"").to_string());
-            validated_umis_present = true;
         }
     }
 

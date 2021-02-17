@@ -34,6 +34,15 @@ use tar::{Builder, Header};
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+fn median(x: &[usize]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h] as f64
+    } else {
+        (x[h - 1] + x[h]) as f64 / 2.0
+    }
+}
+
 pub fn group_and_print_clonotypes(
     tall: &Instant,
     refdata: &RefData,
@@ -1724,6 +1733,44 @@ pub fn group_and_print_clonotypes(
             lchain,
             middle_mean_umisl,
         );
+
+        // Print validated UMI stats.
+
+        let mut missing_valid = false;
+        let mut left_valids = Vec::<usize>::new();
+        let mut right_valids = Vec::<usize>::new();
+        for i in 0..nclono {
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                for k in 0..ex.clones.len() {
+                    for m in 0..ex.clones[k].len() {
+                        if ex.clones[k][m].validated_umis.is_none() {
+                            missing_valid = true;
+                        } else {
+                            if ex.share[m].left {
+                                left_valids
+                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                            } else {
+                                right_valids
+                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if !missing_valid && left_valids.len() > 0 && right_valids.len() > 0 {
+            left_valids.sort();
+            right_valids.sort();
+            fwriteln!(
+                logx,
+                "   • median validated UMIs: {} = {}, {} = {}",
+                hchain,
+                median(&left_valids),
+                lchain,
+                median(&right_valids),
+            );
+        }
 
         // Print marking stats.
 
