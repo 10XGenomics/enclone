@@ -169,12 +169,16 @@ fn main() {
         let new_readme = readme.replace(&old_version, &version);
         if new_readme == readme {
             eprintln!("\nFailed to update version in README.md.");
+            eprintln!(
+                "Could not change version from {} to {}.",
+                old_version, version
+            );
             eprintln!("Please do this now and continue manually with the release.");
             eprintln!("And figure out how this happened.\n");
             std::process::exit(1);
         }
         let mut g = open_for_write_new!["README.md"];
-        fwriteln!(g, "{}", new_readme);
+        fwrite!(g, "{}", new_readme);
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
