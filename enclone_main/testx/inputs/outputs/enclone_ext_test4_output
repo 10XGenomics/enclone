@@ -31,5 +31,6 @@ SUMMARY STATISTICS
    • mean over middle third of contig UMI counts (TRB) = 2.70
    • mean over middle third of contig UMI counts (TRA) = 10.48
    • mean UMIs per cell = 18.65
+   • mean UMIs per cell having two chains = 23.77
    • for reads contributing to UMIs in reported chains, mean reads per UMI = 941.65
 

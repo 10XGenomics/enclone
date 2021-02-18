@@ -36,5 +36,6 @@ SUMMARY STATISTICS
    • mean over middle third of contig UMI counts (heavy chain) = 342.76
    • mean over middle third of contig UMI counts (light chain) = 1925.10
    • mean UMIs per cell = 5905.14
+   • mean UMIs per cell having two chains = 6337.14
    • for reads contributing to UMIs in reported chains, mean reads per UMI = 6.25
 

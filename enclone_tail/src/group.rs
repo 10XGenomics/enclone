@@ -1393,6 +1393,8 @@ pub fn group_and_print_clonotypes(
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
     let (mut numis, mut nreads) = (0, 0);
+    let mut numis2 = 0;
+    let mut ncells2 = 0;
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             two_chain += 1;
@@ -1400,12 +1402,18 @@ pub fn group_and_print_clonotypes(
         let mut n = 0;
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
+            if ex.share.len() == 2 {
+                ncells2 += ex.ncells();
+            }
             n += ex.ncells();
             for k in 0..ex.clones.len() {
                 let x = &ex.clones[k][0];
                 sd.push((x.origin_index, x.donor_index));
                 for m in 0..ex.clones[k].len() {
                     numis += ex.clones[k][m].umi_count;
+                    if ex.share.len() == 2 {
+                        numis2 += ex.clones[k][m].umi_count;
+                    }
                     nreads += ex.clones[k][m].read_count;
                 }
             }
@@ -1742,6 +1750,11 @@ pub fn group_and_print_clonotypes(
             logx,
             "   • mean UMIs per cell = {:.2}",
             numis as f64 / ncells as f64,
+        );
+        fwriteln!(
+            logx,
+            "   • mean UMIs per cell having two chains = {:.2}",
+            numis2 as f64 / ncells2 as f64,
         );
         fwriteln!(
             logx,
