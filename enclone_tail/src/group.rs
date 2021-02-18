@@ -1320,27 +1320,34 @@ pub fn group_and_print_clonotypes(
         clustal_dna.unwrap().finish().unwrap();
     }
 
-    // Compute two umi stats.
+    // Compute some umi stats.
 
     let nclono = exacts.len();
     let mut umish = Vec::<usize>::new();
     let mut umisl = Vec::<usize>::new();
+    let mut umis = Vec::<usize>::new();
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
             for k in 0..ex.clones.len() {
+                let mut nu = 0;
                 for l in 0..ex.share.len() {
                     if ex.share[l].left {
                         umish.push(ex.clones[k][l].umi_count);
                     } else {
                         umisl.push(ex.clones[k][l].umi_count);
                     }
+                    nu += ex.clones[k][l].umi_count;
+                }
+                if ex.share.len() == 2 {
+                    umis.push(nu);
                 }
             }
         }
     }
     umish.sort();
     umisl.sort();
+    umis.sort();
     let (mut middleh, mut denomh) = (0, 0);
     for j in umish.len() / 3..(2 * umish.len()) / 3 {
         middleh += umish[j];
@@ -1358,6 +1365,15 @@ pub fn group_and_print_clonotypes(
     let mut middle_mean_umisl = 0.0;
     if denoml > 0 {
         middle_mean_umisl = (middlel as f64) / (denoml as f64);
+    }
+    let (mut middle, mut denom) = (0, 0);
+    for j in umis.len() / 3..(2 * umis.len()) / 3 {
+        middle += umis[j];
+        denom += 1;
+    }
+    let mut middle_mean_umis = 0.0;
+    if denom > 0 {
+        middle_mean_umis = (middle as f64) / (denom as f64);
     }
 
     // Compute n1 and n2 and n23 and n4.
@@ -1745,6 +1761,11 @@ pub fn group_and_print_clonotypes(
             "   • mean over middle third of contig UMI counts ({}) = {:.2}",
             lchain,
             middle_mean_umisl,
+        );
+        fwriteln!(
+            logx,
+            "   • mean over middle third of cell UMI counts for cells having two chains = {:.2}",
+            middle_mean_umis,
         );
         fwriteln!(
             logx,
