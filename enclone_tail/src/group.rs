@@ -1782,12 +1782,10 @@ pub fn group_and_print_clonotypes(
             "   • for reads contributing to UMIs in reported chains, mean reads per UMI = {:.2}",
             nreads as f64 / numis as f64,
         );
-        if known {
+        if known && ctl.gen_opt.internal_run {
             fwriteln!(
                 logx,
-                "   • read utilization = {:.1}%\n     (assumes first read is short, \
-                about 28 bases)\n     this is the fraction of reads that are assigned \
-                to productive chains in cells",
+                "   • read utilization = {:.1}%\n     (please see notes in the file UNDOCUMENTED)",
                 100.0 * nreads as f64 / read_pairs as f64
             );
         }
