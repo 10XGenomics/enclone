@@ -1392,6 +1392,7 @@ pub fn group_and_print_clonotypes(
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
+    let mut numis = 0;
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             two_chain += 1;
@@ -1403,6 +1404,9 @@ pub fn group_and_print_clonotypes(
             for k in 0..ex.clones.len() {
                 let x = &ex.clones[k][0];
                 sd.push((x.origin_index, x.donor_index));
+                for m in 0..ex.clones[k].len() {
+                    numis += ex.clones[k][m].umi_count;
+                }
             }
         }
         if n >= 2 {
@@ -1732,6 +1736,11 @@ pub fn group_and_print_clonotypes(
             "   • mean over middle third of contig UMI counts ({}) = {:.2}",
             lchain,
             middle_mean_umisl,
+        );
+        fwriteln!(
+            logx,
+            "   • mean UMIs per cell = {:.2}",
+            numis as f64 / ncells as f64,
         );
 
         // Print validated UMI stats.
