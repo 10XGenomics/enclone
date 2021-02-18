@@ -1473,8 +1473,8 @@ pub fn group_and_print_clonotypes(
                 known = false;
             }
         }
+        let (mut cells, mut read_pairs) = (0, 0);
         if known {
-            let (mut cells, mut read_pairs) = (0, 0);
             for i in 0..ctl.origin_info.n() {
                 let c = ctl.origin_info.cells_cellranger[i].unwrap();
                 let rpc = ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
@@ -1782,6 +1782,15 @@ pub fn group_and_print_clonotypes(
             "   • for reads contributing to UMIs in reported chains, mean reads per UMI = {:.2}",
             nreads as f64 / numis as f64,
         );
+        if known {
+            fwriteln!(
+                logx,
+                "   • read utilization = {:.1}%\n     (assumes first read is short, \
+                about 28 bases)\n     this is the fraction of reads that are assigned \
+                to productive chains in cells",
+                100.0 * nreads as f64 / read_pairs as f64
+            );
+        }
 
         // Print validated UMI stats.
 
