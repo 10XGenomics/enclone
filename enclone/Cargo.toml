@@ -22,7 +22,7 @@ assert_cmd = "0.12.0"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = ">=0.32"
 debruijn = "0.3.2"
-dirs = "2.0.2"
+dirs = "3.0.1"
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
