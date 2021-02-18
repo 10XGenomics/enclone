@@ -1392,7 +1392,7 @@ pub fn group_and_print_clonotypes(
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
-    let mut numis = 0;
+    let (mut numis, mut nreads) = (0, 0);
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             two_chain += 1;
@@ -1406,6 +1406,7 @@ pub fn group_and_print_clonotypes(
                 sd.push((x.origin_index, x.donor_index));
                 for m in 0..ex.clones[k].len() {
                     numis += ex.clones[k][m].umi_count;
+                    nreads += ex.clones[k][m].read_count;
                 }
             }
         }
@@ -1741,6 +1742,11 @@ pub fn group_and_print_clonotypes(
             logx,
             "   • mean UMIs per cell = {:.2}",
             numis as f64 / ncells as f64,
+        );
+        fwriteln!(
+            logx,
+            "   • for reads contributing to UMIs in reported chains, mean reads per UMI = {:.2}",
+            nreads as f64 / numis as f64,
         );
 
         // Print validated UMI stats.
