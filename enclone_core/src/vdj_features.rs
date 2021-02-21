@@ -350,6 +350,9 @@ pub fn cdr2_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
             score_pos.push((score, j));
         }
         reverse_sort(&mut score_pos);
+        if score_pos.is_empty() {
+            return None;
+        }
         Some(score_pos[0].1 + 7)
     } else if chain_type == "TRA" {
         // Six amino acids preceeding the CDR2 start.
