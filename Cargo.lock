@@ -212,7 +212,7 @@ dependencies = [
  "serde_derive",
  "snafu",
  "statrs",
- "strum 0.18.0",
+ "strum",
  "strum_macros 0.18.0",
  "triple_accel",
  "vec_map",
@@ -2186,12 +2186,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57bd81eb48f4c437cadc685403cad539345bf703d78e63707418431cecd4522b"
 
 [[package]]
-name = "strum"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7318c509b5ba57f18533982607f24070a55d353e90d4cae30c467cdb2ad5ac5c"
-
-[[package]]
 name = "strum_macros"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2423,7 +2417,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0fc3f83b280ed4a11de489b4fdbc755f8cd53783#0fc3f83b280ed4a11de489b4fdbc755f8cd53783"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=6de76764677ed28e1065d7b89f782641aa7bd364#6de76764677ed28e1065d7b89f782641aa7bd364"
 dependencies = [
  "align_tools",
  "amino",
@@ -2434,7 +2428,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2442,8 +2436,8 @@ dependencies = [
  "sha2",
  "stats_utils",
  "string_utils",
- "strum 0.20.0",
- "strum_macros 0.20.1",
+ "strum",
+ "strum_macros 0.18.0",
  "vdj_types",
  "vector_utils",
 ]
@@ -2451,12 +2445,12 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0fc3f83b280ed4a11de489b4fdbc755f8cd53783#0fc3f83b280ed4a11de489b4fdbc755f8cd53783"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=6de76764677ed28e1065d7b89f782641aa7bd364#6de76764677ed28e1065d7b89f782641aa7bd364"
 dependencies = [
  "serde",
  "serde_json",
- "strum 0.20.0",
- "strum_macros 0.20.1",
+ "strum",
+ "strum_macros 0.18.0",
 ]
 
 [[package]]
