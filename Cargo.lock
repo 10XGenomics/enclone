@@ -2251,9 +2251,9 @@ dependencies = [
 
 [[package]]
 name = "tar"
-version = "0.4.32"
+version = "0.4.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0313546c01d59e29be4f09687bcb4fb6690cec931cc3607b6aec7a0e417f4cc6"
+checksum = "c0bcfbd6a598361fda270d82469fff3d65089dc33e175c9a131f7b4cd395f228"
 dependencies = [
  "filetime",
  "libc",
@@ -2428,7 +2428,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2437,7 +2437,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "strum",
- "strum_macros 0.18.0",
+ "strum_macros 0.20.1",
  "vdj_types",
  "vector_utils",
 ]
@@ -2450,7 +2450,7 @@ dependencies = [
  "serde",
  "serde_json",
  "strum",
- "strum_macros 0.18.0",
+ "strum_macros 0.20.1",
 ]
 
 [[package]]

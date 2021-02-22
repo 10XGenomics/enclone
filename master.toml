@@ -51,7 +51,7 @@ stirling_numbers = "0.1.2"
 string_utils = "0.1.1"
 superslice = "1"
 tables = "0.1.2"
-tar = "0.4.32"
+tar = "0.4.33"
 tilde-expand = "0.1.1"
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="6de76764677ed28e1065d7b89f782641aa7bd364" }
 vector_utils = "0.1.3"
