@@ -2437,7 +2437,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=98378dfdb87d2ffe4bc24e32820ea00eb350f4e4#98378dfdb87d2ffe4bc24e32820ea00eb350f4e4"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=26dbf3cbe75e0335877dcc3ca0322c8bc704a7b6#26dbf3cbe75e0335877dcc3ca0322c8bc704a7b6"
 dependencies = [
  "align_tools",
  "amino",
@@ -2465,7 +2465,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=98378dfdb87d2ffe4bc24e32820ea00eb350f4e4#98378dfdb87d2ffe4bc24e32820ea00eb350f4e4"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=26dbf3cbe75e0335877dcc3ca0322c8bc704a7b6#26dbf3cbe75e0335877dcc3ca0322c8bc704a7b6"
 dependencies = [
  "enum-iterator",
  "serde",
