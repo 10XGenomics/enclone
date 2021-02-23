@@ -2437,7 +2437,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=e0657450c60eaef09e05e59d983524c255a8cfee#e0657450c60eaef09e05e59d983524c255a8cfee"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=98378dfdb87d2ffe4bc24e32820ea00eb350f4e4#98378dfdb87d2ffe4bc24e32820ea00eb350f4e4"
 dependencies = [
  "align_tools",
  "amino",
@@ -2448,7 +2448,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
@@ -2457,7 +2457,7 @@ dependencies = [
  "stats_utils",
  "string_utils",
  "strum",
- "strum_macros 0.20.1",
+ "strum_macros 0.18.0",
  "vdj_types",
  "vector_utils",
 ]
@@ -2465,13 +2465,13 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.1.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=e0657450c60eaef09e05e59d983524c255a8cfee#e0657450c60eaef09e05e59d983524c255a8cfee"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=98378dfdb87d2ffe4bc24e32820ea00eb350f4e4#98378dfdb87d2ffe4bc24e32820ea00eb350f4e4"
 dependencies = [
  "enum-iterator",
  "serde",
  "serde_json",
  "strum",
- "strum_macros 0.20.1",
+ "strum_macros 0.18.0",
 ]
 
 [[package]]
