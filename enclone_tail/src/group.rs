@@ -1790,6 +1790,9 @@ pub fn group_and_print_clonotypes(
             nreads as f64 / numis as f64,
         );
         if known && ctl.gen_opt.internal_run {
+            if ctl.gen_opt.no_uncap_sim {
+                nreads_adjusted = nreads as f64;
+            }
             fwriteln!(
                 logx,
                 "   • read utilization = {:.1}%\n     (please see notes in the file UNDOCUMENTED)",
