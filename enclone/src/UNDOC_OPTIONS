@@ -291,7 +291,7 @@ CLONOTYPE_GROUP_NAMES=filename
 read utilization - This is a stat generated with the SUMMARY option, in internal mode.  It is the
 fraction of reads that are assigned to chains by enclone.  It has the following issues:
 1. It doesn't account for reads that are lost because of capping in assembly.  Internally, we
-can work around this by removing the capping on a cellranger branch.
+can work around this by removing the capping on a cellranger branch.  (Done now.)
 2. It would not be correct if read one was significantly longer than 28 bases, so that it could 
 contribute to assembly.
 
