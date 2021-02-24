@@ -1409,6 +1409,7 @@ pub fn group_and_print_clonotypes(
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
     let (mut numis, mut nreads) = (0, 0);
+    let mut nreads_adjusted = 0.0;
     let mut numis2 = 0;
     let mut ncells2 = 0;
     for i in 0..nclono {
@@ -1430,7 +1431,13 @@ pub fn group_and_print_clonotypes(
                     if ex.share.len() == 2 {
                         numis2 += ex.clones[k][m].umi_count;
                     }
-                    nreads += ex.clones[k][m].read_count;
+                    let n = ex.clones[k][m].read_count;
+                    nreads += n;
+                    let mut x = n as f64;
+                    if ex.clones[k][0].frac_reads_used.is_some() {
+                        x /= ex.clones[k][0].frac_reads_used.unwrap() as f64 / 1_000_000.0;
+                    }
+                    nreads_adjusted += x;
                 }
             }
         }
@@ -1786,7 +1793,7 @@ pub fn group_and_print_clonotypes(
             fwriteln!(
                 logx,
                 "   • read utilization = {:.1}%\n     (please see notes in the file UNDOCUMENTED)",
-                100.0 * nreads as f64 / read_pairs as f64
+                100.0 * nreads_adjusted / read_pairs as f64
             );
         }
 

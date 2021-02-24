@@ -165,6 +165,14 @@ fn parse_vector_entry_from_json(
         }
     }
 
+    // Read fraction_of_reads_for_this_barcode_provided_as_input_to_assembly.
+
+    let mut frac_reads_used = None;
+    let f = v["fraction_of_reads_for_this_barcode_provided_as_input_to_assembly"].as_f64();
+    if f.is_some() {
+        frac_reads_used = Some((f.unwrap() * 1_000_000.0).round() as u32);
+    }
+
     // Reannotate.
 
     if reannotate || ctl.gen_opt.reprod {
@@ -566,6 +574,7 @@ fn parse_vector_entry_from_json(
         chain_type: chain_type.clone(),
         annv: annv.clone(),
         validated_umis: valu,
+        frac_reads_used: frac_reads_used,
     });
 }
 

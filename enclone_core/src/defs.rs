@@ -747,6 +747,7 @@ pub struct TigData {
     pub chain_type: String,                   // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
     pub validated_umis: Option<Vec<String>>,  // validated UMIs
+    pub frac_reads_used: Option<u32>,         // fraction of reads passed to assembly stage in CR
 }
 
 // The ExactClonotype data structure stores information that could be exhibited as a
@@ -772,6 +773,7 @@ pub struct TigData0 {
     pub read_count: usize,                   // number of reads supporting contig
     pub marked: bool,                        // if marked for possible deletion
     pub validated_umis: Option<Vec<String>>, // validated UMIs
+    pub frac_reads_used: Option<u32>,        // fraction of reads passed to assembly stage in CR
 }
 
 #[derive(Clone)]
