@@ -300,3 +300,4 @@ NO_UNCAP_SIM: turn off uncapping simulation
 ===================================================================================================
 
 HAPS_DEBUG: turn on debug mode for the HAPS option
+HAPS_JOIN=iterations,sep: single-thread the join parallel loop and profile it

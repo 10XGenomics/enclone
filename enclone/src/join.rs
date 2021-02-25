@@ -96,32 +96,6 @@ pub fn join_exacts(
     ctl.perf_stats(&timer1, "join setup");
     let timer2 = Instant::now();
 
-    /*
-            PrettyTrace::new()
-                .profile2(1000, 0.0)
-                // .haps_debug()
-                // .haps_raw()
-                .whitelist(&vec![
-                    "amino",
-                    "ansi_escape",
-                    "binary_vec_io",
-                    "enclone",
-                    "equiv",
-                    "graph_simple",
-                    "io_utils",
-                    "marsoc",
-                    "mirror_sparse_matrix",
-                    "perf_stats",
-                    "stats_utils",
-                    "stirling_numbers",
-                    "string_utils",
-                    "tables",
-                    "vector_utils",
-                ])
-                .ctrlc()
-                .on();
-    */
-
     let joinf = |r: &mut (
         usize,
         usize,
@@ -471,14 +445,34 @@ pub fn join_exacts(
         }
     };
 
-    let parallel = false;
-    if parallel {
+    if !ctl.gen_opt.haps_join {
         results.par_iter_mut().for_each(joinf);
     } else {
+        PrettyTrace::new()
+            .profile2(ctl.gen_opt.haps_join_count, ctl.gen_opt.haps_join_sep)
+            .whitelist(&vec![
+                "amino",
+                "ansi_escape",
+                "binary_vec_io",
+                "enclone",
+                "equiv",
+                "graph_simple",
+                "io_utils",
+                "marsoc",
+                "mirror_sparse_matrix",
+                "perf_stats",
+                "stats_utils",
+                "stirling_numbers",
+                "string_utils",
+                "tables",
+                "vector_utils",
+            ])
+            .ctrlc()
+            .on();
         results.iter_mut().for_each(joinf);
+        complete_profiling();
     }
 
-    complete_profiling();
     ctl.perf_stats(&timer2, "in main part of join");
     for l in 0..results.len() {
         for j in 0..results[l].5.len() {

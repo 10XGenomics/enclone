@@ -800,6 +800,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
             }
+        } else if arg.starts_with("HAPS_JOIN=") {
+            ctl.gen_opt.haps_join = true;
+            ctl.gen_opt.haps_join_count = arg.between("HAPS_JOIN=", ",").force_usize();
+            ctl.gen_opt.haps_join_sep = arg.after(",").force_f64() as f32;
         } else if arg == "TREE" {
             ctl.gen_opt.tree = ".".to_string();
         } else if arg == "TREE=const" {
