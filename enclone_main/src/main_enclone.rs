@@ -32,6 +32,7 @@ use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
+use pretty_trace::*;
 use rayon::prelude::*;
 use regex::Regex;
 use serde_json::Value;
@@ -60,6 +61,7 @@ pub fn main_enclone(args: &Vec<String>) {
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
+    let mut haps = false;
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
             print_cpu = true;
@@ -72,6 +74,9 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         if args[i] == "COMP2" {
             comp2 = true;
+        }
+        if args[i].starts_with("HAPS=") {
+            haps = true;
         }
     }
     if comp && !comp2 {
@@ -2502,6 +2507,9 @@ pub fn main_enclone(args: &Vec<String>) {
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
+    }
+    if haps {
+        complete_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {

@@ -587,7 +587,7 @@ dependencies = [
  "pager",
  "perf_stats",
  "petgraph 0.4.13",
- "pretty_trace",
+ "pretty_trace 0.3.3 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=faf30071a2324b6b7654f51962d431c2ed62c079)",
  "rayon",
  "regex",
  "serde",
@@ -662,7 +662,7 @@ dependencies = [
  "io_utils",
  "itertools 0.9.0",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.3.3 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=faf30071a2324b6b7654f51962d431c2ed62c079)",
  "rayon",
  "regex",
  "serde",
@@ -698,7 +698,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray 0.14.0",
  "permutation",
- "pretty_trace",
+ "pretty_trace 0.3.3 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=faf30071a2324b6b7654f51962d431c2ed62c079)",
  "rayon",
  "regex",
  "serde",
@@ -744,7 +744,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray 0.14.0",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.3.3 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=faf30071a2324b6b7654f51962d431c2ed62c079)",
  "rayon",
  "serde",
  "serde_derive",
@@ -1359,7 +1359,7 @@ checksum = "0b3786cdebaa008fd8ef2c688895c15a9fc8e80c073e632207cabbbdd8224990"
 dependencies = [
  "binary_vec_io",
  "io_utils",
- "pretty_trace",
+ "pretty_trace 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1690,6 +1690,23 @@ name = "pretty_trace"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6b615452539e604539c76d752af9e62f3f153e59ebae5fe202bd0dbd3c452bd"
+dependencies = [
+ "backtrace",
+ "failure",
+ "io_utils",
+ "lazy_static",
+ "libc",
+ "nix 0.18.0",
+ "rayon",
+ "stats_utils",
+ "string_utils",
+ "vector_utils",
+]
+
+[[package]]
+name = "pretty_trace"
+version = "0.3.3"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=faf30071a2324b6b7654f51962d431c2ed62c079#faf30071a2324b6b7654f51962d431c2ed62c079"
 dependencies = [
  "backtrace",
  "failure",
@@ -2449,7 +2466,7 @@ dependencies = [
  "io_utils",
  "itertools 0.10.0",
  "kmer_lookup",
- "pretty_trace",
+ "pretty_trace 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_json",
  "sha2",
