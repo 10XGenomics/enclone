@@ -35,7 +35,7 @@ itertools = "0.9.0"
 mirror_sparse_matrix = "0.1.8"
 ndarray = ">= 0.14"
 permutation = "0.2.5"
-pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="faf30071a2324b6b7654f51962d431c2ed62c079" }
+pretty_trace = "0.3.5"
 rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
