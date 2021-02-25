@@ -587,7 +587,7 @@ dependencies = [
  "pager",
  "perf_stats",
  "petgraph 0.4.13",
- "pretty_trace",
+ "pretty_trace 0.4.0",
  "rayon",
  "regex",
  "serde",
@@ -662,7 +662,7 @@ dependencies = [
  "io_utils",
  "itertools 0.9.0",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.4.0",
  "rayon",
  "regex",
  "serde",
@@ -698,7 +698,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray 0.14.0",
  "permutation",
- "pretty_trace",
+ "pretty_trace 0.4.0",
  "rayon",
  "regex",
  "serde",
@@ -744,7 +744,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray 0.14.0",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.4.0",
  "rayon",
  "serde",
  "serde_derive",
@@ -1359,7 +1359,7 @@ checksum = "0b3786cdebaa008fd8ef2c688895c15a9fc8e80c073e632207cabbbdd8224990"
 dependencies = [
  "binary_vec_io",
  "io_utils",
- "pretty_trace",
+ "pretty_trace 0.3.5",
 ]
 
 [[package]]
@@ -1690,6 +1690,24 @@ name = "pretty_trace"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b232890cc01f473646abf96176cc65df14bc71de2df64037c08f3eb8abc47db"
+dependencies = [
+ "backtrace",
+ "failure",
+ "io_utils",
+ "lazy_static",
+ "libc",
+ "nix 0.18.0",
+ "rayon",
+ "stats_utils",
+ "string_utils",
+ "vector_utils",
+]
+
+[[package]]
+name = "pretty_trace"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25918c3862b90c42b189ac9204744a7d2a9a95e47abe7888338295f9e45464bc"
 dependencies = [
  "backtrace",
  "failure",
@@ -2449,7 +2467,7 @@ dependencies = [
  "io_utils",
  "itertools 0.10.0",
  "kmer_lookup",
- "pretty_trace",
+ "pretty_trace 0.3.5",
  "serde",
  "serde_json",
  "sha2",
