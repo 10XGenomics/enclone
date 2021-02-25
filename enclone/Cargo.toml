@@ -33,7 +33,7 @@ itertools = "0.9.0"
 mirror_sparse_matrix = "0.1"
 perf_stats = "0.1.2"
 petgraph = "0.4.13"
-pretty_trace = "0.4.1"
+pretty_trace = "0.4.2"
 rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
@@ -42,7 +42,7 @@ serde_json = "*"
 stats_utils = "0.1"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0c96c6ab8fbe455ea0068fc8cf51d1112c429f6d" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="bb8ae7dd7130198bf3caa960214079fb1c5fdd0b" }
 vector_utils = "0.1.3"
 
 [target.'cfg(not(windows))'.dependencies]
