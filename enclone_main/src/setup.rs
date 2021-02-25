@@ -145,6 +145,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             PrettyTrace::new()
                 .message(&thread_message)
                 .profile(happening)
+                .haps_debug()
                 .whitelist(&vec![
                     "amino",
                     "ansi_escape",
