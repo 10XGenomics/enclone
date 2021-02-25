@@ -565,7 +565,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HAPS", "HTML", "PRE"];
+    let set_nothing = [
+        "BC",
+        "BI",
+        "EMAIL",
+        "GEX",
+        "HAPS",
+        "HAPS_DEBUG",
+        "HTML",
+        "PRE",
+    ];
 
     // Traverse arguments.
 

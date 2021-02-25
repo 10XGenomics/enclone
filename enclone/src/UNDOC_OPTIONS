@@ -296,3 +296,7 @@ can work around this by removing the capping on a cellranger branch.  (Done now.
 contribute to assembly.
 
 NO_UNCAP_SIM: turn off uncapping simulation
+
+===================================================================================================
+
+HAPS_DEBUG: turn on debug mode for the HAPS option

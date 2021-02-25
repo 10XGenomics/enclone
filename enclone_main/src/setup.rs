@@ -130,6 +130,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     if !nopretty && !ctl.gen_opt.cellranger {
         let mut happening = 0;
+        let mut haps_debug = false;
         let mut ctrlc = false;
         for i in 1..args.len() {
             if args[i].starts_with("HAPS=") {
@@ -139,9 +140,35 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if is_simple_arg(&args[i], "CTRLC") {
                 ctrlc = true;
             }
+            if args[i] == "HAPS_DEBUG" {
+                haps_debug = true;
+            }
         }
         let thread_message = new_thread_message();
-        if happening > 0 {
+        if happening > 0 && !haps_debug {
+            PrettyTrace::new()
+                .message(&thread_message)
+                .profile(happening)
+                .whitelist(&vec![
+                    "amino",
+                    "ansi_escape",
+                    "binary_vec_io",
+                    "enclone",
+                    "equiv",
+                    "graph_simple",
+                    "io_utils",
+                    "marsoc",
+                    "mirror_sparse_matrix",
+                    "perf_stats",
+                    "stats_utils",
+                    "stirling_numbers",
+                    "string_utils",
+                    "tables",
+                    "vector_utils",
+                ])
+                .ctrlc()
+                .on();
+        } else if happening > 0 {
             PrettyTrace::new()
                 .message(&thread_message)
                 .profile(happening)
