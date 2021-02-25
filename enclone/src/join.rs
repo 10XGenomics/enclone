@@ -450,23 +450,7 @@ pub fn join_exacts(
     } else {
         PrettyTrace::new()
             .profile2(ctl.gen_opt.haps_join_count, ctl.gen_opt.haps_join_sep)
-            .whitelist(&vec![
-                "amino",
-                "ansi_escape",
-                "binary_vec_io",
-                "enclone",
-                "equiv",
-                "graph_simple",
-                "io_utils",
-                "marsoc",
-                "mirror_sparse_matrix",
-                "perf_stats",
-                "stats_utils",
-                "stirling_numbers",
-                "string_utils",
-                "tables",
-                "vector_utils",
-            ])
+            .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
             .ctrlc()
             .on();
         results.iter_mut().for_each(joinf);

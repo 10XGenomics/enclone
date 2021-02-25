@@ -149,23 +149,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             PrettyTrace::new()
                 .message(&thread_message)
                 .profile(happening)
-                .whitelist(&vec![
-                    "amino",
-                    "ansi_escape",
-                    "binary_vec_io",
-                    "enclone",
-                    "equiv",
-                    "graph_simple",
-                    "io_utils",
-                    "marsoc",
-                    "mirror_sparse_matrix",
-                    "perf_stats",
-                    "stats_utils",
-                    "stirling_numbers",
-                    "string_utils",
-                    "tables",
-                    "vector_utils",
-                ])
+                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
                 .ctrlc()
                 .on();
         } else if happening > 0 {
@@ -173,23 +157,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 .message(&thread_message)
                 .profile(happening)
                 .haps_debug()
-                .whitelist(&vec![
-                    "amino",
-                    "ansi_escape",
-                    "binary_vec_io",
-                    "enclone",
-                    "equiv",
-                    "graph_simple",
-                    "io_utils",
-                    "marsoc",
-                    "mirror_sparse_matrix",
-                    "perf_stats",
-                    "stats_utils",
-                    "stirling_numbers",
-                    "string_utils",
-                    "tables",
-                    "vector_utils",
-                ])
+                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
                 .ctrlc()
                 .on();
         } else if ctrlc {

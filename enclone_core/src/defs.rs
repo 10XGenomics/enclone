@@ -12,6 +12,24 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
+pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
+    "amino",
+    "ansi_escape",
+    "binary_vec_io",
+    "enclone",
+    "equiv",
+    "graph_simple",
+    "io_utils",
+    "marsoc",
+    "mirror_sparse_matrix",
+    "perf_stats",
+    "stats_utils",
+    "stirling_numbers",
+    "string_utils",
+    "tables",
+    "vector_utils",
+];
+
 pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
 
 // Field (variable) names.
