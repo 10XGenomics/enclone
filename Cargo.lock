@@ -757,6 +757,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-iterator"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c79a6321a1197d7730510c7e3f6cb80432dfefecb32426de8cea0aa19b4bb8d7"
+dependencies = [
+ "enum-iterator-derive",
+]
+
+[[package]]
+name = "enum-iterator-derive"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e94aa31f7c0dc764f57896dc615ddd76fc13b0d5dca7eb6cc5e018a5a09ec06"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "enum-map"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2376,7 +2396,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0dcc6bccef869a3fa448cbdd6fc5cb8c42d27d3f#0dcc6bccef869a3fa448cbdd6fc5cb8c42d27d3f"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0c96c6ab8fbe455ea0068fc8cf51d1112c429f6d#0c96c6ab8fbe455ea0068fc8cf51d1112c429f6d"
 dependencies = [
  "align_tools",
  "amino",
@@ -2387,7 +2407,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace 0.4.1",
  "serde",
@@ -2403,10 +2423,11 @@ dependencies = [
 
 [[package]]
 name = "vdj_types"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1ec381196298d13e83bfa7ad9391e9c7e759af43dce872ac910f22f2a5b8d72"
+checksum = "b618bec2106048add444ec1ef4b38c867bb1c598336af1a9a7965b891427ea03"
 dependencies = [
+ "enum-iterator",
  "serde",
  "serde_json",
  "strum",
