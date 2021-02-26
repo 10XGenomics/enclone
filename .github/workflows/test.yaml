@@ -32,34 +32,37 @@ jobs:
 
       # set up caching (duplicated verbatim below)
       #
-      # The purge is there because at one point, before we put the purge in, we observed that
-      # Mac builds would sometimes fail with an error about prost.  These failures would come and
-      # go as we made commits which should not have had an effect on anything related to prost.
-      # Please do not remove the purge as we do not want to accidentally go back to the state where
-      # builds failed intermittently.
+      # We have observed that Mac builds on GitHub Actions sometimes fail with errors about 
+      # crates, including prost.  These errors are observed to come and go as unrelated commits
+      # are made.  We believe these errors are associated with caching.
+      #
+      # 1. We added a purge step, which worked for a while, then exhibited the same error
+      # phenotype.  Now turned off.
+      #
+      # 2. We turned off the caching.  This seems to have solved the problem.
 
-      - name: purge
-        run: sudo /usr/sbin/purge
-      - name: Cache cargo registry
-        uses: actions/cache@v2
-        with:
-          path: ~/.cargo/registry
-          key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-registry-
-      - name: Cache cargo git index
-        uses: actions/cache@v2
-        with:
-          path: ~/.cargo/git
-          key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
-          restore-keys: ${{runner.os}}-cargo-git-
-      - name: Cache cargo build
-        uses: actions/cache@v2
-        with:
-          path: target
-          key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
-          restore-keys: |
-            ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
-            ${{runner.os}}-cargo-target-
+      # - name: purge
+      #   run: sudo /usr/sbin/purge
+      # - name: Cache cargo registry
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.cargo/registry
+      #     key: ${{runner.os}}-cargo-registry-${{hashFiles('Cargo.lock')}}
+      #     restore-keys: ${{runner.os}}-cargo-registry-
+      # - name: Cache cargo git index
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.cargo/git
+      #     key: ${{runner.os}}-cargo-git-${{hashFiles('Cargo.lock')}}
+      #     restore-keys: ${{runner.os}}-cargo-git-
+      # - name: Cache cargo build
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: target
+      #     key: ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-${{hashFiles('**/Cargo.toml')}}-${{hashFiles('**/*.rs')}}
+      #     restore-keys: |
+      #       ${{runner.os}}-cargo-target-${{hashFiles('Cargo.lock')}}-
+      #       ${{runner.os}}-cargo-target-
 
       # start the real work
 
