@@ -22,7 +22,7 @@ failure = "0.1.6"
 prost = ">=0.6.1, <0.8"
 serde = "1.0.90"
 serde_derive = "1.0"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="f55dcbaabd63aa0ba5a8d25288bdfe8e41e2279e" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="685060f7ab9751f13809930646b8a920f117ecaa" }
 
 [build-dependencies]
 prost-build = ">=0.6.1, <0.8"

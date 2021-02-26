@@ -160,12 +160,12 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "binary_vec_io"
-version = "0.1.6"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3f800ff06814ca3bfc302e3844ef6df6fb5f2e19b6a3f181b9a91287abf3ab8"
+checksum = "60f47422c60539cf4816a50f9ac4680889db923daf93367b5d95d32b5755f2a4"
 dependencies = [
  "failure",
- "itertools 0.9.0",
+ "itertools 0.10.0",
 ]
 
 [[package]]
@@ -580,12 +580,12 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
  "petgraph 0.4.13",
- "pretty_trace 0.4.2",
+ "pretty_trace",
  "rayon",
  "regex",
  "serde",
@@ -632,7 +632,7 @@ dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "string_utils",
  "tables",
 ]
@@ -658,9 +658,9 @@ dependencies = [
  "flate2",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "perf_stats",
- "pretty_trace 0.4.2",
+ "pretty_trace",
  "rayon",
  "regex",
  "serde",
@@ -692,11 +692,11 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
- "pretty_trace 0.4.2",
+ "pretty_trace",
  "rayon",
  "regex",
  "serde",
@@ -738,11 +738,11 @@ dependencies = [
  "float-ord",
  "hdf5",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
- "pretty_trace 0.4.2",
+ "pretty_trace",
  "rayon",
  "serde",
  "serde_derive",
@@ -1178,9 +1178,9 @@ dependencies = [
 
 [[package]]
 name = "io_utils"
-version = "0.2.7"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d6a3adf861a0df157ce72e808a87a6290e8dd880be7d863f9a095a8a255f4bc8"
+checksum = "2ac88b70779a2a79019c0ce4ca05138bd8408778120e46381f890f80f178aab8"
 dependencies = [
  "bincode",
  "flate2",
@@ -1351,13 +1351,13 @@ dependencies = [
 
 [[package]]
 name = "mirror_sparse_matrix"
-version = "0.1.8"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b3786cdebaa008fd8ef2c688895c15a9fc8e80c073e632207cabbbdd8224990"
+checksum = "407a4ec14a441a87f472c9e1171014193161abee6c88e553a1c6606dd42c422c"
 dependencies = [
  "binary_vec_io",
  "io_utils",
- "pretty_trace 0.3.5",
+ "pretty_trace",
 ]
 
 [[package]]
@@ -1662,27 +1662,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.3.5"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b232890cc01f473646abf96176cc65df14bc71de2df64037c08f3eb8abc47db"
-dependencies = [
- "backtrace",
- "failure",
- "io_utils",
- "lazy_static",
- "libc",
- "nix 0.18.0",
- "rayon",
- "stats_utils",
- "string_utils",
- "vector_utils",
-]
-
-[[package]]
-name = "pretty_trace"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cd3658d0612fc27d020c59a22b7726fe5f2ff155c9733430e83e53cd48baf42"
+checksum = "b13d206bde265fb492fdacc851b51b2cec78f86793664f910283f792b857aed0"
 dependencies = [
  "backtrace",
  "failure",
@@ -2396,7 +2378,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f55dcbaabd63aa0ba5a8d25288bdfe8e41e2279e#f55dcbaabd63aa0ba5a8d25288bdfe8e41e2279e"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=685060f7ab9751f13809930646b8a920f117ecaa#685060f7ab9751f13809930646b8a920f117ecaa"
 dependencies = [
  "align_tools",
  "amino",
@@ -2407,9 +2389,9 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.9.0",
+ "itertools 0.10.0",
  "kmer_lookup",
- "pretty_trace 0.4.2",
+ "pretty_trace",
  "serde",
  "serde_json",
  "sha2",
