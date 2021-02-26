@@ -31,8 +31,18 @@ jobs:
         uses: actions/checkout@master
 
       # set up caching (duplicated verbatim below)
-      # TURNED OFF BECAUSE IT FAILS INTERMITTENTLY.
+      #
+      # We have observed that Mac builds on GitHub Actions sometimes fail with errors about 
+      # crates, including prost.  These errors are observed to come and go as unrelated commits
+      # are made.  We believe these errors are associated with caching.
+      #
+      # 1. We added a purge step, which worked for a while, then exhibited the same error
+      # phenotype.  Now turned off.
+      #
+      # 2. We turned off the caching.  This seems to have solved the problem.
 
+      # - name: purge
+      #   run: sudo /usr/sbin/purge
       # - name: Cache cargo registry
       #   uses: actions/cache@v2
       #   with:

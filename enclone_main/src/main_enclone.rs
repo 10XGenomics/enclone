@@ -3,6 +3,7 @@
 // See README for documentation.
 
 use self::refx::*;
+use crate::setup::*;
 use crate::split_orbits::*;
 use amino::*;
 use debruijn::dna_string::DnaString;
@@ -17,20 +18,11 @@ use enclone::load_gex::*;
 use enclone::misc1::*;
 use enclone::misc2::*;
 use enclone::misc3::*;
-use enclone::proc_args::*;
-use enclone::proc_args2::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
 use enclone_core::defs::*;
 use enclone_core::vdj_features::*;
-use enclone_core::*;
-use enclone_help::help1::*;
-use enclone_help::help2::*;
-use enclone_help::help3::*;
-use enclone_help::help4::*;
-use enclone_help::help5::*;
-use enclone_help::help_utils::*;
 use enclone_print::define_mat::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
@@ -63,203 +55,13 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
-    let t = Instant::now();
-    // Provide help if requested.
-
-    {
-        if args.len() == 2 && (args[1] == "version" || args[1] == "--version") {
-            println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
-            std::process::exit(0);
-        }
-        let mut args = args.clone();
-        let mut to_delete = vec![false; args.len()];
-        let mut nopager = false;
-        let mut plain = false;
-        let mut long_help = false;
-        for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
-                nopager = true;
-                to_delete[i] = true;
-            } else if args[i] == "HTML" {
-                ctl.gen_opt.html = true;
-                ctl.gen_opt.html_title = "enclone output".to_string();
-                to_delete[i] = true;
-            } else if args[i].starts_with("HTML=") {
-                ctl.gen_opt.html = true;
-                let mut title = args[i].after("HTML=").to_string();
-                if title.starts_with("\"") && title.ends_with("\"") {
-                    title = title.between("\"", "\"").to_string();
-                }
-                ctl.gen_opt.html_title = title;
-                to_delete[i] = true;
-            } else if args[i] == "SVG" {
-                ctl.gen_opt.svg = true;
-                to_delete[i] = true;
-            } else if args[i] == "STABLE_DOC" {
-                ctl.gen_opt.stable_doc = true;
-                to_delete[i] = true;
-            } else if args[i] == "FORCE_EXTERNAL" {
-                to_delete[i] = true;
-            } else if args[i] == "LONG_HELP" {
-                long_help = true;
-                to_delete[i] = true;
-            } else if args[i].starts_with("MAX_CORES=") {
-                to_delete[i] = true;
-            } else if args[i].starts_with("PRE=") {
-                to_delete[i] = true;
-            } else if args[i] == "PLAIN" {
-                to_delete[i] = true;
-                plain = true;
-                unsafe {
-                    PLAIN = true;
-                }
-            }
-        }
-        if ctl.gen_opt.html && ctl.gen_opt.svg {
-            eprintln!("\nBoth HTML and SVG cannot be used at the same time.\n");
-            std::process::exit(1);
-        }
-        erase_if(&mut args, &to_delete);
-        if args.len() == 1 || args.contains(&"help".to_string()) {
-            PrettyTrace::new().on();
-            setup_pager(!nopager);
-        }
-        let mut help_all = false;
-        if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
-            unsafe {
-                HELP_ALL = true;
-            }
-            help_all = true;
-        }
-        let mut h = HelpDesk::new(plain, help_all, long_help, ctl.gen_opt.html);
-        help1(&args, &mut h);
-        help2(&args, &ctl, &mut h);
-        help3(&args, &mut h);
-        help4(&args, &mut h);
-        help5(&args, &ctl, &mut h);
-    }
-
-    // Pretest for some options.
-
-    ctl.pretty = true;
-    let mut nopretty = false;
-    ctl.gen_opt.h5 = true;
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "PLAIN") {
-            ctl.pretty = false;
-        }
-        if is_simple_arg(&args[i], "NOPRETTY") {
-            nopretty = true;
-        }
-        if is_simple_arg(&args[i], "COMP") {
-            ctl.comp = true;
-        }
-        if is_simple_arg(&args[i], "COMP2") {
-            ctl.comp = true;
-            ctl.comp2 = true;
-        }
-        if is_simple_arg(&args[i], "CELLRANGER") {
-            ctl.gen_opt.cellranger = true;
-        }
-        if is_simple_arg(&args[i], "NH5") {
-            ctl.gen_opt.h5 = false;
-        }
-    }
-
-    // Test for happening mode and turn on pretty trace.
-
-    if !nopretty && !ctl.gen_opt.cellranger {
-        let mut happening = 0;
-        let mut ctrlc = false;
-        for i in 1..args.len() {
-            if args[i].starts_with("HAPS=") {
-                // should actually test for usize
-                happening = args[i].after("HAPS=").force_usize();
-            }
-            if is_simple_arg(&args[i], "CTRLC") {
-                ctrlc = true;
-            }
-        }
-        let thread_message = new_thread_message();
-        if happening > 0 {
-            PrettyTrace::new()
-                .message(&thread_message)
-                .profile(happening)
-                .whitelist(&vec![
-                    "amino",
-                    "ansi_escape",
-                    "binary_vec_io",
-                    "enclone",
-                    "equiv",
-                    "graph_simple",
-                    "io_utils",
-                    "marsoc",
-                    "mirror_sparse_matrix",
-                    "perf_stats",
-                    "stats_utils",
-                    "stirling_numbers",
-                    "string_utils",
-                    "tables",
-                    "vector_utils",
-                ])
-                .ctrlc()
-                .on();
-        } else if ctrlc {
-            PrettyTrace::new().message(&thread_message).ctrlc().on();
-        } else {
-            let args: Vec<String> = env::args().collect();
-            let exit_message = format!(
-                "Something has gone badly wrong.  You have probably encountered an internal \
-                error in enclone.\n\n\
-                Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-                above and also the following version information:\n\
-                {} : {}.\n\n\
-                Your command was:\n\n{}\n\n\
-                🌸 Thank you and have a nice day! 🌸",
-                env!("CARGO_PKG_VERSION"),
-                version_string(),
-                args.iter().format(" "),
-            );
-            PrettyTrace::new().exit_message(&exit_message).on();
-            let mut nopager = false;
-            for i in 1..args.len() {
-                if args[i] == "NOPAGER" {
-                    nopager = true;
-                }
-            }
-            setup_pager(!nopager);
-        }
-    }
-    ctl.perf_stats(&t, "in first part of setup");
-
-    // Process args (and set defaults for them).
-
-    proc_args(&mut ctl, &args);
-
-    // Dump lenas.
-
-    for i in 1..args.len() {
-        if is_simple_arg(&args[i], "DUMP_INTERNAL_IDS") {
-            let mut x = Vec::<usize>::new();
-            for y in ctl.origin_info.dataset_id.iter() {
-                x.push(y.force_usize());
-            }
-            x.sort();
-            println!("\n{}\n", x.iter().format(","));
-            std::process::exit(0);
-        }
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
+    let mut haps = false;
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
             print_cpu = true;
@@ -272,6 +74,9 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         if args[i] == "COMP2" {
             comp2 = true;
+        }
+        if args[i].starts_with("HAPS=") {
+            haps = true;
         }
     }
     if comp && !comp2 {
@@ -325,8 +130,8 @@ pub fn main_enclone(args: &Vec<String>) {
     }
 
     // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
-    // has to occur after loading GEX data.  This could also occur after loading only the
-    // feature list, which would be better.
+    // has to occur after loading GEX data.  This could also occur after loading only the feature
+    // list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
     let twoof = Instant::now();
@@ -2702,6 +2507,9 @@ pub fn main_enclone(args: &Vec<String>) {
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
+    }
+    if haps {
+        complete_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {

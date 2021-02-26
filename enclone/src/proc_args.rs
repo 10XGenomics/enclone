@@ -417,6 +417,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NGRAPH_FILTER", &mut ctl.gen_opt.ngraph_filter),
         ("NGROUP", &mut ctl.gen_opt.ngroup),
         ("NIMPROPER", &mut ctl.merge_all_impropers),
+        ("NO_UNCAP_SIM", &mut ctl.gen_opt.no_uncap_sim),
         ("NON_CELL_MARK", &mut ctl.clono_filt_opt.non_cell_mark),
         ("NOPRINT", &mut ctl.gen_opt.noprint),
         ("NOTE_SIMPLE", &mut ctl.clono_print_opt.note_simple),
@@ -564,7 +565,16 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HAPS", "HTML", "PRE"];
+    let set_nothing = [
+        "BC",
+        "BI",
+        "EMAIL",
+        "GEX",
+        "HAPS",
+        "HAPS_DEBUG",
+        "HTML",
+        "PRE",
+    ];
 
     // Traverse arguments.
 
@@ -790,6 +800,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
             }
+        } else if arg.starts_with("HAPS_JOIN=") {
+            ctl.gen_opt.haps_join = true;
+            ctl.gen_opt.haps_join_count = arg.between("HAPS_JOIN=", ",").force_usize();
+            ctl.gen_opt.haps_join_sep = arg.after(",").force_f64() as f32;
         } else if arg == "TREE" {
             ctl.gen_opt.tree = ".".to_string();
         } else if arg == "TREE=const" {

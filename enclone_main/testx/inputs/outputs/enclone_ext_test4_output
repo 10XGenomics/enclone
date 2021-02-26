@@ -30,4 +30,8 @@ SUMMARY STATISTICS
    • estimated T-T doublet rate = 1.4% = 23/1672 = cells with 4 chains / cells with 2 or 4 chains
    • mean over middle third of contig UMI counts (TRB) = 2.70
    • mean over middle third of contig UMI counts (TRA) = 10.48
+   • mean over middle third of cell UMI counts for cells having two chains = 15.42
+   • mean UMIs per cell = 18.65
+   • mean UMIs per cell having two chains = 23.77
+   • for reads contributing to UMIs in reported chains, mean reads per UMI = 941.65
 

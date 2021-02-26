@@ -20,30 +20,30 @@ amino = "0.1.4"
 ansi_escape = "0.1.0"
 assert_cmd = "0.12.0"
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
-bio = ">=0.32"
+bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
 debruijn = "0.3.2"
-dirs = "2.0.2"
+dirs = "3.0.1"
 enclone_core = { path = "../enclone_core" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
 graph_simple = "0.1.1"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
-itertools = "0.9.0"
-mirror_sparse_matrix = "0.1.7"
-perf_stats = "0.1.2"
+itertools = ">= 0.8, <= 0.11"
+mirror_sparse_matrix = "0.1"
+perf_stats = "0.1.3"
 petgraph = "0.4.13"
-pretty_trace = "0.3.2"
-rayon = "1.3"
+pretty_trace = "0.4"
+rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
-serde_derive = "1.0.102"
+serde_derive = "1.0"
 serde_json = "*"
-stats_utils = "0.1.2"
+stats_utils = "0.1"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="2216c0b0b5c607792e90d37ff9e2a89f4c684602" }
 vector_utils = "0.1.3"
 
 [target.'cfg(not(windows))'.dependencies]
-pager = "0.15.0"
+pager = "0.16.0"

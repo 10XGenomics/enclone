@@ -18,6 +18,7 @@ use enclone_core::defs::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
+use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::*;
 use std::collections::HashMap;
@@ -94,7 +95,15 @@ pub fn join_exacts(
     }
     ctl.perf_stats(&timer1, "join setup");
     let timer2 = Instant::now();
-    results.par_iter_mut().for_each(|r| {
+
+    let joinf = |r: &mut (
+        usize,
+        usize,
+        usize,
+        usize,
+        Vec<(usize, usize, bool, Vec<u8>)>,
+        Vec<(usize, usize)>,
+    )| {
         let (i, j) = (r.0, r.1);
         let joins = &mut r.2;
         let errors = &mut r.3;
@@ -434,7 +443,20 @@ pub fn join_exacts(
             */
             logplus.push((info[k1].clonotype_index, info[k2].clonotype_index, err, log));
         }
-    });
+    };
+
+    if !ctl.gen_opt.haps_join {
+        results.par_iter_mut().for_each(joinf);
+    } else {
+        PrettyTrace::new()
+            .profile2(ctl.gen_opt.haps_join_count, ctl.gen_opt.haps_join_sep)
+            .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
+            .ctrlc()
+            .on();
+        results.iter_mut().for_each(joinf);
+        complete_profiling();
+    }
+
     ctl.perf_stats(&timer2, "in main part of join");
     for l in 0..results.len() {
         for j in 0..results[l].5.len() {

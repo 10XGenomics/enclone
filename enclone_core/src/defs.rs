@@ -12,6 +12,24 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
+pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
+    "amino",
+    "ansi_escape",
+    "binary_vec_io",
+    "enclone",
+    "equiv",
+    "graph_simple",
+    "io_utils",
+    "marsoc",
+    "mirror_sparse_matrix",
+    "perf_stats",
+    "stats_utils",
+    "stirling_numbers",
+    "string_utils",
+    "tables",
+    "vector_utils",
+];
+
 pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
 
 // Field (variable) names.
@@ -514,6 +532,11 @@ pub struct GeneralOpt {
     pub subset_json: String,
     pub fold_headers: bool,
     pub domain: String,
+    pub no_uncap_sim: bool,
+
+    pub haps_join: bool,
+    pub haps_join_count: usize,
+    pub haps_join_sep: f32,
 }
 
 // Allele-finding algorithmic options.
@@ -746,7 +769,8 @@ pub struct TigData {
     pub read_count: usize,                    // number of reads supporting contig
     pub chain_type: String,                   // e.g. IGH
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
-    pub validated_umis: Vec<String>,          // validated UMIs
+    pub validated_umis: Option<Vec<String>>,  // validated UMIs
+    pub frac_reads_used: Option<u32>,         // fraction of reads passed to assembly stage in CR
 }
 
 // The ExactClonotype data structure stores information that could be exhibited as a
@@ -757,21 +781,22 @@ pub struct TigData {
 
 #[derive(Clone)]
 pub struct TigData0 {
-    pub quals: Vec<u8>,              // quality scores, truncated to V..J
-    pub v_start: usize,              // start of V on full contig sequence
-    pub j_stop: usize,               // stop of J on full contig sequence
-    pub c_start: Option<usize>,      // start of C on full contig sequence
-    pub full_seq: Vec<u8>,           // full contig sequence
-    pub barcode: String,             // barcode
-    pub tigname: String,             // name of contig
-    pub dataset_index: usize,        // index of dataset
-    pub origin_index: Option<usize>, // index of origin (sample)
-    pub donor_index: Option<usize>,  // index of donor
-    pub tag_index: Option<usize>,    // index of tag
-    pub umi_count: usize,            // number of UMIs supporting contig
-    pub read_count: usize,           // number of reads supporting contig
-    pub marked: bool,                // if marked for possible deletion
-    pub validated_umis: Vec<String>, // validated UMIs
+    pub quals: Vec<u8>,                      // quality scores, truncated to V..J
+    pub v_start: usize,                      // start of V on full contig sequence
+    pub j_stop: usize,                       // stop of J on full contig sequence
+    pub c_start: Option<usize>,              // start of C on full contig sequence
+    pub full_seq: Vec<u8>,                   // full contig sequence
+    pub barcode: String,                     // barcode
+    pub tigname: String,                     // name of contig
+    pub dataset_index: usize,                // index of dataset
+    pub origin_index: Option<usize>,         // index of origin (sample)
+    pub donor_index: Option<usize>,          // index of donor
+    pub tag_index: Option<usize>,            // index of tag
+    pub umi_count: usize,                    // number of UMIs supporting contig
+    pub read_count: usize,                   // number of reads supporting contig
+    pub marked: bool,                        // if marked for possible deletion
+    pub validated_umis: Option<Vec<String>>, // validated UMIs
+    pub frac_reads_used: Option<u32>,        // fraction of reads passed to assembly stage in CR
 }
 
 #[derive(Clone)]

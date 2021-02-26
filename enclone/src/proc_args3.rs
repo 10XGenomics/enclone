@@ -23,11 +23,20 @@ fn fetch_url(url: &str) -> String {
     let req = attohttpc::get(url.clone()).read_timeout(Duration::new(TIMEOUT, 0));
     let response = req.send();
     if response.is_err() {
-        panic!("Failed to access URL {} at step 1.", url);
+        panic!("Failed to access URL {}.", url);
     }
     let response = response.unwrap();
     if !response.is_success() {
-        panic!("Failed to access URL {} at step 2.", url);
+        let msg = response.text().unwrap();
+        if msg.contains("Not found") {
+            eprintln!(
+                "\nAttempt to access the URL\n{}\nfailed with \"Not found\".  Could there \
+                be something wrong with the id?\n",
+                url
+            );
+            std::process::exit(1);
+        }
+        panic!("Failed to access URL {}: {}.", url, msg);
     }
     response.text().unwrap()
 }

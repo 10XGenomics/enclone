@@ -15,14 +15,14 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-bio = ">=0.32"
+bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
 bytes = ">=0.5.5, <2"
-byteorder = "1.3.2"
+byteorder = "1.4.2"
 failure = "0.1.6"
 prost = ">=0.6.1, <0.8"
 serde = "1.0.90"
-serde_derive = "1.0.102"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0fc3f83b280ed4a11de489b4fdbc755f8cd53783" }
+serde_derive = "1.0"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="2216c0b0b5c607792e90d37ff9e2a89f4c684602" }
 
 [build-dependencies]
 prost-build = ">=0.6.1, <0.8"

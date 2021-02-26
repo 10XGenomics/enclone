@@ -34,6 +34,15 @@ use tar::{Builder, Header};
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+fn median(x: &[usize]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h] as f64
+    } else {
+        (x[h - 1] + x[h]) as f64 / 2.0
+    }
+}
+
 pub fn group_and_print_clonotypes(
     tall: &Instant,
     refdata: &RefData,
@@ -1311,27 +1320,34 @@ pub fn group_and_print_clonotypes(
         clustal_dna.unwrap().finish().unwrap();
     }
 
-    // Compute two umi stats.
+    // Compute some umi stats.
 
     let nclono = exacts.len();
     let mut umish = Vec::<usize>::new();
     let mut umisl = Vec::<usize>::new();
+    let mut umis = Vec::<usize>::new();
     for i in 0..nclono {
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
             for k in 0..ex.clones.len() {
+                let mut nu = 0;
                 for l in 0..ex.share.len() {
                     if ex.share[l].left {
                         umish.push(ex.clones[k][l].umi_count);
                     } else {
                         umisl.push(ex.clones[k][l].umi_count);
                     }
+                    nu += ex.clones[k][l].umi_count;
+                }
+                if ex.share.len() == 2 {
+                    umis.push(nu);
                 }
             }
         }
     }
     umish.sort();
     umisl.sort();
+    umis.sort();
     let (mut middleh, mut denomh) = (0, 0);
     for j in umish.len() / 3..(2 * umish.len()) / 3 {
         middleh += umish[j];
@@ -1349,6 +1365,15 @@ pub fn group_and_print_clonotypes(
     let mut middle_mean_umisl = 0.0;
     if denoml > 0 {
         middle_mean_umisl = (middlel as f64) / (denoml as f64);
+    }
+    let (mut middle, mut denom) = (0, 0);
+    for j in umis.len() / 3..(2 * umis.len()) / 3 {
+        middle += umis[j];
+        denom += 1;
+    }
+    let mut middle_mean_umis = 0.0;
+    if denom > 0 {
+        middle_mean_umis = (middle as f64) / (denom as f64);
     }
 
     // Compute n1 and n2 and n23 and n4.
@@ -1383,6 +1408,10 @@ pub fn group_and_print_clonotypes(
     let mut ncc = Vec::<(usize, usize)>::new();
     let mut sd = Vec::<(Option<usize>, Option<usize>)>::new();
     let mut merges = 0;
+    let (mut numis, mut nreads) = (0, 0);
+    let mut nreads_adjusted = 0.0;
+    let mut numis2 = 0;
+    let mut ncells2 = 0;
     for i in 0..nclono {
         if rsi[i].mat.len() == 2 {
             two_chain += 1;
@@ -1390,10 +1419,26 @@ pub fn group_and_print_clonotypes(
         let mut n = 0;
         for j in 0..exacts[i].len() {
             let ex = &exact_clonotypes[exacts[i][j]];
+            if ex.share.len() == 2 {
+                ncells2 += ex.ncells();
+            }
             n += ex.ncells();
             for k in 0..ex.clones.len() {
                 let x = &ex.clones[k][0];
                 sd.push((x.origin_index, x.donor_index));
+                for m in 0..ex.clones[k].len() {
+                    numis += ex.clones[k][m].umi_count;
+                    if ex.share.len() == 2 {
+                        numis2 += ex.clones[k][m].umi_count;
+                    }
+                    let n = ex.clones[k][m].read_count;
+                    nreads += n;
+                    let mut x = n as f64;
+                    if ex.clones[k][0].frac_reads_used.is_some() {
+                        x /= ex.clones[k][0].frac_reads_used.unwrap() as f64 / 1_000_000.0;
+                    }
+                    nreads_adjusted += x;
+                }
             }
         }
         if n >= 2 {
@@ -1435,8 +1480,8 @@ pub fn group_and_print_clonotypes(
                 known = false;
             }
         }
+        let (mut cells, mut read_pairs) = (0, 0);
         if known {
-            let (mut cells, mut read_pairs) = (0, 0);
             for i in 0..ctl.origin_info.n() {
                 let c = ctl.origin_info.cells_cellranger[i].unwrap();
                 let rpc = ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
@@ -1724,6 +1769,87 @@ pub fn group_and_print_clonotypes(
             lchain,
             middle_mean_umisl,
         );
+        fwriteln!(
+            logx,
+            "   • mean over middle third of cell UMI counts for cells having two chains = {:.2}",
+            middle_mean_umis,
+        );
+        fwriteln!(
+            logx,
+            "   • mean UMIs per cell = {:.2}",
+            numis as f64 / ncells as f64,
+        );
+        fwriteln!(
+            logx,
+            "   • mean UMIs per cell having two chains = {:.2}",
+            numis2 as f64 / ncells2 as f64,
+        );
+        fwriteln!(
+            logx,
+            "   • for reads contributing to UMIs in reported chains, mean reads per UMI = {:.2}",
+            nreads as f64 / numis as f64,
+        );
+        if known && ctl.gen_opt.internal_run {
+            if ctl.gen_opt.no_uncap_sim {
+                nreads_adjusted = nreads as f64;
+            }
+            fwriteln!(
+                logx,
+                "   • read utilization = {:.1}%\n     (please see notes in the file UNDOCUMENTED)",
+                100.0 * nreads_adjusted / read_pairs as f64
+            );
+        }
+
+        // Print validated UMI stats.
+
+        let mut missing_valid = false;
+        let mut left_valids = Vec::<usize>::new();
+        let mut right_valids = Vec::<usize>::new();
+        let mut lefts = 0;
+        let mut rights = 0;
+        for i in 0..nclono {
+            for j in 0..exacts[i].len() {
+                let ex = &exact_clonotypes[exacts[i][j]];
+                for k in 0..ex.clones.len() {
+                    for m in 0..ex.clones[k].len() {
+                        if ex.clones[k][m].validated_umis.is_none() {
+                            missing_valid = true;
+                        } else {
+                            if ex.share[m].left {
+                                left_valids
+                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                                lefts += ex.clones[k][m].umi_count;
+                            } else {
+                                right_valids
+                                    .push(ex.clones[k][m].validated_umis.as_ref().unwrap().len());
+                                rights += ex.clones[k][m].umi_count;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if !missing_valid && left_valids.len() > 0 && right_valids.len() > 0 {
+            left_valids.sort();
+            right_valids.sort();
+            let (mut left_sum, mut right_sum) = (0, 0);
+            for i in 0..left_valids.len() {
+                left_sum += left_valids[i];
+            }
+            for i in 0..right_valids.len() {
+                right_sum += right_valids[i];
+            }
+            fwriteln!(
+                logx,
+                "   • median validated UMIs: {} = {} ({:.1}%), {} = {} ({:.1}%)",
+                hchain,
+                median(&left_valids),
+                100.0 * left_sum as f64 / lefts as f64,
+                lchain,
+                median(&right_valids),
+                100.0 * right_sum as f64 / rights as f64,
+            );
+        }
 
         // Print marking stats.
 

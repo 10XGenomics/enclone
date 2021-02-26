@@ -594,6 +594,7 @@ fn test_cpu() {
 //    the ring license.
 // 8. webpki OK because we include the webpki license and also that for chromium.
 // 9. instant OK because we include the license.
+// 10. nalgebra OK because currently licensed under Apache-2.0 and there is not NOTICE file.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -611,11 +612,12 @@ fn test_licenses() {
         "exons",
         "vdj_ann",
     ];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 6] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 7] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
         "instant",
+        "nalgebra",
         "ring",
         "webpki",
     ];
@@ -2069,7 +2071,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 19.0258;
+    const REQUIRED_GI: f64 = 18.9996;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \

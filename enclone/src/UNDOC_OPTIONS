@@ -285,3 +285,19 @@ CLONOTYPE_GROUP_NAMES=filename
 * The argument only does something if honeycomb plotting is used.  In that case, the honeycomb
   plot is split by group and each group is given a different (light) background color.
 * Clonotypes that are not assigned to a group are not displayed.
+
+===================================================================================================
+
+read utilization - This is a stat generated with the SUMMARY option, in internal mode.  It is the
+fraction of reads that are assigned to chains by enclone.  It has the following issues:
+1. It doesn't account for reads that are lost because of capping in assembly.  Internally, we
+can work around this by removing the capping on a cellranger branch.  (Done now.)
+2. It would not be correct if read one was significantly longer than 28 bases, so that it could 
+contribute to assembly.
+
+NO_UNCAP_SIM: turn off uncapping simulation
+
+===================================================================================================
+
+HAPS_DEBUG: turn on debug mode for the HAPS option
+HAPS_JOIN=iterations,sep: single-thread the join parallel loop and profile it

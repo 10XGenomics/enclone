@@ -1170,7 +1170,14 @@ pub fn print_clonotypes(
                                             let r = ex.clones[bcl.2][m].read_count;
                                             cx[cp + p] = format!("{}", r);
                                         } else if rsi.cvars[col][p] == "nval".to_string() {
-                                            let n = ex.clones[bcl.2][m].validated_umis.len();
+                                            let mut n = 0;
+                                            if ex.clones[bcl.2][m].validated_umis.is_some() {
+                                                n = ex.clones[bcl.2][m]
+                                                    .validated_umis
+                                                    .as_ref()
+                                                    .unwrap()
+                                                    .len();
+                                            }
                                             cx[cp + p] = format!("{}", n);
                                         }
                                     }
