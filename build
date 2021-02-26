@@ -26,6 +26,18 @@ mkdir -p enclone_main/testx/outputs
 
 cargo fmt --all
 
+# cargo update once a week
+
+set last    = `cat last_cargo_update`
+set now     = `date +%s`
+set elapsed = `expr $now - $last`
+if ( $elapsed > 604800 ) then
+    echo "\nrunning cargo update, as it has been more than one week since it was last done"
+    echo "this could cause problems\n"
+    cargo update
+    echo $now > last_cargo_update
+endif
+
 # compile rust code
 
 cargo b
