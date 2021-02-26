@@ -1718,9 +1718,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.4.5"
+version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b13d206bde265fb492fdacc851b51b2cec78f86793664f910283f792b857aed0"
+checksum = "8228d93e230c656c73d54919a444aaea2d07ccd5a10458a680946da6b6e19e59"
 dependencies = [
  "backtrace",
  "failure",
@@ -2429,7 +2429,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=685060f7ab9751f13809930646b8a920f117ecaa#685060f7ab9751f13809930646b8a920f117ecaa"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=2216c0b0b5c607792e90d37ff9e2a89f4c684602#2216c0b0b5c607792e90d37ff9e2a89f4c684602"
 dependencies = [
  "align_tools",
  "amino",
