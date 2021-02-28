@@ -1807,10 +1807,20 @@ pub fn group_and_print_clonotypes(
         let mut right_valids = Vec::<usize>::new();
         let mut lefts = 0;
         let mut rights = 0;
+        let mut have_both = 0;
+        let mut have_both_denom = 0;
         for i in 0..nclono {
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
                 for k in 0..ex.clones.len() {
+                    if ex.clones[k][0].validated_umis.is_some() && ex.clones[k].len() == 2 {
+                        have_both_denom += 1;
+                        if ex.clones[k][0].validated_umis.as_ref().unwrap().len() > 0
+                            && ex.clones[k][1].validated_umis.as_ref().unwrap().len() > 0
+                        {
+                            have_both += 1;
+                        }
+                    }
                     for m in 0..ex.clones[k].len() {
                         if ex.clones[k][m].validated_umis.is_none() {
                             missing_valid = true;
@@ -1848,6 +1858,11 @@ pub fn group_and_print_clonotypes(
                 lchain,
                 median(&right_valids),
                 100.0 * right_sum as f64 / rights as f64,
+            );
+            fwriteln!(
+                logx,
+                "   • fraction of two-chain cells having validated UMIs for both chains: {:.1}%",
+                100.0 * have_both as f64 / have_both_denom as f64
             );
         }
 
