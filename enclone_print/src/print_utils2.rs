@@ -1346,7 +1346,10 @@ pub fn row_fill(
                 }
             } else if var == "nval" {
                 cvar![j, *var, "".to_string()];
-                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                if pass == 2
+                    && ctl.parseable_opt.pout.len() > 0
+                    && col + 1 <= ctl.parseable_opt.pchains
+                {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                         let mut vals = String::new();
@@ -1488,7 +1491,7 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", median_numis)];
             } else if *var == "u_cell".to_string() {
                 let var = var.clone();
-                if col + 1 <= ctl.parseable_opt.pchains {
+                if pass == 2 && col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                         let mut vals = String::new();
@@ -1521,7 +1524,7 @@ pub fn row_fill(
                 cvar![j, var, format!("{}", rtot)];
             } else if *var == "r_cell".to_string() {
                 let var = var.clone();
-                if col + 1 <= ctl.parseable_opt.pchains {
+                if pass == 2 && col + 1 <= ctl.parseable_opt.pchains {
                     let varc = format!("{}{}", var, col + 1);
                     if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                         let mut vals = String::new();
