@@ -1356,11 +1356,7 @@ pub fn row_fill(
                             }
                             let mut n = 0;
                             if ex.clones[k][mid].validated_umis.is_some() {
-                                n = ex.clones[k][mid]
-                                    .validated_umis
-                                    .as_ref()
-                                    .unwrap()
-                                    .len();
+                                n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
                             }
                             vals += &format!("{}", n);
                         }
