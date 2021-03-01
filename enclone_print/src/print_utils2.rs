@@ -1346,6 +1346,27 @@ pub fn row_fill(
                 }
             } else if var == "nval" {
                 cvar![j, *var, "".to_string()];
+                if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += POUT_SEP;
+                            }
+                            let mut n = 0;
+                            if ex.clones[k][mid].validated_umis.is_some() {
+                                n = ex.clones[k][mid]
+                                    .validated_umis
+                                    .as_ref()
+                                    .unwrap()
+                                    .len();
+                            }
+                            vals += &format!("{}", n);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
             } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;
