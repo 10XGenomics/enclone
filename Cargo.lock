@@ -2541,7 +2541,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=2216c0b0b5c607792e90d37ff9e2a89f4c684602#2216c0b0b5c607792e90d37ff9e2a89f4c684602"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=b11a537a17f0ae134fdad8a4d275c5e959bb8560#b11a537a17f0ae134fdad8a4d275c5e959bb8560"
 dependencies = [
  "align_tools",
  "amino",
@@ -2554,7 +2554,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "kmer_lookup",
- "pretty_trace 0.4.6",
+ "pretty_trace 0.5.1",
  "serde",
  "serde_json",
  "sha2",
