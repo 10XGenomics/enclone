@@ -466,32 +466,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc("", "very slow");
         h.ldoc(
-            "HAPS=n",
-            "Interrupt code n times, at one second intervals, get a traceback, and then tally",
+            "PROFILE",
+            "Profile the code and tally tracebacks.  Normally used with NOPRINT.  This",
         );
         h.doc(
             "",
-            "the tracebacks.  This only works if the n tracebacks can be obtained before",
-        );
-        h.doc(
-            "",
-            "enclone terminates.  Interrupts that occur in the allocator are ignored, and",
-        );
-        h.doc(
-            "",
-            "in some cases, this accounts for most interrupts, resulting in confusing",
-        );
-        h.doc(
-            "",
-            "output.  In such cases, consider using CTRLC or a more sophisticated tool",
-        );
-        h.doc(
-            "",
-            "like perf.  Also HAPS only reports on the master thread, so to get useful",
-        );
-        h.doc(
-            "",
-            "information, you probably need to change an instance in the code of",
+            "turns off paging because paging and profiling do not work correctly together.",
         );
         h.doc(
             "",

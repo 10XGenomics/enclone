@@ -36,12 +36,14 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let mut nopager = false;
         let mut plain = false;
         let mut long_help = false;
-        if ctl.gen_opt.profile.is_some() {
+        if ctl.gen_opt.profile {
             nopager = true;
+            ctl.gen_opt.profile = true;
         }
         for i in 1..args.len() {
             if args[i] == "NOPAGER" {
                 nopager = true;
+                ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
@@ -85,7 +87,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         erase_if(&mut args, &to_delete);
         if args.len() == 1 || args.contains(&"help".to_string()) {
             PrettyTrace::new().on();
-            setup_pager(!nopager);
+            setup_pager(!nopager && !ctl.gen_opt.profile);
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
@@ -186,7 +188,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     nopager = true;
                 }
             }
-            setup_pager(!nopager);
+            setup_pager(!nopager && !ctl.gen_opt.profile);
         }
     }
     ctl.perf_stats(&t, "in first part of setup");

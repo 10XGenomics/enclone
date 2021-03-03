@@ -32,7 +32,7 @@ itertools = ">= 0.8, <= 0.11"
 mirror_sparse_matrix = "0.1"
 ndarray = ">= 0.14"
 perf_stats = "0.1.3"
-pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="f6265d5776d5414eb55577a419cd2bb4962680af" }
+pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="513cb6646a296f3e44374c7b87bc5cc9e45cbdf4" }
 rayon = "1.4"
 serde = "1.0.90"
 serde_derive = "1.0"

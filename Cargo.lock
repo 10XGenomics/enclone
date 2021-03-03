@@ -609,7 +609,7 @@ dependencies = [
  "perf_stats",
  "petgraph 0.4.13",
  "pprof",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f6265d5776d5414eb55577a419cd2bb4962680af)",
+ "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=513cb6646a296f3e44374c7b87bc5cc9e45cbdf4)",
  "rayon",
  "regex",
  "serde",
@@ -684,7 +684,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "perf_stats",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f6265d5776d5414eb55577a419cd2bb4962680af)",
+ "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=513cb6646a296f3e44374c7b87bc5cc9e45cbdf4)",
  "rayon",
  "regex",
  "serde",
@@ -720,7 +720,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f6265d5776d5414eb55577a419cd2bb4962680af)",
+ "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=513cb6646a296f3e44374c7b87bc5cc9e45cbdf4)",
  "rayon",
  "regex",
  "serde",
@@ -766,7 +766,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=f6265d5776d5414eb55577a419cd2bb4962680af)",
+ "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=513cb6646a296f3e44374c7b87bc5cc9e45cbdf4)",
  "rayon",
  "serde",
  "serde_derive",
@@ -1793,7 +1793,7 @@ dependencies = [
 [[package]]
 name = "pretty_trace"
 version = "0.4.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=f6265d5776d5414eb55577a419cd2bb4962680af#f6265d5776d5414eb55577a419cd2bb4962680af"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=513cb6646a296f3e44374c7b87bc5cc9e45cbdf4#513cb6646a296f3e44374c7b87bc5cc9e45cbdf4"
 dependencies = [
  "backtrace",
  "failure",

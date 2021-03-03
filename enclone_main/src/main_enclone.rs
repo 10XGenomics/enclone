@@ -56,22 +56,48 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) {
-
     // Set up stuff, read args, etc.
 
     let mut ctl = EncloneControl::default();
     for i in 0..args.len() {
         let arg = &args[i];
-        if arg.contains("PROFILE=") && arg.after("PROFILE=").parse::<f32>().is_ok() {
-            ctl.gen_opt.profile = Some(arg.after("PROFILE=").parse::<f32>().unwrap());
+        if arg == "PROFILE" {
+            ctl.gen_opt.profile = true;
         }
     }
-    if ctl.gen_opt.profile.is_some() {
-        let mut whitelist = Vec::<String>::new();
-        for x in PRETTY_TRACE_WHITELIST.iter() {
-            whitelist.push(x.to_string());
+    if ctl.gen_opt.profile {
+        let blacklist = [
+            "alloc",
+            "build",
+            "core",
+            "core-arch",
+            "crossbeam-deque",
+            "crossbeam-epoch",
+            "debruijn",
+            "float-ord",
+            "hashbrown",
+            "hdf5-rust",
+            "hdf5-types",
+            "lock_api",
+            "lz4",
+            "ndarray",
+            "parking_lot",
+            "parking_lot_core",
+            "rayon",
+            "rayon-core",
+            "regex",
+            "regex-syntax",
+            "serde",
+            "serde_json",
+            "std",
+            "superslice",
+            "unknown",
+        ];
+        let mut b = Vec::<String>::new();
+        for x in blacklist.iter() {
+            b.push(x.to_string());
         }
-        start_profiling(ctl.gen_opt.profile.unwrap(), &Some(whitelist));
+        start_profiling(&b);
     }
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
@@ -2525,7 +2551,7 @@ pub fn main_enclone(args: &Vec<String>) {
     if haps {
         complete_profiling();
     }
-    if ctl.gen_opt.profile.is_some() {
+    if ctl.gen_opt.profile {
         stop_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.

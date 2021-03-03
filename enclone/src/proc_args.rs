@@ -559,6 +559,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "PLAIN",
         "PRINT_CPU",
         "PRINT_CPU_INFO",
+        "PROFILE",
         "SVG",
     ];
 
@@ -574,7 +575,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "HAPS_DEBUG",
         "HTML",
         "PRE",
-        "PROFILE",
     ];
 
     // Traverse arguments.
