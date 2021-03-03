@@ -609,7 +609,7 @@ dependencies = [
  "perf_stats",
  "petgraph 0.4.13",
  "pprof",
- "pretty_trace 0.5.1",
+ "pretty_trace 0.5.2",
  "rayon",
  "regex",
  "serde",
@@ -684,7 +684,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "perf_stats",
- "pretty_trace 0.5.1",
+ "pretty_trace 0.5.2",
  "rayon",
  "regex",
  "serde",
@@ -720,7 +720,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
- "pretty_trace 0.5.1",
+ "pretty_trace 0.5.2",
  "rayon",
  "regex",
  "serde",
@@ -766,7 +766,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
- "pretty_trace 0.5.1",
+ "pretty_trace 0.5.2",
  "rayon",
  "serde",
  "serde_derive",
@@ -1792,9 +1792,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bfb40e7269f8bbabcca2f330b28bba36bc31410f5a42d02a3a267e923b4d95e"
+checksum = "471cfb332f36d51b3fdc0bd3868fb7055e0c38aefb6d758971eddc335ce38cbd"
 dependencies = [
  "backtrace",
  "failure",
@@ -2554,7 +2554,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "kmer_lookup",
- "pretty_trace 0.5.1",
+ "pretty_trace 0.5.2",
  "serde",
  "serde_json",
  "sha2",
