@@ -475,9 +475,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "",
-            "par_iter_mut to iter_mut, to turn off parallelization for a strategically",
+            "However you can pipe the output of enclone to \"less -r\".",
         );
-        h.doc("", "selected section.");
         h.print_tab2();
         h.print("\n");
         h.end_doc();
