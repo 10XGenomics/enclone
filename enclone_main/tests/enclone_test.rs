@@ -2054,7 +2054,7 @@ fn test_executable_size() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 26. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
+// 27. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
 // measures total instructions used.
 
 // NOT BASIC
