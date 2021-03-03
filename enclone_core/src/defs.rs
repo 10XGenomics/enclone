@@ -537,6 +537,8 @@ pub struct GeneralOpt {
     pub haps_join: bool,
     pub haps_join_count: usize,
     pub haps_join_sep: f32,
+
+    pub profile: Option<f32>,
 }
 
 // Allele-finding algorithmic options.

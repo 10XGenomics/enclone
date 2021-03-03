@@ -36,6 +36,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let mut nopager = false;
         let mut plain = false;
         let mut long_help = false;
+        if ctl.gen_opt.profile.is_some() {
+            nopager = true;
+        }
         for i in 1..args.len() {
             if args[i] == "NOPAGER" {
                 nopager = true;

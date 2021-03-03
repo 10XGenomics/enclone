@@ -56,8 +56,23 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) {
+
     // Set up stuff, read args, etc.
 
+    let mut ctl = EncloneControl::default();
+    for i in 0..args.len() {
+        let arg = &args[i];
+        if arg.contains("PROFILE=") && arg.after("PROFILE=").parse::<f32>().is_ok() {
+            ctl.gen_opt.profile = Some(arg.after("PROFILE=").parse::<f32>().unwrap());
+        }
+    }
+    if ctl.gen_opt.profile.is_some() {
+        let mut whitelist = Vec::<String>::new();
+        for x in PRETTY_TRACE_WHITELIST.iter() {
+            whitelist.push(x.to_string());
+        }
+        start_profiling(ctl.gen_opt.profile.unwrap(), &Some(whitelist));
+    }
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
@@ -101,7 +116,6 @@ pub fn main_enclone(args: &Vec<String>) {
             cpu_this_start = fields[13].force_usize();
         }
     }
-    let mut ctl = EncloneControl::default();
     ctl.perf_stats(&tall, "before setup");
     setup(&mut ctl, &args);
 
@@ -2510,6 +2524,9 @@ pub fn main_enclone(args: &Vec<String>) {
     }
     if haps {
         complete_profiling();
+    }
+    if ctl.gen_opt.profile.is_some() {
+        stop_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {

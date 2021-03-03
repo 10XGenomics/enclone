@@ -574,6 +574,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "HAPS_DEBUG",
         "HTML",
         "PRE",
+        "PROFILE",
     ];
 
     // Traverse arguments.
