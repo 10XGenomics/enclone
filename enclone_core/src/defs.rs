@@ -534,10 +534,6 @@ pub struct GeneralOpt {
     pub domain: String,
     pub no_uncap_sim: bool,
 
-    pub haps_join: bool,
-    pub haps_join_count: usize,
-    pub haps_join_sep: f32,
-
     pub profile: bool,
     pub nopager: bool,
 }

@@ -131,41 +131,17 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Test for happening mode and turn on pretty trace.
+    // Turn on pretty trace.
 
     if !nopretty && !ctl.gen_opt.cellranger {
-        let mut happening = 0;
-        let mut haps_debug = false;
         let mut ctrlc = false;
         for i in 1..args.len() {
-            if args[i].starts_with("HAPS=") {
-                // should actually test for usize
-                happening = args[i].after("HAPS=").force_usize();
-            }
             if is_simple_arg(&args[i], "CTRLC") {
                 ctrlc = true;
             }
-            if args[i] == "HAPS_DEBUG" {
-                haps_debug = true;
-            }
         }
         let thread_message = new_thread_message();
-        if happening > 0 && !haps_debug {
-            PrettyTrace::new()
-                .message(&thread_message)
-                .profile(happening)
-                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
-                .ctrlc()
-                .on();
-        } else if happening > 0 {
-            PrettyTrace::new()
-                .message(&thread_message)
-                .profile(happening)
-                .haps_debug()
-                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
-                .ctrlc()
-                .on();
-        } else if ctrlc {
+        if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
             let args: Vec<String> = env::args().collect();

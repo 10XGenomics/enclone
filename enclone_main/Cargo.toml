@@ -29,7 +29,7 @@ hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
 perf_stats = "0.1.3"
-pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="3c630892809d48ef1417d9aacff3f065adaefb31" }
+pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="df7518a3cb85791bdfe10ea35142d282174986e6" }
 rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"

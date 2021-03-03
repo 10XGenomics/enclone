@@ -27,7 +27,7 @@ ndarray = ">= 0.14"
 pager = "0.16.0"
 permutation = "0.2.5"
 petgraph = "0.4.13"
-pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="3c630892809d48ef1417d9aacff3f065adaefb31" }
+pretty_trace = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="df7518a3cb85791bdfe10ea35142d282174986e6" }
 prost = ">=0.6.1, <0.8"
 prost-build = ">=0.6.1, <0.8"
 rayon = "1.4"
