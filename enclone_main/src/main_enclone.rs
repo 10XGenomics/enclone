@@ -2499,6 +2499,12 @@ pub fn main_enclone(args: &Vec<String>) {
         &drefs,
     );
 
+    // Report profiling.
+
+    if ctl.gen_opt.profile {
+        stop_profiling();
+    }
+
     // Report computational performance.
 
     let delta;
@@ -2543,9 +2549,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
-    }
-    if ctl.gen_opt.profile {
-        stop_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {
