@@ -609,7 +609,7 @@ dependencies = [
  "perf_stats",
  "petgraph 0.4.13",
  "pprof",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=df7518a3cb85791bdfe10ea35142d282174986e6)",
+ "pretty_trace 0.5.1",
  "rayon",
  "regex",
  "serde",
@@ -684,7 +684,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "perf_stats",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=df7518a3cb85791bdfe10ea35142d282174986e6)",
+ "pretty_trace 0.5.1",
  "rayon",
  "regex",
  "serde",
@@ -720,7 +720,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=df7518a3cb85791bdfe10ea35142d282174986e6)",
+ "pretty_trace 0.5.1",
  "rayon",
  "regex",
  "serde",
@@ -766,7 +766,7 @@ dependencies = [
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
- "pretty_trace 0.4.6 (git+https://github.com/10XGenomics/rust-toolbox.git?rev=df7518a3cb85791bdfe10ea35142d282174986e6)",
+ "pretty_trace 0.5.1",
  "rayon",
  "serde",
  "serde_derive",
@@ -1403,7 +1403,7 @@ checksum = "407a4ec14a441a87f472c9e1171014193161abee6c88e553a1c6606dd42c422c"
 dependencies = [
  "binary_vec_io",
  "io_utils",
- "pretty_trace 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.4.6",
 ]
 
 [[package]]
@@ -1792,8 +1792,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.4.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=df7518a3cb85791bdfe10ea35142d282174986e6#df7518a3cb85791bdfe10ea35142d282174986e6"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2bfb40e7269f8bbabcca2f330b28bba36bc31410f5a42d02a3a267e923b4d95e"
 dependencies = [
  "backtrace",
  "failure",
@@ -2553,7 +2554,7 @@ dependencies = [
  "io_utils",
  "itertools",
  "kmer_lookup",
- "pretty_trace 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.4.6",
  "serde",
  "serde_json",
  "sha2",
