@@ -38,5 +38,5 @@ vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="b11a53
 vector_utils = "0.1.3"
 
 [build-dependencies]
-chrono = "0.4.15"
+chrono = "0.4.19"
 string_utils = "0.1.1"
