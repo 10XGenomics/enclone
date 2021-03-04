@@ -58,10 +58,51 @@ use vector_utils::*;
 pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
+    let mut ctl = EncloneControl::default();
+    for i in 0..args.len() {
+        let arg = &args[i];
+        if arg == "PROFILE" {
+            ctl.gen_opt.profile = true;
+        }
+    }
+    if ctl.gen_opt.profile {
+        let blacklist = [
+            "alloc",
+            "build",
+            "core",
+            "core-arch",
+            "crossbeam-deque",
+            "crossbeam-epoch",
+            "debruijn",
+            "float-ord",
+            "hashbrown",
+            "hdf5-rust",
+            "hdf5-types",
+            "lock_api",
+            "lz4",
+            "ndarray",
+            "parking_lot",
+            "parking_lot_core",
+            "rayon",
+            "rayon-core",
+            "regex",
+            "regex-syntax",
+            "rust-bio",
+            "serde",
+            "serde_json",
+            "std",
+            "superslice",
+            "unknown",
+        ];
+        let mut b = Vec::<String>::new();
+        for x in blacklist.iter() {
+            b.push(x.to_string());
+        }
+        start_profiling(&b);
+    }
     let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
-    let mut haps = false;
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
             print_cpu = true;
@@ -74,9 +115,6 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         if args[i] == "COMP2" {
             comp2 = true;
-        }
-        if args[i].starts_with("HAPS=") {
-            haps = true;
         }
     }
     if comp && !comp2 {
@@ -101,7 +139,6 @@ pub fn main_enclone(args: &Vec<String>) {
             cpu_this_start = fields[13].force_usize();
         }
     }
-    let mut ctl = EncloneControl::default();
     ctl.perf_stats(&tall, "before setup");
     setup(&mut ctl, &args);
 
@@ -2463,6 +2500,14 @@ pub fn main_enclone(args: &Vec<String>) {
         &drefs,
     );
 
+    // Report profiling.
+
+    if ctl.gen_opt.profile {
+        let t = Instant::now();
+        stop_profiling();
+        ctl.perf_stats(&t, "summarizing profiling");
+    }
+
     // Report computational performance.
 
     let delta;
@@ -2507,9 +2552,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") {
         println!("");
-    }
-    if haps {
-        complete_profiling();
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
     if !ctl.gen_opt.cellranger {

@@ -7,13 +7,14 @@
 align_tools = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="591b502c92a7d3825fbe7bb20994e0787cc29a9d" }
 amino = "0.1.4"
 ansi_escape = "0.1.0"
-assert_cmd = "0.12.0"
+assert_cmd = "1.0.3"
+# bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
 # bio = ">=0.32"
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
-chrono = "0.4.15"
+chrono = "0.4.19"
 debruijn = "0.3.2"
 dirs = "3.0.1"
 edit-distance = "2.1.0"
@@ -40,7 +41,7 @@ pager = "0.16.0"
 perf_stats = "0.1.3"
 permutation = "0.2.5"
 petgraph = "0.4.13"
-pretty_trace = "0.4"
+pretty_trace = "0.5"
 prost = ">=0.6.1, <0.8"
 prost-build = ">=0.6.1, <0.8"
 rayon = "1.4"
@@ -55,5 +56,5 @@ superslice = "1.0.0"
 tables = "0.1.2"
 tar = "0.4.33"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="2216c0b0b5c607792e90d37ff9e2a89f4c684602" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="b11a537a17f0ae134fdad8a4d275c5e959bb8560" }
 vector_utils = "0.1.3"

@@ -1432,30 +1432,37 @@ enclone help display
 
 <span style="font-weight:bold;">other options that control clonotype display</span>
 
-┌───────────────┬───────────────────────────────────────────────────────────────────────────────┐
-│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,             │
-│               │  for each such line, displaying the barcode name, the number of UMIs assigned,│
-│               │  and the gene expression UMI count, if applicable, under gex_med              │
-├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a              │
-│               │  single line near the top of the printout for a given clonotype               │
-├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near     │
-│               │  the top of the printout for a given clonotype                                │
-├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,          │
-│               │  near the top of the printout for a given clonotype                           │
-├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│SUM            │  print sum row for each clonotype                                             │
-│MEAN           │  print mean row for each clonotype                                            │
-├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,  │
-│               │  show a C if the column lies within a complementarity-determining region,     │
-│               │  and F if it lies in a framework region, and an L if it lies in the leader    │
-│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,  │
-│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,     │
-│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                      │
-└───────────────┴───────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬─────────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,               │
+│               │  for each such line, displaying the barcode name, the number of UMIs assigned,  │
+│               │  and the gene expression UMI count, if applicable, under gex_med                │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a                │
+│               │  single line near the top of the printout for a given clonotype                 │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near       │
+│               │  the top of the printout for a given clonotype                                  │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,            │
+│               │  near the top of the printout for a given clonotype                             │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│SUM            │  print sum row for each clonotype                                               │
+│MEAN           │  print mean row for each clonotype                                              │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,    │
+│               │  show a C if the column lies within a complementarity-determining region,       │
+│               │  and F if it lies in a framework region, and an L if it lies in the leader      │
+│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,    │
+│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,       │
+│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                        │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│CONX           │  add an additional row to each clonotype table, showing the amino acid consensus│
+│               │  across the clonotype, with X for each variant residue                          │
+├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
+│CONP           │  add an additional row to each clonotype table, showing the amino acid consensus│
+│               │  across the clonotype, with a property symbol whenever two different amino acids│
+│               │  are observed, see "enclone help cvars"                                         │
+└───────────────┴─────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">options that control clonotype grouping</span>
 
@@ -1786,28 +1793,22 @@ enclone help developer
 For instructions on how to compile, please see
 <span style="color:#25bc24;">bit.ly/enclone</span>.
 
-┌───────────┬──────────────────────────────────────────────────────────────────────────────────┐
-│COMP       │  report computational performance stats; use this with NOPRINT if you            │
-│           │  want to suppress visual output, and with NOPAGER if you                         │
-│           │  want output to be unbuffered                                                    │
-│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --               │
-├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert          │
-├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive         │
-│           │  but easy profiling method, to know what the code is doing if it seems to be     │
-│           │  very slow                                                                       │
-├───────────┼──────────────────────────────────────────────────────────────────────────────────┤
-│HAPS=n     │  Interrupt code n times, at one second intervals, get a traceback, and then tally│
-│           │  the tracebacks.  This only works if the n tracebacks can be obtained before     │
-│           │  enclone terminates.  Interrupts that occur in the allocator are ignored, and    │
-│           │  in some cases, this accounts for most interrupts, resulting in confusing        │
-│           │  output.  In such cases, consider using CTRLC or a more sophisticated tool       │
-│           │  like perf.  Also HAPS only reports on the master thread, so to get useful       │
-│           │  information, you probably need to change an instance in the code of             │
-│           │  par_iter_mut to iter_mut, to turn off parallelization for a strategically       │
-│           │  selected section.                                                               │
-└───────────┴──────────────────────────────────────────────────────────────────────────────────┘
+┌───────────┬───────────────────────────────────────────────────────────────────────────────┐
+│COMP       │  report computational performance stats; use this with NOPRINT if you         │
+│           │  want to suppress visual output, and with NOPAGER if you                      │
+│           │  want output to be unbuffered                                                 │
+│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --            │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert       │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive      │
+│           │  but easy profiling method, to know what the code is doing if it seems to be  │
+│           │  very slow                                                                    │
+├───────────┼───────────────────────────────────────────────────────────────────────────────┤
+│PROFILE    │  Profile the code and tally tracebacks.  Normally used with NOPRINT.  This    │
+│           │  turns off paging because paging and profiling do not work correctly together.│
+│           │  However you can pipe the output of enclone to "less -r".                     │
+└───────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>
 </body>

@@ -13,8 +13,11 @@ use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
+use amino::*;
+use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
+use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
@@ -1426,6 +1429,77 @@ pub fn print_clonotypes(
                     &exact_clonotypes,
                     &peer_groups,
                 );
+
+                // Insert consensus row.
+
+                if ctl.clono_print_opt.conx || ctl.clono_print_opt.conp {
+                    let style;
+                    if ctl.clono_print_opt.conx {
+                        style = "x";
+                    } else {
+                        style = "p";
+                    }
+                    let mut row = Vec::<String>::new();
+                    row.push("consensus".to_string());
+                    for _ in 1..row1.len() {
+                        row.push("\\ext".to_string());
+                    }
+                    let classes = aa_classes();
+                    for col in 0..rsi.mat.len() {
+                        for m in 0..rsi.cvars[col].len() {
+                            if rsi.cvars[col][m] == "amino".to_string() {
+                                let mut xdots = String::new();
+                                for k in 0..show_aa[col].len() {
+                                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
+                                        xdots.push(' ');
+                                    }
+                                    let p = show_aa[col][k];
+                                    let mut codons = Vec::<Vec<u8>>::new();
+                                    for u in 0..nexacts {
+                                        if mat[col][u].is_some() {
+                                            let seq_amino = rsi.seqss_amino[col][u].clone();
+                                            if 3 * p + 3 <= seq_amino.len() {
+                                                codons.push(seq_amino[3 * p..3 * p + 3].to_vec());
+                                            }
+                                        }
+                                    }
+                                    unique_sort(&mut codons);
+                                    if codons.solo() {
+                                        let codon = &codons[0];
+                                        let aa = codon_to_aa(&codon);
+                                        let mut log = Vec::<u8>::new();
+                                        emit_codon_color_escape(&codon, &mut log);
+                                        log.push(aa);
+                                        emit_end_escape(&mut log);
+                                        xdots += &strme(&log);
+                                    } else {
+                                        let mut aas = Vec::<u8>::new();
+                                        for x in codons.iter() {
+                                            aas.push(codon_to_aa(x));
+                                        }
+                                        unique_sort(&mut aas);
+                                        if aas.solo() {
+                                            xdots.push(aas[0] as char);
+                                        } else if style == "x" {
+                                            xdots += &"X";
+                                        } else {
+                                            for m in classes.iter() {
+                                                if meet_size(&aas, &m.1) == aas.len() {
+                                                    xdots.push(m.0 as char);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                row.push(xdots);
+                            } else {
+                                row.push("".to_string());
+                            }
+                        }
+                    }
+                    rows.push(row);
+                }
 
                 // Insert horizontal line.
 

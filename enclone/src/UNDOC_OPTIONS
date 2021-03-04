@@ -300,4 +300,6 @@ NO_UNCAP_SIM: turn off uncapping simulation
 ===================================================================================================
 
 HAPS_DEBUG: turn on debug mode for the HAPS option
-HAPS_JOIN=iterations,sep: single-thread the join parallel loop and profile it
+
+PROFILE: turn on profiling, normally used with NOPRINT; paging is turned off because this
+This won't work with paging, however you can pipe to "less -r".

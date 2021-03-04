@@ -36,9 +36,14 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         let mut nopager = false;
         let mut plain = false;
         let mut long_help = false;
+        if ctl.gen_opt.profile {
+            nopager = true;
+            ctl.gen_opt.profile = true;
+        }
         for i in 1..args.len() {
             if args[i] == "NOPAGER" {
                 nopager = true;
+                ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
@@ -82,7 +87,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         erase_if(&mut args, &to_delete);
         if args.len() == 1 || args.contains(&"help".to_string()) {
             PrettyTrace::new().on();
-            setup_pager(!nopager);
+            setup_pager(!nopager && !ctl.gen_opt.profile);
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
@@ -126,41 +131,17 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
 
-    // Test for happening mode and turn on pretty trace.
+    // Turn on pretty trace.
 
     if !nopretty && !ctl.gen_opt.cellranger {
-        let mut happening = 0;
-        let mut haps_debug = false;
         let mut ctrlc = false;
         for i in 1..args.len() {
-            if args[i].starts_with("HAPS=") {
-                // should actually test for usize
-                happening = args[i].after("HAPS=").force_usize();
-            }
             if is_simple_arg(&args[i], "CTRLC") {
                 ctrlc = true;
             }
-            if args[i] == "HAPS_DEBUG" {
-                haps_debug = true;
-            }
         }
         let thread_message = new_thread_message();
-        if happening > 0 && !haps_debug {
-            PrettyTrace::new()
-                .message(&thread_message)
-                .profile(happening)
-                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
-                .ctrlc()
-                .on();
-        } else if happening > 0 {
-            PrettyTrace::new()
-                .message(&thread_message)
-                .profile(happening)
-                .haps_debug()
-                .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
-                .ctrlc()
-                .on();
-        } else if ctrlc {
+        if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
             let args: Vec<String> = env::args().collect();
@@ -183,7 +164,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     nopager = true;
                 }
             }
-            setup_pager(!nopager);
+            setup_pager(!nopager && !ctl.gen_opt.profile);
         }
     }
     ctl.perf_stats(&t, "in first part of setup");

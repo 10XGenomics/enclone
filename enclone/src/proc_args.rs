@@ -380,6 +380,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("CON", &mut ctl.allele_print_opt.con),
         ("CON_CON", &mut ctl.gen_opt.con_con),
         ("CON_TRACE", &mut ctl.allele_print_opt.con_trace),
+        ("CONP", &mut ctl.clono_print_opt.conp),
+        ("CONX", &mut ctl.clono_print_opt.conx),
         ("CURRENT_REF", &mut ctl.gen_opt.current_ref),
         ("DEBUG_TABLE_PRINTING", &mut ctl.debug_table_printing),
         ("DEL", &mut ctl.clono_filt_opt.del),
@@ -559,22 +561,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "PLAIN",
         "PRINT_CPU",
         "PRINT_CPU_INFO",
+        "PROFILE",
         "SVG",
     ];
 
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
-    let set_nothing = [
-        "BC",
-        "BI",
-        "EMAIL",
-        "GEX",
-        "HAPS",
-        "HAPS_DEBUG",
-        "HTML",
-        "PRE",
-    ];
+    let set_nothing = ["BC", "BI", "EMAIL", "GEX", "HTML", "PRE"];
 
     // Traverse arguments.
 
@@ -800,10 +794,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     std::process::exit(1);
                 }
             }
-        } else if arg.starts_with("HAPS_JOIN=") {
-            ctl.gen_opt.haps_join = true;
-            ctl.gen_opt.haps_join_count = arg.between("HAPS_JOIN=", ",").force_usize();
-            ctl.gen_opt.haps_join_sep = arg.after(",").force_f64() as f32;
         } else if arg == "TREE" {
             ctl.gen_opt.tree = ".".to_string();
         } else if arg == "TREE=const" {
@@ -1258,6 +1248,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Sanity check other arguments (and more below).
 
+    if ctl.clono_print_opt.conx && ctl.clono_print_opt.conp {
+        eprintln!("\nPlease specify at most one of CONX and CONP.\n");
+        std::process::exit(1);
+    }
     if ctl.clono_filt_opt.cdr3.is_some() && ctl.clono_filt_opt.cdr3_lev.len() > 0 {
         eprintln!(
             "\nPlease use the CDR3 argument to specify either a regular expression or a\n\

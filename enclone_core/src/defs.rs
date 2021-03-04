@@ -534,9 +534,8 @@ pub struct GeneralOpt {
     pub domain: String,
     pub no_uncap_sim: bool,
 
-    pub haps_join: bool,
-    pub haps_join_count: usize,
-    pub haps_join_sep: f32,
+    pub profile: bool,
+    pub nopager: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -645,6 +644,8 @@ pub struct ClonoPrintOpt {
     pub chain_brief: bool, // show abbreviated chain headers
     pub sum: bool,  // print sum row
     pub mean: bool, // print mean row
+    pub conx: bool,
+    pub conp: bool,
 }
 
 // Clonotype grouping options.

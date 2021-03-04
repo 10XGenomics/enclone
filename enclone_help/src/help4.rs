@@ -1138,6 +1138,20 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "show a \\boldred{◼} if the column lies within a complementarity-determining region,",
         );
         h.docpr("", "and otherwise show a \\bold{▮}.");
+        h.ldoc(
+            "CONX",
+            "add an additional row to each clonotype table, showing the amino acid consensus",
+        );
+        h.doc("", "across the clonotype, with X for each variant residue");
+        h.ldoc(
+            "CONP",
+            "add an additional row to each clonotype table, showing the amino acid consensus",
+        );
+        h.doc(
+            "",
+            "across the clonotype, with a property symbol whenever two different amino acids",
+        );
+        h.doc("", "are observed, see \"enclone help cvars\"");
 
         h.print_tab2();
         h.print("\n");

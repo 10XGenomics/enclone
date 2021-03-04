@@ -18,7 +18,6 @@ use enclone_core::defs::*;
 use equiv::EquivRel;
 use io_utils::*;
 use itertools::Itertools;
-use pretty_trace::*;
 use rayon::prelude::*;
 use std::cmp::*;
 use std::collections::HashMap;
@@ -445,17 +444,7 @@ pub fn join_exacts(
         }
     };
 
-    if !ctl.gen_opt.haps_join {
-        results.par_iter_mut().for_each(joinf);
-    } else {
-        PrettyTrace::new()
-            .profile2(ctl.gen_opt.haps_join_count, ctl.gen_opt.haps_join_sep)
-            .whitelist(&PRETTY_TRACE_WHITELIST.to_vec())
-            .ctrlc()
-            .on();
-        results.iter_mut().for_each(joinf);
-        complete_profiling();
-    }
+    results.par_iter_mut().for_each(joinf);
 
     ctl.perf_stats(&timer2, "in main part of join");
     for l in 0..results.len() {
