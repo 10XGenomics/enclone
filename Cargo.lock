@@ -588,7 +588,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -603,7 +603,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -624,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -651,19 +651,19 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "ansi_escape",
  "enclone_core",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "string_utils",
  "tables",
 ]
 
 [[package]]
 name = "enclone_main"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -682,7 +682,7 @@ dependencies = [
  "flate2",
  "hdf5",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -701,7 +701,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -716,7 +716,7 @@ dependencies = [
  "failure",
  "hdf5",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -735,7 +735,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "bio",
  "byteorder",
@@ -750,7 +750,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.42"
+version = "0.5.43"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -762,7 +762,7 @@ dependencies = [
  "float-ord",
  "hdf5",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "mirror_sparse_matrix",
  "ndarray",
  "perf_stats",
