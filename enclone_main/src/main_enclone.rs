@@ -87,6 +87,7 @@ pub fn main_enclone(args: &Vec<String>) {
             "rayon-core",
             "regex",
             "regex-syntax",
+            "rust-bio",
             "serde",
             "serde_json",
             "std",
@@ -2502,7 +2503,9 @@ pub fn main_enclone(args: &Vec<String>) {
     // Report profiling.
 
     if ctl.gen_opt.profile {
+        let t = Instant::now();
         stop_profiling();
+        ctl.perf_stats(&t, "summarizing profiling");
     }
 
     // Report computational performance.
