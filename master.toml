@@ -8,6 +8,7 @@ align_tools = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="59
 amino = "0.1.4"
 ansi_escape = "0.1.0"
 assert_cmd = "1.0.3"
+# bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
 # bio = ">=0.32"
