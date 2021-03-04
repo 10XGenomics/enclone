@@ -128,26 +128,10 @@ dependencies = [
  "flate2",
  "http",
  "log",
- "rustls 0.16.0",
+ "rustls",
  "url",
  "webpki",
- "webpki-roots 0.18.0",
-]
-
-[[package]]
-name = "attohttpc"
-version = "0.16.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdb8867f378f33f78a811a8eb9bf108ad99430d7aad43315dd9319c827ef6247"
-dependencies = [
- "flate2",
- "http",
- "log",
- "rustls 0.18.1",
- "url",
- "webpki",
- "webpki-roots 0.19.0",
- "wildmatch",
+ "webpki-roots",
 ]
 
 [[package]]
@@ -178,12 +162,6 @@ checksum = "0b25d992356d2eb0ed82172f5248873db5560c4721f564b13cb5193bda5e668e"
 dependencies = [
  "byteorder",
 ]
-
-[[package]]
-name = "base64"
-version = "0.12.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3441f0f7b02788e948e47f457ca01f1d7e6d92c693bc132c22b087d3141c03ff"
 
 [[package]]
 name = "base64"
@@ -615,7 +593,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "assert_cmd",
- "attohttpc 0.16.3",
+ "attohttpc",
  "bio",
  "debruijn",
  "dirs",
@@ -689,7 +667,7 @@ version = "0.5.42"
 dependencies = [
  "amino",
  "ansi_escape",
- "attohttpc 0.16.3",
+ "attohttpc",
  "debruijn",
  "enclone",
  "enclone_core",
@@ -1130,7 +1108,7 @@ name = "hdf5-sys"
 version = "0.7.1"
 source = "git+https://github.com/10xGenomics/hdf5-rust.git?rev=d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d#d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d"
 dependencies = [
- "attohttpc 0.12.0",
+ "attohttpc",
  "bzip2",
  "libc",
  "libloading",
@@ -2173,19 +2151,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustls"
-version = "0.18.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d1126dcf58e93cee7d098dbda643b5f92ed724f1f6a63007c1116eed6700c81"
-dependencies = [
- "base64 0.12.3",
- "log",
- "ring",
- "sct",
- "webpki",
-]
-
-[[package]]
 name = "ryu"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2732,15 +2697,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "webpki-roots"
-version = "0.19.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8eff4b7516a57307f9349c64bf34caa34b940b66fed4b2fb3136cb7386e5739"
-dependencies = [
- "webpki",
-]
-
-[[package]]
 name = "which"
 version = "4.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2749,12 +2705,6 @@ dependencies = [
  "libc",
  "thiserror",
 ]
-
-[[package]]
-name = "wildmatch"
-version = "1.0.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2399814fda0d6999a6bfe9b5c7660d836334deb162a09db8b73d5b38fd8c40a"
 
 [[package]]
 name = "winapi"
