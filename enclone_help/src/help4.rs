@@ -1139,19 +1139,19 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.docpr("", "and otherwise show a \\bold{▮}.");
         h.ldoc(
-            "CDR3_AA_CONX",
-            "add an additional row to each clonotype table, showing the consensus for CDR3",
+            "CONX",
+            "add an additional row to each clonotype table, showing the amino acid consensus",
         );
         h.doc("", "across the clonotype, with X for each variant residue");
         h.ldoc(
-            "CDR3_AA_CONP",
-            "add an additional row to each clonotype table, showing the consensus for CDR3",
+            "CONP",
+            "add an additional row to each clonotype table, showing the amino acid consensus",
         );
         h.doc(
             "",
             "across the clonotype, with a property symbol whenever two different amino acids",
         );
-        h.doc("", "are observed, see \"enclone help cvars\".");
+        h.doc("", "are observed, see \"enclone help cvars\"");
 
         h.print_tab2();
         h.print("\n");

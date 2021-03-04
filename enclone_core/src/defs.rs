@@ -644,8 +644,8 @@ pub struct ClonoPrintOpt {
     pub chain_brief: bool, // show abbreviated chain headers
     pub sum: bool,  // print sum row
     pub mean: bool, // print mean row
-    pub cdr3_aa_conx: bool,
-    pub cdr3_aa_conp: bool,
+    pub conx: bool,
+    pub conp: bool,
 }
 
 // Clonotype grouping options.

@@ -19,6 +19,22 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+pub fn aa_classes() -> Vec<(char, Vec<u8>)> {
+    let mut classes = Vec::new();
+    classes.push(('B', b"DN".to_vec()));
+    classes.push(('Z', b"EQ".to_vec()));
+    classes.push(('J', b"IL".to_vec()));
+    classes.push(('-', b"DE".to_vec()));
+    classes.push(('+', b"KHR".to_vec()));
+    classes.push(('Ψ', b"ILMV".to_vec()));
+    classes.push(('π', b"AGPS".to_vec()));
+    classes.push(('Ω', b"FHWY".to_vec()));
+    classes.push(('Φ', b"IFLMVWY".to_vec()));
+    classes.push(('ζ', b"DEHKNQRST".to_vec()));
+    classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
+    classes
+}
+
 pub fn cdr3_aa_con(
     style: &str,
     col: usize,
@@ -35,18 +51,7 @@ pub fn cdr3_aa_con(
             cdr3s.push(ex.share[m.unwrap()].cdr3_aa.clone());
         }
     }
-    let mut classes = Vec::new();
-    classes.push(('B', b"DN".to_vec()));
-    classes.push(('Z', b"EQ".to_vec()));
-    classes.push(('J', b"IL".to_vec()));
-    classes.push(('-', b"DE".to_vec()));
-    classes.push(('+', b"KHR".to_vec()));
-    classes.push(('Ψ', b"ILMV".to_vec()));
-    classes.push(('π', b"AGPS".to_vec()));
-    classes.push(('Ω', b"FHWY".to_vec()));
-    classes.push(('Φ', b"IFLMVWY".to_vec()));
-    classes.push(('ζ', b"DEHKNQRST".to_vec()));
-    classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
+    let classes = aa_classes();
     let mut c = String::new();
     for i in 0..cdr3s[0].len() {
         let mut vals = Vec::<u8>::new();
