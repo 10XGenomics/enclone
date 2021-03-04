@@ -19,6 +19,59 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
+pub fn cdr3_aa_con(
+    style: &str,
+    col: usize,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    rsi: &ColInfo,
+) -> String {
+    let mat = &rsi.mat;
+    let mut cdr3s = Vec::<String>::new();
+    for v in 0..exacts.len() {
+        let m = mat[col][v];
+        if m.is_some() {
+            let ex = &exact_clonotypes[exacts[v]];
+            cdr3s.push(ex.share[m.unwrap()].cdr3_aa.clone());
+        }
+    }
+    let mut classes = Vec::new();
+    classes.push(('B', b"DN".to_vec()));
+    classes.push(('Z', b"EQ".to_vec()));
+    classes.push(('J', b"IL".to_vec()));
+    classes.push(('-', b"DE".to_vec()));
+    classes.push(('+', b"KHR".to_vec()));
+    classes.push(('Ψ', b"ILMV".to_vec()));
+    classes.push(('π', b"AGPS".to_vec()));
+    classes.push(('Ω', b"FHWY".to_vec()));
+    classes.push(('Φ', b"IFLMVWY".to_vec()));
+    classes.push(('ζ', b"DEHKNQRST".to_vec()));
+    classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
+    let mut c = String::new();
+    for i in 0..cdr3s[0].len() {
+        let mut vals = Vec::<u8>::new();
+        for j in 0..cdr3s.len() {
+            vals.push(cdr3s[j].as_bytes()[i]);
+        }
+        unique_sort(&mut vals);
+        if vals.solo() {
+            c.push(vals[0] as char);
+        } else {
+            if style == "x" {
+                c.push('X');
+            } else {
+                for m in classes.iter() {
+                    if meet_size(&vals, &m.1) == vals.len() {
+                        c.push(m.0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    c
+}
+
 fn rounded_median(x: &[usize]) -> usize {
     let h = x.len() / 2;
     if x.len() % 2 == 1 {
@@ -982,47 +1035,11 @@ pub fn row_fill(
             } else if *var == "cdr3_len".to_string() {
                 cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
             } else if *var == "cdr3_aa_conx".to_string() || *var == "cdr3_aa_conp".to_string() {
-                let mut cdr3s = Vec::<String>::new();
-                for v in 0..exacts.len() {
-                    let m = mat[col][v];
-                    if m.is_some() {
-                        let ex = &exact_clonotypes[exacts[v]];
-                        cdr3s.push(ex.share[m.unwrap()].cdr3_aa.clone());
-                    }
-                }
-                let mut classes = Vec::new();
-                classes.push(('B', b"DN".to_vec()));
-                classes.push(('Z', b"EQ".to_vec()));
-                classes.push(('J', b"IL".to_vec()));
-                classes.push(('-', b"DE".to_vec()));
-                classes.push(('+', b"KHR".to_vec()));
-                classes.push(('Ψ', b"ILMV".to_vec()));
-                classes.push(('π', b"AGPS".to_vec()));
-                classes.push(('Ω', b"FHWY".to_vec()));
-                classes.push(('Φ', b"IFLMVWY".to_vec()));
-                classes.push(('ζ', b"DEHKNQRST".to_vec()));
-                classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
-                let mut c = String::new();
-                for i in 0..cdr3s[0].len() {
-                    let mut vals = Vec::<u8>::new();
-                    for j in 0..cdr3s.len() {
-                        vals.push(cdr3s[j].as_bytes()[i]);
-                    }
-                    unique_sort(&mut vals);
-                    if vals.solo() {
-                        c.push(vals[0] as char);
-                    } else {
-                        if *var == "cdr3_aa_conx".to_string() {
-                            c.push('X');
-                        } else {
-                            for m in classes.iter() {
-                                if meet_size(&vals, &m.1) == vals.len() {
-                                    c.push(m.0);
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                let c;
+                if *var == "cdr3_aa_conx" {
+                    c = cdr3_aa_con("x", col, &exacts, &exact_clonotypes, &rsi);
+                } else {
+                    c = cdr3_aa_con("p", col, &exacts, &exact_clonotypes, &rsi);
                 }
                 cvar![j, var, c];
             } else if *var == "fwr1_dna".to_string()
