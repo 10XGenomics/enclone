@@ -571,7 +571,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 12] = [
+pub const SITE_EXAMPLES: [(&str, &str); 13] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -640,5 +640,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 12] = [
     (
         "pages/auto/foursie2.html",
         "BCR=123085 CDR3=CARRYFGVVADAFDIW HTML",
+    ),
+    // 13.
+    (
+        "img/quad_hive.svg",
+        "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" QUAD_HIVE NOPRINT",
     ),
 ];

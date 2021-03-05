@@ -487,6 +487,7 @@ pub struct GeneralOpt {
     pub plot_by_isotype_nolegend: bool,
     pub plot_by_isotype_color: Vec<String>,
     pub plot_by_mark: bool,
+    pub plot_quad: bool,
     pub clonotype_group_names: Option<String>,
     pub origin_color_map: HashMap<String, String>,
     pub use_legend: bool,
