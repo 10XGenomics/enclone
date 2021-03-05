@@ -81,11 +81,13 @@ git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_c
 
 # sweep, to prevent target from becoming gigantic over time
 #
-# Time parameter to be tweaked as needed.  Note that if this turns out to be too slow, we can
-# restrict to running it periodically rather than on every invocation of build.
+# The cap is set at about 10 GB.
+#
+# Note that if this turns out to be too slow, we can restrict to running it periodically rather 
+# than on every invocation of build.
 
 set start = `date +%s`
-cargo sweep -t 7 > /dev/null
+cargo sweep --maxsize 10000 > /dev/null
 if ( $status != 0 ) then
     echo "sweep failed, please try rerunning by hand"
 endif
