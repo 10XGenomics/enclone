@@ -2204,13 +2204,11 @@ fn test_source_code_file_length() {
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
-        let d = format!("../{}/src", d);
-        if path_exists(&d) {
-            dirs.push(d.clone());
-        }
-        let d = format!("../{}/src/bin", d);
-        if path_exists(&d) {
-            dirs.push(d);
+        for x in ["src", "src/bin", "tests"].iter() {
+            let d = format!("../{}/{}", d, x);
+            if path_exists(&d) {
+                dirs.push(d.clone());
+            }
         }
     }
     for d in dirs.iter() {
