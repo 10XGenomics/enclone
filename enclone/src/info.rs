@@ -49,7 +49,6 @@ pub fn build_info(
         let mut tigs_ins = Vec::<Vec<(usize, Vec<u8>)>>::new();
         let mut tigsp = Vec::<DnaString>::new();
         let mut has_del = Vec::<bool>::new();
-        let mut orig_tigs = Vec::<DnaString>::new();
         let (mut vs, mut js) = (Vec::<DnaString>::new(), Vec::<DnaString>::new());
         let mut vsids = Vec::<usize>::new();
         let mut jsids = Vec::<usize>::new();
@@ -62,8 +61,6 @@ pub fn build_info(
         for j in 0..p.share.len() {
             let x = &mut p.share[j];
             tigsp.push(DnaString::from_acgt_bytes(&x.seq));
-            // INCORRECT, TO DO SOMETHING ABOUT LATER:
-            orig_tigs.push(DnaString::from_acgt_bytes(&x.full_seq));
             let jid = x.j_ref_id;
             js.push(refdata.refs[jid].clone());
 
@@ -304,7 +301,6 @@ pub fn build_info(
                         let tigs_aminox = [tigs_amino[i1].clone(), tigs_amino[i2].clone()].to_vec();
                         let tigspx = [tigsp[i1].clone(), tigsp[i2].clone()].to_vec();
                         let has_delx = [has_del[i1], has_del[i2]].to_vec();
-                        let orig_tigsx = [orig_tigs[i1].clone(), orig_tigs[i2].clone()].to_vec();
                         let vsx = [vs[i1].clone(), vs[i2].clone()].to_vec();
                         let jsx = [js[i1].clone(), js[i2].clone()].to_vec();
                         let cdr3sx = [cdr3s[i1].clone(), cdr3s[i2].clone()].to_vec();
@@ -320,7 +316,6 @@ pub fn build_info(
                             tigs_amino: tigs_aminox,
                             tigsp: tigspx,
                             has_del: has_delx,
-                            orig_tigs: orig_tigsx,
                             clonotype_id: i,
                             exact_cols: exact_cols,
                             clonotype_index: i, // CLEARLY UNNEEDED
@@ -364,7 +359,6 @@ pub fn build_info(
                 tigs_amino: tigs_amino,
                 tigsp: tigsp,
                 has_del: has_del,
-                orig_tigs: orig_tigs,
                 clonotype_id: i,
                 exact_cols: exact_cols,
                 clonotype_index: i, // CLEARLY UNNEEDED

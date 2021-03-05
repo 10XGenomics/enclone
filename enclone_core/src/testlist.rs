@@ -477,14 +477,14 @@ pub const TESTS: [&str; 192] = [
     r###"BCR=123085 CONX CDR3=CVKRASGSAFTAPYW"###,
     // 191. test CONP when there's a gap
     r###"BCR=123085 CONP CDR3=CALGGYTWFDPW"###,
-    // 192. make sure CONP doesn't fail when run on complete dataset
+    // 192. DUPLICATE, TO REPLACE
     r###"BCR=123085 CONP NOPRINT EXPECT_OK"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 25] = [
+pub const EXTENDED_TESTS: [&str; 26] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -546,6 +546,8 @@ pub const EXTENDED_TESTS: [&str; 25] = [
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
     // 25. Test a tweak to the weak chains filter.  This should have two chains.
     r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
+    // 26. make sure CONP doesn't fail when run on complete dataset
+    r###"BCR="45987;123085" NOPRINT CONP BUILT_IN EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

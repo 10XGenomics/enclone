@@ -167,25 +167,25 @@ pub fn create_exact_subclonotype_core(
         // Form full sequence.
 
         let mut full = utr.clone();
-        let mut z = tig_bc[r][m].seq.clone();
+        let mut z = tig_bc[r][m].seq().to_vec();
         full.append(&mut z);
         full.append(&mut constx);
 
         // Note that here we are taking the first entry (r), sort of assuming
         // that all the entries are the same, which in principle they should be.
 
-        let aa = aa_seq(&tig_bc[r][m].seq, 0);
+        let aa = aa_seq(&tig_bc[r][m].seq(), 0);
         let mut d_start = None;
         if tig_bc[r][m].d_start.is_some() {
             d_start = Some(tig_bc[r][m].d_start.unwrap() + utr.len() - tig_bc[r][m].v_start);
         }
         share.push(TigData1 {
             cdr3_dna: tig_bc[r][m].cdr3_dna.clone(),
-            seq: tig_bc[r][m].seq.clone(),
-            seq_del: tig_bc[r][m].seq.clone(), // may get changed later
-            seq_del_amino: tig_bc[r][m].seq.clone(), // may get changed later
-            ins: Vec::new(),                   // may get changed later
-            aa_mod_indel: aa,                  // may get changed later
+            seq: tig_bc[r][m].seq().to_vec(),
+            seq_del: tig_bc[r][m].seq().to_vec(), // may get changed later
+            seq_del_amino: tig_bc[r][m].seq().to_vec(), // may get changed later
+            ins: Vec::new(),                      // may get changed later
+            aa_mod_indel: aa,                     // may get changed later
             full_seq: full,
             v_start: utr.len(),
             v_stop: tig_bc[r][m].v_stop + utr.len() - tig_bc[r][m].v_start,
@@ -278,7 +278,7 @@ pub fn find_exact_subclonotypes(
             for m in 0..tig_bc[r].len() {
                 let (cid1, cid2) = (tig_bc[r][m].c_ref_id, tig_bc[s][m].c_ref_id);
                 if tig_bc[s][m].cdr3_dna != tig_bc[r][m].cdr3_dna
-                    || tig_bc[s][m].seq != tig_bc[r][m].seq
+                    || tig_bc[s][m].seq() != tig_bc[r][m].seq()
 
                     // Working around a bug here.  See above for explanation.
 
@@ -515,7 +515,7 @@ pub fn search_for_shm_indels(ctl: &EncloneControl, tig_bc: &Vec<Vec<TigData>>) {
                 let x = &tig_bc[i][j];
                 cs.push((
                     (x.cdr3_dna.clone(), x.v_ref_id),
-                    x.seq.len(),
+                    x.seq().len(),
                     x.cdr3_aa.clone(),
                 ));
             }

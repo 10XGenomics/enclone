@@ -1466,7 +1466,7 @@ pub fn print_clonotypes(
                                     unique_sort(&mut codons);
                                     let mut gap = false;
                                     for x in codons.iter() {
-                                        if *x == b"---" {
+                                        if x.contains(&b'-') {
                                             gap = true;
                                         }
                                     }

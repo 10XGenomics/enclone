@@ -76,7 +76,7 @@ pub fn explore(li: usize, tig_bc: &Vec<Vec<TigData>>, ctl: &EncloneControl) {
 
                             let mut bqb = Vec::<(u8, u8, usize)>::new();
                             for u in r..s {
-                                bqb.push((tig_bc[u][m].seq[p], tig_bc[u][m].quals[p], u - r));
+                                bqb.push((tig_bc[u][m].seq()[p], tig_bc[u][m].quals[p], u - r));
                             }
                             bqb.sort();
 

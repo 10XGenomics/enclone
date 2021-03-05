@@ -395,7 +395,12 @@ pub fn join_exacts(
                 let nchains = info[k1].lens.len();
                 for m in 0..nchains {
                     let (tig1, tig2) = (&info[k1].tigs[m], &info[k2].tigs[m]);
-                    let (otig1, otig2) = (&info[k1].orig_tigs[m], &info[k2].orig_tigs[m]);
+                    let ex1 = &exact_clonotypes[info[k1].clonotype_index];
+                    let otig1 =
+                        DnaString::from_acgt_bytes(&ex1.share[info[k1].exact_cols[m]].full_seq);
+                    let ex2 = &exact_clonotypes[info[k2].clonotype_index];
+                    let otig2 =
+                        DnaString::from_acgt_bytes(&ex2.share[info[k2].exact_cols[m]].full_seq);
                     if ctl.join_print_opt.seq {
                         fwriteln!(log, "\nchain {}, tig 1 = {}", m + 1, otig1.to_string());
                     }
