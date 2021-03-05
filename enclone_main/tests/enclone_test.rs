@@ -1785,6 +1785,17 @@ fn test_proto_write() -> Result<(), Error> {
                 &cksum_new,
                 t.after("=")
             );
+            eprintln!("If you can't figure out what happened, first turn off this test and see\n\
+                if any other tests failed.  If not, try the following:\n\
+                1. build old code\n\
+                2. enclone BCR=123085 NOPRINT PROTO=~/old\n\
+                3. <build new code>\n\
+                4. enclone BCR=123085 NOPRINT PROTO=~/new\n\
+                5. cmp ~/old ~/new\n\
+                6. in the quasi-readable output, locate the barcode at the first point after the\n\
+                point where the two files differ (or conceivably before)\n\
+                7. analyze what is happening with that barcode\n"
+            );
             std::process::exit(1);
         }
     }
