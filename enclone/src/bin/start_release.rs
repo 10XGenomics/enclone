@@ -36,6 +36,7 @@ fn main() {
         .expect(&format!("failed to execute git status"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit status failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
     let s = strme(&new.stdout);
@@ -65,6 +66,7 @@ fn main() {
         .expect(&format!("failed to execute git pull"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit pull failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -79,6 +81,7 @@ fn main() {
         .expect(&format!("failed to execute cargo b"));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo b failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -93,6 +96,7 @@ fn main() {
         .expect(&format!("failed to execute cargo t"));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo t failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -192,6 +196,7 @@ fn main() {
         .expect(&format!("failed to execute cargo b"));
     if new.status.code() != Some(0) {
         eprintln!("\ncargo b (2) failed \n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -209,6 +214,7 @@ fn main() {
         .expect(&format!("failed to execute git commit"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit commit failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
     println!("pushing changes");
@@ -218,6 +224,7 @@ fn main() {
         .expect(&format!("failed to execute git push"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit push failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -233,6 +240,7 @@ fn main() {
         .expect(&format!("failed to execute git tag"));
     if new.status.code() != Some(0) {
         eprintln!("\ngit tag failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 
@@ -249,6 +257,7 @@ fn main() {
         .expect(&format!("failed to trigger release"));
     if new.status.code() != Some(0) {
         eprintln!("\nattempt to trigger release failed\n");
+        eprintln!("stderr = {}", strme(&new.stderr));
         std::process::exit(1);
     }
 

@@ -1464,7 +1464,15 @@ pub fn print_clonotypes(
                                         }
                                     }
                                     unique_sort(&mut codons);
-                                    if codons.solo() {
+                                    let mut gap = false;
+                                    for x in codons.iter() {
+                                        if *x == b"---" {
+                                            gap = true;
+                                        }
+                                    }
+                                    if codons.solo() && gap {
+                                        xdots += &"g";
+                                    } else if codons.solo() {
                                         let codon = &codons[0];
                                         let aa = codon_to_aa(&codon);
                                         let mut log = Vec::<u8>::new();
@@ -1472,6 +1480,8 @@ pub fn print_clonotypes(
                                         log.push(aa);
                                         emit_end_escape(&mut log);
                                         xdots += &strme(&log);
+                                    } else if gap {
+                                        xdots += &"X";
                                     } else {
                                         let mut aas = Vec::<u8>::new();
                                         for x in codons.iter() {

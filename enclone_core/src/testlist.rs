@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 190] = [
+pub const TESTS: [&str; 192] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -475,6 +475,10 @@ pub const TESTS: [&str; 190] = [
     r###"BCR=123085 CONP CDR3=CVKRASGSAFTAPYW"###,
     // 190. test CONX
     r###"BCR=123085 CONX CDR3=CVKRASGSAFTAPYW"###,
+    // 191. test CONP when there's a gap
+    r###"BCR=123085 CONP CDR3=CALGGYTWFDPW"###,
+    // 192. make sure CONP doesn't fail when run on complete dataset
+    r###"BCR=123085 CONP NOPRINT EXPECT_OK"###,
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
