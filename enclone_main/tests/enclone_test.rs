@@ -1785,8 +1785,8 @@ fn test_proto_write() -> Result<(), Error> {
                 t.after("=")
             );
             eprintln!(
-                "If you can't figure out what happened, first turn off this test and see\n\
-                if any other tests failed.  If not, try the following:\n\
+                "\nIf you can't figure out what happened, first turn off this test and see\n\
+                if any other tests failed.  If not, try the following:\n\n\
                 1. build old code\n\
                 2. enclone BCR=123085 NOPRINT PROTO=~/old\n\
                 3. <build new code>\n\
