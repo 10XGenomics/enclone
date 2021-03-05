@@ -1914,7 +1914,7 @@ fn test_peak_memory() {
     // Specify mem requirements.
 
     let dataset = "BCR=123085";
-    let expected_mb = 366.8;
+    let expected_mb = 364.8;
 
     let max_percent_dev = 0.5;
 
