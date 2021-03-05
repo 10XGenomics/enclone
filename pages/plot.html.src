@@ -53,6 +53,19 @@ will be picked for you.  You can specify a particular app e.g. with
 
 There is another example on the main #enclone page, based on pre- and post-vaccination samples.
 
+<p>
+If desired, the honeycomb plots can be forced into the first quadrant using the 
+<code>QUAD_HIVE</code> option.  Here, for variety, we show all cells, and skip the legend.
+</p>
+
+<p>
+<code>
+enclone BCR=123085:123089 PLOT="plot.svg,s1->blue,s2->red" QUAD_HIVE NOPRINT 
+</code>
+</p>
+
+<img src="../../img/quad_hive.svg" alt="quad hive plot" title="quad hive plot">
+
 <br><br>
 
 <hr>

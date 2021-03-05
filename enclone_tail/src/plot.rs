@@ -138,9 +138,11 @@ fn hex_coord(n: usize, r: f64) -> (f64, f64) {
 // Pack circles of given radii, which should be in descending order.  Return centers for the
 // circles.  There is probably a literature on this, and this is probably a very crappy algorithm.
 //
+// quad: force into first quadrant rather than anywhere
+//
 // Blacklisted polygons are avoided.
 
-fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
+fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>, quad: bool) -> Vec<(f64, f64)> {
     // Set up to track the centers of the circles.
 
     let mut c = Vec::<(f64, f64)>::new();
@@ -185,7 +187,11 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     // Define data for the first circle.
 
     if blacklist.is_empty() {
-        push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+        if !quad {
+            push_center(0.0, 0.0, 0, r[0], radius0, &mut c, &mut ints);
+        } else {
+            push_center(r[0], r[0], 0, r[0], radius0, &mut c, &mut ints);
+        }
     }
 
     // Compute the maximum distance "bigr" from the origin.
@@ -207,6 +213,12 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
     const MUL: f64 = 1.5;
     let mut centers = vec![(0.0, 0.0); SAMPLE];
     let start = if blacklist.is_empty() { 1 } else { 0 };
+    let mut max_dist;
+    if !quad {
+        max_dist = 0.0;
+    } else {
+        max_dist = r[0];
+    }
     for i in start..r.len() {
         let mut found = false;
         let mut best_r1 = 0.0;
@@ -228,13 +240,29 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
                     .wrapping_mul(rand1)
                     .wrapping_add(1_442_695_040_888_963_407);
                 rand = rand2;
-                let mut r1 = (2.0 * (rand1 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
-                let mut r2 = (2.0 * (rand2 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
+                let mut r1;
+                let mut r2;
+                if !quad {
+                    r1 = (2.0 * (rand1 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
+                    r2 = (2.0 * (rand2 % 1_000_000i64) as f64 / 1_000_000.0) - 1.0;
+                } else {
+                    r1 = ((rand1 % 1_000_000i64) as f64 / 1_000_000.0 + 1.0) / 2.0;
+                    r2 = ((rand2 % 1_000_000i64) as f64 / 1_000_000.0 + 1.0) / 2.0;
+                }
 
                 // Make it bigger.
 
-                r1 *= (bigr + r[i]) * MUL;
-                r2 *= (bigr + r[i]) * MUL;
+                if !quad {
+                    r1 *= (bigr + r[i]) * MUL;
+                    r2 *= (bigr + r[i]) * MUL;
+                } else {
+                    r1 = r1 * (bigr + r[i]) * MUL + r[i];
+                    r2 = r2 * (bigr + r[i]) * MUL + r[i];
+                }
+                const RELAXATION_FACTOR: f64 = 0.8;
+                if (r1 * r1 + r2 * r2).sqrt() < RELAXATION_FACTOR * max_dist {
+                    continue;
+                }
                 centers[z] = (r1, r2);
             }
             let mut results = Vec::<(usize, f64, f64, bool)>::new();
@@ -315,6 +343,7 @@ fn pack_circles(r: &Vec<f64>, blacklist: &Vec<Polygon>) -> Vec<(f64, f64)> {
                 break;
             }
         }
+        max_dist = max_dist.max((best_r1 * best_r1 + best_r2 * best_r2).sqrt());
         push_center(best_r1, best_r2, i, r[i], radius0, &mut c, &mut ints);
         bigr = bigr.max(r[i] + (c[i].0 * c[i].0 + c[i].1 * c[i].1).sqrt());
     }
@@ -852,7 +881,7 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let centersx = pack_circles(&radiix, &blacklist);
+        let centersx = pack_circles(&radiix, &blacklist, ctl.gen_opt.plot_quad);
         for i in 0..ids.len() {
             centers[ids[i]] = centersx[i];
         }
