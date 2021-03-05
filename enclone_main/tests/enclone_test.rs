@@ -2134,3 +2134,53 @@ fn test_cpu_usage() {
         println!("{}", report);
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 28. Test source code file length.  Cap the length in lines of the longest .rs file.
+// We do this because long files tend to increase compilation time.  They should be split up
+// where possible.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_source_code_file_length() {
+    PrettyTrace::new().on();
+    const MAX_RS_LINES: usize = 2560;
+    let top = dir_list("..");
+    let mut dirs = Vec::<String>::new();
+    for d in top.iter() {
+        let d = format!("../{}/src", d);
+        if path_exists(&d) {
+            dirs.push(d.clone());
+        }
+        let d = format!("../{}/src/bin", d);
+        if path_exists(&d) {
+            dirs.push(d);
+        }
+    }
+    for d in dirs.iter() {
+        let fs = dir_list(d);
+        for x in fs.iter() {
+            if x.ends_with(".rs") {
+                let y = format!("{}/{}", d, x);
+                let f = open_for_read![&y];
+                let mut n = 0;
+                for _ in f.lines() {
+                    n += 1;
+                }
+                if n > MAX_RS_LINES {
+                    eprintln!(
+                        "\nSource code file {} has {} lines, which exceeds the allowed max \
+                        of {}.\n",
+                        x, n, MAX_RS_LINES,
+                    );
+                    std::process::exit(1);
+                }
+            }
+        }
+    }
+}
