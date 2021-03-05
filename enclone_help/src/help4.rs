@@ -890,6 +890,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc2("any                           X   ADEFGHIKLMNPQRSTVWY");
         h.doc2("--------------------------------------------------------------------");
         h.doc2("The table is searched top to bottom until a matching class is found.");
+        h.doc2("In the special case where every amino acid is shown as a gap (-),");
+        h.doc2("a \"g\" is printed.");
         h.ldoc(
             "fwr*_aa",
             "the FWR*_AA sequence, or \"unknown\" if not computed",
