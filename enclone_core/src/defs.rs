@@ -736,7 +736,6 @@ impl EncloneControl {
 pub struct TigData {
     pub cdr3_dna: String,                     // CDR3 DNA sequence
     pub len: usize,                           // length of V..J sequence
-    pub seq: Vec<u8>,                         // V..J contig subsequence
     pub v_start: usize,                       // start of V on full contig sequence
     pub v_stop: usize,                        // stop of aligned V on full contig sequence
     pub v_stop_ref: usize,                    // stop of aligned V on reference V
@@ -773,6 +772,12 @@ pub struct TigData {
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
     pub validated_umis: Option<Vec<String>>,  // validated UMIs
     pub frac_reads_used: Option<u32>,         // fraction of reads passed to assembly stage in CR
+}
+
+impl TigData {
+    pub fn seq(&self) -> &[u8] {
+        &self.full_seq[self.v_start..self.j_stop]
+    }
 }
 
 // The ExactClonotype data structure stores information that could be exhibited as a

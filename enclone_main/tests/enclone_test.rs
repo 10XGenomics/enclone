@@ -1723,6 +1723,7 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 // It also tests to make sure that the LOUPE output is unchanged.  If it changed for a good
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
+/*
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
 #[test]
@@ -1789,6 +1790,7 @@ fn test_proto_write() -> Result<(), Error> {
     }
     Ok(())
 }
+*/
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

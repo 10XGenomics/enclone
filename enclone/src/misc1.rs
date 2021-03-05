@@ -242,7 +242,7 @@ pub fn cross_filter(
         for i in 0..tig_bc.len() {
             for j in 0..tig_bc[i].len() {
                 let x = &tig_bc[i][j];
-                vjx.push((x.seq.clone(), x.dataset_index, 1));
+                vjx.push((x.seq().to_vec(), x.dataset_index, 1));
             }
         }
         vjx.sort();
@@ -284,7 +284,9 @@ pub fn cross_filter(
     const UMIS_SAVE: usize = 100;
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
-            if tig_bc[i][j].umi_count < UMIS_SAVE && bin_member(&blacklist, &tig_bc[i][j].seq) {
+            if tig_bc[i][j].umi_count < UMIS_SAVE
+                && bin_member(&blacklist, &tig_bc[i][j].seq().to_vec())
+            {
                 fate[tig_bc[i][0].dataset_index].insert(
                     tig_bc[i][0].barcode.clone(),
                     "failed CROSS filter".to_string(),

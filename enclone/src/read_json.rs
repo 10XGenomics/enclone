@@ -538,7 +538,6 @@ fn parse_vector_entry_from_json(
     tigs.push(TigData {
         cdr3_dna: cdr3_dna.to_string(),
         len: seq.len(),
-        seq: seq.as_bytes().to_vec(),
         v_start: tig_start,
         v_stop: v_stop,
         v_stop_ref: v_stop_ref,

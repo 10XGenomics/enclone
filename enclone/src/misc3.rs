@@ -74,9 +74,9 @@ pub fn sort_tig_bc(ctl: &EncloneControl, tig_bc: &mut Vec<Vec<TigData>>, refdata
                 return Ordering::Greater;
 
             // Order by chain sequence.
-            } else if x[i].seq < y[i].seq {
+            } else if x[i].seq() < y[i].seq() {
                 return Ordering::Less;
-            } else if x[i].seq > y[i].seq {
+            } else if x[i].seq() > y[i].seq() {
                 return Ordering::Greater;
             }
 

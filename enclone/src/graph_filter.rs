@@ -40,7 +40,7 @@ pub fn graph_filter(
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &tig_bc[i][j];
-            seqs.push((x.seq.clone(), x.left, x.cdr3_aa.clone(), x.v_ref_id));
+            seqs.push((x.seq().to_vec(), x.left, x.cdr3_aa.clone(), x.v_ref_id));
         }
     }
     seqs.par_sort();
@@ -79,12 +79,13 @@ pub fn graph_filter(
             if tig_bc[i][j1].left {
                 let x1 = &tig_bc[i][j1];
                 let p1 =
-                    lower_bound(&seqs, &(x1.seq.clone(), false, x1.cdr3_aa.clone(), 0)) as usize;
+                    lower_bound(&seqs, &(x1.seq().to_vec(), false, x1.cdr3_aa.clone(), 0)) as usize;
                 for j2 in 0..tig_bc[i].len() {
                     if !tig_bc[i][j2].left {
                         let x2 = &tig_bc[i][j2];
-                        let p2 = lower_bound(&seqs, &(x2.seq.clone(), false, x2.cdr3_aa.clone(), 0))
-                            as usize;
+                        let p2 =
+                            lower_bound(&seqs, &(x2.seq().to_vec(), false, x2.cdr3_aa.clone(), 0))
+                                as usize;
                         res.1.push((p1, p2, min(x1.umi_count, x2.umi_count)));
                     }
                 }
@@ -355,14 +356,14 @@ pub fn graph_filter(
                 continue;
             }
             let x1 = &tig_bc[i][j1];
-            let m1 = (x1.seq.clone(), x1.left, x1.cdr3_aa.clone(), x1.v_ref_id);
+            let m1 = (x1.seq().to_vec(), x1.left, x1.cdr3_aa.clone(), x1.v_ref_id);
             let p1 = bin_position(&seqs, &m1) as usize;
             for j2 in 0..tig_bc[i].len() {
                 if tig_bc[i][j2].left {
                     continue;
                 }
                 let x2 = &tig_bc[i][j2];
-                let m2 = (x2.seq.clone(), x2.left, x2.cdr3_aa.clone(), x2.v_ref_id);
+                let m2 = (x2.seq().to_vec(), x2.left, x2.cdr3_aa.clone(), x2.v_ref_id);
                 let p2 = bin_position(&seqs, &m2) as usize;
                 if bin_member(&kills, &(p1, p2)) {
                     res.1 = true;
