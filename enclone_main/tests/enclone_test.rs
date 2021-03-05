@@ -880,6 +880,57 @@ fn test_extended() {
 
 // NOT BASIC
 
+// Crash tests.
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_crash() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+    let mut crash_tests = Vec::<String>::new();
+    for i in 0..CRASH_SETS.len() {
+        crash_tests.push(format!("{} {} {}", CRASH_DATA, CRASH_SETS[i], CRASH_OPTS));
+    }
+    let mut results = Vec::<(usize, bool, String)>::new();
+    for i in 0..crash_tests.len() {
+        results.push((i, false, String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let it = res.0;
+        let test = &crash_tests[it];
+        let mut out = String::new();
+        run_test(
+            env!("CARGO_BIN_EXE_enclone"),
+            it,
+            "",
+            &test,
+            "crash_test",
+            &mut res.1,
+            &mut res.2,
+            &mut out,
+        );
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if !results[i].1 {
+            std::process::exit(1);
+        }
+    }
+    println!(
+        "\ncrash tests total time for {} enclone subtests = {:.2} seconds\n",
+        crash_tests.len(),
+        elapsed(&t)
+    );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 13.
+
+// NOT BASIC
+
 // Regression tests for internal features.
 
 #[cfg(not(feature = "basic"))]
@@ -924,7 +975,7 @@ fn test_internal() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 13.
+// 14.
 
 // NOT BASIC
 
@@ -1256,7 +1307,7 @@ fn test_for_broken_links_and_spellcheck() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 14.
+// 15.
 
 // NOT BASIC
 
@@ -1371,7 +1422,7 @@ fn test_site_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 15. Test that examples are what we claim they are.
+// 16. Test that examples are what we claim they are.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1422,7 +1473,7 @@ fn test_enclone_examples() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 16. Test that references to the dataset version in README.md are current.
+// 17. Test that references to the dataset version in README.md are current.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1444,7 +1495,7 @@ fn test_version_number_in_readme() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 17. Test that the DejaVuSansMono definition in enclone_css_v2.css has not changed.  We put this
+// 18. Test that the DejaVuSansMono definition in enclone_css_v2.css has not changed.  We put this
 // here because that definition has to be manually tested, and we don't want it accidentally
 // changed and broken.  This is really gross, but it's not clear how to do it better.
 //
@@ -1488,7 +1539,7 @@ fn test_dejavu() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 18. Test that help output hasn't changed.
+// 19. Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1563,7 +1614,7 @@ fn test_help_output() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 19. Test that enclone help all HTML works (without STABLE_DOC).
+// 20. Test that enclone help all HTML works (without STABLE_DOC).
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1587,7 +1638,7 @@ fn test_help_no_stable() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 20. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
+// 21. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
 // would play havoc with any test that runs with GEX=123217, unless it also has H5, resulting
 // in sporadic (rare) test failures.  So don't do that.
 
@@ -1716,7 +1767,7 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 21. This test runs enclone for two test inputs, with LOUPE output
+// 22. This test runs enclone for two test inputs, with LOUPE output
 // turned on. It will then read both the bincode and proto file created
 // and asserts that we get the same data structure either way.
 //
@@ -1804,7 +1855,7 @@ fn test_proto_write() -> Result<(), Error> {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 22. Test for no change to the output of the command that appears in the enclone annotated
+// 23. Test for no change to the output of the command that appears in the enclone annotated
 // example on the landing page.
 
 #[cfg(not(feature = "cpu"))]
@@ -1849,7 +1900,7 @@ fn test_annotated_example() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 23. Test SUBSET_JSON option.
+// 24. Test SUBSET_JSON option.
 
 #[cfg(not(feature = "cpu"))]
 #[cfg(not(feature = "mem"))]
@@ -1897,7 +1948,7 @@ fn test_subset_json() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 24. Test peak memory.  This is designed for one server, bespin1.
+// 25. Test peak memory.  This is designed for one server, bespin1.
 //
 // You can run this test along by typing
 // cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
@@ -2011,7 +2062,7 @@ fn test_peak_memory() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 25. Test running with just reference.
+// 26. Test running with just reference.
 
 // NOT BASIC
 
@@ -2039,7 +2090,7 @@ fn test_ref_only() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 26. Test Linux executable size.
+// 27. Test Linux executable size.
 
 // NOT BASIC
 
@@ -2066,7 +2117,7 @@ fn test_executable_size() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 27. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
+// 28. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
 // measures total instructions used.
 
 // NOT BASIC
@@ -2137,7 +2188,7 @@ fn test_cpu_usage() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 28. Test source code file length.  Cap the length in lines of the longest .rs file.
+// 29. Test source code file length.  Cap the length in lines of the longest .rs file.
 // We do this because long files tend to increase compilation time.  They should be split up
 // where possible.
 
