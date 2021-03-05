@@ -906,7 +906,6 @@ pub struct CloneInfo {
     // if there is one (rare, so wasteful, should be Option)
     pub tigsp: Vec<DnaString>, // contigs, truncated to V..J, packed (doesn't show - chars)
     pub has_del: Vec<bool>,    // if - chars inserted to represent deletion
-    pub orig_tigs: Vec<DnaString>, // untruncated contigs
     pub clonotype_id: usize,   // index into exact_clonotypes
     pub exact_cols: Vec<usize>, // the columns of the exact_clonotype that were extracted (used?)
     pub clonotype_index: usize, // index into vector of all exact subclonotypes (across origins)
