@@ -711,22 +711,10 @@ pub fn read_json(
             }
             s += 1;
         }
-        /*
-        let (mut have_left, mut have_right) = (false, false);
-        for u in r..s {
-            if tigs[u].left {
-                have_left = true;
-            } else {
-                have_right = true;
-            }
-        }
-        */
 
         // For now we require at most four contigs (but we don't yet merge foursies).
 
-        if
-        /* have_left && have_right && */
-        s - r <= 4 {
+        if s - r <= 4 {
             let mut bc_tigs = Vec::<TigData>::new();
             for u in r..s {
                 bc_tigs.push(tigs[u].clone());
