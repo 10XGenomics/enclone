@@ -37,6 +37,9 @@ cargo fmt --all
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # cargo update once a week
+#
+# One reason we do this is that we don't want to accidentally get to a state where cargo update
+# is impossible.
 
 set last    = `cat stamps/last_cargo_update`
 set now     = `date +%s`
