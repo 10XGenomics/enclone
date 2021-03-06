@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod determine_ref;
 pub mod doublets;
 pub mod inconsistent;
 pub mod main_enclone;
