@@ -3,7 +3,6 @@
 // Flag defective reference sequences.
 
 use amino::*;
-use enclone::fwr3_freqs::*;
 use enclone_core::defs::*;
 use enclone_core::vdj_features::*;
 use io_utils::*;
@@ -22,6 +21,38 @@ pub fn flag_defective(
     *log = Vec::<u8>::new();
     let mut count = 0;
     *broken = vec![false; refdata.refs.len()];
+
+    // Compute freqs.
+
+    let mut freqs = Vec::<Vec<Vec<(u32, u8)>>>::new();
+    let f = include_str!["../../enclone/src/fwr3_freqs.data"];
+    let mut x = Vec::<(u32, u8)>::new();
+    let mut y = Vec::<Vec<(u32, u8)>>::new();
+    let mut rlast = 0;
+    let mut ilast = 0;
+    for line in f.lines() {
+        let fields = line.split(',').collect::<Vec<&str>>();
+        let r = fields[0].force_usize();
+        let i = fields[1].force_usize();
+        let count = fields[3].force_usize() as u32;
+        let res = fields[4].as_bytes()[0];
+        if r != rlast || i != ilast {
+            y.push(x.clone());
+            x.clear();
+            if r != rlast {
+                freqs.push(y.clone());
+                y.clear();
+            }
+        }
+        x.push((count, res));
+        rlast = r;
+        ilast = i;
+    }
+    y.push(x);
+    freqs.push(y);
+
+    // Study the reference.
+
     for i in 0..refdata.refs.len() {
         // Determine chain type and exclude those other than IGH, IGK, IGL, TRA and TRB.
 
@@ -198,7 +229,6 @@ pub fn flag_defective(
                     assert_eq!(chain_type, "TRB");
                     r = 4;
                 }
-                let freqs = fwr3_freqs();
                 let score = score_fwr3(&aa, r, &freqs);
                 if score < 8.0 && score4(&aa, r) < 5 {
                     reasons.push("appears to be frameshifted or truncated".to_string());
