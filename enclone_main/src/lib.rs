@@ -3,6 +3,7 @@
 pub mod determine_ref;
 pub mod doublets;
 pub mod filter_umi;
+pub mod flag_defective;
 pub mod inconsistent;
 pub mod main_enclone;
 pub mod merge_onesies;
