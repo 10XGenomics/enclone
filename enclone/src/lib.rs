@@ -4,7 +4,6 @@ extern crate enclone_core;
 
 pub mod allele;
 pub mod explore;
-pub mod fwr3_freqs;
 pub mod graph_filter;
 pub mod html;
 pub mod info;
