@@ -918,9 +918,8 @@ fn test_cpu_usage() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 29. Test source code file length.  Cap the length in lines of the longest .rs file.
-// We do this because long files tend to increase compilation time.  They should be split up
-// where possible.
+// 29. Test source code file length.  Cap the length in lines of the longest .rs file.  We do this
+// because long files tend to increase compilation time.  They should be split up where possible.
 
 // NOT BASIC
 
@@ -930,7 +929,7 @@ fn test_cpu_usage() {
 #[test]
 fn test_source_code_file_length() {
     PrettyTrace::new().on();
-    const MAX_RS_LINES: usize = 2155; // group.rs
+    const MAX_RS_LINES: usize = 1916; // fwr3_freqs.rs
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
@@ -941,6 +940,7 @@ fn test_source_code_file_length() {
             }
         }
     }
+    let mut fail = false;
     for d in dirs.iter() {
         let fs = dir_list(d);
         for x in fs.iter() {
@@ -957,9 +957,12 @@ fn test_source_code_file_length() {
                         of {}.\n",
                         x, n, MAX_RS_LINES,
                     );
-                    std::process::exit(1);
+                    fail = true;
                 }
             }
         }
+    }
+    if fail {
+        std::process::exit(1);
     }
 }
