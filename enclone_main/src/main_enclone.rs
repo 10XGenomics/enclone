@@ -592,44 +592,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    /*
-
-    // Remove V sequences not beginning with a start codon and do some tidying.
-    // Commented out until proven useful.
-
-    let lines = refx.split('\n').collect::<Vec<&str>>();
-    let mut refx2 = String::new();
-    let mut i = 0;
-    while i < lines.len() {
-        let mut j = i + 1;
-        while j < lines.len() {
-            if lines[j].starts_with(">") {
-                break;
-            }
-            j += 1;
-        }
-        let mut seq = String::new();
-        for k in i + 1..j {
-            seq += &lines[k];
-        }
-        seq = seq.replace('a', "A");
-        seq = seq.replace('c', "C");
-        seq = seq.replace('g', "G");
-        seq = seq.replace('t', "T");
-        let mut ok = true;
-        if lines[i].contains("V-REGION") {
-            if !seq.starts_with("ATG") {
-                ok = false;
-            }
-        }
-        if ok {
-            refx2 += &format!("{}\n{}\n", lines[i], seq);
-        }
-        i = j;
-    }
-
-    */
-
     // Build reference data.
 
     let refx2 = &refx;
