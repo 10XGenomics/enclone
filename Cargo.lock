@@ -2523,7 +2523,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=b11a537a17f0ae134fdad8a4d275c5e959bb8560#b11a537a17f0ae134fdad8a4d275c5e959bb8560"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=8fdf5bad241f3fc191deaf408ed39e7391d32ac9#8fdf5bad241f3fc191deaf408ed39e7391d32ac9"
 dependencies = [
  "align_tools",
  "amino",
@@ -2534,7 +2534,7 @@ dependencies = [
  "flate2",
  "hyperbase",
  "io_utils",
- "itertools 0.10.0",
+ "itertools 0.9.0",
  "kmer_lookup",
  "pretty_trace",
  "serde",
