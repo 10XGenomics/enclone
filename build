@@ -29,7 +29,11 @@
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
+set begin_fetch = `date +%s`
 git -C enclone-data fetch --depth=1 origin `cat data_version`
+set end_fetch = `date +%s`
+set elapsed_fetch = `expr $end_fetch - $begin_fetch`
+echo "fetch took $elapsed_fetch seconds"
 git -C enclone-data switch --detach FETCH_HEAD
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
