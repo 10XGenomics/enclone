@@ -995,7 +995,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 8;
+    const DUPPED_CRATES: usize = 6;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
