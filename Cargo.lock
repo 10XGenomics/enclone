@@ -1435,18 +1435,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nix"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
-]
-
-[[package]]
 name = "num"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1681,7 +1669,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "log",
- "nix 0.19.1",
+ "nix",
  "parking_lot",
  "prost",
  "prost-build",
@@ -1725,9 +1713,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.5"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "225519c1f4690a29f2a77c6083ea6321841377d62c603cc6568d2840bdb95af9"
+checksum = "c82b041f45e97786087b37293f3434138a85c006d4d9b912ce55c3d2c66958c6"
 dependencies = [
  "backtrace",
  "failure",
@@ -1735,7 +1723,7 @@ dependencies = [
  "itertools 0.10.0",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix",
  "pprof",
  "rayon",
  "stats_utils",
