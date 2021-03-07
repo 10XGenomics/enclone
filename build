@@ -105,7 +105,8 @@ git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_c
 
 # sweep, to prevent target from becoming gigantic over time
 #
-# The cap is set at about 10 GB.  The sweep is run at most once per day.
+# The cap is set at about 15 GB.  Using 10 GB is definitely too low.  The sweep is run at most 
+# once per day.
 
 set start         = `date +%s`
 set last_sweep    = `cat stamps/last_sweep`
