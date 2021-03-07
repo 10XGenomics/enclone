@@ -70,6 +70,7 @@ if ( $elapsed > 604800 ) then
     # because we want to have only rand 0.7.3, and not both 0.7.3 and 0.8.3
     cargo update -p tempfile --precise 3.1.0
     cargo update -p time --precise 0.1.43
+    cargo update -p itertools:0.10.0 --precise 0.9.0
     echo $now > stamps/last_cargo_update
 endif
 
