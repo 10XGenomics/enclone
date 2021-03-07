@@ -214,7 +214,7 @@ dependencies = [
  "num-integer",
  "num-traits",
  "ordered-float",
- "petgraph 0.5.1",
+ "petgraph 0.4.13",
  "quick-error",
  "regex",
  "serde",
@@ -1424,21 +1424,21 @@ dependencies = [
 
 [[package]]
 name = "nix"
-version = "0.18.0"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83450fe6a6142ddd95fb064b746083fc4ef1705fe81f64a64e1d4b39f54a1055"
+checksum = "b2ccba0cfe4fdf15982d1674c69b1fd80bad427d293849982668dfe454bd61f2"
 dependencies = [
  "bitflags",
  "cc",
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "libc",
 ]
 
 [[package]]
 name = "nix"
-version = "0.19.1"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2ccba0cfe4fdf15982d1674c69b1fd80bad427d293849982668dfe454bd61f2"
+checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
 dependencies = [
  "bitflags",
  "cc",
@@ -1725,9 +1725,9 @@ dependencies = [
 
 [[package]]
 name = "pretty_trace"
-version = "0.5.4"
+version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ed5f228979c334de5412a6ec1741b7d786891e90dd9b2d85390436322cda06e"
+checksum = "225519c1f4690a29f2a77c6083ea6321841377d62c603cc6568d2840bdb95af9"
 dependencies = [
  "backtrace",
  "failure",
@@ -1735,7 +1735,7 @@ dependencies = [
  "itertools 0.10.0",
  "lazy_static",
  "libc",
- "nix 0.18.0",
+ "nix 0.20.0",
  "pprof",
  "rayon",
  "stats_utils",
