@@ -54,6 +54,10 @@ cargo fmt --all
 #
 # One reason we do this is that we don't want to accidentally get to a state where cargo update
 # is impossible.
+#
+# Note that this includes fidgety down-versioning of crates.
+#
+# If running this causes problems, you can just "git checkout Cargo.lock" to undo the change.
 
 set last    = `cat stamps/last_cargo_update`
 set now     = `date +%s`
@@ -62,6 +66,9 @@ if ( $elapsed > 604800 ) then
     echo "\nrunning cargo update, as it has been more than one week since it was last done"
     echo "this could cause problems\n"
     cargo update
+    # prevent tempfile from going to 3.2.0
+    # because we want to have only rand 0.7.3, and not both 0.7.3 and 0.8.3
+    cargo update -p tempfile --precise 3.1.0
     echo $now > stamps/last_cargo_update
 endif
 
