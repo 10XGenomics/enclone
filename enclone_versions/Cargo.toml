@@ -17,7 +17,6 @@ assert_cmd = "1.0.3"
 bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
-chrono = "0.4.19"
 dirs = "3.0.1"
 failure = "0.1.6"
 flate2 = "1.0.20"
