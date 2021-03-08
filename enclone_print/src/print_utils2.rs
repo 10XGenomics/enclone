@@ -1273,6 +1273,28 @@ pub fn row_fill(
                         out_data[u].insert(varc, format!("{}", vals));
                     }
                 }
+            } else if var == "nnval" {
+                cvar![j, *var, "".to_string()];
+                if pass == 2
+                    && ctl.parseable_opt.pout.len() > 0
+                    && col + 1 <= ctl.parseable_opt.pchains
+                {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut nvals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                nvals += POUT_SEP;
+                            }
+                            let mut n = 0;
+                            if ex.clones[k][mid].non_validated_umis.is_some() {
+                                n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
+                            }
+                            nvals += &format!("{}", n);
+                        }
+                        out_data[u].insert(varc, format!("{}", nvals));
+                    }
+                }
             } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;

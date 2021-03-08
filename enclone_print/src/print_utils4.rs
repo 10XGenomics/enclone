@@ -747,6 +747,16 @@ pub fn compute_bu(
                                 n = ex.clones[bcl.2][m].validated_umis.as_ref().unwrap().len();
                             }
                             cx[cp + p] = format!("{}", n);
+                        } else if rsi.cvars[col][p] == "nnval".to_string() {
+                            let mut n = 0;
+                            if ex.clones[bcl.2][m].non_validated_umis.is_some() {
+                                n = ex.clones[bcl.2][m]
+                                    .non_validated_umis
+                                    .as_ref()
+                                    .unwrap()
+                                    .len();
+                            }
+                            cx[cp + p] = format!("{}", n);
                         }
                     }
                 }
