@@ -481,6 +481,19 @@ pub const TESTS: [&str; 192] = [
     r###"BCR=123085 CONP NOPRINT EXPECT_OK"###,
 ];
 
+// Crash tests.  These are tests to make sure that certain options do not result in a crash, even
+// when run on a large and complex dataset.  The options are in groups because not all are
+// compatible with each other.  The datasets are defined by a single fixed list, to be enlarged
+// over time based on discovery of pathologies in particular datasets.  In general these datasets
+// are not public.  All run with certain shared options.
+
+pub const CRASH_DATA: &str = "BCR=\"45987;123085\"";
+pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
+pub const CRASH_SETS: [&str; 2] = [
+    /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
+    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2",
+];
+
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
@@ -529,7 +542,7 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     // there are three chains and the middle one was the problem
     r###"TCR=48602 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD NO_PRE NFORCE"###,
     // 19. Make sure that POUT works on full dataset.
-    // If we experience failurs on other lena ids, we can add them to this list.
+    // If we experience failures on other lena ids, we can add them to this list.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 20. Make sure that FP join output includes join error details.
     // If somehow we fix the FP join occurring here, another one should be substituted.
@@ -546,7 +559,7 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
     // 25. Test a tweak to the weak chains filter.  This should have two chains.
     r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
-    // 26. make sure CONP doesn't fail when run on complete dataset
+    // 26. DUPLICATE, TO REPLACE
     r###"BCR="45987;123085" NOPRINT CONP BUILT_IN EXPECT_OK NO_PRE NFORCE"###,
 ];
 

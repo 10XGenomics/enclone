@@ -90,7 +90,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "NUMI_RATIO",
             "Filter out B cells based on low BCR UMI counts relative to another",
         );
-        h.doc("", "cell in a given clonotype.  The heuristics for this");
+        h.doc2("cell in a given clonotype.  The heuristics for this");
         h.docpr(
             "",
             "are described on the enclone site at \\green{bit.ly/enclone}.",
@@ -227,16 +227,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "MIN_CELLS_EXACT=n",
             "Delete any exact subclonotype having less than n cells.  You might",
         );
-        h.doc(
-            "",
-            "want to use this if you have a very large and complex expanded.",
-        );
-        h.doc("", "clonotype.");
+        h.doc2("want to use this if you have a very large and complex expanded.");
+        h.doc2("clonotype.");
         h.doc(
             "COMPLETE",
             "delete any exact subclonotype that has less chains than the clonotype",
         );
-        h.doc("", "for which you would like to see a simplified view.");
+        h.doc2("for which you would like to see a simplified view.");
         h.docf2(
             "CONST_IGH=\"<pattern>\"",
             "for BCR, keep only exact subclonotypes having a heavy chain whose constant region \
@@ -268,37 +265,28 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             which should match the given examples exactly.  In particular,",
             55,
         );
-        h.doc("", "• use == for equality, and not =");
-        h.doc("", "• put string values in single quotes");
-        h.doc("", "• put the entire expression in double quotes.");
-        h.doc("", "");
+        h.doc2("• use == for equality, and not =");
+        h.doc2("• put string values in single quotes");
+        h.doc2("• put the entire expression in double quotes.");
+        h.doc2("");
         h.doc(
             "",
             "As a toy example, suppose you had a CSV file f having five lines:",
         );
-        h.doc("", "barcode,nice,rank");
-        h.doc("", "AGCATACTCAGAGGTG-1,true,3");
-        h.doc("", "CGTGAGCGTATATGGA-1,true,7");
-        h.doc("", "CGTTAGAAGGAGTAGA-1,false,99");
-        h.doc("", "CGTTAGAAGGAGTAGA-1,dunno,43");
-        h.doc("", "then the command");
-        h.doc(
-            "",
-            "enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true'\"",
-        );
-        h.doc(
-            "",
-            "would cause enclone to use only the first two barcodes shown in",
-        );
-        h.doc("", "the file, and the command");
-        h.doc(
-            "",
-            "enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true' && rank <= 5\"",
-        );
-        h.doc("", "would cause only the first barcode to be used.");
-        h.doc("", "");
-        h.doc("", "See also KEEP_CLONO_IF_CELL_MEAN=... and");
-        h.doc("", "KEEP_CLONO_IF_CELL_MAX=... at \"enclone help filter\".");
+        h.doc2("barcode,nice,rank");
+        h.doc2("AGCATACTCAGAGGTG-1,true,3");
+        h.doc2("CGTGAGCGTATATGGA-1,true,7");
+        h.doc2("CGTTAGAAGGAGTAGA-1,false,99");
+        h.doc2("CGTTAGAAGGAGTAGA-1,dunno,43");
+        h.doc2("then the command");
+        h.doc2("enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true'\"");
+        h.doc2("would cause enclone to use only the first two barcodes shown in");
+        h.doc2("the file, and the command");
+        h.doc2("enclone BCR=123085 BC=f KEEP_CELL_IF=\"nice == 'true' && rank <= 5\"");
+        h.doc2("would cause only the first barcode to be used.");
+        h.doc2("");
+        h.doc2("See also KEEP_CLONO_IF_CELL_MEAN=... and");
+        h.doc2("KEEP_CLONO_IF_CELL_MAX=... at \"enclone help filter\".");
 
         // Done.
 
@@ -472,27 +460,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "n_<name>",
             "number of cells associated to the given name, which can be a dataset",
         );
-        h.doc(
-            "",
-            "or origin or donor or tag short name; may name only one such category",
-        );
+        h.doc2("or origin or donor or tag short name; may name only one such category");
         h.ldoc(
             "nd<k>",
             "For k a positive integer, this creates k+1 fields, that are specific to each",
         );
-        h.doc(
-            "",
-            "clonotype.  The first field is n_<d1>, where d1 is the name of the dataset",
-        );
-        h.doc(
-            "",
-            "having the most cells in the clonotype.  If k ≥ 2, then you'll get a",
-        );
-        h.doc(
-            "",
-            "\"runner-up\" field n_<d2>, etc.  Finally you get a field n_other, however",
-        );
-        h.doc("", "fields will be elided if they represent no cells.");
+        h.doc2("clonotype.  The first field is n_<d1>, where d1 is the name of the dataset");
+        h.doc2("having the most cells in the clonotype.  If k ≥ 2, then you'll get a");
+        h.doc2("\"runner-up\" field n_<d2>, etc.  Finally you get a field n_other, however");
+        h.doc2("fields will be elided if they represent no cells.");
         h.ldoc(
             "near",
             "Hamming distance of V..J DNA sequence to nearest neighbor",
@@ -501,69 +477,39 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "far",
             "Hamming distance of V..J DNA sequence to farthest neighbor",
         );
-        h.doc(
-            "",
-            "both compare to cells having chains in the same columns of the clonotype,",
-        );
-        h.doc(
-            "",
-            "with - shown if there is no other exact subclonotype to compare to",
-        );
+        h.doc2("both compare to cells having chains in the same columns of the clonotype,");
+        h.doc2("with - shown if there is no other exact subclonotype to compare to");
         h.doc(
             "dref",
             "Hamming distance of V..J DNA sequence to donor reference, excluding",
         );
-        h.doc("", "region of recombination");
+        h.doc2("region of recombination");
         h.doc(
             "dref_aa",
             "Hamming distance of V..J amino acid sequence to donor reference, excluding",
         );
-        h.doc("", "region of recombination");
+        h.doc2("region of recombination");
         h.ldoc(
             "count_<reg>",
             "Number of matches of the V..J amino acid sequences of all chains to the given",
         );
-        h.doc(
-            "",
-            "regular expression, which is treated as a subset match, so for example,",
-        );
-        h.doc(
-            "",
-            "count_CAR would count the total number of occurrences of the string CAR in all",
-        );
-        h.doc(
-            "",
-            "the chains.  Please see \"enclone help filter\" for a discussion",
-        );
-        h.doc(
-            "",
-            "about regular expressions.  We also allow the form abbr:count_<regex>,",
-        );
-        h.doc(
-            "",
-            "where abbr is an abbreviation that will appear as the field label.",
-        );
+        h.doc2("regular expression, which is treated as a subset match, so for example,");
+        h.doc2("count_CAR would count the total number of occurrences of the string CAR in all");
+        h.doc2("the chains.  Please see \"enclone help filter\" for a discussion");
+        h.doc2("about regular expressions.  We also allow the form abbr:count_<regex>,");
+        h.doc2("where abbr is an abbreviation that will appear as the field label.");
         h.doc(
             "count_<f>_<reg>",
             "Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar",
         );
-        h.doc(
-            "",
-            "to the above but restricted to motifs lying entirely within",
-        );
-        h.doc("", "a given feature or feature set.");
+        h.doc2("to the above but restricted to motifs lying entirely within");
+        h.doc2("a given feature or feature set.");
         h.ldoc(
             "inkt",
             "A string showing the extent to which the T cells in an exact subclonotype",
         );
-        h.doc(
-            "",
-            "have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,",
-        );
-        h.doc(
-            "",
-            "representing both gene name and junction sequence (CDR3) requirements for",
-        );
+        h.doc2("have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,");
+        h.doc2("representing both gene name and junction sequence (CDR3) requirements for");
         h.docpr(
             "",
             "both chains.  See \\green{bit.ly/enclone} for details on the requirements.",
@@ -573,26 +519,11 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "g<d>",
             "Here d is a nonnegative integer.  Then all the exact subclonotypes are",
         );
-        h.doc(
-            "",
-            "grouped according to the Hamming distance of their V..J sequences.  Those",
-        );
-        h.doc(
-            "",
-            "within distance d are defined to be in the same group, and this is",
-        );
-        h.doc(
-            "",
-            "extended transitively.  The group identifier 1, 2, ... is shown.  The",
-        );
-        h.doc(
-            "",
-            "ordering of these identifiers is arbitrary.  This option is best applied",
-        );
-        h.doc(
-            "",
-            "to cases where all exact subclonotypes have a complete set of chains.",
-        );
+        h.doc2("grouped according to the Hamming distance of their V..J sequences.  Those");
+        h.doc2("within distance d are defined to be in the same group, and this is");
+        h.doc2("extended transitively.  The group identifier 1, 2, ... is shown.  The");
+        h.doc2("ordering of these identifiers is arbitrary.  This option is best applied");
+        h.doc2("to cases where all exact subclonotypes have a complete set of chains.");
         h.ldocpr("gex", "\\red{●} median gene expression UMI count");
         h.docpr(
             "n_gex",
@@ -634,23 +565,19 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "mem",
             "for human or mouse BCR, number of GEX UMIs that are characterized as membrane",
         );
-        h.doc(
-            "",
+        h.doc2(
             "For both of these, the algorithm looks for reads that are aligned through the",
         );
-        h.doc(
-            "",
+        h.doc2(
             "right end of a constant region CH3 exon, and then read into a CH3-CHS or",
         );
-        h.doc(
-            "",
+        h.doc2(
             "CH4-CHS exon, in the secreted case, or a M, M1 or M2 exon, in the membrane case.",
         );
-        h.doc(
-            "",
+        h.doc2(
             "This choice is determined by sequence tables in the code, and we cannot be",
         );
-        h.doc("", "absolutely certain that these tables are complete.");
+        h.doc2("absolutely certain that these tables are complete.");
         h.docpr(
             "",
             "\\bold{These fields require the presence of the files possorted_genome_bam.bam}",
@@ -660,7 +587,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "",
             "\\bold{These fields also require that you have samtools in your path.}",
         );
-        h.doc("", "Note that these counts tend to be low.");
+        h.doc2("Note that these counts tend to be low.");
         h.docpr(
             "",
             "\\boldred{PLEASE NOTE: THIS IS EXPERIMENTAL AND UNLIKELY TO BE FULLY CORRECT.}",
@@ -671,42 +598,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "cred",
             "Short for credibility.  It is a measure of the extent to which cells",
         );
-        h.doc(
-            "",
-            "having gene expression similar to a given putative B cell are themselves",
-        );
-        h.doc(
-            "",
-            "B cells.  (Or similarly for T cells.)  For the actual definition, let n",
-        );
-        h.doc(
-            "",
-            "be the number of VDJ cells that are also GEX cells.  For a given cell,",
-        );
-        h.doc(
-            "",
-            "find the n GEX cells that are closest to it in PCA space, and report the",
-        );
-        h.doc(
-            "",
-            "percent of those that are also VDJ cells.  For multiple datasets, it would",
-        );
-        h.doc(
-            "",
-            "be better to \"aggr\" the data, however that is not currently supported",
-        );
-        h.doc(
-            "",
-            "The computation is also inefficient, so let us know if it's causing",
-        );
-        h.doc(
-            "",
-            "problems for you.  And cred makes much better sense for datasets that",
-        );
-        h.doc(
-            "",
-            "consist of mixed cell types, rather than consisting of pure B or T cells.",
-        );
+        h.doc2("having gene expression similar to a given putative B cell are themselves");
+        h.doc2("B cells.  (Or similarly for T cells.)  For the actual definition, let n");
+        h.doc2("be the number of VDJ cells that are also GEX cells.  For a given cell,");
+        h.doc2("find the n GEX cells that are closest to it in PCA space, and report the");
+        h.doc2("percent of those that are also VDJ cells.  For multiple datasets, it would");
+        h.doc2("be better to \"aggr\" the data, however that is not currently supported");
+        h.doc2("The computation is also inefficient, so let us know if it's causing");
+        h.doc2("problems for you.  And cred makes much better sense for datasets that");
+        h.doc2("consist of mixed cell types, rather than consisting of pure B or T cells.");
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(
             "filter",
@@ -789,41 +689,20 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "edit",
             "a string that defines the edit of the reference V(D)J concatenation versus",
         );
-        h.doc(
-            "",
-            "the contig, from the beginning of the CDR3 to the end of the J segment;",
-        );
-        h.doc(
-            "",
-            "this uses a coordinate system in which 0 is the first base of the J ref",
-        );
-        h.doc(
-            "",
-            "segment (or the first base of the D ref segment for IGH and TRB); for",
-        );
-        h.doc(
-            "",
-            "example D-4:4 denotes the deletion of the last 4 bases of the V segment, ",
-        );
-        h.doc("", "I0:2 denotes an insertion of 2 bases after the V");
-        h.doc(
-            "",
-            "and I0:2•S5 denotes that plus a substitution at position 5; in computing",
-        );
-        h.doc(
-            "",
-            "\"edit\", for IGH and TRB, we always test every possible D segment,",
-        );
-        h.doc(
-            "",
-            "regardless of whether one is annotated, and pick the best one; for this",
-        );
-        h.doc("", "reason, \"edit\" may be slow");
+        h.doc2("the contig, from the beginning of the CDR3 to the end of the J segment;");
+        h.doc2("this uses a coordinate system in which 0 is the first base of the J ref");
+        h.doc2("segment (or the first base of the D ref segment for IGH and TRB); for");
+        h.doc2("example D-4:4 denotes the deletion of the last 4 bases of the V segment, ");
+        h.doc2("I0:2 denotes an insertion of 2 bases after the V");
+        h.doc2("and I0:2•S5 denotes that plus a substitution at position 5; in computing");
+        h.doc2("\"edit\", for IGH and TRB, we always test every possible D segment,");
+        h.doc2("regardless of whether one is annotated, and pick the best one; for this");
+        h.doc2("reason, \"edit\" may be slow");
         h.doc(
             "comp",
             "a measure of CDR3 complexity, which is the total number of S, D and I",
         );
-        h.doc("", "symbols in \"edit\" as defined above");
+        h.doc2("symbols in \"edit\" as defined above");
 
         h.ldoc(
             "cdr*_aa",
@@ -833,11 +712,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "cdr*_aa_L_R_ext",
             "the CDR*_AA sequence, with L amino acids added on the left and R amino acids",
         );
-        h.doc(
-            "",
-            "added on the right; either may be negative, denoting trimming instead",
-        );
-        h.doc("", "of extension");
+        h.doc2("added on the right; either may be negative, denoting trimming instead");
+        h.doc2("of extension");
         h.doc(
             "cdr*_aa_north",
             "the CDR*_AA sequence for BCR defined by North B et al. (2011), A new",

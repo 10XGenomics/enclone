@@ -416,27 +416,19 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "V..J",
             "the full sequence of a V(D)J transcript, from the beginning of the V",
         );
-        h.doc(
-            "",
-            "segment to the end of the J segment; this sequence begins with a stop codon",
-        );
-        h.doc("", "and ends with a partial codon (its first base)");
+        h.doc2("segment to the end of the J segment; this sequence begins with a stop codon");
+        h.doc2("and ends with a partial codon (its first base)");
 
         // doc CDR3
 
-        h.doc(
+        h.docf2(
             "CDR3",
-            "The terms CDR3 and junction are commonly mistaken and often used",
+            "The terms CDR3 and junction are commonly mistaken and often used \
+            interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the \
+            junction (the CDR3 loop plus the canonical C and W/F at the N and C termini \
+            respectively).",
+            60,
         );
-        h.doc(
-            "",
-            "interchangeably.  In enclone's nomenclature, \"CDR3\" actually refers to the",
-        );
-        h.doc(
-            "",
-            "junction (the CDR3 loop plus the canonical C and W/F at the N and C termini",
-        );
-        h.doc("", "respectively).");
 
         // doc clonotype
 
@@ -452,7 +444,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "exact subclonotype",
             "all cells having identical transcripts \\boldred{○}",
         );
-        h.doc("", "(every clonotype is a union of exact subclonotypes)");
+        h.doc2("(every clonotype is a union of exact subclonotypes)");
 
         // doc clone
 
@@ -479,17 +471,14 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "these frequently represent true biological events, arising from expression",
         );
-        h.doc("", "of both alleles");
+        h.doc2("of both alleles");
         h.doc(
             "foursie",
             "a clonotype or exact subclonotype having exactly four chains;",
         );
         h.doc("", "these very rarely represent true biological events");
         h.doc("moresie", "a clonotype having more than four chains;");
-        h.doc(
-            "",
-            "these sad clonotypes do not represent true biological events",
-        );
+        h.doc2("these sad clonotypes do not represent true biological events");
 
         // doc donor etc.
 
@@ -501,10 +490,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "origin",
             "a tube of cells from a donor, from a particular tissue at a",
         );
-        h.doc(
-            "",
-            "particular point in time, and possibly enriched for particular cells",
-        );
+        h.doc2("particular point in time, and possibly enriched for particular cells");
         h.doc(
             "cell group",
             "an aliquot from an origin, presumed to be a random draw",
@@ -513,11 +499,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "dataset",
             "all sequencing data obtained from a particular library type",
         );
-        h.doc(
-            "",
-            "(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running",
-        );
-        h.doc("", "through the Cell Ranger pipeline");
+        h.doc2("(e.g. TCR or BCR or GEX or FB), from one cell group, processed by running");
+        h.doc2("through the Cell Ranger pipeline");
 
         // print main table
 

@@ -14,12 +14,26 @@
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+# notes on some prerequisites
+#
+# Really we should check the prerequisites here.
+
+# 1. You need to have installed rust.
+# 2. You need to have run "cargo install cargo-sweep".
+# 3. You need to have run "cargo install cargo-license".
+
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 # import and update enclone-data
 
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
+set begin_fetch = `date +%s`
 git -C enclone-data fetch --depth=1 origin `cat data_version`
+set end_fetch = `date +%s`
+set elapsed_fetch = `expr $end_fetch - $begin_fetch`
+echo "fetch took $elapsed_fetch seconds"
 git -C enclone-data switch --detach FETCH_HEAD
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -37,15 +51,22 @@ cargo fmt --all
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # cargo update once a week
+#
+# One reason we do this is that we don't want to accidentally get to a state where cargo update
+# is impossible.
+#
+# Note that this includes fidgety down-versioning of crates.
+#
+# If running this causes problems, you can just "git checkout Cargo.lock" to undo the change.
 
-set last    = `cat last_cargo_update`
+set last    = `cat stamps/last_cargo_update`
 set now     = `date +%s`
 set elapsed = `expr $now - $last`
 if ( $elapsed > 604800 ) then
     echo "\nrunning cargo update, as it has been more than one week since it was last done"
     echo "this could cause problems\n"
-    cargo update
-    echo $now > last_cargo_update
+    ./update_enclone
+    echo $now > stamps/last_cargo_update
 endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -81,14 +102,21 @@ git -C enclone-data write-tree --prefix=big_inputs/version15 > datasets_medium_c
 
 # sweep, to prevent target from becoming gigantic over time
 #
-# Time parameter to be tweaked as needed.  Note that if this turns out to be too slow, we can
-# restrict to running it periodically rather than on every invocation of build.
+# The cap is set at about 15 GB.  Using 10 GB is definitely too low.  The sweep is run at most 
+# once per day.
 
-set start = `date +%s`
-cargo sweep -t 7 > /dev/null
-if ( $status != 0 ) then
-    echo "sweep failed, please try rerunning by hand"
+set start         = `date +%s`
+set last_sweep    = `cat stamps/last_sweep`
+set elapsed_sweep = `expr $start - $last_sweep`
+if ( $elapsed_sweep > 86400 ) then
+    cargo sweep --maxsize 10000 > /dev/null
+    if ( $status != 0 ) then
+        echo "sweep failed, please try rerunning by hand"
+        echo "or perhaps you need to \"cargo install cargo-sweep\""
+        exit 1
+    endif
+    set stop = `date +%s`
+    set sweep_time = `expr $stop - $start`
+    echo "sweep took $sweep_time seconds"
+    echo $stop > stamps/last_sweep
 endif
-set stop = `date +%s`
-set sweep_time = `expr $stop - $start`
-echo "sweep took $sweep_time seconds"

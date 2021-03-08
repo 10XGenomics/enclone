@@ -160,19 +160,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "var_indices_aa<i>",
             "amino acid positions in chain that vary across the clonotype",
         );
-        h.doc(
+        h.docf2(
             "share_indices_dna<i>",
             "DNA positions in chain that are constant across the \
-             clonotype,",
+             clonotype, but differ from the donor ref",
+            60,
         );
-        h.doc("", "but differ from the donor ref");
-        h.doc(
+        h.docf2(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
-             clonotype,",
+             clonotype, all of these are comma-separated lists but differ from the donor ref",
+            60,
         );
-        h.doc("", "all of these are comma-separated lists");
-        h.doc("", "but differ from the donor ref");
         h.print_tab2();
         h.print("\n");
 
@@ -229,14 +228,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "q<n>_<i>",
             "special option to display a comma-separated list of the quality",
         );
-        h.doc(
-            "",
-            "scores for chain i, at zero-based position n, numbered starting at the",
-        );
-        h.doc(
-            "",
-            "beginning of the V segment, for each cell in the exact subclonotype",
-        );
+        h.doc2("scores for chain i, at zero-based position n, numbered starting at the");
+        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
         h.ldoc(
             "d_start<i>",
@@ -349,16 +342,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "SEGN=\"s_1|...|s_n\"",
             "only show clonotypes using one of the given reference segment numbers",
         );
-        h.doc(
-            "",
-            "both: looks for V, D, J and C segments; double quote only",
-        );
-        h.doc("", "needed if n > 1");
+        h.doc2("both: looks for V, D, J and C segments; double quote only");
+        h.doc2("needed if n > 1");
         h.doc(
             "",
             "For both SEG and SEGN, multiple instances are allowed, and their",
         );
-        h.doc("", "effects are cumulative.");
+        h.doc2("effects are cumulative.");
 
         // doc MIN_EXACTS
 
@@ -373,7 +363,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "VJ=seq",
             "only show clonotypes using exactly the given V..J sequence",
         );
-        h.doc("", "(string in alphabet ACGT)");
+        h.doc2("(string in alphabet ACGT)");
 
         // doc MIN_DATASETS and MAX_DATASETS and MIN_DATASET_RATIO
 
@@ -389,11 +379,8 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "MIN_DATASET_RATIO=n",
             "only show clonotypes having at least n cells and for which the ratio",
         );
-        h.doc(
-            "",
-            "of the number of cells in the must abundant dataset to the next most",
-        );
-        h.doc("", "abundant one is at least n");
+        h.doc2("of the number of cells in the must abundant dataset to the next most");
+        h.doc2("abundant one is at least n");
 
         // doc CDIFF
 
@@ -401,7 +388,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "CDIFF",
             "only show clonotypes having a difference in constant region with the",
         );
-        h.doc("", "universal reference");
+        h.doc2("universal reference");
 
         // doc DEL
 
@@ -417,10 +404,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "clonotypes will typically contain cells that are \\bold{not} in your",
         );
-        h.doc(
-            "",
-            "list; if you want to fully restrict to a list of barcodes you can use",
-        );
+        h.doc2("list; if you want to fully restrict to a list of barcodes you can use");
         h.docpr(
             "",
             "the \\bold{KEEP_CELL_IF} option, please see \"enclone help special\"",

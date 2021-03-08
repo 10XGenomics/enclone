@@ -439,15 +439,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "For instructions on how to compile, please see\n\
              \\green{bit.ly/enclone}.\n\n",
         );
-        h.doc(
+
+        h.docf2(
             "COMP",
-            "report computational performance stats; use this with NOPRINT if you",
+            "report computational performance stats; use this with NOPRINT if you \
+            want to suppress visual output, and with NOPAGER if you \
+            want output to be unbuffered",
+            60,
         );
-        h.doc(
-            "",
-            "want to suppress visual output, and with NOPAGER if you",
-        );
-        h.doc("", "want output to be unbuffered");
         h.doc(
             "COMP2",
             "like COMP, but adds more detailed lines that are prefixed with --",

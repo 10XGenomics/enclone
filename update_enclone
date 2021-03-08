@@ -1,0 +1,12 @@
+#!/bin/csh -e
+
+# This is insanely fragile.
+
+cargo update
+cargo update -p tempfile --precise 3.1.0
+cargo update -p time --precise 0.1.43
+cargo update -p itertools:0.10.0 --precise 0.9.0
+cargo update -p filetime:0.2.14 --precise 0.2.12
+cargo update -p parking_lot_core:0.8.3 --precise 0.8.2
+cargo update -p wyhash --precise 0.4.2
+cargo update -p statrs --precise 0.12.0

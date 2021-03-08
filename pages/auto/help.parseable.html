@@ -118,23 +118,23 @@ command line.
 <span style="font-weight:bold;">3. per chain fields, where &lt;i> is 1,2,... (see above)
 each of these has the same value for each exact clonotype</span>
 
-┌──────────────────────┬───────────────────────────────────────────────────────────────────────┐
-│v_name&lt;i>             │  name of V segment                                                    │
-│d_name&lt;i>             │  name of D segment (or null)                                          │
-│j_name&lt;i>             │  name of J segment                                                    │
-├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│v_id&lt;i>               │  id of V segment                                                      │
-│d_id&lt;i>               │  id of D segment (or null)                                            │
-│j_id&lt;i>               │  id of J segment                                                      │
-├──────────────────────┼───────────────────────────────────────────────────────────────────────┤
-│var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype                │
-│var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype         │
-│share_indices_dna&lt;i>  │  DNA positions in chain that are constant across the clonotype,       │
-│                      │  but differ from the donor ref                                        │
-│share_indices_aa&lt;i>   │  amino acid positions in chain that are constant across the clonotype,│
-│                      │  all of these are comma-separated lists                               │
-│                      │  but differ from the donor ref                                        │
-└──────────────────────┴───────────────────────────────────────────────────────────────────────┘
+┌──────────────────────┬──────────────────────────────────────────────────────────────┐
+│v_name&lt;i>             │  name of V segment                                           │
+│d_name&lt;i>             │  name of D segment (or null)                                 │
+│j_name&lt;i>             │  name of J segment                                           │
+├──────────────────────┼──────────────────────────────────────────────────────────────┤
+│v_id&lt;i>               │  id of V segment                                             │
+│d_id&lt;i>               │  id of D segment (or null)                                   │
+│j_id&lt;i>               │  id of J segment                                             │
+├──────────────────────┼──────────────────────────────────────────────────────────────┤
+│var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype       │
+│var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype│
+│share_indices_dna&lt;i>  │  DNA positions in chain that are constant across the         │
+│                      │  clonotype, but differ from the donor ref                    │
+│share_indices_aa&lt;i>   │  amino acid positions in chain that are constant across the  │
+│                      │  clonotype, all of these are comma-separated lists but differ│
+│                      │  from the donor ref                                          │
+└──────────────────────┴──────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">4. per exact subclonotype fields</span>
 
@@ -147,7 +147,7 @@ each of these has the same value for each exact clonotype</span>
 │&lt;dataset>_barcode      │  if PCELL is specified, barcode for one cell, or null, if the barcode is│
 │                       │  not from the given dataset                                             │
 ├───────────────────────┴─────────────────────────────────────────────────────────────────────────┤
-│In addition, every lead variable may be specified as a field.  See "enclone help lvars".         │
+│In addition, every lead variable may be specified as a field.  See <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.         │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">5. per chain, per exact subclonotype fields, where &lt;i> is 1,2,... (see above)</span>
@@ -181,7 +181,7 @@ each of these has the same value for each exact clonotype</span>
 ├───────────────┴───────────────────────────────────────────────────────────────────────────┤
 │In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.  However│
 │parametrizable chain variables e.g. <span style="font-weight:bold;">ndiff1vj1</span> must be explicitly listed using <span style="font-weight:bold;">PCOLS</span>;       │
-│they are not in the default list.  See "enclone help cvars".                               │
+│they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                               │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>
