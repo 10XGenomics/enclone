@@ -1350,9 +1350,9 @@ pub fn row_fill(
                                         .format(",")
                                 );
                             }
-                            non_vals += &format!("{}", n);
+                            nvals += &format!("{}", n);
                         }
-                        out_data[u].insert(varc, format!("{}", non_vals));
+                        out_data[u].insert(varc, format!("{}", nvals));
                     }
                 }
             } else if *var == "cdiff".to_string() {
