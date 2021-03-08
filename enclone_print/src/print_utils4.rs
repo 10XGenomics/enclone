@@ -3,6 +3,7 @@
 use amino::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
+use equiv::EquivRel;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -206,4 +207,232 @@ pub fn build_show_aa(
         }
     }
     show_aa
+}
+
+pub fn compute_some_stats(
+    lvars: &Vec<String>,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    gex_info: &GexInfo,
+    vdj_cells: &Vec<Vec<String>>,
+    n_vdj_gex: &Vec<usize>,
+    cred: &mut Vec<Vec<String>>,
+    pe: &mut Vec<Vec<String>>,
+    ppe: &mut Vec<Vec<String>>,
+    npe: &mut Vec<Vec<String>>,
+) {
+    let nexacts = exacts.len();
+
+    // Compute "cred" stats (credibility/# of neighboring cells that are also B cells).
+
+    *cred = vec![Vec::<String>::new(); lvars.len()];
+    for k in 0..lvars.len() {
+        if lvars[k] == "cred".to_string() {
+            for u in 0..nexacts {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for l in 0..ex.clones.len() {
+                    let bc = &ex.clones[l][0].barcode;
+                    let li = ex.clones[l][0].dataset_index;
+                    if gex_info.pca[li].contains_key(&bc.clone()) {
+                        let mut creds = 0;
+                        let mut z = Vec::<(f64, String)>::new();
+                        let x = &gex_info.pca[li][&bc.clone()];
+                        for y in gex_info.pca[li].iter() {
+                            let mut dist2 = 0.0;
+                            for m in 0..x.len() {
+                                dist2 += (y.1[m] - x[m]) * (y.1[m] - x[m]);
+                            }
+                            z.push((dist2, y.0.clone()));
+                        }
+                        z.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                        let top = n_vdj_gex[li];
+                        for i in 0..top {
+                            if bin_member(&vdj_cells[li], &z[i].1) {
+                                creds += 1;
+                            }
+                        }
+                        let pc = 100.0 * creds as f64 / top as f64;
+                        cred[k].push(format!("{:.1}", pc));
+                    } else {
+                        cred[k].push("".to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    // Compute pe (PCA distance).
+
+    *pe = vec![Vec::<String>::new(); lvars.len()];
+    for k in 0..lvars.len() {
+        if lvars[k].starts_with("pe") {
+            let n = lvars[k].after("pe").force_usize();
+            let mut bcs = Vec::<String>::new();
+            let mut count = 0;
+            let mut to_index = Vec::<usize>::new();
+            for u in 0..nexacts {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for l in 0..ex.clones.len() {
+                    let bc = &ex.clones[l][0].barcode;
+                    let li = ex.clones[l][0].dataset_index;
+                    if gex_info.pca[li].contains_key(&bc.clone()) {
+                        bcs.push(bc.to_string());
+                        to_index.push(count);
+                    }
+                    count += 1;
+                }
+            }
+            let mut e: EquivRel = EquivRel::new(bcs.len() as i32);
+            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            let mut mat = vec![Vec::<f64>::new(); bcs.len()];
+            for i in 0..bcs.len() {
+                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+            }
+            for i1 in 0..bcs.len() {
+                for i2 in i1 + 1..bcs.len() {
+                    if e.class_id(i1 as i32) != e.class_id(i2 as i32) {
+                        let mut d = 0.0;
+                        for j in 0..mat[i1].len() {
+                            d += (mat[i1][j] - mat[i2][j]) * (mat[i1][j] - mat[i2][j]);
+                        }
+                        d = d.sqrt();
+                        if d <= n as f64 {
+                            e.join(i1 as i32, i2 as i32);
+                        }
+                    }
+                }
+            }
+            pe[k] = vec![String::new(); count];
+            let mut ids = Vec::<i32>::new();
+            for i in 0..bcs.len() {
+                ids.push(e.class_id(i as i32));
+            }
+            unique_sort(&mut ids);
+            let mut reps = Vec::<i32>::new();
+            e.orbit_reps(&mut reps);
+            reps.sort();
+            for i in 0..bcs.len() {
+                pe[k][to_index[i]] = format!("{}", bin_position(&ids, &e.class_id(i as i32)));
+            }
+        }
+    }
+
+    // Compute ppe (PCA distance).
+
+    *ppe = vec![Vec::<String>::new(); lvars.len()];
+    for k in 0..lvars.len() {
+        if lvars[k].starts_with("ppe") {
+            let n = lvars[k].after("ppe").force_usize();
+            let mut bcs = Vec::<String>::new();
+            let mut count = 0;
+            let mut to_index = Vec::<usize>::new();
+            for u in 0..nexacts {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for l in 0..ex.clones.len() {
+                    let bc = &ex.clones[l][0].barcode;
+                    let li = ex.clones[l][0].dataset_index;
+                    if gex_info.pca[li].contains_key(&bc.clone()) {
+                        bcs.push(bc.to_string());
+                        to_index.push(count);
+                    }
+                    count += 1;
+                }
+            }
+            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            let mut mat = vec![Vec::<f64>::new(); bcs.len()];
+            for i in 0..bcs.len() {
+                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+            }
+            let mut matg = Vec::<Vec<f64>>::new();
+            for i in gex_info.pca[li].iter() {
+                matg.push(i.1.to_vec());
+            }
+            let mut x = vec![0; bcs.len()];
+            for i1 in 0..mat.len() {
+                for i2 in 0..matg.len() {
+                    let m1 = &mat[i1];
+                    let m2 = &matg[i2];
+                    let mut d = 0.0;
+                    for j in 0..m1.len() {
+                        d += (m1[j] - m2[j]) * (m1[j] - m2[j]);
+                    }
+                    d = d.sqrt();
+                    if d <= n as f64 {
+                        x[i1] += 1;
+                    }
+                }
+            }
+            let mut y = vec![0; bcs.len()];
+            for i1 in 0..mat.len() {
+                for i2 in 0..mat.len() {
+                    let m1 = &mat[i1];
+                    let m2 = &mat[i2];
+                    let mut d = 0.0;
+                    for j in 0..m1.len() {
+                        d += (m1[j] - m2[j]) * (m1[j] - m2[j]);
+                    }
+                    d = d.sqrt();
+                    if d <= n as f64 {
+                        y[i1] += 1;
+                    }
+                }
+            }
+            ppe[k] = vec![String::new(); count];
+            for i in 0..bcs.len() {
+                ppe[k][to_index[i]] = format!("{:.1}", 100.0 * y[i] as f64 / x[i] as f64);
+            }
+        }
+    }
+
+    // Compute npe (PCA distance).
+
+    *npe = vec![Vec::<String>::new(); lvars.len()];
+    for k in 0..lvars.len() {
+        if lvars[k].starts_with("npe") {
+            let n = lvars[k].after("npe").force_usize();
+            let mut bcs = Vec::<String>::new();
+            let mut count = 0;
+            let mut to_index = Vec::<usize>::new();
+            for u in 0..nexacts {
+                let clonotype_id = exacts[u];
+                let ex = &exact_clonotypes[clonotype_id];
+                for l in 0..ex.clones.len() {
+                    let bc = &ex.clones[l][0].barcode;
+                    let li = ex.clones[l][0].dataset_index;
+                    if gex_info.pca[li].contains_key(&bc.clone()) {
+                        bcs.push(bc.to_string());
+                        to_index.push(count);
+                    }
+                    count += 1;
+                }
+            }
+            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            let mut mat = vec![Vec::<f64>::new(); bcs.len()];
+            for i in 0..bcs.len() {
+                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+            }
+            let mut y = vec![0; bcs.len()];
+            for i1 in 0..mat.len() {
+                for i2 in 0..mat.len() {
+                    let m1 = &mat[i1];
+                    let m2 = &mat[i2];
+                    let mut d = 0.0;
+                    for j in 0..m1.len() {
+                        d += (m1[j] - m2[j]) * (m1[j] - m2[j]);
+                    }
+                    d = d.sqrt();
+                    if d <= n as f64 {
+                        y[i1] += 1;
+                    }
+                }
+            }
+            npe[k] = vec![String::new(); count];
+            for i in 0..bcs.len() {
+                npe[k][to_index[i]] = format!("{}", y[i]);
+            }
+        }
+    }
 }
