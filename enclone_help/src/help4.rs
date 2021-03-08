@@ -227,11 +227,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "MIN_CELLS_EXACT=n",
             "Delete any exact subclonotype having less than n cells.  You might",
         );
-        h.doc(
-            "",
-            "want to use this if you have a very large and complex expanded.",
-        );
-        h.doc("", "clonotype.");
+        h.doc2("want to use this if you have a very large and complex expanded.");
+        h.doc2("clonotype.");
         h.doc(
             "COMPLETE",
             "delete any exact subclonotype that has less chains than the clonotype",
@@ -268,10 +265,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             which should match the given examples exactly.  In particular,",
             55,
         );
-        h.doc("", "• use == for equality, and not =");
-        h.doc("", "• put string values in single quotes");
-        h.doc("", "• put the entire expression in double quotes.");
-        h.doc("", "");
+        h.doc2("• use == for equality, and not =");
+        h.doc2("• put string values in single quotes");
+        h.doc2("• put the entire expression in double quotes.");
+        h.doc2("");
         h.doc(
             "",
             "As a toy example, suppose you had a CSV file f having five lines:",

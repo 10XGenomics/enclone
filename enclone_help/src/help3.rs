@@ -160,19 +160,18 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "var_indices_aa<i>",
             "amino acid positions in chain that vary across the clonotype",
         );
-        h.doc(
+        h.docf2(
             "share_indices_dna<i>",
             "DNA positions in chain that are constant across the \
-             clonotype,",
+             clonotype, but differ from the donor ref",
+            60,
         );
-        h.doc("", "but differ from the donor ref");
-        h.doc(
+        h.docf2(
             "share_indices_aa<i>",
             "amino acid positions in chain that are constant across the \
-             clonotype,",
+             clonotype, all of these are comma-separated lists but differ from the donor ref",
+            60,
         );
-        h.doc("", "all of these are comma-separated lists");
-        h.doc("", "but differ from the donor ref");
         h.print_tab2();
         h.print("\n");
 
