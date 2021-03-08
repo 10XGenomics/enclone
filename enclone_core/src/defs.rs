@@ -30,6 +30,31 @@ pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
     "vector_utils",
 ];
 
+pub const HELP_PAGES: [&str; 22] = [
+    "all",
+    "amino",
+    "color",
+    "command",
+    "cvars",
+    "developer",
+    "display",
+    "example1",
+    "example2",
+    "faq",
+    "filter",
+    "glossary",
+    "how",
+    "indels",
+    "input",
+    "input_tech",
+    "lvars",
+    "main",
+    "parseable",
+    "quick",
+    "setup",
+    "special",
+];
+
 pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
 
 // Field (variable) names.

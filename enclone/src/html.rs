@@ -3,6 +3,7 @@
 // Utility for inserting html files.  It also changes all instances of #enclone to
 // a preset format for that.
 
+use enclone_core::defs::*;
 use io_utils::*;
 use stats_utils::*;
 use std::env;
@@ -26,9 +27,9 @@ pub fn gtag() -> String {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Insert google tag and banner.
-
 pub fn edit_html(html: &str) -> String {
+    // Insert google tag and banner.
+
     let mut lines2 = Vec::<String>::new();
     for line in html.lines() {
         if line == "</head>" {
@@ -48,9 +49,33 @@ pub fn edit_html(html: &str) -> String {
             );
         }
     }
+
+    // Make "enclone help ..." into a link.
+
+    let mut lines3 = Vec::<String>::new();
+    for line in lines2.iter() {
+        let mut m = line.to_string();
+        for x in HELP_PAGES.iter() {
+            let in1 = format!(r###""enclone help {}""###, x);
+            let in2 = format!(
+                r###"<span style="font-weight:bold;">enclone help {}</span>"###,
+                x
+            );
+            let out = format!(
+                r###"<a href="../../pages/auto/help.{}.html"><code>enclone help {}</code></a>"###,
+                x, x
+            );
+            m = m.replace(&in1, &out);
+            m = m.replace(&in2, &out);
+        }
+        lines3.push(m);
+    }
+
+    // Finish.
+
     let mut x = String::new();
-    for i in 0..lines2.len() {
-        x += &format!("{}\n", lines2[i]);
+    for i in 0..lines3.len() {
+        x += &format!("{}\n", lines3[i]);
     }
     x
 }

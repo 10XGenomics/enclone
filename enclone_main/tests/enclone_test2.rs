@@ -6,6 +6,7 @@ use ansi_escape::*;
 use enclone::html::*;
 use enclone::misc3::parse_bsv;
 use enclone::run_test::*;
+use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
@@ -1001,6 +1002,33 @@ fn test_dupped_crates() {
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",
             d, DUPPED_CRATES,
         );
+        std::process::exit(1);
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 30. Make sure that help page list is correct.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_help_page_list() {
+    let (mut help1, mut help2) = (Vec::<String>::new(), Vec::<String>::new());
+    let autox = dir_list("../pages/auto");
+    for i in 0..autox.len() {
+        if autox[i].starts_with("help") {
+            help1.push(autox[i].between(".", ".").to_string());
+        }
+    }
+    for x in HELP_PAGES.iter() {
+        help2.push(x.to_string());
+    }
+    if help1 != help2 {
+        eprintln!("\nList of help pages is incorrect.\n");
         std::process::exit(1);
     }
 }

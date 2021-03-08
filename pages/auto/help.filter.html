@@ -48,7 +48,7 @@ gtag('config', 'UA-58278925-3');
 
 enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This page describes
 filtering by clonotype.  These options cause only certain clonotypes to be printed.  See also
-"enclone help special", which describes other filtering options.  This page also described
+<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>, which describes other filtering options.  This page also described
 scanning for feature enrichment.
 
 ┌─────────────────────┬─────────────────────────────────────────────────────────────────────────┐
@@ -91,7 +91,7 @@ scanning for feature enrichment.
 │BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes; note that such│
 │                     │  clonotypes will typically contain cells that are <span style="font-weight:bold;">not</span> in your           │
 │                     │  list; if you want to fully restrict to a list of barcodes you can use  │
-│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see "enclone help special"             │
+│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>             │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │INKT                 │  only show clonotypes for which some exact subclonotype is annotated as │
 │                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
@@ -127,7 +127,7 @@ enclone understands linear conditions of the form
 <span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
 where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
 Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  Each vi is a
-lead variable (see "<span style="font-weight:bold;">enclone help lvars</span>") that represents a origin/donor/tag count or gene/feature
+lead variable (see "<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>") that represents a origin/donor/tag count or gene/feature
 barcode UMI count.  In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values
 across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
 some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
@@ -143,7 +143,7 @@ lead variables have been selected using <span style="font-weight:bold;">LVARS</s
 variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
 imposed by using multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note
 that <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype. 
-See also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at "enclone help special".
+See also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
 
 Similarly, to filter by the max across all cells in a clonotype, one may use
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MAX="L"</span>

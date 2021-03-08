@@ -100,7 +100,7 @@ are aware of several things that could be done to speed up enclone.
 
 There are several parts to the answer:
 • enclone is a standalone executable that by default produces human-readable output.
-• You can also run enclone to produce parseable output (see <span style="font-weight:bold;">enclone help parseable</span>), and that
+• You can also run enclone to produce parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), and that
 output can be digested using code that you write (for example, in R).
 • When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
 enclone with a special option that yields only an output file for the 10x visualization tool
@@ -139,7 +139,7 @@ recompute annotations, and that will slow down enclone somewhat.
 
 <span style="color:#5833ff;font-weight:bold;">8. Can I provide data from more than one donor?</span>
 
-Yes.  Type <span style="font-weight:bold;">enclone help input</span> for details.  The default behavior of enclone is to prevent cells
+Yes.  Type <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> for details.  The default behavior of enclone is to prevent cells
 from different donors from being placed in the same clonotype.  The <span style="font-weight:bold;">MIX_DONORS</span> option may be used
 to turn off this behavior.  If you employ this option, then clonotypes containing cells from more
 than one donor will be flagged as errors, unless you use the <span style="font-weight:bold;">NWARN</span> option to turn off those
@@ -160,7 +160,7 @@ Yes, unless output of enclone is going to a terminal.  In that case, you'll alwa
 <span style="color:#5833ff;font-weight:bold;">11. Could a cell be missing from an enclone clonotype?</span>
 
 Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
-described in <span style="font-weight:bold;">enclone help special</span>, and which you can turn off.  We also delete cells for which
+described in <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>, and which you can turn off.  We also delete cells for which
 more than four chains were found.
 
 <span style="color:#5833ff;font-weight:bold;">12. Can enclone print summary stats?</span>
@@ -238,7 +238,7 @@ MAX_DIFFS=200
 MAX_DEGRADATION=150,
 however this will in general be very slow and not produce useful results.  Depending on what your
 goal is, you may find it helpful to use some of these arguments, and with lower values.  You can
-see the meaning of the arguments and their default values by typing "enclone help how".
+see the meaning of the arguments and their default values by typing <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.
 
 <span style="color:#5833ff;font-weight:bold;">20. How can I send the developers an example?</span>
 
