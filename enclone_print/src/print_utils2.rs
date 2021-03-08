@@ -1295,6 +1295,66 @@ pub fn row_fill(
                         out_data[u].insert(varc, format!("{}", nvals));
                     }
                 }
+            } else if var == "vals" {
+                cvar![j, *var, "".to_string()];
+                if pass == 2
+                    && ctl.parseable_opt.pout.len() > 0
+                    && col + 1 <= ctl.parseable_opt.pchains
+                {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut vals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                vals += POUT_SEP;
+                            }
+                            let mut n = String::new();
+                            if ex.clones[k][mid].validated_umis.is_some() {
+                                n = format!(
+                                    "{}",
+                                    ex.clones[k][mid]
+                                        .validated_umis
+                                        .as_ref()
+                                        .unwrap()
+                                        .iter()
+                                        .format(",")
+                                );
+                            }
+                            vals += &format!("{}", n);
+                        }
+                        out_data[u].insert(varc, format!("{}", vals));
+                    }
+                }
+            } else if var == "nvals" {
+                cvar![j, *var, "".to_string()];
+                if pass == 2
+                    && ctl.parseable_opt.pout.len() > 0
+                    && col + 1 <= ctl.parseable_opt.pchains
+                {
+                    let varc = format!("{}{}", var, col + 1);
+                    if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                        let mut nvals = String::new();
+                        for k in 0..ex.ncells() {
+                            if k > 0 {
+                                nvals += POUT_SEP;
+                            }
+                            let mut n = String::new();
+                            if ex.clones[k][mid].non_validated_umis.is_some() {
+                                n = format!(
+                                    "{}",
+                                    ex.clones[k][mid]
+                                        .non_validated_umis
+                                        .as_ref()
+                                        .unwrap()
+                                        .iter()
+                                        .format(",")
+                                );
+                            }
+                            non_vals += &format!("{}", n);
+                        }
+                        out_data[u].insert(varc, format!("{}", non_vals));
+                    }
+                }
             } else if *var == "cdiff".to_string() {
                 let cstart = ex.share[mid].j_stop;
                 let clen = ex.share[mid].full_seq.len() - cstart;
