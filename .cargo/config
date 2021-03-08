@@ -1,2 +1,4 @@
 [alias]
 t = "test --bin traceback1 --test enclone_test1 --test enclone_test2 -- --nocapture"
+tb = "test --test enclone_test1 --test enclone_test2 --features basic -- --nocapture"
+
