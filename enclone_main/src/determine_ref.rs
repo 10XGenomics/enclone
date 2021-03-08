@@ -226,7 +226,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
     // Step 5.  Attempt to determine the reference that was used by reading far enough into the
     // first json file to find a distinguishing entry.
 
-    if refx.len() == 0 {
+    if refx.len() == 0 && jsonx.len() > 0 {
         let cr_ver = ["2.0", "3.1", "4.0", "current"];
         let species = ["human", "mouse"];
         let mut refhash = Vec::<(HashMap<usize, (usize, String)>, String)>::new();
@@ -306,7 +306,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
             }
         }
     }
-    if refx.len() == 0 {
+    if refx.len() == 0 && jsonx.len() > 0 {
         eprintln!(
             "\nenclone was unable to determine the reference sequence that you used.  You \
             have two options:\n\

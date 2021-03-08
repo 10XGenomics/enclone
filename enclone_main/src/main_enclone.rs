@@ -295,6 +295,10 @@ pub fn main_enclone(args: &Vec<String>) {
         ann = "contig_annotations.json";
     }
     determine_ref(&mut ctl, &mut refx);
+    if refx.len() == 0 && ctl.origin_info.n() == 0 {
+        eprintln!("\nNo data and no TCR or BCR data have been specified.\n");
+        std::process::exit(1);
+    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
