@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use crate::print_utils2::*;
+use crate::print_utils1::*;
 use amino::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;

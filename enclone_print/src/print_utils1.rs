@@ -530,3 +530,120 @@ pub fn color_codon(
     }
     log
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn aa_classes() -> Vec<(char, Vec<u8>)> {
+    let mut classes = Vec::new();
+    classes.push(('B', b"DN".to_vec()));
+    classes.push(('Z', b"EQ".to_vec()));
+    classes.push(('J', b"IL".to_vec()));
+    classes.push(('-', b"DE".to_vec()));
+    classes.push(('+', b"KHR".to_vec()));
+    classes.push(('Ψ', b"ILMV".to_vec()));
+    classes.push(('π', b"AGPS".to_vec()));
+    classes.push(('Ω', b"FHWY".to_vec()));
+    classes.push(('Φ', b"IFLMVWY".to_vec()));
+    classes.push(('ζ', b"DEHKNQRST".to_vec()));
+    classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
+    classes
+}
+
+pub fn cdr3_aa_con(
+    style: &str,
+    col: usize,
+    exacts: &Vec<usize>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    rsi: &ColInfo,
+) -> String {
+    let mat = &rsi.mat;
+    let mut cdr3s = Vec::<String>::new();
+    for v in 0..exacts.len() {
+        let m = mat[col][v];
+        if m.is_some() {
+            let ex = &exact_clonotypes[exacts[v]];
+            cdr3s.push(ex.share[m.unwrap()].cdr3_aa.clone());
+        }
+    }
+    let classes = aa_classes();
+    let mut c = String::new();
+    for i in 0..cdr3s[0].len() {
+        let mut vals = Vec::<u8>::new();
+        for j in 0..cdr3s.len() {
+            vals.push(cdr3s[j].as_bytes()[i]);
+        }
+        unique_sort(&mut vals);
+        if vals.solo() {
+            c.push(vals[0] as char);
+        } else {
+            if style == "x" {
+                c.push('X');
+            } else {
+                for m in classes.iter() {
+                    if meet_size(&vals, &m.1) == vals.len() {
+                        c.push(m.0);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    c
+}
+
+pub fn rounded_median(x: &[usize]) -> usize {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        let s = x[h - 1] + x[h];
+        if s % 2 == 0 {
+            s / 2
+        } else {
+            s / 2 + 1
+        }
+    }
+}
+
+pub fn median_f64(x: &[f64]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        (x[h - 1] + x[h]) / 2.0
+    }
+}
+
+pub fn get_gex_matrix_entry(
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    fid: usize,
+    d_all: &Vec<Vec<u32>>,
+    ind_all: &Vec<Vec<u32>>,
+    li: usize,
+    l: usize,
+    p: usize,
+    y: &str,
+) -> f64 {
+    let mut raw_count = 0 as f64;
+    if gex_info.gex_matrices[li].initialized() {
+        raw_count = gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+    } else {
+        for j in 0..d_all[l].len() {
+            if ind_all[l][j] == fid as u32 {
+                raw_count = d_all[l][j] as f64;
+                break;
+            }
+        }
+    }
+    let mult: f64;
+    if y.ends_with("_g") {
+        mult = gex_info.gex_mults[li];
+    } else {
+        mult = gex_info.fb_mults[li];
+    }
+    if !ctl.gen_opt.full_counts {
+        raw_count *= mult;
+    }
+    raw_count
+}
