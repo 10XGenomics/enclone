@@ -471,7 +471,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "these frequently represent true biological events, arising from expression",
         );
-        h.doc("", "of both alleles");
+        h.doc2("of both alleles");
         h.doc(
             "foursie",
             "a clonotype or exact subclonotype having exactly four chains;",
