@@ -43,7 +43,7 @@ serde_json = "*"
 stats_utils = "0.1"
 string_utils = "0.1.1"
 tilde-expand = "0.1.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="fd03ae493ed389432ae50df548fca629c0987ac5" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="da2d4a93e1030dcdd0c05b96c1bb26a6e9cbb5f1" }
 vector_utils = "0.1.3"
 
 [target.'cfg(not(windows))'.dependencies]

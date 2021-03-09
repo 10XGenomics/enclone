@@ -2257,7 +2257,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=fd03ae493ed389432ae50df548fca629c0987ac5#fd03ae493ed389432ae50df548fca629c0987ac5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=da2d4a93e1030dcdd0c05b96c1bb26a6e9cbb5f1#da2d4a93e1030dcdd0c05b96c1bb26a6e9cbb5f1"
 dependencies = [
  "align_tools",
  "amino",
