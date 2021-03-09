@@ -815,7 +815,26 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", nvals));
             }
         }
-    } else if var == "vals" {
+    } else if var == "nival" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                let mut nvals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        nvals += POUT_SEP;
+                    }
+                    let mut n = 0;
+                    if ex.clones[k][mid].invalidated_umis.is_some() {
+                        n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
+                    }
+                    nvals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", nvals));
+            }
+        }
+    } else if var == "valumis" {
         cvar![j, *var, "".to_string()];
         if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
             let varc = format!("{}{}", var, col + 1);
@@ -842,7 +861,7 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
-    } else if var == "nvals" {
+    } else if var == "nvalumis" {
         cvar![j, *var, "".to_string()];
         if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
             let varc = format!("{}{}", var, col + 1);
@@ -858,6 +877,33 @@ pub fn proc_cvar(
                             "{}",
                             ex.clones[k][mid]
                                 .non_validated_umis
+                                .as_ref()
+                                .unwrap()
+                                .iter()
+                                .format(",")
+                        );
+                    }
+                    nvals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", nvals));
+            }
+        }
+    } else if var == "ivalumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                let mut nvals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        nvals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].invalidated_umis.is_some() {
+                        n = format!(
+                            "{}",
+                            ex.clones[k][mid]
+                                .invalidated_umis
                                 .as_ref()
                                 .unwrap()
                                 .iter()

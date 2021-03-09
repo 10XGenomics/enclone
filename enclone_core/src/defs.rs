@@ -94,7 +94,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 67] = [
+pub const CVARS_ALLOWED: [&str; 68] = [
     "var",
     "u",
     "u_min",
@@ -160,8 +160,9 @@ pub const CVARS_ALLOWED: [&str; 67] = [
     "dna%",
     "nval",
     "nnval",
-    "vals",
-    "nvals",
+    "valumis",
+    "nvalumis",
+    "ivalumis",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -800,6 +801,7 @@ pub struct TigData {
     pub annv: Vec<(i32, i32, i32, i32, i32)>, // V annotation (one or two entries), for V..J
     pub validated_umis: Option<Vec<String>>, // validated UMIs
     pub non_validated_umis: Option<Vec<String>>, // non-validated UMIs
+    pub invalidated_umis: Option<Vec<String>>, // invalidated UMIs
     pub frac_reads_used: Option<u32>, // fraction of reads passed to assembly stage in CR
 }
 
@@ -833,6 +835,7 @@ pub struct TigData0 {
     pub marked: bool,                            // if marked for possible deletion
     pub validated_umis: Option<Vec<String>>,     // validated UMIs
     pub non_validated_umis: Option<Vec<String>>, // non-validated UMIs
+    pub invalidated_umis: Option<Vec<String>>,   // invalidated UMIs
     pub frac_reads_used: Option<u32>,            // fraction of reads passed to assembly stage in CR
 }
 

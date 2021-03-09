@@ -247,6 +247,7 @@ pub fn create_exact_subclonotype_core(
                     read_count: tig_bc[t][m].read_count,
                     validated_umis: tig_bc[t][m].validated_umis.clone(),
                     non_validated_umis: tig_bc[t][m].non_validated_umis.clone(),
+                    invalidated_umis: tig_bc[t][m].invalidated_umis.clone(),
                     frac_reads_used: tig_bc[t][m].frac_reads_used,
                     marked: false,
                 });

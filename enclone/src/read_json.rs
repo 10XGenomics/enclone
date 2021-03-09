@@ -174,6 +174,16 @@ fn parse_vector_entry_from_json(
             non_validated_umis.push(non_val[i].to_string().between("\"", "\"").to_string());
         }
     }
+    let mut invalidated_umis = Vec::<String>::new();
+    let mut invalidated_umis_present = false;
+    let inval = v["invalidated_umis"].as_array();
+    if inval.is_some() {
+        invalidated_umis_present = true;
+        let inval = inval.unwrap();
+        for i in 0..inval.len() {
+            invalidated_umis.push(inval[i].to_string().between("\"", "\"").to_string());
+        }
+    }
 
     // Read fraction_of_reads_for_this_barcode_provided_as_input_to_assembly.
 
@@ -549,6 +559,10 @@ fn parse_vector_entry_from_json(
     if non_validated_umis_present {
         non_valu = Some(non_validated_umis);
     }
+    let mut invalu = None;
+    if invalidated_umis_present {
+        invalu = Some(invalidated_umis);
+    }
     tigs.push(TigData {
         cdr3_dna: cdr3_dna.to_string(),
         len: seq.len(),
@@ -588,6 +602,7 @@ fn parse_vector_entry_from_json(
         annv: annv.clone(),
         validated_umis: valu,
         non_validated_umis: non_valu,
+        invalidated_umis: invalu,
         frac_reads_used: frac_reads_used,
     });
 }
