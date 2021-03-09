@@ -5,7 +5,7 @@ Notes on building and testing:
 
 2. Tests assume that you have installed enclone with the "large" option.
    If you have only "medium" and not "large, you can use instead:
-   cd enclone_main; cargo test --features basic -- --nocapture
+   cd enclone_main; cargo tb
    which tests lots of things but not everything.
 
 3. ./test does not include the very large test given by enclone/src/enclone.test.
@@ -14,6 +14,7 @@ Notes on building and testing:
 
 4. Test speed with ./speed.  This uses datasets that are not available externally.  The 
    particular data used have a very large clonotype that causes the code to be slow.
+   [This is not in use now.  There is a speed test inside ./test.]
 
 5. The code for NOPAGER accidentally broke at one point and we
    don't want that to recur.  Some test cases that could be verified:

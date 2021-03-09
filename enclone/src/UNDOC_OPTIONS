@@ -268,7 +268,10 @@ GD_BC=x
 translates into BC=x/outs/genetic_demux_results/clusters.tsv
 to allow for convenient use of genetic demux results in the PD pipeline
 
-cvar nval = number of validated umis
+cvar nval  = number of validated umis (capped at 20)
+cvar nnval = number of non-validated umis (capped at 20)
+cvar vals  = list of validated UMIs
+cvar nvals = list of non-validated UMIs
 
 ===================================================================================================
 

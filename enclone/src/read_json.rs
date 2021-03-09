@@ -152,7 +152,7 @@ fn parse_vector_entry_from_json(
         *cr_version = v["version"].to_string().between("\"", "\"").to_string();
     }
 
-    // Read validated UMIs.
+    // Read validated and non-validated UMIs.
 
     let mut validated_umis = Vec::<String>::new();
     let mut validated_umis_present = false;
@@ -162,6 +162,16 @@ fn parse_vector_entry_from_json(
         let val = val.unwrap();
         for i in 0..val.len() {
             validated_umis.push(val[i].to_string().between("\"", "\"").to_string());
+        }
+    }
+    let mut non_validated_umis = Vec::<String>::new();
+    let mut non_validated_umis_present = false;
+    let non_val = v["non_validated_umis"].as_array();
+    if non_val.is_some() {
+        non_validated_umis_present = true;
+        let non_val = non_val.unwrap();
+        for i in 0..non_val.len() {
+            non_validated_umis.push(non_val[i].to_string().between("\"", "\"").to_string());
         }
     }
 
@@ -535,6 +545,10 @@ fn parse_vector_entry_from_json(
     if validated_umis_present {
         valu = Some(validated_umis);
     }
+    let mut non_valu = None;
+    if non_validated_umis_present {
+        non_valu = Some(non_validated_umis);
+    }
     tigs.push(TigData {
         cdr3_dna: cdr3_dna.to_string(),
         len: seq.len(),
@@ -573,6 +587,7 @@ fn parse_vector_entry_from_json(
         chain_type: chain_type.clone(),
         annv: annv.clone(),
         validated_umis: valu,
+        non_validated_umis: non_valu,
         frac_reads_used: frac_reads_used,
     });
 }

@@ -892,7 +892,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.9771;
+    const REQUIRED_GI: f64 = 18.9964;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -930,7 +930,7 @@ fn test_cpu_usage() {
 #[test]
 fn test_source_code_file_length() {
     PrettyTrace::new().on();
-    const MAX_RS_LINES: usize = 1518; // print_utils2.rs
+    const MAX_RS_LINES: usize = 1505; // proc_args.rs
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {

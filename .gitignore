@@ -2,3 +2,4 @@ target
 enclone_main/test/inputs/version14/85679/outs/raw_feature_bc_matrix/matrix.bin
 enclone_main/testx/outputs
 enclone-data
+stamps/last_sweep

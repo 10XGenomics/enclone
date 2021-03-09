@@ -1,2 +1,17 @@
 [alias]
+
+# "cargo t" exercises nearly the full test suite, except for the giant test "enclone.test"
+#
+# It can only be run from 10x Genomics because it uses a bunch of data files that we don't
+# distribute.
+
 t = "test --bin traceback1 --test enclone_test1 --test enclone_test2 -- --nocapture"
+
+# Note that "./test" exercises this plus a few more tests.
+
+# "cargo tb" exercises a subset of tests
+#
+# "cargo tb" has to be run from the directory enclone_main, but should be runnable from any
+# machine, so long as at least the medium dataset has been downloaded.
+
+tb = "test --test enclone_test1 --test enclone_test2 --features basic -- --nocapture"
