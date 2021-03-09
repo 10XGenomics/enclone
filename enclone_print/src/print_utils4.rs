@@ -5,6 +5,7 @@ use amino::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
+use itertools::Itertools;
 use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
@@ -757,6 +758,18 @@ pub fn compute_bu(
                                     .len();
                             }
                             cx[cp + p] = format!("{}", n);
+                        } else if rsi.cvars[col][p] == "vals".to_string() {
+                            let mut n = Vec::<String>::new();
+                            if ex.clones[bcl.2][m].validated_umis.is_some() {
+                                n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
+                            }
+                            cx[cp + p] = format!("{}", n.iter().format(","));
+                        } else if rsi.cvars[col][p] == "nvals".to_string() {
+                            let mut n = Vec::<String>::new();
+                            if ex.clones[bcl.2][m].non_validated_umis.is_some() {
+                                n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
+                            }
+                            cx[cp + p] = format!("{}", n.iter().format(","));
                         }
                     }
                 }
