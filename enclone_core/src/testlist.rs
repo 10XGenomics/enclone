@@ -477,8 +477,8 @@ pub const TESTS: [&str; 193] = [
     r###"BCR=123085 CONX CDR3=CVKRASGSAFTAPYW"###,
     // 191. test CONP when there's a gap
     r###"BCR=123085 CONP CDR3=CALGGYTWFDPW"###,
-    // 192. DUPLICATE, TO REPLACE
-    r###"BCR=123085 CONP NOPRINT EXPECT_OK"###,
+    // 192. test INFO
+    r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW INFO=testx/inputs/123085_info.csv LVARSP=funny"###,
     // 193. check that this fails gracefully
     r###"NOPRINT EXPECT_FAIL"###,
 ];

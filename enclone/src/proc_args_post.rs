@@ -59,9 +59,9 @@ pub fn proc_args_post(
             let (mut vj1, mut vj2) = (String::new(), String::new());
             let mut other = Vec::<String>::new();
             for i in 0..vals.len() {
-                if vals[i] == "vj_dna1" {
+                if fields[i] == "vj_dna1" {
                     vj1 = vals[i].to_string();
-                } else if vals[i] == "vj_dna2" {
+                } else if fields[i] == "vj_dna2" {
                     vj2 = vals[i].to_string();
                 } else {
                     other.push(vals[i].to_string());
