@@ -561,8 +561,8 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
     // 25. Test a tweak to the weak chains filter.  This should have two chains.
     r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
-    // 26. DUPLICATE, TO REPLACE
-    r###"BCR="45987;123085" NOPRINT CONP BUILT_IN EXPECT_OK NO_PRE NFORCE"###,
+    // 26. crashed at one point
+    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
