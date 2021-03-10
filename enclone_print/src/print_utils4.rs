@@ -758,16 +758,28 @@ pub fn compute_bu(
                                     .len();
                             }
                             cx[cp + p] = format!("{}", n);
-                        } else if rsi.cvars[col][p] == "vals".to_string() {
+                        } else if rsi.cvars[col][p] == "nival".to_string() {
+                            let mut n = 0;
+                            if ex.clones[bcl.2][m].invalidated_umis.is_some() {
+                                n = ex.clones[bcl.2][m].invalidated_umis.as_ref().unwrap().len();
+                            }
+                            cx[cp + p] = format!("{}", n);
+                        } else if rsi.cvars[col][p] == "valumis".to_string() {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
-                        } else if rsi.cvars[col][p] == "nvals".to_string() {
+                        } else if rsi.cvars[col][p] == "nvalumis".to_string() {
                             let mut n = Vec::<String>::new();
                             if ex.clones[bcl.2][m].non_validated_umis.is_some() {
                                 n = ex.clones[bcl.2][m].non_validated_umis.clone().unwrap();
+                            }
+                            cx[cp + p] = format!("{}", n.iter().format(","));
+                        } else if rsi.cvars[col][p] == "ivalumis".to_string() {
+                            let mut n = Vec::<String>::new();
+                            if ex.clones[bcl.2][m].invalidated_umis.is_some() {
+                                n = ex.clones[bcl.2][m].invalidated_umis.clone().unwrap();
                             }
                             cx[cp + p] = format!("{}", n.iter().format(","));
                         }
