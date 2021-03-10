@@ -41,15 +41,15 @@ pub fn proc_args_post(
             std::process::exit(1);
         }
         let fields = lines[0].split(',').collect::<Vec<&str>>();
-        if !fields.contains(&"vj_dna1") || !fields.contains(&"vj_dna2") {
+        if !fields.contains(&"vj_seq1") || !fields.contains(&"vj_seq2") {
             eprintln!(
-                "\nThe CSV file {} needs to have fields vj_dna1 and vj_dna2.\n",
+                "\nThe CSV file {} needs to have fields vj_seq1 and vj_seq2.\n",
                 ctl.gen_opt.info.as_ref().unwrap()
             );
             std::process::exit(1);
         }
         for i in 0..fields.len() {
-            if fields[i] != "vj_dna1" && fields[i] != "vj_dna2" {
+            if fields[i] != "vj_seq1" && fields[i] != "vj_seq2" {
                 ctl.gen_opt.info_fields.push(fields[i].to_string());
             }
         }
@@ -59,9 +59,9 @@ pub fn proc_args_post(
             let (mut vj1, mut vj2) = (String::new(), String::new());
             let mut other = Vec::<String>::new();
             for i in 0..vals.len() {
-                if fields[i] == "vj_dna1" {
+                if fields[i] == "vj_seq1" {
                     vj1 = vals[i].to_string();
-                } else if fields[i] == "vj_dna2" {
+                } else if fields[i] == "vj_seq2" {
                     vj2 = vals[i].to_string();
                 } else {
                     other.push(vals[i].to_string());
