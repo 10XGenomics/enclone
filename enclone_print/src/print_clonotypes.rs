@@ -606,6 +606,7 @@ pub fn print_clonotypes(
                 let mut ppe = Vec::<Vec<String>>::new();
                 let mut npe = Vec::<Vec<String>>::new();
                 compute_some_stats(
+                    &ctl,
                     &lvars,
                     &exacts,
                     &exact_clonotypes,

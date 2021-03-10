@@ -217,6 +217,7 @@ pub fn build_show_aa(
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn compute_some_stats(
+    ctl: &EncloneControl,
     lvars: &Vec<String>,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -276,6 +277,7 @@ pub fn compute_some_stats(
         if lvars[k].starts_with("pe") {
             let n = lvars[k].after("pe").force_usize();
             let mut bcs = Vec::<String>::new();
+            let mut lis = Vec::<usize>::new();
             let mut count = 0;
             let mut to_index = Vec::<usize>::new();
             for u in 0..nexacts {
@@ -286,16 +288,16 @@ pub fn compute_some_stats(
                     let li = ex.clones[l][0].dataset_index;
                     if gex_info.pca[li].contains_key(&bc.clone()) {
                         bcs.push(bc.to_string());
+                        lis.push(li);
                         to_index.push(count);
                     }
                     count += 1;
                 }
             }
             let mut e: EquivRel = EquivRel::new(bcs.len() as i32);
-            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             let mut mat = vec![Vec::<f64>::new(); bcs.len()];
             for i in 0..bcs.len() {
-                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+                mat[i] = gex_info.pca[lis[i]][&bcs[i].clone()].clone();
             }
             for i1 in 0..bcs.len() {
                 for i2 in i1 + 1..bcs.len() {
@@ -333,6 +335,7 @@ pub fn compute_some_stats(
         if lvars[k].starts_with("ppe") {
             let n = lvars[k].after("ppe").force_usize();
             let mut bcs = Vec::<String>::new();
+            let mut lis = Vec::<usize>::new();
             let mut count = 0;
             let mut to_index = Vec::<usize>::new();
             for u in 0..nexacts {
@@ -343,19 +346,21 @@ pub fn compute_some_stats(
                     let li = ex.clones[l][0].dataset_index;
                     if gex_info.pca[li].contains_key(&bc.clone()) {
                         bcs.push(bc.to_string());
+                        lis.push(li);
                         to_index.push(count);
                     }
                     count += 1;
                 }
             }
-            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             let mut mat = vec![Vec::<f64>::new(); bcs.len()];
             for i in 0..bcs.len() {
-                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+                mat[i] = gex_info.pca[lis[i]][&bcs[i].clone()].clone();
             }
             let mut matg = Vec::<Vec<f64>>::new();
-            for i in gex_info.pca[li].iter() {
-                matg.push(i.1.to_vec());
+            for li in 0..ctl.origin_info.n() {
+                for i in gex_info.pca[li].iter() {
+                    matg.push(i.1.to_vec());
+                }
             }
             let mut x = vec![0; bcs.len()];
             for i1 in 0..mat.len() {
@@ -401,6 +406,7 @@ pub fn compute_some_stats(
         if lvars[k].starts_with("npe") {
             let n = lvars[k].after("npe").force_usize();
             let mut bcs = Vec::<String>::new();
+            let mut lis = Vec::<usize>::new();
             let mut count = 0;
             let mut to_index = Vec::<usize>::new();
             for u in 0..nexacts {
@@ -411,15 +417,15 @@ pub fn compute_some_stats(
                     let li = ex.clones[l][0].dataset_index;
                     if gex_info.pca[li].contains_key(&bc.clone()) {
                         bcs.push(bc.to_string());
+                        lis.push(li);
                         to_index.push(count);
                     }
                     count += 1;
                 }
             }
-            let li = 0; // BEWARE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             let mut mat = vec![Vec::<f64>::new(); bcs.len()];
             for i in 0..bcs.len() {
-                mat[i] = gex_info.pca[li][&bcs[i].clone()].clone();
+                mat[i] = gex_info.pca[lis[i]][&bcs[i].clone()].clone();
             }
             let mut y = vec![0; bcs.len()];
             for i1 in 0..mat.len() {
