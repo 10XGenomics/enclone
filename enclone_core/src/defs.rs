@@ -563,9 +563,11 @@ pub struct GeneralOpt {
     pub fold_headers: bool,
     pub domain: String,
     pub no_uncap_sim: bool,
-
     pub profile: bool,
     pub nopager: bool,
+    pub info: Option<String>,
+    pub info_fields: Vec<String>,
+    pub info_data: HashMap<String, Vec<String>>,
 }
 
 // Allele-finding algorithmic options.

@@ -10,7 +10,7 @@ use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
-use std::io::BufRead;
+use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
@@ -566,6 +566,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "SVG",
     ];
 
+    // Define arguments that set something to a string that is an input CSV file name.
+
+    let set_string_readable_csv = [("INFO", &mut ctl.gen_opt.info)];
+
     // Define arguments that do nothing (because already parsed), and which may have
     // an "= value" part.
 
@@ -680,10 +684,36 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if is_string_arg(&arg, var) {
                 let val = arg.after(&format!("{}=", var));
                 if val.is_empty() {
-                    eprintln!("\nFilename input in {} cannot be empty\n", val);
+                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
                     std::process::exit(1);
                 }
                 *(set_string_readable[j].1) = Some(val.to_string());
+                if let Err(e) = File::open(&val) {
+                    eprintln!(
+                        "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
+                        val, e
+                    );
+                    std::process::exit(1);
+                }
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_string_readable_csv args.
+
+        for j in 0..set_string_readable_csv.len() {
+            let var = &set_string_readable_csv[j].0;
+            if is_string_arg(&arg, var) {
+                let val = arg.after(&format!("{}=", var));
+                if val.is_empty() {
+                    eprintln!("\nFilename input in {} cannot be empty.\n", val);
+                    std::process::exit(1);
+                }
+                if !val.ends_with(".csv") {
+                    eprintln!("\nFilename input in {} needs to end with .csv.\n", val);
+                    std::process::exit(1);
+                }
+                *(set_string_readable_csv[j].1) = Some(val.to_string());
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
@@ -1141,9 +1171,74 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     ctl.perf_stats(&targs, "in main args loop");
 
-    // Expand ~ and ~user in output file names.
+    // Process INFO.
 
     let t = Instant::now();
+    if ctl.gen_opt.info.is_some() {
+        let f = open_for_read![&ctl.gen_opt.info.as_ref().unwrap()];
+        let mut lines = Vec::<String>::new();
+        for line in f.lines() {
+            let s = line.unwrap();
+            lines.push(s);
+        }
+        if lines.is_empty() {
+            eprintln!(
+                "\nThe file {} is empty.\n",
+                ctl.gen_opt.info.as_ref().unwrap()
+            );
+            std::process::exit(1);
+        }
+        let fields = lines[0].split(',').collect::<Vec<&str>>();
+        if !fields.contains(&"vj_dna1") || !fields.contains(&"vj_dna2") {
+            eprintln!(
+                "\nThe CSV file {} needs to have fields vj_dna1 and vj_dna2.\n",
+                ctl.gen_opt.info.as_ref().unwrap()
+            );
+            std::process::exit(1);
+        }
+        for i in 0..fields.len() {
+            if fields[i] != "vj_dna1" && fields[i] != "vj_dna2" {
+                ctl.gen_opt.info_fields.push(fields[i].to_string());
+            }
+        }
+        let mut tags = Vec::<String>::new();
+        for i in 1..lines.len() {
+            let vals = parse_csv(&lines[i]);
+            let (mut vj1, mut vj2) = (String::new(), String::new());
+            let mut other = Vec::<String>::new();
+            for i in 0..vals.len() {
+                if vals[i] == "vj_dna1" {
+                    vj1 = vals[i].to_string();
+                } else if vals[i] == "vj_dna2" {
+                    vj2 = vals[i].to_string();
+                } else {
+                    other.push(vals[i].to_string());
+                }
+            }
+            let tag = format!("{}_{}", vj1, vj2);
+            tags.push(tag.clone());
+            ctl.gen_opt.info_data.insert(tag, other);
+        }
+        tags.sort();
+        let mut i = 0;
+        while i < tags.len() {
+            let j = next_diff(&tags, i);
+            if j - i > 1 {
+                eprintln!(
+                    "\nThe immune receptor sequence pair\n{},\n {}\nappears more than once \
+                    in the file {}.\n",
+                    tags[i].before("_"),
+                    tags[i].after("_"),
+                    ctl.gen_opt.info.as_ref().unwrap(),
+                );
+                std::process::exit(1);
+            }
+            i = j;
+        }
+    }
+
+    // Expand ~ and ~user in output file names.
+
     let mut files = [
         &mut ctl.gen_opt.plot_file,
         &mut ctl.gen_opt.fasta_filename,

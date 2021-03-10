@@ -324,6 +324,11 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
     let pchains = ctl.parseable_opt.pchains;
     for x in ctl.parseable_opt.pcols.iter() {
         let mut ok = false;
+        for i in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[i] {
+                ok = true;
+            }
+        }
         if bin_member(&alt_bcs, x) {
             ok = true;
         }
@@ -466,6 +471,12 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     }
     let mut nd_used = false;
     'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
+        for i in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[i] {
+                continue 'main_loop;
+            }
+        }
+
         // See if type is ok.
 
         if *x == "type" {
