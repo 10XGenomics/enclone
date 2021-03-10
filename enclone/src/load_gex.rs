@@ -112,15 +112,43 @@ pub fn load_gex(
                 h5_path = h5_path_alt;
             }
             let types_file = format!("{}/analysis_csv/celltypes/celltypes.csv", outs);
-            let mut pca_file = format!("{}/analysis_csv/pca/10_components/projection.csv", outs);
-            if !path_exists(&pca_file) {
-                pca_file = format!("{}/analysis/pca/10_components/projection.csv", outs);
+
+            // Define possible places for the analysis directory.
+
+            let mut analysis = Vec::<String>::new();
+            analysis.push(format!("{}/analysis_csv", outs));
+            analysis.push(format!("{}/analysis", outs));
+            let pso = format!("{}/../per_sample_outs", outs);
+            if path_exists(&pso) {
+                let samples = dir_list(&pso);
+                if samples.solo() {
+                    let a = format!("{}/{}/count/analysis", pso, samples[0]);
+                    analysis.push(a);
+                }
             }
-            let mut cluster_file =
-                format!("{}/analysis_csv/clustering/graphclust/clusters.csv", outs);
-            if !path_exists(&cluster_file) {
-                cluster_file = format!("{}/analysis/clustering/graphclust/clusters.csv", outs);
+
+            // Find the pca file.
+
+            let mut pca_file = String::new();
+            for x in analysis.iter() {
+                pca_file = format!("{}/pca/10_components/projection.csv", x);
+                if path_exists(&pca_file) {
+                    break;
+                }
             }
+
+            // Find the cluster file.
+
+            let mut cluster_file = String::new();
+            for x in analysis.iter() {
+                cluster_file = format!("{}/clustering/graphclust/clusters.csv", x);
+                if path_exists(&cluster_file) {
+                    break;
+                }
+            }
+
+            // Proceed.
+
             let bin_file = format!("{}/feature_barcode_matrix.bin", outs);
             for f in [pca_file.clone(), cluster_file.clone()].iter() {
                 if !path_exists(&f) {
