@@ -87,11 +87,7 @@ cargo b
 
 # build help pages
 
-target/debug/enclone HTML STABLE_DOC      > pages/auto/help.main.html
-target/debug/enclone HTML STABLE_DOC help > pages/auto/help.setup.html
-foreach x (quick how command glossary example1 example2 input input_tech parseable filter special lvars cvars amino display indels color faq developer all)
-    target/debug/enclone help $x HTML STABLE_DOC > pages/auto/help.$x.html
-end
+build_help_pages
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
