@@ -42,8 +42,10 @@ fn main() {
     let dirs = dir_list(&root);
     let mut ids = Vec::<usize>::new();
     for i in 0..dirs.len() {
-        let id = dirs[i].force_usize();
-        ids.push(id);
+        if dirs[i].parse::<usize>().is_ok() {
+            let id = dirs[i].force_usize();
+            ids.push(id);
+        }
     }
     ids.sort();
     for i in 0..ids.len() {
