@@ -430,59 +430,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Provide developer help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || h.help_all {
-        h.begin_doc("developer");
-        h.print("\n\\bold{a few options for developers}\n\n");
-        h.print(
-            "For instructions on how to compile, please see\n\
-             \\green{bit.ly/enclone}.\n\n",
-        );
-
-        h.docf2(
-            "COMP",
-            "report computational performance stats; use this with NOPRINT if you \
-            want to suppress visual output, and with NOPAGER if you \
-            want output to be unbuffered",
-            60,
-        );
-        h.doc(
-            "COMP2",
-            "like COMP, but adds more detailed lines that are prefixed with --",
-        );
-        h.ldoc(
-            "LONG_HELP",
-            "allow long lines in help pages, which will otherwise trigger an assert",
-        );
-        h.ldoc(
-            "CTRLC",
-            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive",
-        );
-        h.doc(
-            "",
-            "but easy profiling method, to know what the code is doing if it seems to be",
-        );
-        h.doc("", "very slow");
-        h.ldoc(
-            "PROFILE",
-            "Profile the code and tally tracebacks.  Normally used with NOPRINT.  This",
-        );
-        h.doc(
-            "",
-            "turns off paging because paging and profiling do not work correctly together.",
-        );
-        h.doc(
-            "",
-            "However you can pipe the output of enclone to \"less -r\".",
-        );
-        h.print_tab2();
-        h.print("\n");
-        h.end_doc();
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
     // Finish enclone help all.
 
     if h.help_all {

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone developers guide</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>This is a guide for <span style="color:rgb(120,123,175);font-weight:900">enclone</span> developers, both inside and outside 10x Genomics.</p>
+
+<p>There is no reason to read this, unless you want to experimentally modify <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, or are 
+curious.  We distribute pre-built binaries for <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and that's all you need if you just
+want to run the existing code.
+</p>
+
+<h1>The <span style="color:rgb(120,123,175);font-weight:900">enclone</span> components</h1>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has the following software and data components:
+<ul>
+
+<li>
+A GitHub repo
+<a https://github.com/10XGenomics/enclone.git>https://github.com/10XGenomics/enclone</a>
+that is maintained by 10x Genomics.  Contributions are welcome.  The software is licensed freely, 
+however only for use with 10x Genomics data.  Please read the 
+<a href="../../LICENSE.txt">license</a>.
+</li>
+
+<li>
+A web site <a https://10xgenomics.github.io/enclone>https://10xgenomics.github.io/enclone</a>
+that is built automatically by code in the above repo.
+</li>
+
+<li>
+A separate GitHub repo
+<a https://github.com/10XGenomics/enclone-data>https://10xgenomics.github.io/enclone-data</a>
+that contains a small number of datasets.  If you build <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, this is automatically
+downloaded as part of the build process.  If you install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, this is downloaded, unless you 
+choose the <code>small</code> option, in which case you get only a subset of it.
+</li>
+
+<li>
+A larger collection of datasets that are downloaded if you install with the <code>large</code>
+option.
+</li>
+
+<li>
+A still larger collection of datasets that are internal to 10x Genomics and not publicly
+available.  These datasets are kept internal because of consent restrictions, or because the
+datasets were generated as part of experiments using unpublished protocols.  Some of these
+datasets are used in the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite, although there is a shorter test suite that runs
+using only public data.  Developers at 10x Genomics can find the full collection in a directory 
+<code>/mnt/assembly/vdj/current*</code>, where <code>*</code> is a version number.  There is also
+a link <code>/mnt/assembly/cloud</code> that points to a copy on solid-state disk.  The full
+dataset is not backed up, however there is a catalog 
+<code>enclone/src/enclone.testlist.all</code> that would facilitate reconstruction in the
+event of loss.  Over time, we gradually enlarge the collection.
+</li>
+
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<h1>Prerequisites</h1>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be built and run on an x86-64 Linux server or a Mac, although we have not
+tested on a Mac with an M1 processor.</p>
+
+<p>The following software are needed to build and test <span style="color:rgb(120,123,175);font-weight:900">enclone</span>:
+
+<ul>
+
+<li>rust.  Detailed instructions on how to install rust
+can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can 
+confirm that you have successfully installed the Rust compiler by running 
+<code>rustc --version</code>.</p></li>
+
+<li>cargo-license.  Probably this is needed only for internal use.  You can install it using
+<code>cargo install cargo-license</code>, assuming that you have already installed rust.</li>
+
+<li>standard utilities, including git, curl and wget.</li>
+
+</ul>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<h1>Building <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h1>
+
+<ol>
+
+<li>Follow the installation instructions on the main page to install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, using the
+medium or large options.  This is not needed for developers at 10x Genomics.
+Doing this download data, which you will want for experimentation and testing.</li>
+
+<li>
+Go to a directory where you want to put the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> code, and
+<p>clone the <code>enclone</code> repository using
+<code>git clone git@github.com:10XGenomics/enclone.git</code>
+If you have a very slow internet connection, you might wish to download only the current version
+(and not the history) using
+<code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code>.
+</li>
+
+<li>Type <code>cd enclone</code> and then <code>./build</code>.  Depending on your computer,
+this will take roughly 5-10 minutes.  Subsequent invocations (after code changes) will be much 
+faster.  For subsequent use, typing <code>cargo b</code> is even faster, but does omit some 
+build steps (which may or may not matter, depending on what you're doing).</li>
+
+<li>Add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>, and 
+make sure this comes <i>before</i> <code>~/bin</code>, which was where the precompiled
+version of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> was downloaded to by the install command.  You may need to close and reopen
+your terminal window to get the change to <code>PATH</code> to take effect.</li>
+
+<li>Now when you type <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, you'll get the version you just compiled.</li>
+
+</ol>
+
+<p>If you have problems, please write to us at 
+<a href="mailto:enclone@10xgenomics.com"><span style="color:rgb(120,123,175);font-weight:900">enclone</span>@10xgenomics.com</a>.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<h1>Testing <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h1>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has an extensive test suite. It has hundreds of tests.  Most but not all of the
+tests can be run by anyone; the remainder use datasets that are internal to 10x Genomics.
+(See earlier explanation.)</p>
+
+<p>
+To run the main tests, type:
+<ul>
+<li>[external users] <code>cargo tb</code></li>
+<li>[internal users] <code>./test</code></li>
+</ul>
+</p>
+
+<p>
+There is also a very large test, which can only be run internally, which one runs by
+<code>./enclone/enclone.test</code>.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<h1>Profiling <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h1>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides two built-in mechanisms for profiling:</p>
+<ol>
+<li>Add the argument <code>COMP</code> to your command.  This yields a summary of wall-clock
+time by code section, and also tracks peak memory usage.  There is also a version
+<code>COMP2</code> that prints a bit more.</li>
+<li>Add the argument <code>PROFILE</code> to your command.  This yields list of tracebacks
+based on random interrupts.  These tracebacks are manicured and each is shown with its
+multiplicity.</li>
+</ol>
+<p>It is usually convenient to add the argument <code>NOPRINT</code> when using these profiling
+options, so as to suppress other output.</p>
+
+</body>
+</html>
