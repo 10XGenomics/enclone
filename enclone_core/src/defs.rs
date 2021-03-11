@@ -30,13 +30,12 @@ pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
     "vector_utils",
 ];
 
-pub const HELP_PAGES: [&str; 22] = [
+pub const HELP_PAGES: [&str; 21] = [
     "all",
     "amino",
     "color",
     "command",
     "cvars",
-    "developer",
     "display",
     "example1",
     "example2",
