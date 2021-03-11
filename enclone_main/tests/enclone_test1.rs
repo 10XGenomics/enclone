@@ -1093,7 +1093,9 @@ fn test_for_broken_links_and_spellcheck() {
         let mut bads = HashSet::<String>::new();
         let f = open_for_read![x];
         let depth = x.matches('/').count();
+        let mut line_no = 0;
         for line in f.lines() {
+            line_no += 1;
             let mut s = line.unwrap();
 
             // Test spelling.  Case insensitive.
@@ -1265,7 +1267,10 @@ fn test_for_broken_links_and_spellcheck() {
                     let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
                     let response = req.send();
                     if response.is_err() {
-                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        eprintln!(
+                            "\ncould not read link {} on page {} line {}\n",
+                            link, x, line_no
+                        );
                         if i == LINK_RETRIES - 1 {
                             std::process::exit(1);
                         }
@@ -1274,7 +1279,10 @@ fn test_for_broken_links_and_spellcheck() {
                         if response.is_success() {
                             break;
                         }
-                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        eprintln!(
+                            "\ncould not read link {} on page {} line {}\n",
+                            link, x, line_no
+                        );
                         if i == LINK_RETRIES - 1 {
                             std::process::exit(1);
                         }
