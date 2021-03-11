@@ -9,6 +9,7 @@ use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
 use std::fs::{remove_file, File};
+use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use vector_utils::*;
@@ -79,8 +80,20 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
+        ctl.gen_opt.internal_data_dir = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
+        let cloud_loc = "/mnt/assembly/vdj/cloud";
+        if path_exists(&cloud_loc) {
+            let f = open_for_read![&cloud_loc];
+            for line in f.lines() {
+                let cloud = line.unwrap();
+                let cloud_path = format!("{}/current{}", cloud, TEST_FILES_VERSION);
+                if path_exists(&cloud_path) {
+                    ctl.gen_opt.internal_data_dir = cloud_path;
+                }
+            }
+        }
         ctl.gen_opt.pre = vec![
-            format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION),
+            ctl.gen_opt.internal_data_dir.clone(),
             format!("enclone/test/inputs"),
             format!("enclone_main"),
         ];

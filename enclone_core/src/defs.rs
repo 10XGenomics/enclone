@@ -568,6 +568,7 @@ pub struct GeneralOpt {
     pub info: Option<String>,
     pub info_fields: Vec<String>,
     pub info_data: HashMap<String, Vec<String>>,
+    pub internal_data_dir: String,
 }
 
 // Allele-finding algorithmic options.
