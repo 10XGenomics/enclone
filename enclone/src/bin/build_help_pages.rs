@@ -34,13 +34,23 @@ fn main() {
     let mut f = open_for_write_new!["pages/auto/help.setup.html"];
     fwrite!(f, "{}", strme(&new.stdout));
     for x in HELP_PAGES.iter() {
-        let new = Command::new("target/debug/enclone")
-            .arg("help")
-            .arg(x)
-            .arg("HTML")
-            .arg("STABLE_DOC")
-            .output()
-            .expect(&format!("failed to execute enclone"));
+        let new;
+        if *x == "setup" {
+            new = Command::new("target/debug/enclone")
+                .arg("help")
+                .arg("HTML")
+                .arg("STABLE_DOC")
+                .output()
+                .expect(&format!("failed to execute enclone"));
+        } else {
+            new = Command::new("target/debug/enclone")
+                .arg("help")
+                .arg(x)
+                .arg("HTML")
+                .arg("STABLE_DOC")
+                .output()
+                .expect(&format!("failed to execute enclone"));
+        }
         if new.status.code() != Some(0) {
             eprintln!("\nbuild_help_pages failed on {}", x);
             eprintln!("stdout:\n{}", strme(&new.stdout));
