@@ -29,12 +29,20 @@
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
-set begin_fetch = `date +%s`
-git -C enclone-data fetch --depth=1 origin `cat stamps/data_version`
-set end_fetch = `date +%s`
-set elapsed_fetch = `expr $end_fetch - $begin_fetch`
-echo "fetch took $elapsed_fetch seconds"
-git -C enclone-data switch --detach FETCH_HEAD
+if !(-f stamps/data_version_in_use) then
+    echo none > stamps/data_version_in_use
+endif
+if ( `cat stamps/data_version` != `cat stamps/data_version_in_use` ) then
+    echo "starting data update, interrupt not recommended"
+    set begin_fetch = `date +%s`
+    git -C enclone-data fetch --depth=1 origin `cat stamps/data_version`
+    set end_fetch = `date +%s`
+    set elapsed_fetch = `expr $end_fetch - $begin_fetch`
+    echo "fetch took $elapsed_fetch seconds"
+    git -C enclone-data switch --detach FETCH_HEAD
+    cat stamps/data_version > stamps/data_version_in_use
+    echo "data update complete"
+endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
