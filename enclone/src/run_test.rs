@@ -195,6 +195,12 @@ pub fn run_test(
                              failed, with stderr = {}",
                             new_err.iter().format("\n")
                         );
+                        fwriteln!(
+                            log,
+                            "The command was\n\nenclone {} {}\n",
+                            test,
+                            local_pre_arg
+                        );
                     } else {
                         *ok = true;
                     }
