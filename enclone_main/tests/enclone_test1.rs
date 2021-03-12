@@ -446,6 +446,8 @@ fn test_datasets_sha256() {
 #[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu() {
+    PrettyTrace::new().on();
+
     // Introductory comments.
 
     println!(
@@ -467,8 +469,9 @@ fn test_cpu() {
     // Speed test 1.
 
     let it = 1;
-    let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 7700;
+    let test =
+        "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 16638;
     let percent_dev = 6.0;
     println!("\nSpeed test 1");
     println!(
@@ -532,14 +535,14 @@ fn test_cpu() {
 
     let it = 2;
     let test =
-        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 59.0;
+        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 137.6;
     let percent_dev = 6.0;
     println!("Speed test 2");
     println!(
         "\nThis tests wall clock.  It is thus particularly susceptible to competing load \
         on the server.\nIt will also be very slow unless it has been run recently so files \
-        are in cache.\nThis test takes about a minute and may trigger a warning from cargo \
+        are in cache.\nThis test takes about two minutes and will trigger a warning from cargo \
         after 60 seconds.\n"
     );
     let t = Instant::now();
