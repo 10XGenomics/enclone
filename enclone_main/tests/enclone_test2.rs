@@ -1027,8 +1027,24 @@ fn test_help_page_list() {
     for x in HELP_PAGES.iter() {
         help2.push(x.to_string());
     }
-    if help1 != help2 {
-        eprintln!("\nList of help pages is incorrect.\n");
-        std::process::exit(1);
+    help1.sort();
+    help2.sort();
+    for x in help2.iter() {
+        if !bin_member(&help1, &x) {
+            eprintln!(
+                "\nHelp page for {} is in HELP_PAGES but not in enclone/pages/auto.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+    }
+    for x in help1.iter() {
+        if !bin_member(&help2, &x) {
+            eprintln!(
+                "\nHelp page for {} is in enclone/pages/auto but not in HELP_PAGES.\n",
+                x
+            );
+            std::process::exit(1);
+        }
     }
 }
