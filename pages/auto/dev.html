@@ -161,10 +161,9 @@ If you have a very slow internet connection, you might wish to download only the
 <pre><code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code></pre>.
 </li>
 
-<li>Type <code>cd enclone</code> and then <code>./build</code>.  Depending on your computer,
-this will take roughly 5-10 minutes.  Subsequent invocations (after code changes) will be much 
-faster.  For subsequent use, typing <code>cargo b</code> is even faster, but does omit some 
-build steps (which may or may not matter, depending on what you're doing).</li>
+<li>Type <code>cd enclone</code> and then <code>./build</code>.  Depending on your computer, this
+will take roughly 5-10 minutes.  Subsequent invocations (after code changes) will be much 
+faster.</li>
 
 <li>Add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>, and 
 make sure this comes <i>before</i> <code>~/bin</code>, which was where the precompiled
@@ -199,6 +198,10 @@ There is also a very large test, which can only be run internally, which one run
 <code>./enclone/enclone.test</code>.
 </p>
 
+<p>Pull requests trigger <code>./testx</code> (via GitHub Actions) and the very large test
+(via Jenkins).  Note that the internal main test includes tests that are not tested as
+part of this.</p>
+
 <p>To better understand the testing machinery, please refer to the following files:
 <ul>
 <li> <code>enclone_core/src/testlist.rs</code></li>
@@ -206,6 +209,7 @@ There is also a very large test, which can only be run internally, which one run
 <li> <code>test</code></li>
 <li> <code>.cargo/config</code></li>
 <li> <code>enclone/enclone.test</code>.</li>
+<li> <code>.github/workflows/test.yaml</code></li>
 </ul>
 
 <p>The standard test battery includes a speed test, but there is some additional testing
