@@ -331,6 +331,7 @@ fn test_curl_command() {
                             file, size = {} bytes.\n",
                             len
                         );
+                        eprintln!("The command was\n{}\n", command);
                         if len < 100 {
                             eprintln!("file contents = ");
                             let f = open_for_read![&p];
