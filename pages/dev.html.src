@@ -43,7 +43,8 @@ A separate GitHub repo
 https://10xgenomics.github.io/enclone-data
 </a>
 that contains a small number of datasets.  If you build #enclone, this is automatically
-downloaded as part of the build process.  If you install #enclone, this is downloaded, unless you 
+downloaded as part of the build process.  If you install #enclone, this is downloaded into
+a separate location (<code>~/enclone</code>), unless you 
 choose the <code>small</code> option, in which case you get only a subset of it.
 </li>
 
@@ -231,6 +232,21 @@ options, so as to suppress other output.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<h1>What could go wrong?</h1>
+
+<p>If the code crashes, you should get a clean traceback.  If this happens on the distributed
+version of #enclone or the master version, that's a bug that should be reported.</p>
+
+<p>If you run out of disk space while building, you may get weird error messages from the linker,
+in which case you should fix your disk space problem.  You might also need to
+<code>cargo clean</code>.</p>
+
+<p>Very rarely, you'll get weird error messages from the linker, with no apparent reason.
+(We've seen this happen once.)  If this happens, <code>cargo clean</code> should fix the
+problem.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
 <h1>Editing the #enclone web site</h1>
 
 <p>This is done by editing the files in the subdirectory <code>pages</code>, and never by
@@ -239,6 +255,20 @@ auto-generated.</p>
 
 <p>There is a script <code>./local_view</code> that copies the site to 
 your <code>public_html</code> directory so that it can be previewed.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<h1>Making a release (internal)</h1>
+
+<p>If the release warrants announcement, edit <code>pages/history.html.src</code> to note the
+relevant changes.</p>
+
+<p>Run <code>./test</code> on a branch if you're going to release it.  Issue a pull request,
+wait for the tests there to pass, then merge to master.</p>
+
+<p>Trigger the release using the program <code>start_release</code>, which is part
+of the repo.  GitHub Actions then goes to work, and something like twenty minutes later, a new
+release appears.</p>
 
 </body>
 </html>
