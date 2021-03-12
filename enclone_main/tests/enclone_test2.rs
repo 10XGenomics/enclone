@@ -277,44 +277,20 @@ fn test_dejavu() {
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
-    let pages = vec![
-        "setup",
-        "main",
-        "quick",
-        "how",
-        "command",
-        "glossary",
-        "example1",
-        "example2",
-        "input",
-        "input_tech",
-        "parseable",
-        "filter",
-        "special",
-        "lvars",
-        "cvars",
-        "amino",
-        "display",
-        "indels",
-        "color",
-        "faq",
-        "developer",
-        "all",
-    ];
-    for p in pages {
+    for p in HELP_PAGES.iter() {
         let mut command = format!("enclone help {}", p);
-        if p == "setup" {
+        if *p == "setup" {
             command = "enclone help".to_string();
-        } else if p == "main" {
+        } else if *p == "main" {
             command = "enclone".to_string();
         }
         let out_file = format!("../pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg("HTML");
-        if p == "setup" {
+        if *p == "setup" {
             new = new.arg("help");
-        } else if p == "main" {
+        } else if *p == "main" {
         } else {
             new = new.arg("help");
             new = new.arg(p);
