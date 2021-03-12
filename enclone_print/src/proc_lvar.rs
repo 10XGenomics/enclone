@@ -105,17 +105,20 @@ pub fn proc_lvar(
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     let cols = varmat[0].len();
+    let mut tree_args = ctl.gen_opt.tree.clone();
+    unique_sort(&mut tree_args);
 
     // Set up speak macro.
 
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
+            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || tree_args.len() > 0) {
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty()
                     || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
+                    || bin_member(&tree_args, &v)
                 {
                     out_data[$u].insert(v, $val);
                 }

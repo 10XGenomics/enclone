@@ -305,6 +305,11 @@ pub fn row_fill(
             }
         }
     }
+    for x in ctl.gen_opt.tree.iter() {
+        if !lvars.contains(&x) {
+            all_lvars.push(x.clone());
+        }
+    }
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -509,6 +514,11 @@ pub fn row_fill(
             }
         }
         all_vars.append(&mut extra_parseables.clone());
+        for x in ctl.gen_opt.tree.iter() {
+            if !rsi_vars.contains(&x) {
+                all_vars.push(x.clone());
+            }
+        }
 
         // Create column entry.
 

@@ -650,19 +650,11 @@ pub fn group_and_print_clonotypes(
                             }
                         }
                         let mut c = String::new();
-                        if i > 0 && i <= n && ctl.gen_opt.tree == vec!["const1".to_string()] {
-                            let ex = &exact_clonotypes[exacts[oo][i - 1]];
-                            let mut h = Vec::<String>::new();
-                            for m in 0..ex.share.len() {
-                                if ex.share[m].left {
-                                    if ex.share[m].c_ref_id.is_none() {
-                                        h.push("?".to_string());
-                                    } else {
-                                        h.push(refdata.name[ex.share[m].c_ref_id.unwrap()].clone());
-                                    }
-                                }
+                        if i > 0 && i <= n {
+                            let x = &out_datas[oo][i - 1];
+                            for w in ctl.gen_opt.tree.iter() {
+                                c += &format!(",{}={}", w, x[&*w]);
                             }
-                            c = format!(",{}", h.iter().format("+"));
                         }
                         if i == 0 {
                             vnames.push("•".to_string());

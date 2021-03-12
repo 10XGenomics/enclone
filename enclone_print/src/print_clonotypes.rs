@@ -64,9 +64,9 @@ pub fn print_clonotypes(
     controls: &mut Vec<usize>,
     fate: &mut Vec<HashMap<String, String>>,
 ) {
-    // Make an abbreviation.
-
     let lvars = &ctl.clono_print_opt.lvars;
+    let mut tree_args = ctl.gen_opt.tree.clone();
+    unique_sort(&mut tree_args);
 
     // Compute total cells.
 
@@ -906,13 +906,17 @@ pub fn print_clonotypes(
 
                 // Fill in exact_subclonotype_id, reorder.
 
-                if ctl.parseable_opt.pout.len() > 0 {
+                if ctl.parseable_opt.pout.len() > 0 || !ctl.gen_opt.tree.is_empty() {
                     for u in 0..nexacts {
                         macro_rules! speak {
                             ($u:expr, $var:expr, $val:expr) => {
-                                if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
+                                if pass == 2
+                                    && (ctl.parseable_opt.pout.len() > 0
+                                        || !ctl.gen_opt.tree.is_empty())
+                                {
                                     if pcols_sort.is_empty()
                                         || bin_member(&pcols_sort, &$var.to_string())
+                                        || bin_member(&tree_args, &$var.to_string())
                                     {
                                         out_data[$u].insert($var.to_string(), $val);
                                     }
