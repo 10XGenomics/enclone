@@ -836,9 +836,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
             }
         } else if arg == "TREE" {
-            ctl.gen_opt.tree = ".".to_string();
+            ctl.gen_opt.tree_on = true;
         } else if arg == "TREE=const" {
-            ctl.gen_opt.tree = "const".to_string();
+            // this is for backward compatibility
+            ctl.gen_opt.tree_on = true;
+            ctl.gen_opt.tree.push("const1".to_string());
+        } else if arg.starts_with("TREE=") {
+            ctl.gen_opt.tree_on = true;
+            let p = arg.after("TREE=").split(',').collect::<Vec<&str>>();
+            for i in 0..p.len() {
+                ctl.gen_opt.tree.push(p[i].to_string());
+            }
         } else if arg.starts_with("FCELL=") // FCELL retained for backward compatibility
             || arg.starts_with("KEEP_CELL_IF")
         {

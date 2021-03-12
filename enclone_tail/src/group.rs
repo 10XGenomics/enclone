@@ -751,7 +751,7 @@ pub fn group_and_print_clonotypes(
 
             // Generate experimental tree output (options NEWICK0 and TREE).
 
-            if ctl.gen_opt.newick || ctl.gen_opt.tree != "".to_string() {
+            if ctl.gen_opt.newick || ctl.gen_opt.tree_on {
                 // Compute the n x n distance matrix for the exact subclonotypes.
 
                 let n = exacts[oo].len();
@@ -875,7 +875,7 @@ pub fn group_and_print_clonotypes(
 
                 // Output as visual tree.
 
-                if ctl.gen_opt.tree != "".to_string() {
+                if ctl.gen_opt.tree_on {
                     let mut edges = Vec::<(usize, usize, f64)>::new();
                     let mut nvert = 0;
                     for i in 0..tree.len() {
@@ -895,7 +895,7 @@ pub fn group_and_print_clonotypes(
                             }
                         }
                         let mut c = String::new();
-                        if i > 0 && i <= n && ctl.gen_opt.tree == "const".to_string() {
+                        if i > 0 && i <= n && ctl.gen_opt.tree == vec!["const1".to_string()] {
                             let ex = &exact_clonotypes[exacts[oo][i - 1]];
                             let mut h = Vec::<String>::new();
                             for m in 0..ex.share.len() {

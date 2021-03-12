@@ -312,7 +312,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
 
 // Check pcols args.
 
-pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
+pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>) {
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -322,7 +322,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
     unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
-    for x in ctl.parseable_opt.pcols.iter() {
+    for x in cols.iter() {
         let mut ok = false;
         for i in 0..ctl.gen_opt.info_fields.len() {
             if *x == ctl.gen_opt.info_fields[i] {
