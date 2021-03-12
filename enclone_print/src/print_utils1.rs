@@ -278,7 +278,7 @@ pub fn start_gen(
     for u in 0..nexacts {
         n += exact_clonotypes[exacts[u]].ncells();
     }
-    if ctl.parseable_opt.pout.len() > 0 {
+    if ctl.parseable_opt.pout.len() > 0 || ctl.gen_opt.tree.len() > 0 {
         *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
     let cols = rsi.vids.len();
