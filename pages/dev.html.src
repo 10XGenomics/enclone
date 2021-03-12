@@ -45,7 +45,8 @@ https://10xgenomics.github.io/enclone-data
 that contains a small number of datasets.  If you build #enclone, this is automatically
 downloaded as part of the build process.  If you install #enclone, this is downloaded into
 a separate location (<code>~/enclone</code>), unless you 
-choose the <code>small</code> option, in which case you get only a subset of it.
+choose the <code>small</code> option, in which case you get only a subset of it.  The reason
+for having a separate repo for data is to keep the #enclone repo itself small.
 </li>
 
 <li>
@@ -98,17 +99,18 @@ tested on a Mac with an M1 processor.</p>
 
 <ul>
 
-<li>rust.  Detailed instructions on how to install rust
+<li><code>rust</code>.  Detailed instructions on how to install rust
 can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can 
 confirm that you have successfully installed the Rust compiler by running 
 <code>rustc --version</code>.</li>
 
-<li>cargo-license.  Probably this is needed only for internal use.  You can install it using
+<li><code>cargo-license</code>.  Probably this is needed only for internal use.  You can install 
+it using
 <code>cargo install cargo-license</code>, assuming that you have already installed rust.</li>
 
-<li>cargo-sweep.  Install via <code>cargo install cargo-sweep</code>.</li>
+<li><code>cargo-sweep</code>.  Install via <code>cargo install cargo-sweep</code>.</li>
 
-<li>standard utilities, including git, curl and wget.</li>
+<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code>.</li>
 
 </ul>
 
@@ -122,7 +124,7 @@ confirm that you have successfully installed the Rust compiler by running
 
 <li>Follow the installation instructions on the main page to install #enclone, using the
 medium or large options.  This is not needed for developers at 10x Genomics.
-Doing this download data, which you will want for experimentation and testing.</li>
+Doing this downloads data, which you will want for experimentation and testing.</li>
 
 <li>
 Go to a directory where you want to put the #enclone code, and
@@ -130,7 +132,7 @@ Go to a directory where you want to put the #enclone code, and
 <pre><code>git clone git@github.com:10XGenomics/enclone.git</code></pre>
 If you have a very slow internet connection, you might wish to download only the current version
 (and not the history) using
-<pre><code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code></pre>.
+<pre><code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code></pre>
 </li>
 
 <li>Type <code>cd enclone</code> and then <code>./build</code>.  Depending on your computer, this
@@ -145,9 +147,6 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 <li>Now when you type #enclone, you'll get the version you just compiled.</li>
 
 </ol>
-
-<p>If you have problems, please write to us at 
-<a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
