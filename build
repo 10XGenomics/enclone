@@ -7,22 +7,13 @@
 # Build script for enclone.  The only thing missing from this is to run
 # target/debug/merge_html BUILD, 
 # however you should only need to do that rarely,
-# and if you do need to, "cargo t" will catch the problem and should tell you
-# what to do.
-#
-# See also README.
+# and if you do need to, "./test" will catch the problem and should tell you what to do.
 
 # WARNING: note harcoding of version15!
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-# notes on some prerequisites
-#
 # Really we should check the prerequisites here.
-
-# 1. You need to have installed rust.
-# 2. You need to have run "cargo install cargo-sweep".
-# 3. You need to have run "cargo install cargo-license".
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
