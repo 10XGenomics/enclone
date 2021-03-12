@@ -323,13 +323,23 @@ fn test_curl_command() {
                 // Make sure that the all contigs file is not "essentially empty".  This happened.
 
                 if pass >= 2 && jf == 1 {
-                    let len = metadata(&format!("testx/outputs/{}", f)).unwrap().len();
+                    let p = format!("testx/outputs/{}", f);
+                    let len = metadata(&p).unwrap().len();
                     if len < 10_000_000 {
                         eprintln!(
                             "\nDownload yielded truncated all_contig_annotations.json.lz4 \
                             file, size = {} bytes.\n",
                             len
                         );
+                        if len < 100 {
+                            eprintln!("file contents = ");
+                            let f = open_for_read![&p];
+                            for line in f.lines() {
+                                let s = line.unwrap();
+                                eprintln!("{}", s);
+                            }
+                            eprintln!("");
+                        }
                         std::process::exit(1);
                     }
                 }
