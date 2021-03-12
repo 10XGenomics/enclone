@@ -180,8 +180,8 @@ part of this.</p>
 <li> <code>enclone_main/tests/enclone_test*.rs</code></li>
 <li> <code>test</code> and <code>testx</code></li>
 <li> <code>.cargo/config</code></li>
-<li> <code>enclone/enclone.test</code>.</li>
-<li> <code>.github/workflows/test.yaml</code></li>
+<li> <code>enclone/enclone.test</code></li>
+<li> <code>.github/workflows/test.yaml</code>.</li>
 </ul>
 
 <p>The standard test battery includes a speed test, but there is some additional testing
