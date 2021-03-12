@@ -1,5 +1,7 @@
 #!/bin/csh
 
+# Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html.
+
 # Run cargo t and another test which it's not clear how to encapsulate within cargo t.  This
 # also does some tidying and reports time used.  Note that the effect of cargo t is defined 
 # by .cargo/config.
