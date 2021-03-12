@@ -15,7 +15,9 @@ curious.  We distribute pre-built binaries for #enclone, and that's all you need
 want to run the existing code.
 </p>
 
-<h1>The #enclone components</h1>
+<hr>
+
+<h2>The #enclone components</h2>
 
 <p>#enclone has the following software and data components:
 <ul>
@@ -71,7 +73,9 @@ event of loss.  Over time, we gradually enlarge the collection.
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Software architecture</h1>
+<hr>
+
+<h2>Software architecture</h2>
 
 <p>#enclone is written in rust.</p>
 
@@ -89,7 +93,9 @@ sync each <code>Cargo.toml</code> to <code>master.toml</code>.
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Prerequisites</h1>
+<hr>
+
+<h2>Prerequisites</h2>
 
 <p>#enclone can be built and run on an x86-64 Linux server or a Mac, although we have not
 tested on a Mac with an M1 processor.</p>
@@ -114,7 +120,9 @@ confirm that you have successfully installed the Rust compiler by running
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Building #enclone</h1>
+<hr>
+
+<h2>Building #enclone</h2>
 
 <ol>
 
@@ -149,7 +157,9 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Testing #enclone</h1>
+<hr>
+
+<h2>Testing #enclone</h2>
 
 <p>#enclone has an extensive test suite. It has hundreds of tests.  Most but not all of the
 tests can be run by anyone; the remainder use datasets that are internal to 10x Genomics.
@@ -207,7 +217,9 @@ subject to server load.  It also only runs at 10x Genomics.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Profiling #enclone</h1>
+<hr>
+
+<h2>Profiling #enclone</h2>
 
 <p>#enclone provides a few built-in mechanisms for profiling:</p>
 <ol>
@@ -232,7 +244,9 @@ options, so as to suppress other output.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>What could go wrong?</h1>
+<hr>
+
+<h2>What could go wrong?</h2>
 
 <p>If the code crashes, you should get a clean traceback.  If this happens on the distributed
 version of #enclone or the master version, that's a bug that should be reported.</p>
@@ -247,7 +261,9 @@ problem.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Editing the #enclone web site</h1>
+<hr>
+
+<h2>Editing the #enclone web site</h2>
 
 <p>This is done by editing the files in the subdirectory <code>pages</code>, and never by
 editing <code>.html</code> files directly.  All the <code>.html</code> files are 
@@ -258,7 +274,9 @@ your <code>public_html</code> directory so that it can be previewed.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<h1>Making a release (internal)</h1>
+<hr>
+
+<h2>Making a release (internal)</h2>
 
 <p>If the release warrants announcement, edit <code>pages/history.html.src</code> to note the
 relevant changes.</p>
