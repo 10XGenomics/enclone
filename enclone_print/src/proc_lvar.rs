@@ -168,8 +168,12 @@ pub fn proc_lvar(
 
     if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
         let d = x.after("g").force_usize();
-        lvar![i, x, format!("{}", groups[&d][u] + 1)];
-    } else if x == "origins" {
+        if groups.contains_key(&d) {
+            lvar![i, x, format!("{}", groups[&d][u] + 1)];
+            return;
+        }
+    }
+    if x == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             if ex.clones[j][0].origin_index.is_some() {
