@@ -66,8 +66,10 @@ set elapsed = `expr $now - $last`
 if ( $elapsed > 604800 ) then
     echo "\nrunning cargo update, as it has been more than one week since it was last done"
     echo "this could cause problems\n"
+    echo "INTERRUPTING THE UPDATE IS PROBABLY NOT A GOOD IDEA"
     ./update_enclone
     echo $now > stamps/last_cargo_update
+    echo "UPDATE COMPLETE"
 endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
