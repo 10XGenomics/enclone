@@ -364,15 +364,17 @@ pub fn row_fill(
     // exceptionally cryptic would happen downstream.
 
     if row.len() != lvars.len() + 1 {
+        let ex = &exact_clonotypes[u];
         let msg = format!(
             "Oops, row.len() != lvars.len() + 1, as in fact we have\n\
             row.len() = {} and lvars.len() = {}, and in more detail,\n\
             row = {}\n\
-            and lvars = {}.",
+            and lvars = {}.\nThis happened on a clonotype that included the barcode {}.",
             row.len(),
             lvars.len(),
             row.iter().format(","),
             lvars.iter().format(","),
+            ex.clones[0][0].barcode,
         );
         panic!(msg);
     }
