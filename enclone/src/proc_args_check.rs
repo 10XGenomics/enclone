@@ -332,6 +332,14 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
         if bin_member(&alt_bcs, x) {
             ok = true;
         }
+        for y in ctl.clono_print_opt.lvars.iter() {
+            if y.contains(":") {
+                let y = y.before(":");
+                if x == y {
+                    ok = true;
+                }
+            }
+        }
         for y in PLVARS_ALLOWED.iter() {
             if *x == *y {
                 ok = true;
