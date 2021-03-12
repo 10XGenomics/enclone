@@ -59,8 +59,8 @@ pub fn proc_cvar(
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
-                && ((ctl.parseable_opt.pout.len() > 0
-                && $col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0)
+                && ((ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains)
+                    || tree_args.len() > 0)
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
@@ -92,7 +92,10 @@ pub fn proc_cvar(
                 // Proceed.
 
                 let varc = format!("{}{}", v, $col + 1);
-                if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+                if pcols_sort.is_empty()
+                    || bin_member(&pcols_sort, &varc)
+                    || bin_member(&tree_args, &varc)
+                {
                     out_data[$u].insert(varc, val_clean);
                 }
             }
@@ -781,9 +784,15 @@ pub fn proc_cvar(
         }
     } else if var == "nval" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -800,9 +809,15 @@ pub fn proc_cvar(
         }
     } else if var == "nnval" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -819,9 +834,15 @@ pub fn proc_cvar(
         }
     } else if var == "nival" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -838,9 +859,15 @@ pub fn proc_cvar(
         }
     } else if var == "valumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -865,9 +892,15 @@ pub fn proc_cvar(
         }
     } else if var == "nvalumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -892,9 +925,15 @@ pub fn proc_cvar(
         }
     } else if var == "ivalumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains) || tree_args.len() > 0) {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -1077,7 +1116,10 @@ pub fn proc_cvar(
         let var = var.clone();
         if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || tree_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) || bin_member(&tree_args, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
