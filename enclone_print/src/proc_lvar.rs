@@ -133,7 +133,8 @@ pub fn proc_lvar(
     macro_rules! lvar {
         ($i: expr, $var:expr, $val:expr) => {
             if verbose {
-                eprintln!("lvar {} ==> {}", $var, $val);
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
             }
             if $i < lvars.len() {
                 row.push($val)

@@ -113,6 +113,9 @@ pub fn row_fill(
         };
     }
     let cols = varmat[0].len();
+    if ctl.gen_opt.row_fill_verbose {
+        eprintln!("");
+    }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
     // n_gex_cell, n_gex, entropy.
