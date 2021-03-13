@@ -570,11 +570,14 @@ pub fn row_fill(
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
+            if ctl.gen_opt.tree.contains(&varc) {
+                needed = true;
+            }
             if !needed {
                 continue;
             }
             let col_var = j < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 {
+            if !col_var && ctl.parseable_opt.pout.len() == 0 && ctl.gen_opt.tree.is_empty() {
                 continue;
             }
 
