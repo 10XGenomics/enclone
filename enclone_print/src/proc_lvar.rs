@@ -107,6 +107,7 @@ pub fn proc_lvar(
     let cols = varmat[0].len();
     let mut tree_args = ctl.gen_opt.tree.clone();
     unique_sort(&mut tree_args);
+    let verbose = ctl.gen_opt.row_fill_verbose;
 
     // Set up speak macro.
 
@@ -131,6 +132,9 @@ pub fn proc_lvar(
 
     macro_rules! lvar {
         ($i: expr, $var:expr, $val:expr) => {
+            if verbose {
+                eprintln!("lvar {} ==> {}", $var, $val);
+            }
             if $i < lvars.len() {
                 row.push($val)
             }

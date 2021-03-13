@@ -314,3 +314,7 @@ HAPS_DEBUG: turn on debug mode for the HAPS option
 
 PROFILE: turn on profiling, normally used with NOPRINT; paging is turned off because this
 This won't work with paging, however you can pipe to "less -r".
+
+===================================================================================================
+
+ROW_FILL_VERBOSE: special option for debugging

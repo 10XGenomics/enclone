@@ -364,7 +364,7 @@ pub fn row_fill(
     // exceptionally cryptic would happen downstream.
 
     if row.len() != lvars.len() + 1 {
-        let msg = format!(
+        let mut msg = format!(
             "Oops, row.len() != lvars.len() + 1, as in fact we have\n\
             row.len() = {} and lvars.len() = {}, and in more detail,\n\
             row = {}\n\
@@ -375,6 +375,15 @@ pub fn row_fill(
             lvars.iter().format(","),
             ex.clones[0][0].barcode,
         );
+        if !ctl.gen_opt.row_fill_verbose {
+            msg += &format!(
+                "\n\nYou may find it helpful to add the options\n\
+                BARCODE={} ROW_FILL_VERBOSE\n\
+                to the command line.  Depending on other arguments, you might also need to \
+                add MAX_CORES=1.",
+                ex.clones[0][0].barcode
+            );
+        }
         panic!(msg);
     }
 

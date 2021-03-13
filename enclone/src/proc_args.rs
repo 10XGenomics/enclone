@@ -445,6 +445,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("REPROD", &mut ctl.gen_opt.reprod),
         ("REQUIRE_UNBROKEN_OK", &mut ctl.gen_opt.require_unbroken_ok),
         ("REUSE", &mut ctl.gen_opt.reuse),
+        ("ROW_FILL_VERBOSE", &mut ctl.gen_opt.row_fill_verbose),
         ("SEQC", &mut ctl.clono_print_opt.seqc),
         ("SHOW_BC", &mut ctl.join_print_opt.show_bc),
         ("STABLE_DOC", &mut ctl.gen_opt.stable_doc),
