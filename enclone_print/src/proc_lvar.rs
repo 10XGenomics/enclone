@@ -149,8 +149,8 @@ pub fn proc_lvar(
 
     if ctl.gen_opt.info.is_some() {
         if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
-            for i in 0..ctl.gen_opt.info_fields.len() {
-                if *x == ctl.gen_opt.info_fields[i] {
+            for q in 0..ctl.gen_opt.info_fields.len() {
+                if *x == ctl.gen_opt.info_fields[q] {
                     let mut tag = String::new();
                     for j in 0..ex.share.len() {
                         if ex.share[j].left {
@@ -164,7 +164,7 @@ pub fn proc_lvar(
                         }
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
-                        lvar![i, x, ctl.gen_opt.info_data[&tag][i].clone()];
+                        lvar![i, x, ctl.gen_opt.info_data[&tag][q].clone()];
                         return;
                     }
                 }
