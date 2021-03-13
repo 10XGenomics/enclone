@@ -807,7 +807,7 @@ fn test_ref_only() {
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 69674600;
+    const ENCLONE_SIZE: usize = 70411016;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -818,6 +818,7 @@ fn test_executable_size() {
             by {:.1}%.\n",
             ENCLONE_SIZE_MAX_PER_DIFF, delta,
         );
+        eprintln!("old size = {}, new size = {}\n", ENCLONE_SIZE, n);
         std::process::exit(1);
     }
 }

@@ -56,6 +56,16 @@ pub fn proc_args_post(
         let mut tags = Vec::<String>::new();
         for i in 1..lines.len() {
             let vals = parse_csv(&lines[i]);
+            if vals.len() != fields.len() {
+                eprintln!(
+                    "\nINFO file line {} has length {} whereas the file has {} fields. \
+                    The line is\n{}\n",
+                    i + 1,
+                    vals.len(),
+                    fields.len(),
+                    lines[i]
+                );
+            }
             let (mut vj1, mut vj2) = (String::new(), String::new());
             let mut other = Vec::<String>::new();
             for i in 0..vals.len() {
