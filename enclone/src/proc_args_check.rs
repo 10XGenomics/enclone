@@ -3,6 +3,7 @@
 // Check lvars, cvars, and pcols.
 
 use enclone_core::defs::*;
+use rayon::prelude::*;
 use regex::Regex;
 use std::time::Instant;
 use string_utils::*;
@@ -149,8 +150,16 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             }
         }
     }
+
+    // Get known features.  This code is inefficient.
+
     let mut known_features = Vec::<String>::new();
+    let mut results = Vec::<(usize, Vec<String>)>::new();
     for i in 0..gex_info.gex_features.len() {
+        results.push((i, Vec::<String>::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         for j in 0..gex_info.gex_features[i].len() {
             let f = &gex_info.gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
@@ -162,25 +171,32 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             for z in 0..2 {
                 if ff[2].starts_with("Antibody") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_ab{}", ff[z], s));
+                        res.1.push(format!("{}_ab{}", ff[z], s));
                     }
                 } else if ff[2].starts_with("CRISPR") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_cr{}", ff[z], s));
+                        res.1.push(format!("{}_cr{}", ff[z], s));
                     }
                 } else if ff[2].starts_with("CUSTOM") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_cu{}", ff[z], s));
+                        res.1.push(format!("{}_cu{}", ff[z], s));
                     }
                 } else {
                     for s in suffixes_g.iter() {
-                        known_features.push(format!("{}_g{}", ff[z], s));
+                        res.1.push(format!("{}_g{}", ff[z], s));
                     }
                 }
             }
         }
+    });
+    for i in 0..results.len() {
+        known_features.append(&mut results[i].1.clone());
     }
-    unique_sort(&mut known_features);
+    known_features.par_sort();
+    known_features.dedup();
+
+    // Do the check.
+
     for i in 0..to_check.len() {
         let mut x = to_check[i].clone();
         if x.contains(':') {
