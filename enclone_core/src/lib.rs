@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod copy_for_enclone;
 pub mod defs;
 pub mod join_one;
 pub mod mammalian_fixed_len;
