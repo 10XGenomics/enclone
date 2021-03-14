@@ -20,6 +20,59 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn slurp_h5(
+    h5_path: &str,
+    take_matrix: bool,
+    barcodes: &mut Vec<String>,
+    features: &mut Vec<String>,
+    matrix: &mut Vec<Vec<(i32, i32)>>,
+) {
+    // Read barcodes from the h5 file.
+
+    let h = hdf5::File::open(&h5_path).unwrap();
+    let barcode_loc = h.dataset("matrix/barcodes").unwrap();
+    let barcodes0: Vec<FixedAscii<[u8; 18]>> = barcode_loc.as_reader().read_raw().unwrap();
+    for i in 0..barcodes0.len() {
+        barcodes.push(barcodes0[i].to_string());
+    }
+
+    // Read features from the h5 file.
+
+    let feature_id_loc = h.dataset("matrix/features/id").unwrap();
+    let feature_ids: Vec<FixedAscii<[u8; 256]>> = feature_id_loc.as_reader().read_raw().unwrap();
+    let feature_name_loc = h.dataset("matrix/features/name").unwrap();
+    let feature_names: Vec<FixedAscii<[u8; 256]>> =
+        feature_name_loc.as_reader().read_raw().unwrap();
+    let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
+    let feature_types: Vec<FixedAscii<[u8; 256]>> =
+        feature_type_loc.as_reader().read_raw().unwrap();
+    for i in 0..feature_ids.len() {
+        features.push(format!(
+            "{}\t{}\t{}",
+            feature_ids[i], feature_names[i], feature_types[i]
+        ));
+    }
+
+    // If appropriate, construct the binary matrix file from the h5 file.
+
+    if take_matrix {
+        let data_loc = h.dataset("matrix/data").unwrap();
+        let data: Vec<u32> = data_loc.as_reader().read_raw().unwrap();
+        let ind_loc = h.dataset("matrix/indices").unwrap();
+        let ind: Vec<u32> = ind_loc.as_reader().read_raw().unwrap();
+        let ind_ptr_loc = h.dataset("matrix/indptr").unwrap();
+        let ind_ptr: Vec<u32> = ind_ptr_loc.as_reader().read_raw().unwrap();
+        matrix.resize(barcodes.len(), Vec::new());
+        for i in 0..matrix.len() {
+            for j in ind_ptr[i]..ind_ptr[i + 1] {
+                matrix[i].push((ind[j as usize] as i32, data[j as usize] as i32));
+            }
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn load_gex(
     ctl: &mut EncloneControl,
     gex_features: &mut Vec<Vec<String>>,
@@ -391,49 +444,15 @@ pub fn load_gex(
 
             // Otherwise we have to get stuff from the h5 file.
             } else {
-                // Read barcodes from the h5 file.
-
-                let h = hdf5::File::open(&h5_path).unwrap();
-                let barcode_loc = h.dataset("matrix/barcodes").unwrap();
-                let barcodes: Vec<FixedAscii<[u8; 18]>> =
-                    barcode_loc.as_reader().read_raw().unwrap();
-                for i in 0..barcodes.len() {
-                    r.2.push(barcodes[i].to_string());
-                }
-
-                // Read features from the h5 file.
-
-                let feature_id_loc = h.dataset("matrix/features/id").unwrap();
-                let feature_ids: Vec<FixedAscii<[u8; 256]>> =
-                    feature_id_loc.as_reader().read_raw().unwrap();
-                let feature_name_loc = h.dataset("matrix/features/name").unwrap();
-                let feature_names: Vec<FixedAscii<[u8; 256]>> =
-                    feature_name_loc.as_reader().read_raw().unwrap();
-                let feature_type_loc = h.dataset("matrix/features/feature_type").unwrap();
-                let feature_types: Vec<FixedAscii<[u8; 256]>> =
-                    feature_type_loc.as_reader().read_raw().unwrap();
-                for i in 0..feature_ids.len() {
-                    r.1.push(format!(
-                        "{}\t{}\t{}",
-                        feature_ids[i], feature_names[i], feature_types[i]
-                    ));
-                }
-
-                // If appropriate, construct the binary matrix file from the h5 file.
-
+                let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+                slurp_h5(
+                    &h5_path,
+                    bin_file_state == 3,
+                    &mut r.2,
+                    &mut r.1,
+                    &mut matrix,
+                );
                 if bin_file_state == 3 {
-                    let data_loc = h.dataset("matrix/data").unwrap();
-                    let data: Vec<u32> = data_loc.as_reader().read_raw().unwrap();
-                    let ind_loc = h.dataset("matrix/indices").unwrap();
-                    let ind: Vec<u32> = ind_loc.as_reader().read_raw().unwrap();
-                    let ind_ptr_loc = h.dataset("matrix/indptr").unwrap();
-                    let ind_ptr: Vec<u32> = ind_ptr_loc.as_reader().read_raw().unwrap();
-                    let mut matrix = vec![Vec::<(i32, i32)>::new(); r.2.len()];
-                    for i in 0..matrix.len() {
-                        for j in ind_ptr[i]..ind_ptr[i + 1] {
-                            matrix[i].push((ind[j as usize] as i32, data[j as usize] as i32));
-                        }
-                    }
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix, &r.2, &r.1);
                     write_to_file(&r.3, &bin_file);
                     if ctl.gen_opt.internal_run && !bin_file.starts_with("/mnt/assembly/vdj") {
