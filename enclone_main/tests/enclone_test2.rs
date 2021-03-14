@@ -907,7 +907,7 @@ fn test_cpu_usage() {
 #[test]
 fn test_source_code_file_length() {
     PrettyTrace::new().on();
-    const MAX_RS_LINES: usize = 1339; // main_enclone.rs
+    const MAX_RS_LINES: usize = 1328; // enclone_test1.rs
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
