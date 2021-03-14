@@ -438,7 +438,7 @@ pub fn load_gex(
                     write_to_file(&r.3, &bin_file);
                     if ctl.gen_opt.internal_run && !bin_file.starts_with("/mnt/assembly/vdj") {
                         let bin_file_alt =
-                            format!("/mnt/assembly/vdj/{}", bin_file.before("current"));
+                            format!("/mnt/assembly/vdj/current{}", bin_file.after("current"));
                         write_to_file(&r.3, &bin_file_alt);
                     }
                 }
