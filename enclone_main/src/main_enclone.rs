@@ -173,9 +173,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
-    let twoof = Instant::now();
     check_lvars(&ctl, &gex_info);
-    ctl.perf_stats(&twoof, "checking lvars");
     let twoof = Instant::now();
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);

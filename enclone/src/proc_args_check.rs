@@ -4,6 +4,7 @@
 
 use enclone_core::defs::*;
 use regex::Regex;
+use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -466,6 +467,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 // Check lvars args.
 
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
+    let t = Instant::now();
     let mut to_check = Vec::<String>::new();
     let ends0 = [
         "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
@@ -629,7 +631,10 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
     }
+    ctl.perf_stats(&t, "checking lvars top");
+    let t = Instant::now();
     if !to_check.is_empty() {
         check_gene_fb(&ctl, &gex_info, &to_check, "lead");
     }
+    ctl.perf_stats(&t, "checking gene");
 }
