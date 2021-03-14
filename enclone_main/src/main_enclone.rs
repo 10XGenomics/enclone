@@ -175,11 +175,15 @@ pub fn main_enclone(args: &Vec<String>) {
     let gex_info = get_gex_info(&mut ctl);
     let twoof = Instant::now();
     check_lvars(&ctl, &gex_info);
+    ctl.perf_stats(&twoof, "checking lvars");
+    let twoof = Instant::now();
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
+    ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
 
+    let tstar = Instant::now();
     ctl.clono_print_opt.regex_match =
         vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
     let ends0 = [
@@ -198,6 +202,8 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut vars = ctl.clono_print_opt.lvars.clone();
     vars.append(&mut ctl.parseable_opt.pcols.clone());
     unique_sort(&mut vars);
+    ctl.perf_stats(&tstar, "doing miscellaneous stuff");
+    let tomega = Instant::now();
     for x in vars.iter() {
         for (iy, y) in ends.iter().enumerate() {
             let mut xc = x.clone();
@@ -281,7 +287,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
-    ctl.perf_stats(&twoof, "doing miscellaneous stuff");
+    ctl.perf_stats(&tomega, "messing with variables");
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
