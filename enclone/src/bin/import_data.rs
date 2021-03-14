@@ -3,6 +3,12 @@
 // Takes a single argument: a comma-separated list of ids, allowing hyphenated ranges.  Copy these
 // to the internal collections.  If it has already been copied, you'll need to delete it first.
 //
+// You need to set quota first on the second internal location.
+//
+// This is probably not fully consistent with current pipeline structure.
+//
+// Run make_enclone_testlist after this to update the catalog.
+//
 // For use at 10x Genomics.
 
 use enclone_core::copy_for_enclone::*;
@@ -42,7 +48,6 @@ fn main() {
         }
         dests.push(cloud_path);
     }
-
     let args: Vec<String> = env::args().collect();
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<String>::new();
@@ -102,7 +107,8 @@ fn main() {
         // Start copy.
 
         println!("copying {}", id);
-        for dest in dests.iter() {
+        for i in (0..dests.len()).rev() {
+            let dest = &dests[i];
             let target = format!("{}/{}", dest, id);
             if path_exists(&target) {
                 eprintln!("\nPlease delete {}.\n", target);
