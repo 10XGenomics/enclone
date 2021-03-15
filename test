@@ -37,16 +37,6 @@ if ( $status != 0 ) then
     exit 1
 endif
 
-##### RUN TEST GROUP 3 #####
-
-cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture \
-    |& post_process_test
-
-if ( $status != 0 ) then
-    echo "FAILED!"
-    exit 1
-endif
-
 ##### REPORT TIME USED #####
 
 set end = `date +%s`
