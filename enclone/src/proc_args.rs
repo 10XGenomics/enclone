@@ -4,6 +4,7 @@ use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
@@ -65,14 +66,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        for (key, value) in env::vars() {
-            if key == "HOST" || key == "HOSTNAME" {
-                if value.ends_with(".com") && value.rev_before(".com").contains(".") {
-                    let d = value.rev_before(".com").rev_after(".");
-                    ctl.gen_opt.domain = format!("{}.com", d);
-                }
-            }
-        }
+        tempidx(&mut ctl.gen_opt.domain, &mut ctl.gen_opt.serv);
     }
     for i in 1..args.len() {
         if args[i] == "FORCE_EXTERNAL".to_string() {

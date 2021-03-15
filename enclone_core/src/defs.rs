@@ -564,6 +564,7 @@ pub struct GeneralOpt {
     pub subset_json: String,
     pub fold_headers: bool,
     pub domain: String,
+    pub serv: String,
     pub no_uncap_sim: bool,
     pub profile: bool,
     pub nopager: bool,

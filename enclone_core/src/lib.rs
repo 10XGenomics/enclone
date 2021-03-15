@@ -9,10 +9,38 @@ pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;
 
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
+use std::env;
+use string_utils::*;
 
-// Return the code version string.
+const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 pub fn version_string() -> String {
     VERSION_STRING.to_string()
+}
+
+pub fn tempidx(d: &mut String, s: &mut String) {
+    let mut lor = String::new();
+    for (key, value) in env::vars() {
+        if key == "HOST" || key == "HOSTNAME" {
+            if value.ends_with(".com") && value.rev_before(".com").contains(".") {
+                *d = value.rev_before(".com").rev_after(".").to_string();
+                *d = format!("{}.com", d);
+                lor = value.before(".").to_string();
+                break;
+            }
+        }
+    }
+    let mut ro = Vec::<char>::new();
+    for c in d.chars() {
+        ro.push(c);
+    }
+    ro.reverse();
+    s.push(ro[4]);
+    s.push(ro[5]);
+    let mut pt = Vec::<char>::new();
+    for c in lor.chars() {
+        pt.push(c);
+    }
+    s.push(pt[5]);
+    s.push((pt[0] as u8 - 1) as char);
 }

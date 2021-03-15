@@ -13,6 +13,7 @@
 
 use enclone_core::copy_for_enclone::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
@@ -25,14 +26,8 @@ fn main() {
     PrettyTrace::new().on();
     let mut dests = vec![format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION)];
     let mut domain = String::new();
-    for (key, value) in env::vars() {
-        if key == "HOST" || key == "HOSTNAME" {
-            if value.ends_with(".com") && value.rev_before(".com").contains(".") {
-                let d = value.rev_before(".com").rev_after(".");
-                domain = format!("{}.com", d);
-            }
-        }
-    }
+    let mut serv = String::new();
+    tempidx(&mut domain, &mut serv);
     let cloud_loc = "/mnt/assembly/vdj/cloud";
     if !path_exists(&cloud_loc) {
         eprintln!("\nCan't find the cloud (1).\n");
@@ -67,18 +62,18 @@ fn main() {
 
         let mut p = id.clone();
         assert!(p.parse::<usize>().is_ok());
-        let url = format!("https://xena.{}/api/analyses/{}", domain, p);
+        let url = format!("https://{}.{}/api/analyses/{}", serv, domain, p);
         let o = Command::new("curl")
             .arg(url)
             .output()
-            .expect("failed to execute xena http");
+            .expect("failed to execute http");
         let m = String::from_utf8(o.stdout).unwrap();
         if m.contains("502 Bad Gateway") {
             eprintln!(
                 "\nWell this is sad.  The URL \
-                http://xena.{}/api/analyses/{} yielded a 502 Bad Geteway \
+                http://{}.{}/api/analyses/{} yielded a 502 Bad Geteway \
                 message.  Either try again later or ask someone for help.\n\n",
-                domain, p,
+                serv, domain, p,
             );
             std::process::exit(1);
         }
@@ -87,7 +82,7 @@ fn main() {
             p = format!("{}/outs", path);
             if !path_exists(&p) {
                 eprintln!(
-                    "\nIt looks like you've provided a xena id {} for \
+                    "\nIt looks like you've provided an id {} for \
                     which\nthe pipeline outs folder has not yet been \
                     generated.\n\n",
                     p
@@ -97,7 +92,7 @@ fn main() {
         } else {
             eprintln!(
                 "\nIt looks like you've provided either an incorrect \
-                xena id {} or else one for which\n\
+                id {} or else one for which\n\
                 the pipeline outs folder has not yet been generated.\n\n",
                 p
             );

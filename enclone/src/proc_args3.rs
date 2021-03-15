@@ -109,8 +109,8 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
         if tokens[i].starts_with('S') {
             let setid = tokens[i].after("S");
             let url = format!(
-                "https://xena.{}/api/analysis_sets/{}",
-                ctl.gen_opt.domain, setid
+                "https://{}.{}/api/analysis_sets/{}",
+                ctl.gen_opt.serv, ctl.gen_opt.domain, setid
             );
             let m = fetch_url(&url);
             if m.contains("\"analysis_ids\":[") {
@@ -124,16 +124,16 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> String {
 
                 for j in 0..ids.len() {
                     let url = format!(
-                        "https://xena.{}/api/analyses/{}",
-                        ctl.gen_opt.domain, ids[j]
+                        "https://{}.{}/api/analyses/{}",
+                        ctl.gen_opt.serv, ctl.gen_opt.domain, ids[j]
                     );
                     let m = fetch_url(&url);
                     if m.contains("502 Bad Gateway") {
                         eprintln!(
                             "\nWell, this is sad.  The URL \
-                            http://xena.{}/api/analyses/{} returned a 502 Bad Gateway \
+                            http://{}.{}/api/analyses/{} returned a 502 Bad Gateway \
                             message.  Please try again later or ask someone for help.\n",
-                            ctl.gen_opt.domain, ids[j]
+                            ctl.gen_opt.serv, ctl.gen_opt.domain, ids[j]
                         );
                         std::process::exit(1);
                     }
@@ -247,7 +247,10 @@ fn get_path_or_internal_id(
                 q = q.before("/").to_string();
             }
             if q.parse::<usize>().is_ok() {
-                let url = format!("https://xena.{}/api/analyses/{}", ctl.gen_opt.domain, q);
+                let url = format!(
+                    "https://{}.{}/api/analyses/{}",
+                    ctl.gen_opt.serv, ctl.gen_opt.domain, q
+                );
                 // We force single threading around the https access because we observed
                 // intermittently very slow access without it.
                 while spinlock.load(Ordering::SeqCst) != 0 {}
@@ -257,9 +260,9 @@ fn get_path_or_internal_id(
                 if m.contains("502 Bad Gateway") {
                     eprintln!(
                         "\nWell this is sad.  The URL \
-                        http://xena.{}/api/analyses/{} yielded a 502 Bad Gateway \
+                        http://{}.{}/api/analyses/{} yielded a 502 Bad Gateway \
                         message.  Please try again later or ask someone for help.\n",
-                        ctl.gen_opt.domain, q
+                        ctl.gen_opt.serv, ctl.gen_opt.domain, q
                     );
                     std::process::exit(1);
                 }
