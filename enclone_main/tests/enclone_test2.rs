@@ -1025,3 +1025,29 @@ fn test_help_page_list() {
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 31. Test workspace dependency structure.  These restrictions are there to reduce compile time.
+// To be expanded over time.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[cfg(not(feature = "mem"))]
+#[test]
+fn test_dependency_structure() {
+    // Don't allow enclone_core to reach to any other enclone crate.
+
+    let f = include_str!["../../enclone_core/Cargo.toml"];
+    for line in f.lines() {
+        if !line.starts_with("name =") && line.starts_with("enclone") {
+            eprintln!(
+                "\nenclone_core should not depend on any other enclone crate.\n\
+                This restriction is there to reduce compile time.\n"
+            );
+            std::process::exit(1);
+        }
+    }
+}
