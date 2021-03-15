@@ -739,20 +739,12 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
-                // Apply bounds.  Before sorting we check for non-numbers because otherwise you'll
-                // get an inscrutable traceback.
+                // Combine stats for the same variable.  This is needed because each dataset
+                // contributes.  Note that we don't care about the order of the values here
+                // (other than stability) because what we're going to do with them is compute the
+                // mean or max.
 
-                for i in 0..stats.len() {
-                    for j in 0..stats[i].1.len() {
-                        if !stats[i].1[j].is_finite() {
-                            panic!(
-                                "About to sort but there's a non-finite value, which would \
-                                cause the sort to fail.  This is a bug."
-                            );
-                        }
-                    }
-                }
-                stats.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                stats.sort_by(|a, b| a.0.cmp(&b.0));
                 let mut stats2 = Vec::<(String, Vec<f64>)>::new();
                 let mut i = 0;
                 while i < stats.len() {
@@ -771,7 +763,9 @@ pub fn print_clonotypes(
                     i = j;
                 }
                 stats = stats2;
-                // traverse the bounds
+
+                // Traverse the bounds and apply them.
+
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
