@@ -402,6 +402,7 @@ pub fn load_gex(
                 if bin_file_state == 3 {
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix, &r.2, &r.1);
                     write_to_file(&r.3, &bin_file);
+                    // Note that if the dataset archive was complete, we would need to do this.
                     if ctl.gen_opt.internal_run && !bin_file.starts_with("/mnt/assembly/vdj") {
                         let bin_file_alt =
                             format!("/mnt/assembly/vdj/current{}", bin_file.after("current"));

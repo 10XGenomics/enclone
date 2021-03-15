@@ -3,7 +3,9 @@
 // Copy a 10x pipestance, retaining only the files used by enclone, or which might otherwise
 // be convenient to keep.
 
+use crate::slurp::*;
 use io_utils::*;
+use mirror_sparse_matrix::*;
 use std::fs::{copy, remove_file};
 use std::process::Command;
 
@@ -125,9 +127,18 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         } else {
             f = "raw_gene_bc_matrices_h5.h5";
         }
-        copy(&format!("{}/{}", p, f), &format!("{}/outs/{}", target, f)).unwrap();
+        let h5_target = format!("{}/outs/{}", target, f);
+        copy(&format!("{}/{}", p, f), &h5_target).unwrap();
 
         // Generate feature_barcode_matrix.bin.
+
+        let mut barcodes = Vec::<String>::new();
+        let mut features = Vec::<String>::new();
+        let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
+        let bin_file = format!("{}/outs/feature_barcode_matrix.bin", target);
+        write_to_file(&msm, &bin_file);
 
         // Copy other files in outs.
 
