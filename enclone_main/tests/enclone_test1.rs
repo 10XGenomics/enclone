@@ -64,7 +64,6 @@ fn valid_link(link: &str) -> bool {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_parseable_redundancy() {
     let test = r###"BCR=123085 GEX=123217 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
@@ -128,7 +127,6 @@ fn test_for_parseable_redundancy() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_pages_edited() {
     let all = read_dir("../pages/auto").unwrap();
@@ -179,7 +177,6 @@ fn test_help_pages_edited() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_css_existence() {
     let _ = include_str!["../../pages/enclone.css"];
@@ -193,7 +190,6 @@ fn test_css_existence() {
 // A bit ugly because of duplicated code.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_sync_master() {
     let mut version = HashMap::<String, String>::new();
@@ -241,7 +237,6 @@ fn test_sync_master() {
 // the second pass tests the local version; the third tests with wget forced.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_curl_command() {
     let mut internal_run = false;
@@ -377,7 +372,6 @@ fn test_curl_command() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
@@ -454,7 +448,6 @@ fn test_datasets_sha256() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(feature = "cpu")]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu() {
     PrettyTrace::new().on();
@@ -612,7 +605,6 @@ fn test_cpu() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
@@ -744,7 +736,6 @@ fn test_licenses() {
 // 9. Test that files are rustfmt'ed.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_formatting() {
     let new = Command::new("cargo-fmt")
@@ -769,7 +760,6 @@ fn test_formatting() {
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -850,7 +840,6 @@ fn test_enclone() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_extended() {
     PrettyTrace::new().on();
@@ -898,7 +887,6 @@ fn test_extended() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_crash() {
     PrettyTrace::new().on();
@@ -949,7 +937,6 @@ fn test_crash() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_internal() {
     PrettyTrace::new().on();
@@ -1010,7 +997,6 @@ fn test_internal() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;

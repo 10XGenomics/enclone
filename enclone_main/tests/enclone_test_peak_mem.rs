@@ -48,7 +48,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 // from the root of the repo.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_peak_memory() {
     PrettyTrace::new().on();

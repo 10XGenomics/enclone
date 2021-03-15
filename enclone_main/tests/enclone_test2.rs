@@ -47,7 +47,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
@@ -156,7 +155,6 @@ fn test_site_examples() {
 // 16. Test that examples are what we claim they are.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -207,7 +205,6 @@ fn test_enclone_examples() {
 // 17. Test that references to the dataset version in README.md are current.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -236,7 +233,6 @@ fn test_version_number_in_readme() {
 // Only works with high probability.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -273,7 +269,6 @@ fn test_dejavu() {
 // 19. Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
@@ -324,7 +319,6 @@ fn test_help_output() {
 // 20. Test that enclone help all HTML works (without STABLE_DOC).
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
@@ -350,7 +344,6 @@ fn test_help_no_stable() {
 // in sporadic (rare) test failures.  So don't do that.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -482,7 +475,6 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
@@ -566,7 +558,6 @@ fn test_proto_write() -> Result<(), Error> {
 // example on the landing page.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_annotated_example() {
     PrettyTrace::new().on();
@@ -610,7 +601,6 @@ fn test_annotated_example() {
 // 24. Test SUBSET_JSON option.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
@@ -665,7 +655,6 @@ fn test_subset_json() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_ref_only() {
     let test = "REF=../enclone-data/big_inputs/version15/█≈ΠΠΠ≈█/outs/\
@@ -693,7 +682,6 @@ fn test_ref_only() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
@@ -722,7 +710,6 @@ fn test_executable_size() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu_usage() {
     PrettyTrace::new().on();
@@ -793,7 +780,6 @@ fn test_cpu_usage() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_source_code_file_length() {
     PrettyTrace::new().on();
@@ -843,7 +829,6 @@ fn test_source_code_file_length() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dupped_crates() {
     PrettyTrace::new().on();
@@ -881,7 +866,6 @@ fn test_dupped_crates() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_page_list() {
     let (mut help1, mut help2) = (Vec::<String>::new(), Vec::<String>::new());
@@ -925,7 +909,6 @@ fn test_help_page_list() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dependency_structure() {
     // Don't allow enclone_core to reach to any other enclone crate.
