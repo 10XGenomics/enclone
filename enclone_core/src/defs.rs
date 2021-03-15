@@ -263,7 +263,7 @@ impl LinearCondition {
             );
             std::process::exit(1);
         }
-        if !rhs.contains('.') {
+        if !rhs.contains('.') && !rhs.contains('e') {
             rhs += ".0";
         }
         if !rhs.parse::<f64>().is_ok() {
@@ -306,7 +306,7 @@ impl LinearCondition {
             if parts[i].contains('*') {
                 let mut coeffi = parts[i].before("*").to_string();
                 let vari = parts[i].after("*");
-                if !coeffi.contains('.') {
+                if !coeffi.contains('.') && !coeffi.contains('e') {
                     coeffi += ".0";
                 }
                 if !coeffi.parse::<f64>().is_ok() {
