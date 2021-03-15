@@ -43,14 +43,14 @@ pub fn copy_for_enclone(source: &str, target: &str) {
     // Define most of the gex files to be copied.
 
     let gex_files = [
-        "barcode_correction_csv.csv",
-        "barcode_summary.h5",
+        // "barcode_correction_csv.csv", // don't know why this was here
+        // "barcode_summary.h5",         // don't know why this was here
         "filtered_barcodes.csv",
         "filtered_feature_bc_matrix.h5",
         "gene_properties.json",
         "metrics_summary_csv.csv",
         "metrics_summary_json.json",
-        "per_barcode_metrics.csv",
+        // "per_barcode_metrics.csv",    // don't know why this was here
         "per_feature_metrics.csv",
         "web_summary.html",
         "web_summary_pd.html",
