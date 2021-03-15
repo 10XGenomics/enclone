@@ -95,10 +95,12 @@ datasets were generated as part of experiments using unpublished protocols.  Som
 datasets are used in the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite, although there is a shorter test suite that runs
 using only public data.  Developers at 10x Genomics can find the full collection in a directory 
 <code>/mnt/assembly/vdj/current*</code>, where <code>*</code> is a version number.  There is also
-a link <code>/mnt/assembly/cloud</code> that points to a copy on solid-state disk.  The full
-dataset is not backed up, however there is a catalog 
+a link <code>/mnt/assembly/cloud</code> that points to a copy on solid-state disk (super fast but
+less reliable).  The full dataset is not backed up, however there is a catalog 
 <code>enclone/src/enclone.testlist.all</code> that would facilitate reconstruction in the
-event of loss.  Over time, we gradually enlarge the collection.
+event of loss.  Over time, we gradually enlarge the collection.  There is a program
+<code>import_data</code> that copies a given dataset.  Note that someone outside 10x Genomics
+could use a similar system to enable fast access to data.
 </li>
 
 </ul>
