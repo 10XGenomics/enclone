@@ -59,10 +59,8 @@ A still larger collection of datasets that are internal to 10x Genomics and not 
 available.  These datasets are kept internal because of consent restrictions, or because the
 datasets were generated as part of experiments using unpublished protocols.  Some of these
 datasets are used in the #enclone test suite, although there is a shorter test suite that runs
-using only public data.  Developers at 10x Genomics can find the full collection in a directory 
-<code>/mnt/assembly/vdj/current*</code>, where <code>*</code> is a version number.  There is also
-a link <code>/mnt/assembly/cloud</code> that points to a copy on solid-state disk (super fast but
-less reliable).  The full dataset is not backed up, however there is a catalog 
+using only public data.  These are on disk and manually mirrored to solid-state disk (super fast 
+but less reliable).  The full dataset is not backed up, however there is a catalog 
 <code>enclone/src/enclone.testlist.all</code> that would facilitate reconstruction in the
 event of loss.  Over time, we gradually enlarge the collection.  There is a program
 <code>import_data</code> that copies a given dataset.  Note that someone outside 10x Genomics
