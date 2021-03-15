@@ -910,7 +910,8 @@ pub fn proc_cvar(
                     if ex.clones[k][mid].validated_umis.is_some() {
                         let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
                         for i in 0..bc_umis.len() {
-                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
@@ -972,7 +973,8 @@ pub fn proc_cvar(
                     if ex.clones[k][mid].non_validated_umis.is_some() {
                         let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
                         for i in 0..bc_umis.len() {
-                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
@@ -1034,7 +1036,8 @@ pub fn proc_cvar(
                     if ex.clones[k][mid].invalidated_umis.is_some() {
                         let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
                         for i in 0..bc_umis.len() {
-                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
                         }
                         n = format!("{}", bc_umis.iter().format(","));
                     }
