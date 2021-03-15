@@ -771,13 +771,15 @@ pub fn print_clonotypes(
                     i = j;
                 }
                 stats = stats2;
+                // traverse the bounds
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
+                    // traverse the coefficients on the left hand side (each having a variable)
                     for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
                         let mut found = false;
+                        let mut vals = Vec::<f64>::new(); // the stats for the variable
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
