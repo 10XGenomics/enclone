@@ -801,11 +801,15 @@ pub fn print_clonotypes(
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
+                        let mut count = 0;
                         for j in 0..vals.len() {
-                            mean += vals[j];
-                            max = max.max(vals[j]);
+                            if !vals[j].is_nan() {
+                                mean += vals[j];
+                                max = max.max(vals[j]);
+                                count += 1;
+                            }
                         }
-                        mean /= n as f64;
+                        mean /= count as f64;
                         means.push(mean);
                         maxs.push(max);
                     }
