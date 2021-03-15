@@ -5,6 +5,7 @@ pub mod defs;
 pub mod join_one;
 pub mod mammalian_fixed_len;
 pub mod print_tools;
+pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;
 

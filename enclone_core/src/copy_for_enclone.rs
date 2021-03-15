@@ -127,6 +127,8 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         }
         copy(&format!("{}/{}", p, f), &format!("{}/outs/{}", target, f)).unwrap();
 
+        // Generate feature_barcode_matrix.bin.
+
         // Copy other files in outs.
 
         for f in gex_files.iter() {
