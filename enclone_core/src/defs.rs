@@ -12,7 +12,7 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
+pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
     "amino",
     "ansi_escape",
     "binary_vec_io",
@@ -20,7 +20,6 @@ pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
     "equiv",
     "graph_simple",
     "io_utils",
-    "marsoc",
     "mirror_sparse_matrix",
     "perf_stats",
     "stats_utils",
@@ -93,7 +92,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 68] = [
+pub const CVARS_ALLOWED: [&str; 71] = [
     "var",
     "u",
     "u_min",
@@ -162,6 +161,9 @@ pub const CVARS_ALLOWED: [&str; 68] = [
     "valumis",
     "nvalumis",
     "ivalumis",
+    "valbcumis",
+    "nvalbcumis",
+    "ivalbcumis",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];

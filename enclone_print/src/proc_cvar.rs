@@ -890,6 +890,35 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
+    } else if var == "valbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].validated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
+            }
+        }
     } else if var == "nvalumis" {
         cvar![j, *var, "".to_string()];
         if pass == 2
@@ -923,6 +952,35 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", nvals));
             }
         }
+    } else if var == "nvalbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].non_validated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
+            }
+        }
     } else if var == "ivalumis" {
         cvar![j, *var, "".to_string()];
         if pass == 2
@@ -954,6 +1012,35 @@ pub fn proc_cvar(
                     nvals += &format!("{}", n);
                 }
                 out_data[u].insert(varc, format!("{}", nvals));
+            }
+        }
+    } else if var == "ivalbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].invalidated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] = format!("{}{}", ex.clones[k][mid].barcode, bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
             }
         }
     } else if *var == "cdiff".to_string() {
