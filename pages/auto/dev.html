@@ -93,12 +93,12 @@ A still larger collection of datasets that are internal to 10x Genomics and not 
 available.  These datasets are kept internal because of consent restrictions, or because the
 datasets were generated as part of experiments using unpublished protocols.  Some of these
 datasets are used in the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite, although there is a shorter test suite that runs
-using only public data.  These are on disk and manually mirrored to solid-state disk (super fast 
-but less reliable).  The full dataset is not backed up, however there is a catalog 
-<code>enclone/src/enclone.testlist.all</code> that would facilitate reconstruction in the
-event of loss.  Over time, we gradually enlarge the collection.  There is a program
-<code>import_data</code> that copies a given dataset.  Note that someone outside 10x Genomics
-could use a similar system to enable fast access to data.
+using only public data.  These are on disk and mirrored to solid-state disk (super fast 
+but less reliable).  We set <code>PRE</code> to that location.  The full dataset is not backed up, 
+however there is a catalog <code>enclone/src/enclone.testlist.all</code> that would facilitate 
+reconstruction in the event of loss.  Over time, we gradually enlarge the collection.  There is a 
+program <code>import_data</code> that copies a given dataset.  Note that someone outside 
+10x Genomics could use a similar system to enable fast access to data.
 </li>
 
 </ul>
