@@ -216,6 +216,20 @@ pub fn copy_for_enclone(source: &str, target: &str) {
                 copy_file(f, &count_pd_from, &count_pd_to);
             }
         }
+
+        // Generate feature_barcode_matrix.bin.
+
+        let h5_target = format!("{}/raw_feature_bc_matrix.h5", count_pd_to);
+        let mut barcodes = Vec::<String>::new();
+        let mut features = Vec::<String>::new();
+        let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
+        let bin_file = format!("{}/feature_barcode_matrix.bin", count_pd_to);
+        write_to_file(&msm, &bin_file);
+
+        // Copy more.
+
         use fs_extra::dir::{copy, CopyOptions};
         let opt = CopyOptions::new();
         let dirs = ["filtered_feature_bc_matrix", "analysis_csv"];
@@ -271,6 +285,20 @@ pub fn copy_for_enclone(source: &str, target: &str) {
                 copy_file(f, &count_pd_from, &count_pd_to);
             }
         }
+
+        // Generate feature_barcode_matrix.bin.
+
+        let h5_target = format!("{}/raw_feature_bc_matrix.h5", count_pd_to);
+        let mut barcodes = Vec::<String>::new();
+        let mut features = Vec::<String>::new();
+        let mut matrix = Vec::<Vec<(i32, i32)>>::new();
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
+        let bin_file = format!("{}/feature_barcode_matrix.bin", count_pd_to);
+        write_to_file(&msm, &bin_file);
+
+        // Copy more.
+
         use fs_extra::dir::{copy, CopyOptions};
         let opt = CopyOptions::new();
         let dirs = ["filtered_feature_bc_matrix", "analysis_csv"];
