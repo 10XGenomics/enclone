@@ -881,12 +881,18 @@ pub fn print_clonotypes(
                     res.10.push(x.satisfied(&means));
                 }
 
+                // Done unless on second pass.
+
+                if pass == 1 {
+                    continue;
+                }
+
                 // See if we're in the test and control sets for gene scan (exact case).
 
                 if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
                     let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
                     let mut means = Vec::<f64>::new();
-                    for k in 0..nexacts {
+                    for k in 0..exacts.len() {
                         for i in 0..x.n() {
                             let mut vals = Vec::<f64>::new();
                             let mut count = 0;
@@ -932,12 +938,6 @@ pub fn print_clonotypes(
                         }
                         res.10.push(x.satisfied(&means));
                     }
-                }
-
-                // Done unless on second pass.
-
-                if pass == 1 {
-                    continue;
                 }
 
                 // Fill in exact_subclonotype_id, reorder.
@@ -1258,6 +1258,18 @@ pub fn print_clonotypes(
     }
     loupe_out(&ctl, all_loupe_clonotypes, &refdata, &dref);
 
+    // Set up to group and print clonotypes.
+
+    for i in 0..orbits.len() {
+        for j in 0..results[i].1.len() {
+            pics.push(results[i].1[j].clone());
+            exacts.push(results[i].2[j].0.clone());
+            rsi.push(results[i].2[j].1.clone());
+            in_center.push(results[i].12[j]);
+        }
+        out_datas.append(&mut results[i].7);
+    }
+
     // Gather some data for gene scan.
 
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
@@ -1274,7 +1286,7 @@ pub fn print_clonotypes(
     }
     if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
         let mut count = 0;
-        for i in 0..orbits.len() {
+        for i in 0..pics.len() {
             for j in 0..exacts[i].len() {
                 if results[i].9[j] {
                     tests.push(count);
@@ -1285,17 +1297,5 @@ pub fn print_clonotypes(
                 count += 1;
             }
         }
-    }
-
-    // Set up to group and print clonotypes.
-
-    for i in 0..orbits.len() {
-        for j in 0..results[i].1.len() {
-            pics.push(results[i].1[j].clone());
-            exacts.push(results[i].2[j].0.clone());
-            rsi.push(results[i].2[j].1.clone());
-            in_center.push(results[i].12[j]);
-        }
-        out_datas.append(&mut results[i].7);
     }
 }
