@@ -676,7 +676,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     eprintln!("");
                     std::process::exit(1);
                 }
-                remove_file(&val).unwrap();
+                remove_file(&val).expect(&format!("could not remove file {}", val));
                 continue 'args_loop;
             }
         }
