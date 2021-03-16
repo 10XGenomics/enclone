@@ -359,11 +359,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
 
         h.print("\\boldblue{16. How can I cite enclone?}\n\n");
-        h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
-        h.print(
-            "however once enclone has officially launched, you will be able to cite this \
-             version as:\n",
-        );
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
         h.print(&format!("{}", strme(&log)));
@@ -382,7 +377,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         emit_end_escape(&mut log);
         h.print(&format!("{}", strme(&log)));
         h.print(
-            "At some point subsequent to that, there will be a white paper to which you can refer, \
+            "At some point in the future, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",

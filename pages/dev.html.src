@@ -74,13 +74,13 @@ program <code>import_data</code> that copies a given dataset.  Note that someone
 
 <hr><h2>Software architecture</h2>
 
-<p>#enclone is written in rust.</p>
+<p>#enclone is written in Rust.</p>
 
-<p>We used rust because the language makes it extremely easy to use rust code written by
-other people, because rust has its own build system, and because it is fast and safe.</p>
+<p>We used Rust because the language makes it extremely easy to use Rust code written by
+other people, because Rust has its own build system, and because it is fast and safe.</p>
 
-<p>Technical details.  The repo is itself a rust workspace, with a half dozen or so
-subdirectories that comprise rust crates.  Each of these crates has its own 
+<p>Technical details.  The repo is itself a Rust workspace, with a half dozen or so
+subdirectories that comprise Rust crates.  Each of these crates has its own 
 <code>Cargo.toml</code> file.  Modification of dependency
 versions in these files files is done by modifying a file <code>master.toml</code> at the
 top level,
@@ -99,14 +99,14 @@ tested on a Mac with an M1 processor.</p>
 
 <ul>
 
-<li><code>rust</code>.  Detailed instructions on how to install rust
+<li><code>Rust</code>.  Detailed instructions on how to install Rust
 can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can 
 confirm that you have successfully installed the Rust compiler by running 
 <code>rustc --version</code>.</li>
 
 <li><code>cargo-license</code>.  Probably this is needed only for internal use.  You can install 
 it using
-<code>cargo install cargo-license</code>, assuming that you have already installed rust.</li>
+<code>cargo install cargo-license</code>, assuming that you have already installed Rust.</li>
 
 <li><code>cargo-sweep</code>.  Install via <code>cargo install cargo-sweep</code>.</li>
 
