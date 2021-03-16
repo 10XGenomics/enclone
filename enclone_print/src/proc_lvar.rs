@@ -148,9 +148,11 @@ pub fn proc_lvar(
     // Check INFO.
 
     if ctl.gen_opt.info.is_some() {
-        if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
-            for q in 0..ctl.gen_opt.info_fields.len() {
-                if *x == ctl.gen_opt.info_fields[q] {
+        for q in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[q] {
+                let mut found = false;
+                let mut lvarred = false;
+                if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
                     let mut tag = String::new();
                     for j in 0..ex.share.len() {
                         if ex.share[j].left {
@@ -166,12 +168,20 @@ pub fn proc_lvar(
                     if ctl.gen_opt.info_data.contains_key(&tag) {
                         let val = &ctl.gen_opt.info_data[&tag][q];
                         lvar![i, x, val.clone()];
+                        lvarred = true;
                         if val.parse::<f64>().is_ok() {
+                            found = true;
                             stats.push((x.to_string(), vec![val.force_f64(); ex.ncells()]));
                         }
-                        return;
                     }
                 }
+                if !lvarred {
+                    lvar![i, x, String::new()];
+                }
+                if !found {
+                    stats.push((x.to_string(), vec![]));
+                }
+                return;
             }
         }
     }

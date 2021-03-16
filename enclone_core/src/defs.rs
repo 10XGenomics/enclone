@@ -30,6 +30,7 @@ macro_rules! user_error {
         if !FAILED.load(SeqCst)
         {
             FAILED.store(true, SeqCst);
+            eprintln!("");
             eprintln!($($arg)*);
             eprintln!("");
         }
@@ -541,6 +542,7 @@ pub struct GeneralOpt {
     pub gene_scan_test: Option<LinearCondition>,
     pub gene_scan_control: Option<LinearCondition>,
     pub gene_scan_threshold: Option<LinearCondition>,
+    pub gene_scan_exact: bool,
     pub plot_file: String,
     pub plot_by_isotype: bool,
     pub plot_by_isotype_nolegend: bool,

@@ -206,6 +206,10 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.gen_opt.gene_scan_exact && ctl.gen_opt.gene_scan_test.is_none() {
+        eprintln!("\nIt doesn't make sense to specify SCAN_EXIT unless SCAN is also specified.\n");
+        std::process::exit(1);
+    }
     if ctl.clono_print_opt.conx && ctl.clono_print_opt.conp {
         eprintln!("\nPlease specify at most one of CONX and CONP.\n");
         std::process::exit(1);

@@ -736,12 +736,13 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
-                // Combine stats for the same variable.  This is needed because each dataset
-                // contributes.  Note that we don't care about the order of the values here
-                // (other than stability) because what we're going to do with them is compute the
-                // mean or max.
+                // Combine stats for the same variable.  This is needed because each exact
+                // subclonotype contributes.  Note that we don't care about the order of the
+                // values here (other than stability) because what we're going to do with them is
+                // compute the mean or max.
 
                 stats.sort_by(|a, b| a.0.cmp(&b.0));
+                let stats_orig = stats.clone();
                 let mut stats2 = Vec::<(String, Vec<f64>)>::new();
                 let mut i = 0;
                 while i < stats.len() {
@@ -838,10 +839,9 @@ pub fn print_clonotypes(
                     }
                 }
 
-                // See if we're in the test and control sets for gene scan.
-                // uses: ctl, stats
+                // See if we're in the test and control sets for gene scan (non-exact case).
 
-                if ctl.gen_opt.gene_scan_test.is_some() {
+                if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
                     let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
                     let mut means = Vec::<f64>::new();
                     for i in 0..x.n() {
@@ -879,6 +879,59 @@ pub fn print_clonotypes(
                         means.push(mean);
                     }
                     res.10.push(x.satisfied(&means));
+                }
+
+                // See if we're in the test and control sets for gene scan (exact case).
+
+                if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
+                    let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
+                    let mut means = Vec::<f64>::new();
+                    for k in 0..nexacts {
+                        for i in 0..x.n() {
+                            let mut vals = Vec::<f64>::new();
+                            let mut count = 0;
+                            for j in 0..stats_orig.len() {
+                                if stats_orig[j].0 == x.var[i] {
+                                    if count == k {
+                                        vals.append(&mut stats_orig[j].1.clone());
+                                        break;
+                                    } else {
+                                        count += 1;
+                                    }
+                                }
+                            }
+                            let mut mean = 0.0;
+                            for j in 0..vals.len() {
+                                mean += vals[j];
+                            }
+                            mean /= n as f64;
+                            means.push(mean);
+                        }
+                        res.9.push(x.satisfied(&means));
+                        let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
+                        let mut means = Vec::<f64>::new();
+                        for i in 0..x.n() {
+                            let mut vals = Vec::<f64>::new();
+                            let mut count = 0;
+                            for j in 0..stats_orig.len() {
+                                if stats_orig[j].0 == x.var[i] {
+                                    if count == k {
+                                        vals.append(&mut stats_orig[j].1.clone());
+                                        break;
+                                    } else {
+                                        count += 1;
+                                    }
+                                }
+                            }
+                            let mut mean = 0.0;
+                            for j in 0..vals.len() {
+                                mean += vals[j];
+                            }
+                            mean /= n as f64;
+                            means.push(mean);
+                        }
+                        res.10.push(x.satisfied(&means));
+                    }
                 }
 
                 // Done unless on second pass.
@@ -1207,7 +1260,21 @@ pub fn print_clonotypes(
 
     // Gather some data for gene scan.
 
-    if ctl.gen_opt.gene_scan_test.is_some() {
+    if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
+        let mut count = 0;
+        for i in 0..orbits.len() {
+            for j in 0..results[i].1.len() {
+                if results[i].9[j] {
+                    tests.push(count);
+                }
+                if results[i].10[j] {
+                    controls.push(count);
+                }
+                count += 1;
+            }
+        }
+    }
+    if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
         let mut count = 0;
         for i in 0..orbits.len() {
             for j in 0..results[i].1.len() {
