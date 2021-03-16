@@ -13,7 +13,8 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-// Macro for controlled exit.
+// Macro for user error.  This is designed to prevent multiple error messages being emitted
+// in a parallel loop.
 //
 // To use this, you need to add the following lines:
 // - use enclone_core::defs::*;
@@ -23,7 +24,7 @@ use vector_utils::*;
 pub static FAILED: AtomicBool = AtomicBool::new(false);
 
 #[macro_export]
-macro_rules! outahere {
+macro_rules! user_error {
     ($($arg:tt)*) => (
     {
         if !FAILED.load(SeqCst)

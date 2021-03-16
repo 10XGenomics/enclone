@@ -796,7 +796,7 @@ pub fn print_clonotypes(
                             // We had turned off this test (and substituted the above code), but
                             // it's not clear why.
 
-                            outahere!(
+                            user_error!(
                                 "\nFailed to find the variable {} used in a \
                                  bound.  Please see \"enclone help filter\".",
                                 x.var[i]
