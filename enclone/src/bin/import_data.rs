@@ -11,15 +11,13 @@
 //
 // For use at 10x Genomics.
 
+use enclone::proc_args::get_config;
 use enclone_core::copy_for_enclone::*;
 use enclone_core::testlist::*;
-use enclone_core::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 use std::process::Command;
 use string_utils::*;
 
@@ -28,8 +26,8 @@ fn main() {
     let mut config = HashMap::<String, String>::new();
     get_config(&mut config);
     let mut dests = Vec::<String>::new();
-    dests.push(format!"{}/current{}", config["earth"], TEST_FILES_VERSION);
-    dests.push(format!"{}/current{}", config["cloud"], TEST_FILES_VERSION);
+    dests.push(format!("{}/current{}", config["earth"], TEST_FILES_VERSION));
+    dests.push(format!("{}/current{}", config["cloud"], TEST_FILES_VERSION));
     let args: Vec<String> = env::args().collect();
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<String>::new();
@@ -44,7 +42,9 @@ fn main() {
             ids.push(id.to_string());
         }
     }
-    let ones = get_config["ones"];
+    let mut config = HashMap::<String, String>::new();
+    get_config(&mut config);
+    let ones = &config["ones"];
     for id in ids.iter() {
         // Get path.
 
@@ -52,7 +52,7 @@ fn main() {
         assert!(p.parse::<usize>().is_ok());
         let url = format!("{}/{}", ones, p);
         let o = Command::new("curl")
-            .arg(url)
+            .arg(&url)
             .output()
             .expect("failed to execute http");
         let m = String::from_utf8(o.stdout).unwrap();

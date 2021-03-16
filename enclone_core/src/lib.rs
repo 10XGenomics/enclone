@@ -10,7 +10,6 @@ pub mod testlist;
 pub mod vdj_features;
 
 use std::env;
-use string_utils::*;
 
 const VERSION_STRING: &'static str = env!("VERSION_STRING");
 

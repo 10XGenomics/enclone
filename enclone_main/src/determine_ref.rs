@@ -83,7 +83,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
 
     if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
         if !ctl.gen_opt.mouse {
-            let imgt = ctl.gen_opt.get_config["imgt_human"];
+            let imgt = &ctl.gen_opt.config["imgt_human"];
             if ctl.gen_opt.descrip {
                 println!("using IMGT human reference");
             }
@@ -104,7 +104,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
                 *refx += &"\n";
             }
         } else {
-            let imgt = let imgt = ctl.gen_opt.get_config["imgt_mouse"];
+            let imgt = &ctl.gen_opt.config["imgt_mouse"];
             if ctl.gen_opt.descrip {
                 println!("using IMGT mouse reference");
             }

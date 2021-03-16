@@ -703,7 +703,7 @@ fn test_executable_size() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs 
+// 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
 // single-threaded and measures total instructions used.
 
 // NOT BASIC

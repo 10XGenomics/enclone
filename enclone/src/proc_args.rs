@@ -4,7 +4,6 @@ use crate::proc_args2::*;
 use crate::proc_args_post::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
-use enclone_core::*;
 use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
@@ -73,9 +72,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        let earth_path = format!("{}/current{}", ctl.gen_opt.config["earth"], TEST_FILES_VERSION);
+        let earth_path = format!(
+            "{}/current{}",
+            ctl.gen_opt.config["earth"], TEST_FILES_VERSION
+        );
         ctl.gen_opt.internal_data_dir = earth_path;
-        let cloud_path = format!("{}/current{}", ctl.gen_opt.config["cloud"], TEST_FILES_VERSION);
+        let cloud_path = format!(
+            "{}/current{}",
+            ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
+        );
         if path_exists(&cloud_path) {
             ctl.gen_opt.internal_data_dir = cloud_path;
         }

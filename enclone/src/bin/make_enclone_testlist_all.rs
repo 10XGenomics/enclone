@@ -4,8 +4,11 @@
 //
 // This records the id and cellranger version.
 
+use enclone::proc_args::*;
+use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use string_utils::*;
