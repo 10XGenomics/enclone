@@ -13,15 +13,12 @@ use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
-use enclone_core::defs::FAILED;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
-use enclone_core::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use std::sync::atomic::Ordering::SeqCst;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -773,34 +770,12 @@ pub fn print_clonotypes(
                     // traverse the coefficients on the left hand side (each having a variable)
                     let mut fail = false;
                     for i in 0..x.n() {
-                        let mut found = false;
                         let mut vals = Vec::<f64>::new(); // the stats for the variable
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                found = true;
                                 break;
                             }
-                        }
-                        if !found {
-                            /*
-                            for u in 0..nexacts {
-                                let clonotype_id = exacts[u];
-                                let ex = &exact_clonotypes[clonotype_id];
-                                for _ in 0..ex.clones.len() {
-                                    vals.push(0.0);
-                                }
-                            }
-                            */
-
-                            // We had turned off this test (and substituted the above code), but
-                            // it's not clear why.
-
-                            user_error!(
-                                "\nFailed to find the variable {} used in a \
-                                 bound.  Please see \"enclone help filter\".",
-                                x.var[i]
-                            );
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
