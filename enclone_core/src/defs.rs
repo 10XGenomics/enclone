@@ -14,6 +14,11 @@ use string_utils::*;
 use vector_utils::*;
 
 // Macro for controlled exit.
+//
+// To use this, you need to add the following lines:
+// - use enclone_core::defs::*;
+// - use enclone_core::defs::FAILED;
+// - use std::sync::atomic::Ordering::SeqCst;
 
 pub static FAILED: AtomicBool = AtomicBool::new(false);
 
@@ -21,7 +26,7 @@ pub static FAILED: AtomicBool = AtomicBool::new(false);
 macro_rules! outahere {
     ($($arg:tt)*) => (
     {
-        if !FAILED.load(SeqCst) 
+        if !FAILED.load(SeqCst)
         {
             FAILED.store(true, SeqCst);
             eprintln!($($arg)*);
