@@ -839,6 +839,12 @@ pub fn print_clonotypes(
                     }
                 }
 
+                // Done unless on second pass.
+
+                if pass == 1 {
+                    continue;
+                }
+
                 // See if we're in the test and control sets for gene scan (non-exact case).
 
                 if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
@@ -879,12 +885,6 @@ pub fn print_clonotypes(
                         means.push(mean);
                     }
                     res.10.push(x.satisfied(&means));
-                }
-
-                // Done unless on second pass.
-
-                if pass == 1 {
-                    continue;
                 }
 
                 // See if we're in the test and control sets for gene scan (exact case).
@@ -1285,16 +1285,14 @@ pub fn print_clonotypes(
         }
     }
     if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
-        let mut count = 0;
-        for i in 0..pics.len() {
+        for i in 0..exacts.len() {
             for j in 0..exacts[i].len() {
                 if results[i].9[j] {
-                    tests.push(count);
+                    tests.push(exacts[i][j]);
                 }
                 if results[i].10[j] {
-                    controls.push(count);
+                    controls.push(exacts[i][j]);
                 }
-                count += 1;
             }
         }
     }
