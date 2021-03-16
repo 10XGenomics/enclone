@@ -62,8 +62,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     for (key, value) in env::vars() {
         if key.contains("USER") && value.ends_with("10xgenomics.com") {
-            ctl.gen_opt.internal_run = true;
-            get_config(&mut ctl.gen_opt.config);
+            if get_config(&mut ctl.gen_opt.config) {
+                ctl.gen_opt.internal_run = true;
+            }
             break;
         }
     }
@@ -1227,7 +1228,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     );
 }
 
-pub fn get_config(config: &mut HashMap<String, String>) {
+pub fn get_config(config: &mut HashMap<String, String>) -> bool {
     let mut targa = String::new();
     for (key, value) in env::vars() {
         if key == "HOME" {
@@ -1236,18 +1237,21 @@ pub fn get_config(config: &mut HashMap<String, String>) {
     }
     let d = dir_list(&format!("/{}", &targa));
     let mut c = String::new();
+    let mut found = false;
     for x in d.iter() {
         c = format!("/{}/{}/enclone_config", targa, x);
         if path_exists(&c) {
+            found = true;
             break;
         }
     }
-    if c.len() == 0 {
-        panic!("config not found");
+    if !found {
+        return false;
     }
     let f = open_for_read![&c];
     for line in f.lines() {
         let s = line.unwrap();
         config.insert(s.before("=").to_string(), s.after("=").to_string());
     }
+    true
 }

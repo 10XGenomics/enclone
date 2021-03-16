@@ -24,7 +24,7 @@ use string_utils::*;
 fn main() {
     PrettyTrace::new().on();
     let mut config = HashMap::<String, String>::new();
-    get_config(&mut config);
+    let _ = get_config(&mut config);
     let mut dests = Vec::<String>::new();
     dests.push(format!("{}/current{}", config["earth"], TEST_FILES_VERSION));
     dests.push(format!("{}/current{}", config["cloud"], TEST_FILES_VERSION));
@@ -42,8 +42,6 @@ fn main() {
             ids.push(id.to_string());
         }
     }
-    let mut config = HashMap::<String, String>::new();
-    get_config(&mut config);
     let ones = &config["ones"];
     for id in ids.iter() {
         // Get path.

@@ -40,7 +40,7 @@ fn main() {
     fwriteln!(f, "");
     fwriteln!(f, "id,cellranger_version");
     let mut config = HashMap::<String, String>::new();
-    get_config(&mut config);
+    let _ = get_config(&mut config);
     let root = format!("{}/current{}", config["earth"], TEST_FILES_VERSION);
     let dirs = dir_list(&root);
     let mut ids = Vec::<usize>::new();
