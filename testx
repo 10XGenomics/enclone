@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 
 # ./testx is a version of ./test that should run anywhere
 
