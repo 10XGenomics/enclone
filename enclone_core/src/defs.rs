@@ -293,6 +293,7 @@ impl LinearCondition {
             );
             std::process::exit(1);
         }
+        rhs = rhs.replace("E", "e");
         if !rhs.contains('.') && !rhs.contains('e') {
             rhs += ".0";
         }
