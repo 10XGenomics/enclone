@@ -61,7 +61,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Test for internal run.
 
     for (key, value) in env::vars() {
-        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
+        if key.contains("USER") && value.ends_with("10xgenomics.com") {
             ctl.gen_opt.internal_run = true;
             get_config(&mut ctl.gen_opt.config);
             break;
