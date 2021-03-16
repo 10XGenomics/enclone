@@ -515,6 +515,12 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
         );
         h.print(
+            "If for a given clonotype and a given variable, not all values are specified (e.g. if \
+                for a user-specified variable, values are blank), then only the values that are \
+                specified are used in the computation of mean and max.  If no values are \
+                specified, then the condition fails.\n\n",
+        );
+        h.print(
             "Similarly, to filter by the max across all cells in a clonotype, one may use\n\
              \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
              and otherwise as above.\n\n",

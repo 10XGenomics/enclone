@@ -771,6 +771,7 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
                     // traverse the coefficients on the left hand side (each having a variable)
+                    let mut fail = false;
                     for i in 0..x.n() {
                         let mut found = false;
                         let mut vals = Vec::<f64>::new(); // the stats for the variable
@@ -812,11 +813,16 @@ pub fn print_clonotypes(
                                 count += 1;
                             }
                         }
-                        mean /= count as f64;
-                        means.push(mean);
-                        maxs.push(max);
+                        if count == 0 {
+                            fail = true;
+                        } else {
+                            mean /= count as f64;
+                            means.push(mean);
+                            maxs.push(max);
+                        }
                     }
-                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && !x.satisfied(&means) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && (fail || !x.satisfied(&means))
+                    {
                         if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                             in_center = false;
                         } else {
@@ -825,7 +831,7 @@ pub fn print_clonotypes(
                             }
                         }
                     }
-                    if ctl.clono_filt_opt.bound_type[bi] == "max" && !x.satisfied(&maxs) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "max" && (fail || !x.satisfied(&maxs)) {
                         if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                             in_center = false;
                         } else {
