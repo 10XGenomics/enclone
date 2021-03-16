@@ -402,12 +402,14 @@ pub fn load_gex(
                 if bin_file_state == 3 {
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix, &r.2, &r.1);
                     write_to_file(&r.3, &bin_file);
-                    let earth = &ctl.gen_opt.config["earth"];
                     // Note that if the dataset archive was complete, we would not need to do this.
-                    if ctl.gen_opt.internal_run && !bin_file.starts_with(earth) {
-                        let bin_file_alt =
-                            format!("{}/current{}", earth, bin_file.after("current"));
-                        write_to_file(&r.3, &bin_file_alt);
+                    if ctl.gen_opt.internal_run {
+                        let earth = &ctl.gen_opt.config["earth"];
+                        if !bin_file.starts_with(earth) {
+                            let bin_file_alt =
+                                format!("{}/current{}", earth, bin_file.after("current"));
+                            write_to_file(&r.3, &bin_file_alt);
+                        }
                     }
                 }
             }
