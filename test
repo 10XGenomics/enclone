@@ -13,7 +13,7 @@ set start = `date +%s`
 
 ##### MAKE SURE POST_PROCESS_TEST IS IN PATH #####
 
-if(`where post_process_test` == "") then
+if ( `where post_process_test` == "" ) then
     echo "\nPlease add target/debug to your path.\n"
     exit 1
 endif
