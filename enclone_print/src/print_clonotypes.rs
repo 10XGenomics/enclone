@@ -782,6 +782,7 @@ pub fn print_clonotypes(
                             }
                         }
                         if !found {
+                            /*
                             for u in 0..nexacts {
                                 let clonotype_id = exacts[u];
                                 let ex = &exact_clonotypes[clonotype_id];
@@ -789,15 +790,17 @@ pub fn print_clonotypes(
                                     vals.push(0.0);
                                 }
                             }
+                            */
 
-                            /*
+                            // We had turned off this test (and substituted the above code), but
+                            // it's not clear why.
+
                             eprintln!(
                                 "\nFailed to find the variable {} used in a \
                                  bound.  Please see \"enclone help filter\".\n",
                                 x.var[i]
                             );
                             std::process::exit(1);
-                            */
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
