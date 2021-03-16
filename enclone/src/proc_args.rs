@@ -1196,7 +1196,7 @@ pub fn get_config(config: &mut HashMap<String, String>) {
             targa = value.between("/", "/").to_string();
         }
     }
-    let c = format!("{}/assembly/enclone_config", targa);
+    let c = format!("/{}/assembly/enclone_config", targa);
     if !path_exists(&c) {
         panic!("config not found");
     }
