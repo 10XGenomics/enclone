@@ -8,17 +8,20 @@
 use crate::define_mat::*;
 use crate::filter::*;
 use crate::loupe::*;
+use crate::print_clonotypes::defs::FAILED;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
+use enclone_core::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::collections::HashMap;
+use std::sync::atomic::Ordering::SeqCst;
 use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -793,12 +796,12 @@ pub fn print_clonotypes(
                             // We had turned off this test (and substituted the above code), but
                             // it's not clear why.
 
-                            eprintln!(
+                            outahere!(
                                 "\nFailed to find the variable {} used in a \
-                                 bound.  Please see \"enclone help filter\".\n",
+                                 bound.  Please see \"enclone help filter\".",
                                 x.var[i]
                             );
-                            std::process::exit(1);
+
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;

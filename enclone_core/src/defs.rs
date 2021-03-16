@@ -8,9 +8,31 @@ use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
+
+// Macro for controlled exit.
+
+pub static FAILED: AtomicBool = AtomicBool::new(false);
+
+#[macro_export]
+macro_rules! outahere {
+    ($($arg:tt)*) => (
+    {
+        if !FAILED.load(SeqCst) 
+        {
+            FAILED.store(true, SeqCst);
+            eprintln!($($arg)*);
+            eprintln!("");
+        }
+    std::process::exit(1);
+    }
+);
+}
+
+// The rest.
 
 pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
     "amino",
