@@ -891,8 +891,8 @@ pub fn print_clonotypes(
 
                 if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
                     let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
-                    let mut means = Vec::<f64>::new();
                     for k in 0..exacts.len() {
+                        let mut means = Vec::<f64>::new();
                         for i in 0..x.n() {
                             let mut vals = Vec::<f64>::new();
                             let mut count = 0;
@@ -910,7 +910,7 @@ pub fn print_clonotypes(
                             for j in 0..vals.len() {
                                 mean += vals[j];
                             }
-                            mean /= n as f64;
+                            mean /= vals.len() as f64;
                             means.push(mean);
                         }
                         res.9.push(x.satisfied(&means));
