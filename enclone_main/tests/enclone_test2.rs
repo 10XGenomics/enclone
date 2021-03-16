@@ -388,6 +388,7 @@ fn test_enclone_prebuild() {
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
+        eprintln!("new stderr = \n{}\n", strme(&new.stderr));
         std::process::exit(1);
     }
     if !path_exists(&format!(
