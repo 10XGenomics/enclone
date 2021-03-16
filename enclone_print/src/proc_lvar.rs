@@ -164,7 +164,11 @@ pub fn proc_lvar(
                         }
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
-                        lvar![i, x, ctl.gen_opt.info_data[&tag][q].clone()];
+                        let val = &ctl.gen_opt.info_data[&tag][q];
+                        lvar![i, x, val.clone()];
+                        if val.parse::<f64>().is_ok() {
+                            stats.push((x.to_string(), vec![val.force_f64(); ex.ncells()]));
+                        }
                         return;
                     }
                 }
