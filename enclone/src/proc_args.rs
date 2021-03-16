@@ -64,6 +64,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             ctl.gen_opt.internal_run = true;
             get_config(&mut ctl.gen_opt.config);
+            break;
         }
     }
     for i in 1..args.len() {
