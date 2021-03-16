@@ -68,33 +68,63 @@ pub fn tail_code(
     if ctl.gen_opt.gene_scan_test.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;
-        for i in tests.iter() {
-            for u in exacts[*i].iter() {
+        if !ctl.gen_opt.gene_scan_exact {
+            for i in tests.iter() {
+                for u in exacts[*i].iter() {
+                    test_cells += exact_clonotypes[*u].ncells();
+                }
+            }
+            println!(
+                "{} clonotypes containing {} cells in test set",
+                tests.len(),
+                test_cells
+            );
+        } else {
+            for u in tests.iter() {
                 test_cells += exact_clonotypes[*u].ncells();
             }
+            println!(
+                "{} exact subclonotypes containing {} cells in test set",
+                tests.len(),
+                test_cells
+            );
         }
-        println!(
-            "{} clonotypes containing {} cells in test set",
-            tests.len(),
-            test_cells
-        );
         let mut control_cells = 0;
-        for i in controls.iter() {
-            for u in exacts[*i].iter() {
+        if !ctl.gen_opt.gene_scan_exact {
+            for i in controls.iter() {
+                for u in exacts[*i].iter() {
+                    control_cells += exact_clonotypes[*u].ncells();
+                }
+            }
+            println!(
+                "{} clonotypes containing {} cells in control set\n",
+                controls.len(),
+                control_cells
+            );
+        } else {
+            for u in controls.iter() {
                 control_cells += exact_clonotypes[*u].ncells();
             }
+            println!(
+                "{} exact subclonotypes containing {} cells in control set\n",
+                controls.len(),
+                control_cells
+            );
         }
-        println!(
-            "{} clonotypes containing {} cells in control set\n",
-            controls.len(),
-            control_cells
-        );
         if tests.len() == 0 {
-            eprintln!("Gene scan failed, no test clonotypes.\n");
+            if !ctl.gen_opt.gene_scan_exact {
+                eprintln!("Gene scan failed, no test clonotypes.\n");
+            } else {
+                eprintln!("Gene scan failed, no test exact subclonotypes.\n");
+            }
             std::process::exit(1);
         }
         if controls.len() == 0 {
-            eprintln!("Gene scan failed, no control clonotypes.\n");
+            if !ctl.gen_opt.gene_scan_exact {
+                eprintln!("Gene scan failed, no control clonotypes.\n");
+            } else {
+                eprintln!("Gene scan failed, no control exact subclonotypes.\n");
+            }
             std::process::exit(1);
         }
         println!("enriched features\n");
@@ -122,9 +152,67 @@ pub fn tail_code(
                     tc = &controls;
                     vals = &mut control_values;
                 }
-                for j in 0..tc.len() {
-                    for m in 0..exacts[tc[j]].len() {
-                        let ex = &exact_clonotypes[exacts[tc[j]][m]];
+                if !ctl.gen_opt.gene_scan_exact {
+                    for j in 0..tc.len() {
+                        for m in 0..exacts[tc[j]].len() {
+                            let ex = &exact_clonotypes[exacts[tc[j]][m]];
+                            for l in 0..ex.clones.len() {
+                                let li = ex.clones[l][0].dataset_index;
+                                let bc = ex.clones[l][0].barcode.clone();
+                                let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                                if p >= 0 {
+                                    let mut raw_count = 0 as f64;
+                                    if gex_info.gex_matrices[li].initialized() {
+                                        raw_count =
+                                            gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                                    } else {
+                                        let z1 = gex_info.h5_indptr[li][p as usize] as usize;
+                                        // p+1 OK?
+                                        let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize;
+                                        let d: Vec<u32>;
+                                        let ind: Vec<u32>;
+                                        if ctl.gen_opt.h5_pre {
+                                            d = h5_data[li].1[z1..z2].to_vec();
+                                            ind = h5_data[li].2[z1..z2].to_vec();
+                                        } else {
+                                            d = d_readers[li]
+                                                .as_ref()
+                                                .unwrap()
+                                                .read_slice(s![z1..z2])
+                                                .unwrap()
+                                                .to_vec();
+                                            ind = ind_readers[li]
+                                                .as_ref()
+                                                .unwrap()
+                                                .read_slice(s![z1..z2])
+                                                .unwrap()
+                                                .to_vec();
+                                        }
+                                        for j in 0..d.len() {
+                                            if ind[j] == fid as u32 {
+                                                raw_count = d[j] as f64;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    let mult: f64;
+                                    if gene {
+                                        mult = gex_info.gex_mults[li];
+                                    } else {
+                                        mult = gex_info.fb_mults[li];
+                                    }
+                                    if !ctl.gen_opt.full_counts {
+                                        vals.push(raw_count * mult);
+                                    } else {
+                                        vals.push(raw_count);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for j in 0..tc.len() {
+                        let ex = &exact_clonotypes[tc[j]];
                         for l in 0..ex.clones.len() {
                             let li = ex.clones[l][0].dataset_index;
                             let bc = ex.clones[l][0].barcode.clone();

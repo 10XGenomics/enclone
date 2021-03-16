@@ -1275,7 +1275,7 @@ pub fn print_clonotypes(
     if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
         let mut count = 0;
         for i in 0..orbits.len() {
-            for j in 0..results[i].1.len() {
+            for j in 0..exacts[i].len() {
                 if results[i].9[j] {
                     tests.push(count);
                 }
