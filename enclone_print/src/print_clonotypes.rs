@@ -1261,16 +1261,14 @@ pub fn print_clonotypes(
     // Gather some data for gene scan.
 
     if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
-        let mut count = 0;
         for i in 0..orbits.len() {
             for j in 0..results[i].1.len() {
                 if results[i].9[j] {
-                    tests.push(count);
+                    tests.push(i);
                 }
                 if results[i].10[j] {
-                    controls.push(count);
+                    controls.push(i);
                 }
-                count += 1;
             }
         }
     }
