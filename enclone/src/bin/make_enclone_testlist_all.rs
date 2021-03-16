@@ -3,8 +3,6 @@
 // Make enclone/src/enclone.testlist.all.
 //
 // This records the id and cellranger version.
-//
-// Note hardcoding of current15.
 
 use io_utils::*;
 use pretty_trace::*;
@@ -38,7 +36,9 @@ fn main() {
     fwriteln!(f, "# not be manually edited.");
     fwriteln!(f, "");
     fwriteln!(f, "id,cellranger_version");
-    let root = "/mnt/assembly/vdj/current15";
+    let mut config = HashMap::<String, String>::new();
+    get_config(&mut config);
+    let root = format!("{}/current{}", config["earth"], TEST_FILES_VERSION);
     let dirs = dir_list(&root);
     let mut ids = Vec::<usize>::new();
     for i in 0..dirs.len() {

@@ -9,6 +9,7 @@ use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
 use regex::Regex;
+use std::collections::HashMap;
 use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
@@ -63,10 +64,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     for (key, value) in env::vars() {
         if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
             ctl.gen_opt.internal_run = true;
+            get_config(&mut ctl.gen_opt.config);
         }
-    }
-    if ctl.gen_opt.internal_run {
-        tempidx(&mut ctl.gen_opt.domain, &mut ctl.gen_opt.serv);
     }
     for i in 1..args.len() {
         if args[i] == "FORCE_EXTERNAL".to_string() {
@@ -74,17 +73,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
-        ctl.gen_opt.internal_data_dir = format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION);
-        let cloud_loc = "/mnt/assembly/vdj/cloud";
-        if path_exists(&cloud_loc) {
-            let f = open_for_read![&cloud_loc];
-            for line in f.lines() {
-                let cloud = line.unwrap();
-                let cloud_path = format!("{}/current{}", cloud, TEST_FILES_VERSION);
-                if path_exists(&cloud_path) {
-                    ctl.gen_opt.internal_data_dir = cloud_path;
-                }
-            }
+        let earth_path = format!("{}/current{}", ctl.gen_opt.config["earth"], TEST_FILES_VERSION);
+        ctl.gen_opt.internal_data_dir = earth_path;
+        let cloud_path = format!("{}/current{}", ctl.gen_opt.config["cloud"], TEST_FILES_VERSION);
+        if path_exists(&cloud_path) {
+            ctl.gen_opt.internal_data_dir = cloud_path;
         }
         ctl.gen_opt.pre = vec![
             ctl.gen_opt.internal_data_dir.clone(),
@@ -1189,4 +1182,22 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     );
+}
+
+pub fn get_config(config: &mut HashMap<String, String>) {
+    let mut targa = String::new();
+    for (key, value) in env::vars() {
+        if key == "HOME" {
+            targa = value.between("/", "/").to_string();
+        }
+    }
+    let c = format!("{}/assembly/enclone_config", targa);
+    if !path_exists(&c) {
+        panic!("config not found");
+    }
+    let f = open_for_read![&c];
+    for line in f.lines() {
+        let s = line.unwrap();
+        config.insert(s.before("=").to_string(), s.after("=").to_string());
+    }
 }

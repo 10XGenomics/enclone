@@ -441,7 +441,7 @@ fn test_datasets_sha256() {
 // 7.
 
 // SPEED (AND NOT BASIC)
-// calibrated for bespin1, and requires linux
+// calibrated for one server at 10x Genomics, and requires linux
 // cargo test --test enclone_test --features cpu -- --nocapture
 // from enclone_main directory
 // or just ./speed from root directory
@@ -456,7 +456,7 @@ fn test_cpu() {
 
     println!(
         "\nSPEED TESTS\n\n\
-        • These are calibrated for a particular server, bespin1 at \
+        • These are calibrated for a particular server at \
         10x Genomics.  If this code is run\nusing a different server, or if that server is \
         changed, the tests will need to be recalibrated.\n\
         • These tests also use 10x Genomics datasets that are not distributed publicly\n\

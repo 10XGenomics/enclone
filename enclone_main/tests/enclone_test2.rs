@@ -703,8 +703,8 @@ fn test_executable_size() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 28. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
-// measures total instructions used.
+// 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs 
+// single-threaded and measures total instructions used.
 
 // NOT BASIC
 
@@ -759,8 +759,8 @@ fn test_cpu_usage() {
         eprintln!("\n{}\n", report);
         eprintln!(
             "Possible causes of failure:\n\
-            1. You running on a server other than bespin1.  Won't work.\n\
-            2. The server bespin1 was changed.\n\
+            1. You running on a server other than the one this is designed for.  Won't work.\n\
+            2. The server was changed.\n\
             3. A code change altered its performance.\n\
             4. You got very unlucky."
         );

@@ -38,7 +38,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Test peak memory.  This is designed for one server, bespin1.
+// Test peak memory.  This is designed for one server at 10x Genomics
 //
 // This is in a separate file because doing so makes it possible to run just this one test,
 // and have it run by ./test, and have it not run by the CI.
@@ -136,7 +136,8 @@ fn test_peak_memory() {
         }
         eprintln!(
             "Please note that this test was designed to work correctly from a single server\n\
-            named bespin1.  If you're running from a different server, the expected memory value\n\
+            at 10x Genomics.  \
+            If you're running from a different server, the expected memory value\n\
             may need to be changed.  This might also be the case if that server was changed.\n\
             Otherwise, your options are:\n\
             1. Change the value of expected_mb in enclone_test.rs to {:.1}.\n\

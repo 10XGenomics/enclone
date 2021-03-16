@@ -563,8 +563,6 @@ pub struct GeneralOpt {
     pub peer_group_readable: bool,
     pub subset_json: String,
     pub fold_headers: bool,
-    pub domain: String,
-    pub serv: String,
     pub no_uncap_sim: bool,
     pub profile: bool,
     pub nopager: bool,
@@ -573,6 +571,7 @@ pub struct GeneralOpt {
     pub info_data: HashMap<String, Vec<String>>,
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
+    pub config: HashMap<String,String>,
 }
 
 // Allele-finding algorithmic options.

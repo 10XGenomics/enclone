@@ -16,6 +16,7 @@ use enclone_core::testlist::*;
 use enclone_core::*;
 use io_utils::*;
 use pretty_trace::*;
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -24,25 +25,11 @@ use string_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
-    let mut dests = vec![format!("/mnt/assembly/vdj/current{}", TEST_FILES_VERSION)];
-    let mut domain = String::new();
-    let mut serv = String::new();
-    tempidx(&mut domain, &mut serv);
-    let cloud_loc = "/mnt/assembly/vdj/cloud";
-    if !path_exists(&cloud_loc) {
-        eprintln!("\nCan't find the cloud (1).\n");
-        std::process::exit(1);
-    }
-    let f = open_for_read![&cloud_loc];
-    for line in f.lines() {
-        let cloud = line.unwrap();
-        let cloud_path = format!("{}/current{}", cloud, TEST_FILES_VERSION);
-        if !path_exists(&cloud_path) {
-            eprintln!("\nCan't find the cloud (2).\n");
-            std::process::exit(1);
-        }
-        dests.push(cloud_path);
-    }
+    let mut config = HashMap::<String, String>::new();
+    get_config(&mut config);
+    let mut dests = Vec::<String>::new();
+    dests.push(format!"{}/current{}", config["earth"], TEST_FILES_VERSION);
+    dests.push(format!"{}/current{}", config["cloud"], TEST_FILES_VERSION);
     let args: Vec<String> = env::args().collect();
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<String>::new();
@@ -57,12 +44,13 @@ fn main() {
             ids.push(id.to_string());
         }
     }
+    let ones = get_config["ones"];
     for id in ids.iter() {
         // Get path.
 
         let mut p = id.clone();
         assert!(p.parse::<usize>().is_ok());
-        let url = format!("https://{}.{}/api/analyses/{}", serv, domain, p);
+        let url = format!("{}/{}", ones, p);
         let o = Command::new("curl")
             .arg(url)
             .output()
@@ -71,9 +59,9 @@ fn main() {
         if m.contains("502 Bad Gateway") {
             eprintln!(
                 "\nWell this is sad.  The URL \
-                http://{}.{}/api/analyses/{} yielded a 502 Bad Geteway \
+                {} yielded a 502 Bad Geteway \
                 message.  Either try again later or ask someone for help.\n\n",
-                serv, domain, p,
+                url,
             );
             std::process::exit(1);
         }
