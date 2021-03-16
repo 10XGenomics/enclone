@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
-<title>enclone help developer</title>
+<title>enclone help faq</title>
 <style type="text/css">
 @font-face {
     font-family: "DejaVuSansMono";
@@ -91,7 +91,6 @@ pages that are directly accessible from the enclone command line.  These pages c
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help color       │  how enclone uses color, and related things                         │
 │enclone help faq         │  frequently asked questions (long)                                  │
-│enclone help developer   │  a few things for developers                                        │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │<span style="color:#31c39a;">enclone help all</span>         │  <span style="color:#31c39a;">concatenation of all the help pages (long, wide)</span>                   │
 │                         │  <span style="color:#31c39a;">███ USE THIS TO SEARCH ALL THE HELP PAGES! ███</span>                     │
@@ -619,7 +618,14 @@ fields are allowed:
 
 In addition, metadata maybe fully specified on the command line via <span style="font-weight:bold;">METAX="l1;...;ln"</span> where the <span style="font-weight:bold;">li</span>
 are the lines that you would otherwise put in the <span style="font-weight:bold;">META</span> file.
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+<span style="color:#c23621;font-weight:bold;">█ 3 █</span> enclone can also read an ancillary CSV file that specifies arbitrary fields that are
+associated to particular immune receptor sequences.  This is done using <span style="font-weight:bold;">INFO=path.csv</span>; The CSV
+file must have fields <span style="font-weight:bold;">vj_seq1</span>, specifying the full heavy or TRB sequence from the beginning of the
+V segment to the end of the J segment, and <span style="font-weight:bold;">vj_seq2</span>, for the light or TRA chain.  The other fields
+are then made accessible as lvars (see <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>), which are populated for any exact
+subclonotype having exactly two chains (heavy/light or TRB/TRA) that match the data in the CSV
+file.<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help input_tech
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
@@ -1745,14 +1751,12 @@ this is not an officially supported Cell Ranger configuration.
 
 <span style="color:#5833ff;font-weight:bold;">16. How can I cite enclone?</span>
 
-This version of enclone has been provided under a non-disclosure agreement,
-however once enclone has officially launched, you will be able to cite this version as:
 <span style="color:#25bc24;">10x Genomics, https://github.com/10XGenomics/enclone,
 (your enclone version information will be printed here).
-</span>At some point subsequent to that, there will be a white paper to which you can refer, in addition
-to a DOI minted at Zenodo.  In the spirit of reproducibility, you should provide the arguments
-that you used when you ran enclone and indicate the version of Cell Ranger that you used to
-generate the input data.
+</span>At some point in the future, there will be a white paper to which you can refer, in addition to a
+DOI minted at Zenodo.  In the spirit of reproducibility, you should provide the arguments that you
+used when you ran enclone and indicate the version of Cell Ranger that you used to generate the
+input data.
 
 <span style="color:#5833ff;font-weight:bold;">17. Can I print the enclone version?</span>
 
@@ -1785,32 +1789,6 @@ VDJ data, and we do not have a parallel mechanism for gene expression and antibo
 note also that running enclone on the barcodes from a single clonotype will not necessarily
 reproduce the results you observed, because the clonotyping algorithm uses all the data, even if
 only some clonotypes are selected.
-
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-enclone help developer
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-
-<span style="font-weight:bold;">a few options for developers</span>
-
-For instructions on how to compile, please see
-<span style="color:#25bc24;">bit.ly/enclone</span>.
-
-┌───────────┬───────────────────────────────────────────────────────────────────────────────┐
-│COMP       │  report computational performance stats; use this with                        │
-│           │  NOPRINT if you want to suppress visual output, and with                      │
-│           │  NOPAGER if you want output to be unbuffered                                  │
-│COMP2      │  like COMP, but adds more detailed lines that are prefixed with --            │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│LONG_HELP  │  allow long lines in help pages, which will otherwise trigger an assert       │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│CTRLC      │  upon CTRL-C, emit a traceback and then exit; can be used as a primitive      │
-│           │  but easy profiling method, to know what the code is doing if it seems to be  │
-│           │  very slow                                                                    │
-├───────────┼───────────────────────────────────────────────────────────────────────────────┤
-│PROFILE    │  Profile the code and tally tracebacks.  Normally used with NOPRINT.  This    │
-│           │  turns off paging because paging and profiling do not work correctly together.│
-│           │  However you can pipe the output of enclone to "less -r".                     │
-└───────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 </span></pre>
 </body>

@@ -64,9 +64,9 @@ pub fn print_clonotypes(
     controls: &mut Vec<usize>,
     fate: &mut Vec<HashMap<String, String>>,
 ) {
-    // Make an abbreviation.
-
     let lvars = &ctl.clono_print_opt.lvars;
+    let mut tree_args = ctl.gen_opt.tree.clone();
+    unique_sort(&mut tree_args);
 
     // Compute total cells.
 
@@ -606,6 +606,7 @@ pub fn print_clonotypes(
                 let mut ppe = Vec::<Vec<String>>::new();
                 let mut npe = Vec::<Vec<String>>::new();
                 compute_some_stats(
+                    &ctl,
                     &lvars,
                     &exacts,
                     &exact_clonotypes,
@@ -738,20 +739,12 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
-                // Apply bounds.  Before sorting we check for non-numbers because otherwise you'll
-                // get an inscrutable traceback.
+                // Combine stats for the same variable.  This is needed because each dataset
+                // contributes.  Note that we don't care about the order of the values here
+                // (other than stability) because what we're going to do with them is compute the
+                // mean or max.
 
-                for i in 0..stats.len() {
-                    for j in 0..stats[i].1.len() {
-                        if !stats[i].1[j].is_finite() {
-                            panic!(
-                                "About to sort but there's a non-finite value, which would \
-                                cause the sort to fail.  This is a bug."
-                            );
-                        }
-                    }
-                }
-                stats.sort_by(|a, b| a.partial_cmp(b).unwrap());
+                stats.sort_by(|a, b| a.0.cmp(&b.0));
                 let mut stats2 = Vec::<(String, Vec<f64>)>::new();
                 let mut i = 0;
                 while i < stats.len() {
@@ -770,13 +763,17 @@ pub fn print_clonotypes(
                     i = j;
                 }
                 stats = stats2;
+
+                // Traverse the bounds and apply them.
+
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
+                    // traverse the coefficients on the left hand side (each having a variable)
                     for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
                         let mut found = false;
+                        let mut vals = Vec::<f64>::new(); // the stats for the variable
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
@@ -804,11 +801,15 @@ pub fn print_clonotypes(
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
+                        let mut count = 0;
                         for j in 0..vals.len() {
-                            mean += vals[j];
-                            max = max.max(vals[j]);
+                            if !vals[j].is_nan() {
+                                mean += vals[j];
+                                max = max.max(vals[j]);
+                                count += 1;
+                            }
                         }
-                        mean /= n as f64;
+                        mean /= count as f64;
                         means.push(mean);
                         maxs.push(max);
                     }
@@ -905,13 +906,17 @@ pub fn print_clonotypes(
 
                 // Fill in exact_subclonotype_id, reorder.
 
-                if ctl.parseable_opt.pout.len() > 0 {
+                if ctl.parseable_opt.pout.len() > 0 || !ctl.gen_opt.tree.is_empty() {
                     for u in 0..nexacts {
                         macro_rules! speak {
                             ($u:expr, $var:expr, $val:expr) => {
-                                if pass == 2 && ctl.parseable_opt.pout.len() > 0 {
+                                if pass == 2
+                                    && (ctl.parseable_opt.pout.len() > 0
+                                        || !ctl.gen_opt.tree.is_empty())
+                                {
                                     if pcols_sort.is_empty()
                                         || bin_member(&pcols_sort, &$var.to_string())
+                                        || bin_member(&tree_args, &$var.to_string())
                                     {
                                         out_data[$u].insert($var.to_string(), $val);
                                     }
@@ -1062,112 +1067,16 @@ pub fn print_clonotypes(
 
                 // Build the diff row.
 
-                let diff_pos = rows.len();
-                if !drows.is_empty() {
-                    let mut row = row1.clone();
-                    for col in 0..cols {
-                        for m in 0..rsi.cvars[col].len() {
-                            if rsi.cvars[col][m] == "amino".to_string() {
-                                let mut xdots = String::new();
-                                for k in 0..show_aa[col].len() {
-                                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                                        xdots.push(' ');
-                                    }
-                                    let p = show_aa[col][k];
-                                    let q = 3 * p;
-                                    let leader = q < rsi.fr1_starts[col];
-                                    let mut cdr = false;
-                                    if rsi.cdr1_starts[col].is_some()
-                                        && q >= rsi.cdr1_starts[col].unwrap()
-                                        && q < rsi.fr2_starts[col].unwrap()
-                                    {
-                                        cdr = true;
-                                    }
-                                    if q >= rsi.cdr2_starts[col].unwrap()
-                                        && q < rsi.fr3_starts[col].unwrap()
-                                    {
-                                        cdr = true;
-                                    }
-                                    if q >= rsi.cdr3_starts[col]
-                                        && q < rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col]
-                                    {
-                                        cdr = true;
-                                    }
-                                    let mut codons = Vec::<Vec<u8>>::new();
-                                    for u in 0..nexacts {
-                                        if mat[col][u].is_some() {
-                                            let seq_amino = rsi.seqss_amino[col][u].clone();
-                                            if 3 * p + 3 <= seq_amino.len() {
-                                                codons.push(seq_amino[3 * p..3 * p + 3].to_vec());
-                                            }
-                                        }
-                                    }
-                                    unique_sort(&mut codons);
-                                    if codons.len() > 1 {
-                                        if cdr {
-                                            if ctl.gen_opt.diff_style == "C1".to_string() {
-                                                xdots.push('C');
-                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
-                                                xdots.push('');
-                                                xdots.push('[');
-                                                xdots.push('0');
-                                                xdots.push('1');
-                                                xdots.push('m');
-                                                xdots.push('');
-                                                xdots.push('[');
-                                                xdots.push('3');
-                                                xdots.push('1');
-                                                xdots.push('m');
-                                                xdots.push('◼');
-                                                xdots.push('');
-                                                xdots.push('[');
-                                                xdots.push('0');
-                                                xdots.push('1');
-                                                xdots.push('m');
-                                                xdots.push('');
-                                                xdots.push('[');
-                                                xdots.push('3');
-                                                xdots.push('0');
-                                                xdots.push('m');
-                                            } else {
-                                                xdots.push('x');
-                                            }
-                                        } else if !leader {
-                                            if ctl.gen_opt.diff_style == "C1".to_string() {
-                                                xdots.push('F');
-                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
-                                                xdots.push('▮');
-                                            } else {
-                                                xdots.push('x');
-                                            }
-                                        } else {
-                                            if ctl.gen_opt.diff_style == "C1".to_string() {
-                                                xdots.push('L');
-                                            } else if ctl.gen_opt.diff_style == "C2".to_string() {
-                                                xdots.push('▮');
-                                            } else {
-                                                xdots.push('x');
-                                            }
-                                        }
-                                    } else {
-                                        xdots.push('.');
-                                    }
-                                }
-                                row.push(xdots);
-                            } else {
-                                row.push(rsi.cvars[col][m].clone());
-                            }
-                        }
-                        for i in 0..row.len() {
-                            row[i] = format!("[01m{}[0m", row[i]);
-                        }
-                    }
-                    rows.push(row);
-                } else {
-                    for i in 0..row1.len() {
-                        rows[diff_pos - 1][i] = row1[i].clone();
-                    }
-                }
+                build_diff_row(
+                    &ctl,
+                    &rsi,
+                    &mut rows,
+                    &mut drows,
+                    &row1,
+                    nexacts,
+                    &field_types,
+                    &show_aa,
+                );
 
                 // Finish building table content.
 

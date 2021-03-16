@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# ./testx is a version of ./test that should run anywhere
+
+cd enclone_main
+cargo tb

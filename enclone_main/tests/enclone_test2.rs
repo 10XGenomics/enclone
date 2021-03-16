@@ -47,7 +47,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_site_examples() {
     for i in 0..SITE_EXAMPLES.len() {
@@ -156,7 +155,6 @@ fn test_site_examples() {
 // 16. Test that examples are what we claim they are.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
@@ -207,7 +205,6 @@ fn test_enclone_examples() {
 // 17. Test that references to the dataset version in README.md are current.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_version_number_in_readme() {
     PrettyTrace::new().on();
@@ -236,7 +233,6 @@ fn test_version_number_in_readme() {
 // Only works with high probability.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dejavu() {
     PrettyTrace::new().on();
@@ -273,48 +269,23 @@ fn test_dejavu() {
 // 19. Test that help output hasn't changed.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_output() {
     PrettyTrace::new().on();
-    let pages = vec![
-        "setup",
-        "main",
-        "quick",
-        "how",
-        "command",
-        "glossary",
-        "example1",
-        "example2",
-        "input",
-        "input_tech",
-        "parseable",
-        "filter",
-        "special",
-        "lvars",
-        "cvars",
-        "amino",
-        "display",
-        "indels",
-        "color",
-        "faq",
-        "developer",
-        "all",
-    ];
-    for p in pages {
+    for p in HELP_PAGES.iter() {
         let mut command = format!("enclone help {}", p);
-        if p == "setup" {
+        if *p == "setup" {
             command = "enclone help".to_string();
-        } else if p == "main" {
+        } else if *p == "main" {
             command = "enclone".to_string();
         }
         let out_file = format!("../pages/auto/help.{}.html", p);
         let old = read_to_string(&out_file).unwrap();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg("HTML");
-        if p == "setup" {
+        if *p == "setup" {
             new = new.arg("help");
-        } else if p == "main" {
+        } else if *p == "main" {
         } else {
             new = new.arg("help");
             new = new.arg(p);
@@ -348,7 +319,6 @@ fn test_help_output() {
 // 20. Test that enclone help all HTML works (without STABLE_DOC).
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_no_stable() {
     PrettyTrace::new().on();
@@ -374,7 +344,6 @@ fn test_help_no_stable() {
 // in sporadic (rare) test failures.  So don't do that.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone_prebuild() {
     PrettyTrace::new().on();
@@ -419,6 +388,7 @@ fn test_enclone_prebuild() {
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
+        eprintln!("new stderr = \n{}\n", strme(&new.stderr));
         std::process::exit(1);
     }
     if !path_exists(&format!(
@@ -506,7 +476,6 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 // reason, update the output file.  Otherwise perhaps something has gone wrong!
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
     let tests = vec!["BCR=123085", "TCR=101287"];
@@ -590,7 +559,6 @@ fn test_proto_write() -> Result<(), Error> {
 // example on the landing page.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_annotated_example() {
     PrettyTrace::new().on();
@@ -634,7 +602,6 @@ fn test_annotated_example() {
 // 24. Test SUBSET_JSON option.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
@@ -679,117 +646,7 @@ fn test_subset_json() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 25. Test peak memory.  This is designed for one server, bespin1.
-//
-// You can run this test along by typing
-// cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture
-// from the root of the repo.
-// However this also runs the doc tests.  There must be a better way.
-
-#[cfg(not(feature = "basic"))]
-#[cfg(not(feature = "cpu"))]
-#[cfg(feature = "mem")]
-#[test]
-fn test_peak_memory() {
-    PrettyTrace::new().on();
-
-    // Specify mem requirements.
-
-    let dataset = "BCR=123085";
-    let expected_mb = 364.8;
-
-    let max_percent_dev = 0.5;
-
-    // Only run internally.
-
-    let mut internal_run = false;
-    for (key, value) in env::vars() {
-        if key.contains("TELEPORT") && value.contains("10xgenomics.com") {
-            internal_run = true;
-        }
-    }
-    if !internal_run {
-        return;
-    }
-
-    // Define function to get mem.
-
-    fn mem_val(dataset: &str) -> f64 {
-        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-            .arg(&dataset)
-            .args(&["NOPRINT", "COMP"])
-            .output()
-            .expect(&format!("failed to execute peak mem test"));
-        if new.status.code() != Some(0) {
-            eprint!(
-                "\nenclone_site_examples: nonzero status code for peak mem test, stderr =\n{}",
-                strme(&new.stderr),
-            );
-            std::process::exit(1);
-        }
-        let out = strme(&new.stdout);
-        let mut mem = None;
-        for line in out.lines() {
-            if line.starts_with("peak mem usage = ") && line.ends_with(" MB") {
-                mem = Some(line.between("peak mem usage = ", " MB").force_f64());
-            }
-        }
-        if mem.is_none() {
-            eprintln!("\nfailed to find mem usage for peak mem\n");
-            std::process::exit(1);
-        }
-        mem.unwrap()
-    }
-
-    // Run the test.
-
-    let mut ok = false;
-    let mut mems = Vec::<f64>::new();
-    for _tries in 0..3 {
-        let mem = mem_val(&dataset);
-        mems.push(mem);
-        let dev = 100.0 * (mem - expected_mb).abs() / expected_mb;
-        if dev <= max_percent_dev {
-            ok = true;
-            break;
-        }
-    }
-    if !ok {
-        for _tries in 3..10 {
-            mems.push(mem_val(&dataset));
-        }
-    }
-    let mut mean = 0.0;
-    for i in 0..mems.len() {
-        mean += mems[i];
-    }
-    mean /= mems.len() as f64;
-    let dev = 100.0 * (mean - expected_mb).abs() / expected_mb;
-    let msg = format!(
-        "Peak mem of {:.1} MB observed, which differs from expected value of {} by {:.2}%.",
-        mean, expected_mb, dev
-    );
-    if !ok && dev > max_percent_dev {
-        eprintln!("\n{}\n", msg);
-        eprintln!("observed values:\n");
-        for i in 0..mems.len() {
-            eprintln!("{:.1}", mems[i]);
-        }
-        eprintln!(
-            "Please note that this test was designed to work correctly from a single server\n\
-            named bespin1.  If you're running from a different server, the expected memory value\n\
-            may need to be changed.  This might also be the case if that server was changed.\n\
-            Otherwise, your options are:\n\
-            1. Change the value of expected_mb in enclone_test.rs to {:.1}.\n\
-            2. Optimize to reduce mem usage (if value exceeds expected).\n\
-            3. Repeat the test, but this is very unlikely to succeed.\n",
-            mean
-        );
-        std::process::exit(1);
-    } else {
-        println!("{}", msg);
-    }
-}
+// 25. MOVED TO SEPARATE FILE
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -799,7 +656,6 @@ fn test_peak_memory() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_ref_only() {
     let test = "REF=../enclone-data/big_inputs/version15/█≈ΠΠΠ≈█/outs/\
@@ -827,11 +683,10 @@ fn test_ref_only() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 69674600;
+    const ENCLONE_SIZE: usize = 71127120;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -842,20 +697,20 @@ fn test_executable_size() {
             by {:.1}%.\n",
             ENCLONE_SIZE_MAX_PER_DIFF, delta,
         );
+        eprintln!("old size = {}, new size = {}\n", ENCLONE_SIZE, n);
         std::process::exit(1);
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 28. Test cpu usage.  This is designed for one server, bespin1.  It runs single-threaded and
-// measures total instructions used.
+// 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
+// single-threaded and measures total instructions used.
 
 // NOT BASIC
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu_usage() {
     PrettyTrace::new().on();
@@ -892,7 +747,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 18.9964;
+    const REQUIRED_GI: f64 = 18.8680;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -905,8 +760,8 @@ fn test_cpu_usage() {
         eprintln!("\n{}\n", report);
         eprintln!(
             "Possible causes of failure:\n\
-            1. You running on a server other than bespin1.  Won't work.\n\
-            2. The server bespin1 was changed.\n\
+            1. You running on a server other than the one this is designed for.  Won't work.\n\
+            2. The server was changed.\n\
             3. A code change altered its performance.\n\
             4. You got very unlucky."
         );
@@ -926,11 +781,10 @@ fn test_cpu_usage() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_source_code_file_length() {
     PrettyTrace::new().on();
-    const MAX_RS_LINES: usize = 1505; // proc_args.rs
+    const MAX_RS_LINES: usize = 1328; // enclone_test1.rs
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
     for d in top.iter() {
@@ -976,7 +830,6 @@ fn test_source_code_file_length() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_dupped_crates() {
     PrettyTrace::new().on();
@@ -1014,7 +867,6 @@ fn test_dupped_crates() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_page_list() {
     let (mut help1, mut help2) = (Vec::<String>::new(), Vec::<String>::new());
@@ -1027,8 +879,49 @@ fn test_help_page_list() {
     for x in HELP_PAGES.iter() {
         help2.push(x.to_string());
     }
-    if help1 != help2 {
-        eprintln!("\nList of help pages is incorrect.\n");
-        std::process::exit(1);
+    help1.sort();
+    help2.sort();
+    for x in help2.iter() {
+        if !bin_member(&help1, &x) {
+            eprintln!(
+                "\nHelp page for {} is in HELP_PAGES but not in enclone/pages/auto.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+    }
+    for x in help1.iter() {
+        if !bin_member(&help2, &x) {
+            eprintln!(
+                "\nHelp page for {} is in enclone/pages/auto but not in HELP_PAGES.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// 31. Test workspace dependency structure.  These restrictions are there to reduce compile time.
+// To be expanded over time.
+
+// NOT BASIC
+
+#[cfg(not(feature = "basic"))]
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_dependency_structure() {
+    // Don't allow enclone_core to reach to any other enclone crate.
+
+    let f = include_str!["../../enclone_core/Cargo.toml"];
+    for line in f.lines() {
+        if !line.starts_with("name =") && line.starts_with("enclone") {
+            eprintln!(
+                "\nenclone_core should not depend on any other enclone crate.\n\
+                This restriction is there to reduce compile time.\n"
+            );
+            std::process::exit(1);
+        }
     }
 }

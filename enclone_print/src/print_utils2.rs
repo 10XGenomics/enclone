@@ -113,6 +113,9 @@ pub fn row_fill(
         };
     }
     let cols = varmat[0].len();
+    if ctl.gen_opt.row_fill_verbose {
+        eprintln!("");
+    }
 
     // Compute dataset indices, gex, gex_min, gex_max, gex_mean, gex_sum,
     // n_gex_cell, n_gex, entropy.
@@ -305,6 +308,11 @@ pub fn row_fill(
             }
         }
     }
+    for x in ctl.gen_opt.tree.iter() {
+        if !lvars.contains(&x) {
+            all_lvars.push(x.clone());
+        }
+    }
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -359,16 +367,26 @@ pub fn row_fill(
     // exceptionally cryptic would happen downstream.
 
     if row.len() != lvars.len() + 1 {
-        let msg = format!(
+        let mut msg = format!(
             "Oops, row.len() != lvars.len() + 1, as in fact we have\n\
             row.len() = {} and lvars.len() = {}, and in more detail,\n\
             row = {}\n\
-            and lvars = {}.",
+            and lvars = {}.\nThis happened on a clonotype that included the barcode {}.",
             row.len(),
             lvars.len(),
             row.iter().format(","),
             lvars.iter().format(","),
+            ex.clones[0][0].barcode,
         );
+        if !ctl.gen_opt.row_fill_verbose {
+            msg += &format!(
+                "\n\nYou may find it helpful to add the options\n\
+                BARCODE={} ROW_FILL_VERBOSE\n\
+                to the command line.  Depending on other arguments, you might also need to \
+                add MAX_CORES=1.",
+                ex.clones[0][0].barcode
+            );
+        }
         panic!(msg);
     }
 
@@ -509,6 +527,11 @@ pub fn row_fill(
             }
         }
         all_vars.append(&mut extra_parseables.clone());
+        for x in ctl.gen_opt.tree.iter() {
+            if !rsi_vars.contains(&x) {
+                all_vars.push(x.clone());
+            }
+        }
 
         // Create column entry.
 
@@ -547,11 +570,14 @@ pub fn row_fill(
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
+            if ctl.gen_opt.tree.contains(&varc) {
+                needed = true;
+            }
             if !needed {
                 continue;
             }
             let col_var = j < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 {
+            if !col_var && ctl.parseable_opt.pout.len() == 0 && ctl.gen_opt.tree.is_empty() {
                 continue;
             }
 

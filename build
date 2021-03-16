@@ -1,26 +1,19 @@
 #!/bin/csh -e
 
+# Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html.
+
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # Build script for enclone.  The only thing missing from this is to run
 # target/debug/merge_html BUILD, 
 # however you should only need to do that rarely,
-# and if you do need to, "cargo t" will catch the problem and should tell you
-# what to do.
-#
-# See also README.
+# and if you do need to, "./test" will catch the problem and should tell you what to do.
 
 # WARNING: note harcoding of version15!
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-# notes on some prerequisites
-#
 # Really we should check the prerequisites here.
-
-# 1. You need to have installed rust.
-# 2. You need to have run "cargo install cargo-sweep".
-# 3. You need to have run "cargo install cargo-license".
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -29,12 +22,20 @@
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
-set begin_fetch = `date +%s`
-git -C enclone-data fetch --depth=1 origin `cat data_version`
-set end_fetch = `date +%s`
-set elapsed_fetch = `expr $end_fetch - $begin_fetch`
-echo "fetch took $elapsed_fetch seconds"
-git -C enclone-data switch --detach FETCH_HEAD
+if !(-f stamps/data_version_in_use) then
+    echo none > stamps/data_version_in_use
+endif
+if ( `cat stamps/data_version` != `cat stamps/data_version_in_use` ) then
+    echo "starting data update, interrupt not recommended"
+    set begin_fetch = `date +%s`
+    git -C enclone-data fetch --depth=1 origin `cat stamps/data_version`
+    set end_fetch = `date +%s`
+    set elapsed_fetch = `expr $end_fetch - $begin_fetch`
+    echo "fetch took $elapsed_fetch seconds"
+    git -C enclone-data switch --detach FETCH_HEAD
+    cat stamps/data_version > stamps/data_version_in_use
+    echo "data update complete"
+endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -65,8 +66,10 @@ set elapsed = `expr $now - $last`
 if ( $elapsed > 604800 ) then
     echo "\nrunning cargo update, as it has been more than one week since it was last done"
     echo "this could cause problems\n"
+    echo "INTERRUPTING THE UPDATE IS PROBABLY NOT A GOOD IDEA"
     ./update_enclone
     echo $now > stamps/last_cargo_update
+    echo "UPDATE COMPLETE"
 endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -74,16 +77,13 @@ endif
 # compile rust code
 
 cargo b
+rehash
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # build help pages
 
-target/debug/enclone HTML STABLE_DOC      > pages/auto/help.main.html
-target/debug/enclone HTML STABLE_DOC help > pages/auto/help.setup.html
-foreach x (quick how command glossary example1 example2 input input_tech parseable filter special lvars cvars amino display indels color faq developer all)
-    target/debug/enclone help $x HTML STABLE_DOC > pages/auto/help.$x.html
-end
+build_help_pages
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

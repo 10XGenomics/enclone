@@ -83,8 +83,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
 
     if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
         if !ctl.gen_opt.mouse {
-            let imgt =
-                "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_human_20200415-0.0.0/fasta/regions.fa";
+            let imgt = &ctl.gen_opt.config["imgt_human"];
             if ctl.gen_opt.descrip {
                 println!("using IMGT human reference");
             }
@@ -105,8 +104,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
                 *refx += &"\n";
             }
         } else {
-            let imgt =
-                "/mnt/opt/refdata_cellranger/vdj/vdj_IMGT_mouse_20180723-2.2.0/fasta/regions.fa";
+            let imgt = &ctl.gen_opt.config["imgt_mouse"];
             if ctl.gen_opt.descrip {
                 println!("using IMGT mouse reference");
             }

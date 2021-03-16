@@ -1,15 +1,17 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod copy_for_enclone;
 pub mod defs;
 pub mod join_one;
 pub mod mammalian_fixed_len;
 pub mod print_tools;
+pub mod slurp;
 pub mod testlist;
 pub mod vdj_features;
 
-const VERSION_STRING: &'static str = env!("VERSION_STRING");
+use std::env;
 
-// Return the code version string.
+const VERSION_STRING: &'static str = env!("VERSION_STRING");
 
 pub fn version_string() -> String {
     VERSION_STRING.to_string()

@@ -3,7 +3,9 @@
 // Check lvars, cvars, and pcols.
 
 use enclone_core::defs::*;
+use rayon::prelude::*;
 use regex::Regex;
+use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
@@ -148,8 +150,16 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             }
         }
     }
+
+    // Get known features.  This code is inefficient.
+
     let mut known_features = Vec::<String>::new();
+    let mut results = Vec::<(usize, Vec<String>)>::new();
     for i in 0..gex_info.gex_features.len() {
+        results.push((i, Vec::<String>::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         for j in 0..gex_info.gex_features[i].len() {
             let f = &gex_info.gex_features[i][j];
             let ff = f.split('\t').collect::<Vec<&str>>();
@@ -161,25 +171,32 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
             for z in 0..2 {
                 if ff[2].starts_with("Antibody") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_ab{}", ff[z], s));
+                        res.1.push(format!("{}_ab{}", ff[z], s));
                     }
                 } else if ff[2].starts_with("CRISPR") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_cr{}", ff[z], s));
+                        res.1.push(format!("{}_cr{}", ff[z], s));
                     }
                 } else if ff[2].starts_with("CUSTOM") {
                     for s in suffixes.iter() {
-                        known_features.push(format!("{}_cu{}", ff[z], s));
+                        res.1.push(format!("{}_cu{}", ff[z], s));
                     }
                 } else {
                     for s in suffixes_g.iter() {
-                        known_features.push(format!("{}_g{}", ff[z], s));
+                        res.1.push(format!("{}_g{}", ff[z], s));
                     }
                 }
             }
         }
+    });
+    for i in 0..results.len() {
+        known_features.append(&mut results[i].1.clone());
     }
-    unique_sort(&mut known_features);
+    known_features.par_sort();
+    known_features.dedup();
+
+    // Do the check.
+
     for i in 0..to_check.len() {
         let mut x = to_check[i].clone();
         if x.contains(':') {
@@ -312,7 +329,7 @@ fn check_gene_fb(ctl: &EncloneControl, gex_info: &GexInfo, to_check: &Vec<String
 
 // Check pcols args.
 
-pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
+pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>) {
     let mut alt_bcs = Vec::<String>::new();
     for li in 0..ctl.origin_info.alt_bc_fields.len() {
         for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
@@ -322,10 +339,23 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo) {
     unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
-    for x in ctl.parseable_opt.pcols.iter() {
+    for x in cols.iter() {
         let mut ok = false;
+        for i in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[i] {
+                ok = true;
+            }
+        }
         if bin_member(&alt_bcs, x) {
             ok = true;
+        }
+        for y in ctl.clono_print_opt.lvars.iter() {
+            if y.contains(":") {
+                let y = y.before(":");
+                if x == y {
+                    ok = true;
+                }
+            }
         }
         for y in PLVARS_ALLOWED.iter() {
             if *x == *y {
@@ -453,6 +483,7 @@ pub fn check_cvars(ctl: &EncloneControl) {
 // Check lvars args.
 
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
+    let t = Instant::now();
     let mut to_check = Vec::<String>::new();
     let ends0 = [
         "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
@@ -466,6 +497,12 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     }
     let mut nd_used = false;
     'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
+        for i in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[i] {
+                continue 'main_loop;
+            }
+        }
+
         // See if type is ok.
 
         if *x == "type" {
@@ -610,7 +647,10 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             }
         }
     }
+    ctl.perf_stats(&t, "checking lvars top");
+    let t = Instant::now();
     if !to_check.is_empty() {
         check_gene_fb(&ctl, &gex_info, &to_check, "lead");
     }
+    ctl.perf_stats(&t, "checking gene");
 }

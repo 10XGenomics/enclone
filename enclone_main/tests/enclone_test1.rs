@@ -64,7 +64,6 @@ fn valid_link(link: &str) -> bool {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_parseable_redundancy() {
     let test = r###"BCR=123085 GEX=123217 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
@@ -128,7 +127,6 @@ fn test_for_parseable_redundancy() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_help_pages_edited() {
     let all = read_dir("../pages/auto").unwrap();
@@ -179,7 +177,6 @@ fn test_help_pages_edited() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_css_existence() {
     let _ = include_str!["../../pages/enclone.css"];
@@ -193,7 +190,6 @@ fn test_css_existence() {
 // A bit ugly because of duplicated code.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_sync_master() {
     let mut version = HashMap::<String, String>::new();
@@ -241,7 +237,6 @@ fn test_sync_master() {
 // the second pass tests the local version; the third tests with wget forced.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_curl_command() {
     let mut internal_run = false;
@@ -323,13 +318,24 @@ fn test_curl_command() {
                 // Make sure that the all contigs file is not "essentially empty".  This happened.
 
                 if pass >= 2 && jf == 1 {
-                    let len = metadata(&format!("testx/outputs/{}", f)).unwrap().len();
+                    let p = format!("testx/outputs/{}", f);
+                    let len = metadata(&p).unwrap().len();
                     if len < 10_000_000 {
                         eprintln!(
                             "\nDownload yielded truncated all_contig_annotations.json.lz4 \
                             file, size = {} bytes.\n",
                             len
                         );
+                        eprintln!("The command was\n{}\n", command);
+                        if len < 100 {
+                            eprintln!("file contents = ");
+                            let f = open_for_read![&p];
+                            for line in f.lines() {
+                                let s = line.unwrap();
+                                eprintln!("{}", s);
+                            }
+                            eprintln!("");
+                        }
                         std::process::exit(1);
                     }
                 }
@@ -366,7 +372,6 @@ fn test_curl_command() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_datasets_sha256() {
     let sha_command1 = format!(
@@ -436,21 +441,22 @@ fn test_datasets_sha256() {
 // 7.
 
 // SPEED (AND NOT BASIC)
-// calibrated for bespin1, and requires linux
+// calibrated for one server at 10x Genomics, and requires linux
 // cargo test --test enclone_test --features cpu -- --nocapture
 // from enclone_main directory
 // or just ./speed from root directory
 
 #[cfg(not(feature = "basic"))]
 #[cfg(feature = "cpu")]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_cpu() {
+    PrettyTrace::new().on();
+
     // Introductory comments.
 
     println!(
         "\nSPEED TESTS\n\n\
-        • These are calibrated for a particular server, bespin1 at \
+        • These are calibrated for a particular server at \
         10x Genomics.  If this code is run\nusing a different server, or if that server is \
         changed, the tests will need to be recalibrated.\n\
         • These tests also use 10x Genomics datasets that are not distributed publicly\n\
@@ -467,8 +473,9 @@ fn test_cpu() {
     // Speed test 1.
 
     let it = 1;
-    let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 7700;
+    let test =
+        "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 16638;
     let percent_dev = 6.0;
     println!("\nSpeed test 1");
     println!(
@@ -532,14 +539,14 @@ fn test_cpu() {
 
     let it = 2;
     let test =
-        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
-    let expect = 59.0;
+        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let expect = 137.6;
     let percent_dev = 6.0;
     println!("Speed test 2");
     println!(
         "\nThis tests wall clock.  It is thus particularly susceptible to competing load \
         on the server.\nIt will also be very slow unless it has been run recently so files \
-        are in cache.\nThis test takes about a minute and may trigger a warning from cargo \
+        are in cache.\nThis test takes about two minutes and will trigger a warning from cargo \
         after 60 seconds.\n"
     );
     let t = Instant::now();
@@ -598,7 +605,6 @@ fn test_cpu() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_licenses() {
     const ACCEPTABLE_LICENSE_TYPES: [&str; 6] =
@@ -730,7 +736,6 @@ fn test_licenses() {
 // 9. Test that files are rustfmt'ed.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_formatting() {
     let new = Command::new("cargo-fmt")
@@ -755,7 +760,6 @@ fn test_formatting() {
 // update_all_main_tests.rs in enclone/src/bin.  Note that there is some duplicated code there.
 
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_enclone() {
     PrettyTrace::new().on();
@@ -836,7 +840,6 @@ fn test_enclone() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_extended() {
     PrettyTrace::new().on();
@@ -884,7 +887,6 @@ fn test_extended() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_crash() {
     PrettyTrace::new().on();
@@ -935,7 +937,6 @@ fn test_crash() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_internal() {
     PrettyTrace::new().on();
@@ -996,7 +997,6 @@ fn test_internal() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
-#[cfg(not(feature = "mem"))]
 #[test]
 fn test_for_broken_links_and_spellcheck() {
     extern crate attohttpc;
@@ -1036,7 +1036,7 @@ fn test_for_broken_links_and_spellcheck() {
         plasmablast preinstalled prepends pwm pwms redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
-        subclonotypes svg thresholding timepoint tracebacks trb tsv twosie ubuntu \
+        subclonotypes svg testlist thresholding timepoint tracebacks trb tsv twosie ubuntu \
         umi umis underperforming unicode untarring vdj vilella vilfwym vilm website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
@@ -1093,7 +1093,9 @@ fn test_for_broken_links_and_spellcheck() {
         let mut bads = HashSet::<String>::new();
         let f = open_for_read![x];
         let depth = x.matches('/').count();
+        let mut line_no = 0;
         for line in f.lines() {
+            line_no += 1;
             let mut s = line.unwrap();
 
             // Test spelling.  Case insensitive.
@@ -1265,7 +1267,10 @@ fn test_for_broken_links_and_spellcheck() {
                     let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
                     let response = req.send();
                     if response.is_err() {
-                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        eprintln!(
+                            "\ncould not read link {} on page {} line {}\n",
+                            link, x, line_no
+                        );
                         if i == LINK_RETRIES - 1 {
                             std::process::exit(1);
                         }
@@ -1274,7 +1279,10 @@ fn test_for_broken_links_and_spellcheck() {
                         if response.is_success() {
                             break;
                         }
-                        eprintln!("\ncould not read link {} on page {}\n", link, x);
+                        eprintln!(
+                            "\ncould not read link {} on page {} line {}\n",
+                            link, x, line_no
+                        );
                         if i == LINK_RETRIES - 1 {
                             std::process::exit(1);
                         }

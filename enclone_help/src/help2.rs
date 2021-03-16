@@ -282,6 +282,19 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) {
             \\bold{METAX=\"l1;...;ln\"} where the \\bold{li} are the lines that you would \
             otherwise put in the \\bold{META} file.\n",
         );
+
+        h.print(
+            "\n\\boldred{█ 3 █} enclone can also read an ancillary CSV file that \
+            specifies arbitrary fields that are associated to particular immune receptor \
+            sequences.  This is done using \\bold{INFO=path.csv}; \
+            The CSV file must have fields \\bold{vj_seq1}, \
+            specifying the full heavy or TRB sequence from the beginning of the V segment to the \
+            end of the J segment, and \\bold{vj_seq2}, for the light or TRA chain.  The other \
+            fields are then made accessible as lvars (see \"enclone help lvars\"), which are \
+            populated for any exact subclonotype having exactly two chains (heavy/light or \
+            TRB/TRA) that match the data in the CSV file.",
+        );
+
         h.end_doc();
     }
 }

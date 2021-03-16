@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone developers guide</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>This is a guide for <span style="color:rgb(120,123,175);font-weight:900">enclone</span> developers, both inside and outside 10x Genomics.</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px;">
+There is no reason to read this, unless you want to experimentally modify <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, or are 
+curious.  We distribute pre-built binaries for <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and that's all you need if you just
+want to run the existing code.
+</p>
+
+<hr><h2>The <span style="color:rgb(120,123,175);font-weight:900">enclone</span> components</h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has the following software and data components:
+<ul>
+
+<li>
+A GitHub repo
+<a href="https://github.com/10XGenomics/enclone">
+https://github.com/10XGenomics/enclone
+</a>
+that is maintained by 10x Genomics.  Contributions are welcome.  The software is licensed freely, 
+however only for use with 10x Genomics data.  Please read the 
+<a href="../../LICENSE.txt">license</a>.
+</li>
+
+<li>
+A web site <a href="https://10xgenomics.github.io/enclone">
+https://10xgenomics.github.io/enclone
+</a>
+that is built automatically by code in the above repo.
+</li>
+
+<li>
+A separate GitHub repo
+<a href="https://github.com/10XGenomics/enclone-data">
+https://10xgenomics.github.io/enclone-data
+</a>
+that contains a small number of datasets.  If you build <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, this is automatically
+downloaded as part of the build process.  If you install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, this is downloaded into
+a separate location (<code>~/enclone</code>), unless you 
+choose the <code>small</code> option, in which case you get only a subset of it.  The reason
+for having a separate repo for data is to keep the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> repo itself small.
+</li>
+
+<li>
+A larger collection of datasets that are downloaded if you install with the <code>large</code>
+option.
+</li>
+
+<li>
+A still larger collection of datasets that are internal to 10x Genomics and not publicly
+available.  These datasets are kept internal because of consent restrictions, or because the
+datasets were generated as part of experiments using unpublished protocols.  Some of these
+datasets are used in the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite, although there is a shorter test suite that runs
+using only public data.  These are on disk and mirrored to solid-state disk (super fast 
+but less reliable).  We set <code>PRE</code> to that location.  The full dataset is not backed up, 
+however there is a catalog <code>enclone/src/enclone.testlist.all</code> that would facilitate 
+reconstruction in the event of loss.  Over time, we gradually enlarge the collection.  There is a 
+program <code>import_data</code> that copies a given dataset.  Note that someone outside 
+10x Genomics could use a similar system to enable fast access to data.
+</li>
+
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Software architecture</h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> is written in Rust.</p>
+
+<p>We used Rust because the language makes it extremely easy to use Rust code written by
+other people, because Rust has its own build system, and because it is fast and safe.</p>
+
+<p>Technical details.  The repo is itself a Rust workspace, with a half dozen or so
+subdirectories that comprise Rust crates.  Each of these crates has its own 
+<code>Cargo.toml</code> file.  Modification of dependency
+versions in these files files is done by modifying a file <code>master.toml</code> at the
+top level,
+and then typing <code>sync_to_master</code>, which invokes a program (part of the repo) to
+sync each <code>Cargo.toml</code> to <code>master.toml</code>.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Prerequisites</h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be built and run on an x86-64 Linux server or a Mac, although we have not
+tested on a Mac with an M1 processor.</p>
+
+<p>The following software are needed to build and test <span style="color:rgb(120,123,175);font-weight:900">enclone</span>:
+
+<ul>
+
+<li><code>Rust</code>.  Detailed instructions on how to install Rust
+can be found <a href="https://www.rust-lang.org/tools/install" rel="nofollow">here</a>. You can 
+confirm that you have successfully installed the Rust compiler by running 
+<code>rustc --version</code>.</li>
+
+<li><code>cargo-license</code>.  Probably this is needed only for internal use.  You can install 
+it using
+<code>cargo install cargo-license</code>, assuming that you have already installed Rust.</li>
+
+<li><code>cargo-sweep</code>.  Install via <code>cargo install cargo-sweep</code>.</li>
+
+<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code>.</li>
+
+</ul>
+
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Building <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+
+<ol>
+
+<li>Follow the installation instructions on the main page to install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, using the
+medium or large options.  This is not needed for developers at 10x Genomics.
+Doing this downloads data, which you will want for experimentation and testing.</li>
+
+<li>
+Go to a directory where you want to put the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> code, and
+<p>clone the <code>enclone</code> repository using
+<pre><code>git clone git@github.com:10XGenomics/enclone.git</code></pre>
+If you have a very slow internet connection, you might wish to download only the current version
+(and not the history) using
+<pre><code>git clone --depth=1 git@github.com:10XGenomics/enclone.git</code></pre>
+</li>
+
+<li>Type <code>cd enclone</code> and then <code>./build</code>.  Depending on your computer, this
+will take roughly 5-10 minutes.  Subsequent invocations (after code changes) will be much 
+faster.  You can also run <code>cargo b</code>, which is faster, but omits some steps.</li>
+
+<li>Add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>, and 
+make sure this comes <i>before</i> <code>~/bin</code>, which was where the precompiled
+version of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> was downloaded to by the install command.  You may need to close and reopen
+your terminal window to get the change to <code>PATH</code> to take effect.</li>
+
+<li>Now when you type <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, you'll get the version you just compiled.</li>
+
+</ol>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Testing <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has an extensive test suite. It has hundreds of tests.  Most but not all of the
+tests can be run by anyone; the remainder use datasets that are internal to 10x Genomics.
+(See earlier explanation.)</p>
+
+<p>
+To run the main tests, type:
+<ul>
+<li>[external users] <code>./testx</code></li>
+<li>[internal users] <code>./test</code></li>
+</ul>
+</p>
+
+<p>
+There is also a very large test, which can only be run internally, which one runs by
+<code>./enclone/enclone.test</code>.
+</p>
+
+<p>Pull requests trigger <code>./testx</code> (via GitHub Actions) and the very large test
+(via Jenkins).  Note that the internal main test includes tests that are not tested as
+part of this.</p>
+
+<p>To better understand the testing machinery, please refer to the following files:
+<ul>
+<li> <code>enclone_core/src/testlist.rs</code></li>
+<li> <code>enclone_main/tests/enclone_test*.rs</code></li>
+<li> <code>test</code> and <code>testx</code></li>
+<li> <code>.cargo/config</code></li>
+<li> <code>enclone/enclone.test</code></li>
+<li> <code>.github/workflows/test.yaml</code>.</li>
+</ul>
+
+<p>The standard test battery includes a speed test, but there is some additional testing
+given by <code>./speed</code>.  However we don't routinely test this because it is too 
+subject to server load.  It also only runs at 10x Genomics.</p>
+
+<p>There are miscellaneous gnarly issues that we have not automated testing for:
+
+<pre>
+1. The code for NOPAGER accidentally broke at one point and we
+   don't want that to recur.  Some test cases that could be verified:
+   enclone BCR=...
+   enclone BCR=... NOPAGER
+   enclone help all
+   enclone help all NOPAGER
+   enclone help faq
+   enclone help faq NOPAGER.
+   This seems to require manual testing.
+
+2. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
+   because the output was going to the alternate screen.  This seems to require manual testing.
+
+3. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
+</pre>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Profiling <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides a few built-in mechanisms for profiling:</p>
+<ol>
+
+<li>Add the argument <code>COMP</code> to your command.  This yields a summary of wall-clock
+time by code section, and also tracks peak memory usage.  There is also a version
+<code>COMP2</code> that prints a bit more.  Run this with <code>NOPAGER</code> if you want
+to see the lines printed as they happen.</li>
+
+<li>Add the argument <code>PROFILE</code> to your command.  This yields a list of tracebacks
+based on random interrupts.  These tracebacks are manicured and each is shown with its
+multiplicity.  When this option is used, the internal paging mechanism in <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is turned
+off, and you may wish to pipe the output to <code>less -r</code>.</li>
+
+<li>Add the argument <code>CTRLC</code> to your command.  Then upon CTRL-C, execution will
+be stopped and a traceback printed.  In general this is only useful if your code seems to
+be extremely slow or perhaps is stuck in an infinite loop.</li>
+
+</ol>
+<p>It is usually convenient to add the argument <code>NOPRINT</code> when using these profiling
+options, so as to suppress other output.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>What could go wrong?</h2>
+
+<p>If the code crashes, you should get a clean traceback.  If this happens on the distributed
+version of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> or the master version, that's a bug that should be reported.</p>
+
+<p>If you run out of disk space while building, you may get weird error messages from the linker,
+in which case you should fix your disk space problem.  You might also need to
+<code>cargo clean</code>.</p>
+
+<p>Very rarely, you'll get weird error messages from the linker, with no apparent reason.
+(We've seen this happen once.)  If this happens, <code>cargo clean</code> should fix the
+problem.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Editing the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> web site</h2>
+
+<p>This is done by editing the files in the subdirectory <code>pages</code>, and never by
+editing <code>.html</code> files directly.  All the <code>.html</code> files are 
+auto-generated.</p>
+
+<p>There is a script <code>./local_view</code> that copies the site to 
+your <code>public_html</code> directory so that it can be previewed.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Making a release (internal)</h2>
+
+<p>If the release warrants announcement, edit <code>pages/history.html.src</code> to note the
+relevant changes.</p>
+
+<p>Run <code>./test</code> on a branch if you're going to release it.  Issue a pull request,
+wait for the tests there to pass, then merge to master.</p>
+
+<p>Trigger the release using the program <code>start_release</code>, which is part
+of the repo.  GitHub Actions then goes to work, and something like twenty minutes later, a new
+release appears.</p>
+
+</body>
+</html>

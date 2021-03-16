@@ -244,10 +244,15 @@ pub fn start_gen(
     mut mlog: &mut Vec<u8>,
 ) {
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
+    let mut tree_args = ctl.gen_opt.tree.clone();
+    unique_sort(&mut tree_args);
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 {
-                if pcols_sort.is_empty() || bin_member(&pcols_sort, &$var.to_string()) {
+            if ctl.parseable_opt.pout.len() > 0 || tree_args.len() > 0 {
+                if pcols_sort.is_empty()
+                    || bin_member(&pcols_sort, &$var.to_string())
+                    || bin_member(&tree_args, &$var.to_string())
+                {
                     out_data[$u].insert($var.to_string(), $val);
                 }
             }
@@ -255,9 +260,14 @@ pub fn start_gen(
     }
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains {
+            if (ctl.parseable_opt.pout.len() > 0 || tree_args.len() > 0)
+                && $col + 1 <= ctl.parseable_opt.pchains
+            {
                 let varc = format!("{}{}", $var, $col + 1);
-                if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                if pcols_sort.is_empty()
+                    || bin_member(&pcols_sort, &varc)
+                    || bin_member(&tree_args, &varc)
+                {
                     out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
@@ -268,7 +278,7 @@ pub fn start_gen(
     for u in 0..nexacts {
         n += exact_clonotypes[exacts[u]].ncells();
     }
-    if ctl.parseable_opt.pout.len() > 0 {
+    if ctl.parseable_opt.pout.len() > 0 || ctl.gen_opt.tree.len() > 0 {
         *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
     let cols = rsi.vids.len();

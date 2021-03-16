@@ -31,6 +31,25 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>3/16/21</b>: 
+<ul>
+<li>#enclone can now take values for fields associated to particular immune receptor
+sequences via <code>INFO=path.csv</code>; see
+<a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>.</li>
+<li>We now allow <code>TREE=v1,...vn</code> where the <code>vi</code> are parseable variables,
+resulting in labeling by these variables. See
+<a href="../../pages/auto/tree.html">here</a>.  For backward compatibility, <code>const</code>
+is translated to <code>const1</code>.  The new display is slightly different than the old
+display, showing e.g. <code>const1=IGHG1</code> rather than <code>IGHG1</code>.
+</li>
+<li>There is now a detailed
+<a href="../../pages/auto/dev.html"><code>developers guide</code></a>.</li>
+</ul>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>3/4/21</b>: 
 <ul>
 <li>

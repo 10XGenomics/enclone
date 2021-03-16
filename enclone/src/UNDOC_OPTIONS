@@ -113,11 +113,6 @@ LVARS entries
 - ppe<n> = percent of all gex cells within PCA distance n of this cell that are in this clonotype
 
 IMGT: specify the IMGT reference, forces RE so slow
-How this reference was created
-- go into a new directory
-- /mnt/home/jaffe/repos/cellranger/lib/bin/fetch-imgt --genome human-imgt-20200415
-- mkvdjref --genome=vdj_IMGT_human_20200415 --seqs=human-imgt-20200415-mkvdjref-input.fasta
-- also for mouse
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
 
@@ -175,8 +170,6 @@ load BCR and GEX from datasets described in enclone.testdata.bcr.gex
 
 PRINT_CPU: print number of cpu cycles used
 PRINT_CPU_INFO: print info about cpu usage
-
-recognizes S<xena_analysis_set_id>
 
 PLOT_BY_MARK
 
@@ -278,6 +271,9 @@ nival     = number of invalidated UMIs
 valumis   = validated UMIs
 nvalumis  = non-validated UMIs
 ivalumis  = invalidated UMIs
+valbcumis   = validated UMIs, preceeded by barcode
+nvalbcumis  = non-validated UMIs, preceeded by barcode
+ivalbcumis  = invalidated UMIs, preceeded by barcode
 
 All three classes of UMIs are capped at 20 UMIs.
 
@@ -314,3 +310,7 @@ HAPS_DEBUG: turn on debug mode for the HAPS option
 
 PROFILE: turn on profiling, normally used with NOPRINT; paging is turned off because this
 This won't work with paging, however you can pipe to "less -r".
+
+===================================================================================================
+
+ROW_FILL_VERBOSE: special option for debugging

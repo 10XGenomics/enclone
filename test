@@ -1,14 +1,11 @@
 #!/bin/csh
 
-# Run cargo t and another test which it's not clear how to encapsulate within cargo t.  This
+# Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html for general information
+# about testing.
+#
+# Run cargo t and other tests which it's not clear how to encapsulate within cargo t.  This
 # also does some tidying and reports time used.  Note that the effect of cargo t is defined 
 # by .cargo/config.
-#
-# Note that .github/workflows/test.yaml does not test everything that is tested here.
-#
-# enclone/enclone.test is a much longer test that is not included here and can only be run at 10x.
-#
-# See also README.
 
 ##### GET START TIME #####
 
@@ -16,7 +13,7 @@ set start = `date +%s`
 
 ##### MAKE SURE POST_PROCESS_TEST IS IN PATH #####
 
-if(`where post_process_test` == "") then
+if ( `where post_process_test` == "" ) then
     echo "\nPlease add target/debug to your path.\n"
     exit 1
 endif
@@ -34,16 +31,6 @@ endif
 ##### RUN TEST GROUP 2 #####
 
 cargo test -p enclone_tail --lib -- --nocapture |& post_process_test
-
-if ( $status != 0 ) then
-    echo "FAILED!"
-    exit 1
-endif
-
-##### RUN TEST GROUP 3 #####
-
-cargo test --manifest-path enclone_main/Cargo.toml --features mem -- --nocapture \
-    |& post_process_test
 
 if ( $status != 0 ) then
     echo "FAILED!"

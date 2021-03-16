@@ -50,9 +50,8 @@ time in response to feedback.  The initial implementation is inspired by the Lev
 <hr>
 
 <p><b>Method 1.</b>
-This method is invoked using the argument <code>TREE</code>, or <code>TREE=const</code>, to
-label leaves by heavy chain constant region names (<i>N.B.</i>If more than one heavy chain is present,
-we separate their constant region names by "+").
+This method is invoked using the argument <code>TREE</code>, or <code>TREE=v1,...vn</code>, 
+where the <code>vi</code> are parseable variables.
 The method first defines defines the distance between any two exact subclonotypes to be their
 Levenshtein distance. We then add a root "virtual" exact subclonotype which equals the donor 
 reference away from the recombination region and which is undefined within that region (i.e. a 

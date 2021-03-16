@@ -15,12 +15,12 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-ansi_escape = "0.1.0"
+ansi_escape = "0.1"
 enclone_core = { path = "../enclone_core" }
 io_utils = "0.2"
 itertools = ">= 0.8, <= 0.11"
-string_utils = "0.1.1"
-tables = "0.1.2"
+string_utils = "0.1"
+tables = "0.1"
 
 
 

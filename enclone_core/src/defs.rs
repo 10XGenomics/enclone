@@ -12,7 +12,7 @@ use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
 
-pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
+pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
     "amino",
     "ansi_escape",
     "binary_vec_io",
@@ -20,7 +20,6 @@ pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
     "equiv",
     "graph_simple",
     "io_utils",
-    "marsoc",
     "mirror_sparse_matrix",
     "perf_stats",
     "stats_utils",
@@ -30,13 +29,12 @@ pub const PRETTY_TRACE_WHITELIST: [&str; 15] = [
     "vector_utils",
 ];
 
-pub const HELP_PAGES: [&str; 22] = [
+pub const HELP_PAGES: [&str; 21] = [
     "all",
     "amino",
     "color",
     "command",
     "cvars",
-    "developer",
     "display",
     "example1",
     "example2",
@@ -94,7 +92,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 68] = [
+pub const CVARS_ALLOWED: [&str; 71] = [
     "var",
     "u",
     "u_min",
@@ -163,6 +161,9 @@ pub const CVARS_ALLOWED: [&str; 68] = [
     "valumis",
     "nvalumis",
     "ivalumis",
+    "valbcumis",
+    "nvalbcumis",
+    "ivalbcumis",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -264,7 +265,7 @@ impl LinearCondition {
             );
             std::process::exit(1);
         }
-        if !rhs.contains('.') {
+        if !rhs.contains('.') && !rhs.contains('e') {
             rhs += ".0";
         }
         if !rhs.parse::<f64>().is_ok() {
@@ -307,7 +308,7 @@ impl LinearCondition {
             if parts[i].contains('*') {
                 let mut coeffi = parts[i].before("*").to_string();
                 let vari = parts[i].after("*");
-                if !coeffi.contains('.') {
+                if !coeffi.contains('.') && !coeffi.contains('e') {
                     coeffi += ".0";
                 }
                 if !coeffi.parse::<f64>().is_ok() {
@@ -543,7 +544,8 @@ pub struct GeneralOpt {
     pub print_cpu: bool,
     pub print_cpu_info: bool,
     pub newick: bool,
-    pub tree: String,
+    pub tree_on: bool,
+    pub tree: Vec<String>,
     pub allow_inconsistent: bool,
     pub color: String,
     pub color_by_rarity_pc: f64,
@@ -561,11 +563,15 @@ pub struct GeneralOpt {
     pub peer_group_readable: bool,
     pub subset_json: String,
     pub fold_headers: bool,
-    pub domain: String,
     pub no_uncap_sim: bool,
-
     pub profile: bool,
     pub nopager: bool,
+    pub info: Option<String>,
+    pub info_fields: Vec<String>,
+    pub info_data: HashMap<String, Vec<String>>,
+    pub internal_data_dir: String,
+    pub row_fill_verbose: bool,
+    pub config: HashMap<String, String>,
 }
 
 // Allele-finding algorithmic options.

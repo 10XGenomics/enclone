@@ -9,9 +9,9 @@ use crate::filter_umi::*;
 use crate::flag_defective::*;
 use crate::inconsistent::*;
 use crate::merge_onesies::*;
+use crate::populate_features::*;
 use crate::setup::*;
 use crate::split_orbits::*;
-use amino::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
@@ -27,7 +27,6 @@ use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
 use enclone_core::defs::*;
-use enclone_core::vdj_features::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
 use enclone_tail::tail::tail_code;
@@ -51,7 +50,6 @@ use std::{
 };
 use stirling_numbers::*;
 use string_utils::*;
-use tables::*;
 use vdj_ann::*;
 use vector_utils::*;
 
@@ -173,12 +171,15 @@ pub fn main_enclone(args: &Vec<String>) {
     // list, which would be better.
 
     let gex_info = get_gex_info(&mut ctl);
-    let twoof = Instant::now();
     check_lvars(&ctl, &gex_info);
-    check_pcols(&ctl, &gex_info);
+    let twoof = Instant::now();
+    check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
+    check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
+    ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
 
+    let tstar = Instant::now();
     ctl.clono_print_opt.regex_match =
         vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
     let ends0 = [
@@ -197,6 +198,8 @@ pub fn main_enclone(args: &Vec<String>) {
     let mut vars = ctl.clono_print_opt.lvars.clone();
     vars.append(&mut ctl.parseable_opt.pcols.clone());
     unique_sort(&mut vars);
+    ctl.perf_stats(&tstar, "doing miscellaneous stuff");
+    let tomega = Instant::now();
     for x in vars.iter() {
         for (iy, y) in ends.iter().enumerate() {
             let mut xc = x.clone();
@@ -280,7 +283,7 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
-    ctl.perf_stats(&twoof, "doing miscellaneous stuff");
+    ctl.perf_stats(&tomega, "messing with variables");
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -434,177 +437,22 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Populate features.
 
-    let mut fr1_starts = vec![0; refdata.refs.len()];
-    let mut fr2_starts = vec![None; refdata.refs.len()];
-    let mut fr3_starts = vec![None; refdata.refs.len()];
-    let mut cdr1_starts = vec![None; refdata.refs.len()];
-    let mut cdr2_starts = vec![None; refdata.refs.len()];
-    let mut fail = false;
-    for i in 0..refdata.refs.len() {
-        if refdata.is_v(i) {
-            if broken[i] && ctl.gen_opt.require_unbroken_ok {
-                continue;
-            }
-            let aa = aa_seq(&refdata.refs[i].to_ascii_vec(), 0);
-            let rtype = refdata.rtype[i];
-            let chain_type;
-            if rtype == 0 {
-                chain_type = "IGH";
-            } else if rtype == 1 {
-                chain_type = "IGK";
-            } else if rtype == 2 {
-                chain_type = "IGL";
-            } else if rtype == 3 {
-                chain_type = "TRA";
-            } else if rtype == 4 {
-                chain_type = "TRB";
-            } else {
-                continue;
-            }
-            let fs1 = fr1_start(&aa, &chain_type);
-            fr1_starts[i] = 3 * fs1;
-            let fs2 = fr2_start(&aa, &chain_type, false);
-            if fs2.is_some() {
-                fr2_starts[i] = Some(3 * fs2.unwrap());
-            } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
-                    could not be computed\nfor this reference sequence:"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-            let fs3 = fr3_start(&aa, &chain_type, false);
-            if fs3.is_some() {
-                fr3_starts[i] = Some(3 * fs3.unwrap());
-            } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR3 start \
-                    could not be computed\nfor this reference sequence:"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-            let cs1 = cdr1_start(&aa, &chain_type, false);
-            if cs1.is_some() {
-                cdr1_starts[i] = Some(3 * cs1.unwrap());
-                if fs2.is_some() && cs1.unwrap() > fs2.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                    eprintln!(
-                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
-                        exceeds the FWR2 start for this reference sequence:"
-                    );
-                    let seq = refdata.refs[i].to_ascii_vec();
-                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                    fail = true;
-                }
-            } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR1 start \
-                    could not be computed\nfor this reference sequence:\n"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-            let cs2 = cdr2_start(&aa, &chain_type, false);
-            if cs2.is_some() {
-                cdr2_starts[i] = Some(3 * cs2.unwrap());
-                if ctl.gen_opt.require_unbroken_ok && fs3.is_some() && cs2.unwrap() > fs3.unwrap() {
-                    eprintln!(
-                        "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
-                        exceeds the FWR3 start for this reference sequence:"
-                    );
-                    let seq = refdata.refs[i].to_ascii_vec();
-                    eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                    fail = true;
-                }
-            } else if ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the CDR2 start \
-                    could not be computed\nfor this reference sequence:"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-            if cs1.is_some() && fs1 > cs1.unwrap() && ctl.gen_opt.require_unbroken_ok {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR1 start \
-                    exceeds the CDR1 start for this reference sequence:\n"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-            if cs2.is_some()
-                && fs2.is_some()
-                && fs2.unwrap() > cs2.unwrap()
-                && ctl.gen_opt.require_unbroken_ok
-            {
-                eprintln!(
-                    "\nYou supplied the argument REQUIRE_UNBROKEN_OK, but the FWR2 start \
-                    exceeds the CDR2 start for this reference sequence:"
-                );
-                let seq = refdata.refs[i].to_ascii_vec();
-                eprintln!(">{}\n{}\n", refdata.rheaders_orig[i], strme(&seq));
-                fail = true;
-            }
-        }
-    }
-    if fail {
-        std::process::exit(1);
-    }
-
-    // Report on broken reference sequences.  This comes after the json loading because possibly
-    // the user supplied the wrong reference, so there is no value in criticizing the reference
-    // in that case.
-
-    if !log.is_empty() && !ctl.gen_opt.cellranger && !ctl.gen_opt.accept_broken {
-        eprintln!(
-            "\nSome errors were detected in the reference sequences supplied to enclone.\n\
-            Please see comments at end for what you can do about this.\n",
-        );
-        eprint!("{}", strme(&log));
-        eprintln!(
-"🌼  Dear user, some defects were detected in the reference sequences supplied to enclone.   🌼\n\
- 🌼  Some of these defects may be small.  Generally they are associated with V segments that 🌼\n\
- 🌼  are frameshifted or truncated, or with C segments that have an extra base at the        🌼\n\
- 🌼  beginning.  We are letting you know about this because they could result in             🌼\n\
- 🌼  misannotation.                                                                          🌼\n"
-        );
-
-        let mut rows = Vec::<Vec<String>>::new();
-        rows.push(vec![
-            "You can make enclone ignore these defects by adding the additional argument"
-                .to_string(),
-        ]);
-        rows.push(vec![
-            "ACCEPT_BROKEN to the enclone command line.  Or you can obtain the same".to_string(),
-        ]);
-        rows.push(vec![
-            "behavior by defining the environment variable ENCLONE_ACCEPT_BROKEN.".to_string(),
-        ]);
-
-        let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, true);
-        eprintln!("{}", log);
-
-        eprintln!(
-        "This is probably OK, but if your sample is human or mouse, you may wish to either:\n\
-        • rerun cellranger using the cleaned up reference sequences that come prepackaged with \
-          it\n  (noting that your might have used an older, less clean version of that)\n\
-        • or add the argument BUILT_IN to enclone, which will force use of the built-in reference\n  \
-        sequences.  This will be a bit slower because all the contigs will need to be\n  \
-        reannotated.  If you're using mouse, you'll also need to add the argument MOUSE.\n"
-        );
-        std::process::exit(1);
-    }
-
-    if ctl.gen_opt.require_unbroken_ok {
-        std::process::exit(0);
-    }
+    let mut fr1_starts = Vec::<usize>::new();
+    let mut fr2_starts = Vec::<Option<usize>>::new();
+    let mut fr3_starts = Vec::<Option<usize>>::new();
+    let mut cdr1_starts = Vec::<Option<usize>>::new();
+    let mut cdr2_starts = Vec::<Option<usize>>::new();
+    populate_features(
+        &ctl,
+        &refdata,
+        &broken,
+        &mut fr1_starts,
+        &mut fr2_starts,
+        &mut fr3_starts,
+        &mut cdr1_starts,
+        &mut cdr2_starts,
+        &mut log,
+    );
     for i in 0..tig_bc.len() {
         for j in 0..tig_bc[i].len() {
             let x = &mut tig_bc[i][j];

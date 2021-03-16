@@ -53,12 +53,14 @@ pub fn proc_cvar(
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
+    let mut tree_args = ctl.gen_opt.tree.clone();
+    unique_sort(&mut tree_args);
 
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
-                && $col + 1 <= ctl.parseable_opt.pchains
+                && ((ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains)
+                    || tree_args.len() > 0)
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
@@ -90,7 +92,10 @@ pub fn proc_cvar(
                 // Proceed.
 
                 let varc = format!("{}{}", v, $col + 1);
-                if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+                if pcols_sort.is_empty()
+                    || bin_member(&pcols_sort, &varc)
+                    || bin_member(&tree_args, &varc)
+                {
                     out_data[$u].insert(varc, val_clean);
                 }
             }
@@ -779,9 +784,15 @@ pub fn proc_cvar(
         }
     } else if var == "nval" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -798,9 +809,15 @@ pub fn proc_cvar(
         }
     } else if var == "nnval" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -817,9 +834,15 @@ pub fn proc_cvar(
         }
     } else if var == "nival" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -836,9 +859,15 @@ pub fn proc_cvar(
         }
     } else if var == "valumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -861,11 +890,47 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
+    } else if var == "valbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].validated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].validated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
+            }
+        }
     } else if var == "nvalumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -888,11 +953,47 @@ pub fn proc_cvar(
                 out_data[u].insert(varc, format!("{}", nvals));
             }
         }
+    } else if var == "nvalbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].non_validated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].non_validated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
+            }
+        }
     } else if var == "ivalumis" {
         cvar![j, *var, "".to_string()];
-        if pass == 2 && ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
@@ -913,6 +1014,36 @@ pub fn proc_cvar(
                     nvals += &format!("{}", n);
                 }
                 out_data[u].insert(varc, format!("{}", nvals));
+            }
+        }
+    } else if var == "ivalbcumis" {
+        cvar![j, *var, "".to_string()];
+        if pass == 2
+            && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
+                || tree_args.len() > 0)
+        {
+            let varc = format!("{}{}", var, col + 1);
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
+                let mut vals = String::new();
+                for k in 0..ex.ncells() {
+                    if k > 0 {
+                        vals += POUT_SEP;
+                    }
+                    let mut n = String::new();
+                    if ex.clones[k][mid].invalidated_umis.is_some() {
+                        let mut bc_umis = ex.clones[k][mid].invalidated_umis.clone().unwrap();
+                        for i in 0..bc_umis.len() {
+                            bc_umis[i] =
+                                format!("{}{}", ex.clones[k][mid].barcode.before("-"), bc_umis[i]);
+                        }
+                        n = format!("{}", bc_umis.iter().format(","));
+                    }
+                    vals += &format!("{}", n);
+                }
+                out_data[u].insert(varc, format!("{}", vals));
             }
         }
     } else if *var == "cdiff".to_string() {
@@ -1040,7 +1171,7 @@ pub fn proc_cvar(
         cvar![j, var, format!("{}", median_numis)];
     } else if *var == "u_cell".to_string() {
         let var = var.clone();
-        if pass == 2 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || tree_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                 let mut vals = String::new();
@@ -1073,9 +1204,12 @@ pub fn proc_cvar(
         cvar![j, var, format!("{}", rtot)];
     } else if *var == "r_cell".to_string() {
         let var = var.clone();
-        if pass == 2 && col + 1 <= ctl.parseable_opt.pchains {
+        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || tree_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
-            if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
+            if pcols_sort.is_empty()
+                || bin_member(&pcols_sort, &varc)
+                || bin_member(&tree_args, &varc)
+            {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {

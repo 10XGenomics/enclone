@@ -359,11 +359,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
 
         h.print("\\boldblue{16. How can I cite enclone?}\n\n");
-        h.print("This version of enclone has been provided under a non-disclosure agreement,\n");
-        h.print(
-            "however once enclone has officially launched, you will be able to cite this \
-             version as:\n",
-        );
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
         h.print(&format!("{}", strme(&log)));
@@ -382,7 +377,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         emit_end_escape(&mut log);
         h.print(&format!("{}", strme(&log)));
         h.print(
-            "At some point subsequent to that, there will be a white paper to which you can refer, \
+            "At some point in the future, there will be a white paper to which you can refer, \
             in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
             provide the arguments that you used when you ran enclone and indicate the version of \
             Cell Ranger that you used to generate the input data.\n\n",
@@ -425,59 +420,6 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             data, even if only some clonotypes are selected.\n\n",
         );
 
-        h.end_doc();
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Provide developer help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "developer") || h.help_all {
-        h.begin_doc("developer");
-        h.print("\n\\bold{a few options for developers}\n\n");
-        h.print(
-            "For instructions on how to compile, please see\n\
-             \\green{bit.ly/enclone}.\n\n",
-        );
-
-        h.docf2(
-            "COMP",
-            "report computational performance stats; use this with NOPRINT if you \
-            want to suppress visual output, and with NOPAGER if you \
-            want output to be unbuffered",
-            60,
-        );
-        h.doc(
-            "COMP2",
-            "like COMP, but adds more detailed lines that are prefixed with --",
-        );
-        h.ldoc(
-            "LONG_HELP",
-            "allow long lines in help pages, which will otherwise trigger an assert",
-        );
-        h.ldoc(
-            "CTRLC",
-            "upon CTRL-C, emit a traceback and then exit; can be used as a primitive",
-        );
-        h.doc(
-            "",
-            "but easy profiling method, to know what the code is doing if it seems to be",
-        );
-        h.doc("", "very slow");
-        h.ldoc(
-            "PROFILE",
-            "Profile the code and tally tracebacks.  Normally used with NOPRINT.  This",
-        );
-        h.doc(
-            "",
-            "turns off paging because paging and profiling do not work correctly together.",
-        );
-        h.doc(
-            "",
-            "However you can pipe the output of enclone to \"less -r\".",
-        );
-        h.print_tab2();
-        h.print("\n");
         h.end_doc();
     }
 

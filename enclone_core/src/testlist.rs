@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 193] = [
+pub const TESTS: [&str; 198] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -477,10 +477,20 @@ pub const TESTS: [&str; 193] = [
     r###"BCR=123085 CONX CDR3=CVKRASGSAFTAPYW"###,
     // 191. test CONP when there's a gap
     r###"BCR=123085 CONP CDR3=CALGGYTWFDPW"###,
-    // 192. DUPLICATE, TO REPLACE
-    r###"BCR=123085 CONP NOPRINT EXPECT_OK"###,
+    // 192. test INFO
+    r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW INFO=testx/inputs/123085_info.csv LVARSP=funny"###,
     // 193. check that this fails gracefully
     r###"NOPRINT EXPECT_FAIL"###,
+    // 194. this crashed at one point
+    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ NH5 POUT=stdout PCOLS=g37 EXPECT_OK"###,
+    // 195. failed at one point
+    r###"BCR=86237 GEX=85679 LVARSP=woof:IGHV3-7_g_μ NH5 POUT=stdout PCOLS=woof EXPECT_OK"###,
+    // 196. test TREE=n
+    r###"BCR=123085 COMPLETE TREE=n CDR3=CARDLGGRYYGSKDPW"###,
+    // 197. failed at one point
+    r###"BCR=123085 INFO=testx/inputs/123085_info.csv LVARSP=funny EXPECT_OK"###,
+    // 198. test TREE=n,cdr2_aa1
+    r###"BCR=123085 AMINO=cdr3 CDR3=CAVTIFGVRTALPYYYALDVW TREE=n,cdr2_aa1"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
@@ -561,8 +571,8 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     r###"BCR=123085,123090 BUILT_IN BARCODE=AAAGTAGCAAGCCATT-1,ATGGGAGTCCATGAGT-1 NO_PRE NFORCE"###,
     // 25. Test a tweak to the weak chains filter.  This should have two chains.
     r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
-    // 26. DUPLICATE, TO REPLACE
-    r###"BCR="45987;123085" NOPRINT CONP BUILT_IN EXPECT_OK NO_PRE NFORCE"###,
+    // 26. crashed at one point
+    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
