@@ -18,7 +18,6 @@ fn main() {
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
-    let y_label_area_size = 80;
     let point_color = RED;
     let xlabel = "wt_koff";
     let ylabel = "CD27_ab";
@@ -43,10 +42,6 @@ fn main() {
     // Requirements.
 
     assert!(!points.is_empty());
-
-    // Determine the area size for the x label.
-
-    let x_label_area_size = (2.5 * tic_font_size as f32).round() as u32;
 
     // Determine the plot ranges using the extreme values of the points.
 
@@ -78,6 +73,23 @@ fn main() {
         let extra = 2;
         y_precision = -m.log10() as usize + extra;
     }
+
+    // Determine the area size for the x label.
+
+    let x_label_area_size = (2.5 * tic_font_size as f32).round() as u32;
+
+    // Determine the area size for the y label.
+
+    let mut y_digits_to_left = 1;
+    if yhigh.abs() > 1.0 {
+        y_digits_to_left = yhigh.abs().log10().floor() as usize + 1
+    }
+    let y_len = y_digits_to_left + y_precision;
+    let y_label_area_size = 
+        y_len as f64 * (tic_font_size as f64 * 0.6) 
+        + tic_font_size as f64 * 0.2
+        + tic_font_size as f64;
+    let y_label_area_size = y_label_area_size as u32;
 
     // Make the plot.
 
