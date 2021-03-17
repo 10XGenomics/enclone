@@ -15,6 +15,7 @@ pub mod load_gex;
 pub mod misc1;
 pub mod misc2;
 pub mod misc3;
+pub mod plot_points;
 pub mod proc_args;
 pub mod proc_args2;
 pub mod proc_args3;
