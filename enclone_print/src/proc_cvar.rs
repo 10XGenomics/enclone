@@ -53,14 +53,17 @@ pub fn proc_cvar(
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
-    let mut tree_args = ctl.gen_opt.tree.clone();
-    unique_sort(&mut tree_args);
-
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.gen_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.gen_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
                 && ((ctl.parseable_opt.pout.len() > 0 && $col + 1 <= ctl.parseable_opt.pchains)
-                    || tree_args.len() > 0)
+                    || extra_args.len() > 0)
             {
                 let mut v = $var.clone();
                 v = v.replace("_Σ", "_sum");
@@ -94,7 +97,7 @@ pub fn proc_cvar(
                 let varc = format!("{}{}", v, $col + 1);
                 if pcols_sort.is_empty()
                     || bin_member(&pcols_sort, &varc)
-                    || bin_member(&tree_args, &varc)
+                    || bin_member(&extra_args, &varc)
                 {
                     out_data[$u].insert(varc, val_clean);
                 }
@@ -786,12 +789,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -811,12 +814,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -836,12 +839,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -861,12 +864,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -894,12 +897,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -924,12 +927,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -957,12 +960,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -987,12 +990,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
                 for k in 0..ex.ncells() {
@@ -1020,12 +1023,12 @@ pub fn proc_cvar(
         cvar![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
-                || tree_args.len() > 0)
+                || extra_args.len() > 0)
         {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {
@@ -1171,7 +1174,7 @@ pub fn proc_cvar(
         cvar![j, var, format!("{}", median_numis)];
     } else if *var == "u_cell".to_string() {
         let var = var.clone();
-        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || tree_args.len() > 0) {
+        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty() || bin_member(&pcols_sort, &varc) {
                 let mut vals = String::new();
@@ -1204,11 +1207,11 @@ pub fn proc_cvar(
         cvar![j, var, format!("{}", rtot)];
     } else if *var == "r_cell".to_string() {
         let var = var.clone();
-        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || tree_args.len() > 0) {
+        if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
             if pcols_sort.is_empty()
                 || bin_member(&pcols_sort, &varc)
-                || bin_member(&tree_args, &varc)
+                || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
                 for k in 0..ex.ncells() {

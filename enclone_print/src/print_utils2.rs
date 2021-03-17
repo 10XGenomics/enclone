@@ -70,6 +70,12 @@ pub fn row_fill(
         pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
     }
     pcols_sort.sort();
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.gen_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.gen_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
@@ -308,7 +314,7 @@ pub fn row_fill(
             }
         }
     }
-    for x in ctl.gen_opt.tree.iter() {
+    for x in extra_args.iter() {
         if !lvars.contains(&x) {
             all_lvars.push(x.clone());
         }
@@ -527,7 +533,7 @@ pub fn row_fill(
             }
         }
         all_vars.append(&mut extra_parseables.clone());
-        for x in ctl.gen_opt.tree.iter() {
+        for x in extra_args.iter() {
             if !rsi_vars.contains(&x) {
                 all_vars.push(x.clone());
             }
@@ -570,14 +576,14 @@ pub fn row_fill(
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
-            if ctl.gen_opt.tree.contains(&varc) {
+            if extra_args.contains(&varc) {
                 needed = true;
             }
             if !needed {
                 continue;
             }
             let col_var = j < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && ctl.gen_opt.tree.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
                 continue;
             }
 

@@ -62,8 +62,12 @@ pub fn print_clonotypes(
     fate: &mut Vec<HashMap<String, String>>,
 ) {
     let lvars = &ctl.clono_print_opt.lvars;
-    let mut tree_args = ctl.gen_opt.tree.clone();
-    unique_sort(&mut tree_args);
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.gen_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.gen_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
 
     // Compute total cells.
 
@@ -942,17 +946,16 @@ pub fn print_clonotypes(
 
                 // Fill in exact_subclonotype_id, reorder.
 
-                if ctl.parseable_opt.pout.len() > 0 || !ctl.gen_opt.tree.is_empty() {
+                if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
                     for u in 0..nexacts {
                         macro_rules! speak {
                             ($u:expr, $var:expr, $val:expr) => {
                                 if pass == 2
-                                    && (ctl.parseable_opt.pout.len() > 0
-                                        || !ctl.gen_opt.tree.is_empty())
+                                    && (ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty())
                                 {
                                     if pcols_sort.is_empty()
                                         || bin_member(&pcols_sort, &$var.to_string())
-                                        || bin_member(&tree_args, &$var.to_string())
+                                        || bin_member(&extra_args, &$var.to_string())
                                     {
                                         out_data[$u].insert($var.to_string(), $val);
                                     }
