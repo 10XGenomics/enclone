@@ -23,6 +23,8 @@ fn main() {
     let x_label_area_size = 20; // don't understand
     let y_label_area_size = 40; // don't understand
     let point_color = RED;
+    let x_precision = 2;
+    let y_precision = 1;
 
     let root = SVGBackend::new(&plotfile, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
@@ -39,7 +41,8 @@ fn main() {
         .label_style((font, tic_font_size).into_font())
         .x_labels(axis_tics)
         .y_labels(axis_tics)
-        .y_label_formatter(&|x| format!("{:.3}", x))
+        .x_label_formatter(&|x| format!("{:.1$}", x, x_precision))
+        .y_label_formatter(&|x| format!("{:.1$}", x, y_precision))
         .draw()
         .unwrap();
 
