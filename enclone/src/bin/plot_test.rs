@@ -20,7 +20,6 @@ fn main() {
     let ysize = 600;
     let y_label_area_size = 80;
     let point_color = RED;
-    let y_precision = 1;
     let xlabel = "wt_koff";
     let ylabel = "CD27_ab";
 
@@ -69,6 +68,15 @@ fn main() {
     if m > 0.0 {
         let extra = 2;
         x_precision = -m.log10() as usize + extra;
+    }
+
+    // Determine the precision for the y axis tics.
+
+    let mut y_precision = 0;
+    let m = yhigh.abs();
+    if m > 0.0 {
+        let extra = 2;
+        y_precision = -m.log10() as usize + extra;
     }
 
     // Make the plot.
