@@ -20,7 +20,6 @@ fn main() {
     let ysize = 600;
     let y_label_area_size = 60;
     let point_color = RED;
-    let x_precision = 2;
     let y_precision = 1;
     let xlabel = "Count";
     let ylabel = "Bucket";
@@ -61,6 +60,17 @@ fn main() {
         xhigh = xhigh.max(points[i].0);
         ylow = ylow.min(points[i].1);
         yhigh = yhigh.max(points[i].1);
+    }
+
+    // Determine the precision for the x axis tics.
+
+    let mut x_precision = 0;
+    println!("xhigh = {:.8}", xhigh);
+    let m = xhigh.abs();
+    if m > 0.0 {
+        let extra = 2;
+        x_precision = -m.log10() as usize + extra;
+        println!("x_precision = {}", x_precision); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     }
 
     // Make the plot.
