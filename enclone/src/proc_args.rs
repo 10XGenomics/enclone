@@ -13,6 +13,7 @@ use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
+use tilde_expand::*;
 use vector_utils::*;
 
 // Process arguments.
@@ -725,12 +726,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_string_readable.len() {
             let var = &set_string_readable[j].0;
             if is_string_arg(&arg, var) {
-                let val = arg.after(&format!("{}=", var));
+                let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);
                     std::process::exit(1);
                 }
-                *(set_string_readable[j].1) = Some(val.to_string());
+                val = stringme(&tilde_expand(&val.as_bytes()));
+                *(set_string_readable[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
@@ -747,16 +749,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_string_readable_csv.len() {
             let var = &set_string_readable_csv[j].0;
             if is_string_arg(&arg, var) {
-                let val = arg.after(&format!("{}=", var));
+                let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);
                     std::process::exit(1);
                 }
+                val = stringme(&tilde_expand(&val.as_bytes()));
                 if !val.ends_with(".csv") {
                     eprintln!("\nFilename input in {} needs to end with .csv.\n", val);
                     std::process::exit(1);
                 }
-                *(set_string_readable_csv[j].1) = Some(val.to_string());
+                *(set_string_readable_csv[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",

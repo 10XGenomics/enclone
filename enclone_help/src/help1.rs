@@ -371,7 +371,8 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
         h.print("\\bold{2. Importing arguments}\n\n");
         h.print(
             "Extra arguments can be imported on the command line using \\bold{SOURCE=filename}.  \
-            The file may have newlines, and more than one SOURCE command may be used.\n\n",
+            The file may have newlines, and more than one SOURCE command may be used.  Any \
+            line starting with # is treated as a comment.\n\n",
         );
         h.print("\\bold{3. Color}\n\n");
         h.print_enclone();
