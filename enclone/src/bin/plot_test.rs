@@ -8,7 +8,7 @@ fn main() {
 
     // Define parameters of the plot.
 
-    let points: Vec<(f32, f32)> = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
+    let points: Vec<(f32, f32)> = vec![(0.0, -2.111), (7.0, 2.0), (4.0, 5.0), (8.0, 21.3)];
     let title = "This is our first plot";
     let font = "sans-serif";
     let title_font_size = 40;
@@ -19,7 +19,6 @@ fn main() {
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
-    let x_label_area_size = 40;
     let y_label_area_size = 60;
     let point_color = RED;
     let x_precision = 2;
@@ -30,6 +29,10 @@ fn main() {
     // Requirements.
 
     assert!(!points.is_empty());
+
+    // Determine the area size for the x label.
+
+    let x_label_area_size = (2.5 * tic_font_size as f32).round() as u32;
 
     // Determine the plot ranges using the extreme values of the points.
 
