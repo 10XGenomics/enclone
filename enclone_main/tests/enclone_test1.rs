@@ -313,6 +313,9 @@ fn test_curl_command() {
                         install.sh failed to fetch {}.\n",
                         version, f
                     );
+                    eprintln!("results of install command:");
+                    eprint!("stdout:\n{}", strme(&o.stdout));
+                    eprint!("stderr:\n{}", strme(&o.stderr));
                     std::process::exit(1);
                 }
                 // Make sure that the all contigs file is not "essentially empty".  This happened.
