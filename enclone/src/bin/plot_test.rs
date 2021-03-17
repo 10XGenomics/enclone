@@ -8,7 +8,7 @@ fn main() {
 
     // Define parameters of the plot.
 
-    let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
+    let points: Vec<(f32, f32)> = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
     let title = "This is our first plot";
     let font = "sans-serif";
     let title_font_size = 40;
@@ -16,10 +16,6 @@ fn main() {
     let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
     let axis_tics = 5;
     let point_size = 5;
-    let xlow = 0 as f32;
-    let xhigh = 10 as f32;
-    let ylow = 0 as f32;
-    let yhigh = 20 as f32;
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
@@ -30,6 +26,23 @@ fn main() {
     let y_precision = 1;
     let xlabel = "Count";
     let ylabel = "Bucket";
+
+    // Requirements.
+
+    assert!(!points.is_empty());
+
+    // Determine the plot ranges using the extreme values of the points.
+
+    let mut xlow = points[0].0;
+    let mut xhigh = points[0].0;
+    let mut ylow = points[0].1;
+    let mut yhigh = points[0].1;
+    for i in 1..points.len() {
+        xlow = xlow.min(points[i].0);
+        xhigh = xhigh.max(points[i].0);
+        ylow = ylow.min(points[i].1);
+        yhigh = yhigh.max(points[i].1);
+    }
 
     // Make the plot.
 
