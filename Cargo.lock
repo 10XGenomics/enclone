@@ -684,6 +684,7 @@ dependencies = [
  "stirling_numbers",
  "string_utils",
  "tables",
+ "tilde-expand",
  "vdj_ann",
  "vector_utils",
 ]

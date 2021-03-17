@@ -50,12 +50,38 @@ use std::{
 };
 use stirling_numbers::*;
 use string_utils::*;
+use tilde_expand::*;
 use vdj_ann::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) {
+    // Process SOURCE args.
+
+    let mut args2 = vec![args[0].clone()];
+    for i in 1..args.len() {
+        if args[i].starts_with("SOURCE=") {
+            let f = args[i].after("SOURCE=");
+            let f2 = stringme(&tilde_expand(&f.as_bytes()));
+            if !path_exists(&f2) {
+                eprintln!("\nCan't find {}.\n", f);
+                std::process::exit(1);
+            }
+            let f = open_for_read![&f];
+            for line in f.lines() {
+                let s = line.unwrap();
+                let fields = s.split(' ').collect::<Vec<&str>>();
+                for j in 0..fields.len() {
+                    args2.push(fields[j].to_string());
+                }
+            }
+        } else {
+            args2.push(args[i].clone());
+        }
+    }
+    let args = args2;
+
     // Set up stuff, read args, etc.
 
     let mut ctl = EncloneControl::default();
