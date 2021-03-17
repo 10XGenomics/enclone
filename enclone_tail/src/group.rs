@@ -1082,7 +1082,7 @@ pub fn group_and_print_clonotypes(
 
     if ctl.gen_opt.plot_xy_filename.len() > 0 {
         plot_points(
-            &plot_xy_vals, 
+            &plot_xy_vals,
             &ctl.gen_opt.plot_xy_xvar,
             &ctl.gen_opt.plot_xy_yvar,
             &ctl.gen_opt.plot_xy_filename,
