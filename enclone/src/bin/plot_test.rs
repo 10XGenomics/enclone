@@ -14,11 +14,11 @@ fn main() {
     let tic_font_size = 20;
     let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
     let axis_tics = 5;
-    let point_size = 5;
+    let point_size = 4;
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
-    let y_label_area_size = 60;
+    let y_label_area_size = 80;
     let point_color = RED;
     let y_precision = 1;
     let xlabel = "wt_koff";
