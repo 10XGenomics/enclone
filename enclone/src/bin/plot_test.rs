@@ -3,32 +3,17 @@
 // Plot experiment.
 
 use plotters::prelude::*;
+use pretty_trace::*;
 use string_utils::*;
 
-fn main() {
+pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filename: &str) {
+    // Requirements.
+
+    assert!(!points.is_empty());
+
     // Define parameters of the plot.
 
-    let title = "wt_koff versus CD27_ab";
-    let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
-    let xlabel = "wt_koff";
-    let ylabel = "CD27_ab";
-
-    // Load plot data, which are at the end of this file.
-
-    // let points: Vec<(f32, f32)> = vec![(0.0, -2.111), (7.0, 2.0), (4.0, 5.0), (8.0, 21.3)];
-    let mut points = Vec::<(f32, f32)>::new();
-    let f = include_str!["plot_test.rs"];
-    let mut in_data = false;
-    for line in f.lines() {
-        if line == "// DATA" {
-            in_data = true;
-        } else if in_data {
-            points.push((
-                line.between(" ", ",").force_f64() as f32,
-                line.after(",").force_f64() as f32,
-            ));
-        }
-    }
+    let title = format!("{} versus {}", xvar, yvar);
 
     // Possibly universal constants.
 
@@ -41,12 +26,9 @@ fn main() {
     let xsize = 800;
     let ysize = 600;
     let point_color = RED;
+    let range_ext = 0.05;
 
-    // Requirements.
-
-    assert!(!points.is_empty());
-
-    // Determine the plot ranges using the extreme values of the points.
+    // Determine the plot ranges using the extreme values of the points, extended a little bit.
 
     let mut xlow = points[0].0;
     let mut xhigh = points[0].0;
@@ -58,6 +40,18 @@ fn main() {
         ylow = ylow.min(points[i].1);
         yhigh = yhigh.max(points[i].1);
     }
+    if xlow > 0.0 && xlow / (xhigh - xlow) < range_ext {
+        xlow = 0.0;
+    } else {
+        xlow *= 1.0 - range_ext;
+    }
+    xhigh *= 1.0 + range_ext;
+    if ylow > 0.0 && ylow / (yhigh - ylow) < range_ext {
+        ylow = 0.0;
+    } else {
+        ylow *= 1.0 - range_ext;
+    }
+    yhigh *= 1.0 + range_ext;
 
     // Determine the precision for the x axis tics.
 
@@ -95,7 +89,7 @@ fn main() {
 
     // Make the plot.
 
-    let root = SVGBackend::new(&plotfile, (xsize, ysize)).into_drawing_area();
+    let root = SVGBackend::new(&svg_filename, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
     let mut chart = ChartBuilder::on(&root)
         .caption(&title, (font, title_font_size).into_font())
@@ -110,8 +104,8 @@ fn main() {
         .y_labels(axis_tics)
         .x_label_formatter(&|x| format!("{:.1$}", x, x_precision))
         .y_label_formatter(&|x| format!("{:.1$}", x, y_precision))
-        .y_desc(xlabel)
-        .x_desc(ylabel)
+        .y_desc(xvar)
+        .x_desc(yvar)
         .draw()
         .unwrap();
     chart
@@ -124,6 +118,37 @@ fn main() {
             },
         ))
         .unwrap();
+}
+
+fn main() {
+    PrettyTrace::new().on();
+
+    // Names of stuff.
+
+    let svg_filename = "/mnt/home/david.jaffe/public_html/plotz.svg";
+    let xvar = "wt_koff";
+    let yvar = "CD27_ab";
+
+    // Load plot data, which are at the end of this file.
+
+    // let points: Vec<(f32, f32)> = vec![(0.0, -2.111), (7.0, 2.0), (4.0, 5.0), (8.0, 21.3)];
+    let mut points = Vec::<(f32, f32)>::new();
+    let f = include_str!["plot_test.rs"];
+    let mut in_data = false;
+    for line in f.lines() {
+        if line == "// DATA" {
+            in_data = true;
+        } else if in_data {
+            points.push((
+                line.between(" ", ",").force_f64() as f32,
+                line.after(",").force_f64() as f32,
+            ));
+        }
+    }
+
+    // Make the plot.
+
+    plot_points(&points, &xvar, &yvar, &svg_filename);
 }
 
 // enclone
