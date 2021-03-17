@@ -807,6 +807,41 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.force_h5 = false;
         } else if arg == "LEGEND" {
             ctl.gen_opt.use_legend = true;
+        } else if arg.starts_with("PLOTXY=") {
+            let fields = arg.after("PLOTXY=").split(',').collect::<Vec<&str>>();
+            if fields.len() != 3 {
+                eprintln!("\nPLOTXY requires three comma-separated arguments.\n");
+                std::process::exit(1);
+            }
+            if fields[0].len() == 0 || fields[1].len() == 0 || fields[2].len() == 0 {
+                eprintln!("\nArguments to PLOTXY must be non-null.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.plot_xy_xvar = fields[0].to_string();
+            ctl.gen_opt.plot_xy_xvar = fields[1].to_string();
+            let mut val = fields[2].to_string();
+            ctl.gen_opt.plot_xy_filename = val.to_string();
+            val = stringme(&tilde_expand(&val.as_bytes()));
+            let f = File::create(&val);
+            if f.is_err() {
+                eprintln!(
+                    "\nYou've specified an output file\n{}\nthat cannot be written.",
+                    val
+                );
+                if val.contains("/") {
+                    let dir = val.rev_before("/");
+                    let msg;
+                    if path_exists(&dir) {
+                        msg = "exists";
+                    } else {
+                        msg = "does not exist";
+                    }
+                    eprintln!("Note that the path {} {}.", dir, msg);
+                }
+                eprintln!("");
+                std::process::exit(1);
+            }
+            remove_file(&val).expect(&format!("could not remove file {}", val));
         } else if is_usize_arg(&arg, "REQUIRED_FPS") {
             ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
         } else if is_usize_arg(&arg, "REQUIRED_CELLS") {

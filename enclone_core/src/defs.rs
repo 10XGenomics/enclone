@@ -603,6 +603,9 @@ pub struct GeneralOpt {
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
+    pub plot_xy_filename: String,
+    pub plot_xy_xvar: String,
+    pub plot_xy_yvar: String,
 }
 
 // Allele-finding algorithmic options.
