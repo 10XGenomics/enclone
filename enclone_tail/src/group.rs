@@ -263,9 +263,9 @@ pub fn group_and_print_clonotypes(
 
             // Generate data for PLOT_XY.
 
-            if ctl.gen_opt.plot_xy_filename.len() > 0 {
-                let xvar = &ctl.gen_opt.plot_xy_xvar;
-                let yvar = &ctl.gen_opt.plot_xy_yvar;
+            if ctl.plot_opt.plot_xy_filename.len() > 0 {
+                let xvar = &ctl.plot_opt.plot_xy_xvar;
+                let yvar = &ctl.plot_opt.plot_xy_yvar;
                 for i in 0..out_datas[oo].len() {
                     let p = &out_datas[oo][i];
                     if p.contains_key(&xvar.clone()) {
@@ -1080,12 +1080,12 @@ pub fn group_and_print_clonotypes(
 
     // Execute PLOT_XY.
 
-    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
         plot_points(
             &plot_xy_vals,
-            &ctl.gen_opt.plot_xy_xvar,
-            &ctl.gen_opt.plot_xy_yvar,
-            &ctl.gen_opt.plot_xy_filename,
+            &ctl.plot_opt.plot_xy_xvar,
+            &ctl.plot_opt.plot_xy_yvar,
+            &ctl.plot_opt.plot_xy_filename,
         );
     }
 

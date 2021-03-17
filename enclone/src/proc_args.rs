@@ -817,11 +817,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nArguments to PLOTXY must be non-null.\n");
                 std::process::exit(1);
             }
-            ctl.gen_opt.plot_xy_xvar = fields[0].to_string();
-            ctl.gen_opt.plot_xy_yvar = fields[1].to_string();
+            ctl.plot_opt.plot_xy_xvar = fields[0].to_string();
+            ctl.plot_opt.plot_xy_yvar = fields[1].to_string();
             let mut val = fields[2].to_string();
             val = stringme(&tilde_expand(&val.as_bytes()));
-            ctl.gen_opt.plot_xy_filename = val.clone();
+            ctl.plot_opt.plot_xy_filename = val.clone();
             let f = File::create(&val);
             if f.is_err() {
                 eprintln!(

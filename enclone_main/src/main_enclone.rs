@@ -205,13 +205,13 @@ pub fn main_enclone(args: &Vec<String>) {
     let twoof = Instant::now();
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
-    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
         check_pcols(
             &ctl,
             &gex_info,
             &vec![
-                ctl.gen_opt.plot_xy_xvar.clone(),
-                ctl.gen_opt.plot_xy_yvar.clone(),
+                ctl.plot_opt.plot_xy_xvar.clone(),
+                ctl.plot_opt.plot_xy_yvar.clone(),
             ],
         );
     }

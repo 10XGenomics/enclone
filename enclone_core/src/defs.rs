@@ -603,6 +603,12 @@ pub struct GeneralOpt {
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
+}
+
+// Some plot options.  (Should move them all here.)
+
+#[derive(Default)]
+pub struct PlotOpt {
     pub plot_xy_filename: String,
     pub plot_xy_xvar: String,
     pub plot_xy_yvar: String,
@@ -750,6 +756,7 @@ pub struct ParseableOpt {
 #[derive(Default)]
 pub struct EncloneControl {
     pub gen_opt: GeneralOpt,              // miscellaneous general options
+    pub plot_opt: PlotOpt,                // plot options
     pub pretty: bool,                     // use escape characters to enhance view
     pub silent: bool,                     // turn off extra logging
     pub force: bool,                      // make joins even if redundant
