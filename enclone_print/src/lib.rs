@@ -2,6 +2,7 @@
 
 pub mod define_mat;
 pub mod filter;
+pub mod finish_table;
 pub mod loupe;
 pub mod print_clonotypes;
 pub mod print_utils1;
