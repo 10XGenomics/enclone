@@ -9,20 +9,11 @@ fn main() {
     // Define parameters of the plot.
 
     let title = "wt_koff versus CD27_ab";
-    let title_font_size = 30;
-    let font = "sans-serif";
-    let tic_font_size = 20;
     let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
-    let axis_tics = 5;
-    let point_size = 4;
-    let margin = 25;
-    let xsize = 800;
-    let ysize = 600;
-    let point_color = RED;
     let xlabel = "wt_koff";
     let ylabel = "CD27_ab";
 
-    // Load data, which are at the end of this file.
+    // Load plot data, which are at the end of this file.
 
     // let points: Vec<(f32, f32)> = vec![(0.0, -2.111), (7.0, 2.0), (4.0, 5.0), (8.0, 21.3)];
     let mut points = Vec::<(f32, f32)>::new();
@@ -38,6 +29,18 @@ fn main() {
             ));
         }
     }
+
+    // Possibly universal constants.
+
+    let title_font_size = 30;
+    let font = "sans-serif";
+    let tic_font_size = 20;
+    let axis_tics = 5;
+    let point_size = 4;
+    let margin = 25;
+    let xsize = 800;
+    let ysize = 600;
+    let point_color = RED;
 
     // Requirements.
 
@@ -85,8 +88,7 @@ fn main() {
         y_digits_to_left = yhigh.abs().log10().floor() as usize + 1
     }
     let y_len = y_digits_to_left + y_precision;
-    let y_label_area_size = 
-        y_len as f64 * (tic_font_size as f64 * 0.6) 
+    let y_label_area_size = y_len as f64 * (tic_font_size as f64 * 0.6)
         + tic_font_size as f64 * 0.2
         + tic_font_size as f64;
     let y_label_area_size = y_label_area_size as u32;
