@@ -5,7 +5,6 @@
 use plotters::prelude::*;
 
 fn main() {
-
     let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
     let title = "This is our first plot";
     let font = "sans-serif";
@@ -21,16 +20,19 @@ fn main() {
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
+    let x_label_area_size = 20; // don't understand
+    let y_label_area_size = 40; // don't understand
+    let point_color = RED;
 
     let root = SVGBackend::new(&plotfile, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
 
     let mut chart = ChartBuilder::on(&root)
         .caption(&title, (font, title_font_size).into_font())
-        // Set the size of the label region
-        .x_label_area_size(20)
-        .y_label_area_size(40)
-        .build_cartesian_2d(xlow..xhigh, ylow..yhigh).unwrap();
+        .x_label_area_size(x_label_area_size)
+        .y_label_area_size(y_label_area_size)
+        .build_cartesian_2d(xlow..xhigh, ylow..yhigh)
+        .unwrap();
 
     chart
         .configure_mesh()
@@ -38,15 +40,17 @@ fn main() {
         .x_labels(axis_tics)
         .y_labels(axis_tics)
         .y_label_formatter(&|x| format!("{:.3}", x))
-        .draw().unwrap();
+        .draw()
+        .unwrap();
 
-    chart.draw_series(PointSeries::of_element(
-        points.clone(),
-        point_size,
-        &RED,
-        &|c, s, st| {
-            return EmptyElement::at(c)
-            + Circle::new((0,0),s,st.filled());
-        },
-    )).unwrap();
+    chart
+        .draw_series(PointSeries::of_element(
+            points.clone(),
+            point_size,
+            &point_color,
+            &|c, s, st| {
+                return EmptyElement::at(c) + Circle::new((0, 0), s, st.filled());
+            },
+        ))
+        .unwrap();
 }
