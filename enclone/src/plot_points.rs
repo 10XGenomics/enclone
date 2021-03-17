@@ -100,8 +100,8 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
         .y_labels(axis_tics)
         .x_label_formatter(&|x| format!("{:.1$}", x, x_precision))
         .y_label_formatter(&|x| format!("{:.1$}", x, y_precision))
-        .y_desc(xvar)
-        .x_desc(yvar)
+        .x_desc(xvar)
+        .y_desc(yvar)
         .draw()
         .unwrap();
     chart
