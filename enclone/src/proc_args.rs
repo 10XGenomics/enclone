@@ -817,8 +817,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 eprintln!("\nArguments to PLOTXY must be non-null.\n");
                 std::process::exit(1);
             }
-            ctl.plot_opt.plot_xy_xvar = fields[0].to_string();
-            ctl.plot_opt.plot_xy_yvar = fields[1].to_string();
+            let mut xvar = fields[0].to_string();
+            let mut yvar = fields[1].to_string();
+            if xvar.starts_with("log10(") && xvar.ends_with(")") {
+                xvar = xvar.between("log10(", ")").to_string();
+                ctl.plot_opt.plot_xy_x_log10 = true;
+            }
+            if yvar.starts_with("log10(") && yvar.ends_with(")") {
+                yvar = yvar.between("log10(", ")").to_string();
+                ctl.plot_opt.plot_xy_y_log10 = true;
+            }
+            ctl.plot_opt.plot_xy_xvar = xvar;
+            ctl.plot_opt.plot_xy_yvar = yvar;
             let mut val = fields[2].to_string();
             val = stringme(&tilde_expand(&val.as_bytes()));
             ctl.plot_opt.plot_xy_filename = val.clone();

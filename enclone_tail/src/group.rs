@@ -271,11 +271,23 @@ pub fn group_and_print_clonotypes(
                     if p.contains_key(&xvar.clone()) {
                         let x = &p[&xvar.clone()];
                         if x.parse::<f64>().is_ok() {
-                            let x = x.force_f64();
+                            let mut x = x.force_f64();
+                            if ctl.plot_opt.plot_xy_x_log10 {
+                                if x <= 0.0 {
+                                    continue;
+                                }
+                                x = x.log10();
+                            }
                             if p.contains_key(&yvar.clone()) {
                                 let y = &p[&yvar.clone()];
                                 if y.parse::<f64>().is_ok() {
-                                    let y = y.force_f64();
+                                    let mut y = y.force_f64();
+                                    if ctl.plot_opt.plot_xy_y_log10 {
+                                        if y <= 0.0 {
+                                            continue;
+                                        }
+                                        y = y.log10();
+                                    }
                                     plot_xy_vals.push((x as f32, y as f32));
                                 }
                             }
@@ -1081,12 +1093,15 @@ pub fn group_and_print_clonotypes(
     // Execute PLOT_XY.
 
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        plot_points(
-            &plot_xy_vals,
-            &ctl.plot_opt.plot_xy_xvar,
-            &ctl.plot_opt.plot_xy_yvar,
-            &ctl.plot_opt.plot_xy_filename,
-        );
+        let mut xvar = ctl.plot_opt.plot_xy_xvar.clone();
+        if ctl.plot_opt.plot_xy_x_log10 {
+            xvar = format!("log10({})", xvar);
+        }
+        let mut yvar = ctl.plot_opt.plot_xy_yvar.clone();
+        if ctl.plot_opt.plot_xy_y_log10 {
+            yvar = format!("log10({})", yvar);
+        }
+        plot_points(&plot_xy_vals, &xvar, &yvar, &ctl.plot_opt.plot_xy_filename);
     }
 
     // Finish CLUSTAL.

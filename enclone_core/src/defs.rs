@@ -612,6 +612,8 @@ pub struct PlotOpt {
     pub plot_xy_filename: String,
     pub plot_xy_xvar: String,
     pub plot_xy_yvar: String,
+    pub plot_xy_x_log10: bool,
+    pub plot_xy_y_log10: bool,
 }
 
 // Allele-finding algorithmic options.
