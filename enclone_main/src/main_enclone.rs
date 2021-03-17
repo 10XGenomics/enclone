@@ -73,7 +73,9 @@ pub fn main_enclone(args: &Vec<String>) {
                 let s = line.unwrap();
                 let fields = s.split(' ').collect::<Vec<&str>>();
                 for j in 0..fields.len() {
-                    args2.push(fields[j].to_string());
+                    if fields[j].len() > 0 {
+                        args2.push(fields[j].to_string());
+                    }
                 }
             }
         } else {
