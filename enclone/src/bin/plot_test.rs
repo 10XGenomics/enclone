@@ -6,11 +6,16 @@ use plotters::prelude::*;
 
 fn main() {
 
-    let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 7.0)];
+    let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
     let title = "This is our first plot";
     let title_font_size = 40;
     let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
     let axis_tics = 5;
+    let point_size = 5;
+    let xlow = 0 as f32;
+    let xhigh = 10 as f32;
+    let ylow = 0 as f32;
+    let yhigh = 20 as f32;
 
     let root = SVGBackend::new(&plotfile, (800, 600)).into_drawing_area();
     let root = root.margin(10, 10, 10, 10);
@@ -19,8 +24,7 @@ fn main() {
         // Set the size of the label region
         .x_label_area_size(20)
         .y_label_area_size(40)
-        // Finally attach a coordinate on the drawing area and make a chart context
-        .build_cartesian_2d(0f32..10f32, 0f32..10f32).unwrap();
+        .build_cartesian_2d(xlow..xhigh, ylow..yhigh).unwrap();
 
     chart
         .configure_mesh()
@@ -32,7 +36,7 @@ fn main() {
 
     chart.draw_series(PointSeries::of_element(
         points.clone(),
-        5,
+        point_size,
         &RED,
         &|c, s, st| {
             return EmptyElement::at(c)
