@@ -9,6 +9,7 @@ fn main() {
     let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
     let title = "This is our first plot";
     let title_font_size = 40;
+    let tic_font_size = 20;
     let plotfile = "/mnt/home/david.jaffe/public_html/plotz.svg";
     let axis_tics = 5;
     let point_size = 5;
@@ -16,9 +17,10 @@ fn main() {
     let xhigh = 10 as f32;
     let ylow = 0 as f32;
     let yhigh = 20 as f32;
+    let margin = 25;
 
     let root = SVGBackend::new(&plotfile, (800, 600)).into_drawing_area();
-    let root = root.margin(10, 10, 10, 10);
+    let root = root.margin(margin, margin, margin, margin);
     let mut chart = ChartBuilder::on(&root)
         .caption(&title, ("sans-serif", title_font_size).into_font())
         // Set the size of the label region
@@ -28,9 +30,9 @@ fn main() {
 
     chart
         .configure_mesh()
+        .label_style(("sans-serif", tic_font_size).into_font())
         .x_labels(axis_tics)
         .y_labels(axis_tics)
-        // We can also change the format of the label text
         .y_label_formatter(&|x| format!("{:.3}", x))
         .draw().unwrap();
 
