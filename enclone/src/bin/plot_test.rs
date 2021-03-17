@@ -5,6 +5,9 @@
 use plotters::prelude::*;
 
 fn main() {
+
+    // Define parameters of the plot.
+
     let points = vec![(0.0, 0.0), (5.0, 5.0), (8.0, 20.0)];
     let title = "This is our first plot";
     let font = "sans-serif";
@@ -20,22 +23,24 @@ fn main() {
     let margin = 25;
     let xsize = 800;
     let ysize = 600;
-    let x_label_area_size = 20; // don't understand
-    let y_label_area_size = 40; // don't understand
+    let x_label_area_size = 40;
+    let y_label_area_size = 60;
     let point_color = RED;
     let x_precision = 2;
     let y_precision = 1;
+    let xlabel = "Count";
+    let ylabel = "Bucket";
+
+    // Make the plot.
 
     let root = SVGBackend::new(&plotfile, (xsize, ysize)).into_drawing_area();
     let root = root.margin(margin, margin, margin, margin);
-
     let mut chart = ChartBuilder::on(&root)
         .caption(&title, (font, title_font_size).into_font())
         .x_label_area_size(x_label_area_size)
         .y_label_area_size(y_label_area_size)
         .build_cartesian_2d(xlow..xhigh, ylow..yhigh)
         .unwrap();
-
     chart
         .configure_mesh()
         .label_style((font, tic_font_size).into_font())
@@ -43,9 +48,10 @@ fn main() {
         .y_labels(axis_tics)
         .x_label_formatter(&|x| format!("{:.1$}", x, x_precision))
         .y_label_formatter(&|x| format!("{:.1$}", x, y_precision))
+        .y_desc(xlabel)
+        .x_desc(ylabel)
         .draw()
         .unwrap();
-
     chart
         .draw_series(PointSeries::of_element(
             points.clone(),
