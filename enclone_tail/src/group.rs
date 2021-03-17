@@ -15,6 +15,7 @@ use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
+use enclone_core::plot_points::*;
 use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use io_utils::*;
@@ -180,6 +181,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
+    let mut plot_xy_vals = Vec::<(f32, f32)>::new();
     for i in 0..groups.len() {
         let mut o = Vec::<i32>::new();
         for j in 0..groups[i].len() {
@@ -258,6 +260,32 @@ pub fn group_and_print_clonotypes(
         }
         for j in 0..o.len() {
             let oo = o[j] as usize;
+
+            // Generate data for PLOT_XY.
+
+            if ctl.gen_opt.plot_xy_filename.len() > 0 {
+                let xvar = &ctl.gen_opt.plot_xy_xvar;
+                let yvar = &ctl.gen_opt.plot_xy_yvar;
+                for i in 0..out_datas[oo].len() {
+                    let p = &out_datas[oo][i];
+                    if p.contains_key(&xvar.clone()) {
+                        let x = &p[&xvar.clone()];
+                        if x.parse::<f64>().is_ok() {
+                            let x = x.force_f64();
+                            if p.contains_key(&yvar.clone()) {
+                                let y = &p[&yvar.clone()];
+                                if y.parse::<f64>().is_ok() {
+                                    let y = y.force_f64();
+                                    plot_xy_vals.push((x as f32, y as f32));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Proceed.
+
             if !ctl.gen_opt.noprint {
                 if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
@@ -1048,6 +1076,17 @@ pub fn group_and_print_clonotypes(
                 }
             }
         }
+    }
+
+    // Execute PLOT_XY.
+
+    if ctl.gen_opt.plot_xy_filename.len() > 0 {
+        plot_points(
+            &plot_xy_vals, 
+            &ctl.gen_opt.plot_xy_xvar,
+            &ctl.gen_opt.plot_xy_yvar,
+            &ctl.gen_opt.plot_xy_filename,
+        );
     }
 
     // Finish CLUSTAL.

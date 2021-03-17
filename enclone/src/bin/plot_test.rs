@@ -2,7 +2,7 @@
 
 // Plot experiment.
 
-use enclone::plot_points::*;
+use enclone_core::plot_points::*;
 use pretty_trace::*;
 use string_utils::*;
 
