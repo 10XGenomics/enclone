@@ -7,6 +7,7 @@ use crate::print_utils1::*;
 use crate::proc_cvar::*;
 use crate::proc_lvar::*;
 use amino::*;
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::*;

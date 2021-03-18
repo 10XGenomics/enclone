@@ -2,6 +2,7 @@
 
 // Check lvars, cvars, and pcols.
 
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use rayon::prelude::*;
 use regex::Regex;

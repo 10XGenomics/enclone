@@ -14,6 +14,7 @@ use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
 use enclone_proto::types::*;
