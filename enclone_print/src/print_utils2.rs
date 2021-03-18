@@ -4,7 +4,8 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::print_utils1::*;
-use crate::proc_cvar::*;
+use crate::proc_cvar1::*;
+use crate::proc_cvar2::*;
 use crate::proc_lvar::*;
 use amino::*;
 use enclone_core::allowed_vars::*;
@@ -590,7 +591,7 @@ pub fn row_fill(
 
             // Compute.
 
-            let _ = proc_cvar(
+            if !proc_cvar1(
                 &var,
                 j,
                 col,
@@ -623,7 +624,42 @@ pub fn row_fill(
                 r_max,
                 r_mean,
                 rtot,
-            );
+            ) {
+                let _ = proc_cvar2(
+                    &var,
+                    j,
+                    col,
+                    mid,
+                    pass,
+                    u,
+                    &ex,
+                    &ctl,
+                    &exacts,
+                    &exact_clonotypes,
+                    &refdata,
+                    &varmat,
+                    out_data,
+                    &rsi,
+                    &dref,
+                    &peer_groups,
+                    &show_aa,
+                    &field_types,
+                    col_var,
+                    &pcols_sort,
+                    bads,
+                    cx,
+                    u_min,
+                    u_max,
+                    u_mean,
+                    median_numis,
+                    utot,
+                    median_nreads,
+                    r_min,
+                    r_max,
+                    r_mean,
+                    rtot,
+                );
+            }
         }
     }
 }
