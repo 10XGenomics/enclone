@@ -22,7 +22,7 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     let xsize = 800;
     let ysize = 600;
     let point_color = RED;
-    let range_ext = 0.05;
+    let range_ext = 0.04;
 
     // Determine the plot ranges using the extreme values of the points, extended a little bit.
 
@@ -42,8 +42,10 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     xhigh *= 1.0 + range_ext;
     if ylow > 0.0 && ylow / (yhigh - ylow) < range_ext {
         ylow = 0.0;
-    } else {
+    } else if ylow > 0.0 {
         ylow *= 1.0 - range_ext;
+    } else if ylow < 0.0 {
+        ylow *= 1.0 + range_ext;
     }
     if yhigh > 0.0 {
         yhigh *= 1.0 + range_ext;
