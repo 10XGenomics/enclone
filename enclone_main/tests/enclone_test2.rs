@@ -313,7 +313,8 @@ fn test_for_broken_links_and_spellcheck() {
         "abybank adefghiklmnpqrstvwy amazonaws anarci barcode barcodes barcoding bcn \
         bioinf cdiff cellranger chmod clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
-        csv ctrlc cvar cvars datalayer dejavusansmono dref dyiid enclone executables false fcell \
+        csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
+        dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
@@ -327,7 +328,8 @@ fn test_for_broken_links_and_spellcheck() {
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
         subclonotypes svg testlist thresholding timepoint tracebacks trb tsv twosie ubuntu \
         umi umis underperforming unicode untarring vdj vilella vilfwym vilm website wget wikimedia \
-        wikipedia workaround workflow xf xhtml xkcd xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx zenodo zx";
+        wikipedia workaround workflow xf xhtml xkcd \
+        xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx xy yvar zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
 
     // Set up dictionary.
