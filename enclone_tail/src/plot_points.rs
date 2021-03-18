@@ -57,9 +57,9 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
 
     let (mut x_precision, mut y_precision) = (0, 0);
     for pass in 1..=2 {
-        let m = if pass == 1 { 
+        let m = if pass == 1 {
             xlow.abs().max(xhigh.abs())
-        } else { 
+        } else {
             ylow.abs().max(yhigh.abs())
         };
         let mut extra = 2;
