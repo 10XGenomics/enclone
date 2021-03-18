@@ -5,7 +5,14 @@ use plotters::prelude::*;
 pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filename: &str) {
     // Requirements.
 
-    assert!(!points.is_empty());
+    if points.is_empty() {
+        eprintln!(
+            "\nPlot of {} versus {} can't be carried out because there are no data \
+            points\n(consisting of pairs of numbers).\n",
+            xvar, yvar
+        );
+        std::process::exit(1);
+    }
 
     // Define parameters of the plot.
 
