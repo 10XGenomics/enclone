@@ -49,7 +49,7 @@ pub fn proc_cvar(
     r_max: usize,
     r_mean: usize,
     rtot: usize,
-) {
+) -> bool {
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
     let cvars = &ctl.clono_print_opt.cvars;
@@ -1291,5 +1291,8 @@ pub fn proc_cvar(
         {
             bads[u] = true;
         }
+    } else {
+        return false;
     }
+    return true;
 }

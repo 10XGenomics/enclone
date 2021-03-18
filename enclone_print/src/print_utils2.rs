@@ -590,7 +590,7 @@ pub fn row_fill(
 
             // Compute.
 
-            proc_cvar(
+            let _ = proc_cvar(
                 &var,
                 j,
                 col,
