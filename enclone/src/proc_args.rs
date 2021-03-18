@@ -451,6 +451,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "SUPPRESS_ISOTYPE_LEGEND",
             &mut ctl.gen_opt.plot_by_isotype_nolegend,
         ),
+        ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.toy),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (

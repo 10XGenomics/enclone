@@ -454,6 +454,7 @@ pub struct GeneralOpt {
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
+    pub top_genes: bool,
 }
 
 // Some plot options.  (Should move them all here.)

@@ -9,6 +9,7 @@ use enclone_proto::types::*;
 use io_utils::*;
 use ndarray::s;
 use rayon::prelude::*;
+use std::cmp::min;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
@@ -16,6 +17,15 @@ use string_utils::*;
 use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
+
+pub fn median_f64(x: &[f64]) -> f64 {
+    let h = x.len() / 2;
+    if x.len() % 2 == 1 {
+        x[h]
+    } else {
+        (x[h - 1] + x[h]) / 2.0
+    }
+}
 
 pub fn tail_code(
     tall: &Instant,
@@ -331,5 +341,50 @@ pub fn tail_code(
             println!("");
         }
     }
+
+    // Print top genes.
+
+    if ctl.gen_opt.top_genes {
+        let mut results = Vec::<(f64, usize)>::new();
+        let nf = gex_info.gex_features[0].len();
+        for fid in 0..nf {
+            results.push((0.0, fid));
+        }
+        results.par_iter_mut().for_each(|res| {
+            let fid = res.1;
+            let mut vals = Vec::<f64>::new();
+            for i in 0..exacts.len() {
+                for m in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][m]];
+                    for l in 0..ex.clones.len() {
+                        let li = ex.clones[l][0].dataset_index;
+                        let bc = ex.clones[l][0].barcode.clone();
+                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        if p >= 0 {
+                            if gex_info.gex_matrices[li].initialized() {
+                                let raw_count =
+                                    gex_info.gex_matrices[li].value(p as usize, fid) as f64;
+                                vals.push(raw_count);
+                            }
+                        }
+                    }
+                }
+            }
+            vals.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            if !vals.is_empty() {
+                res.0 = median_f64(&vals);
+            }
+        });
+        results.sort_by(|b, a| a.partial_cmp(b).unwrap());
+        println!("\nTOP GENES");
+        for i in 0..min(25, results.len()) {
+            let fid = results[i].1;
+            let count = results[i].0;
+            println!("[{}] {} = {}", i + 1, gex_info.gex_features[0][fid], count);
+        }
+    }
+
+    // Report time.
+
     ctl.perf_stats(&t, "in rest of tail code");
 }
