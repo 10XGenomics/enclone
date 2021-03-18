@@ -56,21 +56,27 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     // Determine precision for axes tics.
 
     let (mut x_precision, mut y_precision) = (0, 0);
-    let m = xhigh.abs();
-    if m > 0.0 {
+    for pass in 1..=2 {
+        let m = if pass == 1 { 
+            xlow.abs().max(xhigh.abs())
+        } else { 
+            ylow.abs().max(yhigh.abs())
+        };
         let mut extra = 2;
-        if m > 10.0 {
-            extra = 0;
+        if m > 0.0 {
+            if m > 1.0 {
+                extra = 0;
+            }
+            if m > 10.0 {
+                extra = 0;
+            }
         }
-        x_precision = -m.log10() as usize + extra;
-    }
-    let m = yhigh.abs();
-    if m > 0.0 {
-        let mut extra = 1;
-        if m > 10.0 {
-            extra = 0;
+        let p = -m.log10() as usize + extra;
+        if pass == 1 {
+            x_precision = p;
+        } else {
+            y_precision = p;
         }
-        y_precision = -m.log10() as usize + extra;
     }
 
     // Determine the area size for the x label.
