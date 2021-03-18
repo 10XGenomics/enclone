@@ -2,6 +2,7 @@
 
 pub mod determine_ref;
 pub mod doublets;
+pub mod fcell;
 pub mod filter_umi;
 pub mod flag_defective;
 pub mod inconsistent;
