@@ -608,7 +608,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 13] = [
+pub const SITE_EXAMPLES: [(&str, &str); 14] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -682,5 +682,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 13] = [
     (
         "img/quad_hive.svg",
         "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" QUAD_HIVE NOPRINT",
+    ),
+    // 14.
+    (
+        "img/two_genes.svg",
+        "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
     ),
 ];

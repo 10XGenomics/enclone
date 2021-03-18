@@ -64,26 +64,28 @@ pub fn process_special_arg(
         let mut val = fields[2].to_string();
         val = stringme(&tilde_expand(&val.as_bytes()));
         ctl.plot_opt.plot_xy_filename = val.clone();
-        let f = File::create(&val);
-        if f.is_err() {
-            eprintln!(
-                "\nYou've specified an output file\n{}\nthat cannot be written.",
-                val
-            );
-            if val.contains("/") {
-                let dir = val.rev_before("/");
-                let msg;
-                if path_exists(&dir) {
-                    msg = "exists";
-                } else {
-                    msg = "does not exist";
+        if val != "stdout" {
+            let f = File::create(&val);
+            if f.is_err() {
+                eprintln!(
+                    "\nYou've specified an output file\n{}\nthat cannot be written.",
+                    val
+                );
+                if val.contains("/") {
+                    let dir = val.rev_before("/");
+                    let msg;
+                    if path_exists(&dir) {
+                        msg = "exists";
+                    } else {
+                        msg = "does not exist";
+                    }
+                    eprintln!("Note that the path {} {}.", dir, msg);
                 }
-                eprintln!("Note that the path {} {}.", dir, msg);
+                eprintln!("");
+                std::process::exit(1);
             }
-            eprintln!("");
-            std::process::exit(1);
+            remove_file(&val).expect(&format!("could not remove file {}", val));
         }
-        remove_file(&val).expect(&format!("could not remove file {}", val));
     } else if is_usize_arg(&arg, "REQUIRED_FPS") {
         ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
     } else if is_usize_arg(&arg, "REQUIRED_CELLS") {

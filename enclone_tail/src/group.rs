@@ -24,6 +24,7 @@ use itertools::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
+use std::fs::remove_file;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
@@ -1102,7 +1103,16 @@ pub fn group_and_print_clonotypes(
         if ctl.plot_opt.plot_xy_y_log10 {
             yvar = format!("log10({})", yvar);
         }
-        plot_points(&plot_xy_vals, &xvar, &yvar, &ctl.plot_opt.plot_xy_filename);
+        let filename = ctl.plot_opt.plot_xy_filename.clone();
+        plot_points(&plot_xy_vals, &xvar, &yvar, &filename);
+        if filename == "stdout" {
+            let f = open_for_read!["stdout"];
+            for line in f.lines() {
+                let s = line.unwrap();
+                println!("{}", s);
+            }
+            remove_file("stdout").unwrap();
+        }
     }
 
     // Finish CLUSTAL.
