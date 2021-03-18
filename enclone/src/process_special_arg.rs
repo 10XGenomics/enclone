@@ -39,14 +39,14 @@ pub fn process_special_arg(
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.gen_opt.use_legend = true;
-    } else if arg.starts_with("PLOTXY=") {
-        let fields = arg.after("PLOTXY=").split(',').collect::<Vec<&str>>();
+    } else if arg.starts_with("PLOTXY_EXACT=") {
+        let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
-            eprintln!("\nPLOTXY requires three comma-separated arguments.\n");
+            eprintln!("\nPLOTXY_EXACT requires three comma-separated arguments.\n");
             std::process::exit(1);
         }
         if fields[0].len() == 0 || fields[1].len() == 0 || fields[2].len() == 0 {
-            eprintln!("\nArguments to PLOTXY must be non-null.\n");
+            eprintln!("\nArguments to PLOTXY_EXACT must be non-null.\n");
             std::process::exit(1);
         }
         let mut xvar = fields[0].to_string();
