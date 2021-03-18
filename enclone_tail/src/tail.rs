@@ -377,7 +377,7 @@ pub fn tail_code(
         });
         results.sort_by(|b, a| a.partial_cmp(b).unwrap());
         println!("\nTOP GENES");
-        for i in 0..min(25, results.len()) {
+        for i in 0..min(50, results.len()) {
             let fid = results[i].1;
             let count = results[i].0;
             println!("[{}] {} = {}", i + 1, gex_info.gex_features[0][fid], count);
