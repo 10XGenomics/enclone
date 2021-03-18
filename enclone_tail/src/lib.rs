@@ -13,5 +13,6 @@ pub mod plot;
 pub mod plot_points;
 pub mod polygon;
 pub mod print_stats;
+pub mod requirements;
 pub mod string_width;
 pub mod tail;
