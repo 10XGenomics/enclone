@@ -1385,18 +1385,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nix"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
-]
-
-[[package]]
 name = "num"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1613,15 +1601,15 @@ dependencies = [
 
 [[package]]
 name = "pprof"
-version = "0.4.3"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "234cb1ca0d59aa771d9bc7e268739d7aef6ca7e9e8d3b78d92f266cd663fd0c1"
+checksum = "a066eee7dbaf89a91078ceb15f56642c8d934eb2a639e7f098dd3f365651f55a"
 dependencies = [
  "backtrace",
  "lazy_static",
  "libc",
  "log",
- "nix 0.20.0",
+ "nix",
  "parking_lot",
  "prost",
  "prost-build",
@@ -1675,7 +1663,7 @@ dependencies = [
  "itertools",
  "lazy_static",
  "libc",
- "nix 0.19.1",
+ "nix",
  "pprof",
  "rayon",
  "stats_utils",
