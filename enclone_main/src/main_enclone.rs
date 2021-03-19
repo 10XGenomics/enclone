@@ -303,6 +303,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Populate features.
 
+    let tpop = Instant::now();
     let mut fr1_starts = Vec::<usize>::new();
     let mut fr2_starts = Vec::<Option<usize>>::new();
     let mut fr3_starts = Vec::<Option<usize>>::new();
@@ -329,9 +330,11 @@ pub fn main_enclone(args: &Vec<String>) {
             x.cdr2_start = cdr2_starts[x.v_ref_id];
         }
     }
+    ctl.perf_stats(&tpop, "populating features");
 
     // Test for no data.
 
+    let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
@@ -339,7 +342,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Search for SHM indels.
 
-    let tproto = Instant::now();
     search_for_shm_indels(&ctl, &tig_bc);
 
     // Filter using light --> heavy graph.

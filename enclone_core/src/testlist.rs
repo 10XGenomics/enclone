@@ -498,7 +498,7 @@ pub const TESTS: [&str; 202] = [
     // 201. test SOURCE
     r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3"###,
     // 202. enforce no unaccounted time
-    r###"BCR=123085 COMPE EXPECT_OK"###,
+    r###"BCR=123085 COMPE UNACCOUNTED EXPECT_OK"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
