@@ -8,6 +8,7 @@
 use crate::define_mat::*;
 use crate::filter::*;
 use crate::finish_table::*;
+use crate::gene_scan::*;
 use crate::loupe::*;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
@@ -851,100 +852,17 @@ pub fn print_clonotypes(
                     continue;
                 }
 
-                // See if we're in the test and control sets for gene scan (non-exact case).
+                // See if we're in the test and control sets for gene scan.
 
-                if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
-                    let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
-                    let mut means = Vec::<f64>::new();
-                    for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
-                                // found = true;
-                                break;
-                            }
-                        }
-                        let mut mean = 0.0;
-                        for j in 0..vals.len() {
-                            mean += vals[j];
-                        }
-                        mean /= n as f64;
-                        means.push(mean);
-                    }
-                    res.9.push(x.satisfied(&means));
-                    let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
-                    let mut means = Vec::<f64>::new();
-                    for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
-                                break;
-                            }
-                        }
-                        let mut mean = 0.0;
-                        for j in 0..vals.len() {
-                            mean += vals[j];
-                        }
-                        mean /= n as f64;
-                        means.push(mean);
-                    }
-                    res.10.push(x.satisfied(&means));
-                }
-
-                // See if we're in the test and control sets for gene scan (exact case).
-
-                if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
-                    let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
-                    for k in 0..exacts.len() {
-                        let mut means = Vec::<f64>::new();
-                        for i in 0..x.n() {
-                            let mut vals = Vec::<f64>::new();
-                            let mut count = 0;
-                            for j in 0..stats_orig.len() {
-                                if stats_orig[j].0 == x.var[i] {
-                                    if count == k {
-                                        vals.append(&mut stats_orig[j].1.clone());
-                                        break;
-                                    } else {
-                                        count += 1;
-                                    }
-                                }
-                            }
-                            let mut mean = 0.0;
-                            for j in 0..vals.len() {
-                                mean += vals[j];
-                            }
-                            mean /= vals.len() as f64;
-                            means.push(mean);
-                        }
-                        res.9.push(x.satisfied(&means));
-                        let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
-                        let mut means = Vec::<f64>::new();
-                        for i in 0..x.n() {
-                            let mut vals = Vec::<f64>::new();
-                            let mut count = 0;
-                            for j in 0..stats_orig.len() {
-                                if stats_orig[j].0 == x.var[i] {
-                                    if count == k {
-                                        vals.append(&mut stats_orig[j].1.clone());
-                                        break;
-                                    } else {
-                                        count += 1;
-                                    }
-                                }
-                            }
-                            let mut mean = 0.0;
-                            for j in 0..vals.len() {
-                                mean += vals[j];
-                            }
-                            mean /= n as f64;
-                            means.push(mean);
-                        }
-                        res.10.push(x.satisfied(&means));
-                    }
-                }
+                gene_scan_test(
+                    &ctl,
+                    &stats,
+                    &stats_orig,
+                    nexacts,
+                    n,
+                    &mut res.9,
+                    &mut res.10,
+                );
 
                 // Fill in exact_subclonotype_id, reorder.
 
