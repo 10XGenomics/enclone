@@ -12,4 +12,5 @@ pub mod populate_features;
 pub mod sec_mem;
 pub mod setup;
 pub mod split_orbits;
+pub mod subset;
 pub mod vars;
