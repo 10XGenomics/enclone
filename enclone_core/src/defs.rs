@@ -446,11 +446,12 @@ impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(&t);
         let t2 = Instant::now();
+        let mut usedx = String::new();
         if self.comp {
             let peak = peak_mem_usage_gb();
             let ipeak = (100.0 * peak).round();
             let peak_mem = format!("peak mem = {:.2} GB", peak);
-            let usedx = format!("{:.2}", used);
+            usedx = format!("{:.2}", used);
             let mut ipeak_changed = false;
             unsafe {
                 if ipeak != LAST_IPEAK {
@@ -463,14 +464,6 @@ impl EncloneControl {
             }
         }
 
-        // Get unaccounted time.
-
-        let delta;
-        unsafe {
-            delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
-        }
-        let deltas = format!("{:.2}", delta);
-
         // Check for time used in the above computation, which could otherwise introduce a
         // discrepancy into the time accounting stats.  Surprisingly, the time spent in that
         // section can be nontrivial.
@@ -478,7 +471,7 @@ impl EncloneControl {
         let used2 = elapsed(&t2);
         let used2x = format!("{:.2}", used2);
         if self.comp {
-            if used2x != "0.00" || (self.unaccounted && deltas != "0.00") {
+            if used2x != "0.00" {
                 println!("used {} seconds computing perf stats for {}", used2x, msg);
             }
         }
@@ -489,10 +482,20 @@ impl EncloneControl {
             WALLCLOCK += used + used2;
         }
 
+        // Get unaccounted time.
+
         // Report unaccounted time.
 
         if self.comp && self.unaccounted && msg != "total" {
+            let delta;
+            unsafe {
+                delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
+            }
+            let deltas = format!("{:.2}", delta);
             if deltas != "0.00" {
+                if usedx == "0.00" {
+                    println!("used 0.00 seconds {}", msg);
+                }
                 println!("used {} seconds unaccounted for", deltas);
             }
         }
