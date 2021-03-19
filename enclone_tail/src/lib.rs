@@ -9,6 +9,7 @@ pub mod grouper;
 pub mod neighbor;
 pub mod newick;
 pub mod pack_circles;
+pub mod phylip;
 pub mod plot;
 pub mod plot_points;
 pub mod polygon;
