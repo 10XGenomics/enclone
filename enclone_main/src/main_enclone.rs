@@ -455,6 +455,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
     // This is intended as a replacement for some old code below.
 
+    let tbc = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -469,10 +470,13 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
+    ctl.perf_stats(&tbc, "computing to_bc");
 
     // Make stirling ratio table.  Not sure that fixing the size of this is safe.
 
+    let tsr = Instant::now();
     let sr = stirling2_ratio_table::<f64>(3000);
+    ctl.perf_stats(&tsr, "computing stirling number table");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
@@ -494,6 +498,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
     // clonotypes.  This requires editing of exact_clonotypes, info, eq, join_info and raw_joins.
 
+    let tone = Instant::now();
     let mut disintegrated = Vec::<bool>::new();
     if ctl.clono_filt_opt.weak_onesies {
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
@@ -589,9 +594,11 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         eq = eq2;
     }
+    ctl.perf_stats(&tone, "disintegrating onesies");
 
     // Update to_bc.
 
+    let txxx = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -624,6 +631,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Lookup for heavy chain reuse (special purpose experimental option).
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
+    ctl.perf_stats(&txxx, "in some odds and ends");
 
     // Filter B cells based on UMI counts.
 
