@@ -463,6 +463,14 @@ impl EncloneControl {
             }
         }
 
+        // Get unaccounted time.
+
+        let delta;
+        unsafe {
+            delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
+        }
+        let deltas = format!("{:.2}", delta);
+
         // Check for time used in the above computation, which could otherwise introduce a
         // discrepancy into the time accounting stats.  Surprisingly, the time spent in that
         // section can be nontrivial.
@@ -470,7 +478,7 @@ impl EncloneControl {
         let used2 = elapsed(&t2);
         let used2x = format!("{:.2}", used2);
         if self.comp {
-            if used2x != "0.00" {
+            if used2x != "0.00" || (self.unaccounted && deltas != "0.00") {
                 println!("used {} seconds computing perf stats for {}", used2x, msg);
             }
         }
@@ -484,11 +492,6 @@ impl EncloneControl {
         // Report unaccounted time.
 
         if self.comp && self.unaccounted && msg != "total" {
-            let delta;
-            unsafe {
-                delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
-            }
-            let deltas = format!("{:.2}", delta);
             if deltas != "0.00" {
                 println!("used {} seconds unaccounted for", deltas);
             }
