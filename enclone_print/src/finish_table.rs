@@ -199,4 +199,84 @@ pub fn finish_table(
         }
     }
     make_table(&ctl, &mut rows, &justify, &mlog, logz);
+
+    // Add phylogeny.
+
+    let nexacts = exacts.len();
+    if ctl.toy {
+        let mut vrefs = Vec::<Vec<u8>>::new();
+        let mut jrefs = Vec::<Vec<u8>>::new();
+        for cx in 0..cols {
+            let (mut vref, mut jref) = (Vec::<u8>::new(), Vec::<u8>::new());
+            for u in 0..nexacts {
+                let m = rsi.mat[cx][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    jref = exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
+                }
+                let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
+                if rsi.vpids[cx].is_some() {
+                    vref = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
+                } else {
+                    vref = vseq1.clone();
+                }
+            }
+            vrefs.push(vref);
+            jrefs.push(jref);
+        }
+        for u1 in 0..nexacts {
+            let ex1 = &exact_clonotypes[exacts[u1]];
+            for u2 in u1 + 1..nexacts {
+                let ex2 = &exact_clonotypes[exacts[u2]];
+                let (mut d1, mut d2) = (0, 0);
+                let mut d = 0;
+                for cx in 0..cols {
+                    let (m1, m2) = (rsi.mat[cx][u1], rsi.mat[cx][u2]);
+                    if m1.is_none() || m2.is_none() {
+                        continue;
+                    }
+                    let (m1, m2) = (m1.unwrap(), m2.unwrap());
+                    let (s1, s2) = (&ex1.share[m1].seq_del, &ex2.share[m2].seq_del);
+                    let n = s1.len();
+                    let (vref, jref) = (&vrefs[cx], &jrefs[cx]);
+                    for j in 0..vars[cx].len() {
+                        let p = vars[cx][j];
+                        if s1[p] != s2[p] {
+                            if p < vref.len() - ctl.heur.ref_v_trim {
+                                if s1[p] == vref[p] {
+                                    d1 += 1;
+                                } else if s2[p] == vref[p] {
+                                    d2 += 1;
+                                }
+                            } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) {
+                                if s1[p] == jref[jref.len() - (n - p)] {
+                                    d1 += 1;
+                                } else if s2[p] == jref[jref.len() - (n - p)] {
+                                    d2 += 1;
+                                }
+                            } else {
+                                d += 1;
+                            }
+                        }
+                    }
+                }
+                if (d1 == 0) ^ (d2 == 0) {
+                    if d1 == 0 {
+                        *logz += &format!("{} ==> {}", u1 + 1, u2 + 1);
+                    } else {
+                        *logz += &format!("{} ==> {}", u2 + 1, u1 + 1);
+                    }
+                    let s = format!(
+                        "; u1 = {}, u2 = {}, d1 = {}, d2 = {}, d = {}\n",
+                        u1 + 1,
+                        u2 + 1,
+                        d1,
+                        d2,
+                        d
+                    );
+                    *logz += &s;
+                }
+            }
+        }
+    }
 }
