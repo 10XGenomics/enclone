@@ -4,6 +4,7 @@ extern crate enclone_core;
 
 pub mod clustal;
 pub mod display_tree;
+pub mod fasta;
 pub mod group;
 pub mod grouper;
 pub mod neighbor;

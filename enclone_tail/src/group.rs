@@ -6,6 +6,7 @@
 
 use crate::clustal::*;
 use crate::display_tree::*;
+use crate::fasta::*;
 use crate::grouper::*;
 use crate::neighbor::*;
 use crate::newick::*;
@@ -13,7 +14,6 @@ use crate::phylip::*;
 use crate::plot_points::*;
 use crate::print_stats::*;
 use crate::requirements::*;
-use amino::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
@@ -649,115 +649,19 @@ pub fn group_and_print_clonotypes(
 
             // Generate FASTA output.
 
-            if ctl.gen_opt.fasta_filename.len() > 0 {
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_some() {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let ex = &exact_clonotypes[*u];
-                            if ctl.gen_opt.fasta_filename != "stdout".to_string() {
-                                fwriteln!(
-                                    fout,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            } else {
-                                fwriteln!(
-                                    logx,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            }
-                            let mut seq = ex.share[r].seq.clone();
-                            let mut cid = ex.share[r].c_ref_id;
-                            if cid.is_none() {
-                                for l in 0..exacts[oo].len() {
-                                    if rsi[oo].mat[m][l].is_some() {
-                                        let r2 = rsi[oo].mat[m][l].unwrap();
-                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
-                                        let cid2 = ex2.share[r2].c_ref_id;
-                                        if cid2.is_some() {
-                                            cid = cid2;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if cid.is_some() {
-                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append(&mut cseq);
-                                if ctl.gen_opt.fasta_filename != "stdout".to_string() {
-                                    fwriteln!(fout, "{}", strme(&seq));
-                                } else {
-                                    fwriteln!(logx, "{}", strme(&seq));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Generate fasta amino acid output.
-
-            if ctl.gen_opt.fasta_aa_filename.len() > 0 {
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_some() {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let ex = &exact_clonotypes[*u];
-                            if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
-                                fwriteln!(
-                                    faaout,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            } else {
-                                fwriteln!(
-                                    logx,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            }
-                            let mut seq = ex.share[r].seq.clone();
-                            let mut cid = ex.share[r].c_ref_id;
-                            if cid.is_none() {
-                                for l in 0..exacts[oo].len() {
-                                    if rsi[oo].mat[m][l].is_some() {
-                                        let r2 = rsi[oo].mat[m][l].unwrap();
-                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
-                                        let cid2 = ex2.share[r2].c_ref_id;
-                                        if cid2.is_some() {
-                                            cid = cid2;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if cid.is_some() {
-                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append(&mut cseq);
-                                if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
-                                    fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
-                                } else {
-                                    fwriteln!(logx, "{}", strme(&aa_seq(&seq, 0)));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            generate_fasta(
+                i,
+                j,
+                oo,
+                &exacts,
+                &rsi,
+                &exact_clonotypes,
+                &ctl,
+                &refdata,
+                &mut logx,
+                &mut fout,
+                &mut faaout,
+            );
 
             // Generate parseable output.
 
