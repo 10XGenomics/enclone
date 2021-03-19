@@ -442,6 +442,7 @@ pub static mut LAST_IPEAK: f64 = -0.0;
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(&t);
+        let t2 = Instant::now();
         if self.comp {
             let peak = peak_mem_usage_gb();
             let ipeak = (100.0 * peak).round();
@@ -458,8 +459,23 @@ impl EncloneControl {
                 println!("used {} seconds {}, {}", usedx, msg, peak_mem);
             }
         }
+
+        // Check for time used in the above computation, which could otherwise introduce a
+        // discrepancy into the time accounting stats.  Surprisingly, the time spent in that
+        // section can be nontrivial.
+
+        let used2 = elapsed(&t2);
+        let used2x = format!("{:.2}", used2);
+        if self.comp {
+            if used2x != "0.00" {
+                println!("used {} seconds computing perf stats for {}", used2x, msg);
+            }
+        }
+
+        // Update total time used.
+
         unsafe {
-            WALLCLOCK += used;
+            WALLCLOCK += used + used2;
         }
     }
 }
