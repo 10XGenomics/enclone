@@ -482,8 +482,6 @@ impl EncloneControl {
             WALLCLOCK += used + used2;
         }
 
-        // Get unaccounted time.
-
         // Report unaccounted time.
 
         if self.comp && self.unaccounted && msg != "total" {
