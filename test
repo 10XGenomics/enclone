@@ -6,6 +6,8 @@
 # Run cargo t and other tests which it's not clear how to encapsulate within cargo t.  This
 # also does some tidying and reports time used.  Note that the effect of cargo t is defined 
 # by .cargo/config.
+#
+# If you want to run this over and over to look for sporadic failures, use ./testtest.
 
 ##### GET START TIME #####
 
