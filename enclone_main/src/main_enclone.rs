@@ -57,6 +57,8 @@ use vector_utils::*;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) {
+    let tall = Instant::now();
+
     // Process SOURCE args.
 
     let mut args2 = vec![args[0].clone()];
@@ -89,6 +91,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Set up stuff, read args, etc.
 
     let mut ctl = EncloneControl::default();
+    ctl.start_time = Some(tall.clone());
     for i in 0..args.len() {
         let arg = &args[i];
         if arg == "PROFILE" {
@@ -130,7 +133,6 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         start_profiling(&b);
     }
-    let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {

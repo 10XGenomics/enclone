@@ -414,6 +414,7 @@ pub struct ParseableOpt {
 
 #[derive(Default)]
 pub struct EncloneControl {
+    pub start_time: Option<Instant>,      // enclone start time
     pub gen_opt: GeneralOpt,              // miscellaneous general options
     pub plot_opt: PlotOpt,                // plot options
     pub pretty: bool,                     // use escape characters to enhance view
@@ -421,6 +422,7 @@ pub struct EncloneControl {
     pub force: bool,                      // make joins even if redundant
     pub comp: bool,                       // print computational performance stats
     pub comp2: bool,                      // print more detailed computational performance stats
+    pub unaccounted: bool,                // show unaccounted time at each step
     pub comp_enforce: bool,               // comp plus enforce no unaccounted time
     pub debug_table_printing: bool,       // turn on debugging for table printing
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
@@ -477,6 +479,19 @@ impl EncloneControl {
 
         unsafe {
             WALLCLOCK += used + used2;
+        }
+
+        // Report unaccounted time.
+
+        if self.comp && self.unaccounted && msg != "total" {
+            let delta;
+            unsafe {
+                delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
+            }
+            let deltas = format!("{:.2}", delta);
+            if deltas != "0.00" {
+                println!("used {} seconds unaccounted for", deltas);
+            }
         }
     }
 }

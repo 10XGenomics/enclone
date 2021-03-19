@@ -458,6 +458,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "UMI_RATIO_FILT_MARK",
             &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
         ),
+        ("UNACCOUNTED", &mut ctl.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
         ("WEAK", &mut ctl.gen_opt.weak),
