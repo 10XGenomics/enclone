@@ -201,6 +201,8 @@ pub fn run_test(
                             test,
                             local_pre_arg
                         );
+                        fwriteln!(log, "stdout = {}", strme(&new.stdout));
+                        fwriteln!(log, "stderr = {}", strme(&new.stderr));
                     } else {
                         *ok = true;
                     }
