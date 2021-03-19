@@ -140,8 +140,11 @@ pub fn main_enclone(args: &Vec<String>) {
         if args[i] == "PRINT_CPU_INFO" {
             print_cpu_info = true;
         }
-        if args[i] == "COMP" {
+        if args[i] == "COMP" || args[i] == "COMPE" {
             comp = true;
+        }
+        if args[i] == "COMPE" {
+            ctl.comp_enforce = true;
         }
         if args[i] == "COMP2" {
             comp2 = true;
@@ -941,12 +944,22 @@ pub fn main_enclone(args: &Vec<String>) {
     unsafe {
         delta = elapsed(&tall) - WALLCLOCK;
     }
+    let deltas = format!("{:.2}", delta);
     ctl.perf_stats(&tall, "total");
     if ctl.comp {
-        println!("used {:.2} seconds unaccounted for", delta);
+        println!("used {} seconds unaccounted for", deltas);
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
-
+    if ctl.comp_enforce {
+        if deltas != "0.00" {
+            eprintln!(
+                "\nUnaccounted time = {} seconds, but COMPE option required that it \
+                be zero.\n",
+                deltas
+            );
+            std::process::exit(1);
+        }
+    }
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if print_cpu || print_cpu_info {
         let f = open_for_read!["/proc/stat"];

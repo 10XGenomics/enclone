@@ -421,6 +421,7 @@ pub struct EncloneControl {
     pub force: bool,                      // make joins even if redundant
     pub comp: bool,                       // print computational performance stats
     pub comp2: bool,                      // print more detailed computational performance stats
+    pub comp_enforce: bool,               // comp plus enforce no unaccounted time
     pub debug_table_printing: bool,       // turn on debugging for table printing
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics

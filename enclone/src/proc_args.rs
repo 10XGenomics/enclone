@@ -555,6 +555,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let set_nothing_simple = [
         "CELLRANGER",
         "COMP",
+        "COMPE",
         "COMP2",
         "CTRLC",
         "DUMP_INTERNAL_IDS",
