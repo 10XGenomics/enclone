@@ -1,0 +1,201 @@
+// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+
+use crate::defs::EncloneControl;
+use string_utils::*;
+use vector_utils::*;
+
+#[derive(Clone)]
+pub struct LinearCondition {
+    pub coeff: Vec<f64>,  // left hand side (lhs) coefficients
+    pub var: Vec<String>, // left hand side variables (parallel to coefficients)
+    pub rhs: f64,         // right hand side; sum of lhs must exceed rhs
+    pub sense: String,    // le, ge, lt, gt
+}
+
+impl LinearCondition {
+    pub fn n(&self) -> usize {
+        self.coeff.len()
+    }
+
+    pub fn new(x: &str) -> LinearCondition {
+        let y = x.replace(" ", "");
+        let lhs: String;
+        let mut rhs: String;
+        let sense: String;
+        if y.contains(">=") {
+            lhs = y.before(">=").to_string();
+            rhs = y.after(">=").to_string();
+            sense = "ge".to_string();
+        } else if y.contains('≥') {
+            lhs = y.before("≥").to_string();
+            rhs = y.after("≥").to_string();
+            sense = "ge".to_string();
+        } else if y.contains("<=") {
+            lhs = y.before("<=").to_string();
+            rhs = y.after("<=").to_string();
+            sense = "le".to_string();
+        } else if y.contains('≤') {
+            lhs = y.before("≤").to_string();
+            rhs = y.after("≤").to_string();
+            sense = "le".to_string();
+        } else if y.contains('<') {
+            lhs = y.before("<").to_string();
+            rhs = y.after("<").to_string();
+            sense = "lt".to_string();
+        } else if y.contains('>') {
+            lhs = y.before(">").to_string();
+            rhs = y.after(">").to_string();
+            sense = "gt".to_string();
+        } else {
+            eprintln!(
+                "\nImproperly formatted condition, no inequality symbol, \
+                 please type \"enclone help display\": {}.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+        rhs = rhs.replace("E", "e");
+        if !rhs.contains('.') && !rhs.contains('e') {
+            rhs += ".0";
+        }
+        if !rhs.parse::<f64>().is_ok() {
+            eprintln!(
+                "\nImproperly formatted condition, right-hand side invalid: {}.\n",
+                x
+            );
+            std::process::exit(1);
+        }
+        let rhs = rhs.force_f64();
+        let mut parts = Vec::<String>::new();
+        let mut last = 0;
+        let lhsx = lhs.as_bytes();
+        let mut parens = 0 as isize;
+        for i in 0..lhsx.len() {
+            if i > 0 && parens == 0 && (lhsx[i] == b'+' || lhsx[i] == b'-') {
+                if lhsx[last] != b'+' {
+                    parts.push(stringme(&lhsx[last..i]));
+                } else {
+                    parts.push(stringme(&lhsx[last + 1..i]));
+                }
+                last = i;
+            }
+            if lhsx[i] == b'(' {
+                parens += 1;
+            } else if lhsx[i] == b')' {
+                parens -= 1;
+            }
+        }
+        let mut coeff = Vec::<f64>::new();
+        let mut var = Vec::<String>::new();
+        if lhsx[last] != b'+' {
+            parts.push(stringme(&lhsx[last..]));
+        } else {
+            parts.push(stringme(&lhsx[last + 1..]));
+        }
+        for i in 0..parts.len() {
+            parts[i] = parts[i].replace("(", "");
+            parts[i] = parts[i].replace(")", "");
+            if parts[i].contains('*') {
+                let mut coeffi = parts[i].before("*").to_string();
+                let vari = parts[i].after("*");
+                if !coeffi.contains('.') && !coeffi.contains('e') {
+                    coeffi += ".0";
+                }
+                if !coeffi.parse::<f64>().is_ok() {
+                    eprintln!(
+                        "\nImproperly formatted condition, coefficient {} is invalid: {}.\n",
+                        coeffi, x
+                    );
+                    std::process::exit(1);
+                }
+                coeff.push(coeffi.force_f64());
+                var.push(vari.to_string());
+            } else {
+                let mut coeffi = 1.0;
+                let mut start = 0;
+                if parts[i].starts_with('-') {
+                    coeffi = -1.0;
+                    start = 1;
+                }
+                coeff.push(coeffi);
+                var.push(parts[i][start..].to_string());
+            }
+        }
+        LinearCondition {
+            coeff: coeff,
+            var: var,
+            rhs: rhs,
+            sense: sense,
+        }
+    }
+
+    pub fn satisfied(&self, val: &Vec<f64>) -> bool {
+        let mut lhs = 0.0;
+        for i in 0..self.coeff.len() {
+            lhs += self.coeff[i] * val[i];
+        }
+        if self.sense == "lt".to_string() {
+            return lhs < self.rhs;
+        } else if self.sense == "gt".to_string() {
+            return lhs > self.rhs;
+        } else if self.sense == "le".to_string() {
+            return lhs <= self.rhs;
+        } else {
+            return lhs >= self.rhs;
+        }
+    }
+
+    pub fn require_valid_variables(&self, ctl: &EncloneControl) {
+        let lvars = &ctl.clono_print_opt.lvars;
+        let mut lvars0 = Vec::<String>::new();
+        let exclude = vec![
+            "datasets",
+            "donors",
+            "near",
+            "far",
+            "dref",
+            "dref_aa",
+            "n_gex_cell",
+            "n_gex",
+            "n_b",
+            "clust",
+            "cred",
+            "type",
+            "gex",
+            "gex_min",
+            "gex_max",
+            "gex_mean",
+            "gex_sum",
+            "entropy",
+            "ext",
+        ];
+        for j in 0..lvars.len() {
+            let mut ok = true;
+            for m in 0..exclude.len() {
+                if lvars[j] == exclude[m] {
+                    ok = false;
+                }
+            }
+            if lvars[j].starts_with("g") && lvars[j].after("g").parse::<usize>().is_ok() {
+                ok = false;
+            }
+            if ok {
+                let mut x = lvars[j].clone();
+                if x.contains(":") {
+                    x = x.before(":").to_string();
+                }
+                lvars0.push(x);
+            }
+        }
+        unique_sort(&mut lvars0);
+        for i in 0..self.var.len() {
+            if !bin_member(&lvars0, &self.var[i]) {
+                eprintln!(
+                    "\nFound invalid variable {} in linear condition.\n",
+                    self.var[i]
+                );
+                std::process::exit(1);
+            }
+        }
+    }
+}

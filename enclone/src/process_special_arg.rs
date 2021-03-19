@@ -4,6 +4,7 @@
 
 use crate::proc_args2::*;
 use enclone_core::defs::*;
+use enclone_core::linear_condition::*;
 use evalexpr::*;
 use io_utils::*;
 use regex::Regex;

@@ -4,6 +4,7 @@ pub mod allowed_vars;
 pub mod copy_for_enclone;
 pub mod defs;
 pub mod join_one;
+pub mod linear_condition;
 pub mod mammalian_fixed_len;
 pub mod print_tools;
 pub mod slurp;
