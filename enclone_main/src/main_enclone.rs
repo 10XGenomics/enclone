@@ -919,6 +919,10 @@ pub fn main_enclone(args: &Vec<String>) {
                 be zero.\n",
                 deltas
             );
+            eprintln!(
+                "Note that this may fail for a small fraction of runs, even though \
+                nothing is wrong.\n"
+            );
             std::process::exit(1);
         }
     }
