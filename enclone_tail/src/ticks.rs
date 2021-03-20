@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+// Find tick marks.
+
 use string_utils::*;
 
 // Given x ≠ 0, find r and s such that x = r * 10^s, and 1.0 <= |r| < 10.
