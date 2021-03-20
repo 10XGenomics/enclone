@@ -143,7 +143,7 @@ mod tests {
 
         // Other examples.
 
-        examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"])); // (not in control set)
+        examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"]));
 
         // Test examples.
 
