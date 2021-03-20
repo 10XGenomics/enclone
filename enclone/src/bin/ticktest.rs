@@ -135,7 +135,6 @@ fn main() {
     // Always choose tick marks that lie within the range.
 
     let mut examples = Vec::<(f32, f32)>::new();
-
     examples.push((-10.961007, -5.8206754));    // -10, -9, -8, -7, -6
     examples.push((0.05962117, 1.02));          // 0.2, 0.4, 0.6, 0.8, 1.0
     examples.push((1.2301,     1.68));          // 1.3, 1.4, 1.5, 1.6 (not in control set)
@@ -143,7 +142,6 @@ fn main() {
     examples.push((0.0,        8.16));          // 2, 4, 6, 8
     examples.push((0.98,       4.08));          // 1, 2, 3, 4
     examples.push((0.0,        0.0016109196));  // 0.0005, 0.0010, 0.0015
-
     let max_ticks = 5;
 
     println!("");
@@ -155,4 +153,27 @@ fn main() {
         println!("low = {}, high = {}, ticks = {}", low, high, t.iter().format(", "));
     }
     println!("==========================================================================\n");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_trace::*;
+    #[test]
+    fn test_ticks() {
+        PrettyTrace::new().on();
+        let max_ticks = 5;
+        let mut examples = Vec::<(f32, f32, Vec<f32>)>::new();
+        examples.push((-10.961007, -5.8206754, vec![-10.0, -9.0, -8.0, -7.0, -6.0]));
+        examples.push((0.05962117, 1.02, vec![0.2, 0.4, 0.6, 0.8, 1.0]));
+        examples.push((1.2301, 1.68, vec![1.3, 1.4, 1.5, 1.6])); // (not in control set)
+        examples.push((0.0, 462.06, vec![100, 200, 300, 400]));
+        examples.push((0.0, 8.16, vec![2.0, 4.0, 6.0, 8.0]));
+        examples.push((0.98, 4.08, vec![1.0, 2.0, 3.0, 4.0]));
+        examples.push((0.0, 0.0016109196, vec![0.0005, 0.0010, 0.0015]));
+        println!("low = {}, high = {}, ticks = {}", x.0, x.1, x.2.iter().format(", "));
+        for x in examples.iter() {
+            assert_eq!(ticks(x.0, x.1, max_ticks), x.2);
+        }
+    }
 }
