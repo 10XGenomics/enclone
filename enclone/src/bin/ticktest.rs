@@ -48,6 +48,11 @@ fn round(x: f64, p: i32) {
 */
 
 
+// Return n * 10^p, more exactly than n as f64 * 10.0_f64.powi(p).
+
+// fn exact_rep(n: usize, p: u32) -> f64 {
+
+
 fn main() {
     PrettyTrace::new().on();
 
@@ -140,6 +145,13 @@ fn main() {
                 if ns.len() > best && ns.len() <= max_ticks {
                     best = ns.len();
                     println!("\n{} = [{}] x 10^{}", ns.len(), ns.iter().format(", "), p);
+
+                    let mut nsx = Vec::<f64>::new();
+                    for i in 0..ns.len() {
+                        nsx.push(ns[i] as f64 * 10.0_f64.powi(p));
+                    }
+                    println!("\n{} = [{}]", nsx.len(), nsx.iter().format(", "));
+
                 } else {
                     let mut ns2 = Vec::<i32>::new();
                     for n in ns.iter() {
@@ -175,39 +187,4 @@ fn main() {
         println!("");
     }
     println!("==========================================================================\n");
-    
-
-
-    /*
-
-    if 0 == 0 { std::process::exit(0); }
-
-
-    // Round low up at that position to get first potential value.
-    //
-    // next = ceil(low * 10^-p) * 10^p
-    // next = a.b where a and b are integers
-
-    let n = ((low as f64) * 10.0_f64.powi(-p)).ceil() as isize;
-    printme!(n);
-
-    if 0 == 0 { std::process::exit(0); }
-    
-    let next = ((low as f64) * 10.0_f64.powi(-p)).ceil();
-    let mut next = (next * 10.0_f64.powi(p));
-    let mut nexts = Vec::<f64>::new();
-    nexts.push(next);
-    loop {
-        // next += 10.0_f64.powi(p);
-        printme!(powix(10.0_f64, p) + powix(10.0_f64, p) + powix(10.0_f64, p));
-        next += powix(10.0_f64, p);
-        if next > high as f64 {
-            break;
-        }
-        nexts.push(next);
-    }
-
-    println!("ticks = {}", nexts.iter().format(", "));
-    
-    */
 }
