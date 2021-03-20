@@ -18,3 +18,4 @@ pub mod print_stats;
 pub mod requirements;
 pub mod string_width;
 pub mod tail;
+pub mod ticks;
