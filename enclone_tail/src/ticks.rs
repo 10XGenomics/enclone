@@ -1,6 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
-
-// Find tick marks.
+//
+// Find tick marks, given a range on an axis, and a maximum number of ticks.
+// The ticks lie in the range, and if the left end of the range is zero, zero is not
+// included.
+//
+// This has been designed to approximately match the behavior of plotters 0.3.0 on a
+// set of test cases.
+//
+// Searching the internet for tick marks algorithm yields some other methods.
 
 use string_utils::*;
 
@@ -124,13 +131,22 @@ mod tests {
         PrettyTrace::new().on();
         let max_ticks = 5;
         let mut examples = Vec::<(f32, f32, Vec<&str>)>::new();
+
+        // Examples designed to match plotters behavior.
+
         examples.push((-10.961007, -5.8206754, vec!["-10", "-9", "-8", "-7", "-6"]));
         examples.push((0.05962117, 1.02, vec!["0.2", "0.4", "0.6", "0.8", "1.0"]));
-        examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"])); // (not in control set)
         examples.push((0.0, 462.06, vec!["100", "200", "300", "400"]));
         examples.push((0.0, 8.16, vec!["2", "4", "6", "8"]));
         examples.push((0.98, 4.08, vec!["1", "2", "3", "4"]));
         examples.push((0.0, 0.0016109196, vec!["0.0005", "0.0010", "0.0015"]));
+
+        // Other examples.
+
+        examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"])); // (not in control set)
+
+        // Test examples.
+
         for x in examples.iter() {
             let mut y = Vec::<String>::new();
             for m in x.2.iter() {
