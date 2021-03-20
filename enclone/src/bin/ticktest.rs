@@ -15,6 +15,7 @@ fn normalize_f32(x: f32, r: &mut f32, s: &mut isize) {
 
 // Return x^p more accurately then x.powi(p).
 
+/*
 fn powix(x: f64, p: i32) -> f64 {
     let mut y = 1.0_f64;
     let mut p = p;
@@ -31,6 +32,7 @@ fn powix(x: f64, p: i32) -> f64 {
     }
     y
 }
+*/
 
 /*
 fn round(x: f64, p: i32) {
@@ -53,18 +55,21 @@ fn main() {
 
     let mut examples = Vec::<(f32, f32)>::new();
 
-    examples.push((-10.961007, -5.8206754)); // -10, -9, -8, -7, -6
-    examples.push((0.05962117, 1.02));       // 0.2, 0.4, 0.6, 0.8, 1.0
-    examples.push((1.2301,     1.68));       // 1.3, 1.4, 1.5, 1.6
-    examples.push((0.0,        462.06));     // 100, 200, 300, 400
-    examples.push((0.0,        8.16));       // 2, 4, 6, 8
+    examples.push((-10.961007, -5.8206754));    // -10, -9, -8, -7, -6
+    examples.push((0.05962117, 1.02));          // 0.2, 0.4, 0.6, 0.8, 1.0
+    examples.push((1.2301,     1.68));          // 1.3, 1.4, 1.5, 1.6 (not in control set)
+    examples.push((0.0,        462.06));        // 100, 200, 300, 400
+    examples.push((0.0,        8.16));          // 2, 4, 6, 8
+    examples.push((0.98,       4.08));          // 1, 2, 3, 4
+    examples.push((0.0,        0.0016109196));  // 0.0005, 0.0010, 0.0015
+
+    let max_ticks = 5;
 
     println!("");
     for ex in 0..examples.len() {
 
         println!("==========================================================================\n");
 
-        let max_ticks = 5;
 
         let low = examples[ex].0;
         let high = examples[ex].1;
@@ -106,6 +111,7 @@ fn main() {
         // printme!(p);
     
 
+        let mut best = 0;
         for q in [p, p - 1].iter() {
             let p = *q;
             // println!("using p = {}", p);
@@ -131,7 +137,35 @@ fn main() {
                 ns.push(n);
             }
             if ns.len() > 1 {
-                println!("\n{} = [{}] x 10^{}", ns.len(), ns.iter().format(", "), p);
+                if ns.len() > best && ns.len() <= max_ticks {
+                    best = ns.len();
+                    println!("\n{} = [{}] x 10^{}", ns.len(), ns.iter().format(", "), p);
+                } else {
+                    let mut ns2 = Vec::<i32>::new();
+                    for n in ns.iter() {
+                        let n = *n;
+                        if n % 2 == 0 {
+                            ns2.push(n);
+                        }
+                    }
+                    if ns2.len() > best && ns2.len() <= max_ticks {
+                        let ns = ns2;
+                        best = ns.len();
+                        println!("\n{} = [{}] x 10^{}", ns.len(), ns.iter().format(", "), p);
+                    }
+                    let mut ns5 = Vec::<i32>::new();
+                    for n in ns.iter() {
+                        let n = *n;
+                        if n % 5 == 0 {
+                            ns5.push(n);
+                        }
+                    }
+                    if ns5.len() > best && ns5.len() <= max_ticks {
+                        let ns = ns5;
+                        best = ns.len();
+                        println!("\n{} = [{}] x 10^{}", ns.len(), ns.iter().format(", "), p);
+                    }
+                }
             }
             if ns.len() >= max_ticks {
                 break;
