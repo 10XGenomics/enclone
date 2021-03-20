@@ -68,30 +68,19 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
                 best_ns = ns.clone();
                 best_p = p;
             } else {
-                let mut ns2 = Vec::<i32>::new();
-                for n in ns.iter() {
-                    let n = *n;
-                    if n % 2 == 0 {
-                        ns2.push(n);
+                for div in [2, 5].iter() {
+                    let mut nsx = Vec::<i32>::new();
+                    for n in ns.iter() {
+                        let n = *n;
+                        if n % div == 0 {
+                            nsx.push(n);
+                        }
                     }
-                }
-                if ns2.len() > best && ns2.len() <= max_ticks {
-                    let ns = ns2;
-                    best = ns.len();
-                    best_ns = ns.clone();
-                    best_p = p
-                }
-                let mut ns5 = Vec::<i32>::new();
-                for n in ns.iter() {
-                    let n = *n;
-                    if n % 5 == 0 {
-                        ns5.push(n);
+                    if nsx.len() > best && nsx.len() <= max_ticks {
+                        best = nsx.len();
+                        best_ns = nsx.clone();
+                        best_p = p
                     }
-                }
-                if ns5.len() > best && ns5.len() <= max_ticks {
-                    let ns = ns5;
-                    best_ns = ns.clone();
-                    best_p = p;
                 }
             }
         }
