@@ -67,7 +67,6 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
                 best = ns.len();
                 best_ns = ns.clone();
                 best_p = p;
-
             } else {
                 let mut ns2 = Vec::<i32>::new();
                 for n in ns.iter() {
@@ -120,45 +119,16 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
                     zeros += "0";
                 }
                 tick = format!("0.{}{}", zeros, tick);
-            } 
+            }
         }
         ticks.push(tick);
     }
     ticks
 }
 
-/*
-fn main() {
-    PrettyTrace::new().on();
-
-    // Always choose tick marks that lie within the range.
-
-    let mut examples = Vec::<(f32, f32)>::new();
-    examples.push((-10.961007, -5.8206754));    // -10, -9, -8, -7, -6
-    examples.push((0.05962117, 1.02));          // 0.2, 0.4, 0.6, 0.8, 1.0
-    examples.push((1.2301,     1.68));          // 1.3, 1.4, 1.5, 1.6 (not in control set)
-    examples.push((0.0,        462.06));        // 100, 200, 300, 400
-    examples.push((0.0,        8.16));          // 2, 4, 6, 8
-    examples.push((0.98,       4.08));          // 1, 2, 3, 4
-    examples.push((0.0,        0.0016109196));  // 0.0005, 0.0010, 0.0015
-    let max_ticks = 5;
-
-    println!("");
-    for ex in 0..examples.len() {
-        println!("==========================================================================");
-        let low = examples[ex].0;
-        let high = examples[ex].1;
-        let t = ticks(low, high, max_ticks);
-        println!("low = {}, high = {}, ticks = {}", low, high, t.iter().format(", "));
-    }
-    println!("==========================================================================\n");
-}
-*/
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use itertools::*;
     use pretty_trace::*;
     #[test]
     fn test_ticks() {
@@ -177,7 +147,6 @@ mod tests {
             for m in x.2.iter() {
                 y.push(m.to_string());
             }
-            println!("low = {}, high = {}, ticks = {}", x.0, x.1, y.iter().format(", "));
             assert_eq!(ticks(x.0, x.1, max_ticks), y);
         }
     }
