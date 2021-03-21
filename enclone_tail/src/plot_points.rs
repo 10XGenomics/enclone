@@ -3,12 +3,21 @@
 // Plot a given set of points.  This provides a function plot_points, built on top of the crate
 // plotters 0.3.0.  That crate provides some useful capabilities, but does not include the
 // full fledged ability to plot points.  The devil is in the details, and specifically in how
-// exactly one sets the precision of tick mark labels, and how one positions axis labels so as 
+// exactly one sets the precision of tick mark labels, and how one positions axis labels so as
 // to not overlap the tick mark labels and be the right distance from them.
 //
 // At some point we may wish to switch to using a different plotting crate or build our own.
+// The string_width and ticks crates we have now might be part of this.
+//
+// TO DO:
+// - Does the code work if there is only one point?
+// - How about the one point (0,0)?
+// - Should have some "no crash" tests?
 
+use crate::string_width::*;
+use crate::ticks::*;
 use plotters::prelude::*;
+use std::cmp::max;
 
 pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filename: &str) {
     // Requirements.
@@ -31,7 +40,7 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     let title_font_size = 30;
     let font = "arial";
     let tic_font_size = 20;
-    let axis_tics = 5;
+    let axis_ticks = 5;
     let point_size = 4;
     let margin = 25;
     let xsize = 800;
@@ -74,30 +83,25 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
         yhigh *= 1.0 - range_ext;
     }
 
-    // Determine precision for axes tics.
+    // Get the tick mark labels.  Note that these are not the actual labels used by plotters.
+    // Rather, these are our best approximation to them, and these enable us to set the precisions
+    // of the tick lables and to appropriately position the  axis labels relative to them.
+
+    let x_ticks = ticks(xlow, xhigh, axis_ticks);
+    let y_ticks = ticks(ylow, yhigh, axis_ticks);
+    assert!(!x_ticks.is_empty());
+    assert!(!y_ticks.is_empty());
+
+    // Determine precision for axes ticks.
 
     let (mut x_precision, mut y_precision) = (0, 0);
-    for pass in 1..=2 {
-        let m = if pass == 1 {
-            xlow.abs().max(xhigh.abs())
-        } else {
-            ylow.abs().max(yhigh.abs())
-        };
-        let mut extra = 2;
-        if m > 0.0 {
-            if m > 1.0 {
-                extra = 0;
-            }
-            if m > 10.0 {
-                extra = 0;
-            }
-        }
-        let p = -m.log10() as usize + extra;
-        if pass == 1 {
-            x_precision = p;
-        } else {
-            y_precision = p;
-        }
+    let x_dot = x_ticks[0].find('.');
+    if x_dot.is_some() {
+        x_precision = x_ticks[0].len() - x_dot.unwrap() - 1;
+    }
+    let y_dot = y_ticks[0].find('.');
+    if y_dot.is_some() {
+        y_precision = y_ticks[0].len() - y_dot.unwrap() - 1;
     }
 
     // Determine the area size for the x label.
@@ -106,18 +110,15 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
 
     // Determine the area size for the y label.
 
-    let mut y_digits_to_left = 1;
-    if yhigh.abs() > 1.0 {
-        y_digits_to_left = yhigh.abs().log10().floor() as usize + 1
+    let mut max_ytick_width = 0;
+    for t in y_ticks.iter() {
+        max_ytick_width = max(
+            max_ytick_width,
+            arial_width(&*t, tic_font_size).ceil() as usize,
+        );
     }
-    let mut y_len = y_digits_to_left + y_precision;
-    if ylow < 0.0 {
-        y_len += 1;
-    }
-    let y_label_area_size = y_len as f64 * (tic_font_size as f64 * 0.6)
-        + tic_font_size as f64 * 0.2
-        + tic_font_size as f64;
-    let y_label_area_size = y_label_area_size as u32 + 5;
+    let extra = (tic_font_size as f32 * 1.5) as usize;
+    let y_label_area_size = (max_ytick_width + extra) as u32;
 
     // Make the plot.
 
@@ -131,9 +132,9 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
         .unwrap();
     chart
         .configure_mesh()
-        .label_style((font, tic_font_size).into_font())
-        .x_labels(axis_tics)
-        .y_labels(axis_tics)
+        .label_style((font, tic_font_size as u32).into_font())
+        .x_labels(axis_ticks)
+        .y_labels(axis_ticks)
         .x_label_formatter(&|x| format!("{:.1$}", x, x_precision))
         .y_label_formatter(&|x| format!("{:.1$}", x, y_precision))
         .x_desc(xvar)
