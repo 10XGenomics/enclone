@@ -22,9 +22,12 @@ fn normalize_f32(x: f32, r: &mut f32, s: &mut isize) {
 
 pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
     assert!(low <= high);
+    if low == high {
+        return vec![format!("{}", low)];
+    }
     let mut low = low;
     if low == 0.0 {
-        low += 0.00001;
+        low = std::f32::MIN_POSITIVE;
     }
 
     // Find ri and si such that:
