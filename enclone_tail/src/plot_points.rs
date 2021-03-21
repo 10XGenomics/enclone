@@ -84,6 +84,7 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     }
 
     // Get the tick mark labels.  Note that these are not the actual labels used by plotters.
+    // (We could not figure out exactly how plotters determines the labels.)
     // Rather, these are our best approximation to them, and these enable us to set the precisions
     // of the tick lables and to appropriately position the  axis labels relative to them.
 
