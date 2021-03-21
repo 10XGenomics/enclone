@@ -1,4 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+//
+// Plot a given set of points.  This provides a function plot_points, built on top of the crate
+// plotters 0.3.0.  That crate provides some useful capabilities, but does not include the
+// full fledged ability to plot points.  The devil is in the details, and specifically in how
+// exactly one sets the precision of tick mark labels, and how one positions axis labels so as 
+// to not overlap the tick mark labels and be the right distance from them.
+//
+// At some point we may wish to switch to using a different plotting crate or build our own.
 
 use plotters::prelude::*;
 
