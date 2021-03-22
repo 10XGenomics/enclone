@@ -27,7 +27,7 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
     }
     let mut low = low;
     if low == 0.0 {
-        low = std::f32::MIN_POSITIVE;
+        low = std::f32::MIN_POSITIVE * 1000.0; // tests fail without some multiplier
     }
 
     // Find ri and si such that:
@@ -56,7 +56,8 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
         }
     }
 
-    // Find best ticks.
+    // Find best ticks.  The result of this is a an integer vector best_ns and an integer best_p.
+    // The ticks are best_ns x 10^best_p.
 
     let mut best = 0;
     let mut best_ns = Vec::<i32>::new();
@@ -98,6 +99,9 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
             break;
         }
     }
+
+    // Format the ticks.
+
     let mut ticks = Vec::<String>::new();
     let p = best_p;
     for x in best_ns.iter() {
@@ -111,7 +115,8 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
             let q = -p as usize;
             if q < tick.len() {
                 let t = tick.as_bytes();
-                tick = format!("{}.{}", strme(&t[0..q]), strme(&t[q..t.len()]));
+                let r = t.len() - q;
+                tick = format!("{}.{}", strme(&t[0..r]), strme(&t[r..t.len()]));
             } else {
                 let mut zeros = String::new();
                 for _ in 0..q - tick.len() {
@@ -147,6 +152,7 @@ mod tests {
         // Other examples.
 
         examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"]));
+        examples.push((2.1266, 2.2134001, vec!["2.14", "2.16", "2.18", "2.20"]));
 
         // Test examples.
 
