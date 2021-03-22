@@ -112,7 +112,12 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String
         println!("ticks = [{}] x 10^{}", ns.iter().format(", "), p);
     }
     for x in ns.iter() {
-        let x = *x;
+        let mut x = *x;
+        let mut neg = false;
+        if x < 0 {
+            neg = true;
+            x = -x;
+        }
         let mut tick = format!("{}", x);
         if p >= 0 {
             for _ in 0..p {
@@ -131,6 +136,9 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String
                 }
                 tick = format!("0.{}{}", zeros, tick);
             }
+        }
+        if neg {
+            tick = format!("-{}", tick);
         }
         ticks.push(tick);
     }
