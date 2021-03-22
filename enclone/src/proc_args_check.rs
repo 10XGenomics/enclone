@@ -345,7 +345,7 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
     for x in cols.iter() {
         let mut ok = false;
         // Note that the following test is probably redundant with some of the testing below.
-        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends) {
+        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, false) {
             ok = true;
         }
         for i in 0..ctl.gen_opt.info_fields.len() {
@@ -493,6 +493,7 @@ pub fn check_one_lvar(
     gex_info: &GexInfo,
     nd_used: &mut bool,
     ends: &Vec<String>,
+    is_lvar: bool,
 ) -> bool {
     for i in 0..ctl.gen_opt.info_fields.len() {
         if *x == ctl.gen_opt.info_fields[i] {
@@ -631,9 +632,12 @@ pub fn check_one_lvar(
                 end_ok = true;
             }
         }
-        if !end_ok && !x.starts_with("n_") && x != "" {
+        if end_ok {
+            return false;
+        }
+        if is_lvar && !x.starts_with("n_") && x != "" {
             eprintln!(
-                "\nUnrecognized variable {} for LVARS or PCOLS.  Please type \
+                "\nUnrecognized variable {} for LVARS.  Please type \
                  \"enclone help lvars\".\n",
                 x
             );
@@ -675,7 +679,7 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
             eprintln!("\nFields ending with _cell cannot be used in LVARS or LVARSP.\n");
             std::process::exit(1);
         }
-        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends) {
+        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, true) {
             to_check.push(x.clone());
         }
     }
