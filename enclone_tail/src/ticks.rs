@@ -1,8 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
 // Find tick marks, given a range on an axis, and a maximum number of ticks.
-// The ticks lie in the range, and if the left end of the range is zero, zero is not
-// included.
+// The ticks lie in the range, and if the left end of the range is zero, zero is not included.
 //
 // This has been designed to approximately match the behavior of plotters 0.3.0 on a
 // set of test cases.
@@ -110,7 +109,7 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
     let p = best_p;
     if verbose {
         use itertools::Itertools;
-        println!("ticks = {} x 10^p", best_ns.iter().format(", "), p);
+        println!("ticks = {} x 10^{}", best_ns.iter().format(", "), p);
     }
     for x in best_ns.iter() {
         let x = *x;
