@@ -20,7 +20,7 @@ fn normalize_f32(x: f32, r: &mut f32, s: &mut isize) {
 }
 
 pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
-    let mut verbose = false;
+    let verbose = false;
     assert!(low <= high);
     if verbose {
         println!("\nlow = {}, high = {}", low, high);
