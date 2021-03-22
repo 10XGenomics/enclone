@@ -638,23 +638,28 @@ pub fn check_one_lvar(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+pub fn build_ends() -> Vec<String> {
+    let mut ends = Vec::<String>::new();
+    let ends0 = [
+        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
+    ];
+    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+    for x in ends0.iter() {
+        for y in suffixes.iter() {
+            ends.push(format!("{}{}", x, y));
+        }
+    }
+    ends
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Check lvars args.
 
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let t = Instant::now();
     let mut to_check = Vec::<String>::new();
-    let mut ends = Vec::<String>::new();
-    {
-        let ends0 = [
-            "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
-        ];
-        let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
-        for x in ends0.iter() {
-            for y in suffixes.iter() {
-                ends.push(format!("{}{}", x, y));
-            }
-        }
-    }
+    let ends = build_ends();
     let mut nd_used = false;
     for x in ctl.clono_print_opt.lvars.iter() {
         if x.ends_with("_cell") {
