@@ -65,7 +65,7 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
     let mut best = 0;
     let mut best_ns = Vec::<i32>::new();
     let mut best_p = 0_i32;
-    for q in [p, p - 1].iter() {
+    for q in [p, p - 1, p - 2].iter() {
         let (s1, s2) = (s1 as i32, s2 as i32);
         let p = *q as i32;
         let r1 = r1 * 10.0_f32.powi(s1 - p);
@@ -155,6 +155,7 @@ mod tests {
         examples.push((0.0, 8.16, vec!["2", "4", "6", "8"]));
         examples.push((0.98, 4.08, vec!["1", "2", "3", "4"]));
         examples.push((0.0, 0.0016109196, vec!["0.0005", "0.0010", "0.0015"]));
+        examples.push((96.236, 101.08199, vec!["97", "98", "99", "100", "101"]));
 
         // Other examples.
 
