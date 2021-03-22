@@ -924,4 +924,28 @@ fn test_dependency_structure() {
             std::process::exit(1);
         }
     }
+
+    // Don't allow any crate except enclone_main to reach the enclone crate.
+
+    let top = dir_list("..");
+    for d in top.iter() {
+        if d.starts_with("enclone") && d != "enclone_main" {
+            let toml = format!("../{}/Cargo.toml", d);
+            if path_exists(&toml) {
+                let f = open_for_read![&toml];
+                for line in f.lines() {
+                    let s = line.unwrap();
+                    if s.starts_with("enclone =") {
+                        eprintln!(
+                            "\nThe crate {} has the crate enclone as a dependency.  In an \
+                            attempt to reduce\ncompile time, we only allow this for the crate \
+                            enclone_main.\n",
+                            d
+                        );
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
 }
