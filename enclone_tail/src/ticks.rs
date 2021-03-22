@@ -21,7 +21,11 @@ fn normalize_f32(x: f32, r: &mut f32, s: &mut isize) {
 }
 
 pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
+    let mut verbose = false;
     assert!(low <= high);
+    if verbose {
+        println!("\nlow = {}, high = {}", low, high);
+    }
     if low == high {
         return vec![format!("{}", low)];
     }
@@ -104,6 +108,10 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
 
     let mut ticks = Vec::<String>::new();
     let p = best_p;
+    if verbose {
+        use itertools::Itertools;
+        println!("ticks = {} x 10^p", best_ns.iter().format(", "), p);
+    }
     for x in best_ns.iter() {
         let x = *x;
         let mut tick = format!("{}", x);
