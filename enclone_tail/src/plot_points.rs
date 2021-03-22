@@ -8,11 +8,6 @@
 //
 // At some point we may wish to switch to using a different plotting crate or build our own.
 // The string_width and ticks crates we have now might be part of this.
-//
-// TO DO:
-// - Does the code work if there is only one point?
-// - How about the one point (0,0)?
-// - Should have some "no crash" tests?
 
 use crate::string_width::*;
 use crate::ticks::*;
