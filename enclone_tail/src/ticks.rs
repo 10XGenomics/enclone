@@ -19,8 +19,7 @@ fn normalize_f32(x: f32, r: &mut f32, s: &mut isize) {
     *r = x * 10.0_f32.powi(-(*s as i32));
 }
 
-pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
-    let verbose = false;
+pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String> {
     assert!(low <= high);
     if verbose {
         println!("\nlow = {}, high = {}", low, high);
@@ -59,8 +58,8 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
         }
     }
 
-    // Find best ticks.  The result of this is a an integer vector best_ns and an integer best_p.
-    // The ticks are best_ns x 10^best_p.
+    // Find best ticks.  The result of this is a an integer vector ns and an integer p.
+    // The ticks are ns x 10^p.
 
     let mut best = 0;
     let mut best_ns = Vec::<i32>::new();
@@ -102,16 +101,17 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize) -> Vec<String> {
             break;
         }
     }
+    let ns = best_ns;
+    let p = best_p;
 
     // Format the ticks.
 
     let mut ticks = Vec::<String>::new();
-    let p = best_p;
     if verbose {
         use itertools::Itertools;
-        println!("ticks = {} x 10^{}", best_ns.iter().format(", "), p);
+        println!("ticks = [{}] x 10^{}", ns.iter().format(", "), p);
     }
-    for x in best_ns.iter() {
+    for x in ns.iter() {
         let x = *x;
         let mut tick = format!("{}", x);
         if p >= 0 {
@@ -161,6 +161,9 @@ mod tests {
 
         examples.push((1.2301, 1.68, vec!["1.3", "1.4", "1.5", "1.6"]));
         examples.push((2.1266, 2.2134001, vec!["2.14", "2.16", "2.18", "2.20"]));
+        examples.push((-2.0, 1.0, vec!["-2", "-1", "0", "1"]));
+        examples.push((-0.01, 0.1, vec!["0.00", "0.05", "0.10"]));
+        examples.push((-0.2, 0.1, vec!["-0.2", "-0.1", "0.0", "0.1"]));
 
         // Test examples.
 
@@ -169,7 +172,9 @@ mod tests {
             for m in x.2.iter() {
                 y.push(m.to_string());
             }
-            assert_eq!(ticks(x.0, x.1, max_ticks), y);
+            if ticks(x.0, x.1, max_ticks, false) != y {
+                assert_eq!(ticks(x.0, x.1, max_ticks, true), y);
+            }
         }
     }
 }

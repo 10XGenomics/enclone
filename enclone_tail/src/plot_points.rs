@@ -83,8 +83,8 @@ pub fn plot_points(points: &Vec<(f32, f32)>, xvar: &str, yvar: &str, svg_filenam
     // Rather, these are our best approximation to them, and these enable us to set the precisions
     // of the tick lables and to appropriately position the  axis labels relative to them.
 
-    let x_ticks = ticks(xlow, xhigh, axis_ticks);
-    let y_ticks = ticks(ylow, yhigh, axis_ticks);
+    let x_ticks = ticks(xlow, xhigh, axis_ticks, false);
+    let y_ticks = ticks(ylow, yhigh, axis_ticks, false);
     assert!(!x_ticks.is_empty());
     assert!(!y_ticks.is_empty());
 
