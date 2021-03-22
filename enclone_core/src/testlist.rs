@@ -511,7 +511,7 @@ pub const CRASH_DATA: &str = "BCR=\"45987;123085\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
 pub const CRASH_SETS: [&str; 2] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
-    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2",
+    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
