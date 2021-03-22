@@ -481,19 +481,25 @@ pub fn check_cvars(ctl: &EncloneControl) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Check lvars args.
 
 pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     let t = Instant::now();
     let mut to_check = Vec::<String>::new();
-    let ends0 = [
-        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
-    ];
-    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
     let mut ends = Vec::<String>::new();
-    for x in ends0.iter() {
-        for y in suffixes.iter() {
-            ends.push(format!("{}{}", x, y));
+    {
+        let ends0 = [
+            "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
+        ];
+        let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
+        for x in ends0.iter() {
+            for y in suffixes.iter() {
+                ends.push(format!("{}{}", x, y));
+            }
         }
     }
     let mut nd_used = false;
