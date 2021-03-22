@@ -340,8 +340,14 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
     unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
+    let ends = build_ends();
+    let mut nd_used = false;
     for x in cols.iter() {
         let mut ok = false;
+        // Note that the following test is probably redundant with some of the testing below.
+        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends) {
+            ok = true;
+        }
         for i in 0..ctl.gen_opt.info_fields.len() {
             if *x == ctl.gen_opt.info_fields[i] {
                 ok = true;
@@ -615,7 +621,10 @@ pub fn check_one_lvar(
         std::process::exit(1);
     }
     let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-    if !(LVARS_ALLOWED.contains(&x) || gpvar) {
+    if gpvar {
+        return true;
+    }
+    if !LVARS_ALLOWED.contains(&x) {
         let mut end_ok = false;
         for i in 0..ends.len() {
             if x.ends_with(&ends[i]) {
