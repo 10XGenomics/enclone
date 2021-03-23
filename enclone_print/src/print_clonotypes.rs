@@ -362,6 +362,7 @@ pub fn print_clonotypes(
                         &rsi,
                         &mut out_data,
                         &mut mlog,
+                        &extra_args,
                     );
                 }
 
@@ -683,6 +684,7 @@ pub fn print_clonotypes(
                         &nd_fields,
                         &peer_groups,
                         &extra_parseables,
+                        &extra_args,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {

@@ -242,14 +242,9 @@ pub fn start_gen(
     rsi: &ColInfo,
     out_data: &mut Vec<HashMap<String, String>>,
     mut mlog: &mut Vec<u8>,
+    extra_args: &Vec<String>,
 ) {
     let pcols_sort = &ctl.parseable_opt.pcols_sort;
-    let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
-        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
-    }
-    unique_sort(&mut extra_args);
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
             if ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0 {

@@ -45,14 +45,9 @@ pub fn proc_cvar2(
     r_max: usize,
     r_mean: usize,
     rtot: usize,
+    extra_args: &Vec<String>,
 ) -> bool {
     let cvars = &ctl.clono_print_opt.cvars;
-    let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
-        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
-    }
-    unique_sort(&mut extra_args);
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
