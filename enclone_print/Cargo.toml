@@ -20,7 +20,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
-bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
+bio = ">=0.33"
 bytes = ">=0.5.5, <2"
 byteorder = "1.4.2"
 debruijn = "0.3.2"
@@ -44,5 +44,5 @@ serde_json = "*"
 stats_utils = "0.1"
 string_utils = "0.1"
 tables = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e927b6e46d1c876f02d40e01f621cd91c01c4c7" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
 vector_utils = "0.1.3"
