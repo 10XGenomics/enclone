@@ -442,9 +442,13 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.begin_doc("lvars");
         h.print("\n\\bold{lead column options}\n\n");
         h.print(
-            "These options define lead variables, which correspond to columns that \
+            "These options define lead variables, which are variables that are computed for each \
+             exact subclonotype, and if using the \\bold{PER_CELL} option, also computed for each \
+             cell.  In addition, lead variables can be used for parseable output.\n\n\
+             Lead variables appear in columns that \
              appear once in each clonotype, on the left side, and have one entry for each \
-             exact subclonotype row.  Please note that for medians of integers, \
+             exact subclonotype row.\n\n\
+             Note that for medians of integers, \
              we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
