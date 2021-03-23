@@ -913,10 +913,10 @@ pub fn main_enclone(args: &Vec<String>) {
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
     if ctl.comp_enforce {
-        if deltas != "0.00" {
+        if deltas.force_f64() > 0.02 {
             eprintln!(
                 "\nUnaccounted time = {} seconds, but COMPE option required that it \
-                be zero.\n",
+                be at most 0.02.\n",
                 deltas
             );
             eprintln!(
