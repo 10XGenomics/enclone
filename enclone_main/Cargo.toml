@@ -9,6 +9,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
+license-file = "../LICENSE.txt"
 publish = false
 
 # Please do not edit crate versions within this file.  Instead edit the file master.toml
@@ -39,7 +40,8 @@ stats_utils = "0.1"
 stirling_numbers = "0.1.3"
 string_utils = "0.1"
 tables = "0.1"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e927b6e46d1c876f02d40e01f621cd91c01c4c7" }
+tilde-expand = "0.1.1"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
 vector_utils = "0.1.3"
 
 [dev-dependencies]

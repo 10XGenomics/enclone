@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 198] = [
+pub const TESTS: [&str; 202] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -491,6 +491,14 @@ pub const TESTS: [&str; 198] = [
     r###"BCR=123085 INFO=testx/inputs/123085_info.csv LVARSP=funny EXPECT_OK"###,
     // 198. test TREE=n,cdr2_aa1
     r###"BCR=123085 AMINO=cdr3 CDR3=CAVTIFGVRTALPYYYALDVW TREE=n,cdr2_aa1"###,
+    // 199. test KEEP_CLONO_IF_CELL_MEAN with INFO
+    r###"BCR=123085 INFO=testx/inputs/123085_info.csv LVARSP=moo KEEP_CLONO_IF_CELL_MEAN="moo>0""###,
+    // 200. test SCAN_EXACT
+    r###"BCR=123085 GEX=123217 LVARSP=IGHV1-69D_g_μ,IGHV3-64D_g_μ MIN_CELLS=10 SCAN="(IGHV1-69D_g_μ)>=1800,(IGHV3-64D_g_μ)>=100,t-10*c>=5.0" NOPRINT H5 SCAN_EXACT"###,
+    // 201. test SOURCE
+    r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3"###,
+    // 202. enforce no unaccounted time
+    r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
@@ -503,7 +511,7 @@ pub const CRASH_DATA: &str = "BCR=\"45987;123085\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
 pub const CRASH_SETS: [&str; 2] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
-    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2",
+    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
@@ -602,7 +610,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 13] = [
+pub const SITE_EXAMPLES: [(&str, &str); 14] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -676,5 +684,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 13] = [
     (
         "img/quad_hive.svg",
         "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" QUAD_HIVE NOPRINT",
+    ),
+    // 14.
+    (
+        "img/two_genes.svg",
+        "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
     ),
 ];

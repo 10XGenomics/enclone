@@ -48,25 +48,11 @@ pub fn fr1_start(aa: &[u8], chain_type: &str) -> usize {
         (150, b'K'),
     ]);
 
-    // #2
-
-    pwm.push(vec![(50, b'V'), (50, b'I'), (50, b'Q'), (50, b'A')]);
-
-    // #3
-
-    pwm.push(vec![]);
-
-    // #4
-
-    pwm.push(vec![(100, b'L'), (100, b'V'), (100, b'M')]);
-
-    // #5
-
-    pwm.push(vec![]);
-
-    // #6
-
-    pwm.push(vec![(250, b'Q'), (250, b'E')]);
+    pwm.push(vec![(50, b'V'), (50, b'I'), (50, b'Q'), (50, b'A')]); // #2
+    pwm.push(vec![]); //                                               #3
+    pwm.push(vec![(100, b'L'), (100, b'V'), (100, b'M')]); //          #4
+    pwm.push(vec![]); //                                               #5
+    pwm.push(vec![(250, b'Q'), (250, b'E')]); //                       #6
 
     for _ in 0..22 - 6 - 1 {
         pwm.push(vec![]);
@@ -123,36 +109,21 @@ pub fn cdr1_start(aa: &[u8], chain_type: &str, verbose: bool) -> Option<usize> {
 
     let z = 19;
 
-    // #19
-
+    /* #19 */
     pwm.push(vec![(50, b'V')]);
-
-    // #20
-
+    /* #20 */
     pwm.push(vec![(30, b'T')]);
-
-    // #21
-
+    /* #21 */
     pwm.push(vec![(200, b'L'), (200, b'I'), (200, b'V'), (200, b'M')]);
-
-    // #22
-
+    /* #22 */
     pwm.push(vec![(80, b'S'), (80, b'T'), (80, b'R')]);
-
-    // #23
-
+    /* #23 */
     pwm.push(vec![(250, b'C')]);
-
-    // #24
-
+    /* #24 */
     pwm.push(vec![]);
-
-    // #25
-
+    /* #25 */
     pwm.push(vec![]);
-
-    // #26
-
+    /* #26 */
     pwm.push(vec![(100, b'S'), (100, b'I'), (100, b'D')]);
 
     // Score positions.

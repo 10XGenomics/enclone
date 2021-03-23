@@ -6,11 +6,14 @@
 
 use crate::clustal::*;
 use crate::display_tree::*;
+use crate::fasta::*;
 use crate::grouper::*;
 use crate::neighbor::*;
 use crate::newick::*;
+use crate::phylip::*;
+use crate::plot_points::*;
 use crate::print_stats::*;
-use amino::*;
+use crate::requirements::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
@@ -22,15 +25,16 @@ use itertools::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
+use std::fs::remove_file;
 use std::fs::File;
 use std::io::Write;
 use std::io::*;
 use std::mem::swap;
 use std::path::Path;
-use std::time::{Instant, SystemTime, UNIX_EPOCH};
+use std::time::Instant;
 use string_utils::*;
 use tables::*;
-use tar::{Builder, Header};
+use tar::Builder;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -180,6 +184,7 @@ pub fn group_and_print_clonotypes(
 
     // Now print clonotypes.
 
+    let mut plot_xy_vals = Vec::<(f32, f32)>::new();
     for i in 0..groups.len() {
         let mut o = Vec::<i32>::new();
         for j in 0..groups[i].len() {
@@ -258,6 +263,44 @@ pub fn group_and_print_clonotypes(
         }
         for j in 0..o.len() {
             let oo = o[j] as usize;
+
+            // Generate data for PLOT_XY.
+
+            if ctl.plot_opt.plot_xy_filename.len() > 0 {
+                let xvar = &ctl.plot_opt.plot_xy_xvar;
+                let yvar = &ctl.plot_opt.plot_xy_yvar;
+                for i in 0..out_datas[oo].len() {
+                    let p = &out_datas[oo][i];
+                    if p.contains_key(&xvar.clone()) {
+                        let x = &p[&xvar.clone()];
+                        if x.parse::<f64>().is_ok() {
+                            let mut x = x.force_f64();
+                            if ctl.plot_opt.plot_xy_x_log10 {
+                                if x <= 0.0 {
+                                    continue;
+                                }
+                                x = x.log10();
+                            }
+                            if p.contains_key(&yvar.clone()) {
+                                let y = &p[&yvar.clone()];
+                                if y.parse::<f64>().is_ok() {
+                                    let mut y = y.force_f64();
+                                    if ctl.plot_opt.plot_xy_y_log10 {
+                                        if y <= 0.0 {
+                                            continue;
+                                        }
+                                        y = y.log10();
+                                    }
+                                    plot_xy_vals.push((x as f32, y as f32));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Proceed.
+
             if !ctl.gen_opt.noprint {
                 if i > 0 || j > 0 || !(ctl.gen_opt.html && ctl.gen_opt.ngroup) {
                     fwrite!(logx, "\n"); // NEWLINE 6
@@ -311,7 +354,7 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
-            // Generate clustal output.
+            // Generate clustal and phylip output.
 
             print_clustal(
                 i,
@@ -325,184 +368,18 @@ pub fn group_and_print_clonotypes(
                 &mut clustal_aa,
                 &mut clustal_dna,
             );
-
-            // Generate sequential PHYLIP output.  See:
-            // 1. http://www.atgc-montpellier.fr/phyml/usersguide.php?type=phylip
-            // 2. http://evolution.genetics.washington.edu/phylip/doc/sequence.html.
-            // We don't fold lines because it may not be necessary.  See giant value for W;
-            // code left in place in case it turns out that folding is needed.  This will involve
-            // a bit more than lowering W.
-
-            if ctl.gen_opt.phylip_aa.len() > 0 {
-                let stdout = ctl.gen_opt.phylip_aa == "stdout".to_string();
-                let mut data = Vec::<u8>::new();
-                let mut nbases = 0;
-                for m in 0..rsi[oo].mat.len() {
-                    nbases += rsi[oo].seq_del_lens[m];
-                }
-                if stdout {
-                    fwriteln!(logx, "");
-                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases / 3);
-                } else {
-                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases / 3);
-                }
-                let mut aa = Vec::<Vec<u8>>::new();
-                let mut names = Vec::<String>::new();
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    let ex = &exact_clonotypes[*u];
-                    let mut seq = Vec::<u8>::new();
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_none() {
-                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m] / 3]);
-                        } else {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let mut z = ex.share[r].aa_mod_indel.clone();
-                            seq.append(&mut z);
-                        }
-                    }
-                    names.push(format!("{}", k + 1,));
-                    aa.append(&mut vec![seq; 1]);
-                }
-                const W: usize = 10000;
-                const PAD: usize = 4;
-                let mut name_width = 0;
-                for i in 0..names.len() {
-                    name_width = std::cmp::max(name_width, names[i].len());
-                }
-                for start in (0..aa[0].len()).step_by(W) {
-                    if start > 0 {
-                        if stdout {
-                            fwriteln!(logx, "");
-                        } else {
-                            fwriteln!(data, "");
-                        }
-                    }
-                    let stop = std::cmp::min(start + W, aa[0].len());
-                    for i in 0..aa.len() {
-                        if stdout {
-                            fwrite!(logx, "{}", names[i]);
-                            fwrite!(
-                                logx,
-                                "{}",
-                                strme(&vec![b' '; name_width + PAD - names[i].len()])
-                            );
-                            fwriteln!(logx, "{}", strme(&aa[i][start..stop]));
-                        } else {
-                            fwrite!(data, "{}", names[i]);
-                            fwrite!(
-                                data,
-                                "{}",
-                                strme(&vec![b' '; name_width + PAD - names[i].len()])
-                            );
-                            fwriteln!(data, "{}", strme(&aa[i][start..stop]));
-                        }
-                    }
-                    if stdout {
-                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
-                    } else {
-                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
-                    }
-                }
-                if !stdout {
-                    let mut header = Header::new_gnu();
-                    header.set_size(data.len() as u64);
-                    header.set_cksum();
-                    header.set_mode(0o0644);
-                    let now = SystemTime::now();
-                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", i + 1, j + 1);
-                    phylip_aa
-                        .as_mut()
-                        .unwrap()
-                        .append_data(&mut header, &filename, &data[..])
-                        .unwrap();
-                }
-            }
-            if ctl.gen_opt.phylip_dna.len() > 0 {
-                let stdout = ctl.gen_opt.phylip_dna == "stdout".to_string();
-                let mut data = Vec::<u8>::new();
-                let mut nbases = 0;
-                for m in 0..rsi[oo].mat.len() {
-                    nbases += rsi[oo].seq_del_lens[m];
-                }
-                if stdout {
-                    fwriteln!(logx, "");
-                    fwriteln!(logx, "{} {}", exacts[oo].len(), nbases);
-                } else {
-                    fwriteln!(data, "{} {}", exacts[oo].len(), nbases);
-                }
-                let mut dna = Vec::<Vec<u8>>::new();
-                let mut names = Vec::<String>::new();
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    let ex = &exact_clonotypes[*u];
-                    let mut seq = Vec::<u8>::new();
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_none() {
-                            seq.append(&mut vec![b'-'; rsi[oo].seq_del_lens[m]]);
-                        } else {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let mut s = ex.share[r].seq_del_amino.clone();
-                            seq.append(&mut s);
-                        }
-                    }
-                    names.push(format!("{}", k + 1,));
-                    dna.append(&mut vec![seq; 1]);
-                }
-                const W: usize = 10000;
-                const PAD: usize = 4;
-                let mut name_width = 0;
-                for i in 0..names.len() {
-                    name_width = std::cmp::max(name_width, names[i].len());
-                }
-                for start in (0..dna[0].len()).step_by(W) {
-                    if start > 0 {
-                        if stdout {
-                            fwriteln!(logx, "");
-                        } else {
-                            fwriteln!(data, "");
-                        }
-                    }
-                    let stop = std::cmp::min(start + W, dna[0].len());
-                    for i in 0..dna.len() {
-                        if stdout {
-                            fwrite!(logx, "{}", names[i]);
-                            fwrite!(
-                                logx,
-                                "{}",
-                                strme(&vec![b' '; name_width + PAD - names[i].len()])
-                            );
-                            fwriteln!(logx, "{}  {}", strme(&dna[i][start..stop]), stop - start);
-                        } else {
-                            fwrite!(data, "{}", names[i]);
-                            fwrite!(
-                                data,
-                                "{}",
-                                strme(&vec![b' '; name_width + PAD - names[i].len()])
-                            );
-                            fwriteln!(data, "{}  {}", strme(&dna[i][start..stop]), stop - start);
-                        }
-                    }
-                    if stdout {
-                        fwrite!(logx, "{}", strme(&vec![b' '; name_width + PAD]));
-                    } else {
-                        fwrite!(data, "{}", strme(&vec![b' '; name_width + PAD]));
-                    }
-                }
-                if !stdout {
-                    let mut header = Header::new_gnu();
-                    header.set_size(data.len() as u64);
-                    header.set_cksum();
-                    header.set_mode(0o0644);
-                    let now = SystemTime::now();
-                    header.set_mtime(now.duration_since(UNIX_EPOCH).unwrap().as_secs());
-                    let filename = format!("{}.{}", i + 1, j + 1);
-                    phylip_dna
-                        .as_mut()
-                        .unwrap()
-                        .append_data(&mut header, &filename, &data[..])
-                        .unwrap();
-                }
-            }
+            print_phylip(
+                i,
+                j,
+                oo,
+                &exacts,
+                &rsi,
+                &exact_clonotypes,
+                &ctl,
+                &mut logx,
+                &mut phylip_aa,
+                &mut phylip_dna,
+            );
 
             // Generate experimental tree output (options NEWICK0 and TREE).
 
@@ -772,115 +649,19 @@ pub fn group_and_print_clonotypes(
 
             // Generate FASTA output.
 
-            if ctl.gen_opt.fasta_filename.len() > 0 {
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_some() {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let ex = &exact_clonotypes[*u];
-                            if ctl.gen_opt.fasta_filename != "stdout".to_string() {
-                                fwriteln!(
-                                    fout,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            } else {
-                                fwriteln!(
-                                    logx,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            }
-                            let mut seq = ex.share[r].seq.clone();
-                            let mut cid = ex.share[r].c_ref_id;
-                            if cid.is_none() {
-                                for l in 0..exacts[oo].len() {
-                                    if rsi[oo].mat[m][l].is_some() {
-                                        let r2 = rsi[oo].mat[m][l].unwrap();
-                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
-                                        let cid2 = ex2.share[r2].c_ref_id;
-                                        if cid2.is_some() {
-                                            cid = cid2;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if cid.is_some() {
-                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append(&mut cseq);
-                                if ctl.gen_opt.fasta_filename != "stdout".to_string() {
-                                    fwriteln!(fout, "{}", strme(&seq));
-                                } else {
-                                    fwriteln!(logx, "{}", strme(&seq));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Generate fasta amino acid output.
-
-            if ctl.gen_opt.fasta_aa_filename.len() > 0 {
-                for (k, u) in exacts[oo].iter().enumerate() {
-                    for m in 0..rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_some() {
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let ex = &exact_clonotypes[*u];
-                            if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
-                                fwriteln!(
-                                    faaout,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            } else {
-                                fwriteln!(
-                                    logx,
-                                    ">group{}.clonotype{}.exact{}.chain{}",
-                                    i + 1,
-                                    j + 1,
-                                    k + 1,
-                                    m + 1
-                                );
-                            }
-                            let mut seq = ex.share[r].seq.clone();
-                            let mut cid = ex.share[r].c_ref_id;
-                            if cid.is_none() {
-                                for l in 0..exacts[oo].len() {
-                                    if rsi[oo].mat[m][l].is_some() {
-                                        let r2 = rsi[oo].mat[m][l].unwrap();
-                                        let ex2 = &exact_clonotypes[exacts[oo][l]];
-                                        let cid2 = ex2.share[r2].c_ref_id;
-                                        if cid2.is_some() {
-                                            cid = cid2;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if cid.is_some() {
-                                let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
-                                seq.append(&mut cseq);
-                                if ctl.gen_opt.fasta_aa_filename != "stdout".to_string() {
-                                    fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
-                                } else {
-                                    fwriteln!(logx, "{}", strme(&aa_seq(&seq, 0)));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            generate_fasta(
+                i,
+                j,
+                oo,
+                &exacts,
+                &rsi,
+                &exact_clonotypes,
+                &ctl,
+                &refdata,
+                &mut logx,
+                &mut fout,
+                &mut faaout,
+            );
 
             // Generate parseable output.
 
@@ -1050,6 +831,29 @@ pub fn group_and_print_clonotypes(
         }
     }
 
+    // Execute PLOT_XY.
+
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+        let mut xvar = ctl.plot_opt.plot_xy_xvar.clone();
+        if ctl.plot_opt.plot_xy_x_log10 {
+            xvar = format!("log10({})", xvar);
+        }
+        let mut yvar = ctl.plot_opt.plot_xy_yvar.clone();
+        if ctl.plot_opt.plot_xy_y_log10 {
+            yvar = format!("log10({})", yvar);
+        }
+        let filename = ctl.plot_opt.plot_xy_filename.clone();
+        plot_points(&plot_xy_vals, &xvar, &yvar, &filename);
+        if filename == "stdout" {
+            let f = open_for_read!["stdout"];
+            for line in f.lines() {
+                let s = line.unwrap();
+                println!("{}", s);
+            }
+            remove_file("stdout").unwrap();
+        }
+    }
+
     // Finish CLUSTAL.
 
     if clustal_aa.is_some() {
@@ -1097,115 +901,7 @@ pub fn group_and_print_clonotypes(
         print!("{}", s);
     }
 
-    // Test for required number of false positives.
+    // Test requirements.
 
-    let mut fail = false;
-    if ctl.gen_opt.required_fps.is_some() {
-        let mut fps = 0;
-        for i in 0..pics.len() {
-            if pics[i].contains("WARNING:") {
-                fps += 1;
-            }
-        }
-        if fps != ctl.gen_opt.required_fps.unwrap() {
-            eprintln!(
-                "\nA \"false positive\" is a clonotype that contains cells from multiple\n\
-                 donors.  You invoked enclone with the argument REQUIRED_FPS={}, but we found\n\
-                 {} false positives, so the requirement is not met.\n",
-                ctl.gen_opt.required_fps.unwrap(),
-                fps
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of cells.
-
-    if ctl.gen_opt.required_cells.is_some() {
-        let mut ncells = 0;
-        for i in 0..pics.len() {
-            for x in exacts[i].iter() {
-                ncells += exact_clonotypes[*x].ncells();
-            }
-        }
-        if ctl.gen_opt.required_cells.unwrap() != ncells {
-            eprintln!(
-                "\nThe required number of cells is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_cells.unwrap(),
-                ncells,
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of clonotypes.
-
-    let nclono = exacts.len();
-    if ctl.gen_opt.required_clonotypes.is_some() {
-        if ctl.gen_opt.required_clonotypes.unwrap() != nclono {
-            eprintln!(
-                "\nThe required number of clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_clonotypes.unwrap(),
-                nclono,
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of donors
-
-    if ctl.gen_opt.required_donors.is_some() {
-        let ndonors = ctl.origin_info.donors;
-        if ctl.gen_opt.required_donors.unwrap() != ndonors {
-            eprintln!(
-                "\nThe required number of donors is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_donors.unwrap(),
-                ndonors,
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of >=2 cell clonotypes.
-
-    if ctl.gen_opt.required_two_cell_clonotypes.is_some() {
-        if ctl.gen_opt.required_two_cell_clonotypes.unwrap() != nclono2 {
-            eprintln!(
-                "\nThe required number of two-cell clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_two_cell_clonotypes.unwrap(),
-                nclono2,
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of two chain clonotypes.
-
-    if ctl.gen_opt.required_two_chain_clonotypes.is_some() {
-        if ctl.gen_opt.required_two_chain_clonotypes.unwrap() != two_chain {
-            eprintln!(
-                "\nThe required number of two-chain clonotypes is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_two_chain_clonotypes.unwrap(),
-                two_chain,
-            );
-            fail = true;
-        }
-    }
-
-    // Test for required number of datasets
-
-    if ctl.gen_opt.required_datasets.is_some() {
-        let ndatasets = ctl.origin_info.n();
-        if ctl.gen_opt.required_datasets.unwrap() != ndatasets {
-            eprintln!(
-                "\nThe required number of datasets is {}, but you actually have {}.\n",
-                ctl.gen_opt.required_datasets.unwrap(),
-                ndatasets,
-            );
-            fail = true;
-        }
-    }
-    if fail {
-        std::process::exit(1);
-    }
+    test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain);
 }

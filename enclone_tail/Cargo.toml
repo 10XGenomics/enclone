@@ -32,6 +32,7 @@ itertools = ">= 0.8, <= 0.11"
 mirror_sparse_matrix = "0.1"
 ndarray = ">= 0.14"
 perf_stats = "0.1"
+plotters = { version = "^0.3.0", default_features = false, features = ["svg_backend", "point_series"] }
 pretty_trace = "0.5"
 rayon = "1.4"
 serde = "1.0.90"
@@ -42,7 +43,7 @@ string_utils = "0.1"
 superslice = "1.0.0"
 tables = "0.1"
 tar = "0.4.33"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e927b6e46d1c876f02d40e01f621cd91c01c4c7" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
 vector_utils = "0.1.3"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"

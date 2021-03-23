@@ -5,13 +5,17 @@
 use self::refx::*;
 use crate::determine_ref::*;
 use crate::doublets::*;
+use crate::fcell::*;
 use crate::filter_umi::*;
 use crate::flag_defective::*;
 use crate::inconsistent::*;
 use crate::merge_onesies::*;
 use crate::populate_features::*;
+use crate::sec_mem::*;
 use crate::setup::*;
 use crate::split_orbits::*;
+use crate::subset::*;
+use crate::vars::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
 use enclone::explore::*;
@@ -31,34 +35,63 @@ use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
-use evalexpr::*;
 use io_utils::*;
 use perf_stats::*;
 use pretty_trace::*;
 use rayon::prelude::*;
-use regex::Regex;
-use serde_json::Value;
 use stats_utils::*;
 use std::{
     collections::HashMap,
     env,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
-    process::Command,
     thread, time,
     time::Instant,
 };
 use stirling_numbers::*;
 use string_utils::*;
+use tilde_expand::*;
 use vdj_ann::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: &Vec<String>) {
+    let tall = Instant::now();
+
+    // Process SOURCE args.
+
+    let mut args2 = vec![args[0].clone()];
+    for i in 1..args.len() {
+        if args[i].starts_with("SOURCE=") {
+            let f = args[i].after("SOURCE=");
+            let f2 = stringme(&tilde_expand(&f.as_bytes()));
+            if !path_exists(&f2) {
+                eprintln!("\nCan't find {}.\n", f);
+                std::process::exit(1);
+            }
+            let f = open_for_read![&f];
+            for line in f.lines() {
+                let s = line.unwrap();
+                if !s.starts_with('#') {
+                    let fields = s.split(' ').collect::<Vec<&str>>();
+                    for j in 0..fields.len() {
+                        if fields[j].len() > 0 {
+                            args2.push(fields[j].to_string());
+                        }
+                    }
+                }
+            }
+        } else {
+            args2.push(args[i].clone());
+        }
+    }
+    let args = args2;
+
     // Set up stuff, read args, etc.
 
     let mut ctl = EncloneControl::default();
+    ctl.start_time = Some(tall.clone());
     for i in 0..args.len() {
         let arg = &args[i];
         if arg == "PROFILE" {
@@ -100,7 +133,6 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         start_profiling(&b);
     }
-    let tall = Instant::now();
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
@@ -110,8 +142,11 @@ pub fn main_enclone(args: &Vec<String>) {
         if args[i] == "PRINT_CPU_INFO" {
             print_cpu_info = true;
         }
-        if args[i] == "COMP" {
+        if args[i] == "COMP" || args[i] == "COMPE" {
             comp = true;
+        }
+        if args[i] == "COMPE" {
+            ctl.comp_enforce = true;
         }
         if args[i] == "COMP2" {
             comp2 = true;
@@ -175,115 +210,22 @@ pub fn main_enclone(args: &Vec<String>) {
     let twoof = Instant::now();
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+        check_pcols(
+            &ctl,
+            &gex_info,
+            &vec![
+                ctl.plot_opt.plot_xy_xvar.clone(),
+                ctl.plot_opt.plot_xy_yvar.clone(),
+            ],
+        );
+    }
+
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
 
-    let tstar = Instant::now();
-    ctl.clono_print_opt.regex_match =
-        vec![HashMap::<String, Vec<usize>>::new(); ctl.origin_info.n()];
-    let ends0 = [
-        "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
-    ];
-    let ends1 = ["_g", "_ab", "_cr", "_cu", "_g", "_ab", "_cr", "_cu", "_g"];
-    let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
-    let mut ends = Vec::<String>::new();
-    let mut endsz = Vec::<String>::new();
-    for (ix, x) in ends0.iter().enumerate() {
-        for y in suffixes.iter() {
-            ends.push(format!("{}{}", x, y));
-            endsz.push(ends1[ix].to_string());
-        }
-    }
-    let mut vars = ctl.clono_print_opt.lvars.clone();
-    vars.append(&mut ctl.parseable_opt.pcols.clone());
-    unique_sort(&mut vars);
-    ctl.perf_stats(&tstar, "doing miscellaneous stuff");
-    let tomega = Instant::now();
-    for x in vars.iter() {
-        for (iy, y) in ends.iter().enumerate() {
-            let mut xc = x.clone();
-            if x.ends_with("_cell") {
-                xc = xc.rev_before("_cell").to_string();
-            }
-            if xc.ends_with(y) {
-                let mut p = xc.rev_before(y);
-                if p.contains(':') {
-                    p = p.after(":");
-                }
-                let pp = format!("{}{}", p, endsz[iy]);
-                if !p.is_empty() && Regex::new(&p).is_ok() {
-                    let mut ok = true;
-                    let mut px = false;
-                    let b = p.as_bytes();
-                    for i in 0..p.len() {
-                        if !((b[i] >= b'A' && b[i] <= b'Z')
-                            || (b[i] >= b'a' && b[i] <= b'z')
-                            || (b[i] >= b'0' && b[i] <= b'9')
-                            || b".-_[]()|*".contains(&b[i]))
-                        {
-                            ok = false;
-                            break;
-                        }
-                        if b"[]()|*".contains(&b[i]) {
-                            px = true;
-                        }
-                    }
-                    if ok && px {
-                        let reg = Regex::new(&format!("^{}$", p));
-                        for li in 0..ctl.origin_info.n() {
-                            let mut js = Vec::<usize>::new();
-                            for j in 0..gex_info.gex_features[li].len() {
-                                let f = &gex_info.gex_features[li][j];
-                                let ff = f.split('\t').collect::<Vec<&str>>();
-                                let mut ok = false;
-                                if ff[2].starts_with("Antibody") {
-                                    if y.contains("_ab") {
-                                        ok = true;
-                                    }
-                                } else if ff[2].starts_with("CRISPR") {
-                                    if y.contains("_cr") {
-                                        ok = true;
-                                    }
-                                } else if ff[2].starts_with("Custom") {
-                                    if y.contains("_cu") {
-                                        ok = true;
-                                    }
-                                } else if y.contains("_g") {
-                                    ok = true;
-                                }
-                                if ok
-                                    && (reg.as_ref().unwrap().is_match(&ff[0])
-                                        || reg.as_ref().unwrap().is_match(&ff[1]))
-                                {
-                                    js.push(j);
-                                }
-                            }
-                            if js.len() > 0 {
-                                ctl.clono_print_opt.regex_match[li].insert(pp.clone(), js);
-                            }
-                        }
-                        let mut matches = false;
-                        for li in 0..ctl.origin_info.n() {
-                            if ctl.clono_print_opt.regex_match[li].contains_key(&pp) {
-                                matches = true;
-                            }
-                        }
-                        if !matches {
-                            eprintln!(
-                                "\nLead variable {} contains a pattern that matches \
-                                no features.\n",
-                                x
-                            );
-                            std::process::exit(1);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    ctl.perf_stats(&tomega, "messing with variables");
+    match_vars(&mut ctl, &gex_info);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -333,86 +275,10 @@ pub fn main_enclone(args: &Vec<String>) {
 
     ctl.gen_opt.species = species(&refdata);
 
-    // Test for okness of sec/mem args.
+    // Process for sec (secreted) or mem (membrane) if specified.
 
-    let mut vars = ctl.parseable_opt.pcols.clone();
-    vars.append(&mut ctl.clono_print_opt.lvars.clone());
-    unique_sort(&mut vars);
-    ctl.gen_opt.using_secmem =
-        bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string());
-    if !ctl.gen_opt.using_secmem
-        && ctl.parseable_opt.pout.len() > 0
-        && ctl.parseable_opt.pcols.len() == 0
-    {
-        if ctl.gen_opt.species == "human" || ctl.gen_opt.species == "mouse" {
-            if is_bcr {
-                let mut have_bam = true;
-                for g in ctl.origin_info.gex_path.iter() {
-                    if g.len() == 0 {
-                        have_bam = false;
-                        break;
-                    }
-                    let bam = format!("{}/possorted_genome_bam.bam", g);
-                    if !path_exists(&bam) {
-                        have_bam = false;
-                        break;
-                    }
-                }
-                if have_bam {
-                    let o = Command::new("samtools")
-                        .arg("--help")
-                        .output()
-                        .expect("failed to execute samtools");
-                    let status = o.status.code().unwrap();
-                    if status == 0 {
-                        ctl.gen_opt.using_secmem = true;
-                    }
-                }
-            }
-        }
-    }
-    if bin_member(&vars, &"sec".to_string()) || bin_member(&vars, &"mem".to_string()) {
-        if ctl.gen_opt.species != "human" && ctl.gen_opt.species != "mouse" {
-            eprintln!("\nThe lvars sec and mem can only be used for data from human and mouse.\n");
-            std::process::exit(1);
-        }
-        if !is_bcr {
-            eprintln!("\nThe lvars sec and mem do not make sense for TCR data.\n");
-            std::process::exit(1);
-        }
-        for g in ctl.origin_info.gex_path.iter() {
-            if g.len() == 0 {
-                eprintln!("\nThe lvars sec and mem can only be used if GEX data are provided.\n");
-                std::process::exit(1);
-            }
-            let bam = format!("{}/possorted_genome_bam.bam", g);
-            if !path_exists(&bam) {
-                eprintln!(
-                    "\nThe lvars sec and mem can only be used if the file\n\
-                    pos_sorted_genome_bam.bam is provided.  We did not see it at this path\n\
-                    {}.",
-                    g
-                );
-                std::process::exit(1);
-            }
-        }
-        let o = Command::new("samtools")
-            .arg("--help")
-            .output()
-            .expect("failed to execute samtools");
-        let status = o.status.code().unwrap();
-        if status != 0 {
-            eprintln!(
-                "\nThe lvars sec and mem can only be used if the samtools\n\
-                executable is in your path.\n"
-            );
-            std::process::exit(1);
-        }
-    }
+    test_sec_mem(&mut ctl);
     ctl.perf_stats(&tr, "building reference and other things");
-
-    // If sec (secreted) or mem (membrane) lvars have been specified, gather those data.
-
     if ctl.gen_opt.using_secmem {
         fetch_secmem(&mut ctl);
     }
@@ -437,6 +303,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Populate features.
 
+    let tpop = Instant::now();
     let mut fr1_starts = Vec::<usize>::new();
     let mut fr2_starts = Vec::<Option<usize>>::new();
     let mut fr3_starts = Vec::<Option<usize>>::new();
@@ -463,9 +330,11 @@ pub fn main_enclone(args: &Vec<String>) {
             x.cdr2_start = cdr2_starts[x.v_ref_id];
         }
     }
+    ctl.perf_stats(&tpop, "populating features");
 
     // Test for no data.
 
+    let tproto = Instant::now();
     if ctl.origin_info.n() == 0 {
         eprintln!("\nNo TCR or BCR data have been specified.\n");
         std::process::exit(1);
@@ -473,7 +342,6 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Search for SHM indels.
 
-    let tproto = Instant::now();
     search_for_shm_indels(&ctl, &tig_bc);
 
     // Filter using light --> heavy graph.
@@ -594,6 +462,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Compute to_bc, which maps (dataset_index, clonotype_id) to {barcodes}.
     // This is intended as a replacement for some old code below.
 
+    let tbc = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -608,10 +477,13 @@ pub fn main_enclone(args: &Vec<String>) {
             }
         }
     }
+    ctl.perf_stats(&tbc, "computing to_bc");
 
     // Make stirling ratio table.  Not sure that fixing the size of this is safe.
 
+    let tsr = Instant::now();
     let sr = stirling2_ratio_table::<f64>(3000);
+    ctl.perf_stats(&tsr, "computing stirling number table");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
@@ -633,6 +505,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
     // clonotypes.  This requires editing of exact_clonotypes, info, eq, join_info and raw_joins.
 
+    let tone = Instant::now();
     let mut disintegrated = Vec::<bool>::new();
     if ctl.clono_filt_opt.weak_onesies {
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
@@ -728,9 +601,11 @@ pub fn main_enclone(args: &Vec<String>) {
         }
         eq = eq2;
     }
+    ctl.perf_stats(&tone, "disintegrating onesies");
 
     // Update to_bc.
 
+    let txxx = Instant::now();
     let mut to_bc = HashMap::<(usize, usize), Vec<String>>::new();
     for i in 0..exact_clonotypes.len() {
         for j in 0..exact_clonotypes[i].clones.len() {
@@ -763,6 +638,7 @@ pub fn main_enclone(args: &Vec<String>) {
     // Lookup for heavy chain reuse (special purpose experimental option).
 
     lookup_heavy_chain_reuse(&ctl, &exact_clonotypes, &info, &eq);
+    ctl.perf_stats(&txxx, "in some odds and ends");
 
     // Filter B cells based on UMI counts.
 
@@ -819,75 +695,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Filter using constraints imposed by FCELL.
 
-    if !ctl.clono_filt_opt.fcell.is_empty() {
-        let mut orbits2 = Vec::<Vec<i32>>::new();
-        for i in 0..orbits.len() {
-            let mut o = orbits[i].clone();
-            let mut to_deletex = vec![false; o.len()];
-            for j in 0..o.len() {
-                let x: &CloneInfo = &info[o[j] as usize];
-                let ex = &mut exact_clonotypes[x.clonotype_index];
-                let mut to_delete = vec![false; ex.ncells()];
-                for k in 0..ex.ncells() {
-                    let li = ex.clones[k][0].dataset_index;
-                    let bc = &ex.clones[k][0].barcode;
-                    let mut keep = true;
-                    for x in ctl.clono_filt_opt.fcell.iter() {
-                        let alt = &ctl.origin_info.alt_bc_fields[li];
-                        let vars = x.iter_variable_identifiers().collect::<Vec<&str>>();
-                        let mut vals = Vec::<String>::new();
-                        for m in 0..vars.len() {
-                            let mut val = String::new();
-                            'uloop: for u in 0..alt.len() {
-                                if alt[u].0 == vars[m] {
-                                    if alt[u].1.contains_key(&bc.clone()) {
-                                        val = alt[u].1[&bc.clone()].clone();
-                                        break 'uloop;
-                                    }
-                                }
-                            }
-                            vals.push(val);
-                        }
-                        let mut c = HashMapContext::new();
-                        for m in 0..vars.len() {
-                            if vals[m].parse::<i64>().is_ok() {
-                                c.set_value(
-                                    vars[m].into(),
-                                    evalexpr::Value::from(vals[m].force_i64()),
-                                )
-                                .unwrap();
-                            } else if vals[m].parse::<f64>().is_ok() {
-                                c.set_value(
-                                    vars[m].into(),
-                                    evalexpr::Value::from(vals[m].force_f64()),
-                                )
-                                .unwrap();
-                            } else {
-                                c.set_value(vars[m].into(), vals[m].clone().into()).unwrap();
-                            }
-                        }
-                        let res = x.eval_with_context(&c);
-                        let ok = res == Ok(evalexpr::Value::from(true));
-                        if !ok {
-                            keep = false;
-                        }
-                    }
-                    if !keep {
-                        to_delete[k] = true;
-                    }
-                }
-                erase_if(&mut ex.clones, &to_delete);
-                if ex.ncells() == 0 {
-                    to_deletex[j] = true;
-                }
-            }
-            erase_if(&mut o, &to_deletex);
-            if !o.is_empty() {
-                orbits2.push(o.clone());
-            }
-        }
-        orbits = orbits2;
-    }
+    filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
 
     // Delete exact subclonotypes that appear to represent doublets.
 
@@ -1057,49 +865,7 @@ pub fn main_enclone(args: &Vec<String>) {
 
     // Process the SUBSET_JSON option.
 
-    if ctl.gen_opt.subset_json.len() > 0 {
-        let mut barcodes = Vec::<String>::new();
-        for l in 0..exacts.len() {
-            for u in 0..exacts[l].len() {
-                let ex = &exact_clonotypes[exacts[l][u]];
-                for j in 0..ex.clones.len() {
-                    barcodes.push(ex.clones[j][0].barcode.clone());
-                }
-            }
-        }
-        unique_sort(&mut barcodes);
-        let mut g = open_for_write_new![&ctl.gen_opt.subset_json];
-        fwriteln!(g, "[");
-        for li in 0..ctl.origin_info.dataset_path.len() {
-            let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
-            let mut jsonx = json.clone();
-            if !path_exists(&json) {
-                jsonx = format!("{}.lz4", json);
-            }
-            let mut xs = Vec::<Vec<u8>>::new();
-            let mut f = BufReader::new(open_maybe_compressed(&jsonx));
-            loop {
-                match read_vector_entry_from_json(&mut f) {
-                    None => break,
-                    Some(x) => {
-                        let v: Value = serde_json::from_str(strme(&x)).unwrap();
-                        let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
-                        if bin_member(&barcodes, &barcode) {
-                            xs.push(x);
-                        }
-                    }
-                }
-            }
-            for j in 0..xs.len() {
-                fwrite!(g, "{}", strme(&xs[j]));
-                if j < xs.len() - 1 {
-                    fwrite!(g, ",");
-                }
-                fwriteln!(g, "");
-            }
-        }
-        fwriteln!(g, "]");
-    }
+    subset_json(&ctl, &exact_clonotypes, &exacts, &ann);
     ctl.perf_stats(&torb, "making orbits");
 
     // Tail code.
@@ -1140,12 +906,26 @@ pub fn main_enclone(args: &Vec<String>) {
     unsafe {
         delta = elapsed(&tall) - WALLCLOCK;
     }
+    let deltas = format!("{:.2}", delta);
     ctl.perf_stats(&tall, "total");
     if ctl.comp {
-        println!("used {:.2} seconds unaccounted for", delta);
+        println!("used {} seconds unaccounted for", deltas);
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
-
+    if ctl.comp_enforce {
+        if deltas != "0.00" {
+            eprintln!(
+                "\nUnaccounted time = {} seconds, but COMPE option required that it \
+                be zero.\n",
+                deltas
+            );
+            eprintln!(
+                "Note that this may fail for a small fraction of runs, even though \
+                nothing is wrong.\n"
+            );
+            std::process::exit(1);
+        }
+    }
     let (mut cpu_all_stop, mut cpu_this_stop) = (0, 0);
     if print_cpu || print_cpu_info {
         let f = open_for_read!["/proc/stat"];

@@ -2,6 +2,7 @@
 
 // Check lvars, cvars, and pcols.
 
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use rayon::prelude::*;
 use regex::Regex;
@@ -339,8 +340,14 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
     unique_sort(&mut alt_bcs);
     let mut to_check = Vec::<String>::new();
     let pchains = ctl.parseable_opt.pchains;
+    let ends = build_ends();
+    let mut nd_used = false;
     for x in cols.iter() {
         let mut ok = false;
+        // Note that the following test is probably redundant with some of the testing below.
+        if check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, false) {
+            ok = true;
+        }
         for i in 0..ctl.gen_opt.info_fields.len() {
             if *x == ctl.gen_opt.info_fields[i] {
                 ok = true;
@@ -480,171 +487,200 @@ pub fn check_cvars(ctl: &EncloneControl) {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Check lvars args.
+pub fn check_one_lvar(
+    x: &str,
+    ctl: &EncloneControl,
+    gex_info: &GexInfo,
+    nd_used: &mut bool,
+    ends: &Vec<String>,
+    is_lvar: bool,
+) -> bool {
+    for i in 0..ctl.gen_opt.info_fields.len() {
+        if *x == ctl.gen_opt.info_fields[i] {
+            return true;
+        }
+    }
 
-pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
-    let t = Instant::now();
-    let mut to_check = Vec::<String>::new();
+    // See if type is ok.
+
+    if x == "type" {
+        let mut specified = false;
+        for i in 0..gex_info.cell_type_specified.len() {
+            if gex_info.cell_type_specified[i] {
+                specified = true;
+            }
+        }
+        if !ctl.gen_opt.internal_run && x != "" {
+            eprintln!(
+                "\nUnrecognized variable {} for LVARS or PCOLS.  Please type \
+                 \"enclone help lvars\".\n",
+                x
+            );
+            std::process::exit(1);
+        }
+        if !specified {
+            eprintln!(
+                "\nYou've used the lead or parseable variable \"type\", but the file \
+                cell_types.csv was not found.\n\
+                This could be because you're using a GEX pipestance that was \
+                run using too old a version of Cell Ranger.\n\
+                Or it might have been generated using the CS pipeline.\n\
+                Or you might have copied the pipestance outs but not included \
+                that file.\n"
+            );
+            std::process::exit(1);
+        }
+    }
+
+    // Check alt_bc_fields.
+
+    for li in 0..ctl.origin_info.alt_bc_fields.len() {
+        for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
+            if ctl.origin_info.alt_bc_fields[li][i].0 == x {
+                return true;
+            }
+        }
+    }
+
+    // Check for nd<k>.
+
+    if x.starts_with("nd")
+        && x.after("nd").parse::<usize>().is_ok()
+        && x.after("nd").force_usize() >= 1
+    {
+        if *nd_used {
+            eprintln!("\nOnly one instance of the lead variable nd<k> is allowed.\n");
+            std::process::exit(1);
+        }
+        *nd_used = true;
+        return true;
+    }
+
+    // Check for [abbr:]count_<regex> and similar.
+
+    if x.starts_with("count_") || x.contains(":count_") {
+        let mut class = "count_".to_string();
+        if x.starts_with("count_cdr1_")
+            || x.starts_with("count_cdr2_")
+            || x.starts_with("count_cdr3_")
+            || x.starts_with("count_fwr1_")
+            || x.starts_with("count_fwr2_")
+            || x.starts_with("count_fwr3_")
+            || x.starts_with("count_fwr4_")
+            || x.starts_with("count_cdr_")
+            || x.starts_with("count_fwr_")
+        {
+            class = format!("count_{}_", x.between("_", "_"));
+        }
+        let y = x.after(&class);
+        let reg = Regex::new(&y);
+        if !reg.is_ok() {
+            eprintln!(
+                "\nThe string after {} in your lead or parseable variable {} is not a valid \
+                regular expression.\n",
+                class, x
+            );
+            std::process::exit(1);
+        }
+        return true;
+    }
+
+    // Check for pe<n> and npe<n> and ppe<n>.
+
+    if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {
+        return true;
+    }
+    if x.starts_with("npe") && x.after("npe").parse::<usize>().is_ok() {
+        return true;
+    }
+    if x.starts_with("ppe") && x.after("ppe").parse::<usize>().is_ok() {
+        return true;
+    }
+
+    // Check for patterns.
+
+    if is_pattern(&x.to_string(), false) {
+        return true;
+    }
+
+    // The rest.
+
+    if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
+        eprintln!(
+            "\nCan't use LVARS or LVARSP or PCOLS variable {} without having gene \
+             expression or feature barcode data.\n",
+            x
+        );
+        std::process::exit(1);
+    }
+    if !gex_info.have_gex && (x.starts_with("gex") || x == "clust" || x == "type") {
+        eprintln!(
+            "\nCan't use LVARS or LVARSP or PCOLS variable {} without having gene \
+             expression data.\n",
+            x
+        );
+        std::process::exit(1);
+    }
+    let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
+    if gpvar {
+        return true;
+    }
+    if !LVARS_ALLOWED.contains(&x) {
+        let mut end_ok = false;
+        for i in 0..ends.len() {
+            if x.ends_with(&ends[i]) {
+                end_ok = true;
+            }
+        }
+        if end_ok {
+            return false;
+        }
+        if is_lvar && !x.starts_with("n_") && x != "" {
+            eprintln!(
+                "\nUnrecognized variable {} for LVARS.  Please type \
+                 \"enclone help lvars\".\n",
+                x
+            );
+            std::process::exit(1);
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn build_ends() -> Vec<String> {
+    let mut ends = Vec::<String>::new();
     let ends0 = [
         "_g", "_ab", "_cr", "_cu", "_g_μ", "_ab_μ", "_cr_μ", "_cu_μ", "_g_%",
     ];
     let suffixes = ["", "_min", "_max", "_μ", "_Σ"];
-    let mut ends = Vec::<String>::new();
     for x in ends0.iter() {
         for y in suffixes.iter() {
             ends.push(format!("{}{}", x, y));
         }
     }
+    ends
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Check lvars args.
+
+pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
+    let t = Instant::now();
+    let mut to_check = Vec::<String>::new();
+    let ends = build_ends();
     let mut nd_used = false;
-    'main_loop: for x in ctl.clono_print_opt.lvars.iter() {
-        for i in 0..ctl.gen_opt.info_fields.len() {
-            if *x == ctl.gen_opt.info_fields[i] {
-                continue 'main_loop;
-            }
-        }
-
-        // See if type is ok.
-
-        if *x == "type" {
-            let mut specified = false;
-            for i in 0..gex_info.cell_type_specified.len() {
-                if gex_info.cell_type_specified[i] {
-                    specified = true;
-                }
-            }
-            if !ctl.gen_opt.internal_run && x != "" {
-                eprintln!(
-                    "\nUnrecognized variable {} for LVARS.  Please type \
-                     \"enclone help lvars\".\n",
-                    x
-                );
-                std::process::exit(1);
-            }
-            if !specified {
-                eprintln!(
-                    "\nYou've used the lead variable \"type\", but the file \
-                    cell_types.csv was not found.\n\
-                    This could be because you're using a GEX pipestance that was \
-                    run using too old a version of Cell Ranger.\n\
-                    Or it might have been generated using the CS pipeline.\n\
-                    Or you might have copied the pipestance outs but not included \
-                    that file.\n"
-                );
-                std::process::exit(1);
-            }
-        }
-
-        // Check alt_bc_fields.
-
-        for li in 0..ctl.origin_info.alt_bc_fields.len() {
-            for i in 0..ctl.origin_info.alt_bc_fields[li].len() {
-                if ctl.origin_info.alt_bc_fields[li][i].0 == *x {
-                    continue 'main_loop;
-                }
-            }
-        }
-
-        // Check for nd<k>.
-
-        if x.starts_with("nd")
-            && x.after("nd").parse::<usize>().is_ok()
-            && x.after("nd").force_usize() >= 1
-        {
-            if nd_used {
-                eprintln!("\nOnly one instance of the lead variable nd<k> is allowed.\n");
-                std::process::exit(1);
-            }
-            nd_used = true;
-            continue;
-        }
-
-        // Check for [abbr:]count_<regex> and similar.
-
-        if x.starts_with("count_") || x.contains(":count_") {
-            let mut class = "count_".to_string();
-            if x.starts_with("count_cdr1_")
-                || x.starts_with("count_cdr2_")
-                || x.starts_with("count_cdr3_")
-                || x.starts_with("count_fwr1_")
-                || x.starts_with("count_fwr2_")
-                || x.starts_with("count_fwr3_")
-                || x.starts_with("count_fwr4_")
-                || x.starts_with("count_cdr_")
-                || x.starts_with("count_fwr_")
-            {
-                class = format!("count_{}_", x.between("_", "_"));
-            }
-            let y = x.after(&class);
-            let reg = Regex::new(&y);
-            if !reg.is_ok() {
-                eprintln!(
-                    "\nThe string after {} in your lead variable {} is not a valid \
-                    regular expression.\n",
-                    class, x
-                );
-                std::process::exit(1);
-            }
-            continue;
-        }
-
-        // Check for pe<n> and npe<n> and ppe<n>.
-
-        if x.starts_with("pe") && x.after("pe").parse::<usize>().is_ok() {
-            continue;
-        }
-        if x.starts_with("npe") && x.after("npe").parse::<usize>().is_ok() {
-            continue;
-        }
-        if x.starts_with("ppe") && x.after("ppe").parse::<usize>().is_ok() {
-            continue;
-        }
-
-        // Check for patterns.
-
-        if is_pattern(&x, false) {
-            continue;
-        }
-
-        // The rest.
-
-        if !gex_info.have_gex && !gex_info.have_fb && x.starts_with("n_gex") {
-            eprintln!(
-                "\nCan't use LVARS or LVARSP variable {} without having gene \
-                 expression or feature barcode data.\n",
-                x
-            );
-            std::process::exit(1);
-        }
-        if !gex_info.have_gex && (x.starts_with("gex") || x == "clust" || x == "type") {
-            eprintln!(
-                "\nCan't use LVARS or LVARSP variable {} without having gene \
-                 expression data.\n",
-                x
-            );
-            std::process::exit(1);
-        }
+    for x in ctl.clono_print_opt.lvars.iter() {
         if x.ends_with("_cell") {
             eprintln!("\nFields ending with _cell cannot be used in LVARS or LVARSP.\n");
             std::process::exit(1);
         }
-        let gpvar = x.starts_with('g') && x.after("g").parse::<usize>().is_ok();
-        if !(LVARS_ALLOWED.contains(&x.as_str()) || gpvar) {
-            let mut end_ok = false;
-            for i in 0..ends.len() {
-                if x.ends_with(&ends[i]) {
-                    end_ok = true;
-                }
-            }
-            if !end_ok && !x.starts_with("n_") && x != "" {
-                eprintln!(
-                    "\nUnrecognized variable {} for LVARS.  Please type \
-                     \"enclone help lvars\".\n",
-                    x
-                );
-                std::process::exit(1);
-            } else {
-                to_check.push(x.clone());
-            }
+        if !check_one_lvar(&*x, &ctl, &gex_info, &mut nd_used, &ends, true) {
+            to_check.push(x.clone());
         }
     }
     ctl.perf_stats(&t, "checking lvars top");

@@ -368,7 +368,13 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              left to right; if an argument name is repeated, only the \
              rightmost value is used, except as noted specifically in the documentation.\n\n",
         );
-        h.print("\\bold{2. Color}\n\n");
+        h.print("\\bold{2. Importing arguments}\n\n");
+        h.print(
+            "Extra arguments can be imported on the command line using \\bold{SOURCE=filename}.  \
+            The file may have newlines, and more than one SOURCE command may be used.  Any \
+            line starting with # is treated as a comment.\n\n",
+        );
+        h.print("\\bold{3. Color}\n\n");
         h.print_enclone();
         h.print(
             " uses ANSI escape codes for color and bolding, frivolously, for emphasis, \
@@ -379,7 +385,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              you want to peruse output using a text editor which does not grok the escape \
              codes.  However some things will not make sense without color.\n\n",
         );
-        h.print("\\bold{3. Paging}\n\n");
+        h.print("\\bold{4. Paging}\n\n");
         h.print("• enclone automatically pipes its output to \\bold{less -R -F -X}.\n");
         h.print(
             "• The effect of this will be that you'll see only the first screen of output.  \

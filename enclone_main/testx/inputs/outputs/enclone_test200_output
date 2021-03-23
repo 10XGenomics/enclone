@@ -1,0 +1,19 @@
+
+FEATURE SCAN
+
+4 exact subclonotypes containing 4 cells in test set
+1 exact subclonotypes containing 54 cells in control set
+
+enriched features
+
+id               name       library_type         test  control  enrichment
+ENSG00000211592  IGKC       Gene Expression     61.00     0.94       64.59
+ENSG00000243466  IGKV1-5    Gene Expression   2423.25     0.09    26171.10
+ENSG00000211893  IGHG2      Gene Expression     14.75     0.26       56.89
+ENSG00000211950  IGHV1-24   Gene Expression      8.00     0.00         inf
+ENSG00000280411  IGHV1-69D  Gene Expression   2175.00     0.96     2258.65
+ENSG00000211650  IGLV5-45   Gene Expression      8.50     0.00         inf
+ENSG00000211662  IGLV3-21   Gene Expression  10955.75     1.59     6879.19
+ENSG00000211669  IGLV3-10   Gene Expression  12115.75     1.22     9912.89
+ENSG00000211677  IGLC2      Gene Expression    124.00     5.67       21.88
+

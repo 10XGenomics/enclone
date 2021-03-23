@@ -7,17 +7,17 @@
 
 use crate::define_mat::*;
 use crate::filter::*;
+use crate::finish_table::*;
+use crate::gene_scan::*;
 use crate::loupe::*;
 use crate::print_utils1::*;
 use crate::print_utils2::*;
 use crate::print_utils3::*;
 use crate::print_utils4::*;
 use crate::print_utils5::*;
-use amino::*;
-use ansi_escape::*;
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
-use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
@@ -65,8 +65,12 @@ pub fn print_clonotypes(
     fate: &mut Vec<HashMap<String, String>>,
 ) {
     let lvars = &ctl.clono_print_opt.lvars;
-    let mut tree_args = ctl.gen_opt.tree.clone();
-    unique_sort(&mut tree_args);
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
 
     // Compute total cells.
 
@@ -739,12 +743,13 @@ pub fn print_clonotypes(
                     rord.push(j);
                 }
 
-                // Combine stats for the same variable.  This is needed because each dataset
-                // contributes.  Note that we don't care about the order of the values here
-                // (other than stability) because what we're going to do with them is compute the
-                // mean or max.
+                // Combine stats for the same variable.  This is needed because each exact
+                // subclonotype contributes.  Note that we don't care about the order of the
+                // values here (other than stability) because what we're going to do with them is
+                // compute the mean or max.
 
                 stats.sort_by(|a, b| a.0.cmp(&b.0));
+                let stats_orig = stats.clone();
                 let mut stats2 = Vec::<(String, Vec<f64>)>::new();
                 let mut i = 0;
                 while i < stats.len() {
@@ -771,33 +776,14 @@ pub fn print_clonotypes(
                     let mut means = Vec::<f64>::new();
                     let mut maxs = Vec::<f64>::new();
                     // traverse the coefficients on the left hand side (each having a variable)
+                    let mut fail = false;
                     for i in 0..x.n() {
-                        let mut found = false;
                         let mut vals = Vec::<f64>::new(); // the stats for the variable
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
                                 vals.append(&mut stats[j].1.clone());
-                                found = true;
                                 break;
                             }
-                        }
-                        if !found {
-                            for u in 0..nexacts {
-                                let clonotype_id = exacts[u];
-                                let ex = &exact_clonotypes[clonotype_id];
-                                for _ in 0..ex.clones.len() {
-                                    vals.push(0.0);
-                                }
-                            }
-
-                            /*
-                            eprintln!(
-                                "\nFailed to find the variable {} used in a \
-                                 bound.  Please see \"enclone help filter\".\n",
-                                x.var[i]
-                            );
-                            std::process::exit(1);
-                            */
                         }
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
@@ -809,11 +795,16 @@ pub fn print_clonotypes(
                                 count += 1;
                             }
                         }
-                        mean /= count as f64;
-                        means.push(mean);
-                        maxs.push(max);
+                        if count == 0 {
+                            fail = true;
+                        } else {
+                            mean /= count as f64;
+                            means.push(mean);
+                            maxs.push(max);
+                        }
                     }
-                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && !x.satisfied(&means) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "mean" && (fail || !x.satisfied(&means))
+                    {
                         if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                             in_center = false;
                         } else {
@@ -822,7 +813,7 @@ pub fn print_clonotypes(
                             }
                         }
                     }
-                    if ctl.clono_filt_opt.bound_type[bi] == "max" && !x.satisfied(&maxs) {
+                    if ctl.clono_filt_opt.bound_type[bi] == "max" && (fail || !x.satisfied(&maxs)) {
                         if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                             in_center = false;
                         } else {
@@ -855,68 +846,36 @@ pub fn print_clonotypes(
                     }
                 }
 
-                // See if we're in the test and control sets for gene scan.
-                // uses: ctl, stats
-
-                if ctl.gen_opt.gene_scan_test.is_some() {
-                    let x = ctl.gen_opt.gene_scan_test.clone().unwrap();
-                    let mut means = Vec::<f64>::new();
-                    for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
-                                // found = true;
-                                break;
-                            }
-                        }
-                        let mut mean = 0.0;
-                        for j in 0..vals.len() {
-                            mean += vals[j];
-                        }
-                        mean /= n as f64;
-                        means.push(mean);
-                    }
-                    res.9.push(x.satisfied(&means));
-                    let x = ctl.gen_opt.gene_scan_control.clone().unwrap();
-                    let mut means = Vec::<f64>::new();
-                    for i in 0..x.n() {
-                        let mut vals = Vec::<f64>::new();
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
-                                break;
-                            }
-                        }
-                        let mut mean = 0.0;
-                        for j in 0..vals.len() {
-                            mean += vals[j];
-                        }
-                        mean /= n as f64;
-                        means.push(mean);
-                    }
-                    res.10.push(x.satisfied(&means));
-                }
-
                 // Done unless on second pass.
 
                 if pass == 1 {
                     continue;
                 }
 
+                // See if we're in the test and control sets for gene scan.
+
+                gene_scan_test(
+                    &ctl,
+                    &stats,
+                    &stats_orig,
+                    nexacts,
+                    n,
+                    &mut res.9,
+                    &mut res.10,
+                );
+
                 // Fill in exact_subclonotype_id, reorder.
 
-                if ctl.parseable_opt.pout.len() > 0 || !ctl.gen_opt.tree.is_empty() {
+                if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
                     for u in 0..nexacts {
                         macro_rules! speak {
                             ($u:expr, $var:expr, $val:expr) => {
                                 if pass == 2
-                                    && (ctl.parseable_opt.pout.len() > 0
-                                        || !ctl.gen_opt.tree.is_empty())
+                                    && (ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty())
                                 {
                                     if pcols_sort.is_empty()
                                         || bin_member(&pcols_sort, &$var.to_string())
-                                        || bin_member(&tree_args, &$var.to_string())
+                                        || bin_member(&extra_args, &$var.to_string())
                                     {
                                         out_data[$u].insert($var.to_string(), $val);
                                     }
@@ -936,13 +895,11 @@ pub fn print_clonotypes(
 
                 add_header_text(&ctl, &exacts, &exact_clonotypes, &rord, &mat, &mut mlog);
 
-                // Build table stuff.
+                // Make the table.
 
-                let mut row1 = Vec::<String>::new();
-                let mut justify = Vec::<u8>::new();
-                let mut rows = Vec::<Vec<String>>::new();
-                let mut drows = Vec::<Vec<String>>::new();
-                build_table_stuff(
+                let mut logz = String::new();
+                finish_table(
+                    n,
                     &ctl,
                     &exacts,
                     &exact_clonotypes,
@@ -950,313 +907,15 @@ pub fn print_clonotypes(
                     &vars,
                     &show_aa,
                     &field_types,
-                    &mut row1,
-                    &mut justify,
-                    &mut drows,
-                    &mut rows,
                     &lvars,
-                );
-
-                // Insert universal and donor reference rows.
-
-                insert_reference_rows(
-                    &ctl,
-                    &rsi,
-                    &show_aa,
-                    &field_types,
                     &refdata,
                     &dref,
-                    &row1,
-                    &mut drows,
-                    &mut rows,
-                    &exacts,
-                    &exact_clonotypes,
                     &peer_groups,
+                    &mut mlog,
+                    &mut logz,
+                    &stats,
+                    &mut sr,
                 );
-
-                // Insert consensus row.
-
-                if ctl.clono_print_opt.conx || ctl.clono_print_opt.conp {
-                    let style;
-                    if ctl.clono_print_opt.conx {
-                        style = "x";
-                    } else {
-                        style = "p";
-                    }
-                    let mut row = Vec::<String>::new();
-                    row.push("consensus".to_string());
-                    for _ in 1..row1.len() {
-                        row.push("\\ext".to_string());
-                    }
-                    let classes = aa_classes();
-                    for col in 0..rsi.mat.len() {
-                        for m in 0..rsi.cvars[col].len() {
-                            if rsi.cvars[col][m] == "amino".to_string() {
-                                let mut xdots = String::new();
-                                for k in 0..show_aa[col].len() {
-                                    if k > 0 && field_types[col][k] != field_types[col][k - 1] {
-                                        xdots.push(' ');
-                                    }
-                                    let p = show_aa[col][k];
-                                    let mut codons = Vec::<Vec<u8>>::new();
-                                    for u in 0..nexacts {
-                                        if mat[col][u].is_some() {
-                                            let seq_amino = rsi.seqss_amino[col][u].clone();
-                                            if 3 * p + 3 <= seq_amino.len() {
-                                                codons.push(seq_amino[3 * p..3 * p + 3].to_vec());
-                                            }
-                                        }
-                                    }
-                                    unique_sort(&mut codons);
-                                    let mut gap = false;
-                                    for x in codons.iter() {
-                                        if x.contains(&b'-') {
-                                            gap = true;
-                                        }
-                                    }
-                                    if codons.solo() && gap {
-                                        xdots += &"g";
-                                    } else if codons.solo() {
-                                        let codon = &codons[0];
-                                        let aa = codon_to_aa(&codon);
-                                        let mut log = Vec::<u8>::new();
-                                        emit_codon_color_escape(&codon, &mut log);
-                                        log.push(aa);
-                                        emit_end_escape(&mut log);
-                                        xdots += &strme(&log);
-                                    } else if gap {
-                                        xdots += &"X";
-                                    } else {
-                                        let mut aas = Vec::<u8>::new();
-                                        for x in codons.iter() {
-                                            aas.push(codon_to_aa(x));
-                                        }
-                                        unique_sort(&mut aas);
-                                        if aas.solo() {
-                                            xdots.push(aas[0] as char);
-                                        } else if style == "x" {
-                                            xdots += &"X";
-                                        } else {
-                                            for m in classes.iter() {
-                                                if meet_size(&aas, &m.1) == aas.len() {
-                                                    xdots.push(m.0 as char);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                row.push(xdots);
-                            } else {
-                                row.push("".to_string());
-                            }
-                        }
-                    }
-                    rows.push(row);
-                }
-
-                // Insert horizontal line.
-
-                if !drows.is_empty() {
-                    let mut width = 1 + lvars.len();
-                    for col in 0..cols {
-                        width += rsi.cvars[col].len();
-                    }
-                    rows.push(vec!["\\hline".to_string(); width]);
-                }
-
-                // Build the diff row.
-
-                build_diff_row(
-                    &ctl,
-                    &rsi,
-                    &mut rows,
-                    &mut drows,
-                    &row1,
-                    nexacts,
-                    &field_types,
-                    &show_aa,
-                );
-
-                // Finish building table content.
-
-                for j in 0..sr.len() {
-                    sr[j].0[0] = format!("{}", j + 1); // row number (#)
-                    rows.push(sr[j].0.clone());
-                    rows.append(&mut sr[j].1.clone());
-                }
-
-                // Add sum and mean rows.
-
-                if ctl.clono_print_opt.sum {
-                    let mut row = Vec::<String>::new();
-                    row.push("Σ".to_string());
-                    for i in 0..lvars.len() {
-                        let mut x = lvars[i].clone();
-                        if x.contains(':') {
-                            x = x.before(":").to_string();
-                        }
-                        let mut found = false;
-                        let mut total = 0.0;
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x {
-                                found = true;
-                                for k in 0..stats[j].1.len() {
-                                    total += stats[j].1[k];
-                                }
-                            }
-                        }
-                        if !found {
-                            row.push(String::new());
-                        } else {
-                            if !lvars[i].ends_with("_%") {
-                                row.push(format!("{}", total.round() as usize));
-                            } else {
-                                row.push(format!("{:.2}", total));
-                            }
-                        }
-                    }
-                    // This is necessary but should not be:
-                    for cx in 0..cols {
-                        for _ in 0..rsi.cvars[cx].len() {
-                            row.push(String::new());
-                        }
-                    }
-                    rows.push(row);
-                }
-                if ctl.clono_print_opt.mean {
-                    let mut row = Vec::<String>::new();
-                    row.push("μ".to_string());
-                    for i in 0..lvars.len() {
-                        let mut x = lvars[i].clone();
-                        if x.contains(':') {
-                            x = x.before(":").to_string();
-                        }
-                        let mut found = false;
-                        let mut total = 0.0;
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x {
-                                found = true;
-                                for k in 0..stats[j].1.len() {
-                                    total += stats[j].1[k];
-                                }
-                            }
-                        }
-                        let mean = total / n as f64;
-                        if !found {
-                            row.push(String::new());
-                        } else {
-                            if !lvars[i].ends_with("_%") {
-                                row.push(format!("{:.1}", mean));
-                            } else {
-                                row.push(format!("{:.2}", mean));
-                            }
-                        }
-                    }
-                    // This is necessary but should not be:
-                    for cx in 0..cols {
-                        for _ in 0..rsi.cvars[cx].len() {
-                            row.push(String::new());
-                        }
-                    }
-                    rows.push(row);
-                }
-
-                // Make table.
-
-                for i in 0..rows.len() {
-                    for j in 0..rows[i].len() {
-                        rows[i][j] = rows[i][j].replace("|TRX", "TRB");
-                        rows[i][j] = rows[i][j].replace("|TRY", "TRA");
-                    }
-                }
-                for cx in 0..cols {
-                    justify.push(b'|');
-                    for m in 0..rsi.cvars[cx].len() {
-                        justify.push(justification(&rsi.cvars[cx][m]));
-                    }
-                }
-                let mut logz = String::new();
-                make_table(&ctl, &mut rows, &justify, &mlog, &mut logz);
-
-                // Add phylogeny.
-
-                if ctl.toy {
-                    let mut vrefs = Vec::<Vec<u8>>::new();
-                    let mut jrefs = Vec::<Vec<u8>>::new();
-                    for cx in 0..cols {
-                        let (mut vref, mut jref) = (Vec::<u8>::new(), Vec::<u8>::new());
-                        for u in 0..nexacts {
-                            let m = rsi.mat[cx][u];
-                            if m.is_some() {
-                                let m = m.unwrap();
-                                jref = exact_clonotypes[exacts[u]].share[m].js.to_ascii_vec();
-                            }
-                            let vseq1 = refdata.refs[rsi.vids[cx]].to_ascii_vec();
-                            if rsi.vpids[cx].is_some() {
-                                vref = dref[rsi.vpids[cx].unwrap()].nt_sequence.clone();
-                            } else {
-                                vref = vseq1.clone();
-                            }
-                        }
-                        vrefs.push(vref);
-                        jrefs.push(jref);
-                    }
-                    for u1 in 0..nexacts {
-                        let ex1 = &exact_clonotypes[exacts[u1]];
-                        for u2 in u1 + 1..nexacts {
-                            let ex2 = &exact_clonotypes[exacts[u2]];
-                            let (mut d1, mut d2) = (0, 0);
-                            let mut d = 0;
-                            for cx in 0..cols {
-                                let (m1, m2) = (rsi.mat[cx][u1], rsi.mat[cx][u2]);
-                                if m1.is_none() || m2.is_none() {
-                                    continue;
-                                }
-                                let (m1, m2) = (m1.unwrap(), m2.unwrap());
-                                let (s1, s2) = (&ex1.share[m1].seq_del, &ex2.share[m2].seq_del);
-                                let n = s1.len();
-                                let (vref, jref) = (&vrefs[cx], &jrefs[cx]);
-                                for j in 0..vars[cx].len() {
-                                    let p = vars[cx][j];
-                                    if s1[p] != s2[p] {
-                                        if p < vref.len() - ctl.heur.ref_v_trim {
-                                            if s1[p] == vref[p] {
-                                                d1 += 1;
-                                            } else if s2[p] == vref[p] {
-                                                d2 += 1;
-                                            }
-                                        } else if p >= n - (jref.len() - ctl.heur.ref_j_trim) {
-                                            if s1[p] == jref[jref.len() - (n - p)] {
-                                                d1 += 1;
-                                            } else if s2[p] == jref[jref.len() - (n - p)] {
-                                                d2 += 1;
-                                            }
-                                        } else {
-                                            d += 1;
-                                        }
-                                    }
-                                }
-                            }
-                            if (d1 == 0) ^ (d2 == 0) {
-                                if d1 == 0 {
-                                    logz += &format!("{} ==> {}", u1 + 1, u2 + 1);
-                                } else {
-                                    logz += &format!("{} ==> {}", u2 + 1, u1 + 1);
-                                }
-                                let s = format!(
-                                    "; u1 = {}, u2 = {}, d1 = {}, d2 = {}, d = {}\n",
-                                    u1 + 1,
-                                    u2 + 1,
-                                    d1,
-                                    d2,
-                                    d
-                                );
-                                logz += &s;
-                            }
-                        }
-                    }
-                }
 
                 // Save.
 
@@ -1291,23 +950,6 @@ pub fn print_clonotypes(
     }
     loupe_out(&ctl, all_loupe_clonotypes, &refdata, &dref);
 
-    // Gather some data for gene scan.
-
-    if ctl.gen_opt.gene_scan_test.is_some() {
-        let mut count = 0;
-        for i in 0..orbits.len() {
-            for j in 0..results[i].1.len() {
-                if results[i].9[j] {
-                    tests.push(count);
-                }
-                if results[i].10[j] {
-                    controls.push(count);
-                }
-                count += 1;
-            }
-        }
-    }
-
     // Set up to group and print clonotypes.
 
     for i in 0..orbits.len() {
@@ -1318,5 +960,32 @@ pub fn print_clonotypes(
             in_center.push(results[i].12[j]);
         }
         out_datas.append(&mut results[i].7);
+    }
+
+    // Gather some data for gene scan.
+
+    if ctl.gen_opt.gene_scan_test.is_some() && !ctl.gen_opt.gene_scan_exact {
+        for i in 0..orbits.len() {
+            for j in 0..results[i].1.len() {
+                if results[i].9[j] {
+                    tests.push(i);
+                }
+                if results[i].10[j] {
+                    controls.push(i);
+                }
+            }
+        }
+    }
+    if ctl.gen_opt.gene_scan_test.is_some() && ctl.gen_opt.gene_scan_exact {
+        for i in 0..exacts.len() {
+            for j in 0..exacts[i].len() {
+                if results[i].9[j] {
+                    tests.push(exacts[i][j]);
+                }
+                if results[i].10[j] {
+                    controls.push(exacts[i][j]);
+                }
+            }
+        }
     }
 }

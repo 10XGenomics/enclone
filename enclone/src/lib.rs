@@ -20,6 +20,7 @@ pub mod proc_args2;
 pub mod proc_args3;
 pub mod proc_args_check;
 pub mod proc_args_post;
+pub mod process_special_arg;
 pub mod read_json;
 pub mod run_test;
 pub mod secret;

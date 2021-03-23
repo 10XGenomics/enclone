@@ -59,7 +59,13 @@ equivalent to providing the command-line argument <span style="font-weight:bold;
 if an argument name is repeated, only the rightmost value is used, except as noted specifically in
 the documentation.
 
-<span style="font-weight:bold;">2. Color</span>
+<span style="font-weight:bold;">2. Importing arguments</span>
+
+Extra arguments can be imported on the command line using <span style="font-weight:bold;">SOURCE=filename</span>.  The file may have
+newlines, and more than one SOURCE command may be used.  Any line starting with # is treated as a
+comment.
+
+<span style="font-weight:bold;">3. Color</span>
 
 <span style="color:#3e7dd1;font-weight:bold;">e</span><span style="color:#f37721;font-weight:bold;">n</span><span style="color:#e7bd20;">c</span><span style="color:#72c0ff;font-weight:bold;">l</span><span style="color:#eb99c2;font-weight:bold;">o</span><span style="color:#31c39a;">n</span><span style="color:#f37721;font-weight:bold;">e</span> uses ANSI escape codes for color and bolding, frivolously, for emphasis, and more
 importantly for amino acids, to represent different codons.  This is done automatically but you
@@ -71,7 +77,7 @@ You can turn off escape codes by adding <span style="font-weight:bold;">PLAIN</s
 output using a text editor which does not grok the escape codes.  However some things will not
 make sense without color.
 
-<span style="font-weight:bold;">3. Paging</span>
+<span style="font-weight:bold;">4. Paging</span>
 
 • enclone automatically pipes its output to <span style="font-weight:bold;">less -R -F -X</span>.
 • The effect of this will be that you'll see only the first screen of output.  You can then use

@@ -4,9 +4,11 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use crate::print_utils1::*;
-use crate::proc_cvar::*;
+use crate::proc_cvar1::*;
+use crate::proc_cvar2::*;
 use crate::proc_lvar::*;
 use amino::*;
+use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
 use itertools::*;
@@ -70,6 +72,12 @@ pub fn row_fill(
         pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
     }
     pcols_sort.sort();
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
@@ -308,7 +316,7 @@ pub fn row_fill(
             }
         }
     }
-    for x in ctl.gen_opt.tree.iter() {
+    for x in extra_args.iter() {
         if !lvars.contains(&x) {
             all_lvars.push(x.clone());
         }
@@ -527,7 +535,7 @@ pub fn row_fill(
             }
         }
         all_vars.append(&mut extra_parseables.clone());
-        for x in ctl.gen_opt.tree.iter() {
+        for x in extra_args.iter() {
             if !rsi_vars.contains(&x) {
                 all_vars.push(x.clone());
             }
@@ -570,20 +578,20 @@ pub fn row_fill(
             } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
-            if ctl.gen_opt.tree.contains(&varc) {
+            if extra_args.contains(&varc) {
                 needed = true;
             }
             if !needed {
                 continue;
             }
             let col_var = j < rsi_vars.len();
-            if !col_var && ctl.parseable_opt.pout.len() == 0 && ctl.gen_opt.tree.is_empty() {
+            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
                 continue;
             }
 
             // Compute.
 
-            proc_cvar(
+            if !proc_cvar1(
                 &var,
                 j,
                 col,
@@ -616,7 +624,42 @@ pub fn row_fill(
                 r_max,
                 r_mean,
                 rtot,
-            );
+            ) {
+                let _ = proc_cvar2(
+                    &var,
+                    j,
+                    col,
+                    mid,
+                    pass,
+                    u,
+                    &ex,
+                    &ctl,
+                    &exacts,
+                    &exact_clonotypes,
+                    &refdata,
+                    &varmat,
+                    out_data,
+                    &rsi,
+                    &dref,
+                    &peer_groups,
+                    &show_aa,
+                    &field_types,
+                    col_var,
+                    &pcols_sort,
+                    bads,
+                    cx,
+                    u_min,
+                    u_max,
+                    u_mean,
+                    median_numis,
+                    utot,
+                    median_nreads,
+                    r_min,
+                    r_max,
+                    r_mean,
+                    rtot,
+                );
+            }
         }
     }
 }

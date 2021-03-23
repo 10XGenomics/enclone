@@ -5,11 +5,19 @@
 <br>
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
 
-<h1>honeycomb plots</h1>
+<h1>plots</h1>
 
 <p>
-#enclone can create a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell. 
+#enclone can create two types of plots:
+<ul>
+<li>a "honeycomb" plot showing each clonotype as a cluster of dots, one per cell</li>
+<li>a dotplot of one variable versus another variable</li>
+</ul>
 </p>
+
+<hr>
+
+<h2>honeycomb plots</h2>
 
 <p>#enclone provides four ways to assign colors in such a plot.  We describe them in order of
 precedence, i.e. color data for the first will be used if provided, etc.</p>
@@ -17,7 +25,7 @@ precedence, i.e. color data for the first will be used if provided, etc.</p>
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
           padding: 8px; width: 950px">
 <b>Hint.</b>
-You may wish to use the <code>MIN_CELLS</code> option (see 
+You may wish to use the <code>MIN_CELLS</code> option
 (see <a href="../../pages/auto/help.filter.html">enclone help filter</a>) to exclude tiny 
 clonotypes, which might otherwise crowd the image and slow down plotting.
 </p>
@@ -140,6 +148,25 @@ will give you an
 auto-generated legend.  You can also customize the legend by adding an argument of the form
 <code>LEGEND=color1,"text1",...,colorn,"textn"</code>
 to the command line.
+</p>
+
+<hr>
+
+<h2>plots of one variable versus another</h2>
+
+<p>If <code>xvar</code> and <code>yvar</code> are the names of parseable variables
+(see <a href="../../pages/auto/help.parseable.html">enclone help parseable</a>), then
+#enclone can produce a plot of <code>xvar</code> versus <code>yvar</code>, showing a point
+for each exact subclonotype (after all filtering) for which both variables are defined and are 
+numbers.  The syntax is <code>PLOTXY_EXACT="xvar,yvar,filename"</code>.  The file is an 
+<code>SVG</code> file.  We allow <code>xvar = log10(v)</code> for some parseable variable
+<code>v</code>, and likewise for <code>yvar</code>.  The quotes are only needed if the variables
+have "funny" characters in them.
+</p>
+
+<p><b>Example.</p>
+<code>enclone BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,plot.svg</code>
+<img src="../../img/two_genes.svg" alt="sample xy plot" title="sample xy plot">
 </p>
 
 </body>

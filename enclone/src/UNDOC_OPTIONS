@@ -314,3 +314,9 @@ This won't work with paging, however you can pipe to "less -r".
 ===================================================================================================
 
 ROW_FILL_VERBOSE: special option for debugging
+
+TOP_GENES: list genes having the highest expression in the selected clonotypes, taking the median 
+across all cells (only implemented if .bin file has been generated using NH5)
+
+COMPE: COMP, plus enforce no unaccounted time
+UNACCOUNTED: show unaccounted time at each step

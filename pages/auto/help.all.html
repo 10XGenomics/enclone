@@ -345,7 +345,13 @@ equivalent to providing the command-line argument <span style="font-weight:bold;
 if an argument name is repeated, only the rightmost value is used, except as noted specifically in
 the documentation.
 
-<span style="font-weight:bold;">2. Color</span>
+<span style="font-weight:bold;">2. Importing arguments</span>
+
+Extra arguments can be imported on the command line using <span style="font-weight:bold;">SOURCE=filename</span>.  The file may have
+newlines, and more than one SOURCE command may be used.  Any line starting with # is treated as a
+comment.
+
+<span style="font-weight:bold;">3. Color</span>
 
 <span style="color:#3e7dd1;font-weight:bold;">e</span><span style="color:#f37721;font-weight:bold;">n</span><span style="color:#e7bd20;">c</span><span style="color:#72c0ff;font-weight:bold;">l</span><span style="color:#eb99c2;font-weight:bold;">o</span><span style="color:#31c39a;">n</span><span style="color:#f37721;font-weight:bold;">e</span> uses ANSI escape codes for color and bolding, frivolously, for emphasis, and more
 importantly for amino acids, to represent different codons.  This is done automatically but you
@@ -357,7 +363,7 @@ You can turn off escape codes by adding <span style="font-weight:bold;">PLAIN</s
 output using a text editor which does not grok the escape codes.  However some things will not
 make sense without color.
 
-<span style="font-weight:bold;">3. Paging</span>
+<span style="font-weight:bold;">4. Paging</span>
 
 • enclone automatically pipes its output to <span style="font-weight:bold;">less -R -F -X</span>.
 • The effect of this will be that you'll see only the first screen of output.  You can then use
@@ -912,6 +918,10 @@ imposed by using multiple instances of <span style="font-weight:bold;">KEEP_CLON
 that <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype. 
 See also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
 
+If for a given clonotype and a given variable, not all values are specified (e.g. if for a
+user-specified variable, values are blank), then only the values that are specified are used in
+the computation of mean and max.  If no values are specified, then the condition fails.
+
 Similarly, to filter by the max across all cells in a clonotype, one may use
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MAX="L"</span>
 and otherwise as above.
@@ -929,6 +939,9 @@ the "control clonotypes".  Currently, the lead variables in <span style="font-we
 that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
 clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately and manually
 examine the test and control clonotypes to make sure that they make sense.
+
+If in addition the argument <span style="font-weight:bold;">SCAN_EXACT</span> is supplied, then scanning will be carried out over exact
+subclonotypes rather than clonotypes.
 
 <span style="font-weight:bold;">an example</span>
 

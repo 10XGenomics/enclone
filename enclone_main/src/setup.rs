@@ -116,7 +116,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if is_simple_arg(&args[i], "NOPRETTY") {
             nopretty = true;
         }
-        if is_simple_arg(&args[i], "COMP") {
+        if is_simple_arg(&args[i], "COMP") || args[i] == "COMPE" {
             ctl.comp = true;
         }
         if is_simple_arg(&args[i], "COMP2") {

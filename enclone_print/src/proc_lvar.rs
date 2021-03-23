@@ -105,21 +105,25 @@ pub fn proc_lvar(
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
     let cols = varmat[0].len();
-    let mut tree_args = ctl.gen_opt.tree.clone();
-    unique_sort(&mut tree_args);
+    let mut extra_args = ctl.gen_opt.tree.clone();
+    if ctl.plot_opt.plot_xy_filename.len() > 0 {
+        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
+        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
+    }
+    unique_sort(&mut extra_args);
     let verbose = ctl.gen_opt.row_fill_verbose;
 
     // Set up speak macro.
 
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || tree_args.len() > 0) {
+            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty()
                     || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
-                    || bin_member(&tree_args, &v)
+                    || bin_member(&extra_args, &v)
                 {
                     out_data[$u].insert(v, $val);
                 }
@@ -148,9 +152,11 @@ pub fn proc_lvar(
     // Check INFO.
 
     if ctl.gen_opt.info.is_some() {
-        if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
-            for q in 0..ctl.gen_opt.info_fields.len() {
-                if *x == ctl.gen_opt.info_fields[q] {
+        for q in 0..ctl.gen_opt.info_fields.len() {
+            if *x == ctl.gen_opt.info_fields[q] {
+                let mut found = false;
+                let mut lvarred = false;
+                if ex.share.len() == 2 && ex.share[0].left != ex.share[1].left {
                     let mut tag = String::new();
                     for j in 0..ex.share.len() {
                         if ex.share[j].left {
@@ -164,10 +170,22 @@ pub fn proc_lvar(
                         }
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
-                        lvar![i, x, ctl.gen_opt.info_data[&tag][q].clone()];
-                        return;
+                        let val = &ctl.gen_opt.info_data[&tag][q];
+                        lvar![i, x, val.clone()];
+                        lvarred = true;
+                        if val.parse::<f64>().is_ok() {
+                            found = true;
+                            stats.push((x.to_string(), vec![val.force_f64(); ex.ncells()]));
+                        }
                     }
                 }
+                if !lvarred {
+                    lvar![i, x, String::new()];
+                }
+                if !found {
+                    stats.push((x.to_string(), vec![]));
+                }
+                return;
             }
         }
     }

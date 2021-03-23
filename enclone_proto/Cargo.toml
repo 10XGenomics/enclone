@@ -9,20 +9,21 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Patrick Marks <patrick.marks@10xgenomics.com>,
               Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
 edition = "2018"
+license-file = "../LICENSE.txt"
 publish = false
 
 # Please do not edit crate versions within this file.  Instead edit the file master.toml
 # in the root of the enclone repo.
 
 [dependencies]
-bio = { git = "https://github.com/rust-bio/rust-bio.git", rev = "792d3e21296d85a711f1a383db513924528b6da5" }
+bio = ">=0.33"
 bytes = ">=0.5.5, <2"
 byteorder = "1.4.2"
 failure = "0.1.6"
 prost = ">=0.6.1, <0.8"
 serde = "1.0.90"
 serde_derive = "1.0"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e927b6e46d1c876f02d40e01f621cd91c01c4c7" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
 
 [build-dependencies]
 prost-build = ">=0.6.1, <0.8"

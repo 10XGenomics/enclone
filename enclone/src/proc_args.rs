@@ -2,18 +2,17 @@
 
 use crate::proc_args2::*;
 use crate::proc_args_post::*;
+use crate::process_special_arg::*;
 use enclone_core::defs::*;
 use enclone_core::testlist::*;
-use evalexpr::*;
 use io_utils::*;
 use itertools::Itertools;
-use regex::Regex;
 use std::collections::HashMap;
 use std::fs::{remove_file, File};
 use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
-use vector_utils::*;
+use tilde_expand::*;
 
 // Process arguments.
 
@@ -440,6 +439,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("REQUIRE_UNBROKEN_OK", &mut ctl.gen_opt.require_unbroken_ok),
         ("REUSE", &mut ctl.gen_opt.reuse),
         ("ROW_FILL_VERBOSE", &mut ctl.gen_opt.row_fill_verbose),
+        ("SCAN_EXACT", &mut ctl.gen_opt.gene_scan_exact),
         ("SEQC", &mut ctl.clono_print_opt.seqc),
         ("SHOW_BC", &mut ctl.join_print_opt.show_bc),
         ("STABLE_DOC", &mut ctl.gen_opt.stable_doc),
@@ -451,12 +451,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "SUPPRESS_ISOTYPE_LEGEND",
             &mut ctl.gen_opt.plot_by_isotype_nolegend,
         ),
+        ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.toy),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
             &mut ctl.clono_filt_opt.umi_ratio_filt_mark,
         ),
+        ("UNACCOUNTED", &mut ctl.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
         ("WEAK", &mut ctl.gen_opt.weak),
@@ -554,6 +556,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let set_nothing_simple = [
         "CELLRANGER",
         "COMP",
+        "COMPE",
         "COMP2",
         "CTRLC",
         "DUMP_INTERNAL_IDS",
@@ -585,6 +588,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Traverse arguments.
 
+    let mut processed = vec![true; args.len()];
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
 
@@ -607,6 +611,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 arg = format!("{}={}", arg.before("="), arg.between("\"", "\""));
             }
         }
+        args[i] = arg.clone();
+        let arg = arg;
 
         // Check for weird case that might arise if testing code is screwed up.
 
@@ -724,12 +730,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_string_readable.len() {
             let var = &set_string_readable[j].0;
             if is_string_arg(&arg, var) {
-                let val = arg.after(&format!("{}=", var));
+                let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);
                     std::process::exit(1);
                 }
-                *(set_string_readable[j].1) = Some(val.to_string());
+                val = stringme(&tilde_expand(&val.as_bytes()));
+                *(set_string_readable[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
@@ -746,16 +753,17 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_string_readable_csv.len() {
             let var = &set_string_readable_csv[j].0;
             if is_string_arg(&arg, var) {
-                let val = arg.after(&format!("{}=", var));
+                let mut val = arg.after(&format!("{}=", var)).to_string();
                 if val.is_empty() {
                     eprintln!("\nFilename input in {} cannot be empty.\n", val);
                     std::process::exit(1);
                 }
+                val = stringme(&tilde_expand(&val.as_bytes()));
                 if !val.ends_with(".csv") {
                     eprintln!("\nFilename input in {} needs to end with .csv.\n", val);
                     std::process::exit(1);
                 }
-                *(set_string_readable_csv[j].1) = Some(val.to_string());
+                *(set_string_readable_csv[j].1) = Some(val.clone());
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
@@ -784,441 +792,29 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             }
         }
 
-        // Process the argument.
+        // Otherwise mark as not processed.
 
-        if is_simple_arg(&arg, "SEQ") {
-            ctl.join_print_opt.seq = true;
-
-        // Not movable.
-        } else if arg.starts_with("PG_DIST=") {
-            let dist = arg.after("PG_DIST=");
-            if dist != "MFL" {
-                eprintln!("\nCurrently the only allowed value for PG_DIST is MFL.\n");
-                std::process::exit(1);
-            }
-            ctl.gen_opt.peer_group_dist = dist.to_string();
-        } else if is_simple_arg(&arg, "H5") {
-            ctl.gen_opt.force_h5 = true;
-        } else if is_simple_arg(&arg, "NH5") {
-            ctl.gen_opt.force_h5 = false;
-        } else if arg == "LEGEND" {
-            ctl.gen_opt.use_legend = true;
-        } else if is_usize_arg(&arg, "REQUIRED_FPS") {
-            ctl.gen_opt.required_fps = Some(arg.after("REQUIRED_FPS=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_CELLS") {
-            ctl.gen_opt.required_cells = Some(arg.after("REQUIRED_CELLS=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_DONORS") {
-            ctl.gen_opt.required_donors = Some(arg.after("REQUIRED_DONORS=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_CLONOTYPES") {
-            ctl.gen_opt.required_clonotypes = Some(arg.after("REQUIRED_CLONOTYPES=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_TWO_CELL_CLONOTYPES") {
-            ctl.gen_opt.required_two_cell_clonotypes =
-                Some(arg.after("REQUIRED_TWO_CELL_CLONOTYPES=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_TWO_CHAIN_CLONOTYPES") {
-            ctl.gen_opt.required_two_chain_clonotypes =
-                Some(arg.after("REQUIRED_TWO_CHAIN_CLONOTYPES=").force_usize());
-        } else if is_usize_arg(&arg, "REQUIRED_DATASETS") {
-            ctl.gen_opt.required_datasets = Some(arg.after("REQUIRED_DATASETS=").force_usize());
-        } else if is_usize_arg(&arg, "EXACT") {
-            ctl.gen_opt.exact = Some(arg.after("EXACT=").force_usize());
-        } else if is_usize_arg(&arg, "MIN_CHAINS") {
-            ctl.clono_filt_opt.min_chains = arg.after("MIN_CHAINS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_CHAINS") {
-            ctl.clono_filt_opt.max_chains = arg.after("MAX_CHAINS=").force_usize();
-        } else if is_usize_arg(&arg, "MIN_CELLS") {
-            ctl.clono_filt_opt.ncells_low = arg.after("MIN_CELLS=").force_usize();
-        } else if is_usize_arg(&arg, "MAX_CELLS") {
-            ctl.clono_filt_opt.ncells_high = arg.after("MAX_CELLS=").force_usize();
-        } else if arg.starts_with("EXFASTA=") {
-            ctl.gen_opt.fasta = arg.after("EXFASTA=").to_string();
-        } else if arg.starts_with("FASTA=") {
-            ctl.gen_opt.fasta_filename = arg.after("FASTA=").to_string();
-        } else if arg.starts_with("FASTA_AA=") {
-            ctl.gen_opt.fasta_aa_filename = arg.after("FASTA_AA=").to_string();
-
-        // Other.
-        } else if arg.starts_with("DIFF_STYLE=") {
-            ctl.gen_opt.diff_style = arg.after("=").to_string();
-            if ctl.gen_opt.diff_style != "C1" && ctl.gen_opt.diff_style != "C2" {
-                eprintln!("\nThe only allowed values for DIFF_STYLE are C1 and C2.\n");
-                std::process::exit(1);
-            }
-        } else if arg.starts_with("COLOR=") {
-            ctl.gen_opt.color = arg.after("COLOR=").to_string();
-            if ctl.gen_opt.color != "codon".to_string()
-                && ctl.gen_opt.color != "property".to_string()
-            {
-                let mut ok = false;
-                if arg.starts_with("COLOR=peer.") {
-                    let pc = arg.after("COLOR=peer.");
-                    if pc.parse::<f64>().is_ok() {
-                        let pc = pc.force_f64();
-                        if pc >= 0.0 && pc <= 100.0 {
-                            ok = true;
-                            ctl.gen_opt.color_by_rarity_pc = pc;
-                        }
-                    }
-                }
-                if !ok {
-                    eprintln!(
-                        "The specified value for COLOR is not allowed.  Please see \
-                        \"enclone help color\".\n"
-                    );
-                    std::process::exit(1);
-                }
-            }
-        } else if arg == "TREE" {
-            ctl.gen_opt.tree_on = true;
-        } else if arg == "TREE=const" {
-            // this is for backward compatibility
-            ctl.gen_opt.tree_on = true;
-            ctl.gen_opt.tree.push("const1".to_string());
-        } else if arg.starts_with("TREE=") {
-            ctl.gen_opt.tree_on = true;
-            let p = arg.after("TREE=").split(',').collect::<Vec<&str>>();
-            for i in 0..p.len() {
-                ctl.gen_opt.tree.push(p[i].to_string());
-            }
-        } else if arg.starts_with("FCELL=") // FCELL retained for backward compatibility
-            || arg.starts_with("KEEP_CELL_IF")
-        {
-            let mut condition;
-            if arg.starts_with("FCELL") {
-                condition = arg.after("FCELL=").to_string();
-            } else {
-                condition = arg.after("KEEP_CELL_IF=").to_string();
-            }
-            let con = condition.as_bytes();
-            for i in 0..con.len() {
-                if i > 0 && i < con.len() - 1 && con[i] == b'=' {
-                    if con[i - 1] != b'=' && con[i - 1] != b'<' && con[i - 1] != b'>' {
-                        if con[i + 1] != b'=' {
-                            eprintln!(
-                                "\nConstraints for {} cannot use =.  Please use == instead.\n",
-                                arg.before("="),
-                            );
-                            std::process::exit(1);
-                        }
-                    }
-                }
-            }
-            condition = condition.replace("'", "\"");
-            let compiled = build_operator_tree(&condition);
-            if !compiled.is_ok() {
-                eprintln!("\n{} usage incorrect.\n", arg.before("="));
-                std::process::exit(1);
-            }
-            ctl.clono_filt_opt.fcell.push(compiled.unwrap());
-        } else if is_simple_arg(&arg, "FAIL_ONLY=true") {
-            ctl.clono_filt_opt.fail_only = true;
-        } else if arg.starts_with("LEGEND=") {
-            let x = parse_csv(&arg.after("LEGEND="));
-            if x.len() == 0 || x.len() % 2 != 0 {
-                eprintln!("\nValue of LEGEND doesn't make sense.\n");
-                std::process::exit(1);
-            }
-            ctl.gen_opt.use_legend = true;
-            for i in 0..x.len() / 2 {
-                ctl.gen_opt
-                    .legend
-                    .push((x[2 * i].clone(), x[2 * i + 1].clone()));
-            }
-        } else if arg.starts_with("BARCODE=") {
-            let bcs = arg.after("BARCODE=").split(',').collect::<Vec<&str>>();
-            let mut x = Vec::<String>::new();
-            for j in 0..bcs.len() {
-                if !bcs[j].contains('-') {
-                    eprintln!(
-                        "\nValue for a barcode in BARCODE argument is invalid, must contain -.\n"
-                    );
-                    std::process::exit(1);
-                }
-                x.push(bcs[j].to_string());
-            }
-            ctl.clono_filt_opt.barcode = x;
-        } else if arg.starts_with("F=") {
-            // deprecated but retained for backward compatibility
-            let filt = arg.after("F=").to_string();
-            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
-            ctl.clono_filt_opt.bound_type.push("mean".to_string());
-        } else if arg.starts_with("KEEP_CLONO_IF_CELL_MEAN=") {
-            let filt = arg.after("KEEP_CLONO_IF_CELL_MEAN=").to_string();
-            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
-            ctl.clono_filt_opt.bound_type.push("mean".to_string());
-        } else if arg.starts_with("KEEP_CLONO_IF_CELL_MAX=") {
-            let filt = arg.after("KEEP_CLONO_IF_CELL_MAX=").to_string();
-            ctl.clono_filt_opt.bounds.push(LinearCondition::new(&filt));
-            ctl.clono_filt_opt.bound_type.push("max".to_string());
-        } else if arg.starts_with("SCAN=") {
-            let mut x = arg.after("SCAN=").to_string();
-            x = x.replace(" ", "").to_string();
-            let x = x.split(',').collect::<Vec<&str>>();
-            if x.len() != 3 {
-                eprintln!("\nArgument to SCAN must have three components.\n");
-                std::process::exit(1);
-            }
-            ctl.gen_opt.gene_scan_test = Some(LinearCondition::new(&x[0]));
-            ctl.gen_opt.gene_scan_control = Some(LinearCondition::new(&x[1]));
-            let threshold = LinearCondition::new(&x[2]);
-            for i in 0..threshold.var.len() {
-                if threshold.var[i] != "t".to_string() && threshold.var[i] != "c".to_string() {
-                    eprintln!("\nIllegal variable in threshold for scan.\n");
-                    std::process::exit(1);
-                }
-            }
-            ctl.gen_opt.gene_scan_threshold = Some(threshold);
-        } else if arg.starts_with("PLOT=") {
-            using_plot = true;
-            let x = arg.after("PLOT=").split(',').collect::<Vec<&str>>();
-            if x.is_empty() {
-                eprintln!("\nArgument to PLOT is invalid.\n");
-                std::process::exit(1);
-            }
-            ctl.gen_opt.plot_file = x[0].to_string();
-            for j in 1..x.len() {
-                if !x[j].contains("->") {
-                    eprintln!("\nArgument to PLOT is invalid.\n");
-                    std::process::exit(1);
-                }
-                ctl.gen_opt
-                    .origin_color_map
-                    .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
-            }
-        } else if arg.starts_with("PLOT_BY_ISOTYPE=") {
-            ctl.gen_opt.plot_by_isotype = true;
-            ctl.gen_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
-            if ctl.gen_opt.plot_file.is_empty() {
-                eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
-                std::process::exit(1);
-            }
-        } else if arg.starts_with("PLOT_BY_ISOTYPE_COLOR=") {
-            if arg.after("PLOT_BY_ISOTYPE_COLOR=").len() == 0 {
-                eprintln!(
-                    "\nA value needs to be specified for the PLOT_BY_ISOTYPE_COLOR \
-                    argument.\n"
-                );
-                std::process::exit(1);
-            }
-            let fields = arg
-                .after("PLOT_BY_ISOTYPE_COLOR=")
-                .split(',')
-                .collect::<Vec<&str>>();
-            for i in 0..fields.len() {
-                ctl.gen_opt
-                    .plot_by_isotype_color
-                    .push(fields[i].to_string());
-            }
-        } else if arg.starts_with("PLOT_BY_MARK=") {
-            ctl.gen_opt.plot_by_mark = true;
-            ctl.gen_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
-            if ctl.gen_opt.plot_file.is_empty() {
-                eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
-                std::process::exit(1);
-            }
-        } else if is_simple_arg(&arg, "FAIL_ONLY=false") {
-            ctl.clono_filt_opt.fail_only = false;
-        } else if is_usize_arg(&arg, "MAX_CORES") {
-            let nthreads = arg.after("MAX_CORES=").force_usize();
-            let _ = rayon::ThreadPoolBuilder::new()
-                .num_threads(nthreads)
-                .build_global();
-        } else if arg.starts_with("PCOLS=") {
-            ctl.parseable_opt.pcols.clear();
-            let p = arg.after("PCOLS=").split(',').collect::<Vec<&str>>();
-            for i in 0..p.len() {
-                let mut x = p[i].to_string();
-                x = x.replace("_sum", "_Σ");
-                x = x.replace("_mean", "_μ");
-                ctl.parseable_opt.pcols.push(x.to_string());
-                ctl.parseable_opt.pcols_sort = ctl.parseable_opt.pcols.clone();
-                ctl.parseable_opt.pcols_sortx = ctl.parseable_opt.pcols.clone();
-                for j in 0..ctl.parseable_opt.pcols_sortx.len() {
-                    if ctl.parseable_opt.pcols_sortx[j].contains(":") {
-                        ctl.parseable_opt.pcols_sortx[j] =
-                            ctl.parseable_opt.pcols_sortx[j].before(":").to_string();
-                    }
-                }
-                unique_sort(&mut ctl.parseable_opt.pcols_sort);
-                unique_sort(&mut ctl.parseable_opt.pcols_sortx);
-            }
-        } else if arg.starts_with("VJ=") {
-            ctl.clono_filt_opt.vj = arg.after("VJ=").as_bytes().to_vec();
-            for c in ctl.clono_filt_opt.vj.iter() {
-                if !(*c == b'A' || *c == b'C' || *c == b'G' || *c == b'T') {
-                    eprintln!("\nIllegal value for VJ, must be over alphabet ACGT.\n");
-                    std::process::exit(1);
-                }
-            }
-        } else if arg.starts_with("AMINO=") {
-            ctl.clono_print_opt.amino.clear();
-            for x in arg.after("AMINO=").split(',').collect::<Vec<&str>>() {
-                if x != "" {
-                    ctl.clono_print_opt.amino.push(x.to_string());
-                }
-            }
-            for x in ctl.clono_print_opt.amino.iter() {
-                let mut ok = false;
-                if *x == "cdr1"
-                    || *x == "cdr2"
-                    || *x == "cdr3"
-                    || *x == "fwr1"
-                    || *x == "fwr2"
-                    || *x == "fwr3"
-                    || *x == "fwr4"
-                    || *x == "var"
-                    || *x == "share"
-                    || *x == "donor"
-                    || *x == "donorn"
-                {
-                    ok = true;
-                } else if x.contains('-') {
-                    let (start, stop) = (x.before("-"), x.after("-"));
-                    if start.parse::<usize>().is_ok() && stop.parse::<usize>().is_ok() {
-                        if start.force_usize() <= stop.force_usize() {
-                            ok = true;
-                        }
-                    }
-                }
-                if !ok {
-                    eprintln!(
-                        "\nUnrecognized variable {} for AMINO.  Please type \
-                         \"enclone help amino\".\n",
-                        x
-                    );
-                    std::process::exit(1);
-                }
-            }
-        } else if arg.starts_with("CVARS=") {
-            ctl.clono_print_opt.cvars.clear();
-            for x in arg.after("CVARS=").split(',').collect::<Vec<&str>>() {
-                if x.len() > 0 {
-                    ctl.clono_print_opt.cvars.push(x.to_string());
-                }
-            }
-            for x in ctl.clono_print_opt.cvars.iter_mut() {
-                *x = x.replace("_sum", "_Σ");
-                *x = x.replace("_mean", "_μ");
-            }
-        } else if arg.starts_with("CVARSP=") {
-            for x in arg.after("CVARSP=").split(',').collect::<Vec<&str>>() {
-                if x.len() > 0 {
-                    ctl.clono_print_opt.cvars.push(x.to_string());
-                }
-            }
-            for x in ctl.clono_print_opt.cvars.iter_mut() {
-                *x = x.replace("_sum", "_Σ");
-                *x = x.replace("_mean", "_μ");
-            }
-        } else if arg.starts_with("LVARS=") {
-            ctl.clono_print_opt.lvars.clear();
-            for x in arg.after("LVARS=").split(',').collect::<Vec<&str>>() {
-                ctl.clono_print_opt.lvars.push(x.to_string());
-            }
-            for x in ctl.clono_print_opt.lvars.iter_mut() {
-                *x = x.replace("_sum", "_Σ");
-                *x = x.replace("_mean", "_μ");
-            }
-        } else if arg.starts_with("LVARSP=") {
-            let lvarsp = arg.after("LVARSP=").split(',').collect::<Vec<&str>>();
-            for x in lvarsp {
-                ctl.clono_print_opt.lvars.push(x.to_string());
-            }
-            for x in ctl.clono_print_opt.lvars.iter_mut() {
-                *x = x.replace("_sum", "_Σ");
-                *x = x.replace("_mean", "_μ");
-            }
-        } else if is_f64_arg(&arg, "MAX_SCORE") {
-            ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
-        } else if is_f64_arg(&arg, "MAX_LOG_SCORE") {
-            let x = arg.after("MAX_LOG_SCORE=").force_f64();
-            ctl.join_alg_opt.max_score = 10.0_f64.powf(x);
-        } else if arg.starts_with("CONST_IGH=") {
-            let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGH=")));
-            if !reg.is_ok() {
-                eprintln!(
-                    "\nYour CONST_IGH value {} could not be parsed as a regular expression.\n",
-                    arg.after("CONST_IGH=")
-                );
-                std::process::exit(1);
-            }
-            ctl.gen_opt.const_igh = Some(reg.unwrap());
-        } else if arg.starts_with("CONST_IGKL=") {
-            let reg = Regex::new(&format!("^{}$", arg.after("CONST_IGKL=")));
-            if !reg.is_ok() {
-                eprintln!(
-                    "\nYour CONST_IGKL value {} could not be parsed as a regular expression.\n",
-                    arg.after("CONST_IGKL=")
-                );
-                std::process::exit(1);
-            }
-            ctl.gen_opt.const_igkl = Some(reg.unwrap());
-        } else if arg.starts_with("CDR3=") {
-            let fields = arg.split('|').collect::<Vec<&str>>();
-            let mut lev = true;
-            for i in 0..fields.len() {
-                if !Regex::new(r"[A-Z]+~[0-9]+")
-                    .as_ref()
-                    .unwrap()
-                    .is_match(fields[i])
-                {
-                    lev = false;
-                }
-            }
-            if lev {
-                ctl.clono_filt_opt.cdr3_lev = arg.after("=").to_string();
-            } else {
-                let reg = Regex::new(&format!("^{}$", arg.after("CDR3=")));
-                if !reg.is_ok() {
-                    eprintln!(
-                        "\nYour CDR3 value {} could not be parsed as a regular expression.\n",
-                        arg.after("CDR3=")
-                    );
-                    std::process::exit(1);
-                }
-                ctl.clono_filt_opt.cdr3 = Some(reg.unwrap());
-            }
-        } else if is_usize_arg(&arg, "CHAINS") {
-            ctl.clono_filt_opt.min_chains = arg.after("CHAINS=").force_usize();
-            ctl.clono_filt_opt.max_chains = arg.after("CHAINS=").force_usize();
-        } else if arg.starts_with("SEG=") {
-            let fields = arg.after("SEG=").split('|').collect::<Vec<&str>>();
-            let mut y = Vec::<String>::new();
-            for x in fields.iter() {
-                y.push(x.to_string());
-            }
-            y.sort();
-            ctl.clono_filt_opt.seg.push(y);
-        } else if arg.starts_with("SEGN=") {
-            let fields = arg.after("SEGN=").split('|').collect::<Vec<&str>>();
-            let mut y = Vec::<String>::new();
-            for x in fields.iter() {
-                if !x.parse::<i32>().is_ok() {
-                    eprintln!("\nInvalid argument to SEGN.\n");
-                    std::process::exit(1);
-                }
-                y.push(x.to_string());
-            }
-            y.sort();
-            ctl.clono_filt_opt.segn.push(y);
-        } else if is_usize_arg(&arg, "CELLS") {
-            ctl.clono_filt_opt.ncells_low = arg.after("CELLS=").force_usize();
-            ctl.clono_filt_opt.ncells_high = ctl.clono_filt_opt.ncells_low;
-        } else if arg.starts_with("META=") {
-            let f = arg.after("META=");
-            metas.push(f.to_string());
-        } else if arg.starts_with("METAX=") {
-            let f = arg.after("METAX=");
-            metaxs.push(f.to_string());
-        } else if arg.starts_with("TCR=")
-            || arg.starts_with("BCR=")
-            || (arg.len() > 0 && arg.as_bytes()[0] >= b'0' && arg.as_bytes()[0] <= b'9')
-        {
-            xcrs.push(arg.to_string());
-        } else {
-            eprintln!("\nUnrecognized argument {}.\n", arg);
-            std::process::exit(1);
-        }
+        processed[i] = false;
     }
+
+    // Process remaining args.
+
+    for i in 1..args.len() {
+        if processed[i] {
+            continue;
+        }
+        process_special_arg(
+            &args[i],
+            &mut ctl,
+            &mut metas,
+            &mut metaxs,
+            &mut xcrs,
+            &mut using_plot,
+        );
+    }
+
+    // Record time.
+
     ctl.perf_stats(&targs, "in main args loop");
 
     // Do residual argument processing.

@@ -1,5 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
+use crate::allowed_vars::*;
+use crate::linear_condition::*;
 use debruijn::dna_string::*;
 use evalexpr::*;
 use hdf5::Dataset;
@@ -8,9 +10,38 @@ use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 use string_utils::*;
 use vector_utils::*;
+
+// Macro for user error.  This is designed to prevent multiple error messages being emitted
+// in a parallel loop.
+//
+// To use this, you need to add the following lines:
+// - use enclone_core::defs::*;
+// - use enclone_core::defs::FAILED;
+// - use std::sync::atomic::Ordering::SeqCst;
+
+pub static FAILED: AtomicBool = AtomicBool::new(false);
+
+#[macro_export]
+macro_rules! user_error {
+    ($($arg:tt)*) => (
+    {
+        if !FAILED.load(SeqCst)
+        {
+            FAILED.store(true, SeqCst);
+            eprintln!("");
+            eprintln!($($arg)*);
+            eprintln!("");
+        }
+    std::process::exit(1);
+    }
+);
+}
+
+// The rest.
 
 pub const PRETTY_TRACE_WHITELIST: [&str; 14] = [
     "amino",
@@ -55,156 +86,6 @@ pub const HELP_PAGES: [&str; 21] = [
 
 pub const MAX_CDR3_DIFFS_TO_JOIN: usize = 5;
 
-// Field (variable) names.
-// Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 30] = [
-    "datasets",
-    "origins",
-    "donors",
-    "n",
-    "gex",
-    "gex_min",
-    "gex_max",
-    "gex_μ",
-    "gex_Σ",
-    "gex_cell",
-    "n_gex_cell",
-    "n_gex",
-    "n_b",
-    "clust",
-    "cred",
-    "cred_cell",
-    "type",
-    "entropy",
-    "entropy_cell",
-    "near",
-    "far",
-    "dref",
-    "dref_aa",
-    "ext",
-    "mark",
-    "inkt",
-    "mait",
-    "sec",
-    "mem",
-    "filter",
-];
-
-// Chain variables that can be used for contigs and chains
-
-pub const CVARS_ALLOWED: [&str; 71] = [
-    "var",
-    "u",
-    "u_min",
-    "u_max",
-    "u_Σ",
-    "u_μ",
-    "comp",
-    "edit",
-    "r",
-    "r_min",
-    "r_max",
-    "r_Σ",
-    "r_μ",
-    "const",
-    "white",
-    "cdr1_dna",
-    "cdr1_dna_ref",
-    "cdr2_dna",
-    "cdr2_dna_ref",
-    "cdr3_dna",
-    "cdr1_len",
-    "cdr2_len",
-    "cdr3_len",
-    "cdr1_aa",
-    "cdr1_aa_north",
-    "cdr1_aa_ref",
-    "cdr2_aa",
-    "cdr2_aa_north",
-    "cdr2_aa_ref",
-    "cdr3_aa",
-    "cdr3_aa_north",
-    "cdr3_aa_conx",
-    "cdr3_aa_conp",
-    "fwr1_dna",
-    "fwr1_dna_ref",
-    "fwr2_dna",
-    "fwr2_dna_ref",
-    "fwr3_dna",
-    "fwr3_dna_ref",
-    "fwr4_dna",
-    "fwr4_dna_ref",
-    "fwr1_len",
-    "fwr2_len",
-    "fwr3_len",
-    "fwr4_len",
-    "fwr1_aa",
-    "fwr1_aa_ref",
-    "fwr2_aa",
-    "fwr2_aa_ref",
-    "fwr3_aa",
-    "fwr3_aa_ref",
-    "fwr4_aa",
-    "fwr4_aa_ref",
-    "ulen",
-    "vjlen",
-    "clen",
-    "cdiff",
-    "udiff",
-    "notes",
-    "d_univ",
-    "d_donor",
-    "aa%",
-    "dna%",
-    "nval",
-    "nnval",
-    "valumis",
-    "nvalumis",
-    "ivalumis",
-    "valbcumis",
-    "nvalbcumis",
-    "ivalbcumis",
-];
-
-pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
-
-pub const PLVARS_ALLOWED: [&str; 7] = [
-    "group_id",
-    "group_ncells",
-    "clonotype_id",
-    "clonotype_ncells",
-    "nchains",
-    "exact_subclonotype_id",
-    "barcodes",
-];
-
-pub const PCVARS_ALLOWED: [&str; 24] = [
-    "v_name",
-    "d_name",
-    "j_name",
-    "v_id",
-    "d_id",
-    "j_id",
-    "var_indices_dna",
-    "var_indices_aa",
-    "share_indices_dna",
-    "share_indices_aa",
-    "v_start",
-    "d_start",
-    "d_frame",
-    "const_id",
-    "utr_id",
-    "utr_name",
-    "cdr3_start",
-    "cdr3_aa",
-    "seq",
-    "vj_seq",
-    "vj_seq_nl",
-    "vj_aa",
-    "vj_aa_nl",
-    "var_aa",
-];
-
 // Clonotyping algorithm heuristics.
 
 #[derive(Default)]
@@ -213,201 +94,6 @@ pub struct ClonotypeHeuristics {
     pub max_degradation: usize,
     pub ref_v_trim: usize,
     pub ref_j_trim: usize,
-}
-
-#[derive(Clone)]
-pub struct LinearCondition {
-    pub coeff: Vec<f64>,  // left hand side (lhs) coefficients
-    pub var: Vec<String>, // left hand side variables (parallel to coefficients)
-    pub rhs: f64,         // right hand side; sum of lhs must exceed rhs
-    pub sense: String,    // le, ge, lt, gt
-}
-
-impl LinearCondition {
-    pub fn n(&self) -> usize {
-        self.coeff.len()
-    }
-
-    pub fn new(x: &str) -> LinearCondition {
-        let y = x.replace(" ", "");
-        let lhs: String;
-        let mut rhs: String;
-        let sense: String;
-        if y.contains(">=") {
-            lhs = y.before(">=").to_string();
-            rhs = y.after(">=").to_string();
-            sense = "ge".to_string();
-        } else if y.contains('≥') {
-            lhs = y.before("≥").to_string();
-            rhs = y.after("≥").to_string();
-            sense = "ge".to_string();
-        } else if y.contains("<=") {
-            lhs = y.before("<=").to_string();
-            rhs = y.after("<=").to_string();
-            sense = "le".to_string();
-        } else if y.contains('≤') {
-            lhs = y.before("≤").to_string();
-            rhs = y.after("≤").to_string();
-            sense = "le".to_string();
-        } else if y.contains('<') {
-            lhs = y.before("<").to_string();
-            rhs = y.after("<").to_string();
-            sense = "lt".to_string();
-        } else if y.contains('>') {
-            lhs = y.before(">").to_string();
-            rhs = y.after(">").to_string();
-            sense = "gt".to_string();
-        } else {
-            eprintln!(
-                "\nImproperly formatted condition, no inequality symbol, \
-                 please type \"enclone help display\": {}.\n",
-                x
-            );
-            std::process::exit(1);
-        }
-        if !rhs.contains('.') && !rhs.contains('e') {
-            rhs += ".0";
-        }
-        if !rhs.parse::<f64>().is_ok() {
-            eprintln!(
-                "\nImproperly formatted condition, right-hand side invalid: {}.\n",
-                x
-            );
-            std::process::exit(1);
-        }
-        let rhs = rhs.force_f64();
-        let mut parts = Vec::<String>::new();
-        let mut last = 0;
-        let lhsx = lhs.as_bytes();
-        let mut parens = 0 as isize;
-        for i in 0..lhsx.len() {
-            if i > 0 && parens == 0 && (lhsx[i] == b'+' || lhsx[i] == b'-') {
-                if lhsx[last] != b'+' {
-                    parts.push(stringme(&lhsx[last..i]));
-                } else {
-                    parts.push(stringme(&lhsx[last + 1..i]));
-                }
-                last = i;
-            }
-            if lhsx[i] == b'(' {
-                parens += 1;
-            } else if lhsx[i] == b')' {
-                parens -= 1;
-            }
-        }
-        let mut coeff = Vec::<f64>::new();
-        let mut var = Vec::<String>::new();
-        if lhsx[last] != b'+' {
-            parts.push(stringme(&lhsx[last..]));
-        } else {
-            parts.push(stringme(&lhsx[last + 1..]));
-        }
-        for i in 0..parts.len() {
-            parts[i] = parts[i].replace("(", "");
-            parts[i] = parts[i].replace(")", "");
-            if parts[i].contains('*') {
-                let mut coeffi = parts[i].before("*").to_string();
-                let vari = parts[i].after("*");
-                if !coeffi.contains('.') && !coeffi.contains('e') {
-                    coeffi += ".0";
-                }
-                if !coeffi.parse::<f64>().is_ok() {
-                    eprintln!(
-                        "\nImproperly formatted condition, coefficient {} is invalid: {}.\n",
-                        coeffi, x
-                    );
-                    std::process::exit(1);
-                }
-                coeff.push(coeffi.force_f64());
-                var.push(vari.to_string());
-            } else {
-                let mut coeffi = 1.0;
-                let mut start = 0;
-                if parts[i].starts_with('-') {
-                    coeffi = -1.0;
-                    start = 1;
-                }
-                coeff.push(coeffi);
-                var.push(parts[i][start..].to_string());
-            }
-        }
-        LinearCondition {
-            coeff: coeff,
-            var: var,
-            rhs: rhs,
-            sense: sense,
-        }
-    }
-
-    pub fn satisfied(&self, val: &Vec<f64>) -> bool {
-        let mut lhs = 0.0;
-        for i in 0..self.coeff.len() {
-            lhs += self.coeff[i] * val[i];
-        }
-        if self.sense == "lt".to_string() {
-            return lhs < self.rhs;
-        } else if self.sense == "gt".to_string() {
-            return lhs > self.rhs;
-        } else if self.sense == "le".to_string() {
-            return lhs <= self.rhs;
-        } else {
-            return lhs >= self.rhs;
-        }
-    }
-
-    pub fn require_valid_variables(&self, ctl: &EncloneControl) {
-        let lvars = &ctl.clono_print_opt.lvars;
-        let mut lvars0 = Vec::<String>::new();
-        let exclude = vec![
-            "datasets",
-            "donors",
-            "near",
-            "far",
-            "dref",
-            "dref_aa",
-            "n_gex_cell",
-            "n_gex",
-            "n_b",
-            "clust",
-            "cred",
-            "type",
-            "gex",
-            "gex_min",
-            "gex_max",
-            "gex_mean",
-            "gex_sum",
-            "entropy",
-            "ext",
-        ];
-        for j in 0..lvars.len() {
-            let mut ok = true;
-            for m in 0..exclude.len() {
-                if lvars[j] == exclude[m] {
-                    ok = false;
-                }
-            }
-            if lvars[j].starts_with("g") && lvars[j].after("g").parse::<usize>().is_ok() {
-                ok = false;
-            }
-            if ok {
-                let mut x = lvars[j].clone();
-                if x.contains(":") {
-                    x = x.before(":").to_string();
-                }
-                lvars0.push(x);
-            }
-        }
-        unique_sort(&mut lvars0);
-        for i in 0..self.var.len() {
-            if !bin_member(&lvars0, &self.var[i]) {
-                eprintln!(
-                    "\nFound invalid variable {} in linear condition.\n",
-                    self.var[i]
-                );
-                std::process::exit(1);
-            }
-        }
-    }
 }
 
 // Origin info data structure.
@@ -512,6 +198,7 @@ pub struct GeneralOpt {
     pub gene_scan_test: Option<LinearCondition>,
     pub gene_scan_control: Option<LinearCondition>,
     pub gene_scan_threshold: Option<LinearCondition>,
+    pub gene_scan_exact: bool,
     pub plot_file: String,
     pub plot_by_isotype: bool,
     pub plot_by_isotype_nolegend: bool,
@@ -572,6 +259,18 @@ pub struct GeneralOpt {
     pub internal_data_dir: String,
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
+    pub top_genes: bool,
+}
+
+// Some plot options.  (Should move them all here.)
+
+#[derive(Default)]
+pub struct PlotOpt {
+    pub plot_xy_filename: String,
+    pub plot_xy_xvar: String,
+    pub plot_xy_yvar: String,
+    pub plot_xy_x_log10: bool,
+    pub plot_xy_y_log10: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -715,12 +414,16 @@ pub struct ParseableOpt {
 
 #[derive(Default)]
 pub struct EncloneControl {
+    pub start_time: Option<Instant>,      // enclone start time
     pub gen_opt: GeneralOpt,              // miscellaneous general options
+    pub plot_opt: PlotOpt,                // plot options
     pub pretty: bool,                     // use escape characters to enhance view
     pub silent: bool,                     // turn off extra logging
     pub force: bool,                      // make joins even if redundant
     pub comp: bool,                       // print computational performance stats
     pub comp2: bool,                      // print more detailed computational performance stats
+    pub unaccounted: bool,                // show unaccounted time at each step
+    pub comp_enforce: bool,               // comp plus enforce no unaccounted time
     pub debug_table_printing: bool,       // turn on debugging for table printing
     pub merge_all_impropers: bool,        // merge all improper exact subclonotypes
     pub heur: ClonotypeHeuristics,        // algorithmic heuristics
@@ -742,11 +445,13 @@ pub static mut LAST_IPEAK: f64 = -0.0;
 impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(&t);
+        let t2 = Instant::now();
+        let mut usedx = String::new();
         if self.comp {
             let peak = peak_mem_usage_gb();
             let ipeak = (100.0 * peak).round();
             let peak_mem = format!("peak mem = {:.2} GB", peak);
-            let usedx = format!("{:.2}", used);
+            usedx = format!("{:.2}", used);
             let mut ipeak_changed = false;
             unsafe {
                 if ipeak != LAST_IPEAK {
@@ -758,8 +463,39 @@ impl EncloneControl {
                 println!("used {} seconds {}, {}", usedx, msg, peak_mem);
             }
         }
+
+        // Check for time used in the above computation, which could otherwise introduce a
+        // discrepancy into the time accounting stats.  Surprisingly, the time spent in that
+        // section can be nontrivial.
+
+        let used2 = elapsed(&t2);
+        let used2x = format!("{:.2}", used2);
+        if self.comp {
+            if used2x != "0.00" {
+                println!("used {} seconds computing perf stats for {}", used2x, msg);
+            }
+        }
+
+        // Update total time used.
+
         unsafe {
-            WALLCLOCK += used;
+            WALLCLOCK += used + used2;
+        }
+
+        // Report unaccounted time.
+
+        if self.comp && self.unaccounted && msg != "total" {
+            let delta;
+            unsafe {
+                delta = elapsed(&self.start_time.unwrap()) - WALLCLOCK;
+            }
+            let deltas = format!("{:.2}", delta);
+            if deltas != "0.00" {
+                if usedx == "0.00" {
+                    println!("used 0.00 seconds {}", msg);
+                }
+                println!("used {} seconds unaccounted for", deltas);
+            }
         }
     }
 }
