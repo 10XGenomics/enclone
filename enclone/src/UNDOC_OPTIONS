@@ -318,5 +318,5 @@ ROW_FILL_VERBOSE: special option for debugging
 TOP_GENES: list genes having the highest expression in the selected clonotypes, taking the median 
 across all cells (only implemented if .bin file has been generated using NH5)
 
-COMPE: COMP, plus enforce no unaccounted time
+COMPE: COMP, plus enforce no unaccounted time (except up to 0.02 seconds)
 UNACCOUNTED: show unaccounted time at each step
