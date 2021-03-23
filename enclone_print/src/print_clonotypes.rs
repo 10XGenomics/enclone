@@ -68,19 +68,7 @@ pub fn print_clonotypes(
 
     // Compute extra args.
 
-    let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
-        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
-    }
-    for i in 0..ctl.clono_filt_opt.bounds.len() {
-        extra_args.append(&mut ctl.clono_filt_opt.bounds[i].var.clone());
-    }
-    if ctl.gen_opt.gene_scan_test.is_some() {
-        extra_args.append(&mut ctl.gen_opt.gene_scan_test.as_ref().unwrap().var.clone());
-        extra_args.append(&mut ctl.gen_opt.gene_scan_control.as_ref().unwrap().var.clone());
-    }
-    unique_sort(&mut extra_args);
+    let extra_args = extra_args(&ctl);
 
     // Compute total cells.
 
