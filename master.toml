@@ -41,7 +41,7 @@ pager = "0.16.0"
 perf_stats = "0.1"
 permutation = "0.2.5"
 petgraph = "0.5"
-plotters = { version = "^0.3.0", default_features = false, features = ["svg_backend", "point_series"] }
+plotters = { version = ">=0.2.15", default_features = false, features = ["svg_backend", "point_series"] }
 pretty_trace = "0.5"
 prost = ">=0.6.1, <0.8"
 prost-build = ">=0.6.1, <0.8"
