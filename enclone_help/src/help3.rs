@@ -127,6 +127,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.print("\\bold{1. per clonotype group fields}\n\n");
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");
         h.ldoc("group_ncells", "total number of cells in the group");
+        h.doc2("(cannot be used in linear conditions)");
         h.print_tab2();
         h.print("\n");
 

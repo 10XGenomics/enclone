@@ -65,12 +65,10 @@ pub fn print_clonotypes(
     fate: &mut Vec<HashMap<String, String>>,
 ) {
     let lvars = &ctl.clono_print_opt.lvars;
-    let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
-        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
-    }
-    unique_sort(&mut extra_args);
+
+    // Compute extra args.
+
+    let extra_args = extra_args(&ctl);
 
     // Compute total cells.
 
@@ -362,6 +360,7 @@ pub fn print_clonotypes(
                         &rsi,
                         &mut out_data,
                         &mut mlog,
+                        &extra_args,
                     );
                 }
 
@@ -683,6 +682,7 @@ pub fn print_clonotypes(
                         &nd_fields,
                         &peer_groups,
                         &extra_parseables,
+                        &extra_args,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {

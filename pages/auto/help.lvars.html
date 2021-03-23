@@ -46,10 +46,15 @@ gtag('config', 'UA-58278925-3');
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">lead column options</span>
 
-These options define lead variables, which correspond to columns that appear once in each
-clonotype, on the left side, and have one entry for each exact subclonotype row.  Please note that
-for medians of integers, we actually report the "rounded median", the result of rounding the true
-median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
+These options define lead variables, which are variables that are computed for each exact
+subclonotype, and if using the <span style="font-weight:bold;">PER_CELL</span> option, also computed for each cell.  In addition, lead
+variables can be used for parseable output.
+
+Lead variables appear in columns that appear once in each clonotype, on the left side, and have
+one entry for each exact subclonotype row.
+
+Note that for medians of integers, we actually report the "rounded median", the result of rounding
+the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 

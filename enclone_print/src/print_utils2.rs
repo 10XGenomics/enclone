@@ -58,6 +58,7 @@ pub fn row_fill(
     nd_fields: &Vec<String>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     extra_parseables: &Vec<String>,
+    extra_args: &Vec<String>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -72,12 +73,6 @@ pub fn row_fill(
         pcols_sort[i] = pcols_sort[i].replace("_μ", "_mean");
     }
     pcols_sort.sort();
-    let mut extra_args = ctl.gen_opt.tree.clone();
-    if ctl.plot_opt.plot_xy_filename.len() > 0 {
-        extra_args.push(ctl.plot_opt.plot_xy_xvar.clone());
-        extra_args.push(ctl.plot_opt.plot_xy_yvar.clone());
-    }
-    unique_sort(&mut extra_args);
     macro_rules! speakc {
         ($u:expr, $col:expr, $var:expr, $val:expr) => {
             if pass == 2
@@ -368,6 +363,7 @@ pub fn row_fill(
             entropy,
             &entropies_unsorted,
             &fcounts,
+            &extra_args,
         );
     }
 
@@ -624,6 +620,7 @@ pub fn row_fill(
                 r_max,
                 r_mean,
                 rtot,
+                &extra_args,
             ) {
                 let _ = proc_cvar2(
                     &var,
@@ -658,6 +655,7 @@ pub fn row_fill(
                     r_max,
                     r_mean,
                     rtot,
+                    &extra_args,
                 );
             }
         }
