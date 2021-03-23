@@ -27,7 +27,8 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=591b502c92a7d3825fbe7bb20994e0787cc29a9d#591b502c92a7d3825fbe7bb20994e0787cc29a9d"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61e5ca2ec70bbae7d4b08ab5d27fcb2fe82295321b4e956a882d26b6341be988"
 dependencies = [
  "bio",
  "debruijn",
@@ -180,9 +181,11 @@ dependencies = [
 
 [[package]]
 name = "bio"
-version = "0.32.1-alpha.0"
-source = "git+https://github.com/rust-bio/rust-bio.git?rev=792d3e21296d85a711f1a383db513924528b6da5#792d3e21296d85a711f1a383db513924528b6da5"
+version = "0.33.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5bf608c2f4e25edc48f85b8c93f4ef772fe4397d018f4aee88308f8d5864ffd"
 dependencies = [
+ "anyhow",
  "approx",
  "bio-types",
  "bit-set",
@@ -204,7 +207,6 @@ dependencies = [
  "num-traits",
  "ordered-float",
  "petgraph",
- "quick-error",
  "regex",
  "serde",
  "serde_derive",
@@ -1703,12 +1705,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "quick-error"
-version = "1.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1d01941d82fa2ab50be1e79e6714289dd7cde78eba4c074bc5a4374f650dfe0"
-
-[[package]]
 name = "quote"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2254,7 +2250,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0e927b6e46d1c876f02d40e01f621cd91c01c4c7#0e927b6e46d1c876f02d40e01f621cd91c01c4c7"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=57e9783ae1200a104d751dabdff72d3eca2cef64#57e9783ae1200a104d751dabdff72d3eca2cef64"
 dependencies = [
  "align_tools",
  "amino",
