@@ -220,7 +220,15 @@ pub fn main_enclone(args: &Vec<String>) {
             ],
         );
     }
-
+    let mut bound_vars = Vec::<String>::new();
+    for bi in 0..ctl.clono_filt_opt.bounds.len() {
+        let x = &ctl.clono_filt_opt.bounds[bi];
+        for i in 0..x.n() {
+            bound_vars.push(x.var[i].clone());
+        }
+    }
+    unique_sort(&mut bound_vars);
+    check_pcols(&ctl, &gex_info, &bound_vars);
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.

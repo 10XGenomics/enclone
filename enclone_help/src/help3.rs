@@ -486,13 +486,14 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "\\bold{linear conditions}\n\n\
              enclone understands linear conditions of the form\n\
              \\bold{c1*v1 ± ... ± cn*vn > d}\n\
-             where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
+             where each ci is a constant, \"ci*\" may be omitted, each vi is a parseable variable, \
              and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
              >= or ≥ or < or <= or ≤.  \
-             Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
-             represents a \
-             origin/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
-             condition, each vi is \
+             The parseable variables should have numeric values, but this is not enforced.  If \
+             you accidentally provide a variable that does not have a numeric value \
+             (e.g. cdr3_aa1), the most likely result is that all clonotypes will be filtered \
+             out.\n\n\
+             In evaluating the condition, each vi is \
              replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \
              allow parentheses around variable names to prevent erroneous parsing, like this \
@@ -506,12 +507,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              enclone has the capability to filter by bounding certain lead variables, using \
              the command-line argument:\n\
              \\bold{KEEP_CLONO_IF_CELL_MEAN=\"L\"}\n\
-             where L is a linear condition (as defined above).  Currently this is limited to \
-             the case where the lead variables have been selected using \\bold{LVARS} or \
-             \\bold{LVARSP}!  Also it is not implemented for all lead variables, and you'll get \
-             an error message if it is not implemented.  Multiple bounds may be imposed by using \
+             where L is a linear condition (as defined above).  Multiple bounds may be imposed \
+             by using \
              multiple instances of \\bold{KEEP_CLONO_IF_CELL_MEAN=...} .  As explained above, \
-             note that \\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
+             note that\n\\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
              filters by computing the mean across all cells in the clonotype.  See also \
              \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
         );
@@ -539,9 +538,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             where each of \\bold{test}, \\bold{control} and \\bold{threshold} are linear \
             conditions as defined above.  Blank spaces are ignored.  The \\bold{test} condition \
             defines the \"test clonotypes\" and the \\bold{control} condition defines the \
-            \"control clonotypes\".  Currently, the lead variables in \\bold{test} and \
-            \\bold{control} must be specified by\n\
-            \\bold{LVARS} or \\bold{LVARSP}!  \
+            \"control clonotypes\".  \
             The \\bold{threshold} condition is special: it may use \
             only the variables \"t\" and \"c\" that represent the raw UMI count for \
             a particular gene or feature, for the test (t) or control (c) clonotypes.  \

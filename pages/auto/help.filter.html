@@ -125,25 +125,25 @@ https://docs.rs/regex.
 
 enclone understands linear conditions of the form
 <span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
-where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
-Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  Each vi is a
-lead variable (see "<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>") that represents a origin/donor/tag count or gene/feature
-barcode UMI count.  In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values
-across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
-some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
-this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
+where each ci is a constant, "ci*" may be omitted, each vi is a parseable variable, and d is a
+constant.  Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  The
+parseable variables should have numeric values, but this is not enforced.  If you accidentally
+provide a variable that does not have a numeric value (e.g. cdr3_aa1), the most likely result is
+that all clonotypes will be filtered out.
+
+In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values across all cells in the
+clonotype.  Because the minus sign - doubles as a hyphen and is used in some feature names, we
+allow parentheses around variable names to prevent erroneous parsing, like this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
 
 <span style="font-weight:bold;">filtering by linear conditions</span>
 
 enclone has the capability to filter by bounding certain lead variables, using the command-line
 argument:
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN="L"</span>
-where L is a linear condition (as defined above).  Currently this is limited to the case where the
-lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Also it is not implemented for all lead
-variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
-imposed by using multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note
-that <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype. 
-See also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+where L is a linear condition (as defined above).  Multiple bounds may be imposed by using
+multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note that
+<span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype.  See
+also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
 
 If for a given clonotype and a given variable, not all values are specified (e.g. if for a
 user-specified variable, values are blank), then only the values that are specified are used in
@@ -161,11 +161,10 @@ feature is turned on using the command line argument
 <span style="font-weight:bold;">SCAN="test,control,threshold"</span>
 where each of <span style="font-weight:bold;">test</span>, <span style="font-weight:bold;">control</span> and <span style="font-weight:bold;">threshold</span> are linear conditions as defined above.  Blank spaces
 are ignored.  The <span style="font-weight:bold;">test</span> condition defines the "test clonotypes" and the <span style="font-weight:bold;">control</span> condition defines
-the "control clonotypes".  Currently, the lead variables in <span style="font-weight:bold;">test</span> and <span style="font-weight:bold;">control</span> must be specified by
-<span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t" and "c"
-that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
-clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately and manually
-examine the test and control clonotypes to make sure that they make sense.
+the "control clonotypes".  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t"
+and "c" that represent the raw UMI count for a particular gene or feature, for the test (t) or
+control (c) clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately
+and manually examine the test and control clonotypes to make sure that they make sense.
 
 If in addition the argument <span style="font-weight:bold;">SCAN_EXACT</span> is supplied, then scanning will be carried out over exact
 subclonotypes rather than clonotypes.

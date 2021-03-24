@@ -514,7 +514,7 @@ pub fn proc_lvar2(
         }
         lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x == "gex" {
-        lvar![i, x, format!("{}", gex_median)];
+        lvar_stats![i, x, format!("{}", gex_median), fcounts];
     } else if x == "gex_cell" {
         if pass == 2 {
             speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
