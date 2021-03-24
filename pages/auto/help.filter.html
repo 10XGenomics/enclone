@@ -128,12 +128,13 @@ enclone understands linear conditions of the form
 where each ci is a constant, "ci*" may be omitted, each vi is a parseable variable, and d is a
 constant.  Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  The
 parseable variables should have numeric values, but this is not enforced.  If you accidentally
-provide a variable that does not have a numeric value (e.g. cdr3_aa1), the most likely result is
-that all clonotypes will be filtered out.
+provide a variable that does not have a numeric value (e.g. cdr3_aa1), a possible result is that
+all clonotypes will be filtered out.
 
 In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values across all cells in the
 clonotype.  Because the minus sign - doubles as a hyphen and is used in some feature names, we
-allow parentheses around variable names to prevent erroneous parsing, like this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
+allow parentheses around variable names to prevent erroneous parsing, like this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>. 
+And something like that would need to be quoted on the command line.
 
 <span style="font-weight:bold;">filtering by linear conditions</span>
 

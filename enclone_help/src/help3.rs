@@ -491,13 +491,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              >= or ≥ or < or <= or ≤.  \
              The parseable variables should have numeric values, but this is not enforced.  If \
              you accidentally provide a variable that does not have a numeric value \
-             (e.g. cdr3_aa1), the most likely result is that all clonotypes will be filtered \
-             out.\n\n\
+             (e.g. cdr3_aa1), a possible result is that all clonotypes will be filtered out.\n\n\
              In evaluating the condition, each vi is \
              replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \
              allow parentheses around variable names to prevent erroneous parsing, like this \
-             \\bold{(IGHV3-7_g) >= 1}.\n\n",
+             \\bold{(IGHV3-7_g) >= 1}.  And something like that would need to be quoted on \
+             the command line.\n\n",
         );
 
         // bounds
