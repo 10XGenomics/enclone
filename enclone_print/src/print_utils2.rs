@@ -6,7 +6,8 @@
 use crate::print_utils1::*;
 use crate::proc_cvar1::*;
 use crate::proc_cvar2::*;
-use crate::proc_lvar::*;
+use crate::proc_lvar1::*;
+use crate::proc_lvar2::*;
 use amino::*;
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
@@ -325,7 +326,7 @@ pub fn row_fill(
     unique_sort(&mut alt_bcs);
     for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
-        proc_lvar(
+        if !proc_lvar1(
             i,
             &x,
             pass,
@@ -364,7 +365,48 @@ pub fn row_fill(
             &entropies_unsorted,
             &fcounts,
             &extra_args,
-        );
+        ) {
+            let _ = proc_lvar2(
+                i,
+                &x,
+                pass,
+                u,
+                &ctl,
+                &exacts,
+                &mults,
+                &exact_clonotypes,
+                &gex_info,
+                &refdata,
+                &varmat,
+                &fp,
+                row,
+                out_data,
+                d_all,
+                ind_all,
+                &rsi,
+                &dref,
+                &groups,
+                stats,
+                &vdj_cells,
+                &n_vdj_gex,
+                &nd_fields,
+                &lvars,
+                &lenas,
+                &alt_bcs,
+                n_gex,
+                &n_gexs,
+                gex_min,
+                gex_max,
+                gex_mean,
+                gex_sum,
+                gex_median,
+                &count_unsorted,
+                entropy,
+                &entropies_unsorted,
+                &fcounts,
+                &extra_args,
+            );
+        }
     }
 
     // Sanity check.  It's here because if it fails and that failure was not detected, something

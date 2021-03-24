@@ -13,4 +13,5 @@ pub mod print_utils4;
 pub mod print_utils5;
 pub mod proc_cvar1;
 pub mod proc_cvar2;
-pub mod proc_lvar;
+pub mod proc_lvar1;
+pub mod proc_lvar2;
