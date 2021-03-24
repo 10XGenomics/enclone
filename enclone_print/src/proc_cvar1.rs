@@ -393,7 +393,11 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar![j, var, y];
+        if y != "cdr2_len" {
+            cvar![j, var, y];
+        } else {
+            cvar_stats1![j, var, y];
+        }
     } else if *var == "cdr2_dna_ref".to_string() || *var == "cdr2_aa_ref".to_string() {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -466,7 +470,7 @@ pub fn proc_cvar1(
     } else if *var == "cdr3_dna".to_string() {
         cvar![j, var, ex.share[mid].cdr3_dna.clone()];
     } else if *var == "cdr3_len".to_string() {
-        cvar![j, var, ex.share[mid].cdr3_aa.len().to_string()];
+        cvar_stats1![j, var, ex.share[mid].cdr3_aa.len().to_string()];
     } else if *var == "cdr3_aa_conx".to_string() || *var == "cdr3_aa_conp".to_string() {
         let c;
         if *var == "cdr3_aa_conx" {
@@ -519,7 +523,11 @@ pub fn proc_cvar1(
                 y = format!("{}", dna.len() / 3);
             }
         }
-        cvar![j, var, y];
+        if y != "fwr1_len" {
+            cvar![j, var, y];
+        } else {
+            cvar_stats1![j, var, y];
+        }
     } else if *var == "fwr1_dna_ref".to_string() || *var == "fwr1_aa_ref".to_string() {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -577,7 +585,11 @@ pub fn proc_cvar1(
                 y = format!("{}", dna.len() / 3);
             }
         }
-        cvar![j, var, y];
+        if y != "fwr2_len" {
+            cvar![j, var, y];
+        } else {
+            cvar_stats1![j, var, y];
+        }
     } else if *var == "fwr2_dna_ref".to_string() || *var == "fwr2_aa_ref".to_string() {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -636,7 +648,11 @@ pub fn proc_cvar1(
                 y = format!("{}", dna.len() / 3);
             }
         }
-        cvar![j, var, y];
+        if y != "fwr3_len" {
+            cvar![j, var, y];
+        } else {
+            cvar_stats1![j, var, y];
+        }
     } else if *var == "fwr3_dna_ref".to_string() || *var == "fwr3_aa_ref".to_string() {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -668,7 +684,11 @@ pub fn proc_cvar1(
         } else {
             y = format!("{}", dna.len() / 3);
         }
-        cvar![j, var, y];
+        if y != "fwr4_len" {
+            cvar![j, var, y];
+        } else {
+            cvar_stats1![j, var, y];
+        }
     } else if *var == "fwr4_dna_ref".to_string() || *var == "fwr4_aa_ref".to_string() {
         let x = &ex.share[mid];
         let heavy = refdata.rtype[x.j_ref_id] == 0;
@@ -688,9 +708,9 @@ pub fn proc_cvar1(
         }
         cvar![j, var, y];
     } else if *var == "ulen".to_string() {
-        cvar![j, *var, format!("{}", ex.share[mid].v_start)];
+        cvar_stats1![j, *var, format!("{}", ex.share[mid].v_start)];
     } else if *var == "clen".to_string() {
-        cvar![
+        cvar_stats1![
             j,
             var,
             format!("{}", ex.share[mid].full_seq.len() - ex.share[mid].j_stop)
