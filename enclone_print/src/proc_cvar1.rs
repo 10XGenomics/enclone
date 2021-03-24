@@ -747,7 +747,7 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar![
+        cvar_stats1![
             j,
             *var,
             format!("{:.1}", percent_ratio(denom - diffs, denom))
@@ -783,13 +783,13 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar![
+        cvar_stats1![
             j,
             *var,
             format!("{:.1}", percent_ratio(denom - diffs, denom))
         ];
     } else if *var == "vjlen".to_string() {
-        cvar![
+        cvar_stats1![
             j,
             var,
             format!("{}", ex.share[mid].j_stop - ex.share[mid].v_start)
@@ -807,7 +807,7 @@ pub fn proc_cvar1(
                     ndiff += 1;
                 }
             }
-            cvar![j, *var, format!("{}", ndiff)];
+            cvar_stats1![j, *var, format!("{}", ndiff)];
         } else {
             cvar![j, *var, "_".to_string()];
         }

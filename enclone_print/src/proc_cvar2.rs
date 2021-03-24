@@ -106,6 +106,28 @@ pub fn proc_cvar2(
             speakc!(u, col, $var, $val);
         };
     }
+    macro_rules! cvar_stats1 {
+        ($i: expr, $var:expr, $val:expr) => {
+            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                cx[col][$i] = $val.clone();
+            }
+            speakc!(u, col, $var, $val);
+            if $val.parse::<f64>().is_ok() {
+                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+            }
+        };
+    }
+    macro_rules! cvar_stats {
+        ($i: expr, $var:expr, $val:expr, $stats:expr) => {
+            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                cx[col][$i] = $val.clone();
+            }
+            speakc!(u, col, $var, $val);
+            stats.push(($var.to_string(), $stats.clone()));
+        };
+    }
+
+    // Proceed.
 
     if var == "nval" {
         cvar![j, *var, "".to_string()];
@@ -119,6 +141,7 @@ pub fn proc_cvar2(
                 || bin_member(&extra_args, &varc)
             {
                 let mut vals = String::new();
+                let mut valsx = Vec::<f64>::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
                         vals += POUT_SEP;
@@ -128,8 +151,10 @@ pub fn proc_cvar2(
                         n = ex.clones[k][mid].validated_umis.as_ref().unwrap().len();
                     }
                     vals += &format!("{}", n);
+                    valsx.push(n as f64);
                 }
-                out_data[u].insert(varc, format!("{}", vals));
+                out_data[u].insert(varc.clone(), format!("{}", vals));
+                stats.push((varc, valsx));
             }
         }
     } else if var == "nnval" {
@@ -144,6 +169,7 @@ pub fn proc_cvar2(
                 || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
+                let mut nvalsx = Vec::<f64>::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
                         nvals += POUT_SEP;
@@ -153,8 +179,10 @@ pub fn proc_cvar2(
                         n = ex.clones[k][mid].non_validated_umis.as_ref().unwrap().len();
                     }
                     nvals += &format!("{}", n);
+                    nvalsx.push(n as f64);
                 }
-                out_data[u].insert(varc, format!("{}", nvals));
+                out_data[u].insert(varc.clone(), format!("{}", nvals));
+                stats.push((varc, nvalsx));
             }
         }
     } else if var == "nival" {
@@ -169,6 +197,7 @@ pub fn proc_cvar2(
                 || bin_member(&extra_args, &varc)
             {
                 let mut nvals = String::new();
+                let mut nvalsx = Vec::<f64>::new();
                 for k in 0..ex.ncells() {
                     if k > 0 {
                         nvals += POUT_SEP;
@@ -178,8 +207,10 @@ pub fn proc_cvar2(
                         n = ex.clones[k][mid].invalidated_umis.as_ref().unwrap().len();
                     }
                     nvals += &format!("{}", n);
+                    nvalsx.push(n as f64);
                 }
-                out_data[u].insert(varc, format!("{}", nvals));
+                out_data[u].insert(varc.clone(), format!("{}", nvals));
+                stats.push((varc, nvalsx));
             }
         }
     } else if var == "valumis" {
@@ -463,7 +494,7 @@ pub fn proc_cvar2(
                 diffs += 1;
             }
         }
-        cvar![j, var, format!("{}", diffs)];
+        cvar_stats1![j, var, format!("{}", diffs)];
     } else if *var == "d_donor".to_string() {
         let vid = ex.share[mid].v_ref_id;
         let mut vref = refdata.refs[vid].to_ascii_vec();
@@ -487,13 +518,17 @@ pub fn proc_cvar2(
                 diffs += 1;
             }
         }
-        cvar![j, var, format!("{}", diffs)];
+        cvar_stats1![j, var, format!("{}", diffs)];
     } else if *var == "notes".to_string() {
         cvar![j, var, ex.share[mid].vs_notesx.clone()];
     } else if *var == "var".to_string() {
         cvar![j, var, stringme(&varmat[u][col])];
     } else if *var == "u".to_string() {
-        cvar![j, var, format!("{}", median_numis)];
+        let mut vals = Vec::<f64>::new();
+        for k in 0..ex.ncells() {
+            vals.push(ex.clones[k][mid].umi_count as f64);
+        }
+        cvar_stats![j, var, format!("{}", median_numis), vals];
     } else if *var == "u_cell".to_string() {
         let var = var.clone();
         if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
@@ -518,7 +553,11 @@ pub fn proc_cvar2(
     } else if *var == "u_Σ".to_string() {
         cvar![j, var, format!("{}", utot)];
     } else if *var == "r".to_string() {
-        cvar![j, var, format!("{}", median_nreads)];
+        let mut nreads = Vec::<f64>::new();
+        for j in 0..ex.clones.len() {
+            nreads.push(ex.clones[j][mid].read_count as f64);
+        }
+        cvar_stats![j, var, format!("{}", median_nreads), nreads];
     } else if *var == "r_min".to_string() {
         cvar![j, var, format!("{}", r_min)];
     } else if *var == "r_max".to_string() {
