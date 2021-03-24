@@ -112,6 +112,8 @@ LVARS entries
 - npe<n> = total number of cells in this clonotype that are within PCA distance n of this cell
 - ppe<n> = percent of all gex cells within PCA distance n of this cell that are in this clonotype
 
+NOTE: pe, npe and ppe cannot be used in bounds.
+
 IMGT: specify the IMGT reference, forces RE so slow
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
