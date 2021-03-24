@@ -126,7 +126,7 @@ pub fn proc_lvar(
         };
     }
 
-    // Set up lead variable macro.  This is the mechanism for generating
+    // Set up lead variable macros.  This is the mechanism for generating
     // both human-readable and parseable output for lead variables.
 
     macro_rules! lvar {
@@ -141,6 +141,21 @@ pub fn proc_lvar(
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
+        };
+    }
+    macro_rules! lvar_stats {
+        ($i: expr, $var:expr, $val:expr, $stats: expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            stats.push(($var.to_string(), $stats.clone()));
         };
     }
 
@@ -222,9 +237,8 @@ pub fn proc_lvar(
         unique_sort(&mut donors);
         lvar![i, x, format!("{}", donors.iter().format(","))];
     } else if x == "n" {
-        lvar![i, x, format!("{}", mults[u])];
         let counts = vec![1.0; mults[u]];
-        stats.push((x.to_string(), counts));
+        lvar_stats![i, x, format!("{}", mults[u]), counts];
     } else if x == "clust" {
         let mut clust = Vec::<usize>::new();
         for j in 0..ex.clones.len() {
@@ -438,8 +452,7 @@ pub fn proc_lvar(
                 counts.push(1.0);
             }
         }
-        lvar![i, x, format!("{}", count)];
-        stats.push((x.to_string(), counts));
+        lvar_stats![i, x, format!("{}", count), counts];
     } else if x == "sec" && ctl.gen_opt.using_secmem {
         let mut n = 0;
         let mut y = Vec::<f64>::new();
@@ -453,8 +466,7 @@ pub fn proc_lvar(
             }
             y.push(count as f64);
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x.to_string(), y));
+        lvar_stats![i, x, format!("{}", n), y];
     } else if x == "mem" && ctl.gen_opt.using_secmem {
         let mut n = 0;
         let mut y = Vec::<f64>::new();
@@ -468,8 +480,7 @@ pub fn proc_lvar(
             }
             y.push(count as f64);
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x.to_string(), y));
+        lvar_stats![i, x, format!("{}", n), y];
     } else if x == "dref" {
         let mut diffs = 0;
         for m in 0..cols {
@@ -590,8 +601,7 @@ pub fn proc_lvar(
                 }
             }
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_cdr2_") || x.contains(":count_cdr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr2_") {
