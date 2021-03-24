@@ -143,6 +143,23 @@ pub fn proc_lvar(
             }
         };
     }
+    macro_rules! lvar_stats1 {
+        ($i: expr, $var:expr, $val:expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            if $val.parse::<f64>().is_ok() {
+                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+            }
+        };
+    }
     macro_rules! lvar_stats {
         ($i: expr, $var:expr, $val:expr, $stats: expr) => {
             if verbose {
@@ -205,7 +222,7 @@ pub fn proc_lvar(
     if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
         let d = x.after("g").force_usize();
         if groups.contains_key(&d) {
-            lvar![i, x, format!("{}", groups[&d][u] + 1)];
+            lvar_stats1![i, x, format!("{}", groups[&d][u] + 1)];
             return;
         }
     }
@@ -250,8 +267,12 @@ pub fn proc_lvar(
             }
             clust.push(cid);
         }
+        let mut clustf = Vec::<f64>::new();
+        for x in clust.iter() {
+            clustf.push(*x as f64);
+        }
         clust.sort();
-        lvar![i, x, format!("{}", abbrev_list(&clust))];
+        lvar_stats![i, x, format!("{}", abbrev_list(&clust)), clustf];
     } else if x == "n_other" {
         let mut n = 0;
         for j in 0..ex.clones.len() {
