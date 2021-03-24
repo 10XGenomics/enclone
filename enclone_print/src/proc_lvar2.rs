@@ -520,7 +520,11 @@ pub fn proc_lvar2(
             speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
         }
     } else if x == "n_gex" {
-        lvar![i, x, format!("{}", n_gex)];
+        let mut n = Vec::<f64>::new();
+        for x in n_gexs.iter() {
+            n.push(*x as f64);
+        }
+        lvar_stats![i, x, format!("{}", n_gex), n];
     } else if x == "n_gex_cell" {
         if i < lvars.len() {
             row.push("".to_string());
@@ -533,7 +537,7 @@ pub fn proc_lvar2(
             );
         }
     } else if x == "entropy" {
-        lvar![i, x, format!("{:.2}", entropy)];
+        lvar_stats![i, x, format!("{:.2}", entropy), entropies_unsorted];
     } else if x == "entropy_cell" {
         let mut e = Vec::<String>::new();
         for x in entropies_unsorted.iter() {

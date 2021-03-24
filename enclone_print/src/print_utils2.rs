@@ -663,6 +663,7 @@ pub fn row_fill(
                 r_mean,
                 rtot,
                 &extra_args,
+                stats,
             ) {
                 let _ = proc_cvar2(
                     &var,
@@ -698,6 +699,7 @@ pub fn row_fill(
                     r_mean,
                     rtot,
                     &extra_args,
+                    stats,
                 );
             }
         }

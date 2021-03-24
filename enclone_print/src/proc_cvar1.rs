@@ -49,6 +49,7 @@ pub fn proc_cvar1(
     _r_mean: usize,
     _rtot: usize,
     extra_args: &Vec<String>,
+    stats: &mut Vec<(String, Vec<f64>)>,
 ) -> bool {
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
@@ -108,6 +109,17 @@ pub fn proc_cvar1(
                 cx[col][$i] = $val.clone();
             }
             speakc!(u, col, $var, $val);
+        };
+    }
+    macro_rules! cvar_stats1 {
+        ($i: expr, $var:expr, $val:expr) => {
+            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                cx[col][$i] = $val.clone();
+            }
+            speakc!(u, col, $var, $val);
+            if $val.parse::<f64>().is_ok() {
+                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+            }
         };
     }
 
@@ -225,7 +237,7 @@ pub fn proc_cvar1(
             }
         }
         if *var == "comp".to_string() {
-            cvar![j, var, format!("{}", comp)];
+            cvar_stats1![j, var, format!("{}", comp)];
         } else {
             cvar![j, var, format!("{}", edit)];
         }

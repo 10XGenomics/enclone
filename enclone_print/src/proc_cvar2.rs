@@ -46,6 +46,7 @@ pub fn proc_cvar2(
     r_mean: usize,
     rtot: usize,
     extra_args: &Vec<String>,
+    stats: &mut Vec<(String, Vec<f64>)>,
 ) -> bool {
     let cvars = &ctl.clono_print_opt.cvars;
     macro_rules! speakc {
