@@ -620,8 +620,7 @@ pub fn proc_lvar(
                 }
             }
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_cdr3_") || x.contains(":count_cdr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr3_") {
@@ -636,8 +635,7 @@ pub fn proc_lvar(
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_fwr1_") || x.contains(":count_fwr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr1_") {
@@ -656,8 +654,7 @@ pub fn proc_lvar(
                 }
             }
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_fwr2_") || x.contains(":count_fwr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr2_") {
@@ -676,8 +673,7 @@ pub fn proc_lvar(
                 }
             }
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_fwr3_") || x.contains(":count_fwr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr3_") {
@@ -696,8 +692,7 @@ pub fn proc_lvar(
                 }
             }
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_fwr4_") || x.contains(":count_fwr4_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr4_") {
@@ -711,8 +706,7 @@ pub fn proc_lvar(
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_cdr_") || x.contains(":count_cdr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr_") {
@@ -743,8 +737,7 @@ pub fn proc_lvar(
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_fwr_") || x.contains(":count_fwr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr_") {
@@ -782,8 +775,7 @@ pub fn proc_lvar(
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x.starts_with("count_") || x.contains(":count_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_") {
@@ -796,8 +788,7 @@ pub fn proc_lvar(
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar![i, x, format!("{}", n)];
-        stats.push((x, vec![n as f64; ex.ncells()]));
+        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
     } else if x == "gex" {
         lvar![i, x, format!("{}", gex_median)];
     } else if x == "gex_cell" {
