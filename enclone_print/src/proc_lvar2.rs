@@ -142,6 +142,23 @@ pub fn proc_lvar2(
             }
         };
     }
+    macro_rules! lvar_stats1 {
+        ($i: expr, $var:expr, $val:expr) => {
+            if verbose {
+                eprint!("lvar {} ==> {}; ", $var, $val);
+                eprintln!("$i = {}, lvars.len() = {}", $i, lvars.len());
+            }
+            if $i < lvars.len() {
+                row.push($val)
+            }
+            if pass == 2 {
+                speak!(u, $var.to_string(), $val);
+            }
+            if $val.parse::<f64>().is_ok() {
+                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+            }
+        };
+    }
     macro_rules! lvar_stats {
         ($i: expr, $var:expr, $val:expr, $stats: expr) => {
             if verbose {
@@ -213,7 +230,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar![i, x, format!("{}", diffs)];
+        lvar_stats1![i, x, format!("{}", diffs)];
     } else if x == "dref_aa" {
         let mut diffs = 0;
         for m in 0..cols {
@@ -247,7 +264,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar![i, x, format!("{}", diffs)];
+        lvar_stats1![i, x, format!("{}", diffs)];
     } else if x == "near" {
         let mut dist = 1_000_000;
         for i2 in 0..varmat.len() {
@@ -267,7 +284,7 @@ pub fn proc_lvar2(
         if dist == 1_000_000 {
             lvar![i, x, "".to_string()];
         } else {
-            lvar![i, x, format!("{}", dist)];
+            lvar_stats1![i, x, format!("{}", dist)];
         }
     } else if x == "far" {
         let mut dist = -1 as isize;
@@ -288,7 +305,7 @@ pub fn proc_lvar2(
         if dist == -1 as isize {
             lvar![i, x, "".to_string()];
         } else {
-            lvar![i, x, format!("{}", dist)];
+            lvar_stats1![i, x, format!("{}", dist)];
         }
     } else if x.starts_with("count_cdr1_") || x.contains(":count_cdr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
