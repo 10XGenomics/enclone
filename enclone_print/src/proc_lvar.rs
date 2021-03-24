@@ -27,7 +27,6 @@ fn rounded_median(x: &[usize]) -> usize {
         }
     }
 }
-
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
@@ -275,6 +274,7 @@ pub fn proc_lvar(
         lvar_stats![i, x, format!("{}", abbrev_list(&clust)), clustf];
     } else if x == "n_other" {
         let mut n = 0;
+        let mut ns = Vec::<f64>::new();
         for j in 0..ex.clones.len() {
             let mut found = false;
             let di = ex.clones[j][0].dataset_index;
@@ -286,21 +286,28 @@ pub fn proc_lvar(
             }
             if !found {
                 n += 1;
+                ns.push(1.0);
+            } else {
+                ns.push(0.0);
             }
         }
-        lvar![i, x, format!("{}", n)];
+        lvar_stats![i, x, format!("{}", n), ns];
     } else if x == "n_b" {
         let mut n_b = 0;
+        let mut ns = Vec::<f64>::new();
         for j in 0..ex.clones.len() {
             let bc = &ex.clones[j][0].barcode;
             let li = ex.clones[j][0].dataset_index;
             if gex_info.cell_type[li].contains_key(&bc.clone()) {
                 if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
                     n_b += 1;
+                    ns.push(1.0);
+                } else {
+                    ns.push(0.0);
                 }
             }
         }
-        lvar![i, x, format!("{}", n_b)];
+        lvar_stats![i, x, format!("{}", n_b), ns];
     } else if x == "type" {
         let mut cell_types = Vec::<String>::new();
         /*
@@ -411,18 +418,24 @@ pub fn proc_lvar(
                 credsx.push(0.0);
             }
         }
+        let credsx_unsorted = credsx.clone();
         credsx.sort_by(|a, b| a.partial_cmp(b).unwrap());
         if x == "cred" {
             if credsx.is_empty() {
                 lvar![i, x, format!("")];
             } else {
-                lvar![i, x, format!("{:.1}", credsx[credsx.len() / 2])];
+                lvar_stats![
+                    i,
+                    x,
+                    format!("{:.1}", credsx[credsx.len() / 2]),
+                    credsx_unsorted
+                ];
             }
         } else {
             if pass == 2 {
                 let mut r = Vec::<String>::new();
-                for j in 0..credsx.len() {
-                    r.push(format!("{:.1}", credsx[j]));
+                for j in 0..credsx_unsorted.len() {
+                    r.push(format!("{:.1}", credsx_unsorted[j]));
                 }
                 speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
             }
