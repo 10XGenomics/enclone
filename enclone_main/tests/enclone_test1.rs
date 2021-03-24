@@ -725,7 +725,11 @@ fn test_licenses() {
         for i in 0..fails.len() {
             msg += &format!("{}. {}\n", i + 1, fails[i]);
         }
-        eprintln!("{}", msg);
+        eprintln!(
+            "{}\nYou may want to retry the test, since the license checks fails sporadically \
+            at a low rate.\n",
+            msg
+        );
         std::process::exit(1);
     }
 }
