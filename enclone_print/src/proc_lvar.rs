@@ -112,7 +112,7 @@ pub fn proc_lvar(
 
     macro_rules! speak {
         ($u:expr, $var:expr, $val:expr) => {
-            if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
+            if out_data.len() > 0 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
                 let mut v = $var.to_string();
                 v = v.replace("_Σ", "_sum");
                 v = v.replace("_μ", "_mean");
@@ -120,7 +120,9 @@ pub fn proc_lvar(
                     || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
                     || bin_member(&extra_args, &v)
                 {
-                    out_data[$u].insert(v, $val);
+                    // saving twice like this is obviously nuts
+                    out_data[$u].insert(v, $val.clone());
+                    out_data[$u].insert($var.to_string(), $val);
                 }
             }
         };
@@ -138,7 +140,7 @@ pub fn proc_lvar(
             if $i < lvars.len() {
                 row.push($val)
             }
-            if pass == 2 {
+            if pass == 2 || ctl.clono_filt_opt.bounds.len() > 0 {
                 speak!(u, $var.to_string(), $val);
             }
         };
@@ -924,7 +926,6 @@ pub fn proc_lvar(
             counts_sub_sorted.sort();
             let sum = fcounts_sub.iter().sum::<f64>();
             let mean = sum / counts_sub.len() as f64;
-
             if xorig.ends_with("_%_cell") {
                 if pass == 2 {
                     let mut c = Vec::<String>::new();

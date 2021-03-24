@@ -351,7 +351,7 @@ pub fn print_clonotypes(
             {
                 // Start to generate parseable output.
 
-                if pass == 2 {
+                if pass == 2 || ctl.clono_filt_opt.bounds.len() > 0 {
                     start_gen(
                         &ctl,
                         &exacts,
@@ -779,12 +779,16 @@ pub fn print_clonotypes(
                     let mut fail = false;
                     for i in 0..x.n() {
                         let mut vals = Vec::<f64>::new(); // the stats for the variable
-                        for j in 0..stats.len() {
-                            if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
-                                break;
+                        for u in 0..nexacts {
+                            if out_data[u].contains_key(&x.var[i]) {
+                                let v = &out_data[u][&x.var[i]];
+                                if v.parse::<f64>().is_ok() {
+                                    vals.push(v.force_f64());
+                                }
                             }
                         }
+                        use itertools::Itertools; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                        println!("var = {}, vals = {}", x.var[i], vals.iter().format(",")); // XXXX
                         let mut mean = 0.0;
                         let mut max = -1000_000_000.0_f64;
                         let mut count = 0;

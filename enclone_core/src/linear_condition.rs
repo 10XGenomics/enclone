@@ -161,7 +161,6 @@ impl LinearCondition {
             "clust",
             "cred",
             "type",
-            "gex",
             "gex_min",
             "gex_max",
             "gex_mean",
