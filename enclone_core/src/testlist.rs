@@ -129,6 +129,7 @@ pub const TESTS: [&str; 202] = [
     r###"BCR=85333 POUT=stdouth PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
     // 40. indel was wrong
+    // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.
     r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
         NH5"###,
     // 41. test case for gex_cell
@@ -300,8 +301,9 @@ pub const TESTS: [&str; 202] = [
     r###"BCR=123085 CDR3="CAKDKVPRRSSWSVFDYYGMDVW~9|CAVTIFGVRTALPYYYALDVW~9" NGROUP"###,
     // 110. test dref_aa
     r###"BCR=123085 LVARSP=dref,dref_aa CDR3=CAREKGIGSSGWDWGAFDIW"###,
-    // 111. test for fail if F used with unsupported variable
-    r###"BCR=123085 LVARSP=near F="near>=0" EXPECT_FAIL"###,
+    // 111. test for fail if F used with unsupported variable (but now supported)
+    // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.
+    r###"BCR=123085 LVARSP=near F="near>=0" EXPECT_OK"###,
     // 112. test 1 of 6 for cdr1/cdr2 in AMINO
     r###"BCR=85333 CDR3=CARDLRVEGFDYW AMINO=var,share,donor,cdr1,cdr2,cdr3"###,
     // 113. test 2 of 6 for cdr1/cdr2 in AMINO
@@ -395,6 +397,7 @@ pub const TESTS: [&str; 202] = [
     r###"BCR=85333 CDR3="CARTSNRGIVATIFRAFDIW|CARDPRGWGVELLYYMDVW" NOPRINT POUT=stdout
         PCOLS=cdr3_aa1"###,
     // 155. test count_<regex> and F for that
+    // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.
     r###"BCR=123085 LVARSP="z:count_CAKTG" F="z > 0""###,
     // 156. test ref variables
     r###"BCR=123085 CDR3=CAREVEQWLERNTLDYW POUT=stdouth PCOLS=fwr1_aa1,fwr1_aa_ref1 AMINO=fwr1"###,
