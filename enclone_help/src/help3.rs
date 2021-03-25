@@ -487,17 +487,35 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              enclone understands linear conditions of the form\n\
              \\bold{c1*v1 ± ... ± cn*vn > d}\n\
              where each ci is a constant, \"ci*\" may be omitted, each vi is a parseable variable, \
-             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
-             >= or ≥ or < or <= or ≤.  \
-             The parseable variables should have numeric values, but this is not enforced.  If \
-             you accidentally provide a variable that does not have a numeric value \
-             (e.g. cdr3_aa1), a possible result is that all clonotypes will be filtered out.\n\n\
-             In evaluating the condition, each vi is \
-             replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
+             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by\n\
+             • >= or equivalently ≥ or ⩾\n\
+             • <\n\
+             • <= or equivalently ≤ or ⩽.\n\n\
+             \
+             The details of how enclone evaluates a linear condition for a clonotype are subtle, \
+             and these subtleties may or may not matter for what you're doing.  You may wish to \
+             look at the specific examples given below.  For more detail, here are the rules:\n\
+             • When a variable is assessed for a given cell, we use the value that would have \
+             been obtained\n  using parseable output (including with the PCELL mode); see \
+             \"enclone help parseble\".  In most\n  cases it will make more sense to use the \
+             per-cell version of a variable, if that makes sense.\n  For example, u1_cell would be \
+             the number of UMIs for the first chain for a given cell, but u1\n  would be the \
+             median value for all cells in an exact subclonotype, regardless of which cell \
+             is\n  examined.\n\
+             • For each variable, enclone finds its values for all cells in the clonotype.  \
+             Values that are not\n  finite numbers are ignored.  This can have unintended \
+             consequences, so be careful not to\n  accidentally use a variable that is \
+             non-numeric.\n\
+             • If no such values are found for some variable, then the constraint fails.\n\
+             • Otherwise, some function is applied to all the values for a given variable \
+             (e.g. the mean\n  function) and the constraint is tested, after substituting in \
+             the values from the function.\n  The particular function \
+             that is used is documented at the appropriate point.\n\n\
+             \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \
              allow parentheses around variable names to prevent erroneous parsing, like this \
-             \\bold{(IGHV3-7_g) >= 1}.  And something like that would need to be quoted on \
-             the command line.\n\n",
+             (IGHV3-7_g) >= 1.  And something like that would need to be quoted on the command \
+             line.\n\n",
         );
 
         // bounds

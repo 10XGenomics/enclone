@@ -900,15 +900,31 @@ https://docs.rs/regex.
 enclone understands linear conditions of the form
 <span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
 where each ci is a constant, "ci*" may be omitted, each vi is a parseable variable, and d is a
-constant.  Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  The
-parseable variables should have numeric values, but this is not enforced.  If you accidentally
-provide a variable that does not have a numeric value (e.g. cdr3_aa1), a possible result is that
-all clonotypes will be filtered out.
+constant.  Blank spaces are ignored.  The > sign may be replaced by
+• >= or equivalently ≥ or ⩾
+• &lt;
+• &lt;= or equivalently ≤ or ⩽.
 
-In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values across all cells in the
-clonotype.  Because the minus sign - doubles as a hyphen and is used in some feature names, we
-allow parentheses around variable names to prevent erroneous parsing, like this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>. 
-And something like that would need to be quoted on the command line.
+The details of how enclone evaluates a linear condition for a clonotype are subtle, and these
+subtleties may or may not matter for what you're doing.  You may wish to look at the specific
+examples given below.  For more detail, here are the rules:
+• When a variable is assessed for a given cell, we use the value that would have been obtained
+  using parseable output (including with the PCELL mode); see "enclone help parseble".  In most
+  cases it will make more sense to use the per-cell version of a variable, if that makes sense.
+  For example, u1_cell would be the number of UMIs for the first chain for a given cell, but u1
+  would be the median value for all cells in an exact subclonotype, regardless of which cell is
+  examined.
+• For each variable, enclone finds its values for all cells in the clonotype.  Values that are not
+  finite numbers are ignored.  This can have unintended consequences, so be careful not to
+  accidentally use a variable that is non-numeric.
+• If no such values are found for some variable, then the constraint fails.
+• Otherwise, some function is applied to all the values for a given variable (e.g. the mean
+  function) and the constraint is tested, after substituting in the values from the function.
+  The particular function that is used is documented at the appropriate point.
+
+Because the minus sign - doubles as a hyphen and is used in some feature names, we allow
+parentheses around variable names to prevent erroneous parsing, like this (IGHV3-7_g) >= 1.  And
+something like that would need to be quoted on the command line.
 
 <span style="font-weight:bold;">filtering by linear conditions</span>
 
