@@ -95,9 +95,9 @@ pub const TESTS: [&str; 202] = [
     r###"BCR=123085 SUMMARY SUMMARY_CLEAN NOPRINT"###,
     // 28. tests BARCODE option
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
-    // 29. tests KEEP_CLONO_IF_CELL_MAX and parenthesized variable in it, SUM and MEAN
+    // 29. tests KEEP_CLONO_IF_CELL_MAX and parenthesized variable in it, SUM and MEAN, use of ≥
     r###"BCR=123085 GEX=123217 LVARSP=IGHV3-7_g,IGHV3-7_g_μ
-        KEEP_CLONO_IF_CELL_MAX="(IGHV3-7_g_μ)>=10000.0" MIN_CHAINS=2 SUM MEAN H5"###,
+        KEEP_CLONO_IF_CELL_MAX="(IGHV3-7_g_μ)≥10000.0" MIN_CHAINS=2 SUM MEAN H5"###,
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
@@ -129,8 +129,8 @@ pub const TESTS: [&str; 202] = [
     r###"BCR=85333 POUT=stdouth PCOLS=barcode,u1,u_cell1,r2,r_cell2 PCELL PER_CELL CVARSP=r
         CDR3=CAADGGGDQYYYMDVW"###,
     // 40. indel was wrong
-    // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)>=4.5" MIN_CHAINS=2 SUM MEAN
+    // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.  Also test ⩾.
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)⩾4.5" MIN_CHAINS=2 SUM MEAN
         NH5"###,
     // 41. test case for gex_cell
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
