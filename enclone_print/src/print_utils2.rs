@@ -3,7 +3,6 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::print_utils1::*;
 use crate::proc_cvar1::*;
 use crate::proc_cvar2::*;
 use crate::proc_lvar1::*;
@@ -11,6 +10,7 @@ use crate::proc_lvar2::*;
 use amino::*;
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;

@@ -600,29 +600,6 @@ pub fn cdr3_aa_con(
     c
 }
 
-pub fn rounded_median(x: &[usize]) -> usize {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        let s = x[h - 1] + x[h];
-        if s % 2 == 0 {
-            s / 2
-        } else {
-            s / 2 + 1
-        }
-    }
-}
-
-pub fn median_f64(x: &[f64]) -> f64 {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        (x[h - 1] + x[h]) / 2.0
-    }
-}
-
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
     gex_info: &GexInfo,

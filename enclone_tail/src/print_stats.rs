@@ -3,6 +3,7 @@
 // Print statistics.
 
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use io_utils::*;
 use perf_stats::*;
 use stats_utils::*;
@@ -13,15 +14,6 @@ use std::time::Instant;
 use string_utils::*;
 use tables::*;
 use vector_utils::*;
-
-fn median(x: &[usize]) -> f64 {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h] as f64
-    } else {
-        (x[h - 1] + x[h]) as f64 / 2.0
-    }
-}
 
 pub fn print_stats(
     tall: &Instant,

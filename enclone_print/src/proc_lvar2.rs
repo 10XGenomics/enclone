@@ -5,6 +5,7 @@
 
 use amino::*;
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_proto::types::*;
 use itertools::*;
 use regex::Regex;
@@ -14,19 +15,6 @@ use string_utils::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
-fn rounded_median(x: &[usize]) -> usize {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        let s = x[h - 1] + x[h];
-        if s % 2 == 0 {
-            s / 2
-        } else {
-            s / 2 + 1
-        }
-    }
-}
 pub fn get_gex_matrix_entry(
     ctl: &EncloneControl,
     gex_info: &GexInfo,

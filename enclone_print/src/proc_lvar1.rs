@@ -4,6 +4,7 @@
 // plus a small helper function get_gex_matrix_entry.
 
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_proto::types::*;
 use itertools::*;
 use std::collections::HashMap;
@@ -409,7 +410,7 @@ pub fn proc_lvar1(
                 lvar_stats1![i, x, format!("{:.1}", median_f64(&credsx))];
             }
         } else {
-            stats.push((x.to_string(), credsx_unsorted));
+            stats.push((x.to_string(), credsx_unsorted.clone()));
             if pass == 2 {
                 let mut r = Vec::<String>::new();
                 for j in 0..credsx_unsorted.len() {
