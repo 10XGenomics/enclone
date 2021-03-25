@@ -29,6 +29,10 @@ impl LinearCondition {
             lhs = y.before("≥").to_string();
             rhs = y.after("≥").to_string();
             sense = "ge".to_string();
+        } else if y.contains('⩾') {
+            lhs = y.before("⩾").to_string();
+            rhs = y.after("⩾").to_string();
+            sense = "ge".to_string();
         } else if y.contains("<=") {
             lhs = y.before("<=").to_string();
             rhs = y.after("<=").to_string();
@@ -36,6 +40,10 @@ impl LinearCondition {
         } else if y.contains('≤') {
             lhs = y.before("≤").to_string();
             rhs = y.after("≤").to_string();
+            sense = "le".to_string();
+        } else if y.contains('⩽') {
+            lhs = y.before("⩽").to_string();
+            rhs = y.after("⩽").to_string();
             sense = "le".to_string();
         } else if y.contains('<') {
             lhs = y.before("<").to_string();
