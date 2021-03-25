@@ -406,14 +406,10 @@ pub fn proc_lvar1(
             if credsx.is_empty() {
                 lvar![i, x, format!("")];
             } else {
-                lvar_stats![
-                    i,
-                    x,
-                    format!("{:.1}", credsx[credsx.len() / 2]),
-                    credsx_unsorted
-                ];
+                lvar_stats1![i, x, format!("{:.1}", median_f64(&credsx))];
             }
         } else {
+            stats.push((x.to_string(), credsx_unsorted));
             if pass == 2 {
                 let mut r = Vec::<String>::new();
                 for j in 0..credsx_unsorted.len() {
