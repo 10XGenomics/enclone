@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 203] = [
+pub const TESTS: [&str; 204] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -504,6 +504,8 @@ pub const TESTS: [&str; 203] = [
     r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
     // 203. test plotting with using the BC option to set color
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv PLOT=stdout NOPRINT"###,
+    // 204. test INFO with PER_CELL and PCELL
+    r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW INFO=testx/inputs/123085_info.csv POUT=stdout PCOLS=moo LVARS=moo PCELL PER_CELL"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
