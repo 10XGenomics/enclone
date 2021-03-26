@@ -48,8 +48,27 @@ This page provides an alphabetical catalog of enclone variables.  We first descr
 in the catalog, then provide the catalog itself, in several chunks.
 </p>
 
-<hr>
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<hr>
+<p>All variables are specified at one of the following levels:
+<ul>
+<li>cell: defined for each cell</li>
+<li>exact: define for each exact subclonotype</li>
+<li>clono: defined for each clonotype</li>
+<li>group: defined for each group of clonotypes.</li>
+</ul>
+</p>
+
+<p>In the clonotype table display, only variables whose level is cell or exact may be
+shown.  In the <code>PER_CELL</code> mode, where one line is shown per cell, any variable
+defined at the cell level should show up for each cell, and if not, this is a flaw, and
+noted below.  Variables defined at the exact level are not shown for each cell, as this would
+be redundant.</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <tr><td> variable </td><td> name of the variable                                  </td></tr>
@@ -62,8 +81,9 @@ in the catalog, then provide the catalog itself, in several chunks.
 </table>
 </p>
 
-<hr>
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<hr>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -80,7 +100,7 @@ in the catalog, then provide the catalog itself, in several chunks.
 <tbody>
 
 <tr><td> (variable from INFO)                                                           </td>
-    <td> 3                                                                              </td>
+    <td>                                                                                </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> sometimes                                                                      </td>
@@ -127,7 +147,6 @@ in the catalog, then provide the catalog itself, in several chunks.
 <table>
 <tr><td>1: missing <code>_cell</code> version</td></tr>
 <tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: <code>PER_CELL</code> shows as blank</td></tr>
 </table>
 </p>
 
