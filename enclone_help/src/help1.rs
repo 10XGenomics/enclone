@@ -118,7 +118,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
              Do you see a neat rectangle composed of four rectangles with words inside them?  \
              Are the vertical lines contiguous?  \
              If not, something is wrong with your terminal!  You may need to change the terminal \
-             font.  For example, Menlo works, but Courier does not.\n\n\
+             font.  We use Menlo Regular at 13pt and line spacing 0.9.  Courier does not work.\n\n\
              4. Can your terminal correctly display ANSI escape sequences?\n\
              The following word should be \\bold{bold}.  \
              The following word should be \\blue{blue}.\n\
