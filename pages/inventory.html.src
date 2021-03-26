@@ -114,6 +114,14 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
 
+<tr><td> n                                                                              </td>
+    <td> 2                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> number of cells                                                                </td></tr>
+
 <tr><td> origins                                                                        </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
