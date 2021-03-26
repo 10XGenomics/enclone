@@ -56,7 +56,9 @@ in the catalog, then provide the catalog itself, in several chunks.
 <li>lvar: a lead variable; these are not associated to a particular chain, and in clonotype
     tables appear at the beginning (leading), before the variables that are associated to a 
     chain</li>
-<li>cvar: a chain variable; these are associated to a particular chain.</li>
+<li>cvar: a chain variable; these are associated to a particular chain.  Except when used
+    in <code>CVARS</code> or <code>CVARSP</code>, these need to be suffixed by the chain
+    number.</li>
 </ul>
 </p>
 
@@ -116,7 +118,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> user defined variable                                                          </td></tr>
 
-<tr><td> datasets                                                                       </td>
+<tr><td> <code>datasets</code>                                                          </td>
     <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -124,7 +126,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> dataset names                                                                  </td></tr>
 
-<tr><td> donors                                                                         </td>
+<tr><td> <code>donors</code>                                                            </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -132,7 +134,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> donor names                                                                    </td></tr>
 
-<tr><td> g&ltd>                                                                         </td>
+<tr><td> <code>g&ltd></code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
@@ -140,7 +142,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> exact subclonotype group as defined by Hamming distance                        </td></tr>
 
-<tr><td> gex                                                                            </td>
+<tr><td> <code>gex</code>                                                               </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -148,7 +150,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
 
-<tr><td> n                                                                              </td>
+<tr><td> <code>n</code>                                                                 </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -156,7 +158,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells                                                                </td></tr>
 
-<tr><td> origins                                                                        </td>
+<tr><td> <code>origins</code>                                                           </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -164,7 +166,7 @@ be redundant.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> origin names                                                                   </td></tr>
 
-<tr><td> u                                                                              </td>
+<tr><td> <code>u</code>                                                                 </td>
     <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> cell                                                                           </td>
