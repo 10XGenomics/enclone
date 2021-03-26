@@ -1,0 +1,64 @@
+<title>enclone variable inventory</title>
+
+<body>
+
+<br>
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+
+<h1>enclone variable inventory</h1>
+
+<p>This page provides an alphabetical catalog of enclone variables.</p>
+
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable </th>
+<th align="left"> complete </th>
+<th align="left"> class </th>
+<th align="left"> level </th>
+<th align="left"> numeric </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
+
+<tr><td> datasets                        </td>
+    <td> 1                               </td>
+    <td> lvar                            </td>
+    <td> cell                            </td>
+    <td> no                              </td>
+    <td> dataset names                   </td></tr>
+
+<tr><td> gex                             </td>
+    <td> yes                             </td>
+    <td> lvar                            </td>
+    <td> cell                            </td>
+    <td> yes                             </td>
+    <td> number of GEX UMIs              </td></tr>
+
+<tr><td> origins                         </td>
+    <td> 2                               </td>
+    <td> lvar                            </td>
+    <td> cell                            </td>
+    <td> no                              </td>
+    <td> origin names                    </td></tr>
+
+<tr><td> u                               </td>
+    <td> 1                               </td>
+    <td> cvar                            </td>
+    <td> cell                            </td>
+    <td> yes                             </td>
+    <td> number of UMIs supporting chain </td></tr>
+
+</tbody>
+</table>
+
+<p>
+<table>
+<tr><td>1: missing <code>_cell</code> version</td></tr>
+<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
+</table>
+</p>
+
+</body>
+</html>
