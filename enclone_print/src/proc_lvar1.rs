@@ -201,6 +201,7 @@ pub fn proc_lvar1(
 
     // Proceed.
 
+    // g<d>: public, defined at exact subclonotype level, value is numeric
     if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
         let d = x.after("g").force_usize();
         if groups.contains_key(&d) {
@@ -208,6 +209,8 @@ pub fn proc_lvar1(
             return true;
         }
     }
+
+    // origins: public, defined at exact subclonotype level, value is not numeric
     if x == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -221,8 +224,12 @@ pub fn proc_lvar1(
         }
         unique_sort(&mut origins);
         lvar![i, x, format!("{}", origins.iter().format(","))];
+
+    // datasets: public, defined at exact subclonotype level, value is not numeric
     } else if x == "datasets" {
         lvar![i, x, format!("{}", lenas.iter().format(","))];
+
+    // donors: public, defined at exact subclonotype level, value is not numeric
     } else if x == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
