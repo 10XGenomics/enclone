@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 205] = [
+pub const TESTS: [&str; 208] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -508,6 +508,12 @@ pub const TESTS: [&str; 205] = [
     r###"BCR=123085 CDR3=CAREGGVGVVTATDWYFDLW INFO=testx/inputs/123085_info.csv POUT=stdout PCOLS=moo LVARS=moo PCELL PER_CELL"###,
     // 205. test g<d> with PER_CELL and PCELL
     r###"BCR=123085 GEX=123217 AMINO=cdr3 LVARS=g15 CDR3=CARVRDILTGDYGMDVW POUT=stdout PCOLS=g15 PCELL PER_CELL H5"###,
+    // 206. test origins with PER_CELL and PCELL
+    r###"BCR=123085:123089 AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout PCELL PER_CELL PCOLS=origins LVARSP=origins"###,
+    // 207. test datasets with PER_CELL and PCELL
+    r###"BCR=123085:123089 CELLS=5 AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout PCELL PER_CELL PCOLS=datasets LVARSP=datasets"###,
+    // 208. tests donors with PER_CELL and PCELL
+    r###"BCR="123085;123089" AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout PCELL PER_CELL PCOLS=donors LVARS=donors MIX_DONORS CHAINS=2"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
