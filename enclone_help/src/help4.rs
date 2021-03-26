@@ -453,6 +453,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
         h.print(
+            "See also \"enclone help cvars\" and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        );
+        h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
@@ -667,6 +671,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              have one entry for each exact subclonotype.  Please note that for medians of \
              integers, we actually report the \"rounded median\", the result of rounding the \
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
+        );
+        h.print(
+            "See also \"enclone help lvars\" and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
         );
         h.print(
             "Per-column variables are specified using\n\

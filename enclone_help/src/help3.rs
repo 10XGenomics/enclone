@@ -123,6 +123,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\boldred{parseable output fields}\n\
              \\boldred{───────────────────────}\n\n",
         );
+        h.print(
+            "See also \"enclone help lvars\", \"enclone help cvars\", and the inventory of all \
+            variables at https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        );
         h.rows.clear();
         h.print("\\bold{1. per clonotype group fields}\n\n");
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");

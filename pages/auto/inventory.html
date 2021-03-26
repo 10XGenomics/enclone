@@ -51,6 +51,15 @@ in the catalog, then provide the catalog itself, in several chunks.
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
+<p>All variables are in one of two classes:
+<ul>
+<li>lvar: a lead variable; these are not associated to a particular chain, and in clonotype
+    tables appear at the beginning (leading), before the variables that are associated to a 
+    chain</li>
+<li>cvar: a chain variable; these are associated to a particular chain.</li>
+</ul>
+</p>
+
 <p>All variables are specified at one of the following levels:
 <ul>
 <li>cell: defined for each cell</li>
@@ -114,6 +123,14 @@ be redundant.</p>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> dataset names                                                                  </td></tr>
+
+<tr><td> g&ltd>                                                                         </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> exact subclonotype group as defined by Hamming distance                        </td></tr>
 
 <tr><td> gex                                                                            </td>
     <td>                                                                                </td>
