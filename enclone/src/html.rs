@@ -42,11 +42,13 @@ pub fn edit_html(html: &str) -> String {
         if line == "<body>" {
             lines2.push("".to_string());
             lines2.push("<br>".to_string());
+            lines2.push("<a href=\"../../index.html#help\">".to_string());
             lines2.push(
                 "<img src=\"../../img/enclone_banner.png\" \
                 alt=\"enclone banner\" title=\"enclone banner\" width=100% />"
                     .to_string(),
             );
+            lines2.push("</a>".to_string());
         }
     }
 
