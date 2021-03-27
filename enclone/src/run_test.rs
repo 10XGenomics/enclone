@@ -102,6 +102,11 @@ pub fn run_test(
             testname,
             it + 1
         );
+        fwriteln!(
+            log,
+            "If you just added a test to the TESTS group in testlist.rs, it would have been \
+            faster if you had\nsimply typed run_last_test to get this information.\n",
+        );
         emit_end_escape(&mut log);
         *logx = stringme(&log);
     } else {
