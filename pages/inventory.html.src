@@ -193,6 +193,14 @@ for exact subclonotype; missing parseable output values
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> evidence for MAIT cell                                                         </td></tr>
 
+<tr><td> <code> near </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> sometimes                                                                      </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> Hamming distance to nearest neighbor                                           </td></tr>
+
 <tr><td> <code> n </code>                                                               </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
