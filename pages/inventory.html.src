@@ -80,7 +80,15 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 </thead>
 <tbody>
 
-<tr><td> (variable from INFO)                                                           </td>
+<tr><td> (from BC or META/bc)                                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> sometimes                                                                      </td>
+    <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
+    <td> user defined variable                                                          </td></tr>
+
+<tr><td> (from INFO)                                                                    </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
