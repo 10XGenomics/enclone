@@ -123,11 +123,27 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> donor names                                                                    </td></tr>
 
+<tr><td> <code> dref </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> nucleotide distance to donor reference                                         </td></tr>
+
+<tr><td> <code> dref_aa </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> amino acid distance to donor reference                                         </td></tr>
+
 <tr><td> <code> far </code>                                                             </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
-    <td> sometimes                                                                      </td>
+    <td> yes or null                                                                    </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> Hamming distance to farthest neighbor                                          </td></tr>
 
@@ -226,6 +242,14 @@ for exact subclonotype; missing parseable output values
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
+
+<tr><td> <code> near </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes or null                                                                    </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> Hamming distance to nearest neighbor                                           </td></tr>
 
 <tr><td> <code> origins </code>                                                         </td>
     <td> 2                                                                              </td>
