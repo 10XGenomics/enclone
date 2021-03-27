@@ -53,7 +53,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <tr><td> variable </td><td> name of the variable                                  </td></tr>
-<tr><td> limitations </td><td> footnote to things missing from the implementation </td></tr>
+<tr><td> limits </td><td> footnote to things missing from the implementation </td></tr>
 <tr><td> class </td><td> lvar or cvar                                             </td></tr>
 <tr><td> level </td><td> cell or exact or clono or group                          </td></tr>
 <tr><td> numeric </td><td> does the variable have numeric values                  </td></tr>
@@ -70,7 +70,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 <thead>
 <tr>
 <th align="left"> variable          </th>
-<th align="left"> limitations       </th>
+<th align="left"> limits            </th>
 <th align="left"> class             </th>
 <th align="left"> level             </th>
 <th align="left"> numeric           </th>
@@ -87,6 +87,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> sometimes                                                                      </td>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> user defined variable                                                          </td></tr>
+
+<tr><td> <code> cred </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> credibility assessed using GEX data                                            </td></tr>
 
 <tr><td> <code> datasets </code>                                                        </td>
     <td> 1                                                                              </td>
