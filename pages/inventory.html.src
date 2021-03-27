@@ -121,6 +121,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> donor names                                                                    </td></tr>
 
+<tr><td> <code> far </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> sometimes                                                                      </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> Hamming distance to farthest neighbor                                          </td></tr>
+
 <tr><td> <code> filter </code>                                                          </td>
     <td> 3                                                                              </td>
     <td> lvar                                                                           </td>
@@ -192,14 +200,6 @@ for exact subclonotype; missing parseable output values
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> evidence for MAIT cell                                                         </td></tr>
-
-<tr><td> <code> near </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> sometimes                                                                      </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> Hamming distance to nearest neighbor                                           </td></tr>
 
 <tr><td> <code> n </code>                                                               </td>
     <td> 2                                                                              </td>
