@@ -72,11 +72,11 @@ information.
 </ul>
 </p>
 
-<p>In the clonotype table display, only variables whose level is cell or exact may be
-shown.  In the <code>PER_CELL</code> mode, where one line is shown per cell, any variable
-defined at the cell level should show up for each cell, and if not, this is a flaw, and
-noted below.  Variables defined at the exact level are not shown for each cell, as this would
-be redundant.</p>
+<p>In the <code>PER_CELL</code> mode, where one line is shown per cell, any variable defined at the
+cell level should show up for each cell, and if not, this is a flaw, and noted below.  Variables 
+defined at exact or higher level are not shown for each cell, as this would be redundant.</p>
+
+<p>When a cvar is used as a parseable variable, it must be suffixed by the chain number.</p>
 
 <p>For variables defined at the cell level, there is a version of the variable name that
 is suffixed with <code>_cell</code>.  This version cannot be used in clonotype tables.  It can
@@ -140,6 +140,22 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> statistics associated to particular features                                   </td></tr>
+
+<tr><td> <code> cdr3_aa_conp </code>                                                    </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR3 amino acid clonotype consensus with symbols at variants                   </td></tr>
+
+<tr><td> <code> cdr3_aa_conx </code>                                                    </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR3 amino acid clonotype consensus with Xs at variants                        </td></tr>
 
 <tr><td> <code> count_* </code>                                                         </td>
     <td>                                                                                </td>
