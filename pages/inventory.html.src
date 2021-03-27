@@ -501,7 +501,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> shared amino acid positions                                                    </td></tr>
 
-<tr><td> <code> share </code>                                                           </td>
+<tr><td> <code> share_indices_dna </code>                                               </td>
     <td> 4                                                                              </td>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
