@@ -128,6 +128,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
 
+<tr><td> <code> inkt </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> evidence for iNKT cell                                                         </td></tr>
+
 <tr><td> <code> n </code>                                                               </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
