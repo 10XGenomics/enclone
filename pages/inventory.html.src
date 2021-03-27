@@ -107,6 +107,22 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> statistics associated to particular features                                   </td></tr>
 
+<tr><td> (&ltdataset>_barcode)                                                          </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> barcode from the given dataset (or null)                                       </td></tr>
+
+<tr><td> (&ltdataset>_barcodes)                                                         </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> barcodes from the given dataset                                                </td></tr>
+
 <tr><td> <code> cdr*_aa </code>                                                         </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -332,13 +348,21 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> edit to get from reference CDR3                                                </td></tr>
 
+<tr><td> <code> exact_subclonotype_id </code>                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> identifier of exact subclonotype                                               </td></tr>
+
 <tr><td> <code> filter </code>                                                          </td>
     <td> 3                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> name of filter that would be applied (if filters turned off)                   </td></tr>
+    <td> name of filter that would be applied (if filters off)                          </td></tr>
 
 <tr><td> <code> fwr*_aa </code>                                                         </td>
     <td>                                                                                </td>
@@ -354,7 +378,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* amino acid sequence for universal reference                               </td></tr>
+    <td> FWR* amino acid seq for universal reference                                    </td></tr>
 
 <tr><td> <code> fwr*_dna </code>                                                        </td>
     <td>                                                                                </td>
@@ -370,7 +394,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> FWR* nucleotide sequence for universal reference                               </td></tr>
+    <td> FWR* nucleotide seq for universal reference                                    </td></tr>
 
 <tr><td> <code> fwr*_len </code>                                                        </td>
     <td>                                                                                </td>
@@ -386,7 +410,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> exact subclonotype group as defined by Hamming distance                        </td></tr>
+    <td> exact subclonotype group, by Hamming distance                                  </td></tr>
 
 <tr><td> <code> gex </code>                                                             </td>
     <td>                                                                                </td>
