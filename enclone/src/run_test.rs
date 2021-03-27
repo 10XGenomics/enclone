@@ -105,7 +105,8 @@ pub fn run_test(
         fwriteln!(
             log,
             "If you just added a test to the TESTS group in testlist.rs, it would have been \
-            faster if you had\nsimply typed run_last_test to get this information.\n",
+            faster if you had\nsimply typed run_last_test to get this information.  But you first \
+            need to run ./build.\n",
         );
         emit_end_escape(&mut log);
         *logx = stringme(&log);
