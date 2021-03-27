@@ -67,7 +67,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>A-H</h2>
+<h2>A-D</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -107,6 +107,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> statistics associated to particular features                                   </td></tr>
 
+<tr><td> <code> cdr*_aa </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR* amino acid sequence                                                       </td></tr>
+
 <tr><td> <code> cdr3_aa_conp </code>                                                    </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -122,6 +130,30 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR3 amino acid clonotype consensus with Xs at variants                        </td></tr>
+
+<tr><td> <code> cdr*_aa_ref </code>                                                     </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR* amino acid sequence for universal reference                               </td></tr>
+
+<tr><td> <code> cdr*_dna </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR* nucleotide sequence                                                       </td></tr>
+
+<tr><td> <code> cdr*_dna_ref </code>                                                    </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR* nucleotide sequence for universal reference                               </td></tr>
 
 <tr><td> <code> count_* </code>                                                         </td>
     <td>                                                                                </td>
@@ -171,13 +203,37 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> amino acid distance to donor reference                                         </td></tr>
 
-<tr><td> <code> far </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes or null                                                                    </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> Hamming distance to farthest neighbor                                          </td></tr>
+</tbody>
+</table>
+</p>
+
+<p>
+<table>
+<tr><td>1: missing <code>_cell</code> version</td></tr>
+<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
+<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
+for exact subclonotype; missing parseable output values
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>E-K</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
 
 <tr><td> <code> filter </code>                                                          </td>
     <td> 3                                                                              </td>
@@ -203,6 +259,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
 
+<tr><td> <code> inkt </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> evidence for iNKT cell                                                         </td></tr>
+
 </tbody>
 </table>
 </p>
@@ -219,7 +283,7 @@ for exact subclonotype; missing parseable output values
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>I-Z</h2>
+<h2>L-Z</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -234,14 +298,6 @@ for exact subclonotype; missing parseable output values
 </tr>
 </thead>
 <tbody>
-
-<tr><td> <code> inkt </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> evidence for iNKT cell                                                         </td></tr>
 
 <tr><td> <code> mait </code>                                                            </td>
     <td>                                                                                </td>
