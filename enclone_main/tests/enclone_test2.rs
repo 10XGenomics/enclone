@@ -320,7 +320,7 @@ fn test_for_broken_links_and_spellcheck() {
         hypermutation hypermutations igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json krh levenshtein linux loh lvar lvars \
         macbook mait metadata mkdir \
-        moresies multiomic nall ncbi ncross ndoublet newick nimproper \
+        moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
         pcell pdb pgas phad phylip \
         plasmablast preinstalled prepends pwm pwms redownloads \
