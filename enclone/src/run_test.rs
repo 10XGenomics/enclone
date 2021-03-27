@@ -66,6 +66,9 @@ pub fn run_test(
         ncores = true;
     }
     test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
+    while test.contains("  ") {
+        test = test.replace("  ", " ");
+    }
     let mut log = Vec::<u8>::new();
     let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, it + 1);
     let mut pre_arg = format!(
