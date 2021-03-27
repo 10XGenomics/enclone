@@ -228,7 +228,7 @@ for exact subclonotype; missing parseable output values</td></tr>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>D-I</h2>
+<h2>D-G</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -380,14 +380,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> number of cells in clonotype group                                             </td></tr>
 
-<tr><td> <code> inkt </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> evidence for iNKT cell                                                         </td></tr>
-
 </tbody>
 </table>
 </p>
@@ -405,7 +397,7 @@ for exact subclonotype; missing parseable output values</td></tr>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>J-Z</h2>
+<h2>H-N</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -420,6 +412,14 @@ for exact subclonotype; missing parseable output values</td></tr>
 </tr>
 </thead>
 <tbody>
+
+<tr><td> <code> inkt </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> evidence for iNKT cell                                                         </td></tr>
 
 <tr><td> <code> j_id </code>                                                            </td>
     <td> 4                                                                              </td>
@@ -485,6 +485,39 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> Hamming distance to nearest neighbor                                           </td></tr>
 
+</tbody>
+</table>
+</p>
+
+<p>
+<table>
+<tr><td>1: missing <code>_cell</code> version</td></tr>
+<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
+<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>O-Z</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
+
 <tr><td> <code> origins </code>                                                         </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
@@ -548,6 +581,38 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> variable nucleotide positions                                                  </td></tr>
+
+<tr><td> <code> vj_aa </code>                                                           </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> amino acid sequence of V..J                                                    </td></tr>
+
+<tr><td> <code> vj_aa_nl </code>                                                        </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> amino acid sequence of V..J, excluding leader                                  </td></tr>
+
+<tr><td> <code> vj_seq </code>                                                         </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> nucleotide sequence of V..J                                                    </td></tr>
+
+<tr><td> <code> vj_seq_nl </code>                                                       </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> nucleotide sequence of V..J, excluding leader                                  </td></tr>
 
 </tbody>
 </table>
