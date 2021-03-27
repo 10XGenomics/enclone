@@ -121,7 +121,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid clonotype consensus with symbols at variants                   </td></tr>
+    <td> CDR3 amino acid clonotype consensus, symbols at variants                       </td></tr>
 
 <tr><td> <code> cdr3_aa_conx </code>                                                    </td>
     <td>                                                                                </td>
@@ -129,7 +129,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid clonotype consensus with Xs at variants                        </td></tr>
+    <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
 
 <tr><td> <code> cdr*_aa_north </code>                                                   </td>
     <td>                                                                                </td>
@@ -171,6 +171,22 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> length of CDR* amino acid sequence                                             </td></tr>
 
+<tr><td> <code> clonotype_id </code>                                                    </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> identifier of clonotype within clonotype group                                 </td></tr>
+
+<tr><td> <code> clonotype_ncells </code>                                                </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> number of cells in the clonotype                                               </td></tr>
+
 <tr><td> <code> comp </code>                                                            </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -204,7 +220,8 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 <tr><td>1: missing <code>_cell</code> version</td></tr>
 <tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
 <tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -331,6 +348,22 @@ for exact subclonotype; missing parseable output values
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
 
+<tr><td> <code> group_id </code>                                                        </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> group                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> identifier of clonotype group                                                  </td></tr>
+
+<tr><td> <code> group_ncells </code>                                                    </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> group                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> number of cells in clonotype group                                             </td></tr>
+
 <tr><td> <code> inkt </code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -348,7 +381,8 @@ for exact subclonotype; missing parseable output values
 <tr><td>1: missing <code>_cell</code> version</td></tr>
 <tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
 <tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -403,6 +437,14 @@ for exact subclonotype; missing parseable output values
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
 
+<tr><td> <code> nchains </code>                                                         </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> number of chains in the clonotype                                              </td></tr>
+
 <tr><td> <code> near </code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -436,7 +478,8 @@ for exact subclonotype; missing parseable output values
 <tr><td>1: missing <code>_cell</code> version</td></tr>
 <tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
 <tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
 
