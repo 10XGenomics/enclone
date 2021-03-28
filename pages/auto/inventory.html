@@ -235,21 +235,13 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR* amino acid sequence                                                       </td></tr>
 
-<tr><td> <code> cdr3_aa_conp </code>                                                    </td>
+<tr><td> <code> cdr*_aa_L_R_ext </code>                                                 </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
+    <td> exact                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid clonotype consensus, symbols at variants                       </td></tr>
-
-<tr><td> <code> cdr3_aa_conx </code>                                                    </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
+    <td> CDR* region with specified extension length                                    </td></tr>
 
 <tr><td> <code> cdr*_aa_north </code>                                                   </td>
     <td>                                                                                </td>
@@ -291,13 +283,21 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> length of CDR* amino acid sequence                                             </td></tr>
 
-<tr><td> <code> cdr*_aa_L_R_ext </code>                                                 </td>
+<tr><td> <code> cdr3_aa_conp </code>                                                    </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
+    <td> clono                                                                          </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> CDR* region with specified extension length                                    </td></tr>
+    <td> CDR3 amino acid clonotype consensus, symbols at variants                       </td></tr>
+
+<tr><td> <code> cdr3_aa_conx </code>                                                    </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
 
 <tr><td> <code> cdr3_start </code>                                                      </td>
     <td> 4                                                                              </td>
@@ -412,6 +412,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> distance from donor reference                                                  </td></tr>
 
+<tr><td> <code> d_frame </code>                                                         </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
+
 <tr><td> <code> d_id </code>                                                            </td>
     <td> 4                                                                              </td>
     <td> cvar                                                                           </td>
@@ -427,6 +435,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> D region name                                                                  </td></tr>
+
+<tr><td> <code> d_start </code>                                                         </td>
+    <td> 4                                                                              </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> start of D on full nucleotide sequence (or null)                               </td></tr>
 
 <tr><td> <code> d_univ </code>                                                          </td>
     <td>                                                                                </td>
@@ -475,22 +491,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> amino acid distance to donor reference                                         </td></tr>
-
-<tr><td> <code> d_frame </code>                                                         </td>
-    <td> 4                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
-
-<tr><td> <code> d_start </code>                                                         </td>
-    <td> 4                                                                              </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> start of D on full nucleotide sequence (or null)                               </td></tr>
 
 <tr><td> <code> edit </code>                                                            </td>
     <td>                                                                                </td>
@@ -637,14 +637,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>)               </td></tr>
 
-<tr><td> <code> gex_μ </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)           </td></tr>
-
 <tr><td> <code> gex_Σ </code>                                                           </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -652,6 +644,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)             </td></tr>
+
+<tr><td> <code> gex_μ </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)           </td></tr>
 
 <tr><td> <code> group_id </code>                                                        </td>
     <td> 4                                                                              </td>
@@ -742,14 +742,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells                                                                </td></tr>
 
-<tr><td> <code> n_gex </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> number of cells seen by GEX pipeline                                           </td></tr>
-
 <tr><td> <code> n_&ltname> </code>                                                      </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
@@ -757,6 +749,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
+
+<tr><td> <code> n_gex </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> number of cells seen by GEX pipeline                                           </td></tr>
 
 <tr><td> <code> nchains </code>                                                         </td>
     <td> 4                                                                              </td>
@@ -846,14 +846,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> sum of chain read counts across exact subclonotype (= <code>r_Σ</code>)        </td></tr>
 
-<tr><td> <code> r_μ </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> mean chain read count across exact subclonotype (= <code>r_μ</code>)           </td></tr>
-
 <tr><td> <code> r_Σ </code>                                                             </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -861,6 +853,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> sum of chain reads across exact subclonotype (= <code>r_sum</code>)            </td></tr>
+
+<tr><td> <code> r_μ </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> mean chain read count across exact subclonotype (= <code>r_μ</code>)           </td></tr>
 
 </tbody>
 </table>
@@ -959,14 +959,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> sum of chain UMI counts across exact subclonotype (= <code>u_Σ</code>)         </td></tr>
 
-<tr><td> <code> u_μ </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> mean chain UMI count across exact subclonotype (= <code>u_μ</code>)            </td></tr>
-
 <tr><td> <code> u_Σ </code>                                                             </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -975,13 +967,13 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> sum of chain UMIs across exact subclonotype (= <code>u_sum</code>)             </td></tr>
 
-<tr><td> <code> ulen </code>                                                            </td>
+<tr><td> <code> u_μ </code>                                                             </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> length of observed 5'-UTR sequence                                             </td></tr>
+    <td> mean chain UMI count across exact subclonotype (= <code>u_μ</code>)            </td></tr>
 
 <tr><td> <code> udiff </code>                                                           </td>
     <td>                                                                                </td>
@@ -990,6 +982,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> differences of 5'-UTR region with universal reference                          </td></tr>
+
+<tr><td> <code> ulen </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> length of observed 5'-UTR sequence                                             </td></tr>
 
 <tr><td> <code> utr_id </code>                                                          </td>
     <td> 4                                                                              </td>
@@ -1040,14 +1040,6 @@ for exact subclonotype; missing parseable output values</td></tr>
 </thead>
 <tbody>
 
-<tr><td> <code> var </code>                                                             </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> bases at position in chain that vary across the clonotype                      </td></tr>
-
 <tr><td> <code> v_id </code>                                                            </td>
     <td> 4                                                                              </td>
     <td> cvar                                                                           </td>
@@ -1072,6 +1064,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> start of V on full nucleotide sequence                                         </td></tr>
 
+<tr><td> <code> var </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> bases at position in chain that vary across the clonotype                      </td></tr>
+
 <tr><td> <code> var_aa </code>                                                          </td>
     <td> 4                                                                              </td>
     <td> cvar                                                                           </td>
@@ -1095,14 +1095,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> variable nucleotide positions                                                  </td></tr>
-
-<tr><td> <code> vjlen </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> length in bases of V..J                                                        </td></tr>
 
 <tr><td> <code> vj_aa </code>                                                           </td>
     <td> 4                                                                              </td>
@@ -1135,6 +1127,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> nucleotide sequence of V..J, excluding leader                                  </td></tr>
+
+<tr><td> <code> vjlen </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> length in bases of V..J                                                        </td></tr>
 
 </tbody>
 </table>
