@@ -123,6 +123,22 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> barcodes from the given dataset                                                </td></tr>
 
+<tr><td> barcode                                                                        </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> cell                                                                           </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> barcode of the cell                                                            </td></tr>
+
+<tr><td> barcodes                                                                       </td>
+    <td> 4                                                                              </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> barcodes for the exact subclonotype                                            </td></tr>
+
 <tr><td> <code> cdr*_aa </code>                                                         </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
