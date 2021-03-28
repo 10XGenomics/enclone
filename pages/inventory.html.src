@@ -136,7 +136,7 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> amino acid identity with donor reference                                       </td></tr>
 
-<tr><td> barcode                                                                        </td>
+<tr><td> <code> barcode </code>                                                         </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -144,7 +144,7 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> barcode of the cell                                                            </td></tr>
 
-<tr><td> barcodes                                                                       </td>
+<tr><td> <code> barcodes </code>                                                        </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
