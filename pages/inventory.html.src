@@ -107,7 +107,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> </td>
     <td> statistics associated to particular features                                   </td></tr>
 
-<tr><td> (&ltdataset>_barcode)                                                          </td>
+<tr><td> &ltdataset>_barcode                                                            </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -115,7 +115,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> barcode from the given dataset (or null)                                       </td></tr>
 
-<tr><td> (&ltdataset>_barcodes)                                                         </td>
+<tr><td> &ltdataset>_barcodes                                                           </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
@@ -138,6 +138,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> barcodes for the exact subclonotype                                            </td></tr>
+
+<tr><td> <code> cdiff </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> differences of const region with universal reference                           </td></tr>
 
 <tr><td> <code> cdr*_aa </code>                                                         </td>
     <td>                                                                                </td>
@@ -234,6 +242,14 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
     <td> yes or null                                                                    </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> CDR3 complexity number                                                         </td></tr>
+
+<tr><td> <code> const </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> constant region name                                                           </td></tr>
 
 <tr><td> <code> const_id </code>                                                        </td>
     <td> 4                                                                              </td>
@@ -637,6 +653,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes or null                                                                    </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> number of UMIs supporting chain                                                </td></tr>
+
+<tr><td> <code> udiff </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> differences of 5'-UTR region with universal reference                          </td></tr>
 
 <tr><td> <code> utr_id </code>                                                          </td>
     <td> 4                                                                              </td>
