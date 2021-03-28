@@ -547,6 +547,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> maximum number of GEX UMIs across exact subclonotype                           </td></tr>
 
+<tr><td> <code> gex_mean </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_μ</code>)              </td></tr>
+
 <tr><td> <code> gex_min </code>                                                         </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -554,6 +562,30 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> minimum number of GEX UMIs across exact subclonotype                           </td></tr>
+
+<tr><td> <code> gex_sum </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> sum of GEX UMIs across exact subclonotype (= <code>gex_Σ</code>)               </td></tr>
+
+<tr><td> <code> gex_μ </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)           </td></tr>
+
+<tr><td> <code> gex_Σ </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> sum of GEX UMIs across exact subclonotype (= <code>gex_sum</code>)             </td></tr>
 
 <tr><td> <code> group_id </code>                                                        </td>
     <td> 4                                                                              </td>
