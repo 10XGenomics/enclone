@@ -245,7 +245,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
-    <td> sometimes                                                                      </td>
+    <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> length of CDR* amino acid sequence                                             </td></tr>
 
@@ -518,7 +518,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
-    <td> sometimes                                                                      </td>
+    <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> length of FWR* amino acid sequence                                             </td></tr>
 
