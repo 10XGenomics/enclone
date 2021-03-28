@@ -668,7 +668,7 @@ for exact subclonotype; missing parseable output values</td></tr>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>O-U</h2>
+<h2>O-R</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -716,6 +716,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> maximum chain read count across exact subclonotype                             </td></tr>
 
+<tr><td> <code> r_mean </code>                                                          </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> mean chain reads across exact subclonotype (= <code>r_mean</code>)             </td></tr>
+
 <tr><td> <code> r_min </code>                                                           </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -723,6 +731,63 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> minimum chain read count across exact subclonotype                             </td></tr>
+
+<tr><td> <code> r_sum </code>                                                           </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> sum of chain read counts across exact subclonotype (= <code>r_Σ</code>)        </td></tr>
+
+<tr><td> <code> r_μ </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> mean chain read count across exact subclonotype (= <code>r_μ</code>)           </td></tr>
+
+<tr><td> <code> r_Σ </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> sum of chain reads across exact subclonotype (= <code>r_sum</code>)            </td></tr>
+
+</tbody>
+</table>
+</p>
+
+<p>
+<table>
+<tr><td>1: missing <code>_cell</code> version</td></tr>
+<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
+<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>S-U</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
 
 <tr><td> <code> seq </code>                                                             </td>
     <td> 4                                                                              </td>
