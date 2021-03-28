@@ -507,7 +507,7 @@ for exact subclonotype; missing parseable output values</td></tr>
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>G-N</h2>
+<h2>G-M</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -635,6 +635,39 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> evidence for MAIT cell                                                         </td></tr>
 
+</tbody>
+</table>
+</p>
+
+<p>
+<table>
+<tr><td>1: missing <code>_cell</code> version</td></tr>
+<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
+<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
+for exact subclonotype; missing parseable output values</td></tr>
+<tr><td>4: only implemented for parseable output</td></tr>
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>N-R</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
+
 <tr><td> <code> n </code>                                                               </td>
     <td> 2                                                                              </td>
     <td> lvar                                                                           </td>
@@ -667,6 +700,14 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> number of chains in the clonotype                                              </td></tr>
 
+<tr><td> <code> ndiff&ltn>vj </code>                                                    </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> number of base differences with exact subclonotype n                           </td></tr>
+
 <tr><td> <code> near </code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
@@ -682,39 +723,6 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> notes for exact subclonotype                                                   </td></tr>
-
-</tbody>
-</table>
-</p>
-
-<p>
-<table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
-<tr><td>4: only implemented for parseable output</td></tr>
-</table>
-</p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<hr>
-<h2>O-R</h2>
-<p>
-<table rules="all" cellpadding="6" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left"> variable          </th>
-<th align="left"> limits            </th>
-<th align="left"> class             </th>
-<th align="left"> level             </th>
-<th align="left"> numeric           </th>
-<th align="left"> help page         </th>
-<th align="left"> brief description </th>
-</tr>
-</thead>
-<tbody>
 
 <tr><td> <code> origins </code>                                                         </td>
     <td> 2                                                                              </td>
