@@ -168,7 +168,7 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> mean count for a feature (same with <code>μ</code> for <code>mean</code>)      </td></tr>
 
-<tr><td> &ltdataset>_barcode                                                            </td>
+<tr><td> <code> &ltdataset>_barcode </code>                                             </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
@@ -176,7 +176,7 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
     <td> barcode from the given dataset (or null)                                       </td></tr>
 
-<tr><td> &ltdataset>_barcodes                                                           </td>
+<tr><td> <code> &ltdataset>_barcodes </code>                                            </td>
     <td> 4                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
