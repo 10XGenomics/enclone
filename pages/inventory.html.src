@@ -47,7 +47,7 @@ is suffixed with <code>_cell</code>.  This version cannot be used in clonotype t
 be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 
 <p>The following example illustrates some of these points:
-<table rules="all" style="border: 2.5px solid red">
+<table rules="all" style="border: 3px solid gray">
 <tbody>
 <tr><td align="left" style="padding: 4px 11px 0px 14px">
 <pre><code>enclone BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW PER_CELL POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1
