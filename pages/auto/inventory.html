@@ -163,7 +163,7 @@ is not present for an exact subclonotype.
     <td> maximum count for a feature                                                    </td></tr>
 
 <tr><td> <code> &ltfeature>_mean </code>                                                </td>
-    <td>                                                                                </td>
+    <td> 5                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
@@ -179,7 +179,7 @@ is not present for an exact subclonotype.
     <td> minimum count for a feature                                                    </td></tr>
 
 <tr><td> <code> &ltfeature>_sum </code>                                                 </td>
-    <td>                                                                                </td>
+    <td> 5                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
@@ -187,7 +187,7 @@ is not present for an exact subclonotype.
     <td> sum of counts for a feature (same with <code>sum</code> for <code>Σ</code>)    </td></tr>
 
 <tr><td> <code> &ltfeature>_Σ </code>                                                   </td>
-    <td>                                                                                </td>
+    <td> 5                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
@@ -195,7 +195,7 @@ is not present for an exact subclonotype.
     <td> sum of counts for a feature (same with <code>Σ</code> for <code>sum</code>)    </td></tr>
 
 <tr><td> <code> &ltfeature>_μ </code>                                                   </td>
-    <td>                                                                                </td>
+    <td> 5                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
@@ -207,7 +207,8 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> barcode from the given dataset (or null)                                       </td></tr>
 
 <tr><td> <code> &ltdataset>_barcodes </code>                                            </td>
@@ -215,7 +216,8 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> barcodes from the given dataset                                                </td></tr>
 
 <tr><td> <code> aa% </code>                                                             </td>
@@ -231,7 +233,8 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> barcode of the cell                                                            </td></tr>
 
 <tr><td> <code> barcodes </code>                                                        </td>
@@ -239,7 +242,8 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> barcodes for the exact subclonotype                                            </td></tr>
 
 </tbody>
@@ -248,11 +252,8 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
+<tr><td>5: shows as blank in parseable output</td></tr>
 </table>
 </p>
 
@@ -376,7 +377,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> lvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> identifier of clonotype within clonotype group                                 </td></tr>
 
 <tr><td> <code> clonotype_ncells </code>                                                </td>
@@ -384,7 +386,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> lvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> number of cells in the clonotype                                               </td></tr>
 
 <tr><td> <code> comp </code>                                                            </td>
@@ -408,7 +411,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> numerical identifier of constant region (or null)                              </td></tr>
 
 <tr><td> <code> count_* </code>                                                         </td>
@@ -433,10 +437,6 @@ for exact subclonotype; missing parseable output values</td></tr>
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
@@ -473,7 +473,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
 
 <tr><td> <code> d_id </code>                                                            </td>
@@ -481,7 +482,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> D region id                                                                    </td></tr>
 
 <tr><td> <code> d_name </code>                                                          </td>
@@ -489,7 +491,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> D region name                                                                  </td></tr>
 
 <tr><td> <code> d_start </code>                                                         </td>
@@ -497,7 +500,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> start of D on full nucleotide sequence (or null)                               </td></tr>
 
 <tr><td> <code> d_univ </code>                                                          </td>
@@ -714,7 +718,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> lvar                                                                           </td>
     <td> group                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> identifier of clonotype group                                                  </td></tr>
 
 <tr><td> <code> group_ncells </code>                                                    </td>
@@ -722,7 +727,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> lvar                                                                           </td>
     <td> group                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> number of cells in clonotype group                                             </td></tr>
 
 <tr><td> <code> inkt </code>                                                            </td>
@@ -738,7 +744,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> J region id                                                                    </td></tr>
 
 <tr><td> <code> j_name </code>                                                          </td>
@@ -746,7 +753,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> J region name                                                                  </td></tr>
 
 <tr><td> <code> mait </code>                                                            </td>
@@ -763,10 +771,6 @@ for exact subclonotype; missing parseable output values</td></tr>
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
@@ -819,7 +823,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> lvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> number of chains in the clonotype                                              </td></tr>
 
 <tr><td> <code> ndiff&ltn>vj </code>                                                    </td>
@@ -859,7 +864,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> read quality scores at position <code>n</code>                                 </td></tr>
 
 <tr><td> <code> r </code>                                                               </td>
@@ -924,10 +930,7 @@ for exact subclonotype; missing parseable output values</td></tr>
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
 <tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
@@ -956,7 +959,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> full nucleotide sequence of exact subclonotype                                 </td></tr>
 
 <tr><td> <code> share_indices_aa </code>                                                </td>
@@ -964,7 +968,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> shared amino acid positions                                                    </td></tr>
 
 <tr><td> <code> share_indices_dna </code>                                               </td>
@@ -972,7 +977,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> shared nucleotide positions                                                    </td></tr>
 
 <tr><td> <code> u </code>                                                               </td>
@@ -1052,7 +1058,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> numerical identifier of 5'-UTR region (or null)                               </td></tr>
 
 <tr><td> <code> utr_name </code>                                                        </td>
@@ -1060,7 +1067,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> name 5'-UTR region (or null)                                                   </td></tr>
 
 </tbody>
@@ -1069,10 +1077,6 @@ for exact subclonotype; missing parseable output values</td></tr>
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
@@ -1101,7 +1105,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> V region id                                                                    </td></tr>
 
 <tr><td> <code> v_name </code>                                                          </td>
@@ -1109,7 +1114,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> V region name                                                                  </td></tr>
 
 <tr><td> <code> v_start </code>                                                         </td>
@@ -1117,7 +1123,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> start of V on full nucleotide sequence                                         </td></tr>
 
 <tr><td> <code> var </code>                                                             </td>
@@ -1133,7 +1140,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> variant residue indices in clonotype (including synonymous)                    </td></tr>
 
 <tr><td> <code> var_indices_aa </code>                                                  </td>
@@ -1141,7 +1149,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> variable amino acid positions                                                  </td></tr>
 
 <tr><td> <code> var_indices_dna </code>                                                 </td>
@@ -1149,7 +1158,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>
+                                                                                        </td>
     <td> variable nucleotide positions                                                  </td></tr>
 
 <tr><td> <code> vj_aa </code>                                                           </td>
@@ -1157,7 +1167,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> amino acid sequence of V..J                                                    </td></tr>
 
 <tr><td> <code> vj_aa_nl </code>                                                        </td>
@@ -1165,7 +1176,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> amino acid sequence of V..J, excluding leader                                  </td></tr>
 
 <tr><td> <code> vj_seq </code>                                                         </td>
@@ -1173,7 +1185,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> nucleotide sequence of V..J                                                    </td></tr>
 
 <tr><td> <code> vj_seq_nl </code>                                                       </td>
@@ -1181,7 +1194,8 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> nucleotide sequence of V..J, excluding leader                                  </td></tr>
 
 <tr><td> <code> vjlen </code>                                                           </td>
@@ -1198,10 +1212,6 @@ for exact subclonotype; missing parseable output values</td></tr>
 
 <p>
 <table>
-<tr><td>1: missing <code>_cell</code> version</td></tr>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
-for exact subclonotype; missing parseable output values</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
