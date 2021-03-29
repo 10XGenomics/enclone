@@ -907,7 +907,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> mean chain UMIs across exact subclonotype (= <code>u_mean</code>)              </td></tr>
+    <td> mean chain UMIs across exact subclonotype (= <code>u_μ</code>)                 </td></tr>
 
 <tr><td> <code> u_min </code>                                                           </td>
     <td>                                                                                </td>
@@ -939,7 +939,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> mean chain UMI count across exact subclonotype (= <code>u_μ</code>)            </td></tr>
+    <td> mean chain UMI count for exact subclonotype (= <code>u_mean</code>)            </td></tr>
 
 <tr><td> <code> udiff </code>                                                           </td>
     <td>                                                                                </td>
