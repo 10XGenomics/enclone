@@ -319,7 +319,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> numerical identifier of constant region (       )                              </td></tr>
+    <td> numerical identifier of constant region (or null)                              </td></tr>
 
 <tr><td> <code> count_* </code>                                                         </td>
     <td>                                                                                </td>
@@ -963,7 +963,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> numerical identifier of 5'-UTR region (       )                               </td></tr>
+    <td> numerical identifier of 5'-UTR region (or null)                               </td></tr>
 
 <tr><td> <code> utr_name </code>                                                        </td>
     <td> 4                                                                              </td>
@@ -971,7 +971,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> name 5'-UTR region (       )                                                   </td></tr>
+    <td> name 5'-UTR region (or null)                                                   </td></tr>
 
 </tbody>
 </table>
