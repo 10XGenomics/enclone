@@ -19,6 +19,7 @@
 
 # import and update enclone-data
 
+set begin = `date +%s`
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
 endif
@@ -126,3 +127,6 @@ if ( $elapsed_sweep > 86400 ) then
     echo "sweep took $sweep_time seconds"
     echo $stop > stamps/last_sweep
 endif
+set end = `date +%s`
+set used = `expr $end - $begin`
+echo "build used $used seconds in total"
