@@ -46,6 +46,10 @@ defined at exact or higher level are not shown for each cell, as this would be r
 is suffixed with <code>_cell</code>.  This version cannot be used in clonotype tables.  It can
 be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 
+<p>The following example illustrates some of these points:
+#include pages/auto/variable_demo.html
+</p>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>

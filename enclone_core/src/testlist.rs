@@ -674,7 +674,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 14] = [
+pub const SITE_EXAMPLES: [(&str, &str); 15] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -753,5 +753,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 14] = [
     (
         "img/two_genes.svg",
         "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
+    ),
+    // 15.
+    (
+        "pages/auto/variable_demo.html",
+        "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1 \
+         HTML=\"variable demo\"",
     ),
 ];
