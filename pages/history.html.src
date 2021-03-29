@@ -33,8 +33,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>3/29/21</b>: 
+<b>3/30/21</b>: 
 <ul>
+<li>We turned on overflow checking in the #enclone executables.  It is possible that you will
+    now see error messages (tracebacks) where you did not previously see them.  Please report 
+    these events!</li>
 <li>Clicking on the #enclone banner at the top of any page on the site now takes you back to
     the help section on the main page.</li>
 <li>There is a new <a href="../../pages/auto/inventory.html"><code>page</code></a>

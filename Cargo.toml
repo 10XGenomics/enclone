@@ -18,6 +18,7 @@ opt-level = 3
 debug = 1
 lto = true
 codegen-units = 1
+overflow-checks = true
 
 [profile.test]
 opt-level = 3
