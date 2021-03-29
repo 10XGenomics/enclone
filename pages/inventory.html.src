@@ -67,7 +67,8 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 <tr><td> class </td><td> lvar or cvar                                             </td></tr>
 <tr><td> level </td><td> cell or exact or clono or group                          </td></tr>
 <tr><td> numeric </td><td> does the variable have numeric values*                 </td></tr>
-<tr><td> help page </td><td> page where variable is documented                    </td></tr>
+<tr><td> help page </td><td> page where variable is documented (both a link and an enclone command)
+                                                                                  </td></tr>
 <tr><td> brief description </td><td> summary, see help page for details           </td></tr>
 </table>
 </p>
