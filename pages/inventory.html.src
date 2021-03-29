@@ -47,6 +47,8 @@ is suffixed with <code>_cell</code>.  This version cannot be used in clonotype t
 be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 
 <p>The following example illustrates some of these points:
+<pre><code>enclone BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW PER_CELL POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1
+</code></pre>
 #include pages/auto/variable_demo.html
 </p>
 

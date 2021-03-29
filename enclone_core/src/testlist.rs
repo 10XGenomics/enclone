@@ -757,7 +757,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 15] = [
     // 15.
     (
         "pages/auto/variable_demo.html",
-        "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1 \
+        "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW PER_CELL POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1 \
          HTML=\"variable demo\"",
     ),
 ];
