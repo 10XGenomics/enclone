@@ -118,7 +118,7 @@ is not present for an exact subclonotype.
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
-    <td> barcode from the given dataset (       )                                       </td></tr>
+    <td> barcode from the given dataset (or null)                                       </td></tr>
 
 <tr><td> &ltdataset>_barcodes                                                           </td>
     <td> 4                                                                              </td>
