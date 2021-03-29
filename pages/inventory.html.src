@@ -136,7 +136,7 @@ is not present for an exact subclonotype.
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean count for a feature (same with <code>mean</code> for <code>μ</code>)      </td></tr>
+    <td> mean count for a feature (same with <code>μ</code> for <code>mean</code>)      </td></tr>
 
 <tr><td> <code> &ltfeature>_min </code>                                                 </td>
     <td>                                                                                </td>
@@ -152,7 +152,7 @@ is not present for an exact subclonotype.
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of counts for a feature (same with <code>sum</code> for <code>Σ</code>)    </td></tr>
+    <td> sum of counts for a feature (same with <code>Σ</code> for <code>sum</code>)    </td></tr>
 
 <tr><td> <code> &ltfeature>_Σ </code>                                                   </td>
     <td> 5                                                                              </td>
@@ -160,7 +160,7 @@ is not present for an exact subclonotype.
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> sum of counts for a feature (same with <code>Σ</code> for <code>sum</code>)    </td></tr>
+    <td> sum of counts for a feature (same with <code>sum</code> for <code>Σ</code>)    </td></tr>
 
 <tr><td> <code> &ltfeature>_μ </code>                                                   </td>
     <td> 5                                                                              </td>
@@ -168,7 +168,7 @@ is not present for an exact subclonotype.
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> mean count for a feature (same with <code>μ</code> for <code>mean</code>)      </td></tr>
+    <td> mean count for a feature (same with <code>mean</code> for <code>μ</code>)      </td></tr>
 
 <tr><td> <code> &ltdataset>_barcode </code>                                             </td>
     <td> 4                                                                              </td>
