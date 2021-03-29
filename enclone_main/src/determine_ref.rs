@@ -154,6 +154,16 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) {
             *refx += &"\n";
             if s.starts_with('>') {
                 nheader += 1;
+                let v: Vec<&str> = s.split_terminator('|').collect();
+                if v.len() < 4 {
+                    eprintln!(
+                        "\nThe header line\n{}\nin the FASTA file specified by\nREF={}\n\
+                        does not have the required structure for a cellranger or \
+                        enclone VDJ reference.",
+                        s, ctl.gen_opt.refname,
+                    );
+                    std::process::exit(1);
+                }
             } else {
                 for c in s.chars() {
                     bases += 1;
