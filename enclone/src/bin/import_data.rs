@@ -92,6 +92,10 @@ fn main() {
         let mut moved = false;
         for dest in dests.iter() {
             if path_exists(&format!("{}/{}", dest, id)) {
+                if path_exists(&format!("{}/{}.aside", dest, id)) {
+                    eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
+                    std::process::exit(1);
+                }
                 rename(
                     &format!("{}/{}", dest, id),
                     &format!("{}/{}.aside", dest, id),
