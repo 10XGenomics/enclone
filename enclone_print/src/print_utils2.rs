@@ -519,11 +519,6 @@ pub fn row_fill(
         );
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
         speakc!(u, col, "v_start".to_string(), xm.v_start);
-        let mut d_start = String::new();
-        if xm.d_start.is_some() {
-            d_start = format!("{}", xm.d_start.unwrap());
-        }
-        speakc!(u, col, "d_start".to_string(), d_start);
         let cid = xm.c_ref_id;
         if cid.is_some() {
             let cid = cid.unwrap();

@@ -593,6 +593,12 @@ pub fn proc_cvar2(
             );
         }
         cvar![j, var, d_frame];
+    } else if *var == "d_start".to_string() {
+        let mut d_start = String::new();
+        if ex.share[mid].d_start.is_some() {
+            d_start = format!("{}", ex.share[mid].d_start.unwrap());
+        }
+        cvar![j, var, d_start];
     } else if *var == "const".to_string() {
         let mut constx = Vec::<String>::new();
         let cid = ex.share[mid].c_ref_id;

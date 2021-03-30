@@ -237,10 +237,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
         h.ldoc(
-            "d_start<i>",
-            "start of D segment on full DNA sequence (or null)",
-        );
-        h.ldoc(
             "const_id<i>",
             "numerical identifier of constant region (or null, if not known)",
         );

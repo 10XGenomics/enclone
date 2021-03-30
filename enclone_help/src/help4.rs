@@ -810,6 +810,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "d_frame",
             "reading frame of D segment, either 0 or 1 or 2 (or null)",
         );
+        h.doc(
+            "d_start",
+            "start of D segment on full DNA sequence (or null)",
+        );
         h.ldoc(
             "aa%",
             "amino acid percent identity with donor reference, outside junction region",
