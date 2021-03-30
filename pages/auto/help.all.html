@@ -787,9 +787,6 @@ each of these has the same value for each exact clonotype</span>
 │vj_aa_nl&lt;i>   │  amino acid sequence of V..J (excludes last base, in incomplete codon),    │
 │              │  but starting after the leader                                             │
 │seq&lt;i>        │  full DNA sequence                                                         │
-│q&lt;n>_&lt;i>      │  special option to display a comma-separated list of the quality           │
-│              │  scores for chain i, at zero-based position n, numbered starting at the    │
-│              │  beginning of the V segment, for each cell in the exact subclonotype       │
 ├──────────────┼────────────────────────────────────────────────────────────────────────────┤
 │var_aa&lt;i>     │  amino acids that vary across the clonotype (synonymous changes included)  │
 ├──────────────┴────────────────────────────────────────────────────────────────────────────┤
@@ -1388,6 +1385,10 @@ where each xi is one of:
 │                 │  (same but contig has 10 additional bases beyond end of ref C region         │
 │                 │  At most five differences are shown, and if there are more, ... is appended. │
 │udiff            │  like cdiff, but for the 5'-UTR                                              │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│q&lt;n>_            │  comma-separated list of the quality                                         │
+│                 │  scores at zero-based position n, numbered starting at the                   │
+│                 │  beginning of the V segment, for each cell in the exact subclonotype         │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │notes            │  optional note if there is an insertion or the end of J does not exactly abut│
 │                 │  the beginning of C; elided if empty; also single base overlaps between      │

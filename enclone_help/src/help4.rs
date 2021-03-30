@@ -872,6 +872,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "At most five differences are shown, and if there are more, ... is appended.",
         );
         h.doc("udiff", "like cdiff, but for the 5'-UTR");
+        h.ldoc("q<n>_", "comma-separated list of the quality");
+        h.doc2("scores at zero-based position n, numbered starting at the");
+        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc(
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut",

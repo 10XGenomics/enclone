@@ -123,7 +123,21 @@ pub fn proc_cvar1(
         };
     }
 
-    if *var == "amino".to_string() && col_var {
+    if var.starts_with('q')
+        && var.ends_with('_')
+        && var.after("q").rev_before("_").parse::<usize>().is_ok()
+    {
+        let n = var.between("q", "_").force_usize();
+        let mut val = String::new();
+        if n < ex.share[mid].seq.len() {
+            let mut quals = Vec::<u8>::new();
+            for j in 0..ex.clones.len() {
+                quals.push(ex.clones[j][mid].quals[n]);
+            }
+            val = format!("{}", quals.iter().format(","));
+        }
+        cvar![j, var, val];
+    } else if *var == "amino".to_string() && col_var {
         let mut last_color = "black".to_string();
         for k in 0..show_aa[col].len() {
             let p = show_aa[col][k];

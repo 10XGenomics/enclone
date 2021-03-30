@@ -595,26 +595,6 @@ pub fn row_fill(
         let r_max = *nreads.iter().max().unwrap();
         let median_nreads = rounded_median(&nreads);
 
-        // Speak quality score column entries.
-
-        if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
-            for i in 0..pcols_sort.len() {
-                if pcols_sort[i].starts_with('q')
-                    && pcols_sort[i].ends_with(&format!("_{}", col + 1))
-                {
-                    let n = pcols_sort[i].after("q").rev_before("_").force_usize();
-                    if n < ex.share[mid].seq.len() {
-                        let mut quals = Vec::<u8>::new();
-                        for j in 0..ex.clones.len() {
-                            quals.push(ex.clones[j][mid].quals[n]);
-                        }
-                        let q = format!("{}", quals.iter().format(","));
-                        out_data[u].insert(pcols_sort[i].clone(), q);
-                    }
-                }
-            }
-        }
-
         // Speak some other column entries.
 
         let xm = &ex.share[mid];

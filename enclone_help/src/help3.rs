@@ -222,12 +222,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc("", "but starting after the leader");
         h.doc("seq<i>", "full DNA sequence");
-        h.doc(
-            "q<n>_<i>",
-            "special option to display a comma-separated list of the quality",
-        );
-        h.doc2("scores for chain i, at zero-based position n, numbered starting at the");
-        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc(
             "var_aa<i>",
             "amino acids that vary across the clonotype (synonymous changes included)",
