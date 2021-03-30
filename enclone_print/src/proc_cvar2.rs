@@ -474,6 +474,26 @@ pub fn proc_cvar2(
             udiff = format!("+{}", ulen);
         }
         cvar![j, var, udiff];
+    } else if *var == "const_id" {
+        let mut const_id = String::new();
+        if ex.share[mid].c_ref_id.is_some() {
+            const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
+        }
+        cvar![j, var, const_id];
+    } else if *var == "utr_id" {
+        let mut u = String::new();
+        let uid = ex.share[mid].u_ref_id;
+        if uid.is_some() {
+            u = format!("{}", refdata.id[uid.unwrap()]);
+        }
+        cvar![j, var, u];
+    } else if *var == "utr_name" {
+        let mut u = String::new();
+        let uid = ex.share[mid].u_ref_id;
+        if uid.is_some() {
+            u = refdata.name[uid.unwrap()].clone();
+        }
+        cvar![j, var, u];
     } else if *var == "d_univ".to_string() {
         let vid = ex.share[mid].v_ref_id;
         let vref = &refdata.refs[vid].to_ascii_vec();

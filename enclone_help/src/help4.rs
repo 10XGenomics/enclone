@@ -696,7 +696,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "r",
             "\\red{●} VDJ read count for each exact subclonotype, median across cells",
         );
-        h.ldoc("const", "constant region name");
         h.ldoc(
             "edit",
             "a string that defines the edit of the reference V(D)J concatenation versus",
@@ -822,12 +821,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "dna%",
             "nucleotide percent identity with donor reference, outside junction region",
         );
-        h.ldoc("v_name", "name of V segment");
-        h.doc("d_name", "name of D segment (or null)");
-        h.doc("j_name", "name of J segment");
-        h.ldoc("v_id", "id of V segment");
-        h.doc("d_id", "id of D segment (or null)");
-        h.doc("j_id", "id of J segment");
+        h.ldoc("utr_name", "name of 5'-UTR region");
+        h.doc("v_name", "name of V region");
+        h.doc("d_name", "name of D region (or null)");
+        h.doc("j_name", "name of J region");
+        h.doc("const", "name of constant region");
+        h.ldoc("utr_id", "id of 5'-UTR region");
+        h.doc("v_id", "id of V region");
+        h.doc("d_id", "id of D region (or null)");
+        h.doc("j_id", "id of J region");
+        h.doc("const_id", "id of constant region (or null, if not known)");
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
         h.ldoc(
             "vjlen",

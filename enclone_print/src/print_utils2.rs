@@ -634,17 +634,6 @@ pub fn row_fill(
         );
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
         speakc!(u, col, "v_start".to_string(), xm.v_start);
-        let cid = xm.c_ref_id;
-        if cid.is_some() {
-            let cid = cid.unwrap();
-            speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
-        }
-        let uid = ex.share[mid].u_ref_id;
-        if uid.is_some() {
-            let uid = uid.unwrap();
-            speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
-            speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
-        }
         speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {

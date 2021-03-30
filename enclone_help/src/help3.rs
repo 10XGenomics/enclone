@@ -231,18 +231,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
         h.ldoc(
-            "const_id<i>",
-            "numerical identifier of constant region (or null, if not known)",
-        );
-        h.ldoc(
-            "utr_id<i>",
-            "numerical identifier of 5'-UTR region (or null, if not known)",
-        );
-        h.doc(
-            "utr_name<i>",
-            "name of 5'-UTR region (or null, if not known)",
-        );
-        h.ldoc(
             "cdr3_start<i>",
             "base position start of CDR3 sequence on full contig",
         );

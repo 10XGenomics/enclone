@@ -64,8 +64,6 @@ where each xi is one of:
 │u                │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
 │r                │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│const            │  constant region name                                                        │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │edit             │  a string that defines the edit of the reference V(D)J concatenation versus  │
 │                 │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
 │                 │  this uses a coordinate system in which 0 is the first base of the J ref     │
@@ -130,13 +128,17 @@ where each xi is one of:
 │aa%              │  amino acid percent identity with donor reference, outside junction region   │
 │dna%             │  nucleotide percent identity with donor reference, outside junction region   │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│v_name           │  name of V segment                                                           │
-│d_name           │  name of D segment (or null)                                                 │
-│j_name           │  name of J segment                                                           │
+│utr_name         │  name of 5'-UTR region                                                       │
+│v_name           │  name of V region                                                            │
+│d_name           │  name of D region (or null)                                                  │
+│j_name           │  name of J region                                                            │
+│const            │  name of constant region                                                     │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│v_id             │  id of V segment                                                             │
-│d_id             │  id of D segment (or null)                                                   │
-│j_id             │  id of J segment                                                             │
+│utr_id           │  id of 5'-UTR region                                                         │
+│v_id             │  id of V region                                                              │
+│d_id             │  id of D region (or null)                                                    │
+│j_id             │  id of J region                                                              │
+│const_id         │  id of constant region (or null, if not known)                               │
 │                 │  (these are the numbers after ">" in the VDJ reference file)                 │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
