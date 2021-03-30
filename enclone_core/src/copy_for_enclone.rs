@@ -159,16 +159,7 @@ pub fn copy_for_enclone(source: &str, target: &str) {
                 d = "filtered_gene_bc_matrices_mex";
             }
             copy(&format!("{}/{}", p, d), &format!("{}/outs", target), &opt).unwrap();
-            let mut dirs = vec!["analysis".to_string(), "analysis_csv".to_string()];
-            if path_exists(&format!("{}/per_sample_outs", p)) {
-                let list = dir_list(&format!("{}/per_sample_outs", p));
-                if list.solo() {
-                    let x = &list[0];
-                    let d = format!("{}/per_sample_outs/{}/count/analysis", target, x);
-                    mkdirp(&d);
-                    dirs.push(d);
-                }
-            }
+            let dirs = vec!["analysis".to_string(), "analysis_csv".to_string()];
             for d in dirs.iter() {
                 copy(&format!("{}/{}", p, d), &format!("{}/outs", target), &opt).unwrap();
             }
@@ -250,6 +241,23 @@ pub fn copy_for_enclone(source: &str, target: &str) {
                 &opt,
             )
             .unwrap();
+        }
+
+        // Copy per_sample_outs.
+
+        if path_exists(&format!("{}/per_sample_outs", p)) {
+            let list = dir_list(&format!("{}/per_sample_outs", p));
+            if list.solo() {
+                let x = &list[0];
+                let d = format!("per_sample_outs/{}/count/analysis", x);
+                mkdirp(&format!("{}/outs/{}", target, d));
+                copy(
+                    &format!("{}/{}", p, d),
+                    &format!("{}/outs/per_sample_outs/{}/count", target, x),
+                    &opt,
+                )
+                .unwrap();
+            }
         }
 
     // Copy new dir structure.
