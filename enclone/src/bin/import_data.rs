@@ -19,7 +19,7 @@ use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::{remove_file, rename};
+use std::fs::{remove_dir_all, rename};
 use std::process::Command;
 use string_utils::*;
 
@@ -118,7 +118,7 @@ fn main() {
 
         if moved {
             for dest in dests.iter() {
-                remove_file(&format!("{}/{}.aside", dest, id)).unwrap();
+                remove_dir_all(&format!("{}/{}.aside", dest, id)).unwrap();
             }
         }
     }
