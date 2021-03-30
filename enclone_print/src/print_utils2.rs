@@ -58,8 +58,8 @@ pub fn row_fill(
     lvarsc: &Vec<String>,
     nd_fields: &Vec<String>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
-    extra_parseables: &Vec<String>,
     extra_args: &Vec<String>,
+    all_vars: &Vec<String>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -475,30 +475,9 @@ pub fn row_fill(
             };
         }
 
-        // Define all_vars.
-
-        let rsi_vars = &rsi.cvars[col];
-        let mut all_vars = rsi_vars.clone();
-        for j in 0..CVARS_ALLOWED.len() {
-            let var = &CVARS_ALLOWED[j];
-            if !rsi_vars.contains(&var.to_string()) {
-                all_vars.push(var.to_string());
-            }
-        }
-        for j in 0..CVARS_ALLOWED_PCELL.len() {
-            let var = &CVARS_ALLOWED_PCELL[j];
-            if !rsi_vars.contains(&var.to_string()) {
-                all_vars.push(var.to_string());
-            }
-        }
-        all_vars.append(&mut extra_parseables.clone());
-        for x in extra_args.iter() {
-            if !rsi_vars.contains(&x) {
-                all_vars.push(x.clone());
-            }
-        }
         // Process variables that need to be computed even if the chain entry is empty.
 
+        let rsi_vars = &ctl.clono_print_opt.cvars;
         for j in 0..all_vars.len() {
             // Decide if there is nothing to compute.  This is almost certainly not optimal.
             // Also largely duplicated below.

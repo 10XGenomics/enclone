@@ -70,13 +70,6 @@ pub fn print_clonotypes(
 
     let extra_args = extra_args(&ctl);
 
-    // Compute total cells.
-
-    let mut total_cells = 0;
-    for i in 0..exact_clonotypes.len() {
-        total_cells += exact_clonotypes[i].ncells();
-    }
-
     // Define parseable output columns.  The entire machinery for parseable output is controlled
     // by macros that begin with "speak".
 
@@ -120,6 +113,36 @@ pub fn print_clonotypes(
             }
         }
         unique_sort(&mut extra_parseables);
+    }
+
+    // Compute all_vars.
+
+    let rsi_vars = &ctl.clono_print_opt.cvars;
+    let mut all_vars = rsi_vars.clone();
+    for j in 0..CVARS_ALLOWED.len() {
+        let var = &CVARS_ALLOWED[j];
+        if !rsi_vars.contains(&var.to_string()) {
+            all_vars.push(var.to_string());
+        }
+    }
+    for j in 0..CVARS_ALLOWED_PCELL.len() {
+        let var = &CVARS_ALLOWED_PCELL[j];
+        if !rsi_vars.contains(&var.to_string()) {
+            all_vars.push(var.to_string());
+        }
+    }
+    all_vars.append(&mut extra_parseables.clone());
+    for x in extra_args.iter() {
+        if !rsi_vars.contains(&x) {
+            all_vars.push(x.clone());
+        }
+    }
+
+    // Compute total cells.
+
+    let mut total_cells = 0;
+    for i in 0..exact_clonotypes.len() {
+        total_cells += exact_clonotypes[i].ncells();
     }
 
     // Test for presence of GEX/FB data.
@@ -680,8 +703,8 @@ pub fn print_clonotypes(
                         &lvars,
                         &nd_fields,
                         &peer_groups,
-                        &extra_parseables,
                         &extra_args,
+                        &all_vars,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
