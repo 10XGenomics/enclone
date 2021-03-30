@@ -8,7 +8,7 @@
 //
 // This is probably not fully consistent with current pipeline structure.
 //
-// Run make_enclone_testlist after this to update the catalog.
+// Run make_enclone_testlist_all after this to update the catalog.
 //
 // For use at 10x Genomics.
 
