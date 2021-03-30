@@ -584,6 +584,15 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
+    } else if *var == "d_frame".to_string() {
+        let mut d_frame = String::new();
+        if ex.share[mid].d_start.is_some() {
+            d_frame = format!(
+                "{}",
+                (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
+            );
+        }
+        cvar![j, var, d_frame];
     } else if *var == "const".to_string() {
         let mut constx = Vec::<String>::new();
         let cid = ex.share[mid].c_ref_id;

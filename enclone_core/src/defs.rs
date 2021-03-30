@@ -878,7 +878,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             "share_indices_aa",
             "v_start",
             "d_start",
-            "d_frame",
             "const_id",
             "utr_id",
             "utr_name",

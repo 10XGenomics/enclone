@@ -807,6 +807,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
         h.ldoc(
+            "d_frame",
+            "reading frame of D segment, either 0 or 1 or 2 (or null)",
+        );
+        h.ldoc(
             "aa%",
             "amino acid percent identity with donor reference, outside junction region",
         );
