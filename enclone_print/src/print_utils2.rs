@@ -666,24 +666,6 @@ pub fn row_fill(
 
         // Create column entry.
 
-        let mut somelist = vec![false; all_vars.len()];
-        for j in 0..all_vars.len() {
-            let mut jj = j;
-            if !have_notes && notes_in && j >= notes_pos {
-                jj -= 1;
-            }
-            let var = &all_vars[j];
-            let varc = format!("{}{}", var, col + 1);
-            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
-                somelist[j] = true;
-            } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
-                && col + 1 <= ctl.parseable_opt.pchains
-                && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
-            {
-                somelist[j] = true;
-            }
-        }
         for j in 0..all_vars.len() {
             let mut jj = j;
             if !have_notes && notes_in && j >= notes_pos {
