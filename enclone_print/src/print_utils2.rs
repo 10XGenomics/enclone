@@ -478,14 +478,28 @@ pub fn row_fill(
         // Process variables that need to be computed even if the chain entry is empty.
 
         let rsi_vars = &ctl.clono_print_opt.cvars;
+        let have_notes = rsi.cvars[col].contains(&"notes".to_string());
+        let mut notes_pos = 0;
+        let mut notes_in = false;
+        for j in 0..rsi_vars.len() {
+            if all_vars[j] == "notes" {
+                notes_pos = j;
+                notes_in = true;
+            }
+        }
         for j in 0..all_vars.len() {
+            let mut jj = j;
+            if !have_notes && notes_in && j >= notes_pos {
+                jj -= 1;
+            }
+
             // Decide if there is nothing to compute.  This is almost certainly not optimal.
             // Also largely duplicated below.
 
             let mut needed = false;
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 needed = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
@@ -500,7 +514,7 @@ pub fn row_fill(
             if !needed {
                 continue;
             }
-            let col_var = j < rsi_vars.len();
+            let col_var = jj < rsi_vars.len();
             if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
                 continue;
             }
@@ -654,9 +668,13 @@ pub fn row_fill(
 
         let mut somelist = vec![false; all_vars.len()];
         for j in 0..all_vars.len() {
+            let mut jj = j;
+            if !have_notes && notes_in && j >= notes_pos {
+                jj -= 1;
+            }
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 somelist[j] = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
@@ -667,12 +685,20 @@ pub fn row_fill(
             }
         }
         for j in 0..all_vars.len() {
+            let mut jj = j;
+            if !have_notes && notes_in && j >= notes_pos {
+                jj -= 1;
+            }
+            if all_vars[j] == "notes" && !have_notes {
+                continue;
+            }
+
             // Decide if there is nothing to compute.  This is almost certainly not optimal.
 
             let mut needed = false;
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 needed = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
@@ -693,7 +719,7 @@ pub fn row_fill(
             if !needed {
                 continue;
             }
-            let col_var = j < rsi_vars.len();
+            let col_var = jj < rsi_vars.len();
             if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
                 continue;
             }
@@ -702,7 +728,7 @@ pub fn row_fill(
 
             if !proc_cvar1(
                 &var,
-                j,
+                jj,
                 col,
                 mid,
                 pass,
@@ -738,7 +764,7 @@ pub fn row_fill(
             ) {
                 let _ = proc_cvar2(
                     &var,
-                    j,
+                    jj,
                     col,
                     mid,
                     pass,

@@ -886,37 +886,6 @@ pub fn print_clonotypes(
                     &mut res.10,
                 );
 
-                // Fill in exact_subclonotype_id, reorder.
-
-                if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
-                    for u in 0..nexacts {
-                        macro_rules! speak {
-                            ($u:expr, $var:expr, $val:expr) => {
-                                if pass == 2
-                                    && (ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty())
-                                {
-                                    if pcols_sort.is_empty()
-                                        || bin_member(&pcols_sort, &$var.to_string())
-                                        || bin_member(&extra_args, &$var.to_string())
-                                    {
-                                        out_data[$u].insert($var.to_string(), $val);
-                                    }
-                                }
-                            };
-                        }
-                        speak![rord[u], "exact_subclonotype_id", format!("{}", u + 1)];
-                    }
-                    let mut out_data2 = vec![HashMap::<String, String>::new(); nexacts];
-                    for v in 0..nexacts {
-                        out_data2[v] = out_data[rord[v]].clone();
-                    }
-                    out_data = out_data2;
-                }
-
-                // Add header text to mlog.
-
-                add_header_text(&ctl, &exacts, &exact_clonotypes, &rord, &mat, &mut mlog);
-
                 // Make the table.
 
                 let mut logz = String::new();
@@ -937,6 +906,11 @@ pub fn print_clonotypes(
                     &mut logz,
                     &stats,
                     &mut sr,
+                    &extra_args,
+                    &pcols_sort,
+                    &mut out_data,
+                    &rord,
+                    pass,
                 );
 
                 // Save.
