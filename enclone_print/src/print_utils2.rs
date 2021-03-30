@@ -633,8 +633,6 @@ pub fn row_fill(
             stringme(&xm.seq[xm.fr1_start..])
         );
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
-        speakc!(u, col, "v_start".to_string(), xm.v_start);
-        speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);

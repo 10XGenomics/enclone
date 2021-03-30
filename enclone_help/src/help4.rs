@@ -805,13 +805,18 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
         );
         h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
-        h.ldoc(
-            "d_frame",
-            "reading frame of D segment, either 0 or 1 or 2 (or null)",
-        );
+        h.ldoc("v_start", "start of V segment on full DNA sequence");
         h.doc(
             "d_start",
             "start of D segment on full DNA sequence (or null)",
+        );
+        h.doc(
+            "cdr3_start",
+            "base position start of CDR3 sequence on full contig",
+        );
+        h.doc(
+            "d_frame",
+            "reading frame of D segment, either 0 or 1 or 2 (or null)",
         );
         h.ldoc(
             "aa%",

@@ -37,7 +37,7 @@ pub const LVARS_ALLOWED: [&str; 30] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 82] = [
+pub const CVARS_ALLOWED: [&str; 84] = [
     "var",
     "u",
     "u_min",
@@ -120,6 +120,8 @@ pub const CVARS_ALLOWED: [&str; 82] = [
     "const_id",
     "utr_id",
     "utr_name",
+    "cdr3_start",
+    "v_start",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -134,13 +136,11 @@ pub const PLVARS_ALLOWED: [&str; 7] = [
     "barcodes",
 ];
 
-pub const PCVARS_ALLOWED: [&str; 13] = [
+pub const PCVARS_ALLOWED: [&str; 11] = [
     "var_indices_dna",
     "var_indices_aa",
     "share_indices_dna",
     "share_indices_aa",
-    "v_start",
-    "cdr3_start",
     "cdr3_aa",
     "seq",
     "vj_seq",

@@ -335,7 +335,7 @@ is not present for an exact subclonotype.
     <td> CDR3 amino acid clonotype consensus, Xs at variants                            </td></tr>
 
 <tr><td> <code> cdr3_start </code>                                                      </td>
-    <td> 4                                                                              </td>
+    <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
@@ -1096,7 +1096,7 @@ for exact subclonotype; missing parseable output values</td></tr>
     <td> V region name                                                                  </td></tr>
 
 <tr><td> <code> v_start </code>                                                         </td>
-    <td> 4                                                                              </td>
+    <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>

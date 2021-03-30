@@ -229,11 +229,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc2("scores for chain i, at zero-based position n, numbered starting at the");
         h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
-        h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
-        h.ldoc(
-            "cdr3_start<i>",
-            "base position start of CDR3 sequence on full contig",
-        );
         h.ldoc(
             "var_aa<i>",
             "amino acids that vary across the clonotype (synonymous changes included)",

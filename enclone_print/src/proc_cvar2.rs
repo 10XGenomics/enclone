@@ -604,7 +604,7 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
-    } else if *var == "d_frame".to_string() {
+    } else if *var == "d_frame" {
         let mut d_frame = String::new();
         if ex.share[mid].d_start.is_some() {
             d_frame = format!(
@@ -613,13 +613,17 @@ pub fn proc_cvar2(
             );
         }
         cvar![j, var, d_frame];
-    } else if *var == "d_start".to_string() {
+    } else if *var == "cdr3_start" {
+        cvar![j, var, format!("{}", ex.share[mid].cdr3_start)];
+    } else if *var == "v_start" {
+        cvar![j, var, format!("{}", ex.share[mid].v_start)];
+    } else if *var == "d_start" {
         let mut d_start = String::new();
         if ex.share[mid].d_start.is_some() {
             d_start = format!("{}", ex.share[mid].d_start.unwrap());
         }
         cvar![j, var, d_start];
-    } else if *var == "const".to_string() {
+    } else if *var == "const" {
         let mut constx = Vec::<String>::new();
         let cid = ex.share[mid].c_ref_id;
         if cid.is_some() {
