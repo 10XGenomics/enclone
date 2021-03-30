@@ -522,7 +522,7 @@ pub fn proc_cvar2(
     } else if *var == "v_name" {
         cvar![j, var, refdata.name[rsi.vids[col]]];
     } else if *var == "v_id" {
-        cvar_stats1![j, var, format!("{}", rsi.vids[col])];
+        cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
     } else if *var == "d_name" {
         let mut dname = String::new();
         if rsi.dids[col].is_some() {
@@ -532,13 +532,13 @@ pub fn proc_cvar2(
     } else if *var == "d_id" {
         let mut did = String::new();
         if rsi.dids[col].is_some() {
-            did = format!("{}", rsi.dids[col].unwrap());
+            did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
         }
         cvar_stats1![j, var, did];
     } else if *var == "j_name" {
         cvar![j, var, refdata.name[rsi.jids[col]]];
     } else if *var == "j_id" {
-        cvar_stats1![j, var, format!("{}", rsi.jids[col])];
+        cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
     } else if *var == "notes".to_string() {
         cvar![j, var, ex.share[mid].vs_notesx.clone()];
     } else if *var == "var".to_string() {

@@ -828,7 +828,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.ldoc("v_id", "id of V segment");
         h.doc("d_id", "id of D segment (or null)");
         h.doc("j_id", "id of J segment");
-        h.doc2("(all are zero-based indices in the VDJ reference file)");
+        h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
