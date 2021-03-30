@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 222] = [
+pub const TESTS: [&str; 223] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -568,6 +568,8 @@ pub const TESTS: [&str; 222] = [
     //
     // 222. test for busted reference
     r###"BCR=85333 REF=testx/inputs/busted_regions.fa EXPECT_FAIL"###,
+    // 223. test d_name and d_id
+    r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth PCOLS=d_name1,d_id1"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
