@@ -754,13 +754,6 @@ https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
 each of these has the same value for each exact clonotype</span>
 
 ┌──────────────────────┬──────────────────────────────────────────────────────────────┐
-│v_name&lt;i>             │  name of V segment                                           │
-│d_name&lt;i>             │  name of D segment (or null)                                 │
-│j_name&lt;i>             │  name of J segment                                           │
-├──────────────────────┼──────────────────────────────────────────────────────────────┤
-│v_id&lt;i>               │  id of V segment                                             │
-│d_id&lt;i>               │  id of D segment (or null)                                   │
-│j_id&lt;i>               │  id of J segment                                             │
 ├──────────────────────┼──────────────────────────────────────────────────────────────┤
 │var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype       │
 │var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype│
@@ -1380,6 +1373,15 @@ where each xi is one of:
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │aa%              │  amino acid percent identity with donor reference, outside junction region   │
 │dna%             │  nucleotide percent identity with donor reference, outside junction region   │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_name           │  name of V segment                                                           │
+│d_name           │  name of D segment (or null)                                                 │
+│j_name           │  name of J segment                                                           │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_id             │  id of V segment                                                             │
+│d_id             │  id of D segment (or null)                                                   │
+│j_id             │  id of J segment                                                             │
+│                 │  (all are zero-based indices in the VDJ reference file)                      │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
 │clen             │  length of observed constant region (usually truncated at primer start)      │

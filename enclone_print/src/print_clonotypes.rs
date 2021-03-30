@@ -356,7 +356,6 @@ pub fn print_clonotypes(
                         &ctl,
                         &exacts,
                         &exact_clonotypes,
-                        &refdata,
                         &rsi,
                         &mut out_data,
                         &mut mlog,

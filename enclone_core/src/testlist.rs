@@ -568,8 +568,9 @@ pub const TESTS: [&str; 223] = [
     //
     // 222. test for busted reference
     r###"BCR=85333 REF=testx/inputs/busted_regions.fa EXPECT_FAIL"###,
-    // 223. test d_name and d_id
-    r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth PCOLS=d_name1,d_id1"###,
+    // 223. test {v,d,j}_name and _id
+    r###"BCR=86237 CDR3=CARGHPNYDYVWGSYRYRAYYFDYW POUT=stdouth
+         PCOLS=v_name1,d_name1,j_name1,v_id1,d_id1,j_id1"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

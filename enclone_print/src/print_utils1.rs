@@ -11,7 +11,6 @@ use std::collections::HashMap;
 use std::io::Write;
 use string_utils::*;
 use tables::*;
-use vdj_ann::refx::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -238,7 +237,6 @@ pub fn start_gen(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    refdata: &RefData,
     rsi: &ColInfo,
     out_data: &mut Vec<HashMap<String, String>>,
     mut mlog: &mut Vec<u8>,
@@ -253,21 +251,6 @@ pub fn start_gen(
                     || bin_member(&extra_args, &$var.to_string())
                 {
                     out_data[$u].insert($var.to_string(), $val);
-                }
-            }
-        };
-    }
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0)
-                && $col + 1 <= ctl.parseable_opt.pchains
-            {
-                let varc = format!("{}{}", $var, $col + 1);
-                if pcols_sort.is_empty()
-                    || bin_member(&pcols_sort, &varc)
-                    || bin_member(&extra_args, &varc)
-                {
-                    out_data[$u].insert(varc, format!("{}", $val));
                 }
             }
         };
@@ -334,20 +317,6 @@ pub fn start_gen(
                     );
                 }
             }
-        }
-        for cx in 0..cols {
-            let vid = rsi.vids[cx];
-            speakc!(u, cx, "v_name", refdata.name[vid]);
-            speakc!(u, cx, "v_id", refdata.id[vid]);
-            let did = rsi.dids[cx];
-            if did.is_some() {
-                let did = did.unwrap();
-                speakc!(u, cx, "d_name", refdata.name[did]);
-                speakc!(u, cx, "d_id", refdata.id[did]);
-            }
-            let jid = rsi.jids[cx];
-            speakc!(u, cx, "j_name", refdata.name[jid]);
-            speakc!(u, cx, "j_id", refdata.id[jid]);
         }
     }
 

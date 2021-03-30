@@ -866,12 +866,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         }
         for x in &[
-            "v_name",
-            "d_name",
-            "j_name",
-            "v_id",
-            "d_id",
-            "j_id",
             "var_indices_dna",
             "var_indices_aa",
             "share_indices_dna",

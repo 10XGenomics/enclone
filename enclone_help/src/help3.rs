@@ -151,12 +151,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "\\bold{3. per chain fields, where <i> is 1,2,... (see above)\n\
              each of these has the same value for each exact clonotype}\n\n",
         );
-        h.doc("v_name<i>", "name of V segment");
-        h.doc("d_name<i>", "name of D segment (or null)");
-        h.doc("j_name<i>", "name of J segment");
-        h.ldoc("v_id<i>", "id of V segment");
-        h.doc("d_id<i>", "id of D segment (or null)");
-        h.doc("j_id<i>", "id of J segment");
         h.ldoc(
             "var_indices_dna<i>",
             "DNA positions in chain that vary across the clonotype",
