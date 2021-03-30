@@ -460,7 +460,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
-        h.doc("datasets", "dataset identifiers");
+        h.doc("nchains", "total number of chains in the clonotype");
+        h.ldoc("datasets", "dataset identifiers");
         h.doc("origin", "origin identifiers");
         h.doc("donors", "donor identifiers");
         h.ldoc("n", "number of cells");

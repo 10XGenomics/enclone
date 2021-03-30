@@ -142,7 +142,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "identifier of clonotype within the clonotype group = 0, 1, ...",
         );
         h.ldoc("clonotype_ncells", "total number of cells in the clonotype");
-        h.ldoc("nchains", "total number of chains in the clonotype");
         h.print_tab2();
         h.print("\n");
 

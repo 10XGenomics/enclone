@@ -63,7 +63,7 @@ pub fn proc_lvar1(
     out_data: &mut Vec<HashMap<String, String>>,
     _d_all: &mut Vec<Vec<u32>>,
     _ind_all: &mut Vec<Vec<u32>>,
-    _rsi: &ColInfo,
+    rsi: &ColInfo,
     _dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
     stats: &mut Vec<(String, Vec<f64>)>,
@@ -224,6 +224,8 @@ pub fn proc_lvar1(
         }
         unique_sort(&mut origins);
         lvar![i, x, format!("{}", origins.iter().format(","))];
+    } else if x == "nchains" {
+        lvar_stats1![i, x, format!("{}", rsi.mat.len())];
 
     // datasets: public, defined at exact subclonotype level, value is not numeric
     } else if x == "datasets" {
