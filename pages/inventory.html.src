@@ -603,7 +603,7 @@ is not present for an exact subclonotype.
 <p>
 <table>
 <tr><td>3: missing <code>_cell</code> version and does not show value
-for exact subclonotype; missing parseable output values</td></tr>
+           for exact subclonotype</td></tr>
 </table>
 </p>
 

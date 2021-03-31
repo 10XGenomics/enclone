@@ -85,6 +85,7 @@ pub fn proc_lvar1(
     _entropies_unsorted: &Vec<f64>,
     _fcounts: &Vec<f64>,
     extra_args: &Vec<String>,
+    fate: &Vec<HashMap<String, String>>,
 ) -> bool {
     let clonotype_id = exacts[u];
     let ex = &exact_clonotypes[clonotype_id];
@@ -346,6 +347,20 @@ pub fn proc_lvar1(
         lvar![i, x, format!("{}", abbrev_list(&cell_types))];
     } else if x == "filter" {
         lvar![i, x, String::new()];
+        if pass == 2 {
+            let mut fates = Vec::<String>::new();
+            for j in 0..ex.clones.len() {
+                let mut f = String::new();
+                let bc = &ex.clones[j][0].barcode;
+                let li = ex.clones[j][0].dataset_index;
+                if fate[li].contains_key(&bc.clone()) {
+                    f = fate[li][&bc.clone()].clone();
+                    f = f.between(" ", " ").to_string();
+                }
+                fates.push(f);
+            }
+            speak!(u, x, format!("{}", fates.iter().format(POUT_SEP)));
+        }
     } else if x == "mark" {
         let mut n = 0;
         for j in 0..ex.clones.len() {

@@ -60,6 +60,7 @@ pub fn row_fill(
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     extra_args: &Vec<String>,
     all_vars: &Vec<String>,
+    fate: &Vec<HashMap<String, String>>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -366,6 +367,7 @@ pub fn row_fill(
             &entropies_unsorted,
             &fcounts,
             &extra_args,
+            &fate,
         ) {
             let _ = proc_lvar2(
                 i,
@@ -406,6 +408,7 @@ pub fn row_fill(
                 &entropies_unsorted,
                 &fcounts,
                 &extra_args,
+                &fate,
             );
         }
     }

@@ -704,6 +704,7 @@ pub fn print_clonotypes(
                         &peer_groups,
                         &extra_args,
                         &all_vars,
+                        &fate,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {

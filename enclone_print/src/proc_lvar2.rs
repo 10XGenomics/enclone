@@ -88,6 +88,7 @@ pub fn proc_lvar2(
     entropies_unsorted: &Vec<f64>,
     fcounts: &Vec<f64>,
     extra_args: &Vec<String>,
+    _fate: &Vec<HashMap<String, String>>,
 ) -> bool {
     let mat = &rsi.mat;
     let clonotype_id = exacts[u];
