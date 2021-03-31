@@ -101,12 +101,12 @@ pub fn proc_lvar2(
         ($u:expr, $var:expr, $val:expr) => {
             if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0) {
                 let mut v = $var.to_string();
-                v = v.replace("_Σ", "_sum");
-                v = v.replace("_μ", "_mean");
                 if ctl.parseable_opt.pcols.is_empty()
                     || bin_member(&ctl.parseable_opt.pcols_sortx, &v)
                     || bin_member(&extra_args, &v)
                 {
+                    v = v.replace("_Σ", "_sum");
+                    v = v.replace("_μ", "_mean");
                     out_data[$u].insert(v, $val);
                 }
             }
