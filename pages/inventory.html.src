@@ -96,7 +96,7 @@ information.
 <td>no  </td>
 <td>yes </td>
 <td>yes </td>
-<td>    </td>
+<td>not available at all for visual output</td>
 </tr>
 <tr>
 <td colspan="6">For visual output, "exact" is what you get by default, "cell" is what you get 
@@ -108,15 +108,7 @@ information.
 </table>
 </p>
 
-<p>In the <code>PER_CELL</code> mode, where one line is shown per cell, any variable defined at the
-cell level should show up for each cell, and if not, this is a flaw, and noted below.  Variables 
-defined at exact or higher level are not shown for each cell, as this would be redundant.</p>
-
-<p>For variables defined at the cell level, there is a version of the variable name that
-is suffixed with <code>_cell</code>.  This version cannot be used in clonotype tables.  It can
-be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
-
-<p>The following example illustrates some of these points:
+<p>The following example illustrates some of this:
 <table rules="all" style="border: 3px solid gray">
 <tbody>
 <tr><td align="left" style="padding: 4px 11px 0px 14px">
@@ -145,7 +137,7 @@ be used for parseable output, but only if one specifies <code>PCELL</code>.</p>
 </p>
 
 <p>
-*: We allow for the null value (the empty string).  For example, this would be used if a chain
+*We allow for the null value (the empty string).  For example, this would be used if a chain
 is not present for an exact subclonotype.
 </p>
 
