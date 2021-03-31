@@ -46,6 +46,7 @@ information.
 <th align="left"> level                          </th>
 <th align="center" colspan="2"> visual output    </th>
 <th align="center" colspan="2"> parseable output </th>
+<th align="left"> notes                          </th>
 </tr>
 <tr>
 <th align="left">                                </th>
@@ -53,6 +54,7 @@ information.
 <th align="left"> cell                           </th>
 <th align="left"> exact                          </th>
 <th align="left"> cell                           </th>
+<th align="left">                                </th>
 </tr>
 </thead>
 <tbody>
@@ -62,13 +64,15 @@ information.
 <td>yes </td>
 <td>no  </td>
 <td>yes </td>
+<td>    </td>
 </tr>
 <tr>
 <td>cell-exact</td>
 <td>yes </td>
 <td>yes </td>
 <td>yes </td>
-<td>yes for <code>_cell</code> version</td>
+<td>yes </td>
+<td>parseable-cell output is only for <code>_cell</code> version</td>
 </tr>
 <tr>
 <td>exact</td>
@@ -76,6 +80,7 @@ information.
 <td>no  </td>
 <td>yes </td>
 <td>yes </td>
+<td>    </td>
 </tr>
 <tr>
 <td>clono</td>
@@ -83,6 +88,7 @@ information.
 <td>no  </td>
 <td>yes </td>
 <td>yes </td>
+<td>    </td>
 </tr>
 <tr>
 <td>group</td>
@@ -90,6 +96,7 @@ information.
 <td>no  </td>
 <td>yes </td>
 <td>yes </td>
+<td>    </td>
 </tr>
 </tbody>
 </table>
