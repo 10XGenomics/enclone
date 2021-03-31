@@ -31,7 +31,8 @@ information.
 
 <p>All variables are specified at one of the following levels:
 <ul>
-<li>cell: defined for each cell, however these also have a value for an exact subclonotype</li>
+<li>cell: defined for each cell</li>
+<li>cell-exact: defined for each cell, and also has a value for an exact subclonotype</li>
 <li>exact: define for each exact subclonotype</li>
 <li>clono: defined for each clonotype</li>
 <li>group: defined for each group of clonotypes.</li>
@@ -117,7 +118,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> &ltfeature> </code>                                                     </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> count for a particular gene expression or antibody feature                     </td></tr>
@@ -125,7 +126,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> &ltfeature>_% </code>                                                   </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> percent of total expression for a particular gene                              </td></tr>
@@ -406,7 +407,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> cred </code>                                                            </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> credibility assessed using GEX data                                            </td></tr>
@@ -495,7 +496,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> datasets </code>                                                        </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> dataset names                                                                  </td></tr>
@@ -511,7 +512,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> donors </code>                                                          </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> donor names                                                                    </td></tr>
@@ -637,7 +638,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> gex </code>                                                             </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of GEX UMIs                                                             </td></tr>
@@ -831,7 +832,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> origins </code>                                                         </td>
     <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> origin names                                                                   </td></tr>
@@ -848,7 +849,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> r </code>                                                               </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> number of reads supporting chain                                               </td></tr>
@@ -960,7 +961,7 @@ is not present for an exact subclonotype.
 <tr><td> <code> u </code>                                                               </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> number of UMIs supporting chain                                                </td></tr>
