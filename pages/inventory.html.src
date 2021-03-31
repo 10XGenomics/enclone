@@ -98,7 +98,7 @@ is not present for an exact subclonotype.
 <tbody>
 
 <tr><td> (from BC or META/bc)                                                           </td>
-    <td> 6,7,8                                                                          </td>
+    <td> 1,6,7                                                                          </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> sometimes                                                                      </td>
@@ -227,10 +227,10 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
+<tr><td>1: deliberately does not show value for an exact subclonotype in a clonotype table</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
 <tr><td>6: does not have <code>_cell</code> version for parseable output</td></tr>
 <tr><td>7: when used with parseable output, only works in <code>PER_CELL</code> mode</td></tr>
-<tr><td>8: does not show value for an exact subclonotype</td></tr>
 </table>
 </p>
 
