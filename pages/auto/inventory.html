@@ -127,7 +127,8 @@ CTCCTAGCAAGGACAC-1  4033     4033
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <tr><td> variable </td><td> name of the variable                                  </td></tr>
-<tr><td> limits </td><td> footnote to things missing from the implementation </td></tr>
+<tr><td> limits </td><td> footnote to things missing from the implementation (which in general
+                          are deliberate)</td></tr>
 <tr><td> class </td><td> lvar or cvar                                             </td></tr>
 <tr><td> level </td><td> cell or exact or clono or group                          </td></tr>
 <tr><td> numeric </td><td> does the variable have numeric values*                 </td></tr>
@@ -242,7 +243,7 @@ is not present for an exact subclonotype.
     <td> mean count for a feature (same with <code>mean</code> for <code>μ</code>)      </td></tr>
 
 <tr><td> <code> &ltdataset>_barcode </code>                                             </td>
-    <td> 4,5                                                                            </td>
+    <td> 5,6                                                                            </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
@@ -291,10 +292,12 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>1: deliberately does not show value for an exact subclonotype in a clonotype table</td></tr>
+<tr><td>1: does not show value for an exact subclonotype in a clonotype table</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
-<tr><td>5: for parseable output, deliberately only works in <code>PCELL</code> mode, and
-           deliberately does not have <code>_cell</code> version</td></tr>
+<tr><td>5: for parseable output, only works in <code>PCELL</code> mode, and
+           does not have <code>_cell</code> version</td></tr>
+<tr><td>6: only implemented for parseable output, and as an automatic field for clonotype tables
+           in <code>PER_CELL</code> mode</td></tr>
 </table>
 </p>
 
@@ -663,7 +666,7 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>3: deliberately missing <code>_cell</code> version and deliberately does not show value
+<tr><td>3: missing <code>_cell</code> version and does not show value
 for exact subclonotype; missing parseable output values</td></tr>
 </table>
 </p>
