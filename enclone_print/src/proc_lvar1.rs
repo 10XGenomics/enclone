@@ -201,7 +201,6 @@ pub fn proc_lvar1(
 
     // Proceed.
 
-    // g<d>: public, defined at exact subclonotype level, value is numeric
     if x.starts_with('g') && x.after("g").parse::<usize>().is_ok() {
         let d = x.after("g").force_usize();
         if groups.contains_key(&d) {
@@ -210,7 +209,6 @@ pub fn proc_lvar1(
         }
     }
 
-    // origins: public, defined at exact subclonotype level, value is not numeric
     if x == "origins" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -224,14 +222,32 @@ pub fn proc_lvar1(
         }
         unique_sort(&mut origins);
         lvar![i, x, format!("{}", origins.iter().format(","))];
+    } else if x == "origins_cell" {
+        let mut origins = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].origin_index.is_some() {
+                origins.push(
+                    ctl.origin_info.origin_list[ex.clones[j][0].origin_index.unwrap()].clone(),
+                );
+            } else {
+                origins.push("?".to_string());
+            }
+        }
+        if pass == 2 {
+            speak!(u, x, format!("{}", origins.iter().format(POUT_SEP)));
+        }
     } else if x == "nchains" {
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
-
-    // datasets: public, defined at exact subclonotype level, value is not numeric
     } else if x == "datasets" {
         lvar![i, x, format!("{}", lenas.iter().format(","))];
-
-    // donors: public, defined at exact subclonotype level, value is not numeric
+    } else if x == "datasets_cell" {
+        let mut datasets = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            datasets.push(ctl.origin_info.dataset_list[ex.clones[j][0].dataset_index].clone());
+        }
+        if pass == 2 {
+            speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));
+        }
     } else if x == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -244,6 +260,19 @@ pub fn proc_lvar1(
         }
         unique_sort(&mut donors);
         lvar![i, x, format!("{}", donors.iter().format(","))];
+    } else if x == "donors_cell" {
+        let mut donors = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            if ex.clones[j][0].donor_index.is_some() {
+                donors
+                    .push(ctl.origin_info.donor_list[ex.clones[j][0].donor_index.unwrap()].clone());
+            } else {
+                donors.push("?".to_string());
+            }
+        }
+        if pass == 2 {
+            speak!(u, x, format!("{}", donors.iter().format(POUT_SEP)));
+        }
     } else if x == "n" {
         let counts = vec![1.0; mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];

@@ -2,10 +2,13 @@
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 31] = [
+pub const LVARS_ALLOWED: [&str; 34] = [
     "datasets",
     "origins",
     "donors",
+    "datasets_cell",
+    "origins_cell",
+    "donors_cell",
     "n",
     "gex",
     "gex_min",
