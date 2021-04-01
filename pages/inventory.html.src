@@ -858,17 +858,17 @@ is not present for an exact subclonotype.
 <tbody>
 
 <tr><td> <code> n </code>                                                               </td>
-    <td> 2                                                                              </td>
+    <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells                                                                </td></tr>
 
 <tr><td> <code> n_&ltname> </code>                                                      </td>
-    <td> 2                                                                              </td>
+    <td>                                                                                </td>
     <td> lvar                                                                           </td>
-    <td> cell                                                                           </td>
+    <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
@@ -988,12 +988,6 @@ is not present for an exact subclonotype.
     <td> mean chain read count across exact subclonotype (= <code>r_μ</code>)           </td></tr>
 
 </tbody>
-</table>
-</p>
-
-<p>
-<table>
-<tr><td>2: missing <code>_cell</code> version and <code>PER_CELL</code> shows as blank</td></tr>
 </table>
 </p>
 
