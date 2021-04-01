@@ -119,7 +119,7 @@ a first pass, you may wish to just read that.
 <td align="center">yes </td>
 <td align="center">yes </td>
 <td align="center">yes </td>
-<td>parseable-cell output is only for <code>_cell</code> version</td>
+<td>    </td>
 </tr>
 <tr>
 <td align="center">exact</td>
@@ -145,15 +145,24 @@ a first pass, you may wish to just read that.
 <td align="center">yes </td>
 <td>not available at all for visual output</td>
 </tr>
-<tr>
-<td colspan="6">For visual output, "exact" is what you get by default, "cell" is what you get 
-                <i>in addition</i> if <code>PER_CELL</code> is specified.<br>
-                For parseable output, "exact" is what you get by default, "cell" is what you get 
-                if <code>PCELL</code> is specified, and the <code>_cell</code> variable version
-                is used.</td>
-</tr>
 </tbody>
 </table>
+</p>
+
+<p>Here are some rules about how this works (and please see the example below, which may be
+more instructive):
+<ol>
+<li>In visual output, the default behavior is to display at the exact level.  Variables which
+are defined only at the cell level will show as null (blank).</li>
+<li>If you provide the argument <code>PER_CELL</code>, then visual output is in a "split" mode,
+appearing both at the exact and cell levels.</li>
+<li>In parseable output, the default behavior is to display at the exact level.  Variables which
+are defined only at the cell level are not allowed.</li>
+<li>If you provide the argument <code>PCELL</code>, then parseable output is instead displayed
+at the cell level.  Moreover, every cell-exact variable has a special <code>_cell</code> version
+that can be used in this mode.  This allows you to use both the exact version and the cell 
+version.</li>
+</ol>
 </p>
 
 <hr>
