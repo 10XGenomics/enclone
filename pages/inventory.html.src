@@ -27,7 +27,7 @@ a first pass, you may wish to just read that.
 <h2>General information</h2>
 <p>#enclone allows variables to be used in the following ways:
 <ul>
-<li>in clonotype tables</li>
+<li>in visual output (clonotype tables)</li>
 <li>in parseable output</li>
 <li>in linear constraints.</li>
 </ul>
