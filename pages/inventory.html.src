@@ -14,10 +14,25 @@ This page provides an alphabetical catalog of enclone variables, along with some
 information.
 </p>
 
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
+padding: 8px; font-size: 110%">
+#enclone variables are complicated because there are different types and different ways that
+they can be used.  This pages specifies the system, but also provides an example, and for
+a first pass, you may wish to just read that.
+</p>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
 <h2>General information</h2>
+<p>#enclone allows variables to be used in the following ways:
+<ul>
+<li>in clonotype tables</li>
+<li>in parseable output</li>
+<li>in linear constraints.</li>
+</ul>
+</p>
+
 <p>All variables are in one of two classes:
 <ul>
 <li>lvar: a lead variable; these are not associated to a particular chain, and in clonotype
