@@ -2,7 +2,7 @@
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 34] = [
+pub const LVARS_ALLOWED: [&str; 35] = [
     "datasets",
     "origins",
     "donors",
@@ -37,6 +37,7 @@ pub const LVARS_ALLOWED: [&str; 34] = [
     "mem",
     "filter",
     "nchains",
+    "clonotype_ncells",
 ];
 
 // Chain variables that can be used for contigs and chains
