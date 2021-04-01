@@ -894,7 +894,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     speaker!("group_id");
     speaker!("group_ncells");
     speaker!("clonotype_id");
-    speaker!("clonotype_ncells");
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
     for x in ctl.origin_info.dataset_list.iter() {

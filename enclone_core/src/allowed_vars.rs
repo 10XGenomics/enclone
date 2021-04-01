@@ -131,11 +131,10 @@ pub const CVARS_ALLOWED: [&str; 84] = [
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
 
-pub const PLVARS_ALLOWED: [&str; 6] = [
+pub const PLVARS_ALLOWED: [&str; 5] = [
     "group_id",
     "group_ncells",
     "clonotype_id",
-    "clonotype_ncells",
     "exact_subclonotype_id",
     "barcodes",
 ];
