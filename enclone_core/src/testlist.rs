@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 227] = [
+pub const TESTS: [&str; 228] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -586,6 +586,9 @@ pub const TESTS: [&str; 227] = [
     r###"BCR=123085:123089 CELLS=5 AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout
          PCELL PER_CELL PCOLS=datasets,datasets_cell,origins,origins_cell,donors,donors_cell
          LVARSP=origins,donors"###,
+    // 228. test clonotype_ncells with PER_CELL and PCELL
+    r###"BCR=123085 AMINO= CDR3=CARHLQWELPYW FOLD_HEADERS POUT=stdout PCELL PER_CELL
+         PCOLS=clonotype_ncells LVARSP=clonotype_ncells"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
