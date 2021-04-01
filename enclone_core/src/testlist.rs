@@ -697,7 +697,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 15] = [
+pub const SITE_EXAMPLES: [(&str, &str); 16] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -783,4 +783,16 @@ pub const SITE_EXAMPLES: [(&str, &str); 15] = [
         "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW PER_CELL POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1 \
          HTML=\"variable demo\"",
     ),
+    // 16.
+    (
+        "pages/auto/variable_demo2.html",
+        "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW POUT=stdouth PCOLS=barcodes,u1 \
+         HTML=\"variable demo2\"",
+    ),
+
+// Notes on how to add to the above SITE_EXAMPLES:
+// 1. cargo b
+// 2. merge_html BUILD
+// 3. ./build
+
 ];

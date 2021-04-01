@@ -111,12 +111,20 @@ information.
 <p>The following example illustrates how this applies to the cell-exact variable <code>u</code>:
 <table rules="all" style="border: 3px solid gray">
 <tbody>
+
+<tr><td align="left" style="padding: 4px 11px 0px 14px">
+<pre><code>enclone BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW POUT=stdouth PCOLS=barcodes,u1
+</code></pre>
+#include pages/auto/variable_demo2.html
+</td></tr>
+
 <tr><td align="left" style="padding: 4px 11px 0px 14px">
 <pre><code>enclone BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW PER_CELL POUT=stdouth PCELL PCOLS=barcode,u1,u_cell1
 </code></pre>
 #include pages/auto/variable_demo.html
+</td></tr>
 
-</td></tr></tbody></table></p>
+</tbody></table></p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
