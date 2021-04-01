@@ -237,6 +237,12 @@ pub fn proc_lvar1(
         if pass == 2 {
             speak!(u, x, format!("{}", origins.iter().format(POUT_SEP)));
         }
+    } else if x == "clonotype_ncells" {
+        let mut n = 0;
+        for u in exacts.iter() {
+            n += exact_clonotypes[*u].ncells();
+        }
+        lvar_stats1![i, x, format!("{}", n)];
     } else if x == "nchains" {
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
     } else if x == "datasets" {

@@ -262,12 +262,7 @@ pub fn start_gen(
     if ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0 {
         *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
-    let mut ncells = 0;
     for u in 0..exacts.len() {
-        ncells += exact_clonotypes[exacts[u]].ncells();
-    }
-    for u in 0..exacts.len() {
-        speak!(u, "clonotype_ncells", format!("{}", ncells));
         let mut bc = Vec::<String>::new();
         for x in exact_clonotypes[exacts[u]].clones.iter() {
             bc.push(x[0].barcode.clone());
