@@ -284,7 +284,7 @@ is not present for an exact subclonotype.
     <td> barcode from the given dataset (or null)                                       </td></tr>
 
 <tr><td> <code> &ltdataset>_barcodes </code>                                            </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -301,7 +301,7 @@ is not present for an exact subclonotype.
     <td> amino acid identity with donor reference                                       </td></tr>
 
 <tr><td> <code> barcode </code>                                                         </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
@@ -310,7 +310,7 @@ is not present for an exact subclonotype.
     <td> barcode of the cell                                                            </td></tr>
 
 <tr><td> <code> barcodes </code>                                                        </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -324,9 +324,9 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
+<tr><td>1: only implemented for parseable output</td></tr>
 <tr><td>3: only implemented for parseable output, and as an automatic field for clonotype tables
            in <code>PER_CELL</code> mode</td></tr>
-<tr><td>4: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -446,7 +446,7 @@ is not present for an exact subclonotype.
     <td> length of observed constant region                                             </td></tr>
 
 <tr><td> <code> clonotype_id </code>                                                    </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
@@ -455,7 +455,7 @@ is not present for an exact subclonotype.
     <td> identifier of clonotype within clonotype group                                 </td></tr>
 
 <tr><td> <code> clonotype_ncells </code>                                                </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> yes                                                                            </td>
@@ -510,7 +510,7 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>4: only implemented for parseable output</td></tr>
+<tr><td>1: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -777,7 +777,7 @@ is not present for an exact subclonotype.
     <td> mean of GEX UMIs across exact subclonotype (= <code>gex_mean</code>)           </td></tr>
 
 <tr><td> <code> group_id </code>                                                        </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> group                                                                          </td>
     <td> yes                                                                            </td>
@@ -786,7 +786,7 @@ is not present for an exact subclonotype.
     <td> identifier of clonotype group                                                  </td></tr>
 
 <tr><td> <code> group_ncells </code>                                                    </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> group                                                                          </td>
     <td> yes                                                                            </td>
@@ -834,7 +834,7 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>4: only implemented for parseable output</td></tr>
+<tr><td>1: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -1017,7 +1017,7 @@ is not present for an exact subclonotype.
 <tbody>
 
 <tr><td> <code> seq </code>                                                             </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1026,7 +1026,7 @@ is not present for an exact subclonotype.
     <td> full nucleotide sequence of exact subclonotype                                 </td></tr>
 
 <tr><td> <code> share_indices_aa </code>                                                </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
@@ -1035,7 +1035,7 @@ is not present for an exact subclonotype.
     <td> shared amino acid positions                                                    </td></tr>
 
 <tr><td> <code> share_indices_dna </code>                                               </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
@@ -1139,7 +1139,7 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>4: only implemented for parseable output</td></tr>
+<tr><td>1: only implemented for parseable output</td></tr>
 </table>
 </p>
 
@@ -1198,7 +1198,7 @@ is not present for an exact subclonotype.
     <td> bases at position in chain that vary across the clonotype                      </td></tr>
 
 <tr><td> <code> var_aa </code>                                                          </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1207,7 +1207,7 @@ is not present for an exact subclonotype.
     <td> variant residue indices in clonotype (including synonymous)                    </td></tr>
 
 <tr><td> <code> var_indices_aa </code>                                                  </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
@@ -1216,7 +1216,7 @@ is not present for an exact subclonotype.
     <td> variable amino acid positions                                                  </td></tr>
 
 <tr><td> <code> var_indices_dna </code>                                                 </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> clono                                                                          </td>
     <td> no                                                                             </td>
@@ -1225,7 +1225,7 @@ is not present for an exact subclonotype.
     <td> variable nucleotide positions                                                  </td></tr>
 
 <tr><td> <code> vj_aa </code>                                                           </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1234,7 +1234,7 @@ is not present for an exact subclonotype.
     <td> amino acid sequence of V..J                                                    </td></tr>
 
 <tr><td> <code> vj_aa_nl </code>                                                        </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1243,7 +1243,7 @@ is not present for an exact subclonotype.
     <td> amino acid sequence of V..J, excluding leader                                  </td></tr>
 
 <tr><td> <code> vj_seq </code>                                                         </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1252,7 +1252,7 @@ is not present for an exact subclonotype.
     <td> nucleotide sequence of V..J                                                    </td></tr>
 
 <tr><td> <code> vj_seq_nl </code>                                                       </td>
-    <td> 4                                                                              </td>
+    <td> 1                                                                              </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> no                                                                             </td>
@@ -1274,7 +1274,7 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>4: only implemented for parseable output</td></tr>
+<tr><td>1: only implemented for parseable output</td></tr>
 </table>
 </p>
 
