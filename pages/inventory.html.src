@@ -195,7 +195,7 @@ is not present for an exact subclonotype.
 <tbody>
 
 <tr><td> (from BC or META/bc)                                                           </td>
-    <td> 1,5                                                                            </td>
+    <td> 1                                                                              </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> sometimes                                                                      </td>
@@ -275,7 +275,7 @@ is not present for an exact subclonotype.
     <td> mean count for a feature (same with <code>mean</code> for <code>μ</code>)      </td></tr>
 
 <tr><td> <code> &ltdataset>_barcode </code>                                             </td>
-    <td> 3,5                                                                            </td>
+    <td> 1,3                                                                            </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
@@ -301,7 +301,7 @@ is not present for an exact subclonotype.
     <td> amino acid identity with donor reference                                       </td></tr>
 
 <tr><td> <code> barcode </code>                                                         </td>
-    <td> 4,5                                                                            </td>
+    <td> 1,4                                                                            </td>
     <td> lvar                                                                           </td>
     <td> cell                                                                           </td>
     <td> no                                                                             </td>
@@ -324,12 +324,11 @@ is not present for an exact subclonotype.
 
 <p>
 <table>
-<tr><td>1: does not show value for an exact subclonotype in a clonotype table</td></tr>
+<tr><td>1: for parseable output, only works in <code>PCELL</code> mode, and
+           does not have <code>_cell</code> version</td></tr>
 <tr><td>3: only implemented for parseable output, and as an automatic field for clonotype tables
            in <code>PER_CELL</code> mode</td></tr>
 <tr><td>4: only implemented for parseable output</td></tr>
-<tr><td>5: for parseable output, only works in <code>PCELL</code> mode, and
-           does not have <code>_cell</code> version</td></tr>
 </table>
 </p>
 
