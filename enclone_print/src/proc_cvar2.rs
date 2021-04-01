@@ -112,8 +112,9 @@ pub fn proc_cvar2(
                 cx[col][$i] = $val.clone();
             }
             speakc!(u, col, $var, $val);
+            let varc = format!("{}{}", $var, col + 1);
             if $val.parse::<f64>().is_ok() {
-                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+                stats.push((varc, vec![$val.force_f64(); ex.ncells()]));
             }
         };
     }
@@ -123,7 +124,8 @@ pub fn proc_cvar2(
                 cx[col][$i] = $val.clone();
             }
             speakc!(u, col, $var, $val);
-            stats.push(($var.to_string(), $stats.clone()));
+            let varc = format!("{}{}", $var, col + 1);
+            stats.push((varc, $stats.clone()));
         };
     }
 
