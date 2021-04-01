@@ -487,7 +487,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
 
         h.print(
             "\\bold{filtering by linear conditions}\n\n\
-             enclone has the capability to filter by bounding certain lead variables, using \
+             enclone has the capability to filter by bounding variables, using \
              the command-line argument:\n\
              \\bold{KEEP_CLONO_IF_CELL_MEAN=\"L\"}\n\
              where L is a linear condition (as defined above).  Multiple bounds may be imposed \
