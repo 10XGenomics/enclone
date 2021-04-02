@@ -171,6 +171,10 @@ Similarly, to filter by the max across all cells in a clonotype, one may use
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MAX="L"</span>
 and otherwise as above.
 
+<span style="font-weight:bold;">Caution.</span>  Because of interactions between filters (including built-in filters), the results of
+filtering can be counterintuitive.  In particular, cells might be removed from a clonotype after a
+linear condition is applied, leading to confusing results.
+
 <span style="font-weight:bold;">feature scanning</span>
 
 If gene expression and/or feature barcode data have been generated, enclone can scan all features

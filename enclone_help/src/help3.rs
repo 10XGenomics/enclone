@@ -508,6 +508,12 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
              and otherwise as above.\n\n",
         );
+        h.print(
+            "\\bold{Caution.}  Because of interactions between filters (including built-in \
+            filters), the results of filtering can be counterintuitive.  In particular, cells \
+            might be removed from a clonotype after a linear condition is applied, leading to \
+            confusing results.\n\n",
+        );
 
         // feature scanning
 
