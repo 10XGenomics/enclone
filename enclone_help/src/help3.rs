@@ -514,6 +514,11 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             might be removed from a clonotype after a linear condition is applied, leading to \
             confusing results.\n\n",
         );
+        h.print(
+            "For cell-exact variables (see \
+            \\green{https://10xgenomics.github.io/enclone/pages/auto/variables.html)}, note \
+            that linear conditions are applied to the cell version of the variable.\n\n",
+        );
 
         // feature scanning
 
