@@ -40,7 +40,7 @@ command-line help that comes with your copy of #enclone will always match its be
     these events!</li>
 <li>Clicking on the #enclone banner at the top of any page on the site now takes you back to
     the help section on the main page.</li>
-<li>There is a new <a href="../../pages/auto/inventory.html"><code>page</code></a>
+<li>There is a new <a href="../../pages/auto/variables.html"><code>page</code></a>
     that inventories all the #enclone variables.</li>
 <li>Almost any parseable variable can now be used in a linear condition.  Of course it doesn't
     makes sense to use such a variable unless its values are numeric.</n>
