@@ -97,6 +97,12 @@ pub fn main_enclone(args: &Vec<String>) {
         if arg == "PROFILE" {
             ctl.gen_opt.profile = true;
         }
+        if arg == "EVIL_EYE" {
+            ctl.evil_eye = true;
+        }
+    }
+    if ctl.evil_eye {
+        println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
         let blacklist = [
@@ -173,6 +179,9 @@ pub fn main_enclone(args: &Vec<String>) {
             let fields = s.split(' ').collect::<Vec<&str>>();
             cpu_this_start = fields[13].force_usize();
         }
+    }
+    if ctl.evil_eye {
+        println!("calling perf_stats, before setup");
     }
     ctl.perf_stats(&tall, "before setup");
     setup(&mut ctl, &args);

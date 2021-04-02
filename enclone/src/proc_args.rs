@@ -19,6 +19,9 @@ use tilde_expand::*;
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Knobs.
 
+    if ctl.evil_eye {
+        println!("processing args");
+    }
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
         max_diffs: 55,
@@ -73,6 +76,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
+        if ctl.evil_eye {
+            println!("detected internal run");
+        }
         let earth_path = format!(
             "{}/current{}",
             ctl.gen_opt.config["earth"], TEST_FILES_VERSION
@@ -560,6 +566,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "COMP2",
         "CTRLC",
         "DUMP_INTERNAL_IDS",
+        "EVIL_EYE",
         "FORCE_EXTERNAL",
         "LONG_HELP",
         "MARKED_B",
@@ -667,6 +674,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if is_string_arg(&arg, var) {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable[j].1;
+                if ctl.evil_eye {
+                    println!("creating file {} to test writability", val);
+                }
                 let f = File::create(&val);
                 if f.is_err() {
                     eprintln!(
@@ -686,7 +696,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     eprintln!("");
                     std::process::exit(1);
                 }
+                if ctl.evil_eye {
+                    println!("removing file {}", val);
+                }
                 remove_file(&val).expect(&format!("could not remove file {}", val));
+                if ctl.evil_eye {
+                    println!("removal of file {} complete", val);
+                }
                 continue 'args_loop;
             }
         }

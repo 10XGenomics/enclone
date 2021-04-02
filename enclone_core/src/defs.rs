@@ -437,6 +437,7 @@ pub struct EncloneControl {
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
     pub parseable_opt: ParseableOpt,      // parseable output options
     pub toy: bool,                        // toy with phylogeny
+    pub evil_eye: bool,                   // extra printing to try to trace hangs
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;

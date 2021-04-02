@@ -41,7 +41,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.profile = true;
         }
         for i in 1..args.len() {
-            if args[i] == "NOPAGER" {
+            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
@@ -133,6 +133,9 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Turn on pretty trace.
 
+    if ctl.evil_eye {
+        println!("about to turn on pretty trace");
+    }
     if !nopretty && !ctl.gen_opt.cellranger {
         let mut ctrlc = false;
         for i in 1..args.len() {
