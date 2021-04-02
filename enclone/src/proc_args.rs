@@ -604,6 +604,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     }
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
+        if ctl.evil_eye {
+            println!("processing arg = {}", arg);
+        }
 
         // Replace deprecated option.
 
