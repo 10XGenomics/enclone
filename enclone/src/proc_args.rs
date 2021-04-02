@@ -38,7 +38,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
     for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_") {
+        if key.starts_with("ENCLONE_") && key != "ENCLONE_CONFIG" {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         }
     }
@@ -880,29 +880,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 }
 
 pub fn get_config(config: &mut HashMap<String, String>) -> bool {
-    let mut targa = String::new();
+    let mut config_file = String::new();
     for (key, value) in env::vars() {
-        if key == "HOME" {
-            targa = value.between("/", "/").to_string();
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
         }
     }
-    let d = dir_list(&format!("/{}", &targa));
-    let mut c = String::new();
-    let mut found = false;
-    for x in d.iter() {
-        c = format!("/{}/{}/enclone_config", targa, x);
-        if path_exists(&c) {
-            found = true;
-            break;
+    if config_file.len() > 0 && path_exists(&config_file) {
+        let f = open_for_read![&config_file];
+        for line in f.lines() {
+            let s = line.unwrap();
+            config.insert(s.before("=").to_string(), s.after("=").to_string());
         }
+        return true;
     }
-    if !found {
-        return false;
-    }
-    let f = open_for_read![&c];
-    for line in f.lines() {
-        let s = line.unwrap();
-        config.insert(s.before("=").to_string(), s.after("=").to_string());
-    }
-    true
+    false
 }
