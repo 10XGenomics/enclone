@@ -792,6 +792,12 @@ pub fn print_clonotypes(
                 stats = stats2;
 
                 // Traverse the bounds and apply them.
+                // Notes:
+                // 1. This seems to run during both pass 1 and 2, and should only run
+                //    during pass 1.
+                // 2. The results of this can be counterintuitive, because the filtering is
+                //    applied during pass 1, when there could be cells in the clonotype, that
+                //    are removed by other filters.
 
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
