@@ -145,6 +145,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Set up general options.
 
+    if ctl.evil_eye {
+        println!("setting up general options");
+    }
     ctl.gen_opt.h5_pre = true;
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
@@ -596,6 +599,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Traverse arguments.
 
     let mut processed = vec![true; args.len()];
+    if ctl.evil_eye {
+        println!("starting main args loop");
+    }
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
 
@@ -716,6 +722,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable_or_stdout[j].1;
                 if *val != "stdout" {
+                    if ctl.evil_eye {
+                        println!("creating file {} to test writability, not stdout", val);
+                    }
                     let f = File::create(&val);
                     if f.is_err() {
                         eprintln!(
@@ -735,7 +744,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                         eprintln!("");
                         std::process::exit(1);
                     }
+                    if ctl.evil_eye {
+                        println!("removing file {}", val);
+                    }
                     remove_file(&val).expect(&format!("could not remove file {}", val));
+                }
+                if ctl.evil_eye {
+                    println!("removal of file {} complete", val);
                 }
                 continue 'args_loop;
             }
@@ -753,12 +768,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
+                if ctl.evil_eye {
+                    println!("testing ability to open file {}", val);
+                }
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
                     );
                     std::process::exit(1);
+                }
+                if ctl.evil_eye {
+                    println!("file open complete");
                 }
                 continue 'args_loop;
             }
@@ -815,6 +836,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process remaining args.
 
+    if ctl.evil_eye {
+        println!("processing remaining args");
+    }
     for i in 1..args.len() {
         if processed[i] {
             continue;
