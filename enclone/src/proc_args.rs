@@ -62,10 +62,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Test for internal run.
 
+    if ctl.evil_eye {
+        println!("testing for internal run");
+    }
     for (key, value) in env::vars() {
         if key.contains("USER") && value.ends_with("10xgenomics.com") {
+            if ctl.evil_eye {
+                println!("getting config");
+            }
             if get_config(&mut ctl.gen_opt.config) {
                 ctl.gen_opt.internal_run = true;
+            }
+            if ctl.evil_eye {
+                println!("got config");
             }
             break;
         }
@@ -106,6 +115,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process special option SPLIT_COMMAND.
 
+    if ctl.evil_eye {
+        println!("at split command");
+    }
     let mut split = false;
     for i in 1..args.len() {
         if args[i] == "SPLIT_BY_COMMAND" {
