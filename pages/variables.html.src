@@ -858,17 +858,17 @@ is not present for an exact subclonotype.
 <tbody>
 
 <tr><td> <code> n </code>                                                               </td>
-    <td>                                                                                </td>
+    <td> 3                                                                              </td>
     <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells                                                                </td></tr>
 
 <tr><td> <code> n_&ltname> </code>                                                      </td>
-    <td>                                                                                </td>
+    <td> 3                                                                              </td>
     <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
+    <td> cell-exact                                                                     </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> number of cells associated to the given name                                   </td></tr>
@@ -988,6 +988,13 @@ is not present for an exact subclonotype.
     <td> mean chain read count across exact subclonotype (= <code>r_μ</code>)           </td></tr>
 
 </tbody>
+</table>
+</p>
+
+<p>
+<table>
+<tr><td>3: <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
+           which would be distracting</td></tr>
 </table>
 </p>
 
