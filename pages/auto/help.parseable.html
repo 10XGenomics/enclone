@@ -42,7 +42,9 @@ gtag('config', 'UA-58278925-3');
 <body>
 
 <br>
+<a href="../../index.html#help">
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">parseable output</span>
 
@@ -97,6 +99,9 @@ command line.
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 
+See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>, <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>, and the inventory of all variables at
+https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
+
 <span style="font-weight:bold;">1. per clonotype group fields</span>
 
 ┌──────────────┬──────────────────────────────────────────┐
@@ -108,25 +113,14 @@ command line.
 
 <span style="font-weight:bold;">2. per clonotype fields</span>
 
-┌──────────────────┬────────────────────────────────────────────────────────────────┐
-│clonotype_id      │  identifier of clonotype within the clonotype group = 0, 1, ...│
-├──────────────────┼────────────────────────────────────────────────────────────────┤
-│clonotype_ncells  │  total number of cells in the clonotype                        │
-├──────────────────┼────────────────────────────────────────────────────────────────┤
-│nchains           │  total number of chains in the clonotype                       │
-└──────────────────┴────────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│clonotype_id  │  identifier of clonotype within the clonotype group = 0, 1, ...│
+└──────────────┴────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">3. per chain fields, where &lt;i> is 1,2,... (see above)
 each of these has the same value for each exact clonotype</span>
 
 ┌──────────────────────┬──────────────────────────────────────────────────────────────┐
-│v_name&lt;i>             │  name of V segment                                           │
-│d_name&lt;i>             │  name of D segment (or null)                                 │
-│j_name&lt;i>             │  name of J segment                                           │
-├──────────────────────┼──────────────────────────────────────────────────────────────┤
-│v_id&lt;i>               │  id of V segment                                             │
-│d_id&lt;i>               │  id of D segment (or null)                                   │
-│j_id&lt;i>               │  id of J segment                                             │
 ├──────────────────────┼──────────────────────────────────────────────────────────────┤
 │var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype       │
 │var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype│
@@ -155,31 +149,16 @@ each of these has the same value for each exact clonotype</span>
 
 [all apply to chain i of a particular exact clonotype]
 
-┌───────────────┬───────────────────────────────────────────────────────────────────────────┐
-│vj_seq&lt;i>      │  DNA sequence of V..J                                                     │
-│vj_seq_nl&lt;i>   │  DNA sequence of V..J, but starting after the leader                      │
-│vj_aa&lt;i>       │  amino acid sequence of V..J (excludes last base, in incomplete codon)    │
-│vj_aa_nl&lt;i>    │  amino acid sequence of V..J (excludes last base, in incomplete codon),   │
-│               │  but starting after the leader                                            │
-│seq&lt;i>         │  full DNA sequence                                                        │
-│q&lt;n>_&lt;i>       │  special option to display a comma-separated list of the quality          │
-│               │  scores for chain i, at zero-based position n, numbered starting at the   │
-│               │  beginning of the V segment, for each cell in the exact subclonotype      │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│v_start&lt;i>     │  start of V segment on full DNA sequence                                  │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│d_start&lt;i>     │  start of D segment on full DNA sequence (or null)                        │
-│d_frame&lt;i>     │  reading frame of D segment, either 0 or 1 or 2 (or null)                 │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│const_id&lt;i>    │  numerical identifier of constant region (or null, if not known)          │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│utr_id&lt;i>      │  numerical identifier of 5'-UTR region (or null, if not known)            │
-│utr_name&lt;i>    │  name of 5'-UTR region (or null, if not known)                            │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│cdr3_start&lt;i>  │  base position start of CDR3 sequence on full contig                      │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│var_aa&lt;i>      │  amino acids that vary across the clonotype (synonymous changes included) │
-├───────────────┴───────────────────────────────────────────────────────────────────────────┤
+┌──────────────┬────────────────────────────────────────────────────────────────────────────┐
+│vj_seq&lt;i>     │  DNA sequence of V..J                                                      │
+│vj_seq_nl&lt;i>  │  DNA sequence of V..J, but starting after the leader                       │
+│vj_aa&lt;i>      │  amino acid sequence of V..J (excludes last base, in incomplete codon)     │
+│vj_aa_nl&lt;i>   │  amino acid sequence of V..J (excludes last base, in incomplete codon),    │
+│              │  but starting after the leader                                             │
+│seq&lt;i>        │  full DNA sequence                                                         │
+├──────────────┼────────────────────────────────────────────────────────────────────────────┤
+│var_aa&lt;i>     │  amino acids that vary across the clonotype (synonymous changes included)  │
+├──────────────┴────────────────────────────────────────────────────────────────────────────┤
 │In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.  However│
 │parametrizable chain variables e.g. <span style="font-weight:bold;">ndiff1vj1</span> must be explicitly listed using <span style="font-weight:bold;">PCOLS</span>;       │
 │they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                               │

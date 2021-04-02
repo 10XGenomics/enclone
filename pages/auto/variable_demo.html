@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>variable demo</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
+</head>
+<body>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 5 CELLS</span>
+
+[1.1] CLONOTYPE = 5 CELLS
+┌──────────────────────────┬───────────────────────────────────────┬─────────────────────────────┐
+│                          │  <span style="font-weight:bold;">CHAIN 1</span>                              │  CHAIN 2                    │
+│                          │  <span style="font-weight:bold;">98|IGHV2-5 ◆ 57|IGHJ5</span>                │  349|IGLV3-1 ◆ 311|IGLJ2    │
+│                          ├───────────────────────────────────────┼─────────────────────────────┤
+│                          │    11111111111111111111               │    11111111111              │
+│                          │  8 11111222222222233333               │  6 00000111111              │
+│                          │  5 56789012345678901234               │  2 56789012345              │
+│                          │    ════════CDR3════════               │    ════CDR3═══              │
+│reference                 │  <span style="color:#3e7dd1;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">D</span>◦◦◦◦◦◦              │
+│donor ref                 │  <span style="color:#3e7dd1;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>               │  <span style="color:#f37721;font-weight:bold;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">D</span>◦◦◦◦◦◦              │
+├──────────────────────────┼───────────────────────────────────────┼─────────────────────────────┤
+│<span style="font-weight:bold;">#  barcode             n  </span>│<span style="font-weight:bold;">  x ....................     u  const  </span>│<span style="font-weight:bold;">  . ...........      u  const</span>│
+│1                      3  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>   592  IGHM   │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   2995  IGLC2│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   CGTTCTGGTAGCCTCG-1     </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                           592         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                  2995       </span>│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   GCGCCAAGTATTACCG-1     </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                           104         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                   172       </span>│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   TGGCCAGGTTACGCGC-1     </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                          6617         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                 12097       </span>│
+│2                      1  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  6218  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>  15182  IGLC2│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   GACCTGGAGCGTGAAC-1     </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                          6218         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                 15182       </span>│
+│3                      1  │  <span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">A</span><span style="color:#31c39a;">LM</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#e7bd20;">T</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#e7bd20;">CS</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">D</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#31c39a;">S</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  4033  IGHG1  │  <span style="color:#e7bd20;">V</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">DSS</span><span style="color:#e7bd20;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span>   6777  IGLC2│
+│<span style="color:#4a2cb7;background-color:#f1f1f1;">   CTCCTAGCAAGGACAC-1     </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                          4033         </span><span style="background-color:#f1f1f1;">│</span><span style="color:#4a2cb7;background-color:#f1f1f1;">                  6777       </span>│
+└──────────────────────────┴───────────────────────────────────────┴─────────────────────────────┘
+barcode               u1  u_cell1
+CGTTCTGGTAGCCTCG-1   592      592
+GCGCCAAGTATTACCG-1   592      104
+TGGCCAGGTTACGCGC-1   592     6617
+GACCTGGAGCGTGAAC-1  6218     6218
+CTCCTAGCAAGGACAC-1  4033     4033
+</span></pre>
+</body>
+</html>
+

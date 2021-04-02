@@ -560,6 +560,10 @@ pub fn compute_bu(
                     row.push(val);
                 } else if lvars[k] == "datasets".to_string() {
                     row.push(format!("{}", ctl.origin_info.dataset_id[li].clone()));
+                } else if lvars[k] == "origins".to_string() {
+                    row.push(format!("{}", ctl.origin_info.origin_id[li].clone()));
+                } else if lvars[k] == "donors".to_string() {
+                    row.push(format!("{}", ctl.origin_info.donor_id[li].clone()));
                 } else if lvars[k] == "clust".to_string() && have_gex {
                     let mut cid = 0;
                     if gex_info.cluster[li].contains_key(&bc.clone()) {

@@ -11,7 +11,6 @@ use std::collections::HashMap;
 use std::io::Write;
 use string_utils::*;
 use tables::*;
-use vdj_ann::refx::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -238,8 +237,6 @@ pub fn start_gen(
     ctl: &EncloneControl,
     exacts: &Vec<usize>,
     exact_clonotypes: &Vec<ExactClonotype>,
-    refdata: &RefData,
-    rsi: &ColInfo,
     out_data: &mut Vec<HashMap<String, String>>,
     mut mlog: &mut Vec<u8>,
     extra_args: &Vec<String>,
@@ -257,21 +254,6 @@ pub fn start_gen(
             }
         };
     }
-    macro_rules! speakc {
-        ($u:expr, $col:expr, $var:expr, $val:expr) => {
-            if (ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0)
-                && $col + 1 <= ctl.parseable_opt.pchains
-            {
-                let varc = format!("{}{}", $var, $col + 1);
-                if pcols_sort.is_empty()
-                    || bin_member(&pcols_sort, &varc)
-                    || bin_member(&extra_args, &varc)
-                {
-                    out_data[$u].insert(varc, format!("{}", $val));
-                }
-            }
-        };
-    }
     let nexacts = exacts.len();
     let mut n = 0;
     for u in 0..nexacts {
@@ -280,14 +262,7 @@ pub fn start_gen(
     if ctl.parseable_opt.pout.len() > 0 || extra_args.len() > 0 {
         *out_data = vec![HashMap::<String, String>::new(); nexacts];
     }
-    let cols = rsi.vids.len();
-    let mut ncells = 0;
     for u in 0..exacts.len() {
-        ncells += exact_clonotypes[exacts[u]].ncells();
-    }
-    for u in 0..exacts.len() {
-        speak!(u, "nchains", format!("{}", cols));
-        speak!(u, "clonotype_ncells", format!("{}", ncells));
         let mut bc = Vec::<String>::new();
         for x in exact_clonotypes[exacts[u]].clones.iter() {
             bc.push(x[0].barcode.clone());
@@ -334,20 +309,6 @@ pub fn start_gen(
                     );
                 }
             }
-        }
-        for cx in 0..cols {
-            let vid = rsi.vids[cx];
-            speakc!(u, cx, "v_name", refdata.name[vid]);
-            speakc!(u, cx, "v_id", refdata.id[vid]);
-            let did = rsi.dids[cx];
-            if did.is_some() {
-                let did = did.unwrap();
-                speakc!(u, cx, "d_name", refdata.name[did]);
-                speakc!(u, cx, "d_id", refdata.id[did]);
-            }
-            let jid = rsi.jids[cx];
-            speakc!(u, cx, "j_name", refdata.name[jid]);
-            speakc!(u, cx, "j_id", refdata.id[jid]);
         }
     }
 
@@ -598,29 +559,6 @@ pub fn cdr3_aa_con(
         }
     }
     c
-}
-
-pub fn rounded_median(x: &[usize]) -> usize {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        let s = x[h - 1] + x[h];
-        if s % 2 == 0 {
-            s / 2
-        } else {
-            s / 2 + 1
-        }
-    }
-}
-
-pub fn median_f64(x: &[f64]) -> f64 {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        (x[h - 1] + x[h]) / 2.0
-    }
 }
 
 pub fn get_gex_matrix_entry(

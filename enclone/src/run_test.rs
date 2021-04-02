@@ -66,6 +66,9 @@ pub fn run_test(
         ncores = true;
     }
     test = test.replace("{TEST_FILES_VERSION}", &format!("{}", TEST_FILES_VERSION));
+    while test.contains("  ") {
+        test = test.replace("  ", " ");
+    }
     let mut log = Vec::<u8>::new();
     let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, it + 1);
     let mut pre_arg = format!(
@@ -98,6 +101,12 @@ pub fn run_test(
             it + 1,
             testname,
             it + 1
+        );
+        fwriteln!(
+            log,
+            "If you just added a test to the TESTS group in testlist.rs, it would have been \
+            faster if you had\nsimply typed run_last_test to get this information.  But you first \
+            need to run ./build.\n",
         );
         emit_end_escape(&mut log);
         *logx = stringme(&log);

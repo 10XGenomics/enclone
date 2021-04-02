@@ -5,8 +5,10 @@ use crate::print_utils3::*;
 use crate::print_utils5::*;
 use enclone_core::defs::*;
 use enclone_proto::types::*;
+use std::collections::HashMap;
 use string_utils::*;
 use vdj_ann::refx::*;
+use vector_utils::*;
 
 pub fn finish_table(
     n: usize,
@@ -21,11 +23,47 @@ pub fn finish_table(
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
-    mlog: &Vec<u8>,
+    mlog: &mut Vec<u8>,
     logz: &mut String,
     stats: &Vec<(String, Vec<f64>)>,
     sr: &mut Vec<(Vec<String>, Vec<Vec<String>>, Vec<Vec<u8>>, usize)>,
+    extra_args: &Vec<String>,
+    pcols_sort: &Vec<String>,
+    out_data: &mut Vec<HashMap<String, String>>,
+    rord: &Vec<usize>,
+    pass: usize,
 ) {
+    // Fill in exact_subclonotype_id, reorder.
+
+    let nexacts = exacts.len();
+    if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
+        for u in 0..nexacts {
+            macro_rules! speak {
+                ($u:expr, $var:expr, $val:expr) => {
+                    if pass == 2 && (ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty()) {
+                        if pcols_sort.is_empty()
+                            || bin_member(&pcols_sort, &$var.to_string())
+                            || bin_member(&extra_args, &$var.to_string())
+                        {
+                            out_data[$u].insert($var.to_string(), $val);
+                        }
+                    }
+                };
+            }
+            speak![rord[u], "exact_subclonotype_id", format!("{}", u + 1)];
+        }
+        let mut out_data2 = vec![HashMap::<String, String>::new(); nexacts];
+        for v in 0..nexacts {
+            out_data2[v] = out_data[rord[v]].clone();
+        }
+        *out_data = out_data2;
+    }
+
+    // Add header text to mlog.
+
+    let mat = &rsi.mat;
+    add_header_text(&ctl, &exacts, &exact_clonotypes, &rord, &mat, mlog);
+
     // Build table stuff.
 
     let mut row1 = Vec::<String>::new();

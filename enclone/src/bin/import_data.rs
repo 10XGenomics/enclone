@@ -1,13 +1,14 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Takes a single argument: a comma-separated list of ids, allowing hyphenated ranges.  Copy these
-// to the internal collections.  If it has already been copied, you'll need to delete it first.
+// to the internal collections.  If it has already been copied, it is moved aside, and at the end,
+// deleted (assuming that the copy did not fail.
 //
 // You need to set quota first on the second internal location.
 //
 // This is probably not fully consistent with current pipeline structure.
 //
-// Run make_enclone_testlist after this to update the catalog.
+// Run make_enclone_testlist_all after this to update the catalog.
 //
 // For use at 10x Genomics.
 
@@ -18,6 +19,7 @@ use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;
 use std::env;
+use std::fs::{remove_dir_all, rename};
 use std::process::Command;
 use string_utils::*;
 
@@ -85,6 +87,24 @@ fn main() {
             std::process::exit(1);
         }
 
+        // Move directories if they exist.
+
+        let mut moved = false;
+        for dest in dests.iter() {
+            if path_exists(&format!("{}/{}", dest, id)) {
+                if path_exists(&format!("{}/{}.aside", dest, id)) {
+                    eprintln!("\nPlease remove {}/{}.aside.\n", dest, id);
+                    std::process::exit(1);
+                }
+                rename(
+                    &format!("{}/{}", dest, id),
+                    &format!("{}/{}.aside", dest, id),
+                )
+                .unwrap();
+                moved = true;
+            }
+        }
+
         // Start copy.
 
         println!("copying {}", id);
@@ -96,6 +116,14 @@ fn main() {
                 std::process::exit(1);
             }
             copy_for_enclone(&format!("{}/..", p), &target);
+        }
+
+        // Remove moved directories.
+
+        if moved {
+            for dest in dests.iter() {
+                remove_dir_all(&format!("{}/{}.aside", dest, id)).unwrap();
+            }
         }
     }
 }

@@ -453,10 +453,15 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
         h.print(
+            "See also \"enclone help cvars\" and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        );
+        h.print(
             "Lead variables are specified using \\bold{LVARS=x1,...,xn} \
              where each xi is one of:\n\n",
         );
-        h.doc("datasets", "dataset identifiers");
+        h.doc("nchains", "total number of chains in the clonotype");
+        h.ldoc("datasets", "dataset identifiers");
         h.doc("origin", "origin identifiers");
         h.doc("donors", "donor identifiers");
         h.ldoc("n", "number of cells");
@@ -465,6 +470,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "number of cells associated to the given name, which can be a dataset",
         );
         h.doc2("or origin or donor or tag short name; may name only one such category");
+        h.doc("clonotype_ncells", "total number of cells in the clonotype");
         h.ldoc(
             "nd<k>",
             "For k a positive integer, this creates k+1 fields, that are specific to each",
@@ -498,8 +504,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "Number of matches of the V..J amino acid sequences of all chains to the given",
         );
         h.doc2("regular expression, which is treated as a subset match, so for example,");
-        h.doc2("count_CAR would count the total number of occurrences of the string CAR in all");
-        h.doc2("the chains.  Please see \"enclone help filter\" for a discussion");
+        h.doc2("count_CAR would count the total number of occurrences of the string CAR in");
+        h.doc2("all the chains.  Please see \"enclone help filter\" for a discussion");
         h.doc2("about regular expressions.  We also allow the form abbr:count_<regex>,");
         h.doc2("where abbr is an abbreviation that will appear as the field label.");
         h.doc(
@@ -669,6 +675,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
              true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
         );
         h.print(
+            "See also \"enclone help lvars\" and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        );
+        h.print(
             "Per-column variables are specified using\n\
              \\bold{CVARS=x1,...,xn}\n\
              where each xi is one of:\n\n",
@@ -688,7 +698,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "r",
             "\\red{●} VDJ read count for each exact subclonotype, median across cells",
         );
-        h.ldoc("const", "constant region name");
         h.ldoc(
             "edit",
             "a string that defines the edit of the reference V(D)J concatenation versus",
@@ -798,6 +807,19 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
         );
         h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
+        h.ldoc("v_start", "start of V segment on full DNA sequence");
+        h.doc(
+            "d_start",
+            "start of D segment on full DNA sequence (or null)",
+        );
+        h.doc(
+            "cdr3_start",
+            "base position start of CDR3 sequence on full contig",
+        );
+        h.doc(
+            "d_frame",
+            "reading frame of D segment, either 0 or 1 or 2 (or null)",
+        );
         h.ldoc(
             "aa%",
             "amino acid percent identity with donor reference, outside junction region",
@@ -806,6 +828,17 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "dna%",
             "nucleotide percent identity with donor reference, outside junction region",
         );
+        h.ldoc("utr_name", "name of 5'-UTR region");
+        h.doc("v_name", "name of V region");
+        h.doc("d_name", "name of D region (or null)");
+        h.doc("j_name", "name of J region");
+        h.doc("const", "name of constant region");
+        h.ldoc("utr_id", "id of 5'-UTR region");
+        h.doc("v_id", "id of V region");
+        h.doc("d_id", "id of D region (or null)");
+        h.doc("j_id", "id of J region");
+        h.doc("const_id", "id of constant region (or null, if not known)");
+        h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
@@ -840,6 +873,9 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "At most five differences are shown, and if there are more, ... is appended.",
         );
         h.doc("udiff", "like cdiff, but for the 5'-UTR");
+        h.ldoc("q<n>_", "comma-separated list of the quality");
+        h.doc2("scores at zero-based position n, numbered starting at the");
+        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
         h.ldoc(
             "notes",
             "optional note if there is an insertion or the end of J does not exactly abut",
@@ -885,80 +921,6 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.print(
             "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
              \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
-        );
-        h.end_doc();
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Provide amino help.
-
-    if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || h.help_all {
-        h.begin_doc("amino");
-        h.print(
-            "\nThere is a complex per-chain column to the left of other \
-             per-chain columns, defined by\n\
-             \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
-             in one combined ordered group, where each xi is one of:\n\n",
-        );
-        h.doc("cdr1", "CDR1 sequence");
-        h.doc("cdr2", "CDR2 sequence");
-        h.doc("cdr3", "CDR3 sequence");
-        h.doc("fwr1", "FWR1 sequence");
-        h.doc("fwr2", "FWR2 sequence");
-        h.doc("fwr3", "FWR3 sequence");
-        h.doc("", "Notes:");
-        h.docpr(
-            "",
-            "1. Please see the page on \\green{bit.ly/enclone} about V(D)J features for notes",
-        );
-        h.doc("", "on our method and interpretation.");
-        h.docf2(
-            "",
-            "2. There are circumstances under which these cannot \
-            be calculated, most notably in cases where something is wrong with the associated \
-            reference sequence.  In such cases, even though you specify CDR1 or CDR2, they will \
-            not be shown.",
-            85,
-        );
-        h.docf2(
-            "",
-            "3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header \
-            line that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even \
-            more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
-            85,
-        );
-        h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
-        h.ldoc("var", "positions in chain that vary across the clonotype");
-        h.doc(
-            "share",
-            "positions in chain that differ consistently from the donor reference",
-        );
-        h.ldoc(
-            "donor",
-            "positions in chain where the donor reference differs from the universal \
-             reference",
-        );
-        h.ldoc(
-            "donorn",
-            "positions in chain where the donor reference differs nonsynonymously",
-        );
-        h.doc("", "from the universal reference");
-        h.ldoc(
-            "a-b",
-            "amino acids numbered a through b (zero-based, inclusive)",
-        );
-        h.print_tab2();
-        h.print("\n");
-        h.print(
-            "Note that we compute positions in base space, and then divide by three to get \
-             positions in amino acid space.  Thus it can happen that a position in amino acid \
-             space is shown for both \\bold{var} and \\bold{share}.\n\n",
-        );
-        h.print(
-            "The default value for \\bold{AMINO} is \\bold{cdr3,var,share,donor}.  \
-             Note that we only report amino acids that are strictly within V..J, \
-             thus specifically excluding the codon bridging J and C.\n\n",
         );
         h.end_doc();
     }

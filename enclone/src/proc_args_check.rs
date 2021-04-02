@@ -417,11 +417,6 @@ pub fn check_pcols(ctl: &EncloneControl, gex_info: &GexInfo, cols: &Vec<String>)
                         ok = true;
                     } else if PCVARS_ALLOWED.contains(&y) {
                         ok = true;
-                    } else if y.starts_with('q')
-                        && y.ends_with('_')
-                        && y.between("q", "_").parse::<usize>().is_ok()
-                    {
-                        ok = true;
                     } else if y.starts_with("ndiff")
                         && y.ends_with("vj")
                         && y.between("ndiff", "vj").parse::<usize>().is_ok()
@@ -471,6 +466,11 @@ pub fn check_cvars(ctl: &EncloneControl) {
             && x.between("aa_", "_").parse::<usize>().is_ok()
             && x.after("aa_").after("_").ends_with("_ext")
             && x.after("aa_").between("_", "_ext").parse::<usize>().is_ok()
+        {
+            ok = true;
+        } else if x.starts_with('q')
+            && x.ends_with('_')
+            && x.after("q").rev_before("_").parse::<usize>().is_ok()
         {
             ok = true;
         }

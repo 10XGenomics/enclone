@@ -2,7 +2,6 @@
 
 use crate::defs::EncloneControl;
 use string_utils::*;
-use vector_utils::*;
 
 #[derive(Clone)]
 pub struct LinearCondition {
@@ -30,6 +29,10 @@ impl LinearCondition {
             lhs = y.before("≥").to_string();
             rhs = y.after("≥").to_string();
             sense = "ge".to_string();
+        } else if y.contains('⩾') {
+            lhs = y.before("⩾").to_string();
+            rhs = y.after("⩾").to_string();
+            sense = "ge".to_string();
         } else if y.contains("<=") {
             lhs = y.before("<=").to_string();
             rhs = y.after("<=").to_string();
@@ -37,6 +40,10 @@ impl LinearCondition {
         } else if y.contains('≤') {
             lhs = y.before("≤").to_string();
             rhs = y.after("≤").to_string();
+            sense = "le".to_string();
+        } else if y.contains('⩽') {
+            lhs = y.before("⩽").to_string();
+            rhs = y.after("⩽").to_string();
             sense = "le".to_string();
         } else if y.contains('<') {
             lhs = y.before("<").to_string();
@@ -145,56 +152,13 @@ impl LinearCondition {
         }
     }
 
-    pub fn require_valid_variables(&self, ctl: &EncloneControl) {
-        let lvars = &ctl.clono_print_opt.lvars;
-        let mut lvars0 = Vec::<String>::new();
-        let exclude = vec![
-            "datasets",
-            "donors",
-            "near",
-            "far",
-            "dref",
-            "dref_aa",
-            "n_gex_cell",
-            "n_gex",
-            "n_b",
-            "clust",
-            "cred",
-            "type",
-            "gex",
-            "gex_min",
-            "gex_max",
-            "gex_mean",
-            "gex_sum",
-            "entropy",
-            "ext",
-        ];
-        for j in 0..lvars.len() {
-            let mut ok = true;
-            for m in 0..exclude.len() {
-                if lvars[j] == exclude[m] {
-                    ok = false;
-                }
-            }
-            if lvars[j].starts_with("g") && lvars[j].after("g").parse::<usize>().is_ok() {
-                ok = false;
-            }
-            if ok {
-                let mut x = lvars[j].clone();
-                if x.contains(":") {
-                    x = x.before(":").to_string();
-                }
-                lvars0.push(x);
-            }
-        }
-        unique_sort(&mut lvars0);
+    pub fn require_valid_variables(&self, _ctl: &EncloneControl) {
         for i in 0..self.var.len() {
-            if !bin_member(&lvars0, &self.var[i]) {
+            if self.var[i].ends_with("_cell") {
                 eprintln!(
-                    "\nFound invalid variable {} in linear condition.\n",
+                    "\nThe variable {} should not be used in a linear condition.\n",
                     self.var[i]
                 );
-                std::process::exit(1);
             }
         }
     }

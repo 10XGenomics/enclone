@@ -97,6 +97,12 @@ pub fn main_enclone(args: &Vec<String>) {
         if arg == "PROFILE" {
             ctl.gen_opt.profile = true;
         }
+        if arg == "EVIL_EYE" {
+            ctl.evil_eye = true;
+        }
+    }
+    if ctl.evil_eye {
+        println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
         let blacklist = [
@@ -174,6 +180,9 @@ pub fn main_enclone(args: &Vec<String>) {
             cpu_this_start = fields[13].force_usize();
         }
     }
+    if ctl.evil_eye {
+        println!("calling perf_stats, before setup");
+    }
     ctl.perf_stats(&tall, "before setup");
     setup(&mut ctl, &args);
 
@@ -220,7 +229,15 @@ pub fn main_enclone(args: &Vec<String>) {
             ],
         );
     }
-
+    let mut bound_vars = Vec::<String>::new();
+    for bi in 0..ctl.clono_filt_opt.bounds.len() {
+        let x = &ctl.clono_filt_opt.bounds[bi];
+        for i in 0..x.n() {
+            bound_vars.push(x.var[i].clone());
+        }
+    }
+    unique_sort(&mut bound_vars);
+    check_pcols(&ctl, &gex_info, &bound_vars);
     ctl.perf_stats(&twoof, "checking pcols");
 
     // Find matching features for <regular expression>_g etc.
@@ -913,10 +930,10 @@ pub fn main_enclone(args: &Vec<String>) {
         println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
     }
     if ctl.comp_enforce {
-        if deltas.force_f64() > 0.02 {
+        if deltas.force_f64() > 0.03 {
             eprintln!(
                 "\nUnaccounted time = {} seconds, but COMPE option required that it \
-                be at most 0.02.\n",
+                be at most 0.03.\n",
                 deltas
             );
             eprintln!(

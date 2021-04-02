@@ -311,23 +311,24 @@ fn test_for_broken_links_and_spellcheck() {
 
     let extra_words =
         "abybank adefghiklmnpqrstvwy amazonaws anarci barcode barcodes barcoding bcn \
-        bioinf cdiff cellranger chmod clonotype clonotypes \
+        bioinf cdiff cellranger chmod clen clono clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
         dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
         hypermutation hypermutations igh igk igl ighm igkc imgt \
-        indel indels inkt jsdelivr json krh levenshtein linux loh lvars \
+        indel indels inkt jsdelivr json krh levenshtein linux loh lvar lvars \
         macbook mait metadata mkdir \
-        moresies multiomic nall ncbi ncross ndoublet newick nimproper \
+        moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
         pcell pdb pgas phad phylip \
         plasmablast preinstalled prepends pwm pwms redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
-        subclonotypes svg testlist thresholding timepoint tracebacks trb tsv twosie ubuntu \
-        umi umis underperforming unicode untarring vdj vilella vilfwym vilm website wget wikimedia \
+        subclonotypes svg testlist thresholding timepoint tracebacks trb tsv twosie ubuntu udiff \
+        umi umis underperforming unicode untarring \
+        vdj vilella vilfwym vilm vjlen website wget wikimedia \
         wikipedia workaround workflow xf xhtml xkcd \
         xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx xy yvar zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
@@ -380,7 +381,7 @@ fn test_for_broken_links_and_spellcheck() {
     // Test each html.
 
     let mut dict_fail = false;
-    for x in htmls {
+    for x in htmls.iter() {
         let mut bads = HashSet::<String>::new();
         let f = open_for_read![x];
         let depth = x.matches('/').count();
@@ -524,7 +525,7 @@ fn test_for_broken_links_and_spellcheck() {
                 }
                 s = s.after("<img src=\"").to_string();
             }
-            for link in links {
+            'links: for link in links {
                 // Temporary workaround.
 
                 if link == "https://10xgenomics.github.io/enclone/install.sh" {
@@ -541,6 +542,14 @@ fn test_for_broken_links_and_spellcheck() {
                 }
                 if unreliable {
                     continue;
+                }
+
+                // Test for some links that don't exist yet, but will exist once page is live.
+
+                for h in htmls.iter() {
+                    if link == format!("https://10xgenomics.github.io/enclone/{}", h.after("../")) {
+                        continue 'links;
+                    }
                 }
 
                 // eprintln!("checking link \"{}\"", link);

@@ -123,6 +123,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\boldred{parseable output fields}\n\
              \\boldred{───────────────────────}\n\n",
         );
+        h.print(
+            "See also \"enclone help lvars\", \"enclone help cvars\", and the inventory of all \
+            variables at https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        );
         h.rows.clear();
         h.print("\\bold{1. per clonotype group fields}\n\n");
         h.doc("group_id", "identifier of clonotype group - 0,1, ...");
@@ -137,8 +141,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "clonotype_id",
             "identifier of clonotype within the clonotype group = 0, 1, ...",
         );
-        h.ldoc("clonotype_ncells", "total number of cells in the clonotype");
-        h.ldoc("nchains", "total number of chains in the clonotype");
         h.print_tab2();
         h.print("\n");
 
@@ -147,12 +149,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "\\bold{3. per chain fields, where <i> is 1,2,... (see above)\n\
              each of these has the same value for each exact clonotype}\n\n",
         );
-        h.doc("v_name<i>", "name of V segment");
-        h.doc("d_name<i>", "name of D segment (or null)");
-        h.doc("j_name<i>", "name of J segment");
-        h.ldoc("v_id<i>", "id of V segment");
-        h.doc("d_id<i>", "id of D segment (or null)");
-        h.doc("j_id<i>", "id of J segment");
         h.ldoc(
             "var_indices_dna<i>",
             "DNA positions in chain that vary across the clonotype",
@@ -225,37 +221,6 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc("", "but starting after the leader");
         h.doc("seq<i>", "full DNA sequence");
-        h.doc(
-            "q<n>_<i>",
-            "special option to display a comma-separated list of the quality",
-        );
-        h.doc2("scores for chain i, at zero-based position n, numbered starting at the");
-        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
-        h.ldoc("v_start<i>", "start of V segment on full DNA sequence");
-        h.ldoc(
-            "d_start<i>",
-            "start of D segment on full DNA sequence (or null)",
-        );
-        h.doc(
-            "d_frame<i>",
-            "reading frame of D segment, either 0 or 1 or 2 (or null)",
-        );
-        h.ldoc(
-            "const_id<i>",
-            "numerical identifier of constant region (or null, if not known)",
-        );
-        h.ldoc(
-            "utr_id<i>",
-            "numerical identifier of 5'-UTR region (or null, if not known)",
-        );
-        h.doc(
-            "utr_name<i>",
-            "name of 5'-UTR region (or null, if not known)",
-        );
-        h.ldoc(
-            "cdr3_start<i>",
-            "base position start of CDR3 sequence on full contig",
-        );
         h.ldoc(
             "var_aa<i>",
             "amino acids that vary across the clonotype (synonymous changes included)",
@@ -486,32 +451,49 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "\\bold{linear conditions}\n\n\
              enclone understands linear conditions of the form\n\
              \\bold{c1*v1 ± ... ± cn*vn > d}\n\
-             where each ci is a constant, \"ci*\" may be omitted, each vi is a variable, \
-             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by \
-             >= or ≥ or < or <= or ≤.  \
-             Each vi is a lead variable (see \"\\bold{enclone help lvars}\") that \
-             represents a \
-             origin/donor/tag count or gene/feature barcode UMI count.  In evaluating the \
-             condition, each vi is \
-             replaced by the \\bold{mean} of its values across all cells in the clonotype.  \
+             where each ci is a constant, \"ci*\" may be omitted, each vi is a parseable variable, \
+             and d is a constant.  Blank spaces are ignored.  The > sign may be replaced by\n\
+             • >= or equivalently ≥ or ⩾\n\
+             • <\n\
+             • <= or equivalently ≤ or ⩽.\n\n\
+             \
+             The details of how enclone evaluates a linear condition for a clonotype are subtle, \
+             and these subtleties may or may not matter for what you're doing.  You may wish to \
+             look at the specific examples given below.  For more detail, here are the rules:\n\
+             • When a variable is assessed for a given cell, we use the value that would have \
+             been obtained\n  using parseable output (including with the PCELL mode); see \
+             \"enclone help parseble\".  In most\n  cases it will make more sense to use the \
+             per-cell version of a variable, if it is defined.\n  For example, u1_cell would be \
+             the number of UMIs for the first chain for a given cell, but u1\n  would be the \
+             median value for all cells in an exact subclonotype, regardless of which cell \
+             is\n  examined.\n\
+             • For each variable, enclone finds its values for all cells in the clonotype.  \
+             Values that are not\n  finite numbers are ignored.  This can have unintended \
+             consequences, so be careful not to\n  accidentally use a variable that is \
+             non-numeric.\n\
+             • If no such values are found for some variable, then the constraint fails.\n\
+             • Otherwise, some function is applied to all the values for a given variable \
+             (e.g. the mean\n  function) and the constraint is tested, after substituting in \
+             the values from the function.\n  The particular function \
+             that is used is documented at the appropriate point.\n\n\
+             \
              Because the minus sign - doubles as a hyphen and is used in some feature names, we \
              allow parentheses around variable names to prevent erroneous parsing, like this \
-             \\bold{(IGHV3-7_g) >= 1}.\n\n",
+             (IGHV3-7_g) >= 1.  And something like that would need to be quoted on the command \
+             line.\n\n",
         );
 
         // bounds
 
         h.print(
             "\\bold{filtering by linear conditions}\n\n\
-             enclone has the capability to filter by bounding certain lead variables, using \
+             enclone has the capability to filter by bounding variables, using \
              the command-line argument:\n\
              \\bold{KEEP_CLONO_IF_CELL_MEAN=\"L\"}\n\
-             where L is a linear condition (as defined above).  Currently this is limited to \
-             the case where the lead variables have been selected using \\bold{LVARS} or \
-             \\bold{LVARSP}!  Also it is not implemented for all lead variables, and you'll get \
-             an error message if it is not implemented.  Multiple bounds may be imposed by using \
+             where L is a linear condition (as defined above).  Multiple bounds may be imposed \
+             by using \
              multiple instances of \\bold{KEEP_CLONO_IF_CELL_MEAN=...} .  As explained above, \
-             note that \\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
+             note that\n\\bold{KEEP_CLONO_IF_CELL_MEAN=...} \
              filters by computing the mean across all cells in the clonotype.  See also \
              \\bold{KEEP_CELL_IF=} at \"enclone help special\".\n\n",
         );
@@ -526,6 +508,17 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
              \\bold{KEEP_CLONO_IF_CELL_MAX=\"L\"}\n\
              and otherwise as above.\n\n",
         );
+        h.print(
+            "\\bold{Caution.}  Because of interactions between filters (including built-in \
+            filters), the results of filtering can be counterintuitive.  In particular, cells \
+            might be removed from a clonotype after a linear condition is applied, leading to \
+            confusing results.\n\n",
+        );
+        h.print(
+            "For cell-exact variables (see \
+            \\green{https://10xgenomics.github.io/enclone/pages/auto/variables.html)}, note \
+            that linear conditions are applied to the cell version of the variable.\n\n",
+        );
 
         // feature scanning
 
@@ -539,9 +532,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             where each of \\bold{test}, \\bold{control} and \\bold{threshold} are linear \
             conditions as defined above.  Blank spaces are ignored.  The \\bold{test} condition \
             defines the \"test clonotypes\" and the \\bold{control} condition defines the \
-            \"control clonotypes\".  Currently, the lead variables in \\bold{test} and \
-            \\bold{control} must be specified by\n\
-            \\bold{LVARS} or \\bold{LVARSP}!  \
+            \"control clonotypes\".  \
             The \\bold{threshold} condition is special: it may use \
             only the variables \"t\" and \"c\" that represent the raw UMI count for \
             a particular gene or feature, for the test (t) or control (c) clonotypes.  \
@@ -572,6 +563,80 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
 
         // done
 
+        h.end_doc();
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Provide amino help.
+
+    if (args.len() == 3 && args[1] == "help" && args[2] == "amino") || h.help_all {
+        h.begin_doc("amino");
+        h.print(
+            "\nThere is a complex per-chain column to the left of other \
+             per-chain columns, defined by\n\
+             \\bold{AMINO=x1,...,xn}: display amino acid columns for the given categories, \
+             in one combined ordered group, where each xi is one of:\n\n",
+        );
+        h.doc("cdr1", "CDR1 sequence");
+        h.doc("cdr2", "CDR2 sequence");
+        h.doc("cdr3", "CDR3 sequence");
+        h.doc("fwr1", "FWR1 sequence");
+        h.doc("fwr2", "FWR2 sequence");
+        h.doc("fwr3", "FWR3 sequence");
+        h.doc("", "Notes:");
+        h.docpr(
+            "",
+            "1. Please see the page on \\green{bit.ly/enclone} about V(D)J features for notes",
+        );
+        h.doc("", "on our method and interpretation.");
+        h.docf2(
+            "",
+            "2. There are circumstances under which these cannot \
+            be calculated, most notably in cases where something is wrong with the associated \
+            reference sequence.  In such cases, even though you specify CDR1 or CDR2, they will \
+            not be shown.",
+            85,
+        );
+        h.docf2(
+            "",
+            "3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header \
+            line that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even \
+            more cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.",
+            85,
+        );
+        h.doc("", "4. The same stipulations apply to FWR1, FWR2 and FWR3.");
+        h.ldoc("var", "positions in chain that vary across the clonotype");
+        h.doc(
+            "share",
+            "positions in chain that differ consistently from the donor reference",
+        );
+        h.ldoc(
+            "donor",
+            "positions in chain where the donor reference differs from the universal \
+             reference",
+        );
+        h.ldoc(
+            "donorn",
+            "positions in chain where the donor reference differs nonsynonymously",
+        );
+        h.doc("", "from the universal reference");
+        h.ldoc(
+            "a-b",
+            "amino acids numbered a through b (zero-based, inclusive)",
+        );
+        h.print_tab2();
+        h.print("\n");
+        h.print(
+            "Note that we compute positions in base space, and then divide by three to get \
+             positions in amino acid space.  Thus it can happen that a position in amino acid \
+             space is shown for both \\bold{var} and \\bold{share}.\n\n",
+        );
+        h.print(
+            "The default value for \\bold{AMINO} is \\bold{cdr3,var,share,donor}.  \
+             Note that we only report amino acids that are strictly within V..J, \
+             thus specifically excluding the codon bridging J and C.\n\n",
+        );
         h.end_doc();
     }
 }

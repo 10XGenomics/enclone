@@ -2,10 +2,13 @@
 
 // Field (variable) names.
 // Lead variables for exact subclonotypes and cells.
-pub const LVARS_ALLOWED: [&str; 30] = [
+pub const LVARS_ALLOWED: [&str; 35] = [
     "datasets",
     "origins",
     "donors",
+    "datasets_cell",
+    "origins_cell",
+    "donors_cell",
     "n",
     "gex",
     "gex_min",
@@ -33,11 +36,13 @@ pub const LVARS_ALLOWED: [&str; 30] = [
     "sec",
     "mem",
     "filter",
+    "nchains",
+    "clonotype_ncells",
 ];
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 71] = [
+pub const CVARS_ALLOWED: [&str; 84] = [
     "var",
     "u",
     "u_min",
@@ -109,38 +114,36 @@ pub const CVARS_ALLOWED: [&str; 71] = [
     "valbcumis",
     "nvalbcumis",
     "ivalbcumis",
-];
-
-pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
-
-pub const PLVARS_ALLOWED: [&str; 7] = [
-    "group_id",
-    "group_ncells",
-    "clonotype_id",
-    "clonotype_ncells",
-    "nchains",
-    "exact_subclonotype_id",
-    "barcodes",
-];
-
-pub const PCVARS_ALLOWED: [&str; 24] = [
+    "d_frame",
+    "d_start",
     "v_name",
     "d_name",
     "j_name",
     "v_id",
     "d_id",
     "j_id",
-    "var_indices_dna",
-    "var_indices_aa",
-    "share_indices_dna",
-    "share_indices_aa",
-    "v_start",
-    "d_start",
-    "d_frame",
     "const_id",
     "utr_id",
     "utr_name",
     "cdr3_start",
+    "v_start",
+];
+
+pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
+
+pub const PLVARS_ALLOWED: [&str; 5] = [
+    "group_id",
+    "group_ncells",
+    "clonotype_id",
+    "exact_subclonotype_id",
+    "barcodes",
+];
+
+pub const PCVARS_ALLOWED: [&str; 11] = [
+    "var_indices_dna",
+    "var_indices_aa",
+    "share_indices_dna",
+    "share_indices_aa",
     "cdr3_aa",
     "seq",
     "vj_seq",

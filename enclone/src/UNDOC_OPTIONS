@@ -112,6 +112,8 @@ LVARS entries
 - npe<n> = total number of cells in this clonotype that are within PCA distance n of this cell
 - ppe<n> = percent of all gex cells within PCA distance n of this cell that are in this clonotype
 
+NOTE: pe, npe and ppe cannot be used in bounds.
+
 IMGT: specify the IMGT reference, forces RE so slow
 
 IMGT_FIX: make certain hardcoded fixes to the IMGT reference.
@@ -320,3 +322,4 @@ across all cells (only implemented if .bin file has been generated using NH5)
 
 COMPE: COMP, plus enforce no unaccounted time (except up to 0.02 seconds)
 UNACCOUNTED: show unaccounted time at each step
+EVIL_EYE: print logging to facilitate diagnosis of mysterious hanging

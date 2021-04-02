@@ -1,0 +1,31 @@
+
+[1m[38;5;27m[1] GROUP = 1 CLONOTYPES = 6 CELLS[0m
+
+[1.1] CLONOTYPE = 6 CELLS
+┌──────────────────────────┬────────────────┬──────────────┐
+│                          │  [1mCHAIN 1[0m       │  CHAIN 2     │
+│                          │  [1m190|IGHV4-39[0m  │  386|IGLV7-43│
+│                          │  [1m◆ 54|IGHJ4[0m    │  ◆ 311|IGLJ2 │
+│                          ├────────────────┼──────────────┤
+│[1m#  barcode             n  [0m│[1m  cdr3_aa_conp  [0m│[1m  cdr3_aa_conp[0m│
+│1                      1  │  CARHLQWELPYW  │  CLLYYπGANVVF│
+│[38;5;18m[48;5;255m   GATCGTAAGGGTGTGT-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+│2                      1  │  CARHLQWELPYW  │  CLLYYπGANVVF│
+│[38;5;18m[48;5;255m   CGCTATCGTGCGGTAA-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+│3                      1  │  CARHLQWELPYW  │  CLLYYπGANVVF│
+│[38;5;18m[48;5;255m   GATCGATCAGCGTCCA-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+│4                      1  │  CARHLQWELPYW  │  CLLYYπGANVVF│
+│[38;5;18m[48;5;255m   CGACTTCGTACCGAGA-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+│5                      1  │  CARHLQWELPYW  │              │
+│[38;5;18m[48;5;255m   TTGAACGCACCTCGGA-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+│6                      1  │  CARHLQWELPYW  │              │
+│[38;5;18m[48;5;255m   AGCTCCTAGACGCAAC-1     [0m[48;5;255m│[38;5;18m                [0m[48;5;255m│[38;5;18m              [0m│
+└──────────────────────────┴────────────────┴──────────────┘
+cdr3_aa_conp2
+CLLYYπGANVVF
+CLLYYπGANVVF
+CLLYYπGANVVF
+CLLYYπGANVVF
+
+
+

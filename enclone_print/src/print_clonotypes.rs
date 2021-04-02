@@ -70,13 +70,6 @@ pub fn print_clonotypes(
 
     let extra_args = extra_args(&ctl);
 
-    // Compute total cells.
-
-    let mut total_cells = 0;
-    for i in 0..exact_clonotypes.len() {
-        total_cells += exact_clonotypes[i].ncells();
-    }
-
     // Define parseable output columns.  The entire machinery for parseable output is controlled
     // by macros that begin with "speak".
 
@@ -120,6 +113,36 @@ pub fn print_clonotypes(
             }
         }
         unique_sort(&mut extra_parseables);
+    }
+
+    // Compute all_vars.
+
+    let rsi_vars = &ctl.clono_print_opt.cvars;
+    let mut all_vars = rsi_vars.clone();
+    for j in 0..CVARS_ALLOWED.len() {
+        let var = &CVARS_ALLOWED[j];
+        if !rsi_vars.contains(&var.to_string()) {
+            all_vars.push(var.to_string());
+        }
+    }
+    for j in 0..CVARS_ALLOWED_PCELL.len() {
+        let var = &CVARS_ALLOWED_PCELL[j];
+        if !rsi_vars.contains(&var.to_string()) {
+            all_vars.push(var.to_string());
+        }
+    }
+    all_vars.append(&mut extra_parseables.clone());
+    for x in extra_args.iter() {
+        if !rsi_vars.contains(&x) {
+            all_vars.push(x.clone());
+        }
+    }
+
+    // Compute total cells.
+
+    let mut total_cells = 0;
+    for i in 0..exact_clonotypes.len() {
+        total_cells += exact_clonotypes[i].ncells();
     }
 
     // Test for presence of GEX/FB data.
@@ -356,8 +379,6 @@ pub fn print_clonotypes(
                         &ctl,
                         &exacts,
                         &exact_clonotypes,
-                        &refdata,
-                        &rsi,
                         &mut out_data,
                         &mut mlog,
                         &extra_args,
@@ -681,8 +702,9 @@ pub fn print_clonotypes(
                         &lvars,
                         &nd_fields,
                         &peer_groups,
-                        &extra_parseables,
                         &extra_args,
+                        &all_vars,
+                        &fate,
                     );
                     let mut bli = Vec::<(String, usize, usize)>::new();
                     for l in 0..ex.clones.len() {
@@ -770,6 +792,12 @@ pub fn print_clonotypes(
                 stats = stats2;
 
                 // Traverse the bounds and apply them.
+                // Notes:
+                // 1. This seems to run during both pass 1 and 2, and should only run
+                //    during pass 1.
+                // 2. The results of this can be counterintuitive, because the filtering is
+                //    applied during pass 1, when there could be cells in the clonotype, that
+                //    are removed by other filters.
 
                 for bi in 0..ctl.clono_filt_opt.bounds.len() {
                     let x = &ctl.clono_filt_opt.bounds[bi];
@@ -864,37 +892,6 @@ pub fn print_clonotypes(
                     &mut res.10,
                 );
 
-                // Fill in exact_subclonotype_id, reorder.
-
-                if ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty() {
-                    for u in 0..nexacts {
-                        macro_rules! speak {
-                            ($u:expr, $var:expr, $val:expr) => {
-                                if pass == 2
-                                    && (ctl.parseable_opt.pout.len() > 0 || !extra_args.is_empty())
-                                {
-                                    if pcols_sort.is_empty()
-                                        || bin_member(&pcols_sort, &$var.to_string())
-                                        || bin_member(&extra_args, &$var.to_string())
-                                    {
-                                        out_data[$u].insert($var.to_string(), $val);
-                                    }
-                                }
-                            };
-                        }
-                        speak![rord[u], "exact_subclonotype_id", format!("{}", u + 1)];
-                    }
-                    let mut out_data2 = vec![HashMap::<String, String>::new(); nexacts];
-                    for v in 0..nexacts {
-                        out_data2[v] = out_data[rord[v]].clone();
-                    }
-                    out_data = out_data2;
-                }
-
-                // Add header text to mlog.
-
-                add_header_text(&ctl, &exacts, &exact_clonotypes, &rord, &mat, &mut mlog);
-
                 // Make the table.
 
                 let mut logz = String::new();
@@ -915,6 +912,11 @@ pub fn print_clonotypes(
                     &mut logz,
                     &stats,
                     &mut sr,
+                    &extra_args,
+                    &pcols_sort,
+                    &mut out_data,
+                    &rord,
+                    pass,
                 );
 
                 // Save.

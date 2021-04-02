@@ -3,7 +3,9 @@
 <body>
 
 <br>
-<img src="../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+<a href="../../index.html#help">
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
 
 <h1>Fetching test datasets</h1>
 

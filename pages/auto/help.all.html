@@ -42,7 +42,9 @@ gtag('config', 'UA-58278925-3');
 <body>
 
 <br>
+<a href="../../index.html#help">
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone main help page (what you get by typing "enclone")
@@ -131,7 +133,9 @@ Look at this:
 └────────┴─────────┘
 Do you see a neat rectangle composed of four rectangles with words inside them?  Are the vertical
 lines contiguous?  If not, something is wrong with your terminal!  You may need to change the
-terminal font.  For example, Menlo works, but Courier does not.
+terminal font.  We use Menlo Regular at 13pt.  However, you may still observe small vertical
+gaps between characters in some instances, depending on your computer and apparently
+resulting from bugs in font rendition.
 
 4. Can your terminal correctly display ANSI escape sequences?
 The following word should be <span style="font-weight:bold;">bold</span>.  The following word should be <span style="color:#5833ff;">blue</span>.
@@ -726,6 +730,9 @@ command line.
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 
+See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>, <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>, and the inventory of all variables at
+https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
+
 <span style="font-weight:bold;">1. per clonotype group fields</span>
 
 ┌──────────────┬──────────────────────────────────────────┐
@@ -737,25 +744,14 @@ command line.
 
 <span style="font-weight:bold;">2. per clonotype fields</span>
 
-┌──────────────────┬────────────────────────────────────────────────────────────────┐
-│clonotype_id      │  identifier of clonotype within the clonotype group = 0, 1, ...│
-├──────────────────┼────────────────────────────────────────────────────────────────┤
-│clonotype_ncells  │  total number of cells in the clonotype                        │
-├──────────────────┼────────────────────────────────────────────────────────────────┤
-│nchains           │  total number of chains in the clonotype                       │
-└──────────────────┴────────────────────────────────────────────────────────────────┘
+┌──────────────┬────────────────────────────────────────────────────────────────┐
+│clonotype_id  │  identifier of clonotype within the clonotype group = 0, 1, ...│
+└──────────────┴────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">3. per chain fields, where &lt;i> is 1,2,... (see above)
 each of these has the same value for each exact clonotype</span>
 
 ┌──────────────────────┬──────────────────────────────────────────────────────────────┐
-│v_name&lt;i>             │  name of V segment                                           │
-│d_name&lt;i>             │  name of D segment (or null)                                 │
-│j_name&lt;i>             │  name of J segment                                           │
-├──────────────────────┼──────────────────────────────────────────────────────────────┤
-│v_id&lt;i>               │  id of V segment                                             │
-│d_id&lt;i>               │  id of D segment (or null)                                   │
-│j_id&lt;i>               │  id of J segment                                             │
 ├──────────────────────┼──────────────────────────────────────────────────────────────┤
 │var_indices_dna&lt;i>    │  DNA positions in chain that vary across the clonotype       │
 │var_indices_aa&lt;i>     │  amino acid positions in chain that vary across the clonotype│
@@ -784,31 +780,16 @@ each of these has the same value for each exact clonotype</span>
 
 [all apply to chain i of a particular exact clonotype]
 
-┌───────────────┬───────────────────────────────────────────────────────────────────────────┐
-│vj_seq&lt;i>      │  DNA sequence of V..J                                                     │
-│vj_seq_nl&lt;i>   │  DNA sequence of V..J, but starting after the leader                      │
-│vj_aa&lt;i>       │  amino acid sequence of V..J (excludes last base, in incomplete codon)    │
-│vj_aa_nl&lt;i>    │  amino acid sequence of V..J (excludes last base, in incomplete codon),   │
-│               │  but starting after the leader                                            │
-│seq&lt;i>         │  full DNA sequence                                                        │
-│q&lt;n>_&lt;i>       │  special option to display a comma-separated list of the quality          │
-│               │  scores for chain i, at zero-based position n, numbered starting at the   │
-│               │  beginning of the V segment, for each cell in the exact subclonotype      │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│v_start&lt;i>     │  start of V segment on full DNA sequence                                  │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│d_start&lt;i>     │  start of D segment on full DNA sequence (or null)                        │
-│d_frame&lt;i>     │  reading frame of D segment, either 0 or 1 or 2 (or null)                 │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│const_id&lt;i>    │  numerical identifier of constant region (or null, if not known)          │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│utr_id&lt;i>      │  numerical identifier of 5'-UTR region (or null, if not known)            │
-│utr_name&lt;i>    │  name of 5'-UTR region (or null, if not known)                            │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│cdr3_start&lt;i>  │  base position start of CDR3 sequence on full contig                      │
-├───────────────┼───────────────────────────────────────────────────────────────────────────┤
-│var_aa&lt;i>      │  amino acids that vary across the clonotype (synonymous changes included) │
-├───────────────┴───────────────────────────────────────────────────────────────────────────┤
+┌──────────────┬────────────────────────────────────────────────────────────────────────────┐
+│vj_seq&lt;i>     │  DNA sequence of V..J                                                      │
+│vj_seq_nl&lt;i>  │  DNA sequence of V..J, but starting after the leader                       │
+│vj_aa&lt;i>      │  amino acid sequence of V..J (excludes last base, in incomplete codon)     │
+│vj_aa_nl&lt;i>   │  amino acid sequence of V..J (excludes last base, in incomplete codon),    │
+│              │  but starting after the leader                                             │
+│seq&lt;i>        │  full DNA sequence                                                         │
+├──────────────┼────────────────────────────────────────────────────────────────────────────┤
+│var_aa&lt;i>     │  amino acids that vary across the clonotype (synonymous changes included)  │
+├──────────────┴────────────────────────────────────────────────────────────────────────────┤
 │In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.  However│
 │parametrizable chain variables e.g. <span style="font-weight:bold;">ndiff1vj1</span> must be explicitly listed using <span style="font-weight:bold;">PCOLS</span>;       │
 │they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                               │
@@ -899,25 +880,41 @@ https://docs.rs/regex.
 
 enclone understands linear conditions of the form
 <span style="font-weight:bold;">c1*v1 ± ... ± cn*vn > d</span>
-where each ci is a constant, "ci*" may be omitted, each vi is a variable, and d is a constant. 
-Blank spaces are ignored.  The > sign may be replaced by >= or ≥ or &lt; or &lt;= or ≤.  Each vi is a
-lead variable (see "<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>") that represents a origin/donor/tag count or gene/feature
-barcode UMI count.  In evaluating the condition, each vi is replaced by the <span style="font-weight:bold;">mean</span> of its values
-across all cells in the clonotype.  Because the minus sign - doubles as a hyphen and is used in
-some feature names, we allow parentheses around variable names to prevent erroneous parsing, like
-this <span style="font-weight:bold;">(IGHV3-7_g) >= 1</span>.
+where each ci is a constant, "ci*" may be omitted, each vi is a parseable variable, and d is a
+constant.  Blank spaces are ignored.  The > sign may be replaced by
+• >= or equivalently ≥ or ⩾
+• &lt;
+• &lt;= or equivalently ≤ or ⩽.
+
+The details of how enclone evaluates a linear condition for a clonotype are subtle, and these
+subtleties may or may not matter for what you're doing.  You may wish to look at the specific
+examples given below.  For more detail, here are the rules:
+• When a variable is assessed for a given cell, we use the value that would have been obtained
+  using parseable output (including with the PCELL mode); see "enclone help parseble".  In most
+  cases it will make more sense to use the per-cell version of a variable, if it is defined.
+  For example, u1_cell would be the number of UMIs for the first chain for a given cell, but u1
+  would be the median value for all cells in an exact subclonotype, regardless of which cell is
+  examined.
+• For each variable, enclone finds its values for all cells in the clonotype.  Values that are not
+  finite numbers are ignored.  This can have unintended consequences, so be careful not to
+  accidentally use a variable that is non-numeric.
+• If no such values are found for some variable, then the constraint fails.
+• Otherwise, some function is applied to all the values for a given variable (e.g. the mean
+  function) and the constraint is tested, after substituting in the values from the function.
+  The particular function that is used is documented at the appropriate point.
+
+Because the minus sign - doubles as a hyphen and is used in some feature names, we allow
+parentheses around variable names to prevent erroneous parsing, like this (IGHV3-7_g) >= 1.  And
+something like that would need to be quoted on the command line.
 
 <span style="font-weight:bold;">filtering by linear conditions</span>
 
-enclone has the capability to filter by bounding certain lead variables, using the command-line
-argument:
+enclone has the capability to filter by bounding variables, using the command-line argument:
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN="L"</span>
-where L is a linear condition (as defined above).  Currently this is limited to the case where the
-lead variables have been selected using <span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  Also it is not implemented for all lead
-variables, and you'll get an error message if it is not implemented.  Multiple bounds may be
-imposed by using multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note
-that <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype. 
-See also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+where L is a linear condition (as defined above).  Multiple bounds may be imposed by using
+multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note that
+<span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype.  See
+also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
 
 If for a given clonotype and a given variable, not all values are specified (e.g. if for a
 user-specified variable, values are blank), then only the values that are specified are used in
@@ -927,6 +924,13 @@ Similarly, to filter by the max across all cells in a clonotype, one may use
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MAX="L"</span>
 and otherwise as above.
 
+<span style="font-weight:bold;">Caution.</span>  Because of interactions between filters (including built-in filters), the results of
+filtering can be counterintuitive.  In particular, cells might be removed from a clonotype after a
+linear condition is applied, leading to confusing results.
+
+For cell-exact variables (see <span style="color:#25bc24;">https://10xgenomics.github.io/enclone/pages/auto/variables.html)</span>,
+note that linear conditions are applied to the cell version of the variable.
+
 <span style="font-weight:bold;">feature scanning</span>
 
 If gene expression and/or feature barcode data have been generated, enclone can scan all features
@@ -935,11 +939,10 @@ feature is turned on using the command line argument
 <span style="font-weight:bold;">SCAN="test,control,threshold"</span>
 where each of <span style="font-weight:bold;">test</span>, <span style="font-weight:bold;">control</span> and <span style="font-weight:bold;">threshold</span> are linear conditions as defined above.  Blank spaces
 are ignored.  The <span style="font-weight:bold;">test</span> condition defines the "test clonotypes" and the <span style="font-weight:bold;">control</span> condition defines
-the "control clonotypes".  Currently, the lead variables in <span style="font-weight:bold;">test</span> and <span style="font-weight:bold;">control</span> must be specified by
-<span style="font-weight:bold;">LVARS</span> or <span style="font-weight:bold;">LVARSP</span>!  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t" and "c"
-that represent the raw UMI count for a particular gene or feature, for the test (t) or control (c)
-clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately and manually
-examine the test and control clonotypes to make sure that they make sense.
+the "control clonotypes".  The <span style="font-weight:bold;">threshold</span> condition is special: it may use only the variables "t"
+and "c" that represent the raw UMI count for a particular gene or feature, for the test (t) or
+control (c) clonotypes.  To get a meaningful result, you should specify <span style="font-weight:bold;">MIN_CELLS</span> appropriately
+and manually examine the test and control clonotypes to make sure that they make sense.
 
 If in addition the argument <span style="font-weight:bold;">SCAN_EXACT</span> is supplied, then scanning will be carried out over exact
 subclonotypes rather than clonotypes.
@@ -962,6 +965,49 @@ determined by having "enough" cells in both the test and control sets, and in ha
 cleanly defined.
 
 Currently feature scanning requires that each dataset have identical features.
+
+<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+enclone help amino
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+There is a complex per-chain column to the left of other per-chain columns, defined by
+<span style="font-weight:bold;">AMINO=x1,...,xn</span>: display amino acid columns for the given categories, in one combined ordered
+group, where each xi is one of:
+
+┌────────┬───────────────────────────────────────────────────────────────────────────────────────┐
+│cdr1    │  CDR1 sequence                                                                        │
+│cdr2    │  CDR2 sequence                                                                        │
+│cdr3    │  CDR3 sequence                                                                        │
+│fwr1    │  FWR1 sequence                                                                        │
+│fwr2    │  FWR2 sequence                                                                        │
+│fwr3    │  FWR3 sequence                                                                        │
+│        │  Notes:                                                                               │
+│        │  1. Please see the page on <span style="color:#25bc24;">bit.ly/enclone</span> about V(D)J features for notes              │
+│        │  on our method and interpretation.                                                    │
+│        │  2. There are circumstances under which these cannot be calculated, most notably in   │
+│        │  cases where something is wrong with the associated reference sequence.  In such      │
+│        │  cases, even though you specify CDR1 or CDR2, they will not be shown.                 │
+│        │  3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header line│
+│        │  that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even more   │
+│        │  cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.               │
+│        │  4. The same stipulations apply to FWR1, FWR2 and FWR3.                               │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│var     │  positions in chain that vary across the clonotype                                    │
+│share   │  positions in chain that differ consistently from the donor reference                 │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│donor   │  positions in chain where the donor reference differs from the universal reference    │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│donorn  │  positions in chain where the donor reference differs nonsynonymously                 │
+│        │  from the universal reference                                                         │
+├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
+│a-b     │  amino acids numbered a through b (zero-based, inclusive)                             │
+└────────┴───────────────────────────────────────────────────────────────────────────────────────┘
+
+Note that we compute positions in base space, and then divide by three to get positions in amino
+acid space.  Thus it can happen that a position in amino acid space is shown for both <span style="font-weight:bold;">var</span> and <span style="font-weight:bold;">share</span>.
+
+The default value for <span style="font-weight:bold;">AMINO</span> is <span style="font-weight:bold;">cdr3,var,share,donor</span>.  Note that we only report amino acids that
+are strictly within V..J, thus specifically excluding the codon bridging J and C.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help special
@@ -1153,83 +1199,89 @@ one entry for each exact subclonotype row.
 Note that for medians of integers, we actually report the "rounded median", the result of rounding
 the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
+See also <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
+
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
 
-┌─────────────────┬────────────────────────────────────────────────────────────────────────────────┐
-│datasets         │  dataset identifiers                                                           │
-│origin           │  origin identifiers                                                            │
-│donors           │  donor identifiers                                                             │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│n                │  number of cells                                                               │
-│n_&lt;name>         │  number of cells associated to the given name, which can be a dataset          │
-│                 │  or origin or donor or tag short name; may name only one such category         │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│nd&lt;k>            │  For k a positive integer, this creates k+1 fields, that are specific to each  │
-│                 │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset    │
-│                 │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a          │
-│                 │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however      │
-│                 │  fields will be elided if they represent no cells.                             │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│near             │  Hamming distance of V..J DNA sequence to nearest neighbor                     │
-│far              │  Hamming distance of V..J DNA sequence to farthest neighbor                    │
-│                 │  both compare to cells having chains in the same columns of the clonotype,     │
-│                 │  with - shown if there is no other exact subclonotype to compare to            │
-│dref             │  Hamming distance of V..J DNA sequence to donor reference, excluding           │
-│                 │  region of recombination                                                       │
-│dref_aa          │  Hamming distance of V..J amino acid sequence to donor reference, excluding    │
-│                 │  region of recombination                                                       │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│count_&lt;reg>      │  Number of matches of the V..J amino acid sequences of all chains to the given │
-│                 │  regular expression, which is treated as a subset match, so for example,       │
-│                 │  count_CAR would count the total number of occurrences of the string CAR in all│
-│                 │  the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion                │
-│                 │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,        │
-│                 │  where abbr is an abbreviation that will appear as the field label.            │
-│count_&lt;f>_&lt;reg>  │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar   │
-│                 │  to the above but restricted to motifs lying entirely within                   │
-│                 │  a given feature or feature set.                                               │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│inkt             │  A string showing the extent to which the T cells in an exact subclonotype     │
-│                 │  have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,   │
-│                 │  representing both gene name and junction sequence (CDR3) requirements for     │
-│                 │  both chains.  See <span style="color:#25bc24;">bit.ly/enclone</span> for details on the requirements.             │
-│mait             │  Same as with inkt but for MAIT cells instead.                                 │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│g&lt;d>             │  Here d is a nonnegative integer.  Then all the exact subclonotypes are        │
-│                 │  grouped according to the Hamming distance of their V..J sequences.  Those     │
-│                 │  within distance d are defined to be in the same group, and this is            │
-│                 │  extended transitively.  The group identifier 1, 2, ... is shown.  The         │
-│                 │  ordering of these identifiers is arbitrary.  This option is best applied      │
-│                 │  to cases where all exact subclonotypes have a complete set of chains.         │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│gex              │  <span style="color:#c23621;">●</span> median gene expression UMI count                                            │
-│n_gex            │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                    │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│&lt;gene>_g         │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type       │
-│&lt;antibody>_ab    │  with the given id or name; report the median UMI count for it; we allow       │
-│&lt;crispr>_cr      │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr    │
-│&lt;custom>_cu      │  or cu; this represents a sum of UMI counts across the matching features. ●    │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│cred             │  Short for credibility.  It is a measure of the extent to which cells          │
-│                 │  having gene expression similar to a given putative B cell are themselves      │
-│                 │  B cells.  (Or similarly for T cells.)  For the actual definition, let n       │
-│                 │  be the number of VDJ cells that are also GEX cells.  For a given cell,        │
-│                 │  find the n GEX cells that are closest to it in PCA space, and report the      │
-│                 │  percent of those that are also VDJ cells.  For multiple datasets, it would    │
-│                 │  be better to "aggr" the data, however that is not currently supported         │
-│                 │  The computation is also inefficient, so let us know if it's causing           │
-│                 │  problems for you.  And cred makes much better sense for datasets that         │
-│                 │  consist of mixed cell types, rather than consisting of pure B or T cells.     │
-├─────────────────┼────────────────────────────────────────────────────────────────────────────────┤
-│filter           │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some         │
-│                 │  default filters (or all default filters, e.g. with NALL_CELL), and this       │
-│                 │  cell would have been deleted by one of the default filters, then this will    │
-│                 │  show the name of the last filter that would have been applied to delete the   │
-│                 │  cell.  Note that there are complex interactions between filters, so the       │
-│                 │  actual effect with all default filters on may be significantly different.     │
-│                 │  Note also that use of NALL_CELL will typically result in peculiar             │
-│                 │  artifacts, so this should only be used as an exploratory tool.                │
-└─────────────────┴────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│nchains           │  total number of chains in the clonotype                                      │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│datasets          │  dataset identifiers                                                          │
+│origin            │  origin identifiers                                                           │
+│donors            │  donor identifiers                                                            │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│n                 │  number of cells                                                              │
+│n_&lt;name>          │  number of cells associated to the given name, which can be a dataset         │
+│                  │  or origin or donor or tag short name; may name only one such category        │
+│clonotype_ncells  │  total number of cells in the clonotype                                       │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│nd&lt;k>             │  For k a positive integer, this creates k+1 fields, that are specific to each │
+│                  │  clonotype.  The first field is n_&lt;d1>, where d1 is the name of the dataset   │
+│                  │  having the most cells in the clonotype.  If k ≥ 2, then you'll get a         │
+│                  │  "runner-up" field n_&lt;d2>, etc.  Finally you get a field n_other, however     │
+│                  │  fields will be elided if they represent no cells.                            │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│near              │  Hamming distance of V..J DNA sequence to nearest neighbor                    │
+│far               │  Hamming distance of V..J DNA sequence to farthest neighbor                   │
+│                  │  both compare to cells having chains in the same columns of the clonotype,    │
+│                  │  with - shown if there is no other exact subclonotype to compare to           │
+│dref              │  Hamming distance of V..J DNA sequence to donor reference, excluding          │
+│                  │  region of recombination                                                      │
+│dref_aa           │  Hamming distance of V..J amino acid sequence to donor reference, excluding   │
+│                  │  region of recombination                                                      │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│count_&lt;reg>       │  Number of matches of the V..J amino acid sequences of all chains to the given│
+│                  │  regular expression, which is treated as a subset match, so for example,      │
+│                  │  count_CAR would count the total number of occurrences of the string CAR in   │
+│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion           │
+│                  │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,       │
+│                  │  where abbr is an abbreviation that will appear as the field label.           │
+│count_&lt;f>_&lt;reg>   │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar  │
+│                  │  to the above but restricted to motifs lying entirely within                  │
+│                  │  a given feature or feature set.                                              │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│inkt              │  A string showing the extent to which the T cells in an exact subclonotype    │
+│                  │  have evidence for being an iNKT cell.  The most evidence is denoted 𝝰gj𝝱gj,  │
+│                  │  representing both gene name and junction sequence (CDR3) requirements for    │
+│                  │  both chains.  See <span style="color:#25bc24;">bit.ly/enclone</span> for details on the requirements.            │
+│mait              │  Same as with inkt but for MAIT cells instead.                                │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│g&lt;d>              │  Here d is a nonnegative integer.  Then all the exact subclonotypes are       │
+│                  │  grouped according to the Hamming distance of their V..J sequences.  Those    │
+│                  │  within distance d are defined to be in the same group, and this is           │
+│                  │  extended transitively.  The group identifier 1, 2, ... is shown.  The        │
+│                  │  ordering of these identifiers is arbitrary.  This option is best applied     │
+│                  │  to cases where all exact subclonotypes have a complete set of chains.        │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│gex               │  <span style="color:#c23621;">●</span> median gene expression UMI count                                           │
+│n_gex             │  <span style="color:#5833ff;">●</span> number of cells found by cellranger using GEX or Ab data                   │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│&lt;gene>_g          │  <span style="color:#c23621;">●</span> all five feature types: look for a declared feature of the given type      │
+│&lt;antibody>_ab     │  with the given id or name; report the median UMI count for it; we allow      │
+│&lt;crispr>_cr       │  we also allow &lt;regular expression>_g where g can be replaced by ab, ag, cr   │
+│&lt;custom>_cu       │  or cu; this represents a sum of UMI counts across the matching features. ●   │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│cred              │  Short for credibility.  It is a measure of the extent to which cells         │
+│                  │  having gene expression similar to a given putative B cell are themselves     │
+│                  │  B cells.  (Or similarly for T cells.)  For the actual definition, let n      │
+│                  │  be the number of VDJ cells that are also GEX cells.  For a given cell,       │
+│                  │  find the n GEX cells that are closest to it in PCA space, and report the     │
+│                  │  percent of those that are also VDJ cells.  For multiple datasets, it would   │
+│                  │  be better to "aggr" the data, however that is not currently supported        │
+│                  │  The computation is also inefficient, so let us know if it's causing          │
+│                  │  problems for you.  And cred makes much better sense for datasets that        │
+│                  │  consist of mixed cell types, rather than consisting of pure B or T cells.    │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some        │
+│                  │  default filters (or all default filters, e.g. with NALL_CELL), and this      │
+│                  │  cell would have been deleted by one of the default filters, then this will   │
+│                  │  show the name of the last filter that would have been applied to delete the  │
+│                  │  cell.  Note that there are complex interactions between filters, so the      │
+│                  │  actual effect with all default filters on may be significantly different.    │
+│                  │  Note also that use of NALL_CELL will typically result in peculiar            │
+│                  │  artifacts, so this should only be used as an exploratory tool.               │
+└──────────────────┴───────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
 ● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
@@ -1281,6 +1333,9 @@ that appear once for each chain in each clonotype, and have one entry for each e
  Please note that for medians of integers, we actually report the "rounded median", the result of
 rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
+See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
+
 Per-column variables are specified using
 <span style="font-weight:bold;">CVARS=x1,...,xn</span>
 where each xi is one of:
@@ -1290,8 +1345,6 @@ where each xi is one of:
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │u                │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
 │r                │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│const            │  constant region name                                                        │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │edit             │  a string that defines the edit of the reference V(D)J concatenation versus  │
 │                 │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
@@ -1351,8 +1404,26 @@ where each xi is one of:
 │                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on          │
 │                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_start          │  start of V segment on full DNA sequence                                     │
+│d_start          │  start of D segment on full DNA sequence (or null)                           │
+│cdr3_start       │  base position start of CDR3 sequence on full contig                         │
+│d_frame          │  reading frame of D segment, either 0 or 1 or 2 (or null)                    │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │aa%              │  amino acid percent identity with donor reference, outside junction region   │
 │dna%             │  nucleotide percent identity with donor reference, outside junction region   │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│utr_name         │  name of 5'-UTR region                                                       │
+│v_name           │  name of V region                                                            │
+│d_name           │  name of D region (or null)                                                  │
+│j_name           │  name of J region                                                            │
+│const            │  name of constant region                                                     │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│utr_id           │  id of 5'-UTR region                                                         │
+│v_id             │  id of V region                                                              │
+│d_id             │  id of D region (or null)                                                    │
+│j_id             │  id of J region                                                              │
+│const_id         │  id of constant region (or null, if not known)                               │
+│                 │  (these are the numbers after ">" in the VDJ reference file)                 │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
 │clen             │  length of observed constant region (usually truncated at primer start)      │
@@ -1364,6 +1435,10 @@ where each xi is one of:
 │                 │  (same but contig has 10 additional bases beyond end of ref C region         │
 │                 │  At most five differences are shown, and if there are more, ... is appended. │
 │udiff            │  like cdiff, but for the 5'-UTR                                              │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│q&lt;n>_            │  comma-separated list of the quality                                         │
+│                 │  scores at zero-based position n, numbered starting at the                   │
+│                 │  beginning of the V segment, for each cell in the exact subclonotype         │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │notes            │  optional note if there is an insertion or the end of J does not exactly abut│
 │                 │  the beginning of C; elided if empty; also single base overlaps between      │
@@ -1411,49 +1486,6 @@ At least one variable must be listed.  The default is <span style="font-weight:b
 appends.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-enclone help amino
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-
-There is a complex per-chain column to the left of other per-chain columns, defined by
-<span style="font-weight:bold;">AMINO=x1,...,xn</span>: display amino acid columns for the given categories, in one combined ordered
-group, where each xi is one of:
-
-┌────────┬───────────────────────────────────────────────────────────────────────────────────────┐
-│cdr1    │  CDR1 sequence                                                                        │
-│cdr2    │  CDR2 sequence                                                                        │
-│cdr3    │  CDR3 sequence                                                                        │
-│fwr1    │  FWR1 sequence                                                                        │
-│fwr2    │  FWR2 sequence                                                                        │
-│fwr3    │  FWR3 sequence                                                                        │
-│        │  Notes:                                                                               │
-│        │  1. Please see the page on <span style="color:#25bc24;">bit.ly/enclone</span> about V(D)J features for notes              │
-│        │  on our method and interpretation.                                                    │
-│        │  2. There are circumstances under which these cannot be calculated, most notably in   │
-│        │  cases where something is wrong with the associated reference sequence.  In such      │
-│        │  cases, even though you specify CDR1 or CDR2, they will not be shown.                 │
-│        │  3. If the CDR1 and CDR2 sequences are sufficiently short, the part of the header line│
-│        │  that looks like e.g. ═CDR1═ will get contracted e.g. to DR1 or something even more   │
-│        │  cryptic.  It is also possible that the computed CDR1 or CDR2 is empty.               │
-│        │  4. The same stipulations apply to FWR1, FWR2 and FWR3.                               │
-├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
-│var     │  positions in chain that vary across the clonotype                                    │
-│share   │  positions in chain that differ consistently from the donor reference                 │
-├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
-│donor   │  positions in chain where the donor reference differs from the universal reference    │
-├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
-│donorn  │  positions in chain where the donor reference differs nonsynonymously                 │
-│        │  from the universal reference                                                         │
-├────────┼───────────────────────────────────────────────────────────────────────────────────────┤
-│a-b     │  amino acids numbered a through b (zero-based, inclusive)                             │
-└────────┴───────────────────────────────────────────────────────────────────────────────────────┘
-
-Note that we compute positions in base space, and then divide by three to get positions in amino
-acid space.  Thus it can happen that a position in amino acid space is shown for both <span style="font-weight:bold;">var</span> and <span style="font-weight:bold;">share</span>.
-
-The default value for <span style="font-weight:bold;">AMINO</span> is <span style="font-weight:bold;">cdr3,var,share,donor</span>.  Note that we only report amino acids that
-are strictly within V..J, thus specifically excluding the codon bridging J and C.
-
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help display
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
@@ -1473,8 +1505,8 @@ enclone help display
 │FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,            │
 │               │  near the top of the printout for a given clonotype                             │
 ├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│SUM            │  print sum row for each clonotype                                               │
-│MEAN           │  print mean row for each clonotype                                              │
+│SUM            │  print sum row for each clonotype (sum is across cells)                         │
+│MEAN           │  print mean row for each clonotype (mean is across cells)                       │
 ├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
 │DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,    │
 │               │  show a C if the column lies within a complementarity-determining region,       │

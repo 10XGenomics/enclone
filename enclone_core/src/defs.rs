@@ -437,6 +437,7 @@ pub struct EncloneControl {
     pub clono_group_opt: ClonoGroupOpt,   // grouping options for clonotypes
     pub parseable_opt: ParseableOpt,      // parseable output options
     pub toy: bool,                        // toy with phylogeny
+    pub evil_eye: bool,                   // extra printing to try to trace hangs
 }
 
 pub static mut WALLCLOCK: f64 = 0.0;
@@ -866,23 +867,10 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
             }
         }
         for x in &[
-            "v_name",
-            "d_name",
-            "j_name",
-            "v_id",
-            "d_id",
-            "j_id",
             "var_indices_dna",
             "var_indices_aa",
             "share_indices_dna",
             "share_indices_aa",
-            "v_start",
-            "d_start",
-            "d_frame",
-            "const_id",
-            "utr_id",
-            "utr_name",
-            "cdr3_start",
             "seq",
             "vj_seq",
             "vj_seq_nl",
@@ -907,8 +895,6 @@ pub fn set_speakers(ctl: &EncloneControl, parseable_fields: &mut Vec<String>) {
     speaker!("group_id");
     speaker!("group_ncells");
     speaker!("clonotype_id");
-    speaker!("clonotype_ncells");
-    speaker!("nchains");
     speaker!("exact_subclonotype_id");
     speaker!("barcodes");
     for x in ctl.origin_info.dataset_list.iter() {

@@ -3,13 +3,14 @@
 // This file contains the single function row_fill,
 // plus a small helper function get_gex_matrix_entry.
 
-use crate::print_utils1::*;
 use crate::proc_cvar1::*;
 use crate::proc_cvar2::*;
-use crate::proc_lvar::*;
+use crate::proc_lvar1::*;
+use crate::proc_lvar2::*;
 use amino::*;
 use enclone_core::allowed_vars::*;
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_proto::types::*;
 use itertools::*;
 use ndarray::s;
@@ -57,8 +58,9 @@ pub fn row_fill(
     lvarsc: &Vec<String>,
     nd_fields: &Vec<String>,
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
-    extra_parseables: &Vec<String>,
     extra_args: &Vec<String>,
+    all_vars: &Vec<String>,
+    fate: &Vec<HashMap<String, String>>,
 ) {
     // Redefine some things to reduce dependencies.
 
@@ -115,6 +117,7 @@ pub fn row_fill(
             }
         };
     }
+
     let cols = varmat[0].len();
     if ctl.gen_opt.row_fill_verbose {
         eprintln!("");
@@ -325,7 +328,7 @@ pub fn row_fill(
     unique_sort(&mut alt_bcs);
     for i in 0..all_lvars.len() {
         let x = &all_lvars[i];
-        proc_lvar(
+        if !proc_lvar1(
             i,
             &x,
             pass,
@@ -364,7 +367,50 @@ pub fn row_fill(
             &entropies_unsorted,
             &fcounts,
             &extra_args,
-        );
+            &fate,
+        ) {
+            let _ = proc_lvar2(
+                i,
+                &x,
+                pass,
+                u,
+                &ctl,
+                &exacts,
+                &mults,
+                &exact_clonotypes,
+                &gex_info,
+                &refdata,
+                &varmat,
+                &fp,
+                row,
+                out_data,
+                d_all,
+                ind_all,
+                &rsi,
+                &dref,
+                &groups,
+                stats,
+                &vdj_cells,
+                &n_vdj_gex,
+                &nd_fields,
+                &lvars,
+                &lenas,
+                &alt_bcs,
+                n_gex,
+                &n_gexs,
+                gex_min,
+                gex_max,
+                gex_mean,
+                gex_sum,
+                gex_median,
+                &count_unsorted,
+                entropy,
+                &entropies_unsorted,
+                &fcounts,
+                &extra_args,
+                &fate,
+            );
+        }
     }
 
     // Sanity check.  It's here because if it fails and that failure was not detected, something
@@ -409,6 +455,121 @@ pub fn row_fill(
     // Traverse the chains.
 
     for col in 0..cols {
+        // Set up chain variable macro.  This is the mechanism for generating
+        // both human-readable and parseable output for chain variables.
+
+        macro_rules! cvar {
+            ($i: expr, $var:expr, $val:expr) => {
+                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                    cx[col][$i] = $val.clone();
+                }
+                speakc!(u, col, $var, $val);
+            };
+        }
+        macro_rules! cvar_stats1 {
+            ($i: expr, $var:expr, $val:expr) => {
+                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
+                    cx[col][$i] = $val.clone();
+                }
+                speakc!(u, col, $var, $val);
+                let varc = format!("{}{}", $var, col + 1);
+                if $val.parse::<f64>().is_ok() {
+                    stats.push((varc, vec![$val.force_f64(); ex.ncells()]));
+                }
+            };
+        }
+
+        // Process variables that need to be computed even if the chain entry is empty.
+
+        let rsi_vars = &ctl.clono_print_opt.cvars;
+        let have_notes = rsi.cvars[col].contains(&"notes".to_string());
+        let mut notes_pos = 0;
+        let mut notes_in = false;
+        for j in 0..rsi_vars.len() {
+            if all_vars[j] == "notes" {
+                notes_pos = j;
+                notes_in = true;
+            }
+        }
+        for j in 0..all_vars.len() {
+            let mut jj = j;
+            if !have_notes && notes_in && j >= notes_pos {
+                jj -= 1;
+            }
+
+            // Decide if there is nothing to compute.  This is almost certainly not optimal.
+            // Also largely duplicated below.
+
+            let mut needed = false;
+            let var = &all_vars[j];
+            let varc = format!("{}{}", var, col + 1);
+            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
+                needed = true;
+            } else if pass == 2
+                && ctl.parseable_opt.pout.len() > 0
+                && col + 1 <= ctl.parseable_opt.pchains
+                && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
+            {
+                needed = true;
+            }
+            if extra_args.contains(&varc) {
+                needed = true;
+            }
+            if !needed {
+                continue;
+            }
+            let col_var = jj < rsi_vars.len();
+            if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
+                continue;
+            }
+
+            // Process some variables.
+
+            if *var == "v_name" {
+                cvar![j, var, refdata.name[rsi.vids[col]]];
+            } else if *var == "v_id" {
+                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
+            } else if *var == "d_name" {
+                let mut dname = String::new();
+                if rsi.dids[col].is_some() {
+                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
+                }
+                cvar![j, var, dname];
+            } else if *var == "d_id" {
+                let mut did = String::new();
+                if rsi.dids[col].is_some() {
+                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
+                }
+                cvar_stats1![j, var, did];
+            } else if *var == "j_name" {
+                cvar![j, var, refdata.name[rsi.jids[col]]];
+            } else if *var == "j_id" {
+                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
+            } else if *var == "v_name" {
+                cvar![j, var, refdata.name[rsi.vids[col]]];
+            } else if *var == "v_id" {
+                cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
+            } else if *var == "d_name" {
+                let mut dname = String::new();
+                if rsi.dids[col].is_some() {
+                    dname = refdata.name[rsi.dids[col].unwrap()].clone();
+                }
+                cvar![j, var, dname];
+            } else if *var == "d_id" {
+                let mut did = String::new();
+                if rsi.dids[col].is_some() {
+                    did = format!("{}", refdata.id[rsi.dids[col].unwrap()]);
+                }
+                cvar_stats1![j, var, did];
+            } else if *var == "j_name" {
+                cvar![j, var, refdata.name[rsi.jids[col]]];
+            } else if *var == "j_id" {
+                cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
+            }
+        }
+
+        // Keep going.
+
         let mid = mat[col][u];
         if mid.is_none() {
             continue;
@@ -438,26 +599,6 @@ pub fn row_fill(
         let r_max = *nreads.iter().max().unwrap();
         let median_nreads = rounded_median(&nreads);
 
-        // Speak quality score column entries.
-
-        if ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains {
-            for i in 0..pcols_sort.len() {
-                if pcols_sort[i].starts_with('q')
-                    && pcols_sort[i].ends_with(&format!("_{}", col + 1))
-                {
-                    let n = pcols_sort[i].after("q").rev_before("_").force_usize();
-                    if n < ex.share[mid].seq.len() {
-                        let mut quals = Vec::<u8>::new();
-                        for j in 0..ex.clones.len() {
-                            quals.push(ex.clones[j][mid].quals[n]);
-                        }
-                        let q = format!("{}", quals.iter().format(","));
-                        out_data[u].insert(pcols_sort[i].clone(), q);
-                    }
-                }
-            }
-        }
-
         // Speak some other column entries.
 
         let xm = &ex.share[mid];
@@ -476,26 +617,6 @@ pub fn row_fill(
             stringme(&xm.seq[xm.fr1_start..])
         );
         speakc!(u, col, "seq".to_string(), stringme(&xm.full_seq));
-        speakc!(u, col, "v_start".to_string(), xm.v_start);
-        let (mut d_start, mut d_frame) = (String::new(), String::new());
-        if xm.d_start.is_some() {
-            d_start = format!("{}", xm.d_start.unwrap());
-            d_frame = format!("{}", (xm.d_start.unwrap() - xm.v_start) % 3);
-        }
-        speakc!(u, col, "d_start".to_string(), d_start);
-        speakc!(u, col, "d_frame".to_string(), d_frame);
-        let cid = xm.c_ref_id;
-        if cid.is_some() {
-            let cid = cid.unwrap();
-            speakc!(u, col, "const_id".to_string(), refdata.id[cid]);
-        }
-        let uid = ex.share[mid].u_ref_id;
-        if uid.is_some() {
-            let uid = uid.unwrap();
-            speakc!(u, col, "utr_id".to_string(), refdata.id[uid]);
-            speakc!(u, col, "utr_name".to_string(), refdata.name[uid]);
-        }
-        speakc!(u, col, "cdr3_start".to_string(), xm.cdr3_start);
         let mut vv = Vec::<usize>::new();
         for x in vars_amino[col].iter() {
             vv.push(*x / 3);
@@ -514,52 +635,23 @@ pub fn row_fill(
         }
         speakc!(u, col, "var_aa".to_string(), strme(&varaa));
 
-        // Define all_vars.
-
-        let rsi_vars = &rsi.cvars[col];
-        let mut all_vars = rsi_vars.clone();
-        for j in 0..CVARS_ALLOWED.len() {
-            let var = &CVARS_ALLOWED[j];
-            if !rsi_vars.contains(&var.to_string()) {
-                all_vars.push(var.to_string());
-            }
-        }
-        for j in 0..CVARS_ALLOWED_PCELL.len() {
-            let var = &CVARS_ALLOWED_PCELL[j];
-            if !rsi_vars.contains(&var.to_string()) {
-                all_vars.push(var.to_string());
-            }
-        }
-        all_vars.append(&mut extra_parseables.clone());
-        for x in extra_args.iter() {
-            if !rsi_vars.contains(&x) {
-                all_vars.push(x.clone());
-            }
-        }
-
         // Create column entry.
 
-        let mut somelist = vec![false; all_vars.len()];
         for j in 0..all_vars.len() {
-            let var = &all_vars[j];
-            let varc = format!("{}{}", var, col + 1);
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
-                somelist[j] = true;
-            } else if pass == 2
-                && ctl.parseable_opt.pout.len() > 0
-                && col + 1 <= ctl.parseable_opt.pchains
-                && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
-            {
-                somelist[j] = true;
+            let mut jj = j;
+            if !have_notes && notes_in && j >= notes_pos {
+                jj -= 1;
             }
-        }
-        for j in 0..all_vars.len() {
+            if all_vars[j] == "notes" && !have_notes {
+                continue;
+            }
+
             // Decide if there is nothing to compute.  This is almost certainly not optimal.
 
             let mut needed = false;
             let var = &all_vars[j];
             let varc = format!("{}{}", var, col + 1);
-            if j < rsi.cvars[col].len() && cvars.contains(&var) {
+            if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 needed = true;
             } else if pass == 2
                 && ctl.parseable_opt.pout.len() > 0
@@ -580,7 +672,7 @@ pub fn row_fill(
             if !needed {
                 continue;
             }
-            let col_var = j < rsi_vars.len();
+            let col_var = jj < rsi_vars.len();
             if !col_var && ctl.parseable_opt.pout.len() == 0 && extra_args.is_empty() {
                 continue;
             }
@@ -589,7 +681,7 @@ pub fn row_fill(
 
             if !proc_cvar1(
                 &var,
-                j,
+                jj,
                 col,
                 mid,
                 pass,
@@ -621,10 +713,11 @@ pub fn row_fill(
                 r_mean,
                 rtot,
                 &extra_args,
+                stats,
             ) {
                 let _ = proc_cvar2(
                     &var,
-                    j,
+                    jj,
                     col,
                     mid,
                     pass,
@@ -656,6 +749,7 @@ pub fn row_fill(
                     r_mean,
                     rtot,
                     &extra_args,
+                    stats,
                 );
             }
         }

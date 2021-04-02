@@ -42,12 +42,17 @@ gtag('config', 'UA-58278925-3');
 <body>
 
 <br>
+<a href="../../index.html#help">
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">per-chain column options</span>: These options define per-chain variables, which correspond to columns
 that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
  Please note that for medians of integers, we actually report the "rounded median", the result of
 rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
+
+See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
 
 Per-column variables are specified using
 <span style="font-weight:bold;">CVARS=x1,...,xn</span>
@@ -58,8 +63,6 @@ where each xi is one of:
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │u                │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
 │r                │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│const            │  constant region name                                                        │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │edit             │  a string that defines the edit of the reference V(D)J concatenation versus  │
 │                 │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
@@ -119,8 +122,26 @@ where each xi is one of:
 │                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on          │
 │                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_start          │  start of V segment on full DNA sequence                                     │
+│d_start          │  start of D segment on full DNA sequence (or null)                           │
+│cdr3_start       │  base position start of CDR3 sequence on full contig                         │
+│d_frame          │  reading frame of D segment, either 0 or 1 or 2 (or null)                    │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │aa%              │  amino acid percent identity with donor reference, outside junction region   │
 │dna%             │  nucleotide percent identity with donor reference, outside junction region   │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│utr_name         │  name of 5'-UTR region                                                       │
+│v_name           │  name of V region                                                            │
+│d_name           │  name of D region (or null)                                                  │
+│j_name           │  name of J region                                                            │
+│const            │  name of constant region                                                     │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│utr_id           │  id of 5'-UTR region                                                         │
+│v_id             │  id of V region                                                              │
+│d_id             │  id of D region (or null)                                                    │
+│j_id             │  id of J region                                                              │
+│const_id         │  id of constant region (or null, if not known)                               │
+│                 │  (these are the numbers after ">" in the VDJ reference file)                 │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
 │clen             │  length of observed constant region (usually truncated at primer start)      │
@@ -132,6 +153,10 @@ where each xi is one of:
 │                 │  (same but contig has 10 additional bases beyond end of ref C region         │
 │                 │  At most five differences are shown, and if there are more, ... is appended. │
 │udiff            │  like cdiff, but for the 5'-UTR                                              │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│q&lt;n>_            │  comma-separated list of the quality                                         │
+│                 │  scores at zero-based position n, numbered starting at the                   │
+│                 │  beginning of the V segment, for each cell in the exact subclonotype         │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │notes            │  optional note if there is an insertion or the end of J does not exactly abut│
 │                 │  the beginning of C; elided if empty; also single base overlaps between      │

@@ -3,7 +3,9 @@
 <body>
 
 <br>
+<a href="../../index.html#help">
 <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -168,6 +170,8 @@ To run the main tests, type:
 There is also a very large test, which can only be run internally, which one runs by
 <code>./enclone/enclone.test</code>.
 </p>
+
+<p>An individual test can be run e.g. by <code>cargo t test_cpu_usage</code>.</p>
 
 <p>Pull requests trigger <code>./testx</code> (via GitHub Actions) and the very large test
 (via Jenkins).  Note that the internal main test includes tests that are not tested as

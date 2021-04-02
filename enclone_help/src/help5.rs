@@ -51,8 +51,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "print full sequence for each chain in the first exact subclonotype,",
         );
         h.doc("", "near the top of the printout for a given clonotype");
-        h.ldoc("SUM", "print sum row for each clonotype");
-        h.doc("MEAN", "print mean row for each clonotype");
+        h.ldoc(
+            "SUM",
+            "print sum row for each clonotype (sum is across cells)",
+        );
+        h.doc(
+            "MEAN",
+            "print mean row for each clonotype (mean is across cells)",
+        );
 
         h.rows.push(vec!["\\hline".to_string(); 2]);
         h.docf2(

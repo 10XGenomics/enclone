@@ -19,6 +19,9 @@ use tilde_expand::*;
 pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Knobs.
 
+    if ctl.evil_eye {
+        println!("processing args");
+    }
     let targs = Instant::now();
     let heur = ClonotypeHeuristics {
         max_diffs: 55,
@@ -35,7 +38,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     let mut args2 = Vec::<String>::new();
     args2.push(args[0].clone());
     for (key, value) in env::vars() {
-        if key.starts_with("ENCLONE_") {
+        if key.starts_with("ENCLONE_") && key != "ENCLONE_CONFIG" {
             args2.push(format!("{}={}", key.after("ENCLONE_"), value));
         }
     }
@@ -59,10 +62,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Test for internal run.
 
+    if ctl.evil_eye {
+        println!("testing for internal run");
+    }
     for (key, value) in env::vars() {
         if key.contains("USER") && value.ends_with("10xgenomics.com") {
+            if ctl.evil_eye {
+                println!("getting config");
+            }
             if get_config(&mut ctl.gen_opt.config) {
                 ctl.gen_opt.internal_run = true;
+            }
+            if ctl.evil_eye {
+                println!("got config");
             }
             break;
         }
@@ -73,6 +85,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         }
     }
     if ctl.gen_opt.internal_run {
+        if ctl.evil_eye {
+            println!("detected internal run");
+        }
         let earth_path = format!(
             "{}/current{}",
             ctl.gen_opt.config["earth"], TEST_FILES_VERSION
@@ -100,6 +115,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process special option SPLIT_COMMAND.
 
+    if ctl.evil_eye {
+        println!("at split command");
+    }
     let mut split = false;
     for i in 1..args.len() {
         if args[i] == "SPLIT_BY_COMMAND" {
@@ -139,6 +157,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Set up general options.
 
+    if ctl.evil_eye {
+        println!("setting up general options");
+    }
     ctl.gen_opt.h5_pre = true;
     ctl.gen_opt.min_cells_exact = 1;
     ctl.gen_opt.min_chains_exact = 1;
@@ -560,6 +581,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         "COMP2",
         "CTRLC",
         "DUMP_INTERNAL_IDS",
+        "EVIL_EYE",
         "FORCE_EXTERNAL",
         "LONG_HELP",
         "MARKED_B",
@@ -589,8 +611,14 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Traverse arguments.
 
     let mut processed = vec![true; args.len()];
+    if ctl.evil_eye {
+        println!("starting main args loop");
+    }
     'args_loop: for i in 1..args.len() {
         let mut arg = args[i].to_string();
+        if ctl.evil_eye {
+            println!("processing arg = {}", arg);
+        }
 
         // Replace deprecated option.
 
@@ -667,6 +695,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             if is_string_arg(&arg, var) {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable[j].1;
+                if ctl.evil_eye {
+                    println!("creating file {} to test writability", val);
+                }
                 let f = File::create(&val);
                 if f.is_err() {
                     eprintln!(
@@ -686,7 +717,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     eprintln!("");
                     std::process::exit(1);
                 }
+                if ctl.evil_eye {
+                    println!("removing file {}", val);
+                }
                 remove_file(&val).expect(&format!("could not remove file {}", val));
+                if ctl.evil_eye {
+                    println!("removal of file {} complete", val);
+                }
                 continue 'args_loop;
             }
         }
@@ -700,6 +737,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                     arg.after(&format!("{}=", var)).to_string();
                 let val = &set_string_writeable_or_stdout[j].1;
                 if *val != "stdout" {
+                    if ctl.evil_eye {
+                        println!("creating file {} to test writability, not stdout", val);
+                    }
                     let f = File::create(&val);
                     if f.is_err() {
                         eprintln!(
@@ -719,7 +759,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                         eprintln!("");
                         std::process::exit(1);
                     }
+                    if ctl.evil_eye {
+                        println!("removing file {}", val);
+                    }
                     remove_file(&val).expect(&format!("could not remove file {}", val));
+                }
+                if ctl.evil_eye {
+                    println!("removal of file {} complete", val);
                 }
                 continue 'args_loop;
             }
@@ -737,12 +783,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 }
                 val = stringme(&tilde_expand(&val.as_bytes()));
                 *(set_string_readable[j].1) = Some(val.clone());
+                if ctl.evil_eye {
+                    println!("testing ability to open file {}", val);
+                }
                 if let Err(e) = File::open(&val) {
                     eprintln!(
                         "\nYou've specified an input file\n{}\nthat cannot be read due to {}\n",
                         val, e
                     );
                     std::process::exit(1);
+                }
+                if ctl.evil_eye {
+                    println!("file open complete");
                 }
                 continue 'args_loop;
             }
@@ -799,6 +851,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Process remaining args.
 
+    if ctl.evil_eye {
+        println!("processing remaining args");
+    }
     for i in 1..args.len() {
         if processed[i] {
             continue;
@@ -825,29 +880,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 }
 
 pub fn get_config(config: &mut HashMap<String, String>) -> bool {
-    let mut targa = String::new();
+    let mut config_file = String::new();
     for (key, value) in env::vars() {
-        if key == "HOME" {
-            targa = value.between("/", "/").to_string();
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
         }
     }
-    let d = dir_list(&format!("/{}", &targa));
-    let mut c = String::new();
-    let mut found = false;
-    for x in d.iter() {
-        c = format!("/{}/{}/enclone_config", targa, x);
-        if path_exists(&c) {
-            found = true;
-            break;
+    if config_file.len() > 0 && path_exists(&config_file) {
+        let f = open_for_read![&config_file];
+        for line in f.lines() {
+            let s = line.unwrap();
+            config.insert(s.before("=").to_string(), s.after("=").to_string());
         }
+        return true;
     }
-    if !found {
-        return false;
-    }
-    let f = open_for_read![&c];
-    for line in f.lines() {
-        let s = line.unwrap();
-        config.insert(s.before("=").to_string(), s.after("=").to_string());
-    }
-    true
+    false
 }

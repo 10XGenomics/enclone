@@ -5,6 +5,7 @@
 use crate::group::*;
 use crate::plot::*;
 use enclone_core::defs::*;
+use enclone_core::median::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use ndarray::s;
@@ -17,15 +18,6 @@ use string_utils::*;
 use tables::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
-
-pub fn median_f64(x: &[f64]) -> f64 {
-    let h = x.len() / 2;
-    if x.len() % 2 == 1 {
-        x[h]
-    } else {
-        (x[h - 1] + x[h]) / 2.0
-    }
-}
 
 pub fn tail_code(
     tall: &Instant,
