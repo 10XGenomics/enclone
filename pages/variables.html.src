@@ -994,7 +994,7 @@ is not present for an exact subclonotype.
 <p>
 <table>
 <tr><td>3: <code>PER_CELL</code>values are not displayed because they are all <code>1</code>,
-           which would be distracting</td></tr>
+           which would be distracting; also there is no <code>_cell</code> version</td></tr>
 </table>
 </p>
 
