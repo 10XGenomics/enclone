@@ -17,6 +17,7 @@ publish = false
 
 [dependencies]
 amino = "0.1"
+chrono = "0.4.19"
 debruijn = "0.3.2"
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
