@@ -30,7 +30,11 @@ The following table enumerates the filters, in order of application, along with 
 of what they do.  Please understand that in general, artifactual barcodes cannot be surgically
 removed by sharply defined tests.  Rather, the filters are <i>heuristic</i>, and have the
 cumulative effect of removing nearly all artifacts (in most cases), while removing few valid
-barcodes.</p>
+barcodes.  In the #enclone codebase, there are regression tests, some of which provide
+representative examples for filtering.  When we modify the filters, we examine the effect on
+these examples, and add others as needed as protection against accidentally deterioration of
+performance.
+</p>
 
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
@@ -46,7 +50,7 @@ barcodes.</p>
 <tr>
 <td align="left"> 1                                                                        </td>
 <td align="left"> cell filter                                                              </td>
-<td align="left"> remove barcodes not called cells in <code>cellranger</code> VDJ pipeline </td>
+<td align="left"> remove barcodes not called cells in Cell Ranger VDJ pipeline             </td>
 </tr>
 
 <tr>
@@ -87,54 +91,48 @@ barcodes.</p>
 
 <tr>
 <td align="left"> 8                                                                        </td>
-<td align="left"> improper filter                                                          </td>
-<td align="left"> remove exact subclonotypes having multiple chains, all of the same type  </td>
-</tr>
-
-<tr>
-<td align="left"> 9                                                                        </td>
 <td align="left"> weak onesie filter                                                       </td>
 <td align="left"> disintegrate some single-chain clonotypes into single cells              </td>
 </tr>
 
 <tr>
-<td align="left"> 10                                                                       </td>
+<td align="left"> 9                                                                        </td>
 <td align="left"> UMI filter                                                               </td>
 <td align="left"> remove some B cells having very low UMI counts                           </td>
 </tr>
 
 <tr>
-<td align="left"> 11                                                                       </td>
+<td align="left"> 10                                                                       </td>
 <td align="left"> UMI ratio filter                                                         </td>
 <td align="left"> remove some B cells having very low UMI counts,  relative to clonotype   </td>
 </tr>
 
 <tr>
-<td align="left"> 12                                                                       </td>
+<td align="left"> 11                                                                       </td>
 <td align="left"> GEX filter                                                               </td>
 <td align="left"> remove cells called by VDJ pipeline but not by GEX pipeline              </td>
 </tr>
 
 <tr>
-<td align="left"> 13                                                                       </td>
+<td align="left"> 12                                                                       </td>
 <td align="left"> doublet filter                                                           </td>
 <td align="left"> remove some barcodes that appear to represent doublets                   </td>
 </tr>
 
 <tr>
-<td align="left"> 14                                                                       </td>
+<td align="left"> 13                                                                       </td>
 <td align="left"> onesie merger                                                            </td>
 <td align="left"> prevent merger of some single-chain clonotypes into other clonotypes     </td>
 </tr>
 
 <tr>
-<td align="left"> 15                                                                       </td>
+<td align="left"> 14                                                                       </td>
 <td align="left"> quality merger                                                           </td>
 <td align="left"> filter out exact subclonotypes having a position with low quality scores </td>
 </tr>
 
 <tr>
-<td align="left"> 16                                                                       </td>
+<td align="left"> 15                                                                       </td>
 <td align="left"> weak chain filter                                                        </td>
 <td align="left"> remove cells having a chain that is probably spurious                    </td>
 </tr>
