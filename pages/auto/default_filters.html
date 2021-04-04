@@ -181,6 +181,29 @@ provide more details about the filters.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
+made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
+observed in different libraries should be statistically consistent.  Otherwise, they likely 
+represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
+apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
+specified):
+</p>
+
+<p>
+If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
+<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
+the total number of productive pairs for all datasets from the same origin.  
+If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
+instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
+V..J segment that do not have at least <code>100</code> supporting UMIs.
+</p>
+
+<p>This test could clearly be strengthened.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
 <p><b>Foursie filtering.</b>  
 Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
 <i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
@@ -277,79 +300,6 @@ and which are deleted if the foursie filtering is on:
 │1  34      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  57  IGHM   │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  207  IGKC  │
 └───────────┴─────────────────────────────────────┴───────────────────────────┘
 </span></pre>
-
-<hr>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
-made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
-observed in different libraries should be statistically consistent.  Otherwise, they likely 
-represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
-apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
-specified):
-</p>
-
-<p>
-If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
-<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
-the total number of productive pairs for all datasets from the same origin.  
-If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
-instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
-V..J segment that do not have at least <code>100</code> supporting UMIs.
-</p>
-
-<p>This test could clearly be strengthened.</p>
-
-<hr>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<p><b>Doublet filtering.</b>
-This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
-higher-order multiplets).  The first Cell Ranger version in which this appeared was 6.0.</p>
-
-<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
-clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
-have entries for particular chains (and not entries for the other chains) are merged together to
-form a pure subclonotype.</p>
-
-<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
-pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
-subclonotypes that have only one chain.</p>
-
-<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
-the following three conditions are all satisfied:
-<ul>
-<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
-<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
-<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
-</ul>
-</p>
-
-<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
-subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
-the original clonotypes may break up into separate clonotypes, as they may no longer be held 
-together by shared chains.</p>
-
-<p>If the argument <code>NDOUBLET</code> is supplied to <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, then doublet filtering is
-not applied.</p>
-
-<hr>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
-is a chain that appears in a relatively small number of cells, we delete all the cells that support
-that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
-condition is that the number of cells supporting the chain is at most <code>20</code>, and 
-<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
-
-<br>
-
-For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
-point after Cell Ranger 6.0.
-
 <hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
@@ -419,6 +369,56 @@ Let <code>k</code> be the number of cells to be deleted in clonotype having <cod
 cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
 probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
 less then <code>0.01</code>.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Doublet filtering.</b>
+This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
+higher-order multiplets).  The first Cell Ranger version in which this appeared was 6.0.</p>
+
+<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
+clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
+have entries for particular chains (and not entries for the other chains) are merged together to
+form a pure subclonotype.</p>
+
+<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
+pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
+subclonotypes that have only one chain.</p>
+
+<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
+the following three conditions are all satisfied:
+<ul>
+<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
+<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
+<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
+</ul>
+</p>
+
+<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
+subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
+the original clonotypes may break up into separate clonotypes, as they may no longer be held 
+together by shared chains.</p>
+
+<p>If the argument <code>NDOUBLET</code> is supplied to <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, then doublet filtering is
+not applied.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
+is a chain that appears in a relatively small number of cells, we delete all the cells that support
+that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
+condition is that the number of cells supporting the chain is at most <code>20</code>, and 
+<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
+
+<br>
+
+For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
+point after Cell Ranger 6.0.
+
 
 </body>
 </html>

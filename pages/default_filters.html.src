@@ -147,33 +147,6 @@ provide more details about the filters.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<p><b>Foursie filtering.</b>  
-Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
-<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
-the actual biology of single cells, we do not do this.  However we never merge them with other
-exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
-doublets.  Specifically, for each foursie exact subclonotype, #enclone looks at each pair of two 
-chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
-appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
-subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
-clonotypes that are present if the filtering is off:
-
-<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
-</code></pre>
-
-#include pages/auto/foursie1.html
-
-and which are deleted if the foursie filtering is on:
-
-<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW
-</code></pre>
-
-#include pages/auto/foursie2.html
-
-<hr>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
 <p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
 made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
 observed in different libraries should be statistically consistent.  Otherwise, they likely 
@@ -197,51 +170,28 @@ V..J segment that do not have at least <code>100</code> supporting UMIs.
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<p><b>Doublet filtering.</b>
-This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
-higher-order multiplets).  The first Cell Ranger version in which this appeared was 6.0.</p>
+<p><b>Foursie filtering.</b>  
+Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
+<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
+the actual biology of single cells, we do not do this.  However we never merge them with other
+exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
+doublets.  Specifically, for each foursie exact subclonotype, #enclone looks at each pair of two 
+chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
+appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
+subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
+clonotypes that are present if the filtering is off:
 
-<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
-clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
-have entries for particular chains (and not entries for the other chains) are merged together to
-form a pure subclonotype.</p>
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
+</code></pre>
 
-<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
-pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
-subclonotypes that have only one chain.</p>
+#include pages/auto/foursie1.html
 
-<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
-the following three conditions are all satisfied:
-<ul>
-<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
-<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
-<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
-</ul>
-</p>
+and which are deleted if the foursie filtering is on:
 
-<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
-subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
-the original clonotypes may break up into separate clonotypes, as they may no longer be held 
-together by shared chains.</p>
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW
+</code></pre>
 
-<p>If the argument <code>NDOUBLET</code> is supplied to #enclone, then doublet filtering is
-not applied.</p>
-
-<hr>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
-<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
-is a chain that appears in a relatively small number of cells, we delete all the cells that support
-that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
-condition is that the number of cells supporting the chain is at most <code>20</code>, and 
-<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
-
-<br>
-
-For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
-point after Cell Ranger 6.0.
-
+#include pages/auto/foursie2.html
 <hr>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
@@ -311,6 +261,56 @@ Let <code>k</code> be the number of cells to be deleted in clonotype having <cod
 cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
 probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
 less then <code>0.01</code>.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Doublet filtering.</b>
+This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
+higher-order multiplets).  The first Cell Ranger version in which this appeared was 6.0.</p>
+
+<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
+clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
+have entries for particular chains (and not entries for the other chains) are merged together to
+form a pure subclonotype.</p>
+
+<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
+pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
+subclonotypes that have only one chain.</p>
+
+<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
+the following three conditions are all satisfied:
+<ul>
+<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
+<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
+<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
+</ul>
+</p>
+
+<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
+subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
+the original clonotypes may break up into separate clonotypes, as they may no longer be held 
+together by shared chains.</p>
+
+<p>If the argument <code>NDOUBLET</code> is supplied to #enclone, then doublet filtering is
+not applied.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
+is a chain that appears in a relatively small number of cells, we delete all the cells that support
+that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
+condition is that the number of cells supporting the chain is at most <code>20</code>, and 
+<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
+
+<br>
+
+For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
+point after Cell Ranger 6.0.
+
 
 </body>
 </html>
