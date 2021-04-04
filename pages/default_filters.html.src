@@ -31,9 +31,8 @@ of what they do.  Please understand that in general, artifactual barcodes cannot
 removed by sharply defined tests.  Rather, the filters are <i>heuristic</i>, and have the
 cumulative effect of removing nearly all artifacts (in most cases), while removing few valid
 barcodes.  In the #enclone codebase, there are regression tests, some of which provide
-representative examples for filtering.  When we modify the filters, we examine the effect on
-these examples, and add others as needed as protection against accidentally deterioration of
-performance.
+representative examples for filtering.  When we modify the filters, we examine the effect on these
+examples, and add others as needed as protection against accidental deterioration of performance.
 </p>
 
 <p>
