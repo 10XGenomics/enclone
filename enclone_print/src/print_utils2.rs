@@ -458,14 +458,6 @@ pub fn row_fill(
         // Set up chain variable macro.  This is the mechanism for generating
         // both human-readable and parseable output for chain variables.
 
-        macro_rules! cvar {
-            ($i: expr, $var:expr, $val:expr) => {
-                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                    cx[col][$i] = $val.clone();
-                }
-                speakc!(u, col, $var, $val);
-            };
-        }
         macro_rules! cvar_stats1 {
             ($i: expr, $var:expr, $val:expr) => {
                 if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
@@ -524,7 +516,7 @@ pub fn row_fill(
             // Process some variables.
 
             if *var == "v_name" {
-                cvar![j, var, refdata.name[rsi.vids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
@@ -532,7 +524,7 @@ pub fn row_fill(
                 if rsi.dids[col].is_some() {
                     dname = refdata.name[rsi.dids[col].unwrap()].clone();
                 }
-                cvar![j, var, dname];
+                cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
                 let mut did = String::new();
                 if rsi.dids[col].is_some() {
@@ -540,11 +532,11 @@ pub fn row_fill(
                 }
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
-                cvar![j, var, refdata.name[rsi.jids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
             } else if *var == "j_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
             } else if *var == "v_name" {
-                cvar![j, var, refdata.name[rsi.vids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
@@ -552,7 +544,7 @@ pub fn row_fill(
                 if rsi.dids[col].is_some() {
                     dname = refdata.name[rsi.dids[col].unwrap()].clone();
                 }
-                cvar![j, var, dname];
+                cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
                 let mut did = String::new();
                 if rsi.dids[col].is_some() {
@@ -560,7 +552,7 @@ pub fn row_fill(
                 }
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
-                cvar![j, var, refdata.name[rsi.jids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
             } else if *var == "j_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
             }
