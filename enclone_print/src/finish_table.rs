@@ -25,7 +25,7 @@ pub fn finish_table(
     peer_groups: &Vec<Vec<(usize, u8, u32)>>,
     mlog: &mut Vec<u8>,
     logz: &mut String,
-    stats: &Vec<(String, Vec<f64>)>,
+    stats: &Vec<(String, Vec<String>)>,
     sr: &mut Vec<(Vec<String>, Vec<Vec<String>>, Vec<Vec<u8>>, usize)>,
     extra_args: &Vec<String>,
     pcols_sort: &Vec<String>,
@@ -162,7 +162,9 @@ pub fn finish_table(
                 if stats[j].0 == x {
                     found = true;
                     for k in 0..stats[j].1.len() {
-                        total += stats[j].1[k];
+                        if stats[j].1[k].parse::<f64>().is_ok() {
+                            total += stats[j].1[k].force_f64();
+                        }
                     }
                 }
             }
@@ -198,7 +200,9 @@ pub fn finish_table(
                 if stats[j].0 == x {
                     found = true;
                     for k in 0..stats[j].1.len() {
-                        total += stats[j].1[k];
+                        if stats[j].1[k].parse::<f64>().is_ok() {
+                            total += stats[j].1[k].force_f64();
+                        }
                     }
                 }
             }

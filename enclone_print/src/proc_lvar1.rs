@@ -66,7 +66,7 @@ pub fn proc_lvar1(
     rsi: &ColInfo,
     _dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
-    stats: &mut Vec<(String, Vec<f64>)>,
+    stats: &mut Vec<(String, Vec<String>)>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     nd_fields: &Vec<String>,
@@ -139,7 +139,7 @@ pub fn proc_lvar1(
                 speak!(u, $var.to_string(), $val);
             }
             if $val.parse::<f64>().is_ok() {
-                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
+                stats.push(($var.to_string(), vec![$val; ex.ncells()]));
             }
         };
     }
@@ -183,10 +183,8 @@ pub fn proc_lvar1(
                         let val = &ctl.gen_opt.info_data[&tag][q];
                         lvar![i, x, val.clone()];
                         lvarred = true;
-                        if val.parse::<f64>().is_ok() {
-                            found = true;
-                            stats.push((x.to_string(), vec![val.force_f64(); ex.ncells()]));
-                        }
+                        found = true;
+                        stats.push((x.to_string(), vec![val.to_string(); ex.ncells()]));
                     }
                 }
                 if !lvarred {
@@ -281,7 +279,7 @@ pub fn proc_lvar1(
             speak!(u, x, format!("{}", donors.iter().format(POUT_SEP)));
         }
     } else if x == "n" {
-        let counts = vec![1.0; mults[u]];
+        let counts = vec!["1.0".to_string(); mults[u]];
         lvar_stats![i, x, format!("{}", mults[u]), counts];
     } else if x == "clust" {
         let mut clust = Vec::<usize>::new();
@@ -294,15 +292,15 @@ pub fn proc_lvar1(
             }
             clust.push(cid);
         }
-        let mut clustf = Vec::<f64>::new();
+        let mut clustf = Vec::<String>::new();
         for x in clust.iter() {
-            clustf.push(*x as f64);
+            clustf.push(format!("{}", x));
         }
         clust.sort();
         lvar_stats![i, x, format!("{}", abbrev_list(&clust)), clustf];
     } else if x == "n_other" {
         let mut n = 0;
-        let mut ns = Vec::<f64>::new();
+        let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let mut found = false;
             let di = ex.clones[j][0].dataset_index;
@@ -314,24 +312,24 @@ pub fn proc_lvar1(
             }
             if !found {
                 n += 1;
-                ns.push(1.0);
+                ns.push("1.0".to_string());
             } else {
-                ns.push(0.0);
+                ns.push("0.0".to_string());
             }
         }
         lvar_stats![i, x, format!("{}", n), ns];
     } else if x == "n_b" {
         let mut n_b = 0;
-        let mut ns = Vec::<f64>::new();
+        let mut ns = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let bc = &ex.clones[j][0].barcode;
             let li = ex.clones[j][0].dataset_index;
             if gex_info.cell_type[li].contains_key(&bc.clone()) {
                 if gex_info.cell_type[li][&bc.clone()].starts_with('B') {
                     n_b += 1;
-                    ns.push(1.0);
+                    ns.push("1.0".to_string());
                 } else {
-                    ns.push(0.0);
+                    ns.push("0.0".to_string());
                 }
             }
         }
@@ -469,7 +467,11 @@ pub fn proc_lvar1(
                 lvar_stats1![i, x, format!("{:.1}", median_f64(&credsx))];
             }
         } else {
-            stats.push((x.to_string(), credsx_unsorted.clone()));
+            let mut r = Vec::<String>::new();
+            for j in 0..credsx_unsorted.len() {
+                r.push(format!("{}", credsx_unsorted[j]));
+            }
+            stats.push((x.to_string(), r));
             if pass == 2 {
                 let mut r = Vec::<String>::new();
                 for j in 0..credsx_unsorted.len() {
@@ -501,27 +503,27 @@ pub fn proc_lvar1(
     } else if x.starts_with("n_") && !x.starts_with("n_gex") {
         let name = x.after("n_");
         let mut count = 0;
-        let mut counts = Vec::<f64>::new();
+        let mut counts = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             let x = &ex.clones[j][0];
             if ctl.origin_info.dataset_id[x.dataset_index] == name {
                 count += 1;
-                counts.push(1.0);
+                counts.push("1.0".to_string());
             } else if x.origin_index.is_some()
                 && ctl.origin_info.origin_list[x.origin_index.unwrap()] == name
             {
                 count += 1;
-                counts.push(1.0);
+                counts.push("1.0".to_string());
             } else if x.donor_index.is_some()
                 && ctl.origin_info.donor_list[x.donor_index.unwrap()] == name
             {
                 count += 1;
-                counts.push(1.0);
+                counts.push("1.0".to_string());
             } else if x.tag_index.is_some()
                 && ctl.origin_info.tag_list[x.tag_index.unwrap()] == name
             {
                 count += 1;
-                counts.push(1.0);
+                counts.push("1.0".to_string());
             }
         }
         lvar_stats![i, x, format!("{}", count), counts];

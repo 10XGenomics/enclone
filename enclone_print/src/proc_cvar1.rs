@@ -49,7 +49,7 @@ pub fn proc_cvar1(
     _r_mean: usize,
     _rtot: usize,
     extra_args: &Vec<String>,
-    stats: &mut Vec<(String, Vec<f64>)>,
+    stats: &mut Vec<(String, Vec<String>)>,
 ) -> bool {
     let seq_amino = &rsi.seqss_amino[col][u];
     let mat = &rsi.mat;
@@ -119,7 +119,7 @@ pub fn proc_cvar1(
             speakc!(u, col, $var, $val);
             let varc = format!("{}{}", $var, col + 1);
             if $val.parse::<f64>().is_ok() {
-                stats.push((varc, vec![$val.force_f64(); ex.ncells()]));
+                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
             }
         };
     }

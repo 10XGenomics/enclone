@@ -1,11 +1,12 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 use enclone_core::defs::*;
+use string_utils::*;
 
 pub fn gene_scan_test(
     ctl: &EncloneControl,
-    stats: &Vec<(String, Vec<f64>)>,
-    stats_orig: &Vec<(String, Vec<f64>)>,
+    stats: &Vec<(String, Vec<String>)>,
+    stats_orig: &Vec<(String, Vec<String>)>,
     nexacts: usize,
     n: usize,
     in_test: &mut Vec<bool>,
@@ -20,7 +21,11 @@ pub fn gene_scan_test(
             let mut vals = Vec::<f64>::new();
             for j in 0..stats.len() {
                 if stats[j].0 == x.var[i] {
-                    vals.append(&mut stats[j].1.clone());
+                    for k in 0..stats[j].1.len() {
+                        if stats[j].1[k].parse::<f64>().is_ok() {
+                            vals.push(stats[j].1[k].force_f64());
+                        }
+                    }
                     break;
                 }
             }
@@ -38,7 +43,11 @@ pub fn gene_scan_test(
             let mut vals = Vec::<f64>::new();
             for j in 0..stats.len() {
                 if stats[j].0 == x.var[i] {
-                    vals.append(&mut stats[j].1.clone());
+                    for k in 0..stats[j].1.len() {
+                        if stats[j].1[k].parse::<f64>().is_ok() {
+                            vals.push(stats[j].1[k].force_f64());
+                        }
+                    }
                     break;
                 }
             }
@@ -64,7 +73,11 @@ pub fn gene_scan_test(
                 for j in 0..stats_orig.len() {
                     if stats_orig[j].0 == x.var[i] {
                         if count == k {
-                            vals.append(&mut stats_orig[j].1.clone());
+                            for l in 0..stats_orig[j].1.len() {
+                                if stats_orig[j].1[l].parse::<f64>().is_ok() {
+                                    vals.push(stats_orig[j].1[l].force_f64());
+                                }
+                            }
                             break;
                         } else {
                             count += 1;
@@ -87,7 +100,11 @@ pub fn gene_scan_test(
                 for j in 0..stats_orig.len() {
                     if stats_orig[j].0 == x.var[i] {
                         if count == k {
-                            vals.append(&mut stats_orig[j].1.clone());
+                            for l in 0..stats_orig[j].1.len() {
+                                if stats_orig[j].1[l].parse::<f64>().is_ok() {
+                                    vals.push(stats_orig[j].1[l].force_f64());
+                                }
+                            }
                             break;
                         } else {
                             count += 1;

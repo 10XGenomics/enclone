@@ -52,7 +52,7 @@ pub fn row_fill(
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
-    stats: &mut Vec<(String, Vec<f64>)>,
+    stats: &mut Vec<(String, Vec<String>)>,
     vdj_cells: &Vec<Vec<String>>,
     n_vdj_gex: &Vec<usize>,
     lvarsc: &Vec<String>,
@@ -474,7 +474,7 @@ pub fn row_fill(
                 speakc!(u, col, $var, $val);
                 let varc = format!("{}{}", $var, col + 1);
                 if $val.parse::<f64>().is_ok() {
-                    stats.push((varc, vec![$val.force_f64(); ex.ncells()]));
+                    stats.push((varc, vec![$val.to_string(); ex.ncells()]));
                 }
             };
         }

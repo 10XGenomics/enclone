@@ -69,7 +69,7 @@ pub fn proc_lvar2(
     rsi: &ColInfo,
     dref: &Vec<DonorReferenceItem>,
     _groups: &HashMap<usize, Vec<usize>>,
-    stats: &mut Vec<(String, Vec<f64>)>,
+    stats: &mut Vec<(String, Vec<String>)>,
     _vdj_cells: &Vec<Vec<String>>,
     _n_vdj_gex: &Vec<usize>,
     _nd_fields: &Vec<String>,
@@ -143,9 +143,7 @@ pub fn proc_lvar2(
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
-            if $val.parse::<f64>().is_ok() {
-                stats.push(($var.to_string(), vec![$val.force_f64(); ex.ncells()]));
-            }
+            stats.push(($var.to_string(), vec![$val; ex.ncells()]));
         };
     }
     macro_rules! lvar_stats {
@@ -168,7 +166,7 @@ pub fn proc_lvar2(
 
     if x == "sec" && ctl.gen_opt.using_secmem {
         let mut n = 0;
-        let mut y = Vec::<f64>::new();
+        let mut y = Vec::<String>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
             let bc = &ex.clones[l][0].barcode;
@@ -177,12 +175,12 @@ pub fn proc_lvar2(
                 count = ctl.origin_info.secmem[li][&bc.clone()].0;
                 n += count;
             }
-            y.push(count as f64);
+            y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
     } else if x == "mem" && ctl.gen_opt.using_secmem {
         let mut n = 0;
-        let mut y = Vec::<f64>::new();
+        let mut y = Vec::<String>::new();
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
             let bc = &ex.clones[l][0].barcode;
@@ -191,7 +189,7 @@ pub fn proc_lvar2(
                 count = ctl.origin_info.secmem[li][&bc.clone()].1;
                 n += count;
             }
-            y.push(count as f64);
+            y.push(format!("{}", count));
         }
         lvar_stats![i, x, format!("{}", n), y];
     } else if x == "dref" {
@@ -314,7 +312,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_cdr2_") || x.contains(":count_cdr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr2_") {
@@ -333,7 +331,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_cdr3_") || x.contains(":count_cdr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr3_") {
@@ -348,7 +346,7 @@ pub fn proc_lvar2(
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr1_") || x.contains(":count_fwr1_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr1_") {
@@ -367,7 +365,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr2_") || x.contains(":count_fwr2_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr2_") {
@@ -386,7 +384,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr3_") || x.contains(":count_fwr3_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr3_") {
@@ -405,7 +403,7 @@ pub fn proc_lvar2(
                 }
             }
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr4_") || x.contains(":count_fwr4_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr4_") {
@@ -419,7 +417,7 @@ pub fn proc_lvar2(
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_cdr_") || x.contains(":count_cdr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_cdr_") {
@@ -450,7 +448,7 @@ pub fn proc_lvar2(
             let aa = aa_seq(&ex.share[j].seq[cdr3..fwr4], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_fwr_") || x.contains(":count_fwr_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_fwr_") {
@@ -488,7 +486,7 @@ pub fn proc_lvar2(
             let aa = aa_seq(&ex.share[j].seq[fwr4..], 0);
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x.starts_with("count_") || x.contains(":count_") {
         let (mut x, mut y) = (x.to_string(), x.to_string());
         if x.contains(":count_") {
@@ -501,17 +499,21 @@ pub fn proc_lvar2(
             let aa = aa_seq(&ex.share[j].seq, 0); // seems inefficient
             n += reg.find_iter(&strme(&aa)).count();
         }
-        lvar_stats![i, x, format!("{}", n), vec![n as f64; ex.ncells()]];
+        lvar_stats![i, x, format!("{}", n), vec![format!("{}", n); ex.ncells()]];
     } else if x == "gex" {
-        lvar_stats![i, x, format!("{}", gex_median), fcounts];
+        let mut f = Vec::<String>::new();
+        for x in fcounts.iter() {
+            f.push(format!("{}", *x));
+        }
+        lvar_stats![i, x, format!("{}", gex_median), f];
     } else if x == "gex_cell" {
         if pass == 2 {
             speak!(u, x, format!("{}", count_unsorted.iter().format(POUT_SEP)));
         }
     } else if x == "n_gex" {
-        let mut n = Vec::<f64>::new();
+        let mut n = Vec::<String>::new();
         for x in n_gexs.iter() {
-            n.push(*x as f64);
+            n.push(format!("{}", *x));
         }
         lvar_stats![i, x, format!("{}", n_gex), n];
     } else if x == "n_gex_cell" {
@@ -526,7 +528,11 @@ pub fn proc_lvar2(
             );
         }
     } else if x == "entropy" {
-        lvar_stats![i, x, format!("{:.2}", entropy), entropies_unsorted];
+        let mut e = Vec::<String>::new();
+        for x in entropies_unsorted.iter() {
+            e.push(format!("{}", x));
+        }
+        lvar_stats![i, x, format!("{:.2}", entropy), e];
     } else if x == "entropy_cell" {
         let mut e = Vec::<String>::new();
         for x in entropies_unsorted.iter() {
@@ -625,16 +631,20 @@ pub fn proc_lvar2(
             }
         }
         if computed {
+            let mut f = Vec::<String>::new();
+            for x in fcounts_sub.iter() {
+                f.push(format!("{}", x));
+            }
             if !y0.ends_with("_%") {
-                stats.push((x.clone(), fcounts_sub.clone()));
+                stats.push((x.clone(), f));
             } else {
-                let mut f = Vec::<f64>::new();
+                let mut f = Vec::<String>::new();
                 for i in 0..fcounts_sub.len() {
                     let mut x = 0.0;
                     if gex_mean > 0.0 {
                         x = 100.0 * fcounts_sub[i] / gex_mean;
                     }
-                    f.push(x);
+                    f.push(format!("{}", x));
                 }
                 stats.push((x.clone(), f));
             }
