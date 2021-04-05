@@ -473,9 +473,7 @@ pub fn row_fill(
                 }
                 speakc!(u, col, $var, $val);
                 let varc = format!("{}{}", $var, col + 1);
-                if $val.parse::<f64>().is_ok() {
-                    stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-                }
+                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
             };
         }
 
