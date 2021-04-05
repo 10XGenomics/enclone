@@ -33,6 +33,16 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
+<b>4/5/21</b>: Add page
+<a href="../../pages/auto/default_filters.html"><code>#enclone default filters</code></a>
+that describes the order of the filters that #enclone uses, and provides technical details
+about some of the filters, which was previously on the
+<a href="../../pages/auto/heuristics.html"><code>heuristics page</code></a>.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
 <b>4/2/21</b>: 
 <ul>
 <li>Almost any parseable variable can now be used in a linear condition.  Of course it doesn't

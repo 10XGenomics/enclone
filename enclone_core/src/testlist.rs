@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 230] = [
+pub const TESTS: [&str; 233] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -597,6 +597,13 @@ pub const TESTS: [&str; 230] = [
     // 230. weird but correct result, becaused filtering is applied simultaneously with other
     // filters
     r###"BCR=123085 KEEP_CLONO_IF_CELL_MAX="nchains > 2" CDR3=CTRDRDLRGATDAFDIW"###,
+    // 231. test ≤
+    r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY SUMMARY_CLEAN"###,
+    // 232. test nonsense variable in linear constraint
+    r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL H5"###,
+    // 233. test use of two linear constraints
+    r###"BCR=123085 GEX=123217
+         KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

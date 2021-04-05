@@ -2,6 +2,7 @@
 //
 // See README for documentation.
 
+use chrono::{TimeZone, Utc};
 use enclone::misc1::*;
 use enclone::proc_args::*;
 use enclone::proc_args2::*;
@@ -147,6 +148,22 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         if ctrlc {
             PrettyTrace::new().message(&thread_message).ctrlc().on();
         } else {
+            let now = Utc::now().naive_utc().timestamp();
+            let build_date = version_string().after(":").between(": ", " :").to_string();
+            let build_datetime = format!("{} 00:00:00", build_date);
+            let then = Utc
+                .datetime_from_str(&build_datetime, "%Y-%m-%d %H:%M:%S")
+                .unwrap()
+                .timestamp();
+            let days_since_build = (now - then) / (60 * 60 * 24);
+            let mut elapsed_message = String::new();
+            if days_since_build > 30 {
+                elapsed_message = format!(
+                    "Your build is {} days old.  You might want to check \
+                    to see if there is a newer build now.\n\n",
+                    days_since_build
+                );
+            }
             let args: Vec<String> = env::args().collect();
             let exit_message = format!(
                 "Something has gone badly wrong.  You have probably encountered an internal \
@@ -155,10 +172,12 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 above and also the following version information:\n\
                 {} : {}.\n\n\
                 Your command was:\n\n{}\n\n\
+                {}\
                 🌸 Thank you and have a nice day! 🌸",
                 env!("CARGO_PKG_VERSION"),
                 version_string(),
                 args.iter().format(" "),
+                elapsed_message,
             );
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;

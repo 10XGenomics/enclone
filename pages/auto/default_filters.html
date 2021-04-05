@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone default filters</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<a href="../../index.html#help">
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
+
+<h1>enclone default filters</h1>
+
+<p>When <span style="color:rgb(120,123,175);font-weight:900">enclone</span> is run, a series of filters are applied, resulting in deletion of barcodes or in
+some cases in changing which cells are combined together.  Here we describe the order of the 
+filters and technical details about some of them.  Please see also the page
+<a href="../../pages/auto/help.special.html">enclone help special</a> that describes some details
+about the filters and how they can be turned <i>off</i>.</p>
+
+<p>Note that when you run <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, if you specify the <code>SUMMARY</code> option, then a table
+will be printed showing the filters that removed cells, and how many cells that each removed.
+You can use this as a guide regarding which filters are most important for your dataset.  If you
+only want to see the summary, then you can use the two options <code>SUMMARY</code> and
+<code>NOPRINT</code>.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Filter order.</b>
+The following table enumerates the filters, in order of application, along with a brief description
+of what they do.  Please understand that in general, artifactual barcodes cannot be surgically
+removed by sharply defined tests.  Rather, the filters are <i>heuristic</i>, and have the
+cumulative effect of removing nearly all artifacts (in most cases), while removing few valid
+barcodes.  In the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> codebase, there are regression tests, some of which provide
+representative examples for filtering.  When we modify the filters, we examine the effect on these
+examples, and add others as needed as protection against accidental deterioration of performance.
+</p>
+
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> number                 </th>
+<th align="left"> filter name            </th>
+<th align="left"> brief description      </th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td align="left"> 1                                                                        </td>
+<td align="left"> cell filter                                                              </td>
+<td align="left"> remove barcodes not called cells in Cell Ranger VDJ pipeline             </td>
+</tr>
+
+<tr>
+<td align="left"> 2                                                                        </td>
+<td align="left"> graph filter                                                             </td>
+<td align="left"> remove some exact subclonotypes that appear to be background             </td>
+</tr>
+
+<tr>
+<td align="left"> 3                                                                        </td>
+<td align="left"> cross filter                                                             </td>
+<td align="left"> use cross-library information to remove spurious exact subclonotypes     </td>
+</tr>
+
+<tr>
+<td align="left"> 4                                                                        </td>
+<td align="left"> barcode duplication filter                                               </td>
+<td align="left"> remove duplicated barcodes within an exact subclonotype                  </td>
+</tr>
+
+<tr>
+<td align="left"> 5                                                                        </td>
+<td align="left"> whitelist filter                                                         </td>
+<td align="left"> remove rare artifacts arising from gel bead contamination                </td>
+</tr>
+
+<tr>
+<td align="left"> 6                                                                        </td>
+<td align="left"> foursie filter                                                           </td>
+<td align="left"> remove some four-chain clonotypes that might represent doublets          </td>
+</tr>
+
+<tr>
+<td align="left"> 7                                                                        </td>
+<td align="left"> improper filter                                                          </td>
+<td align="left"> remove exact subclonotypes having multiple chains, all of the same type  </td>
+</tr>
+
+<tr>
+<td align="left"> 8                                                                        </td>
+<td align="left"> weak onesie filter                                                       </td>
+<td align="left"> disintegrate some single-chain clonotypes into single cells              </td>
+</tr>
+
+<tr>
+<td align="left"> 9                                                                        </td>
+<td align="left"> UMI filter                                                               </td>
+<td align="left"> remove some B cells having very low UMI counts                           </td>
+</tr>
+
+<tr>
+<td align="left"> 10                                                                       </td>
+<td align="left"> UMI ratio filter                                                         </td>
+<td align="left"> remove some B cells having very low UMI counts,  relative to clonotype   </td>
+</tr>
+
+<tr>
+<td align="left"> 11                                                                       </td>
+<td align="left"> GEX filter                                                               </td>
+<td align="left"> remove cells called by VDJ pipeline but not by GEX pipeline              </td>
+</tr>
+
+<tr>
+<td align="left"> 12                                                                       </td>
+<td align="left"> doublet filter                                                           </td>
+<td align="left"> remove some barcodes that appear to represent doublets                   </td>
+</tr>
+
+<tr>
+<td align="left"> 13                                                                       </td>
+<td align="left"> onesie merger                                                            </td>
+<td align="left"> prevent merger of some single-chain clonotypes into other clonotypes     </td>
+</tr>
+
+<tr>
+<td align="left"> 14                                                                       </td>
+<td align="left"> quality merger                                                           </td>
+<td align="left"> filter out exact subclonotypes having a position with low quality scores </td>
+</tr>
+
+<tr>
+<td align="left"> 15                                                                       </td>
+<td align="left"> weak chain filter                                                        </td>
+<td align="left"> remove cells having a chain that is probably spurious                    </td>
+</tr>
+
+</tbody></table></p>
+
+<p>The remainder of this page and
+<a href="../../pages/auto/help.special.html">enclone help special</a>
+provide more details about the filters.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Cross filtering.</b>  If multiple draws are made from the same tube of cells, and one library
+made from each, yielding multiple "datasets" having the same "origin", then the clonotypes 
+observed in different libraries should be statistically consistent.  Otherwise, they likely 
+represent an artifact, for example, possibly resulting from fragmentation of a plasma cell.  We
+apply the following test as a proxy for statistical consistency (unless <code>NCROSS</code> is
+specified):
+</p>
+
+<p>
+If a V..J segment appears in exactly one dataset, with frequency <code>n</code>, let 
+<code>x</code> be the total number of productive pairs for that dataset, and let <code>y</code> be 
+the total number of productive pairs for all datasets from the same origin.  
+If <code>(x/y)^n ≤ 10^-6</code>, i.e. the probability that assuming even distribution, all 
+instances of that V..J ended up in that one dataset, delete all the productive pairs for that 
+V..J segment that do not have at least <code>100</code> supporting UMIs.
+</p>
+
+<p>This test could clearly be strengthened.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Foursie filtering.</b>  
+Foursie exact subclonotypes are highly enriched for cell doublets.  Deleting them all
+<i>might</i> be justified, but because it is hypothetically possible that sometimes they represent 
+the actual biology of single cells, we do not do this.  However we never merge them with other
+exact subclonotypes, and sometimes we delete them, if we have other evidence they they are
+doublets.  Specifically, for each foursie exact subclonotype, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> looks at each pair of two 
+chains within it (with one heavy and one light, or TRB/TRA), and if the V..J sequences for those 
+appear in a twosie exact subclonotype having at least ten cells, then the foursie exact 
+subclonotype is deleted, no matter how many cells it has.  For example, this shows two foursie 
+clonotypes that are present if the filtering is off:
+
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW NFOURSIE_KILL
+</code></pre>
+
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 34 CELLS</span>
+
+[1.1] CLONOTYPE = 34 CELLS
+┌───────────┬─────────────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                            │  CHAIN 2                  │
+│           │  <span style="font-weight:bold;">740.1.1|IGHV4-30-4 ◆ 53|IGHJ3</span>      │  253|IGKV1D-39 ◆ 217|IGKJ5│
+│           ├─────────────────────────────────────┼───────────────────────────┤
+│           │      1 1111111111111111             │  111111111111             │
+│           │  25690 1111122222222223             │  011111111112             │
+│           │  01048 5678901234567890             │  901234567890             │
+│           │        ══════CDR3══════             │  ════CDR3════             │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">S</span><span style="color:#3e7dd1;font-weight:bold;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ..... ................   u  const  </span>│<span style="font-weight:bold;">  ............    u  const </span>│
+│1  34      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  57  IGHM   │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  207  IGKC  │
+└───────────┴─────────────────────────────────────┴───────────────────────────┘
+
+<span style="color:#2ce4e4;">╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+
+</span><span style="color:#4c7aff;font-weight:bold;">[2] GROUP = 1 CLONOTYPES = 22 CELLS</span>
+
+[2.1] CLONOTYPE = 22 CELLS
+┌───────────┬─────────────────────────────────────┬─────────────────────────────────────────┬─────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                            │  <span style="font-weight:bold;">CHAIN 2</span>                                │  CHAIN 3                    │  CHAIN 4                  │
+│           │  <span style="font-weight:bold;">740.1.1|IGHV4-30-4 ◆ 53|IGHJ3</span>      │  <span style="font-weight:bold;">144.1.2|IGHV3-49 ◆ 737|IGHJ6</span>           │  273|IGKV2D-28 ◆ 213|IGKJ1  │  253|IGKV1D-39 ◆ 217|IGKJ5│
+│           ├─────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────┼───────────────────────────┤
+│           │      1 1111111111111111             │     1111111111111111111111              │  11111111111                │  111111111111             │
+│           │  25690 1111122222222223             │  35 1111222222222233333333              │  11111111222                │  011111111112             │
+│           │  01048 5678901234567890             │  15 6789012345678901234567              │  23456789012                │  901234567890             │
+│           │        ══════CDR3══════             │     ═════════CDR3═════════              │  ════CDR3═══                │  ════CDR3════             │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">S</span><span style="color:#3e7dd1;font-weight:bold;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">V</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>              │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦                │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#f37721;font-weight:bold;">F</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>              │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦                │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ..... ................   u  const  </span>│<span style="font-weight:bold;">  .. ......................    u  const  </span>│<span style="font-weight:bold;">  ...........    u  const    </span>│<span style="font-weight:bold;">  ............    u  const </span>│
+│1  22      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  65  IGHM   │  <span style="color:#e7bd20;">K</span><span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#3e7dd1;font-weight:bold;">QL</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#31c39a;">S</span><span style="color:#eb99c2;font-weight:bold;">YYYY</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>  308  IGHG1  │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  647  IGKC     │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  264  IGKC  │
+└───────────┴─────────────────────────────────────┴─────────────────────────────────────────┴─────────────────────────────┴───────────────────────────┘
+
+<span style="color:#2ce4e4;">╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+
+</span><span style="color:#4c7aff;font-weight:bold;">[3] GROUP = 1 CLONOTYPES = 1 CELLS</span>
+
+[3.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────┬─────────────────────────────────────────┬─────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                            │  <span style="font-weight:bold;">CHAIN 2</span>                                │  CHAIN 3                    │  CHAIN 4                  │
+│           │  <span style="font-weight:bold;">740.1.1|IGHV4-30-4 ◆ 53|IGHJ3</span>      │  <span style="font-weight:bold;">144.1.2|IGHV3-49 ◆ 737|IGHJ6</span>           │  273|IGKV2D-28 ◆ 213|IGKJ1  │  253|IGKV1D-39 ◆ 217|IGKJ5│
+│           ├─────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────┼───────────────────────────┤
+│           │      1 1111111111111111             │     1111111111111111111111              │  11111111111                │  111111111111             │
+│           │  25690 1111122222222223             │  35 1111222222222233333333              │  11111111222                │  011111111112             │
+│           │  01048 5678901234567890             │  15 6789012345678901234567              │  23456789012                │  901234567890             │
+│           │        ══════CDR3══════             │     ═════════CDR3═════════              │  ════CDR3═══                │  ════CDR3════             │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">S</span><span style="color:#3e7dd1;font-weight:bold;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">V</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>              │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦                │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#f37721;font-weight:bold;">F</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>              │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦                │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  ..... ................   u  const  </span>│<span style="font-weight:bold;">  .. ......................    u  const  </span>│<span style="font-weight:bold;">  ...........    u  const    </span>│<span style="font-weight:bold;">  ............    u  const </span>│
+│1  1       │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  69  ?      │  <span style="color:#e7bd20;">K</span><span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">A</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#3e7dd1;font-weight:bold;">QL</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#31c39a;">S</span><span style="color:#eb99c2;font-weight:bold;">YYYY</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#31c39a;">M</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">W</span>  304  IGHG1  │  <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#31c39a;">M</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#eb99c2;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  562  IGKC     │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  266  IGKC  │
+└───────────┴─────────────────────────────────────┴─────────────────────────────────────────┴─────────────────────────────┴───────────────────────────┘
+</span></pre>
+
+and which are deleted if the foursie filtering is on:
+
+<pre><code>enclone BCR=123085 CDR3=CARRYFGVVADAFDIW
+</code></pre>
+
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 34 CELLS</span>
+
+[1.1] CLONOTYPE = 34 CELLS
+┌───────────┬─────────────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                            │  CHAIN 2                  │
+│           │  <span style="font-weight:bold;">740.1.1|IGHV4-30-4 ◆ 53|IGHJ3</span>      │  253|IGKV1D-39 ◆ 217|IGKJ5│
+│           ├─────────────────────────────────────┼───────────────────────────┤
+│           │      1 1111111111111111             │  111111111111             │
+│           │  25690 1111122222222223             │  011111111112             │
+│           │  01048 5678901234567890             │  901234567890             │
+│           │        ══════CDR3══════             │  ════CDR3════             │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#31c39a;">S</span><span style="color:#3e7dd1;font-weight:bold;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>             │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  ..... ................   u  const  </span>│<span style="font-weight:bold;">  ............    u  const </span>│
+│1  34      │  <span style="color:#f37721;font-weight:bold;">VG</span><span style="color:#e7bd20;">H</span><span style="color:#f37721;font-weight:bold;">S</span><span style="color:#31c39a;">A</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span>  57  IGHM   │  <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#e7bd20;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">ST</span><span style="color:#31c39a;">P</span><span style="color:#eb99c2;font-weight:bold;">PI</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  207  IGKC  │
+└───────────┴─────────────────────────────────────┴───────────────────────────┘
+</span></pre>
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>UMI filtering.</b>  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> filters out B cells having low UMI counts, relative to a baseline
+that is determined for each dataset, according to a
+heuristic described here, unless the argument <code>NUMI</code> is supplied, to turn off that
+filter.</code>
+
+<p>The motivation for this filter is to mitigate illusory clonotype expansions arising from
+fragmentation of plasma cells or other physical processes (not all fully understood).  These
+processes all result in "cells" having low UMI counts, many of which do not correspond to intact 
+real cells.  Illusory clonotype expansions are generally infrequent, but occasionally cluster
+in individual datasets.</p>
+
+<p>Nomenclature: for any cell, find the maximum UMI count for its heavy chains, if any, and the 
+maximum for its light chains, if any.  The sum of these two maxima is denoted 
+<code>umitot</code>.</p>
+
+<p>The algorithm for this filter first establishes a baseline for the expected value of 
+<code>umitot</code>, for each dataset taken individually.  To do this, all clonotypes having 
+exactly one cell and exactly one heavy and light chain each are examined.  If there are less than 
+<code>20</code> such cells, the filter is not applied to cells in that dataset.  Otherwise,
+let <code>n_50%</code> denote the median of the <code>umitot</code> values for the dataset, and let
+<code>n_10%</code> the 10th percentile.  Let
+<pre><code>umin = min( n_10%, n_50% - 4 * sqrt(n_50%) )</code>.</pre>
+This is the baseline <i>low</i> value for <code>umitot</code>.  The reason for having the second
+part of the <code>min</code> is to prevent filtering in cases where UMI counts are sufficiently 
+low that poisson variability could cause a real cell to appear fake.</p>
+
+<p>Next we scan each clonotype having at least two cells, and delete every cell having 
+<code>umitot < umin</code>, with the following qualifications:  
+<ul>
+<li>Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
+probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
+less then <code>0.01</code>.  The more cells are flagged in a clonotype, the more likely this
+test is satisfied, which is the point of the test.
+</li>
+<li>If <i>every</i> cell in a clonotype would be deleted, then we find its exact subclonotype 
+having the highest sum for <code>umitot</code>, summing across its cells.  Then we protect from
+deletion the cell in this exact subclonotype having the highest <code>umitot</code> value.  We 
+do this because in general even if a clonotype expansion did not occur, there was probably at
+least a single <i>bona fide</i> cell that gave rise to it.
+</li>
+</ul>
+
+A better test could probably be devised that started from the expected distribution of UMI counts.
+The test would trigger based on the number and improbability of low UMI counts.  The current test 
+only considers the number of counts that fall below a threshold, and not their particular values.
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>UMI ratio filtering.</b>  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> filters out B cells having low UMI counts, relative to
+other UMI counts in a given clonotype, according to a 
+heuristic described here, unless the argument <code>NUMI_RATIO</code> is supplied, to turn off that
+filter.</code>
+
+<p>First we mark a cell for possible deletion, if the VDJ UMI count for some chain of some other 
+cell is at least 500 times greater than the total VDJ UMI count for the given cell.</p>
+
+<p>Then we scan each clonotype having at least two cells, and delete every cell marked as above,
+with the following qualification.  
+Let <code>k</code> be the number of cells to be deleted in clonotype having <code>n</code>
+cells.  Then we require that for a binomial distribution having <code>p = 0.1</code>, the 
+probability of observing <code>k</code> or more events in a sample of size <code>n</code> is 
+less then <code>0.01</code>.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Doublet filtering.</b>
+This filtering removes some exact subclonotypes that appear to represent doublets (or possibly
+higher-order multiplets).  The first Cell Ranger version in which this appeared was 6.0.</p>
+
+<p>The algorithm works by first computing <i>pure</i> subclonotypes.  This is done by taking each
+clonotype and breaking it apart according to its chain signature.  All the exact subclonotypes that
+have entries for particular chains (and not entries for the other chains) are merged together to
+form a pure subclonotype.</p>
+
+<p>In the simplest case, where the clonotype has two chains, the clonotype could give rise to three
+pure subclonotypes: one for the exact subclonotypes that have both chains, and one each for the
+subclonotypes that have only one chain.</p>
+
+<p>The algorithm then finds triples <code>(p0, p1, p2)</code> of pure subclonotypes, for which
+the following three conditions are all satisfied:
+<ul>
+<li><code>p0</code> and <code>p1</code> share an identical CDR3 DNA sequence</li>
+<li><code>p0</code> and <code>p2</code> share an identical CDR3 DNA sequence</li>
+<li><code>p1</code> and <code>p2</code> do <i>not</i> share an identical CDR3 DNA sequence.</li>
+</ul>
+</p>
+
+<p>Finally, if <code>5 * ncells(p0) <= min( ncells(p1), ncells(p2) )</code>, the entire pure 
+subclonotype <code>p0</code> is deleted.  And after all these operations are completed, some of 
+the original clonotypes may break up into separate clonotypes, as they may no longer be held 
+together by shared chains.</p>
+
+<p>If the argument <code>NDOUBLET</code> is supplied to <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, then doublet filtering is
+not applied.</p>
+
+<hr>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p><b>Weak chain filtering.</b>  If a clonotype has three or more chains, and amongst those there 
+is a chain that appears in a relatively small number of cells, we delete all the cells that support
+that chain.  This filter is turned off if <code>NWEAK_CHAINS</code> is specified.  The precise
+condition is that the number of cells supporting the chain is at most <code>20</code>, and 
+<code>8</code> times that number of cells is less than the total number of cells in the clonotype.
+
+<br>
+
+For the current Cell Ranger, replace <code>20</code> by <code>5</code>.  This will change at some
+point after Cell Ranger 6.0.
+
+
+</body>
+</html>

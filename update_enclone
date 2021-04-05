@@ -11,4 +11,4 @@ cargo update -p parking_lot_core:0.8.3 --precise 0.8.2
 cargo update -p wyhash --precise 0.4.2
 cargo update -p statrs --precise 0.12.0
 cargo update -p pprof --precise 0.4.2
-cargo update -p ndarray:0.15.0 --precise 0.14.0
+cargo update -p ndarray:0.15.1 --precise 0.14.0

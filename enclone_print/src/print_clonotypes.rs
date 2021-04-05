@@ -621,7 +621,7 @@ pub fn print_clonotypes(
 
                 // Set up to record stats that assign a value to each cell for a given variable.
 
-                let mut stats = Vec::<(String, Vec<f64>)>::new();
+                let mut stats = Vec::<(String, Vec<String>)>::new();
 
                 // Compute some stats;
 
@@ -772,7 +772,7 @@ pub fn print_clonotypes(
 
                 stats.sort_by(|a, b| a.0.cmp(&b.0));
                 let stats_orig = stats.clone();
-                let mut stats2 = Vec::<(String, Vec<f64>)>::new();
+                let mut stats2 = Vec::<(String, Vec<String>)>::new();
                 let mut i = 0;
                 while i < stats.len() {
                     let mut j = i + 1;
@@ -782,7 +782,7 @@ pub fn print_clonotypes(
                         }
                         j += 1;
                     }
-                    let mut all = Vec::<f64>::new();
+                    let mut all = Vec::<String>::new();
                     for k in i..j {
                         all.append(&mut stats[k].1.clone());
                     }
@@ -809,7 +809,11 @@ pub fn print_clonotypes(
                         let mut vals = Vec::<f64>::new(); // the stats for the variable
                         for j in 0..stats.len() {
                             if stats[j].0 == x.var[i] {
-                                vals.append(&mut stats[j].1.clone());
+                                for k in 0..stats[j].1.len() {
+                                    if stats[j].1[k].parse::<f64>().is_ok() {
+                                        vals.push(stats[j].1[k].force_f64());
+                                    }
+                                }
                                 break;
                             }
                         }
