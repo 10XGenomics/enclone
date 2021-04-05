@@ -179,14 +179,13 @@ pub fn proc_lvar1(
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
                         let val = &ctl.gen_opt.info_data[&tag][q];
-                        lvar![i, x, val.clone()];
+                        lvar_stats1![i, x, val.clone()];
                         lvarred = true;
                         found = true;
-                        stats.push((x.to_string(), vec![val.to_string(); ex.ncells()]));
                     }
                 }
                 if !lvarred {
-                    lvar![i, x, String::new()];
+                    lvar_stats1![i, x, String::new()];
                 }
                 if !found {
                     stats.push((x.to_string(), vec![]));
@@ -420,13 +419,13 @@ pub fn proc_lvar1(
                 s += "j";
             }
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else if x.starts_with("pe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x.starts_with("npe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x.starts_with("ppe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x == "cred" || x == "cred_cell" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {
