@@ -113,9 +113,7 @@ pub fn proc_cvar2(
             }
             speakc!(u, col, $var, $val);
             let varc = format!("{}{}", $var, col + 1);
-            if $val.parse::<f64>().is_ok() {
-                stats.push((varc, vec![$val; ex.ncells()]));
-            }
+            stats.push((varc, vec![$val; ex.ncells()]));
         };
     }
     macro_rules! cvar_stats {

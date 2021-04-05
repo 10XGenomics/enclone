@@ -138,9 +138,7 @@ pub fn proc_lvar1(
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
-            if $val.parse::<f64>().is_ok() {
-                stats.push(($var.to_string(), vec![$val; ex.ncells()]));
-            }
+            stats.push(($var.to_string(), vec![$val; ex.ncells()]));
         };
     }
     macro_rules! lvar_stats {
