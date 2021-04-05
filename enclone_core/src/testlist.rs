@@ -598,12 +598,12 @@ pub const TESTS: [&str; 233] = [
     // filters
     r###"BCR=123085 KEEP_CLONO_IF_CELL_MAX="nchains > 2" CDR3=CTRDRDLRGATDAFDIW"###,
     // 231. test ≤
-    r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY"###,
+    r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 232. test nonsense variable in linear constraint
-    r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL"###,
+    r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL H5"###,
     // 233. test use of two linear constraints
     r###"BCR=123085 GEX=123217
-         KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200""###,
+         KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
