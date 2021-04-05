@@ -770,7 +770,7 @@ pub fn print_clonotypes(
                 // values here (other than stability) because what we're going to do with them is
                 // compute the mean or max.
 
-                stats.sort();
+                stats.sort_by(|a, b| a.0.cmp(&b.0));
                 let stats_orig = stats.clone();
                 let mut stats2 = Vec::<(String, Vec<String>)>::new();
                 let mut i = 0;
