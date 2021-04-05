@@ -599,7 +599,7 @@ pub const TESTS: [&str; 232] = [
     r###"BCR=123085 KEEP_CLONO_IF_CELL_MAX="nchains > 2" CDR3=CTRDRDLRGATDAFDIW"###,
     // 231. test ≤
     r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY"###,
-    // 232. test nonsense variable in KEEP_CLONO_IF_CELL_MAX
+    // 232. test nonsense variable in linear constraint
     r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL"###,
 ];
 
