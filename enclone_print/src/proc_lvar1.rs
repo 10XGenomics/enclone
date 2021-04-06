@@ -490,23 +490,23 @@ pub fn proc_lvar1(
             }
         }
     } else if bin_member(&alt_bcs, x) {
-        lvar![i, x, format!("")];
-        if pass == 2 {
-            let mut r = Vec::<String>::new();
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = ex.clones[l][0].barcode.clone();
-                let mut val = String::new();
-                let alt = &ctl.origin_info.alt_bc_fields[li];
-                for j in 0..alt.len() {
-                    if alt[j].0 == *x {
-                        if alt[j].1.contains_key(&bc.clone()) {
-                            val = alt[j].1[&bc.clone()].clone();
-                        }
+        let mut r = Vec::<String>::new();
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = ex.clones[l][0].barcode.clone();
+            let mut val = String::new();
+            let alt = &ctl.origin_info.alt_bc_fields[li];
+            for j in 0..alt.len() {
+                if alt[j].0 == *x {
+                    if alt[j].1.contains_key(&bc.clone()) {
+                        val = alt[j].1[&bc.clone()].clone();
                     }
                 }
-                r.push(val);
             }
+            r.push(val);
+        }
+        lvar_stats![i, x, format!(""), r];
+        if pass == 2 {
             speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
         }
     } else if x.starts_with("n_") && !x.starts_with("n_gex") {
