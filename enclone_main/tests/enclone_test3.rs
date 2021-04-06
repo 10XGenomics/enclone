@@ -646,7 +646,59 @@ fn test_subset_json() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 25. MOVED TO SEPARATE FILE
+// 25. Test that ordinary cell-exact variables have a _cell version.  By ordinary we mean
+// that the variable is described in variables.html.src by a name in the alphabet a-zA-Z0-9_,
+// although that's not exactly how we test.
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_cell_exact() {
+    let vars = include_str!["../../pages/variables.html.src"];
+    let mut lines = Vec::<String>::new();
+    for line in vars.lines() {
+        lines.push(line.to_string());
+    }
+    let mut fails = Vec::<String>::new();
+    for i in 0..lines.len() {
+        if lines[i].contains("<td> cell-exact") {
+            let var = lines[i - 3].between("<code> ", " </code>");
+            if !var.contains("&") {
+                let lvar = lines[i - 1].contains("lvar");
+                let varp;
+                if lvar {
+                    varp = format!("{}_cell", var);
+                } else {
+                    varp = format!("{}_cell1", var);
+                }
+                let pre_arg = format!(
+                    "PRE=../enclone-data/big_inputs/version{}",
+                    TEST_FILES_VERSION
+                );
+                let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+                    .arg(&pre_arg)
+                    .arg("BCR=123085")
+                    .arg("POUT=stdout")
+                    .arg(&format!("PCOLS={}", varp))
+                    .output()
+                    .expect(&format!("failed to execute test_cel_exact"));
+                if new.status.code() != Some(0) {
+                    fails.push(var.to_string());
+                }
+            }
+        }
+    }
+    if !fails.is_empty() {
+        let mut msg = String::new();
+        for i in 0..fails.len() {
+            msg += &format!(
+                "{} is cell-exact but does not have a _cell version\n",
+                fails[i]
+            );
+        }
+        eprintln!("\n{}", msg);
+        std::process::exit(1);
+    }
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -826,9 +878,6 @@ fn test_source_code_file_length() {
 
 // 30. Cap number of duplicated crates.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dupped_crates() {
