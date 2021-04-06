@@ -640,6 +640,10 @@ pub fn row_fill(
 
             let mut needed = false;
             let var = &all_vars[j];
+            if !ex.share[mid].left && (*var == "opt_d" || *var == "opt_d2" || *var == "opt_d_delta")
+            {
+                continue;
+            }
             let varc = format!("{}{}", var, col + 1);
             if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 needed = true;

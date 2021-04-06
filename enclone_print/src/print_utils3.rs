@@ -36,12 +36,16 @@ pub fn define_column_info(
     let mut cvars = Vec::<Vec<String>>::new();
     for cx in 0..cols {
         let mut have_notes = false;
+        let mut left = false;
         for u in 0..exacts.len() {
             let ex = &exact_clonotypes[exacts[u]];
             let m = mat[cx][u];
             if m.is_some() {
                 let m = m.unwrap();
                 let ex = &ex.share[m];
+                if ex.left {
+                    left = true;
+                }
                 if ex.vs_notesx.len() > 0 {
                     have_notes = true;
                 }
@@ -49,10 +53,16 @@ pub fn define_column_info(
         }
         let mut cv = Vec::<String>::new();
         for i in 0..ctl.clono_print_opt.cvars.len() {
-            if ctl.clono_print_opt.cvars[i] == "notes" && !have_notes {
+            let var = &ctl.clono_print_opt.cvars[i];
+            if var == "notes" && !have_notes {
                 continue;
             }
-            cv.push(ctl.clono_print_opt.cvars[i].to_string());
+            if !left
+                && (var == "opt_d" || var == "opt_d2" || var == "opt_d_delta" || var == "opt_dΔ")
+            {
+                continue;
+            }
+            cv.push(var.to_string());
         }
         cvars.push(cv);
     }

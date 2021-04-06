@@ -152,16 +152,16 @@ pub fn proc_cvar1(
         || *var == "edit".to_string()
         || *var == "opt_d"
         || *var == "opt_d_delta"
+        || *var == "opt_dΔ"
         || *var == "opt_d2"
     {
-        if !ex.share[mid].left && (*var == "opt_d" || *var == "opt_d_delta" || *var == "opt_d2") {
+        if !ex.share[mid].left
+            && (*var == "opt_d" || *var == "opt_d_delta" || *var == "opt_dΔ" || *var == "opt_d2")
+        {
             cvar_stats1![j, var, "".to_string()];
             return true;
         }
         let mut comp = 1000000;
-        let mut best_d = 0;
-        let mut best_d2 = 0;
-        let mut second_comp = 1000000;
         let mut edit = String::new();
         let td = &ex.share[mid];
         let tig = &td.seq;
@@ -175,6 +175,8 @@ pub fn proc_cvar1(
         if ex.share[mid].left {
             z = refdata.ds.len();
         }
+        let mut ds = Vec::<usize>::new();
+        let mut counts = Vec::<usize>::new();
         for di in 0..z {
             let mut d = 0;
             if ex.share[mid].left {
@@ -248,18 +250,25 @@ pub fn proc_cvar1(
                 };
                 m += 1;
             }
+            counts.push(count);
+            ds.push(d);
             if count < comp {
-                best_d = d;
-                if comp < 1000000 {
-                    second_comp = comp;
-                    best_d2 = d;
-                }
                 comp = count;
                 edit = format!("{}", edits.iter().format("•"));
-            } else if count < second_comp {
-                second_comp = count;
-                best_d2 = d;
             }
+        }
+        sort_sync2(&mut counts, &mut ds);
+        let mut comp = 0;
+        let mut best_d = 0;
+        if counts.len() > 0 {
+            comp = counts[0];
+            best_d = ds[0];
+        }
+        let mut second_comp = 0;
+        let mut best_d2 = 0;
+        if counts.len() > 1 {
+            second_comp = counts[1];
+            best_d2 = ds[1];
         }
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
