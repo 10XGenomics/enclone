@@ -247,7 +247,7 @@ pub fn proc_lvar1(
     } else if x == "nchains" {
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
     } else if x == "datasets" {
-        lvar![i, x, format!("{}", lenas.iter().format(","))];
+        lvar_stats1![i, x, format!("{}", lenas.iter().format(","))];
     } else if x == "datasets_cell" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -256,6 +256,7 @@ pub fn proc_lvar1(
         if pass == 2 {
             speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));
         }
+        stats.push((x.to_string(), datasets));
     } else if x == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
