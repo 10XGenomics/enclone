@@ -406,7 +406,7 @@ pub fn proc_lvar1(
                 s += "j";
             }
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else if x == "mait" {
         let mut s = String::new();
         let alpha_g = ex.share[0].mait_alpha_chain_gene_match;

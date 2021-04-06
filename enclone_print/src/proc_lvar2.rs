@@ -572,7 +572,7 @@ pub fn proc_lvar2(
             );
             j = k;
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
@@ -687,7 +687,7 @@ pub fn proc_lvar2(
                 }
             }
         } else if i < lvars.len() {
-            lvar![i, x, "".to_string()];
+            lvar_stats1![i, x, "".to_string()];
         }
     }
     return true;
