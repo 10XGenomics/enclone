@@ -103,14 +103,6 @@ pub fn proc_cvar1(
     // Set up chain variable macro.  This is the mechanism for generating
     // both human-readable and parseable output for chain variables.
 
-    macro_rules! cvar {
-        ($i: expr, $var:expr, $val:expr) => {
-            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                cx[col][$i] = $val.clone();
-            }
-            speakc!(u, col, $var, $val);
-        };
-    }
     macro_rules! cvar_stats1 {
         ($i: expr, $var:expr, $val:expr) => {
             if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
@@ -599,7 +591,7 @@ pub fn proc_cvar1(
             }
         }
         if y != "fwr2_len" {
-            cvar![j, var, y];
+            cvar_stats1![j, var, y];
         } else {
             cvar_stats1![j, var, y];
         }
@@ -616,7 +608,7 @@ pub fn proc_cvar1(
                 y = stringme(&aa_seq(&dna, 0));
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "fwr3_dna".to_string()
         || *var == "fwr3_aa".to_string()
         || *var == "fwr3_len".to_string()
@@ -662,7 +654,7 @@ pub fn proc_cvar1(
             }
         }
         if y != "fwr3_len" {
-            cvar![j, var, y];
+            cvar_stats1![j, var, y];
         } else {
             cvar_stats1![j, var, y];
         }
@@ -680,7 +672,7 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "fwr4_dna".to_string()
         || *var == "fwr4_aa".to_string()
         || *var == "fwr4_len".to_string()
@@ -698,7 +690,7 @@ pub fn proc_cvar1(
             y = format!("{}", dna.len() / 3);
         }
         if y != "fwr4_len" {
-            cvar![j, var, y];
+            cvar_stats1![j, var, y];
         } else {
             cvar_stats1![j, var, y];
         }
@@ -719,7 +711,7 @@ pub fn proc_cvar1(
         } else {
             y = stringme(&aa_seq(&dna.to_vec(), 0));
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "ulen".to_string() {
         cvar_stats1![j, *var, format!("{}", ex.share[mid].v_start)];
     } else if *var == "clen".to_string() {
@@ -822,7 +814,7 @@ pub fn proc_cvar1(
             }
             cvar_stats1![j, *var, format!("{}", ndiff)];
         } else {
-            cvar![j, *var, "_".to_string()];
+            cvar_stats1![j, *var, "_".to_string()];
         }
     } else {
         return false;

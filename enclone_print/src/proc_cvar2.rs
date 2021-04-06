@@ -130,7 +130,7 @@ pub fn proc_cvar2(
     // Proceed.
 
     if var == "nval" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -158,7 +158,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "nnval" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -186,7 +186,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "nival" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -214,7 +214,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "valumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -247,7 +247,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "valbcumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -277,7 +277,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "nvalumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -310,7 +310,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "nvalbcumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -340,7 +340,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "ivalumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -373,7 +373,7 @@ pub fn proc_cvar2(
             }
         }
     } else if var == "ivalbcumis" {
-        cvar![j, *var, "".to_string()];
+        cvar_stats1![j, *var, "".to_string()];
         if pass == 2
             && ((ctl.parseable_opt.pout.len() > 0 && col + 1 <= ctl.parseable_opt.pchains)
                 || extra_args.len() > 0)
@@ -433,7 +433,7 @@ pub fn proc_cvar2(
         } else if clen > 0 {
             cdiff = format!("+{}", clen);
         }
-        cvar![j, var, cdiff];
+        cvar_stats1![j, var, cdiff];
     } else if *var == "udiff".to_string() {
         let ulen = ex.share[mid].v_start;
         let uid = ex.share[mid].u_ref_id;
@@ -473,27 +473,27 @@ pub fn proc_cvar2(
         } else if ulen > 0 {
             udiff = format!("+{}", ulen);
         }
-        cvar![j, var, udiff];
+        cvar_stats1![j, var, udiff];
     } else if *var == "const_id" {
         let mut const_id = String::new();
         if ex.share[mid].c_ref_id.is_some() {
             const_id = format!("{}", refdata.id[ex.share[mid].c_ref_id.unwrap()]);
         }
-        cvar![j, var, const_id];
+        cvar_stats1![j, var, const_id];
     } else if *var == "utr_id" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             u = format!("{}", refdata.id[uid.unwrap()]);
         }
-        cvar![j, var, u];
+        cvar_stats1![j, var, u];
     } else if *var == "utr_name" {
         let mut u = String::new();
         let uid = ex.share[mid].u_ref_id;
         if uid.is_some() {
             u = refdata.name[uid.unwrap()].clone();
         }
-        cvar![j, var, u];
+        cvar_stats1![j, var, u];
     } else if *var == "d_univ".to_string() {
         let vid = ex.share[mid].v_ref_id;
         let vref = &refdata.refs[vid].to_ascii_vec();
@@ -540,9 +540,9 @@ pub fn proc_cvar2(
         }
         cvar_stats1![j, var, format!("{}", diffs)];
     } else if *var == "notes".to_string() {
-        cvar![j, var, ex.share[mid].vs_notesx.clone()];
+        cvar_stats1![j, var, ex.share[mid].vs_notesx.clone()];
     } else if *var == "var".to_string() {
-        cvar![j, var, stringme(&varmat[u][col])];
+        cvar_stats1![j, var, stringme(&varmat[u][col])];
     } else if *var == "u".to_string() {
         let mut vals = Vec::<String>::new();
         for k in 0..ex.ncells() {
