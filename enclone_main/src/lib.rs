@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 pub mod determine_ref;
+pub mod disintegrate;
 pub mod doublets;
 pub mod fcell;
 pub mod filter_umi;
