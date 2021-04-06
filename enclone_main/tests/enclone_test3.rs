@@ -679,6 +679,7 @@ fn test_cell_exact() {
                     .arg("BCR=123085")
                     .arg("POUT=stdout")
                     .arg(&format!("PCOLS={}", varp))
+                    .arg("PCELL")
                     .output()
                     .expect(&format!("failed to execute test_cel_exact"));
                 if new.status.code() != Some(0) {
@@ -704,9 +705,6 @@ fn test_cell_exact() {
 
 // 26. Test running with just reference.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_ref_only() {
