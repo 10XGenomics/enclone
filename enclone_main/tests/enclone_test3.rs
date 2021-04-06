@@ -677,7 +677,9 @@ fn test_cell_exact() {
                 );
                 let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
                     .arg(&pre_arg)
-                    .arg("BCR=123085")
+                    .arg("BCR=86237")
+                    .arg("GEX=85679")
+                    .arg("NH5")
                     .arg("POUT=stdout")
                     .arg(&format!("PCOLS={}", varp))
                     .arg("PCELL")
