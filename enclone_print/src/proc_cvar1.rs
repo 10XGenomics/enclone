@@ -232,7 +232,11 @@ pub fn proc_cvar1(
                     }
                     Del => {
                         if pos >= start && pos < stop {
-                            count += 1;
+                            if *var == "comp" || *var == "edit" {
+                                count += 1;
+                            } else {
+                                count += n - m;
+                            }
                             edits.push(format!("D{}:{}", rpos, n - m));
                         }
                         pos += n - m;
@@ -240,7 +244,11 @@ pub fn proc_cvar1(
                     }
                     Ins => {
                         if pos >= start && pos < stop {
-                            count += 1;
+                            if *var == "comp" || *var == "edit" {
+                                count += 1;
+                            } else {
+                                count += n - m;
+                            }
                             edits.push(format!("I{}:{}", rpos, n - m));
                         }
                         rpos += (n - m) as isize;
