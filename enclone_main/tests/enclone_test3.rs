@@ -660,7 +660,8 @@ fn test_cell_exact() {
     }
     let mut fails = Vec::<String>::new();
     for i in 0..lines.len() {
-        if lines[i].contains("<td> cell-exact") {
+        // WARNING: NOTE THAT FOOTNOTE 3 TEST IS HARDCODED.
+        if lines[i].contains("<td> cell-exact") && !lines[i - 2].contains(" 3 ") {
             let var = lines[i - 3].between("<code> ", " </code>");
             if !var.contains("&") {
                 let lvar = lines[i - 1].contains("lvar");
