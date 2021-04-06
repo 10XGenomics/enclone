@@ -135,7 +135,7 @@ pub fn proc_cvar1(
             }
             val = format!("{}", quals.iter().format(","));
         }
-        cvar![j, var, val];
+        cvar_stats1![j, var, val];
     } else if *var == "amino".to_string() && col_var {
         let mut last_color = "black".to_string();
         for k in 0..show_aa[col].len() {
@@ -252,7 +252,7 @@ pub fn proc_cvar1(
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
         } else {
-            cvar![j, var, format!("{}", edit)];
+            cvar_stats1![j, var, format!("{}", edit)];
         }
     } else if *var == "cdr1_dna".to_string()
         || *var == "cdr1_aa".to_string()
@@ -320,7 +320,7 @@ pub fn proc_cvar1(
                 }
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "cdr1_dna_ref".to_string() || *var == "cdr1_aa_ref".to_string() {
         let x = &ex.share[mid];
         let mut y = "unknown".to_string();
@@ -337,7 +337,7 @@ pub fn proc_cvar1(
                 y = stringme(&aa_seq(&dna, 0));
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "cdr2_dna".to_string()
         || *var == "cdr2_aa".to_string()
         || *var == "cdr2_aa_north".to_string()
@@ -407,7 +407,7 @@ pub fn proc_cvar1(
             }
         }
         if y != "cdr2_len" {
-            cvar![j, var, y];
+            cvar_stats1![j, var, y];
         } else {
             cvar_stats1![j, var, y];
         }
@@ -427,9 +427,9 @@ pub fn proc_cvar1(
                 y = stringme(&aa_seq(&dna, 0));
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "cdr3_aa".to_string() {
-        cvar![j, var, ex.share[mid].cdr3_aa.clone()];
+        cvar_stats1![j, var, ex.share[mid].cdr3_aa.clone()];
     } else if (var.starts_with("cdr3_aa_") && var.ends_with("_ext")) || var == "cdr3_aa_north" {
         let mut left = -1 * 3;
         let mut right = -1 * 3;
@@ -479,9 +479,9 @@ pub fn proc_cvar1(
             }
             y = stringme(&aa_seq(&dna, 0));
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "cdr3_dna".to_string() {
-        cvar![j, var, ex.share[mid].cdr3_dna.clone()];
+        cvar_stats1![j, var, ex.share[mid].cdr3_dna.clone()];
     } else if *var == "cdr3_len".to_string() {
         cvar_stats1![j, var, ex.share[mid].cdr3_aa.len().to_string()];
     } else if *var == "cdr3_aa_conx".to_string() || *var == "cdr3_aa_conp".to_string() {
@@ -491,7 +491,7 @@ pub fn proc_cvar1(
         } else {
             c = cdr3_aa_con("p", col, &exacts, &exact_clonotypes, &rsi);
         }
-        cvar![j, var, c];
+        cvar_stats1![j, var, c];
     } else if *var == "fwr1_dna".to_string()
         || *var == "fwr1_aa".to_string()
         || *var == "fwr1_len".to_string()
@@ -537,7 +537,7 @@ pub fn proc_cvar1(
             }
         }
         if y != "fwr1_len" {
-            cvar![j, var, y];
+            cvar_stats1![j, var, y];
         } else {
             cvar_stats1![j, var, y];
         }
@@ -553,7 +553,7 @@ pub fn proc_cvar1(
                 y = stringme(&aa_seq(&dna, 0));
             }
         }
-        cvar![j, var, y];
+        cvar_stats1![j, var, y];
     } else if *var == "fwr2_dna".to_string()
         || *var == "fwr2_aa".to_string()
         || *var == "fwr2_len".to_string()

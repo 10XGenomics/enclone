@@ -216,8 +216,14 @@ pub fn proc_lvar1(
                 origins.push("?".to_string());
             }
         }
+        let origins_unsorted = origins.clone();
         unique_sort(&mut origins);
-        lvar![i, x, format!("{}", origins.iter().format(","))];
+        lvar_stats![
+            i,
+            x,
+            format!("{}", origins.iter().format(",")),
+            origins_unsorted
+        ];
     } else if x == "origins_cell" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -260,8 +266,14 @@ pub fn proc_lvar1(
                 donors.push("?".to_string());
             }
         }
+        let donors_unsorted = donors.clone();
         unique_sort(&mut donors);
-        lvar![i, x, format!("{}", donors.iter().format(","))];
+        lvar_stats![
+            i,
+            x,
+            format!("{}", donors.iter().format(",")),
+            donors_unsorted
+        ];
     } else if x == "donors_cell" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -347,19 +359,19 @@ pub fn proc_lvar1(
         cell_types.sort();
         lvar![i, x, format!("{}", abbrev_list(&cell_types))];
     } else if x == "filter" {
-        lvar![i, x, String::new()];
-        if pass == 2 {
-            let mut fates = Vec::<String>::new();
-            for j in 0..ex.clones.len() {
-                let mut f = String::new();
-                let bc = &ex.clones[j][0].barcode;
-                let li = ex.clones[j][0].dataset_index;
-                if fate[li].contains_key(&bc.clone()) {
-                    f = fate[li][&bc.clone()].clone();
-                    f = f.between(" ", " ").to_string();
-                }
-                fates.push(f);
+        let mut fates = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut f = String::new();
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if fate[li].contains_key(&bc.clone()) {
+                f = fate[li][&bc.clone()].clone();
+                f = f.between(" ", " ").to_string();
             }
+            fates.push(f);
+        }
+        lvar_stats![i, x, String::new(), fates];
+        if pass == 2 {
             speak!(u, x, format!("{}", fates.iter().format(POUT_SEP)));
         }
     } else if x == "mark" {
