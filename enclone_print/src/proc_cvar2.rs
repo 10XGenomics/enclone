@@ -98,14 +98,6 @@ pub fn proc_cvar2(
     // Set up chain variable macro.  This is the mechanism for generating
     // both human-readable and parseable output for chain variables.
 
-    macro_rules! cvar {
-        ($i: expr, $var:expr, $val:expr) => {
-            if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                cx[col][$i] = $val.clone();
-            }
-            speakc!(u, col, $var, $val);
-        };
-    }
     macro_rules! cvar_stats1 {
         ($i: expr, $var:expr, $val:expr) => {
             if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
@@ -565,13 +557,13 @@ pub fn proc_cvar2(
             }
         }
     } else if *var == "u_min".to_string() {
-        cvar![j, var, format!("{}", u_min)];
+        cvar_stats1![j, var, format!("{}", u_min)];
     } else if *var == "u_max".to_string() {
-        cvar![j, var, format!("{}", u_max)];
+        cvar_stats1![j, var, format!("{}", u_max)];
     } else if *var == "u_μ".to_string() {
-        cvar![j, var, format!("{}", u_mean)];
+        cvar_stats1![j, var, format!("{}", u_mean)];
     } else if *var == "u_Σ".to_string() {
-        cvar![j, var, format!("{}", utot)];
+        cvar_stats1![j, var, format!("{}", utot)];
     } else if *var == "r".to_string() {
         let mut nreads = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -579,13 +571,13 @@ pub fn proc_cvar2(
         }
         cvar_stats![j, var, format!("{}", median_nreads), nreads];
     } else if *var == "r_min".to_string() {
-        cvar![j, var, format!("{}", r_min)];
+        cvar_stats1![j, var, format!("{}", r_min)];
     } else if *var == "r_max".to_string() {
-        cvar![j, var, format!("{}", r_max)];
+        cvar_stats1![j, var, format!("{}", r_max)];
     } else if *var == "r_μ".to_string() {
-        cvar![j, var, format!("{}", r_mean)];
+        cvar_stats1![j, var, format!("{}", r_mean)];
     } else if *var == "r_Σ".to_string() {
-        cvar![j, var, format!("{}", rtot)];
+        cvar_stats1![j, var, format!("{}", rtot)];
     } else if *var == "r_cell".to_string() {
         let var = var.clone();
         if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
@@ -612,17 +604,17 @@ pub fn proc_cvar2(
                 (ex.share[mid].d_start.unwrap() - ex.share[mid].v_start) % 3
             );
         }
-        cvar![j, var, d_frame];
+        cvar_stats1![j, var, d_frame];
     } else if *var == "cdr3_start" {
-        cvar![j, var, format!("{}", ex.share[mid].cdr3_start)];
+        cvar_stats1![j, var, format!("{}", ex.share[mid].cdr3_start)];
     } else if *var == "v_start" {
-        cvar![j, var, format!("{}", ex.share[mid].v_start)];
+        cvar_stats1![j, var, format!("{}", ex.share[mid].v_start)];
     } else if *var == "d_start" {
         let mut d_start = String::new();
         if ex.share[mid].d_start.is_some() {
             d_start = format!("{}", ex.share[mid].d_start.unwrap());
         }
-        cvar![j, var, d_start];
+        cvar_stats1![j, var, d_start];
     } else if *var == "const" {
         let mut constx = Vec::<String>::new();
         let cid = ex.share[mid].c_ref_id;
@@ -634,7 +626,7 @@ pub fn proc_cvar2(
         unique_sort(&mut constx);
         // This is overcomplicated because there is now at most one
         // const entry per exact subclonotype.
-        cvar![j, var, format!("{}", constx.iter().format(","))];
+        cvar_stats1![j, var, format!("{}", constx.iter().format(","))];
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
