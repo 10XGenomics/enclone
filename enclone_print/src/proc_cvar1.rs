@@ -148,8 +148,20 @@ pub fn proc_cvar1(
                 cx[col][j] += strme(&log);
             }
         }
-    } else if *var == "comp".to_string() || *var == "edit".to_string() {
+    } else if *var == "comp".to_string()
+        || *var == "edit".to_string()
+        || *var == "opt_d"
+        || *var == "opt_d_delta"
+        || *var == "opt_d2"
+    {
+        if !ex.share[mid].left && (*var == "opt_d" || *var == "opt_d_delta" || *var == "opt_d2") {
+            cvar_stats1![j, var, "".to_string()];
+            return true;
+        }
         let mut comp = 1000000;
+        let mut best_d = 0;
+        let mut best_d2 = 0;
+        let mut second_comp = 1000000;
         let mut edit = String::new();
         let td = &ex.share[mid];
         let tig = &td.seq;
@@ -237,14 +249,28 @@ pub fn proc_cvar1(
                 m += 1;
             }
             if count < comp {
+                best_d = d;
+                if comp < 1000000 {
+                    second_comp = comp;
+                    best_d2 = d;
+                }
                 comp = count;
                 edit = format!("{}", edits.iter().format("•"));
+            } else if count < second_comp {
+                second_comp = count;
+                best_d2 = d;
             }
         }
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
-        } else {
+        } else if *var == "edit" {
             cvar_stats1![j, var, format!("{}", edit)];
+        } else if *var == "opt_d" {
+            cvar_stats1![j, var, format!("{}", refdata.name[best_d])];
+        } else if *var == "opt_d2" {
+            cvar_stats1![j, var, format!("{}", refdata.name[best_d2])];
+        } else {
+            cvar_stats1![j, var, format!("{}", second_comp - comp)];
         }
     } else if *var == "cdr1_dna".to_string()
         || *var == "cdr1_aa".to_string()

@@ -42,7 +42,7 @@ pub const LVARS_ALLOWED: [&str; 35] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 84] = [
+pub const CVARS_ALLOWED: [&str; 87] = [
     "var",
     "u",
     "u_min",
@@ -127,6 +127,9 @@ pub const CVARS_ALLOWED: [&str; 84] = [
     "utr_name",
     "cdr3_start",
     "v_start",
+    "opt_d",
+    "opt_d_delta",
+    "opt_d2",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
