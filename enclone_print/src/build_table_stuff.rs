@@ -164,161 +164,160 @@ pub fn build_table_stuff(
             } else {
                 for u in 0..nexacts {
                     let m = rsi.mat[cx][u];
-                    if m.is_some() {
-                        let m = m.unwrap();
-                        let mut n = show.len();
-                        for k in 1..show.len() {
-                            if field_types[cx][k] != field_types[cx][k - 1] {
-                                n += 1;
-                            }
+                    if m.is_none() {
+                        continue;
+                    }
+                    let m = m.unwrap();
+                    let mut n = show.len();
+                    for k in 1..show.len() {
+                        if field_types[cx][k] != field_types[cx][k - 1] {
+                            n += 1;
                         }
-                        let mut ch = vec![' '; n];
-                        let amino = &ctl.clono_print_opt.amino;
-                        let ex = &exact_clonotypes[exacts[u]];
-                        let x = &ex.share[m];
-                        let mut cs1 = 0;
-                        if rsi.cdr1_starts[cx].is_some() {
-                            cs1 = rsi.cdr1_starts[cx].unwrap();
-                        }
-                        let mut cs2 = 0;
-                        if rsi.cdr2_starts[cx].is_some() {
-                            cs2 = rsi.cdr2_starts[cx].unwrap();
-                        }
-                        let mut fs2 = 0;
-                        if rsi.fr2_starts[cx].is_some() {
-                            fs2 = rsi.fr2_starts[cx].unwrap();
-                        }
-                        let mut fs3 = 0;
-                        if rsi.fr3_starts[cx].is_some() {
-                            fs3 = rsi.fr3_starts[cx].unwrap();
-                        }
-                        let fields = [
-                            (
-                                "fwr1".to_string(),
-                                rsi.fr1_starts[cx],
-                                cs1,
-                                rsi.cdr1_starts[cx].is_some(),
-                            ),
-                            (
-                                "fwr2".to_string(),
-                                fs2,
-                                cs2,
-                                rsi.fr2_starts[cx].is_some() && rsi.cdr2_starts[cx].is_some(),
-                            ),
-                            (
-                                "fwr3".to_string(),
-                                fs3,
-                                rsi.cdr3_starts[cx],
-                                rsi.fr3_starts[cx].is_some(),
-                            ),
-                            (
-                                "cdr1".to_string(),
-                                cs1,
-                                fs2,
-                                rsi.cdr1_starts[cx].is_some() && rsi.fr2_starts[cx].is_some(),
-                            ),
-                            (
-                                "cdr2".to_string(),
-                                cs2,
-                                fs3,
-                                rsi.cdr2_starts[cx].is_some() && rsi.fr3_starts[cx].is_some(),
-                            ),
-                            (
-                                "cdr3".to_string(),
-                                rsi.cdr3_starts[cx],
-                                rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
-                                true,
-                            ),
-                            (
-                                "fwr4".to_string(),
-                                rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
-                                rsi.seq_del_lens[cx] - 1,
-                                true,
-                            ),
-                        ];
-                        for z in 0..fields.len() {
-                            if amino.contains(&fields[z].0)
-                                && fields[z].3
-                                && fields[z].1 <= fields[z].2
-                            {
-                                let cs1 = fields[z].1 / 3;
-                                let mut ch_start = 0;
-                                for k in 0..show.len() {
-                                    if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
-                                        ch_start += 1;
-                                    }
-                                    if show[k] == cs1 {
-                                        break;
-                                    }
+                    }
+                    let mut ch = vec![' '; n];
+                    let amino = &ctl.clono_print_opt.amino;
+                    let ex = &exact_clonotypes[exacts[u]];
+                    let x = &ex.share[m];
+                    let mut cs1 = 0;
+                    if rsi.cdr1_starts[cx].is_some() {
+                        cs1 = rsi.cdr1_starts[cx].unwrap();
+                    }
+                    let mut cs2 = 0;
+                    if rsi.cdr2_starts[cx].is_some() {
+                        cs2 = rsi.cdr2_starts[cx].unwrap();
+                    }
+                    let mut fs2 = 0;
+                    if rsi.fr2_starts[cx].is_some() {
+                        fs2 = rsi.fr2_starts[cx].unwrap();
+                    }
+                    let mut fs3 = 0;
+                    if rsi.fr3_starts[cx].is_some() {
+                        fs3 = rsi.fr3_starts[cx].unwrap();
+                    }
+                    let fields = [
+                        (
+                            "fwr1".to_string(),
+                            rsi.fr1_starts[cx],
+                            cs1,
+                            rsi.cdr1_starts[cx].is_some(),
+                        ),
+                        (
+                            "fwr2".to_string(),
+                            fs2,
+                            cs2,
+                            rsi.fr2_starts[cx].is_some() && rsi.cdr2_starts[cx].is_some(),
+                        ),
+                        (
+                            "fwr3".to_string(),
+                            fs3,
+                            rsi.cdr3_starts[cx],
+                            rsi.fr3_starts[cx].is_some(),
+                        ),
+                        (
+                            "cdr1".to_string(),
+                            cs1,
+                            fs2,
+                            rsi.cdr1_starts[cx].is_some() && rsi.fr2_starts[cx].is_some(),
+                        ),
+                        (
+                            "cdr2".to_string(),
+                            cs2,
+                            fs3,
+                            rsi.cdr2_starts[cx].is_some() && rsi.fr3_starts[cx].is_some(),
+                        ),
+                        (
+                            "cdr3".to_string(),
+                            rsi.cdr3_starts[cx],
+                            rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                            true,
+                        ),
+                        (
+                            "fwr4".to_string(),
+                            rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
+                            rsi.seq_del_lens[cx] - 1,
+                            true,
+                        ),
+                    ];
+                    for z in 0..fields.len() {
+                        if amino.contains(&fields[z].0) && fields[z].3 && fields[z].1 <= fields[z].2
+                        {
+                            let cs1 = fields[z].1 / 3;
+                            let mut ch_start = 0;
+                            for k in 0..show.len() {
+                                if k > 0 && field_types[cx][k] != field_types[cx][k - 1] {
                                     ch_start += 1;
                                 }
-                                let q = (fields[z].2 - fields[z].1) / 3;
-
-                                // Catch an error condition that has happened a few times.
-
-                                if ch_start + q > ch.len() {
-                                    let mut ds = Vec::<String>::new();
-                                    for i in 0..ex.ncells() {
-                                        let li = ex.clones[i][m].dataset_index;
-                                        ds.push(ctl.origin_info.dataset_id[li].clone());
-                                    }
-                                    unique_sort(&mut ds);
-                                    panic!(
-                                        "Internal error, out of range in \
-                                        build_table_stuff, CDR3 = {}, datasets = {},\n\
-                                        ch_start = {}, q = {}, ch.len() = {},\n\
-                                        fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {},\n\
-                                        show = {}.",
-                                        x.cdr3_aa,
-                                        ds.iter().format(","),
-                                        ch_start,
-                                        q,
-                                        ch.len(),
-                                        fields[z].0,
-                                        fields[z].1,
-                                        fields[z].2,
-                                        show.iter().format(","),
-                                    );
+                                if show[k] == cs1 {
+                                    break;
                                 }
+                                ch_start += 1;
+                            }
+                            let q = (fields[z].2 - fields[z].1) / 3;
 
-                                // Do the work.
+                            // Catch an error condition that has happened a few times.
 
-                                let mut t = fields[z].0.to_string();
-                                t.make_ascii_uppercase();
-                                let t = t.as_bytes();
-                                let mut s = String::new();
-                                if q >= 4 {
-                                    let left = (q - 3) / 2;
-                                    let right = q - left - 4;
-                                    s += &"═".repeat(left);
-                                    s += strme(&t);
-                                    s += &"═".repeat(right);
-                                } else if q == 3 {
-                                    s += strme(&t[0..1]);
-                                    s += strme(&t[2..4]);
-                                } else if q == 2 {
-                                    s += strme(&t[0..1]);
-                                    s += strme(&t[3..4]);
-                                } else if q == 1 {
-                                    s += strme(&t[3..4]);
+                            if ch_start + q > ch.len() {
+                                let mut ds = Vec::<String>::new();
+                                for i in 0..ex.ncells() {
+                                    let li = ex.clones[i][m].dataset_index;
+                                    ds.push(ctl.origin_info.dataset_id[li].clone());
                                 }
-                                let mut schars = Vec::<char>::new();
-                                for x in s.chars() {
-                                    schars.push(x);
-                                }
-                                for k in 0..q {
-                                    ch[ch_start + k] = schars[k];
-                                }
+                                unique_sort(&mut ds);
+                                panic!(
+                                    "Internal error, out of range in \
+                                    build_table_stuff, CDR3 = {}, datasets = {},\n\
+                                    ch_start = {}, q = {}, ch.len() = {},\n\
+                                    fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {},\n\
+                                    show = {}.",
+                                    x.cdr3_aa,
+                                    ds.iter().format(","),
+                                    ch_start,
+                                    q,
+                                    ch.len(),
+                                    fields[z].0,
+                                    fields[z].1,
+                                    fields[z].2,
+                                    show.iter().format(","),
+                                );
+                            }
+
+                            // Do the work.
+
+                            let mut t = fields[z].0.to_string();
+                            t.make_ascii_uppercase();
+                            let t = t.as_bytes();
+                            let mut s = String::new();
+                            if q >= 4 {
+                                let left = (q - 3) / 2;
+                                let right = q - left - 4;
+                                s += &"═".repeat(left);
+                                s += strme(&t);
+                                s += &"═".repeat(right);
+                            } else if q == 3 {
+                                s += strme(&t[0..1]);
+                                s += strme(&t[2..4]);
+                            } else if q == 2 {
+                                s += strme(&t[0..1]);
+                                s += strme(&t[3..4]);
+                            } else if q == 1 {
+                                s += strme(&t[3..4]);
+                            }
+                            let mut schars = Vec::<char>::new();
+                            for x in s.chars() {
+                                schars.push(x);
+                            }
+                            for k in 0..q {
+                                ch[ch_start + k] = schars[k];
                             }
                         }
-                        let mut s = String::new();
-                        for c in ch {
-                            s.push(c);
-                        }
-                        s = s.trim_end().to_string();
-                        row.push(s);
-                        break;
                     }
+                    let mut s = String::new();
+                    for c in ch {
+                        s.push(c);
+                    }
+                    s = s.trim_end().to_string();
+                    row.push(s);
+                    break;
                 }
             }
         }
