@@ -87,6 +87,8 @@ pub fn disintegrate_onesies(
             }
             to_info2.push(x);
         }
+        ctl.perf_stats(&t, "disintegrating onesies 2");
+        let t = Instant::now();
         *info = info2;
         let mut raw_joins2 = Vec::<(i32, i32)>::new();
         for i in 0..raw_joins.len() {
@@ -113,6 +115,6 @@ pub fn disintegrate_onesies(
             }
         }
         *eq = eq2;
-        ctl.perf_stats(&t, "disintegrating onesies 2");
+        ctl.perf_stats(&t, "disintegrating onesies 3");
     }
 }
