@@ -18,8 +18,8 @@ pub fn disintegrate_onesies(
     join_info: &mut Vec<(usize, usize, bool, Vec<u8>)>,
     raw_joins: &mut Vec<(i32, i32)>,
 ) {
-    let tone = Instant::now();
     if ctl.clono_filt_opt.weak_onesies {
+        let t = Instant::now();
         let ncells_total = exact_clonotypes.iter().map(|x| x.ncells()).sum();
         let mut to_info = HashMap::<usize, usize>::new();
         let mut exacts2 = Vec::<ExactClonotype>::new();
@@ -63,6 +63,8 @@ pub fn disintegrate_onesies(
                 }
             }
         }
+        ctl.perf_stats(&t, "disintegrating onesies 1");
+        let t = Instant::now();
         *join_info = join_info2;
         *exact_clonotypes = exacts2;
         let mut info2 = Vec::<CloneInfo>::new();
@@ -111,6 +113,6 @@ pub fn disintegrate_onesies(
             }
         }
         *eq = eq2;
+        ctl.perf_stats(&t, "disintegrating onesies 2");
     }
-    ctl.perf_stats(&tone, "disintegrating onesies");
 }
