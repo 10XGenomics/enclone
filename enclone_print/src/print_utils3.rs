@@ -785,9 +785,13 @@ pub fn build_table_stuff(
                                         unique_sort(&mut ds);
                                         panic!(
                                             "Internal error, out of range in \
-                                            build_table_stuff, CDR3 = {}, datasets = {}.",
+                                            build_table_stuff, CDR3 = {}, datasets = {},\n\
+                                            ch_start = {}, q = {}, ch.len() = {}.",
                                             x.cdr3_aa,
-                                            ds.iter().format(",")
+                                            ds.iter().format(","),
+                                            ch_start,
+                                            q,
+                                            ch.len(),
                                         );
                                     }
 
