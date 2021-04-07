@@ -763,12 +763,16 @@ pub fn build_table_stuff(
                                     panic!(
                                         "Internal error, out of range in \
                                         build_table_stuff, CDR3 = {}, datasets = {},\n\
-                                        ch_start = {}, q = {}, ch.len() = {}.",
+                                        ch_start = {}, q = {}, ch.len() = {},\n\
+                                        fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {}.",
                                         x.cdr3_aa,
                                         ds.iter().format(","),
                                         ch_start,
                                         q,
                                         ch.len(),
+                                        fields[z].0,
+                                        fields[z].1,
+                                        fields[z].2,
                                     );
                                 }
 
