@@ -197,50 +197,53 @@ pub fn build_table_stuff(
                 }
                 let fields = [
                     (
-                        "fwr1".to_string(),
+                        "fwr1",
                         rsi.fr1_starts[cx],
                         cs1,
                         rsi.cdr1_starts[cx].is_some(),
                     ),
                     (
-                        "fwr2".to_string(),
+                        "fwr2",
                         fs2,
                         cs2,
                         rsi.fr2_starts[cx].is_some() && rsi.cdr2_starts[cx].is_some(),
                     ),
                     (
-                        "fwr3".to_string(),
+                        "fwr3",
                         fs3,
                         rsi.cdr3_starts[cx],
                         rsi.fr3_starts[cx].is_some(),
                     ),
                     (
-                        "cdr1".to_string(),
+                        "cdr1",
                         cs1,
                         fs2,
                         rsi.cdr1_starts[cx].is_some() && rsi.fr2_starts[cx].is_some(),
                     ),
                     (
-                        "cdr2".to_string(),
+                        "cdr2",
                         cs2,
                         fs3,
                         rsi.cdr2_starts[cx].is_some() && rsi.fr3_starts[cx].is_some(),
                     ),
                     (
-                        "cdr3".to_string(),
+                        "cdr3",
                         rsi.cdr3_starts[cx],
                         rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
                         true,
                     ),
                     (
-                        "fwr4".to_string(),
+                        "fwr4",
                         rsi.cdr3_starts[cx] + x.cdr3_aa.len() * 3,
                         rsi.seq_del_lens[cx] - 1,
                         true,
                     ),
                 ];
                 for z in 0..fields.len() {
-                    if amino.contains(&fields[z].0) && fields[z].3 && fields[z].1 <= fields[z].2 {
+                    if amino.contains(&fields[z].0.to_string())
+                        && fields[z].3
+                        && fields[z].1 <= fields[z].2
+                    {
                         let cs1 = fields[z].1 / 3;
                         let mut ch_start = 0;
                         for k in 0..show.len() {
