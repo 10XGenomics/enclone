@@ -750,6 +750,30 @@ pub fn build_table_stuff(
                                     ch_start += 1;
                                 }
                                 let q = (fields[z].2 - fields[z].1) / 3;
+
+                                // Catch an error condition that has happened a few times.
+
+                                if ch_start + q > ch.len() {
+                                    let mut ds = Vec::<String>::new();
+                                    for i in 0..ex.ncells() {
+                                        let li = ex.clones[i][m].dataset_index;
+                                        ds.push(ctl.origin_info.dataset_id[li].clone());
+                                    }
+                                    unique_sort(&mut ds);
+                                    panic!(
+                                        "Internal error, out of range in \
+                                        build_table_stuff, CDR3 = {}, datasets = {},\n\
+                                        ch_start = {}, q = {}, ch.len() = {}.",
+                                        x.cdr3_aa,
+                                        ds.iter().format(","),
+                                        ch_start,
+                                        q,
+                                        ch.len(),
+                                    );
+                                }
+
+                                // Do the work.
+
                                 let mut t = fields[z].0.to_string();
                                 t.make_ascii_uppercase();
                                 let t = t.as_bytes();
@@ -774,29 +798,6 @@ pub fn build_table_stuff(
                                     schars.push(x);
                                 }
                                 for k in 0..q {
-                                    // Catch an error condition that has happened a few times.
-
-                                    if ch_start + k >= ch.len() {
-                                        let mut ds = Vec::<String>::new();
-                                        for i in 0..ex.ncells() {
-                                            let li = ex.clones[i][m].dataset_index;
-                                            ds.push(ctl.origin_info.dataset_id[li].clone());
-                                        }
-                                        unique_sort(&mut ds);
-                                        panic!(
-                                            "Internal error, out of range in \
-                                            build_table_stuff, CDR3 = {}, datasets = {},\n\
-                                            ch_start = {}, q = {}, ch.len() = {}.",
-                                            x.cdr3_aa,
-                                            ds.iter().format(","),
-                                            ch_start,
-                                            q,
-                                            ch.len(),
-                                        );
-                                    }
-
-                                    // Do the work.
-
                                     ch[ch_start + k] = schars[k];
                                 }
                             }
