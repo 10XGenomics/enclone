@@ -263,12 +263,14 @@ pub fn build_table_stuff(
                                 ds.push(ctl.origin_info.dataset_id[li].clone());
                             }
                             unique_sort(&mut ds);
+                            let mut types = Vec::<usize>::new();
                             panic!(
                                 "Internal error, out of range in \
                                 build_table_stuff, CDR3 = {}, datasets = {},\n\
                                 ch_start = {}, q = {}, ch.len() = {},\n\
                                 fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {},\n\
-                                show = {}.",
+                                show = {},\n\
+                                field_types = {}.",
                                 x.cdr3_aa,
                                 ds.iter().format(","),
                                 ch_start,
@@ -278,6 +280,7 @@ pub fn build_table_stuff(
                                 fields[z].1,
                                 fields[z].2,
                                 show.iter().format(","),
+                                field_types[cx].iter().format(","),
                             );
                         }
 
