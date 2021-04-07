@@ -394,7 +394,7 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
-    } else if *var == "cdiff".to_string() {
+    } else if *var == "cdiff" {
         let cstart = ex.share[mid].j_stop;
         let clen = ex.share[mid].full_seq.len() - cstart;
         let cid = ex.share[mid].c_ref_id;
@@ -426,7 +426,7 @@ pub fn proc_cvar2(
             cdiff = format!("+{}", clen);
         }
         cvar_stats1![j, var, cdiff];
-    } else if *var == "udiff".to_string() {
+    } else if *var == "udiff" {
         let ulen = ex.share[mid].v_start;
         let uid = ex.share[mid].u_ref_id;
         let mut udiff = String::new();
@@ -486,7 +486,7 @@ pub fn proc_cvar2(
             u = refdata.name[uid.unwrap()].clone();
         }
         cvar_stats1![j, var, u];
-    } else if *var == "d_univ".to_string() {
+    } else if *var == "d_univ" {
         let vid = ex.share[mid].v_ref_id;
         let vref = &refdata.refs[vid].to_ascii_vec();
         let jid = ex.share[mid].j_ref_id;
@@ -507,7 +507,7 @@ pub fn proc_cvar2(
             }
         }
         cvar_stats1![j, var, format!("{}", diffs)];
-    } else if *var == "d_donor".to_string() {
+    } else if *var == "d_donor" {
         let vid = ex.share[mid].v_ref_id;
         let mut vref = refdata.refs[vid].to_ascii_vec();
         if rsi.vpids[col].is_some() {
@@ -531,17 +531,17 @@ pub fn proc_cvar2(
             }
         }
         cvar_stats1![j, var, format!("{}", diffs)];
-    } else if *var == "notes".to_string() {
+    } else if *var == "notes" {
         cvar_stats1![j, var, ex.share[mid].vs_notesx.clone()];
-    } else if *var == "var".to_string() {
+    } else if *var == "var" {
         cvar_stats1![j, var, stringme(&varmat[u][col])];
-    } else if *var == "u".to_string() {
+    } else if *var == "u" {
         let mut vals = Vec::<String>::new();
         for k in 0..ex.ncells() {
             vals.push(format!("{}", ex.clones[k][mid].umi_count));
         }
         cvar_stats![j, var, format!("{}", median_numis), vals];
-    } else if *var == "u_cell".to_string() {
+    } else if *var == "u_cell" {
         let var = var.clone();
         if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
@@ -556,29 +556,29 @@ pub fn proc_cvar2(
                 out_data[u].insert(varc, format!("{}", vals));
             }
         }
-    } else if *var == "u_min".to_string() {
+    } else if *var == "u_min" {
         cvar_stats1![j, var, format!("{}", u_min)];
-    } else if *var == "u_max".to_string() {
+    } else if *var == "u_max" {
         cvar_stats1![j, var, format!("{}", u_max)];
-    } else if *var == "u_μ".to_string() {
+    } else if *var == "u_μ" {
         cvar_stats1![j, var, format!("{}", u_mean)];
-    } else if *var == "u_Σ".to_string() {
+    } else if *var == "u_Σ" {
         cvar_stats1![j, var, format!("{}", utot)];
-    } else if *var == "r".to_string() {
+    } else if *var == "r" {
         let mut nreads = Vec::<String>::new();
         for j in 0..ex.clones.len() {
             nreads.push(format!("{}", ex.clones[j][mid].read_count));
         }
         cvar_stats![j, var, format!("{}", median_nreads), nreads];
-    } else if *var == "r_min".to_string() {
+    } else if *var == "r_min" {
         cvar_stats1![j, var, format!("{}", r_min)];
-    } else if *var == "r_max".to_string() {
+    } else if *var == "r_max" {
         cvar_stats1![j, var, format!("{}", r_max)];
-    } else if *var == "r_μ".to_string() {
+    } else if *var == "r_μ" {
         cvar_stats1![j, var, format!("{}", r_mean)];
-    } else if *var == "r_Σ".to_string() {
+    } else if *var == "r_Σ" {
         cvar_stats1![j, var, format!("{}", rtot)];
-    } else if *var == "r_cell".to_string() {
+    } else if *var == "r_cell" {
         let var = var.clone();
         if pass == 2 && (col + 1 <= ctl.parseable_opt.pchains || extra_args.len() > 0) {
             let varc = format!("{}{}", var, col + 1);
@@ -630,7 +630,7 @@ pub fn proc_cvar2(
 
     // Compute potential whitelist contamination percent and filter.
     // This is an undocumented option.
-    } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
+    } else if *var == "white" || ctl.clono_filt_opt.whitef {
         let mut bch = vec![Vec::<(usize, String, usize, usize)>::new(); 2];
         for l in 0..ex.clones.len() {
             let li = ex.clones[l][0].dataset_index;
