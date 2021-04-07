@@ -266,6 +266,28 @@ pub fn process_special_arg(
                 .origin_color_map
                 .insert(x[j].before("->").to_string(), x[j].after("->").to_string());
         }
+    } else if arg.starts_with("PLOT2=") {
+        *using_plot = true;
+        let x = arg.after("PLOT2=").split(',').collect::<Vec<&str>>();
+        if x.is_empty() {
+            eprintln!("\nArgument to PLOT is invalid.\n");
+            std::process::exit(1);
+        }
+        if x.len() % 2 != 1 {
+            eprintln!("\nArgument to PLOT is invalid.\n");
+            std::process::exit(1);
+        }
+        ctl.gen_opt.plot_file = x[0].to_string();
+        for j in (1..x.len()).step_by(2) {
+            let condition = x[j].to_string();
+            let color = x[j + 1].to_string();
+            if !condition.contains("=") {
+                eprintln!("\nArgument to PLOT is invalid.\n");
+                std::process::exit(1);
+            }
+            ctl.gen_opt.plot_conditions.push(condition);
+            ctl.gen_opt.plot_colors.push(color);
+        }
     } else if arg.starts_with("PLOT_BY_ISOTYPE=") {
         ctl.gen_opt.plot_by_isotype = true;
         ctl.gen_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();

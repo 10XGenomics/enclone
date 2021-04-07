@@ -260,6 +260,8 @@ pub struct GeneralOpt {
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
     pub top_genes: bool,
+    pub plot_conditions: Vec<String>,
+    pub plot_colors: Vec<String>,
 }
 
 // Some plot options.  (Should move them all here.)
