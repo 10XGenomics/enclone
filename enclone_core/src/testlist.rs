@@ -691,7 +691,7 @@ pub const EXTENDED_TESTS: [&str; 28] = [
     // 27. parseable value for fwr4_aa was wrong
     r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
     // 28. conp value was truncated
-    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW"###,
+    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
