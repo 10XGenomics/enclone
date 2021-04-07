@@ -653,11 +653,11 @@ pub fn row_fill(
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
-            } else if *var == "amino".to_string() {
+            } else if *var == "amino" {
                 needed = true;
-            } else if *var == "u_cell".to_string() || *var == "r_cell".to_string() {
+            } else if *var == "u_cell" || *var == "r_cell" {
                 needed = true;
-            } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
+            } else if *var == "white" || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
             if extra_args.contains(&varc) {
