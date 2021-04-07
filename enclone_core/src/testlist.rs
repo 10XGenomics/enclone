@@ -623,7 +623,7 @@ pub const CRASH_SETS: [&str; 3] = [
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 27] = [
+pub const EXTENDED_TESTS: [&str; 28] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -690,6 +690,8 @@ pub const EXTENDED_TESTS: [&str; 27] = [
          NFORCE"###,
     // 27. parseable value for fwr4_aa was wrong
     r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
+    // 28. conp value was truncated
+    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW"###,
 ];
 
 // Tests of internal features.
