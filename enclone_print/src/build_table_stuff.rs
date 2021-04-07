@@ -266,11 +266,15 @@ pub fn build_table_stuff(
                                 ds.push(ctl.origin_info.dataset_id[li].clone());
                             }
                             unique_sort(&mut ds);
+                            let fields_msg = format!(
+                                "fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {},",
+                                fields[z].0, fields[z].1, fields[z].2,
+                            );
                             panic!(
                                 "Internal error, out of range in \
                                 build_table_stuff, CDR3 = {}, datasets = {},\n\
                                 ch_start = {}, q = {}, ch.len() = {},\n\
-                                fields[z].0 = {}, fields[z].1 = {}, fields[z].2 = {},\n\
+                                {}\n\
                                 show = {},\n\
                                 field_types = {}.",
                                 x.cdr3_aa,
@@ -278,9 +282,7 @@ pub fn build_table_stuff(
                                 ch_start,
                                 q,
                                 ch.len(),
-                                fields[z].0,
-                                fields[z].1,
-                                fields[z].2,
+                                fields_msg,
                                 show.iter().format(","),
                                 field_types[cx].iter().format(","),
                             );
