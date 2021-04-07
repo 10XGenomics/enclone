@@ -689,7 +689,7 @@ pub const EXTENDED_TESTS: [&str; 27] = [
     r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
          NFORCE"###,
     // 27. parseable value for fwr4_aa was wrong
-    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1"###,
+    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
