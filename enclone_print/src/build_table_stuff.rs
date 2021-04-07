@@ -263,7 +263,6 @@ pub fn build_table_stuff(
                                 ds.push(ctl.origin_info.dataset_id[li].clone());
                             }
                             unique_sort(&mut ds);
-                            let mut types = Vec::<usize>::new();
                             panic!(
                                 "Internal error, out of range in \
                                 build_table_stuff, CDR3 = {}, datasets = {},\n\
