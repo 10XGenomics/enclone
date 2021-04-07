@@ -709,8 +709,8 @@ pub fn proc_cvar1(
         cvar_stats1![j, var, y];
     } else if *var == "fwr4_dna" || *var == "fwr4_aa" || *var == "fwr4_len" {
         let x = &ex.share[mid];
-        let start = x.cdr3_start - x.ins_len() + 3 * x.cdr3_aa.len();
-        let stop = x.seq_del_amino.len();
+        let start = rsi.cdr3_starts[col] + 3 * rsi.cdr3_lens[col];
+        let stop = rsi.seq_del_lens[col];
         let dna = &x.seq_del_amino[start..stop];
         let y;
         if *var == "fwr4_dna".to_string() {
