@@ -33,7 +33,11 @@ command-line help that comes with your copy of #enclone will always match its be
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <p>
-<b>4/8/21</b>: Fix bug that caused <code>CONP</code> to produce the wrong answer in some cases.
+<b>4/8/21</b>: 
+<ul>
+<li>Fix bug that caused <code>CONP</code> to produce the wrong answer in some cases.</li>
+<li>Fix bug that caused FWR4 values to be wrong in some cases.</li>
+</ul>
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
