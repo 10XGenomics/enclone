@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod build_table_stuff;
 pub mod define_mat;
 pub mod filter;
 pub mod finish_table;
