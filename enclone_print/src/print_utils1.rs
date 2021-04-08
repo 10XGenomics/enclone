@@ -515,7 +515,7 @@ pub fn aa_classes() -> Vec<(char, Vec<u8>)> {
     classes.push(('Ω', b"FHWY".to_vec()));
     classes.push(('Φ', b"IFLMVWY".to_vec()));
     classes.push(('ζ', b"DEHKNQRST".to_vec()));
-    classes.push(('X', b"ADEFGHIKLMNPQRSTVWY".to_vec()));
+    classes.push(('X', b"ACDEFGHIKLMNPQRSTVWY".to_vec()));
     classes
 }
 

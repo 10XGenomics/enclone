@@ -5,6 +5,7 @@
 // In some cases, by eye, you can see rounder forms that could be created by relocating some of
 // the cells.
 
+use crate::hex::*;
 use crate::pack_circles::*;
 use crate::polygon::*;
 use crate::string_width::*;
@@ -35,102 +36,6 @@ fn set_svg_height(svg: &mut String, new_height: f64) {
 
 fn get_svg_height(svg: &String) -> f64 {
     svg.between("height=\"", "\"").force_f64()
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// For radius r and n = 0, 1, ..., consider a counterclockwise spiral of lattice-packed disks of
-// radius r, starting at the origin and going first to the right.  Return the coordinates of the
-// center of the nth disk.  See this picture:
-// https://www.researchgate.net/profile/Guorui_Li4/publication/220270050/figure/fig1/
-//         AS:393993713143808@1470946829076/The-hexagonal-coordinate-system.png
-// There is no attempt at efficiency.
-
-fn hex_coord(n: usize, r: f64) -> (f64, f64) {
-    // Special case.
-    if n == 0 {
-        return (0.0, 0.0);
-    }
-    // If the hexagons are numbered 0, 1, ... outward, which hexagon "hid" are we on and
-    // which position "hpos" on that are we at?
-    let mut hid = 1;
-    let mut k = 6;
-    let mut hpos = n - 1;
-    loop {
-        if hpos < k {
-            break;
-        }
-        hpos -= k;
-        hid += 1;
-        k += 6;
-    }
-    // Find coordinates.
-    let c = r * 3.0f64.sqrt() / 2.0; // center to center distance, divided by 2
-    let mut x = hid as f64 * 2.0 * c;
-    let mut y = 0.0;
-    let mut p = hpos;
-    if p > 0 {
-        // Traverse the six faces, as far as we have to go.
-        for _ in 0..hid {
-            x -= c;
-            y += 1.5;
-            p -= 1;
-            if p == 0 {
-                break;
-            }
-        }
-        if p > 0 {
-            for _ in 0..hid {
-                x -= 2.0 * c;
-                p -= 1;
-                if p == 0 {
-                    break;
-                }
-            }
-            if p > 0 {
-                for _ in 0..hid {
-                    x -= c;
-                    y -= 1.5;
-                    p -= 1;
-                    if p == 0 {
-                        break;
-                    }
-                }
-                if p > 0 {
-                    for _ in 0..hid {
-                        x += c;
-                        y -= 1.5;
-                        p -= 1;
-                        if p == 0 {
-                            break;
-                        }
-                    }
-                    if p > 0 {
-                        for _ in 0..hid {
-                            x += 2.0 * c;
-                            p -= 1;
-                            if p == 0 {
-                                break;
-                            }
-                        }
-                        if p > 0 {
-                            for _ in 0..hid - 1 {
-                                x += c;
-                                y += 1.5;
-                                p -= 1;
-                                if p == 0 {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    x *= 2.0 / 3.0f64.sqrt();
-    y *= 2.0 / 3.0f64.sqrt();
-    (x, y)
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -342,8 +247,12 @@ pub fn plot_clonotypes(
                     let mut color_id = 0;
                     if crefs.solo() && crefs[0].is_some() {
                         let c = &refdata.name[crefs[0].unwrap()];
-                        let p = bin_position(&const_names, &c) as usize;
-                        color_id = 1 + p;
+                        // Note that is possible for p to be -1 in the following.  This is known
+                        // to happen if a heavy chain V gene is on the same contig as a light
+                        // chain C gene (which may be an artifact).  There is an example in
+                        // enclone_main/testx/inputs/flaky.
+                        let p = bin_position(&const_names, &c);
+                        color_id = (1 + p) as usize;
                     }
                     if ctl.gen_opt.plot_by_isotype_color.is_empty() {
                         let x = print_color13(color_id);

@@ -1,0 +1,1145 @@
+[
+    {
+        "aa_sequence": "MEAPAQLLFLLLLWLPDTTGEIVLTQSPATLSLSPGERATLSCRASQSVSSYLAWYQQKPGQAPRLLIYDASNRATGIPARFSGSGSGTDFTLTISSLEPEDFAVYYCQQRSNWPPTFGGGTKVEIKRTVAAPSVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDN", 
+        "annotations": [
+            {
+                "annotation_length": 47, 
+                "annotation_match_end": 47, 
+                "annotation_match_start": 13, 
+                "cigar": "34M518S", 
+                "contig_match_end": 34, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 281, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 68
+            }, 
+            {
+                "annotation_length": 345, 
+                "annotation_match_end": 345, 
+                "annotation_match_start": 0, 
+                "cigar": "34S345M173S", 
+                "contig_match_end": 379, 
+                "contig_match_start": 34, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 282, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 690
+            }, 
+            {
+                "annotation_length": 37, 
+                "annotation_match_end": 37, 
+                "annotation_match_start": 0, 
+                "cigar": "379S37M136S", 
+                "contig_match_end": 416, 
+                "contig_match_start": 379, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKJ4", 
+                    "feature_id": 217, 
+                    "gene_name": "IGKJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 69
+            }, 
+            {
+                "annotation_length": 320, 
+                "annotation_match_end": 136, 
+                "annotation_match_start": 0, 
+                "cigar": "416S136M", 
+                "contig_match_end": 552, 
+                "contig_match_start": 416, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKC", 
+                    "feature_id": 213, 
+                    "gene_name": "IGKC", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 272
+            }
+        ], 
+        "barcode": "TAGACCACAATCGGTT-1", 
+        "cdr3": "CQQRSNWPPTF", 
+        "cdr3_seq": "TGTCAGCAGCGTAGCAACTGGCCTCCCACTTTC", 
+        "cdr3_start": 355, 
+        "cdr3_stop": 388, 
+        "clonotype": null, 
+        "contig_name": "TAGACCACAATCGGTT-1_contig_1", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82", 
+            "raw_consensus_id": "clonotype82_consensus_1"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 930, 
+        "sequence": "GGAGGAACTGCTCAGTTAGGACCCAGAGGGAACCATGGAAGCCCCAGCTCAGCTTCTCTTCCTCCTGCTACTCTGGCTCCCAGATACCACCGGAGAAATTGTGTTGACACAGTCTCCAGCCACCCTGTCTTTGTCTCCAGGGGAAAGAGCCACCCTCTCCTGCAGGGCCAGTCAGAGTGTTAGCAGCTACTTAGCCTGGTACCAACAGAAACCTGGCCAGGCTCCCAGGCTCCTCATCTATGATGCATCCAACAGGGCCACTGGCATCCCAGCCAGGTTCAGTGGCAGTGGGTCTGGGACAGACTTCACTCTCACCATCAGCAGCCTAGAGCCTGAAGATTTTGCAGTTTATTACTGTCAGCAGCGTAGCAACTGGCCTCCCACTTTCGGCGGAGGGACCAAGGTGGAGATCAAACGAACTGTGGCTGCACCATCTGTCTTCATCTTCCCGCCATCTGATGAGCAGTTGAAATCTGGAACTGCCTCTGTTGTGTGCCTGCTGAATAACTTCTATCCCAGAGAGGCCAAAGTACAGTGGAAGGTGGATAACGC", 
+        "start_codon_pos": 34, 
+        "stop_codon_pos": null, 
+        "umi_count": 13
+    }, 
+    {
+        "aa_sequence": "MEFWLSWVFLVAISKGVQCEVQLVETGGGLIQPGGSLRLSCAASGFTVSSNYMSWVRQAPGKGLEWVSVIYSGGSTYYADSVKGRFTISRDNSKNTLYLQMNSLRAEDTAVYYCARGVPTFGGVPWFDPWGQGTLVTVSSGQPKANPTVTLFPPSSEELQANKATLVCLISDFYPGAVTVAWKADGSPVKAGVETTKPSKQSNNKYAASS", 
+        "annotations": [
+            {
+                "annotation_length": 221, 
+                "annotation_match_end": 221, 
+                "annotation_match_start": 179, 
+                "cigar": "42M632S", 
+                "contig_match_end": 42, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 145, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 84
+            }, 
+            {
+                "annotation_length": 350, 
+                "annotation_match_end": 350, 
+                "annotation_match_start": 0, 
+                "cigar": "42S350M282S", 
+                "contig_match_end": 392, 
+                "contig_match_start": 42, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 146, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 695
+            }, 
+            {
+                "annotation_length": 51, 
+                "annotation_match_end": 51, 
+                "annotation_match_start": 0, 
+                "cigar": "412S51M211S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 412, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ5", 
+                    "feature_id": 57, 
+                    "gene_name": "IGHJ5", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 82
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "463S211M", 
+                "contig_match_end": 674, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 422
+            }
+        ], 
+        "barcode": "TAGACCACAATCGGTT-1", 
+        "cdr3": "CARGVPTFGGVPWFDPW", 
+        "cdr3_seq": "TGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGG", 
+        "cdr3_start": 381, 
+        "cdr3_stop": 432, 
+        "clonotype": null, 
+        "contig_name": "TAGACCACAATCGGTT-1_contig_2", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": ">>>>>>H]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 169, 
+        "sequence": "TGTTTCCATTCGGTGATCAGCACTGAACACAGAGGACTCACCATGGAGTTTTGGCTGAGCTGGGTTTTCCTTGTTGCTATTTCAAAAGGTGTCCAGTGTGAGGTGCAGCTGGTGGAGACTGGAGGAGGCTTGATCCAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGGTTCACCGTCAGTAGCAACTACATGAGCTGGGTCCGCCAGGCTCCAGGGAAGGGGCTGGAGTGGGTCTCAGTTATTTATAGCGGTGGTAGCACATACTACGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTTCAAATGAACAGCCTGAGAGCCGAGGACACGGCCGTGTATTACTGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGGTCAGCCCAAGGCCAACCCCACTGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": 42, 
+        "stop_codon_pos": null, 
+        "umi_count": 5
+    }, 
+    {
+        "aa_sequence": "MDWTWSILFLVAAATGAHSQVQLVQSGAEVKKPGASVKVSCKASGYTFTSYGISWVRQAPGQGLEWMGWISAYNGNTNYAQKLQGRVTMTTDTSTSTAYMELRSLRSDDTAVYYCARGVYGSGSYLKLLGPGNPGHRLLSTHQGSGCVPHHIRVQTPKG*QPCGPGMLDNWVP", 
+        "annotations": [
+            {
+                "annotation_length": 59, 
+                "annotation_match_end": 59, 
+                "annotation_match_start": 15, 
+                "cigar": "44M521S", 
+                "contig_match_end": 44, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 64, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 88
+            }, 
+            {
+                "annotation_length": 353, 
+                "annotation_match_end": 353, 
+                "annotation_match_start": 0, 
+                "cigar": "44S353M168S", 
+                "contig_match_end": 397, 
+                "contig_match_start": 44, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 65, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 696
+            }, 
+            {
+                "annotation_length": 27, 
+                "annotation_match_end": 27, 
+                "annotation_match_start": 0, 
+                "cigar": "394S27M144S", 
+                "contig_match_end": 421, 
+                "contig_match_start": 394, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD3-10", 
+                    "feature_id": 18, 
+                    "gene_name": "IGHD3-10", 
+                    "region_type": "D-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 24
+            }, 
+            {
+                "annotation_length": 46, 
+                "annotation_match_end": 46, 
+                "annotation_match_start": 7, 
+                "cigar": "424S39M102S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 424, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ4", 
+                    "feature_id": 54, 
+                    "gene_name": "IGHJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 78
+            }, 
+            {
+                "annotation_length": 1289, 
+                "annotation_match_end": 102, 
+                "annotation_match_start": 0, 
+                "cigar": "463S102M", 
+                "contig_match_end": 565, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD", 
+                    "feature_id": 6, 
+                    "gene_name": "IGHD", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 204
+            }
+        ], 
+        "barcode": "TAGACCACAATCGGTT-1", 
+        "cdr3": "CARGVY", 
+        "cdr3_seq": "TGTGCGAGAGGTGTCTAT", 
+        "cdr3_start": 386, 
+        "cdr3_stop": 404, 
+        "clonotype": null, 
+        "contig_name": "TAGACCACAATCGGTT-1_contig_3", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>HHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]HHHHHHHHHGHHHHHHHHHHHHHHHHHHHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 119, 
+        "sequence": "CACACCCCTCCTTGGGAGAATCCCCTAGATCACAGCTCCTCACCATGGACTGGACCTGGAGCATCCTTTTCTTGGTGGCAGCAGCAACAGGTGCCCACTCCCAGGTTCAGCTGGTGCAGTCTGGAGCTGAGGTGAAGAAGCCTGGGGCCTCAGTGAAGGTCTCCTGCAAGGCTTCTGGTTACACCTTTACCAGCTATGGTATCAGCTGGGTGCGACAGGCCCCTGGACAAGGGCTTGAGTGGATGGGATGGATCAGCGCTTACAATGGTAACACAAACTATGCACAGAAGCTCCAGGGCAGAGTCACCATGACCACAGACACATCCACGAGCACAGCCTACATGGAGCTGAGGAGCCTGAGATCTGACGACACGGCCGTGTATTACTGTGCGAGAGGTGTCTATGGTTCGGGGAGTTATTTGAAACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGCACCCACCAAGGCTCCGGATGTGTTCCCCATCATATCAGGGTGCAGACACCCAAAGGATAACAGCCCTGTGGTCCTGGCATGCTTGATAACTGGGTACCACC", 
+        "start_codon_pos": 44, 
+        "stop_codon_pos": 521, 
+        "umi_count": 3
+    }, 
+    {
+        "aa_sequence": null, 
+        "annotations": [
+            {
+                "annotation_length": 337, 
+                "annotation_match_end": 337, 
+                "annotation_match_start": 16, 
+                "cigar": "321M256S", 
+                "contig_match_end": 321, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLV3-19", 
+                    "feature_id": 360, 
+                    "gene_name": "IGLV3-19", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 642
+            }, 
+            {
+                "annotation_length": 38, 
+                "annotation_match_end": 38, 
+                "annotation_match_start": 0, 
+                "cigar": "328S38M211S", 
+                "contig_match_end": 366, 
+                "contig_match_start": 328, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLJ2", 
+                    "feature_id": 314, 
+                    "gene_name": "IGLJ2", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 71
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "366S211M", 
+                "contig_match_end": 577, 
+                "contig_match_start": 366, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 397
+            }
+        ], 
+        "barcode": "TAGACCACAATCGGTT-1", 
+        "cdr3": "CNSRDSSGNHLVF", 
+        "cdr3_seq": "TGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTC", 
+        "cdr3_start": 299, 
+        "cdr3_stop": 338, 
+        "clonotype": null, 
+        "contig_name": "TAGACCACAATCGGTT-1_contig_4", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>>>>>>>>>>HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]IIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 38, 
+        "sequence": "TCTGGCTCACTCTCCTCACTCTTTGCATAGGTTCTGTGGTTTCTTCTGAGCTGACTCAGGACCCTGCTGTGTCTGTGGCCTTGGGACAGACAGTCAGGATCACATGCCAAGGAGACAGCCTCAGAAGCTATTATGCAAGCTGGTACCAGCAGAAGCCAGGACAGGCCCCTGTACTTGTCATCTATGGTAAAAACAACCGGCCCTCAGGGATCCCAGACCGATTCTCTGGCTCCAGCTCAGGAAACACAGCTTCCTTGACCATCACTGGGGCTCAGGCGGAAGATGAGGCTGACTATTACTGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTCGGCGGAGGGACCAAGCTGACCGTCCTAGGTCAGCCCAAGGCTGCCCCCTCGGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": null, 
+        "stop_codon_pos": null, 
+        "umi_count": 1
+    },
+    {
+        "aa_sequence": "MEAPAQLLFLLLLWLPDTTGEIVLTQSPATLSLSPGERATLSCRASQSVSSYLAWYQQKPGQAPRLLIYDASNRATGIPARFSGSGSGTDFTLTISSLEPEDFAVYYCQQRSNWPPTFGGGTKVEIKRTVAAPSVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDN", 
+        "annotations": [
+            {
+                "annotation_length": 47, 
+                "annotation_match_end": 47, 
+                "annotation_match_start": 13, 
+                "cigar": "34M518S", 
+                "contig_match_end": 34, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 281, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 68
+            }, 
+            {
+                "annotation_length": 345, 
+                "annotation_match_end": 345, 
+                "annotation_match_start": 0, 
+                "cigar": "34S345M173S", 
+                "contig_match_end": 379, 
+                "contig_match_start": 34, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 282, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 690
+            }, 
+            {
+                "annotation_length": 37, 
+                "annotation_match_end": 37, 
+                "annotation_match_start": 0, 
+                "cigar": "379S37M136S", 
+                "contig_match_end": 416, 
+                "contig_match_start": 379, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKJ4", 
+                    "feature_id": 217, 
+                    "gene_name": "IGKJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 69
+            }, 
+            {
+                "annotation_length": 320, 
+                "annotation_match_end": 136, 
+                "annotation_match_start": 0, 
+                "cigar": "416S136M", 
+                "contig_match_end": 552, 
+                "contig_match_start": 416, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKC", 
+                    "feature_id": 213, 
+                    "gene_name": "IGKC", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 272
+            }
+        ], 
+        "barcode": "AAGAGCACAATCGACC-1", 
+        "cdr3": "CQQRSNWPPTF", 
+        "cdr3_seq": "TGTCAGCAGCGTAGCAACTGGCCTCCCACTTTC", 
+        "cdr3_start": 355, 
+        "cdr3_stop": 388, 
+        "clonotype": null, 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_1", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82", 
+            "raw_consensus_id": "clonotype82_consensus_1"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 930, 
+        "sequence": "GGAGGAACTGCTCAGTTAGGACCCAGAGGGAACCATGGAAGCCCCAGCTCAGCTTCTCTTCCTCCTGCTACTCTGGCTCCCAGATACCACCGGAGAAATTGTGTTGACACAGTCTCCAGCCACCCTGTCTTTGTCTCCAGGGGAAAGAGCCACCCTCTCCTGCAGGGCCAGTCAGAGTGTTAGCAGCTACTTAGCCTGGTACCAACAGAAACCTGGCCAGGCTCCCAGGCTCCTCATCTATGATGCATCCAACAGGGCCACTGGCATCCCAGCCAGGTTCAGTGGCAGTGGGTCTGGGACAGACTTCACTCTCACCATCAGCAGCCTAGAGCCTGAAGATTTTGCAGTTTATTACTGTCAGCAGCGTAGCAACTGGCCTCCCACTTTCGGCGGAGGGACCAAGGTGGAGATCAAACGAACTGTGGCTGCACCATCTGTCTTCATCTTCCCGCCATCTGATGAGCAGTTGAAATCTGGAACTGCCTCTGTTGTGTGCCTGCTGAATAACTTCTATCCCAGAGAGGCCAAAGTACAGTGGAAGGTGGATAACGC", 
+        "start_codon_pos": 34, 
+        "stop_codon_pos": null, 
+        "umi_count": 13
+    }, 
+    {
+        "aa_sequence": "MEFWLSWVFLVAISKGVQCEVQLVETGGGLIQPGGSLRLSCAASGFTVSSNYMSWVRQAPGKGLEWVSVIYSGGSTYYADSVKGRFTISRDNSKNTLYLQMNSLRAEDTAVYYCARGVPTFGGVPWFDPWGQGTLVTVSSGQPKANPTVTLFPPSSEELQANKATLVCLISDFYPGAVTVAWKADGSPVKAGVETTKPSKQSNNKYAASS", 
+        "annotations": [
+            {
+                "annotation_length": 221, 
+                "annotation_match_end": 221, 
+                "annotation_match_start": 179, 
+                "cigar": "42M632S", 
+                "contig_match_end": 42, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 145, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 84
+            }, 
+            {
+                "annotation_length": 350, 
+                "annotation_match_end": 350, 
+                "annotation_match_start": 0, 
+                "cigar": "42S350M282S", 
+                "contig_match_end": 392, 
+                "contig_match_start": 42, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 146, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 695
+            }, 
+            {
+                "annotation_length": 51, 
+                "annotation_match_end": 51, 
+                "annotation_match_start": 0, 
+                "cigar": "412S51M211S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 412, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ5", 
+                    "feature_id": 57, 
+                    "gene_name": "IGHJ5", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 82
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "463S211M", 
+                "contig_match_end": 674, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 422
+            }
+        ], 
+        "barcode": "AAGAGCACAATCGACC-1", 
+        "cdr3": "CARGVPTFGGVPWFDPW", 
+        "cdr3_seq": "TGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGG", 
+        "cdr3_start": 381, 
+        "cdr3_stop": 432, 
+        "clonotype": null, 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_2", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": ">>>>>>H]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 169, 
+        "sequence": "TGTTTCCATTCGGTGATCAGCACTGAACACAGAGGACTCACCATGGAGTTTTGGCTGAGCTGGGTTTTCCTTGTTGCTATTTCAAAAGGTGTCCAGTGTGAGGTGCAGCTGGTGGAGACTGGAGGAGGCTTGATCCAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGGTTCACCGTCAGTAGCAACTACATGAGCTGGGTCCGCCAGGCTCCAGGGAAGGGGCTGGAGTGGGTCTCAGTTATTTATAGCGGTGGTAGCACATACTACGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTTCAAATGAACAGCCTGAGAGCCGAGGACACGGCCGTGTATTACTGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGGTCAGCCCAAGGCCAACCCCACTGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": 42, 
+        "stop_codon_pos": null, 
+        "umi_count": 5
+    }, 
+    {
+        "aa_sequence": "MDWTWSILFLVAAATGAHSQVQLVQSGAEVKKPGASVKVSCKASGYTFTSYGISWVRQAPGQGLEWMGWISAYNGNTNYAQKLQGRVTMTTDTSTSTAYMELRSLRSDDTAVYYCARGVYGSGSYLKLLGPGNPGHRLLSTHQGSGCVPHHIRVQTPKG*QPCGPGMLDNWVP", 
+        "annotations": [
+            {
+                "annotation_length": 59, 
+                "annotation_match_end": 59, 
+                "annotation_match_start": 15, 
+                "cigar": "44M521S", 
+                "contig_match_end": 44, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 64, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 88
+            }, 
+            {
+                "annotation_length": 353, 
+                "annotation_match_end": 353, 
+                "annotation_match_start": 0, 
+                "cigar": "44S353M168S", 
+                "contig_match_end": 397, 
+                "contig_match_start": 44, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 65, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 696
+            }, 
+            {
+                "annotation_length": 27, 
+                "annotation_match_end": 27, 
+                "annotation_match_start": 0, 
+                "cigar": "394S27M144S", 
+                "contig_match_end": 421, 
+                "contig_match_start": 394, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD3-10", 
+                    "feature_id": 18, 
+                    "gene_name": "IGHD3-10", 
+                    "region_type": "D-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 24
+            }, 
+            {
+                "annotation_length": 46, 
+                "annotation_match_end": 46, 
+                "annotation_match_start": 7, 
+                "cigar": "424S39M102S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 424, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ4", 
+                    "feature_id": 54, 
+                    "gene_name": "IGHJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 78
+            }, 
+            {
+                "annotation_length": 1289, 
+                "annotation_match_end": 102, 
+                "annotation_match_start": 0, 
+                "cigar": "463S102M", 
+                "contig_match_end": 565, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD", 
+                    "feature_id": 6, 
+                    "gene_name": "IGHD", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 204
+            }
+        ], 
+        "barcode": "AAGAGCACAATCGACC-1", 
+        "cdr3": "CARGVY", 
+        "cdr3_seq": "TGTGCGAGAGGTGTCTAT", 
+        "cdr3_start": 386, 
+        "cdr3_stop": 404, 
+        "clonotype": null, 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_3", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>HHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]HHHHHHHHHGHHHHHHHHHHHHHHHHHHHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 119, 
+        "sequence": "CACACCCCTCCTTGGGAGAATCCCCTAGATCACAGCTCCTCACCATGGACTGGACCTGGAGCATCCTTTTCTTGGTGGCAGCAGCAACAGGTGCCCACTCCCAGGTTCAGCTGGTGCAGTCTGGAGCTGAGGTGAAGAAGCCTGGGGCCTCAGTGAAGGTCTCCTGCAAGGCTTCTGGTTACACCTTTACCAGCTATGGTATCAGCTGGGTGCGACAGGCCCCTGGACAAGGGCTTGAGTGGATGGGATGGATCAGCGCTTACAATGGTAACACAAACTATGCACAGAAGCTCCAGGGCAGAGTCACCATGACCACAGACACATCCACGAGCACAGCCTACATGGAGCTGAGGAGCCTGAGATCTGACGACACGGCCGTGTATTACTGTGCGAGAGGTGTCTATGGTTCGGGGAGTTATTTGAAACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGCACCCACCAAGGCTCCGGATGTGTTCCCCATCATATCAGGGTGCAGACACCCAAAGGATAACAGCCCTGTGGTCCTGGCATGCTTGATAACTGGGTACCACC", 
+        "start_codon_pos": 44, 
+        "stop_codon_pos": 521, 
+        "umi_count": 3
+    }, 
+    {
+        "aa_sequence": null, 
+        "annotations": [
+            {
+                "annotation_length": 337, 
+                "annotation_match_end": 337, 
+                "annotation_match_start": 16, 
+                "cigar": "321M256S", 
+                "contig_match_end": 321, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLV3-19", 
+                    "feature_id": 360, 
+                    "gene_name": "IGLV3-19", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 642
+            }, 
+            {
+                "annotation_length": 38, 
+                "annotation_match_end": 38, 
+                "annotation_match_start": 0, 
+                "cigar": "328S38M211S", 
+                "contig_match_end": 366, 
+                "contig_match_start": 328, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLJ2", 
+                    "feature_id": 314, 
+                    "gene_name": "IGLJ2", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 71
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "366S211M", 
+                "contig_match_end": 577, 
+                "contig_match_start": 366, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 397
+            }
+        ], 
+        "barcode": "AAGAGCACAATCGACC-1", 
+        "cdr3": "CNSRDSSGNHLVF", 
+        "cdr3_seq": "TGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTC", 
+        "cdr3_start": 299, 
+        "cdr3_stop": 338, 
+        "clonotype": null, 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_4", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>>>>>>>>>>HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]IIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 38, 
+        "sequence": "TCTGGCTCACTCTCCTCACTCTTTGCATAGGTTCTGTGGTTTCTTCTGAGCTGACTCAGGACCCTGCTGTGTCTGTGGCCTTGGGACAGACAGTCAGGATCACATGCCAAGGAGACAGCCTCAGAAGCTATTATGCAAGCTGGTACCAGCAGAAGCCAGGACAGGCCCCTGTACTTGTCATCTATGGTAAAAACAACCGGCCCTCAGGGATCCCAGACCGATTCTCTGGCTCCAGCTCAGGAAACACAGCTTCCTTGACCATCACTGGGGCTCAGGCGGAAGATGAGGCTGACTATTACTGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTCGGCGGAGGGACCAAGCTGACCGTCCTAGGTCAGCCCAAGGCTGCCCCCTCGGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": null, 
+        "stop_codon_pos": null, 
+        "umi_count": 1
+    },
+    {
+        "aa_sequence": "MEAPAQLLFLLLLWLPDTTGEIVLTQSPATLSLSPGERATLSCRASQSVSSYLAWYQQKPGQAPRLLIYDASNRATGIPARFSGSGSGTDFTLTISSLEPEDFAVYYCQQRSNWPPTFGGGTKVEIKRTVAAPSVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDN", 
+        "annotations": [
+            {
+                "annotation_length": 47, 
+                "annotation_match_end": 47, 
+                "annotation_match_start": 13, 
+                "cigar": "34M518S", 
+                "contig_match_end": 34, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 281, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 68
+            }, 
+            {
+                "annotation_length": 345, 
+                "annotation_match_end": 345, 
+                "annotation_match_start": 0, 
+                "cigar": "34S345M173S", 
+                "contig_match_end": 379, 
+                "contig_match_start": 34, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKV3-11", 
+                    "feature_id": 282, 
+                    "gene_name": "IGKV3-11", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 690
+            }, 
+            {
+                "annotation_length": 37, 
+                "annotation_match_end": 37, 
+                "annotation_match_start": 0, 
+                "cigar": "379S37M136S", 
+                "contig_match_end": 416, 
+                "contig_match_start": 379, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKJ4", 
+                    "feature_id": 217, 
+                    "gene_name": "IGKJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 69
+            }, 
+            {
+                "annotation_length": 320, 
+                "annotation_match_end": 136, 
+                "annotation_match_start": 0, 
+                "cigar": "416S136M", 
+                "contig_match_end": 552, 
+                "contig_match_start": 416, 
+                "feature": {
+                    "chain": "IGK", 
+                    "display_name": "IGKC", 
+                    "feature_id": 213, 
+                    "gene_name": "IGKC", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 272
+            }
+        ], 
+        "barcode": "CACAGTTTTATGGGGC-1", 
+        "cdr3": "CQQRSNWPPTF", 
+        "cdr3_seq": "TGTCAGCAGCGTAGCAACTGGCCTCCCACTTTC", 
+        "cdr3_start": 355, 
+        "cdr3_stop": 388, 
+        "clonotype": null, 
+        "contig_name": "CACAGTTTTATGGGGC-1_contig_1", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82", 
+            "raw_consensus_id": "clonotype82_consensus_1"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 930, 
+        "sequence": "GGAGGAACTGCTCAGTTAGGACCCAGAGGGAACCATGGAAGCCCCAGCTCAGCTTCTCTTCCTCCTGCTACTCTGGCTCCCAGATACCACCGGAGAAATTGTGTTGACACAGTCTCCAGCCACCCTGTCTTTGTCTCCAGGGGAAAGAGCCACCCTCTCCTGCAGGGCCAGTCAGAGTGTTAGCAGCTACTTAGCCTGGTACCAACAGAAACCTGGCCAGGCTCCCAGGCTCCTCATCTATGATGCATCCAACAGGGCCACTGGCATCCCAGCCAGGTTCAGTGGCAGTGGGTCTGGGACAGACTTCACTCTCACCATCAGCAGCCTAGAGCCTGAAGATTTTGCAGTTTATTACTGTCAGCAGCGTAGCAACTGGCCTCCCACTTTCGGCGGAGGGACCAAGGTGGAGATCAAACGAACTGTGGCTGCACCATCTGTCTTCATCTTCCCGCCATCTGATGAGCAGTTGAAATCTGGAACTGCCTCTGTTGTGTGCCTGCTGAATAACTTCTATCCCAGAGAGGCCAAAGTACAGTGGAAGGTGGATAACGC", 
+        "start_codon_pos": 34, 
+        "stop_codon_pos": null, 
+        "umi_count": 13
+    }, 
+    {
+        "aa_sequence": "MEFWLSWVFLVAISKGVQCEVQLVETGGGLIQPGGSLRLSCAASGFTVSSNYMSWVRQAPGKGLEWVSVIYSGGSTYYADSVKGRFTISRDNSKNTLYLQMNSLRAEDTAVYYCARGVPTFGGVPWFDPWGQGTLVTVSSGQPKANPTVTLFPPSSEELQANKATLVCLISDFYPGAVTVAWKADGSPVKAGVETTKPSKQSNNKYAASS", 
+        "annotations": [
+            {
+                "annotation_length": 221, 
+                "annotation_match_end": 221, 
+                "annotation_match_start": 179, 
+                "cigar": "42M632S", 
+                "contig_match_end": 42, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 145, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 84
+            }, 
+            {
+                "annotation_length": 350, 
+                "annotation_match_end": 350, 
+                "annotation_match_start": 0, 
+                "cigar": "42S350M282S", 
+                "contig_match_end": 392, 
+                "contig_match_start": 42, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV3-53", 
+                    "feature_id": 146, 
+                    "gene_name": "IGHV3-53", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 695
+            }, 
+            {
+                "annotation_length": 51, 
+                "annotation_match_end": 51, 
+                "annotation_match_start": 0, 
+                "cigar": "412S51M211S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 412, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ5", 
+                    "feature_id": 57, 
+                    "gene_name": "IGHJ5", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 82
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "463S211M", 
+                "contig_match_end": 674, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 422
+            }
+        ], 
+        "barcode": "CACAGTTTTATGGGGC-1", 
+        "cdr3": "CARGVPTFGGVPWFDPW", 
+        "cdr3_seq": "TGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGG", 
+        "cdr3_start": 381, 
+        "cdr3_stop": 432, 
+        "clonotype": null, 
+        "contig_name": "CACAGTTTTATGGGGC-1_contig_2", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": true, 
+        "quals": ">>>>>>H]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 169, 
+        "sequence": "TGTTTCCATTCGGTGATCAGCACTGAACACAGAGGACTCACCATGGAGTTTTGGCTGAGCTGGGTTTTCCTTGTTGCTATTTCAAAAGGTGTCCAGTGTGAGGTGCAGCTGGTGGAGACTGGAGGAGGCTTGATCCAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGGTTCACCGTCAGTAGCAACTACATGAGCTGGGTCCGCCAGGCTCCAGGGAAGGGGCTGGAGTGGGTCTCAGTTATTTATAGCGGTGGTAGCACATACTACGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTTCAAATGAACAGCCTGAGAGCCGAGGACACGGCCGTGTATTACTGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGGTCAGCCCAAGGCCAACCCCACTGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": 42, 
+        "stop_codon_pos": null, 
+        "umi_count": 5
+    }, 
+    {
+        "aa_sequence": "MDWTWSILFLVAAATGAHSQVQLVQSGAEVKKPGASVKVSCKASGYTFTSYGISWVRQAPGQGLEWMGWISAYNGNTNYAQKLQGRVTMTTDTSTSTAYMELRSLRSDDTAVYYCARGVYGSGSYLKLLGPGNPGHRLLSTHQGSGCVPHHIRVQTPKG*QPCGPGMLDNWVP", 
+        "annotations": [
+            {
+                "annotation_length": 59, 
+                "annotation_match_end": 59, 
+                "annotation_match_start": 15, 
+                "cigar": "44M521S", 
+                "contig_match_end": 44, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 64, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "5'UTR"
+                }, 
+                "mismatches": [], 
+                "score": 88
+            }, 
+            {
+                "annotation_length": 353, 
+                "annotation_match_end": 353, 
+                "annotation_match_start": 0, 
+                "cigar": "44S353M168S", 
+                "contig_match_end": 397, 
+                "contig_match_start": 44, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHV1-18", 
+                    "feature_id": 65, 
+                    "gene_name": "IGHV1-18", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 696
+            }, 
+            {
+                "annotation_length": 27, 
+                "annotation_match_end": 27, 
+                "annotation_match_start": 0, 
+                "cigar": "394S27M144S", 
+                "contig_match_end": 421, 
+                "contig_match_start": 394, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD3-10", 
+                    "feature_id": 18, 
+                    "gene_name": "IGHD3-10", 
+                    "region_type": "D-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 24
+            }, 
+            {
+                "annotation_length": 46, 
+                "annotation_match_end": 46, 
+                "annotation_match_start": 7, 
+                "cigar": "424S39M102S", 
+                "contig_match_end": 463, 
+                "contig_match_start": 424, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHJ4", 
+                    "feature_id": 54, 
+                    "gene_name": "IGHJ4", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 78
+            }, 
+            {
+                "annotation_length": 1289, 
+                "annotation_match_end": 102, 
+                "annotation_match_start": 0, 
+                "cigar": "463S102M", 
+                "contig_match_end": 565, 
+                "contig_match_start": 463, 
+                "feature": {
+                    "chain": "IGH", 
+                    "display_name": "IGHD", 
+                    "feature_id": 6, 
+                    "gene_name": "IGHD", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 204
+            }
+        ], 
+        "barcode": "CACAGTTTTATGGGGC-1", 
+        "cdr3": "CARGVY", 
+        "cdr3_seq": "TGTGCGAGAGGTGTCTAT", 
+        "cdr3_start": 386, 
+        "cdr3_stop": 404, 
+        "clonotype": null, 
+        "contig_name": "CACAGTTTTATGGGGC-1_contig_3", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>HHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]HHHHHHHHHGHHHHHHHHHHHHHHHHHHHHH]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 119, 
+        "sequence": "CACACCCCTCCTTGGGAGAATCCCCTAGATCACAGCTCCTCACCATGGACTGGACCTGGAGCATCCTTTTCTTGGTGGCAGCAGCAACAGGTGCCCACTCCCAGGTTCAGCTGGTGCAGTCTGGAGCTGAGGTGAAGAAGCCTGGGGCCTCAGTGAAGGTCTCCTGCAAGGCTTCTGGTTACACCTTTACCAGCTATGGTATCAGCTGGGTGCGACAGGCCCCTGGACAAGGGCTTGAGTGGATGGGATGGATCAGCGCTTACAATGGTAACACAAACTATGCACAGAAGCTCCAGGGCAGAGTCACCATGACCACAGACACATCCACGAGCACAGCCTACATGGAGCTGAGGAGCCTGAGATCTGACGACACGGCCGTGTATTACTGTGCGAGAGGTGTCTATGGTTCGGGGAGTTATTTGAAACTACTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAGCACCCACCAAGGCTCCGGATGTGTTCCCCATCATATCAGGGTGCAGACACCCAAAGGATAACAGCCCTGTGGTCCTGGCATGCTTGATAACTGGGTACCACC", 
+        "start_codon_pos": 44, 
+        "stop_codon_pos": 521, 
+        "umi_count": 3
+    }, 
+    {
+        "aa_sequence": null, 
+        "annotations": [
+            {
+                "annotation_length": 337, 
+                "annotation_match_end": 337, 
+                "annotation_match_start": 16, 
+                "cigar": "321M256S", 
+                "contig_match_end": 321, 
+                "contig_match_start": 0, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLV3-19", 
+                    "feature_id": 360, 
+                    "gene_name": "IGLV3-19", 
+                    "region_type": "L-REGION+V-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 642
+            }, 
+            {
+                "annotation_length": 38, 
+                "annotation_match_end": 38, 
+                "annotation_match_start": 0, 
+                "cigar": "328S38M211S", 
+                "contig_match_end": 366, 
+                "contig_match_start": 328, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLJ2", 
+                    "feature_id": 314, 
+                    "gene_name": "IGLJ2", 
+                    "region_type": "J-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 71
+            }, 
+            {
+                "annotation_length": 317, 
+                "annotation_match_end": 211, 
+                "annotation_match_start": 0, 
+                "cigar": "366S211M", 
+                "contig_match_end": 577, 
+                "contig_match_start": 366, 
+                "feature": {
+                    "chain": "IGL", 
+                    "display_name": "IGLC1", 
+                    "feature_id": 308, 
+                    "gene_name": "IGLC1", 
+                    "region_type": "C-REGION"
+                }, 
+                "mismatches": [], 
+                "score": 397
+            }
+        ], 
+        "barcode": "CACAGTTTTATGGGGC-1", 
+        "cdr3": "CNSRDSSGNHLVF", 
+        "cdr3_seq": "TGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTC", 
+        "cdr3_start": 299, 
+        "cdr3_stop": 338, 
+        "clonotype": null, 
+        "contig_name": "CACAGTTTTATGGGGC-1_contig_4", 
+        "filtered": true, 
+        "frame": null, 
+        "high_confidence": true, 
+        "info": {
+            "raw_clonotype_id": "clonotype82"
+        }, 
+        "is_cell": true, 
+        "primer_annotations": [], 
+        "productive": false, 
+        "quals": ">>>>>>>>>>>>>>>>>>>>>>>>HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]IIIIIIIIII]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", 
+        "read_count": 38, 
+        "sequence": "TCTGGCTCACTCTCCTCACTCTTTGCATAGGTTCTGTGGTTTCTTCTGAGCTGACTCAGGACCCTGCTGTGTCTGTGGCCTTGGGACAGACAGTCAGGATCACATGCCAAGGAGACAGCCTCAGAAGCTATTATGCAAGCTGGTACCAGCAGAAGCCAGGACAGGCCCCTGTACTTGTCATCTATGGTAAAAACAACCGGCCCTCAGGGATCCCAGACCGATTCTCTGGCTCCAGCTCAGGAAACACAGCTTCCTTGACCATCACTGGGGCTCAGGCGGAAGATGAGGCTGACTATTACTGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTCGGCGGAGGGACCAAGCTGACCGTCCTAGGTCAGCCCAAGGCTGCCCCCTCGGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAAACAGAGCAACAACAAGTACGCGGCCAGCAGCTA", 
+        "start_codon_pos": null, 
+        "stop_codon_pos": null, 
+        "umi_count": 1
+    }
+]

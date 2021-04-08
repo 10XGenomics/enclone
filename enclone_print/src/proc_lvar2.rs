@@ -269,7 +269,7 @@ pub fn proc_lvar2(
             dist = min(dist, d);
         }
         if dist == 1_000_000 {
-            lvar![i, x, "".to_string()];
+            lvar_stats1![i, x, "".to_string()];
         } else {
             lvar_stats1![i, x, format!("{}", dist)];
         }
@@ -290,7 +290,7 @@ pub fn proc_lvar2(
             dist = max(dist, d);
         }
         if dist == -1 as isize {
-            lvar![i, x, "".to_string()];
+            lvar_stats1![i, x, "".to_string()];
         } else {
             lvar_stats1![i, x, format!("{}", dist)];
         }
@@ -540,13 +540,13 @@ pub fn proc_lvar2(
         }
         speak!(u, x, format!("{}", e.iter().format(POUT_SEP)));
     } else if x == "gex_min" {
-        lvar![i, x, format!("{}", gex_min)];
+        lvar_stats1![i, x, format!("{}", gex_min)];
     } else if x == "gex_max" {
-        lvar![i, x, format!("{}", gex_max)];
+        lvar_stats1![i, x, format!("{}", gex_max)];
     } else if x == "gex_μ" {
-        lvar![i, x, format!("{}", gex_mean.round() as usize)];
+        lvar_stats1![i, x, format!("{}", gex_mean.round() as usize)];
     } else if x == "gex_Σ" {
-        lvar![i, x, format!("{}", gex_sum.round() as usize)];
+        lvar_stats1![i, x, format!("{}", gex_sum.round() as usize)];
     } else if x == "ext" {
         let mut exts = Vec::<String>::new();
         for l in 0..ex.clones.len() {
@@ -572,7 +572,7 @@ pub fn proc_lvar2(
             );
             j = k;
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else {
         let (mut counts_sub, mut fcounts_sub) = (Vec::<usize>::new(), Vec::<f64>::new());
         let xorig = x.clone();
@@ -687,7 +687,7 @@ pub fn proc_lvar2(
                 }
             }
         } else if i < lvars.len() {
-            lvar![i, x, "".to_string()];
+            lvar_stats1![i, x, "".to_string()];
         }
     }
     return true;

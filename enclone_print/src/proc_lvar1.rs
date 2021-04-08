@@ -138,9 +138,7 @@ pub fn proc_lvar1(
             if pass == 2 {
                 speak!(u, $var.to_string(), $val);
             }
-            if $val.parse::<f64>().is_ok() {
-                stats.push(($var.to_string(), vec![$val; ex.ncells()]));
-            }
+            stats.push(($var.to_string(), vec![$val; ex.ncells()]));
         };
     }
     macro_rules! lvar_stats {
@@ -181,14 +179,13 @@ pub fn proc_lvar1(
                     }
                     if ctl.gen_opt.info_data.contains_key(&tag) {
                         let val = &ctl.gen_opt.info_data[&tag][q];
-                        lvar![i, x, val.clone()];
+                        lvar_stats1![i, x, val.clone()];
                         lvarred = true;
                         found = true;
-                        stats.push((x.to_string(), vec![val.to_string(); ex.ncells()]));
                     }
                 }
                 if !lvarred {
-                    lvar![i, x, String::new()];
+                    lvar_stats1![i, x, String::new()];
                 }
                 if !found {
                     stats.push((x.to_string(), vec![]));
@@ -219,8 +216,14 @@ pub fn proc_lvar1(
                 origins.push("?".to_string());
             }
         }
+        let origins_unsorted = origins.clone();
         unique_sort(&mut origins);
-        lvar![i, x, format!("{}", origins.iter().format(","))];
+        lvar_stats![
+            i,
+            x,
+            format!("{}", origins.iter().format(",")),
+            origins_unsorted
+        ];
     } else if x == "origins_cell" {
         let mut origins = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -244,7 +247,7 @@ pub fn proc_lvar1(
     } else if x == "nchains" {
         lvar_stats1![i, x, format!("{}", rsi.mat.len())];
     } else if x == "datasets" {
-        lvar![i, x, format!("{}", lenas.iter().format(","))];
+        lvar_stats1![i, x, format!("{}", lenas.iter().format(","))];
     } else if x == "datasets_cell" {
         let mut datasets = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -253,6 +256,7 @@ pub fn proc_lvar1(
         if pass == 2 {
             speak!(u, x, format!("{}", datasets.iter().format(POUT_SEP)));
         }
+        stats.push((x.to_string(), datasets));
     } else if x == "donors" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -263,8 +267,14 @@ pub fn proc_lvar1(
                 donors.push("?".to_string());
             }
         }
+        let donors_unsorted = donors.clone();
         unique_sort(&mut donors);
-        lvar![i, x, format!("{}", donors.iter().format(","))];
+        lvar_stats![
+            i,
+            x,
+            format!("{}", donors.iter().format(",")),
+            donors_unsorted
+        ];
     } else if x == "donors_cell" {
         let mut donors = Vec::<String>::new();
         for j in 0..ex.clones.len() {
@@ -350,19 +360,19 @@ pub fn proc_lvar1(
         cell_types.sort();
         lvar![i, x, format!("{}", abbrev_list(&cell_types))];
     } else if x == "filter" {
-        lvar![i, x, String::new()];
-        if pass == 2 {
-            let mut fates = Vec::<String>::new();
-            for j in 0..ex.clones.len() {
-                let mut f = String::new();
-                let bc = &ex.clones[j][0].barcode;
-                let li = ex.clones[j][0].dataset_index;
-                if fate[li].contains_key(&bc.clone()) {
-                    f = fate[li][&bc.clone()].clone();
-                    f = f.between(" ", " ").to_string();
-                }
-                fates.push(f);
+        let mut fates = Vec::<String>::new();
+        for j in 0..ex.clones.len() {
+            let mut f = String::new();
+            let bc = &ex.clones[j][0].barcode;
+            let li = ex.clones[j][0].dataset_index;
+            if fate[li].contains_key(&bc.clone()) {
+                f = fate[li][&bc.clone()].clone();
+                f = f.between(" ", " ").to_string();
             }
+            fates.push(f);
+        }
+        lvar_stats![i, x, String::new(), fates];
+        if pass == 2 {
             speak!(u, x, format!("{}", fates.iter().format(POUT_SEP)));
         }
     } else if x == "mark" {
@@ -397,7 +407,7 @@ pub fn proc_lvar1(
                 s += "j";
             }
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else if x == "mait" {
         let mut s = String::new();
         let alpha_g = ex.share[0].mait_alpha_chain_gene_match;
@@ -422,13 +432,13 @@ pub fn proc_lvar1(
                 s += "j";
             }
         }
-        lvar![i, x, s.clone()];
+        lvar_stats1![i, x, s.clone()];
     } else if x.starts_with("pe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x.starts_with("npe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x.starts_with("ppe") {
-        lvar![i, x, format!("")];
+        lvar_stats1![i, x, format!("")];
     } else if x == "cred" || x == "cred_cell" {
         let mut credsx = Vec::<f64>::new();
         for l in 0..ex.clones.len() {
@@ -481,23 +491,23 @@ pub fn proc_lvar1(
             }
         }
     } else if bin_member(&alt_bcs, x) {
-        lvar![i, x, format!("")];
-        if pass == 2 {
-            let mut r = Vec::<String>::new();
-            for l in 0..ex.clones.len() {
-                let li = ex.clones[l][0].dataset_index;
-                let bc = ex.clones[l][0].barcode.clone();
-                let mut val = String::new();
-                let alt = &ctl.origin_info.alt_bc_fields[li];
-                for j in 0..alt.len() {
-                    if alt[j].0 == *x {
-                        if alt[j].1.contains_key(&bc.clone()) {
-                            val = alt[j].1[&bc.clone()].clone();
-                        }
+        let mut r = Vec::<String>::new();
+        for l in 0..ex.clones.len() {
+            let li = ex.clones[l][0].dataset_index;
+            let bc = ex.clones[l][0].barcode.clone();
+            let mut val = String::new();
+            let alt = &ctl.origin_info.alt_bc_fields[li];
+            for j in 0..alt.len() {
+                if alt[j].0 == *x {
+                    if alt[j].1.contains_key(&bc.clone()) {
+                        val = alt[j].1[&bc.clone()].clone();
                     }
                 }
-                r.push(val);
             }
+            r.push(val);
+        }
+        lvar_stats![i, x, format!(""), r];
+        if pass == 2 {
             speak!(u, x, format!("{}", r.iter().format(POUT_SEP)));
         }
     } else if x.starts_with("n_") && !x.starts_with("n_gex") {

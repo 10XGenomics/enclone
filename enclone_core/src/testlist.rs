@@ -612,17 +612,19 @@ pub const TESTS: [&str; 233] = [
 // over time based on discovery of pathologies in particular datasets.  In general these datasets
 // are not public.  All run with certain shared options.
 
-pub const CRASH_DATA: &str = "BCR=\"45987;123085\"";
+pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 2] = [
+pub const CRASH_SETS: [&str; 4] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
+    /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4",
+    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
 // not publicly avaiable, or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 26] = [
+pub const EXTENDED_TESTS: [&str; 28] = [
     // 1. test that used to crash on a particular barcode; this also gave the wrong
     // answer for an insertion until it was fixed
     r###"BCR=40955 NCELL BARCODE=GCGCAGTCAAAGTGCG-1 AMINO=cdr3 NO_PRE NFORCE"###,
@@ -685,7 +687,12 @@ pub const EXTENDED_TESTS: [&str; 26] = [
     // 25. Test a tweak to the weak chains filter.  This should have two chains.
     r###"BCR=174957 CDR3=CARPRGYCSGGSCFPFASW BUILT_IN NO_PRE NFORCE"###,
     // 26. crashed at one point
-    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    r###"BCR=123085,123086 GEX=123749,123750 LVARSP=pe1 BUILT_IN NOPRINT EXPECT_OK NO_PRE
+         NFORCE"###,
+    // 27. parseable value for fwr4_aa was wrong
+    r###"BCR=1117070 AMINO=fwr4 CDR3=CAKDVNGYSSGWAFENW POUT=stdout PCOLS=fwr4_aa1 NO_PRE NFORCE"###,
+    // 28. conp value was truncated
+    r###"BCR=1117069 CONP CDR3=CVRDPPEELELFDYW NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.

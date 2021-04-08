@@ -458,14 +458,6 @@ pub fn row_fill(
         // Set up chain variable macro.  This is the mechanism for generating
         // both human-readable and parseable output for chain variables.
 
-        macro_rules! cvar {
-            ($i: expr, $var:expr, $val:expr) => {
-                if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
-                    cx[col][$i] = $val.clone();
-                }
-                speakc!(u, col, $var, $val);
-            };
-        }
         macro_rules! cvar_stats1 {
             ($i: expr, $var:expr, $val:expr) => {
                 if $i < rsi.cvars[col].len() && cvars.contains(&$var) {
@@ -473,9 +465,7 @@ pub fn row_fill(
                 }
                 speakc!(u, col, $var, $val);
                 let varc = format!("{}{}", $var, col + 1);
-                if $val.parse::<f64>().is_ok() {
-                    stats.push((varc, vec![$val.to_string(); ex.ncells()]));
-                }
+                stats.push((varc, vec![$val.to_string(); ex.ncells()]));
             };
         }
 
@@ -526,7 +516,7 @@ pub fn row_fill(
             // Process some variables.
 
             if *var == "v_name" {
-                cvar![j, var, refdata.name[rsi.vids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
@@ -534,7 +524,7 @@ pub fn row_fill(
                 if rsi.dids[col].is_some() {
                     dname = refdata.name[rsi.dids[col].unwrap()].clone();
                 }
-                cvar![j, var, dname];
+                cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
                 let mut did = String::new();
                 if rsi.dids[col].is_some() {
@@ -542,11 +532,11 @@ pub fn row_fill(
                 }
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
-                cvar![j, var, refdata.name[rsi.jids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
             } else if *var == "j_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
             } else if *var == "v_name" {
-                cvar![j, var, refdata.name[rsi.vids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.vids[col]]];
             } else if *var == "v_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.vids[col]])];
             } else if *var == "d_name" {
@@ -554,7 +544,7 @@ pub fn row_fill(
                 if rsi.dids[col].is_some() {
                     dname = refdata.name[rsi.dids[col].unwrap()].clone();
                 }
-                cvar![j, var, dname];
+                cvar_stats1![j, var, dname];
             } else if *var == "d_id" {
                 let mut did = String::new();
                 if rsi.dids[col].is_some() {
@@ -562,7 +552,7 @@ pub fn row_fill(
                 }
                 cvar_stats1![j, var, did];
             } else if *var == "j_name" {
-                cvar![j, var, refdata.name[rsi.jids[col]]];
+                cvar_stats1![j, var, refdata.name[rsi.jids[col]]];
             } else if *var == "j_id" {
                 cvar_stats1![j, var, format!("{}", refdata.id[rsi.jids[col]])];
             }
@@ -650,6 +640,10 @@ pub fn row_fill(
 
             let mut needed = false;
             let var = &all_vars[j];
+            if !ex.share[mid].left && (*var == "opt_d" || *var == "opt_d2" || *var == "opt_d_delta")
+            {
+                continue;
+            }
             let varc = format!("{}{}", var, col + 1);
             if jj < rsi.cvars[col].len() && cvars.contains(&var) {
                 needed = true;
@@ -659,11 +653,11 @@ pub fn row_fill(
                 && (pcols_sort.is_empty() || bin_member(&pcols_sort, &varc))
             {
                 needed = true;
-            } else if *var == "amino".to_string() {
+            } else if *var == "amino" {
                 needed = true;
-            } else if *var == "u_cell".to_string() || *var == "r_cell".to_string() {
+            } else if *var == "u_cell" || *var == "r_cell" {
                 needed = true;
-            } else if *var == "white".to_string() || ctl.clono_filt_opt.whitef {
+            } else if *var == "white" || ctl.clono_filt_opt.whitef {
                 needed = true;
             }
             if extra_args.contains(&varc) {

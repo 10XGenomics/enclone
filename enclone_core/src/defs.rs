@@ -260,6 +260,8 @@ pub struct GeneralOpt {
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
     pub top_genes: bool,
+    pub plot_conditions: Vec<String>,
+    pub plot_colors: Vec<String>,
 }
 
 // Some plot options.  (Should move them all here.)
@@ -781,6 +783,8 @@ pub fn justification(x: &str) -> u8 {
         || x.ends_with("_barcodes")
         || (x.starts_with("cdr") && !x.ends_with("len"))
         || (x.starts_with("fwr") && !x.ends_with("len"))
+        || x == "opt_d"
+        || x == "opt_d2"
     {
         return b'l';
     } else {
