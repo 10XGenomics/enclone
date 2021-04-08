@@ -342,6 +342,10 @@ pub fn plot_clonotypes(
                     let mut color_id = 0;
                     if crefs.solo() && crefs[0].is_some() {
                         let c = &refdata.name[crefs[0].unwrap()];
+                        // Note that is possible for p to be -1 in the following.  This is known
+                        // to happen if a heavy chain V gene is on the same contig as a light
+                        // chain C gene (which may be an artifact).  There is an example in
+                        // enclone_main/testx/inputs/flaky.
                         let p = bin_position(&const_names, &c);
                         color_id = (1 + p) as usize;
                     }
