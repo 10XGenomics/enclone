@@ -33,6 +33,7 @@ use enclone::read_json::*;
 use enclone::secret::*;
 use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
+use enclone_core::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
 use enclone_tail::tail::tail_code;
@@ -798,8 +799,9 @@ pub fn main_enclone(args: &Vec<String>) {
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {
+        *PICS.lock().unwrap() = pics.clone();
         println!("\nPlease start enclone_client in a terminal window.\n");
-        let _ = enclone_server(&pics);
+        let _ = enclone_server();
         std::process::exit(0);
     }
 

@@ -618,7 +618,9 @@ name = "enclone_com"
 version = "0.5.51"
 dependencies = [
  "bytes",
+ "enclone_core",
  "futures",
+ "lazy_static",
  "string_utils",
  "tokio",
  "tokio-stream",
@@ -639,6 +641,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
+ "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
  "regex",
@@ -690,6 +693,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "lazy_static",
  "perf_stats",
  "pretty_trace",
  "rayon",
