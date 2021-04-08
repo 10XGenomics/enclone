@@ -2,6 +2,7 @@
 guide to some of the directories here:
 
 enclone_main       this includes the enclone main program
+enclone_com        inter-processs communication (experimenal)
 enclone_core       core definitions, etc.
 enclone_help       help menus from the command line
 enclone            most of the code up to "printing"

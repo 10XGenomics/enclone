@@ -1,0 +1,24 @@
+[package]
+name = "enclone_com"
+version = "0.5.51"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+license-file = "../LICENSE.txt"
+publish = false
+
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
+[dependencies]
+bytes = ">=0.5.5, <2"
+futures = { version = "0.3.0", features = ["thread-pool"]}
+string_utils = "0.1"
+tokio = { version = "1.0.0", features = ["full", "tracing"] }
+tokio-stream = { version = "0.1" }
+tokio-util = { version = "0.6.3", features = ["full"] }
