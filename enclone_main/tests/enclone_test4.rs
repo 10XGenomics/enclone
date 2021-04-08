@@ -116,9 +116,6 @@ fn test_cpu_usage() {
 // 29. Test source code file length.  Cap the length in lines of the longest .rs file.  We do this
 // because long files tend to increase compilation time.  They should be split up where possible.
 
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_source_code_file_length() {
