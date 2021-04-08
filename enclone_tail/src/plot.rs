@@ -342,8 +342,8 @@ pub fn plot_clonotypes(
                     let mut color_id = 0;
                     if crefs.solo() && crefs[0].is_some() {
                         let c = &refdata.name[crefs[0].unwrap()];
-                        let p = bin_position(&const_names, &c) as usize;
-                        color_id = 1 + p;
+                        let p = bin_position(&const_names, &c);
+                        color_id = (1 + p) as usize;
                     }
                     if ctl.gen_opt.plot_by_isotype_color.is_empty() {
                         let x = print_color13(color_id);
