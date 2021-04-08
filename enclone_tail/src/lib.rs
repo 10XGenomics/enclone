@@ -7,6 +7,7 @@ pub mod display_tree;
 pub mod fasta;
 pub mod group;
 pub mod grouper;
+pub mod hex;
 pub mod neighbor;
 pub mod newick;
 pub mod pack_circles;
