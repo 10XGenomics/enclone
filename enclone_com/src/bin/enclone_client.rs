@@ -4,7 +4,6 @@
 //
 // based on code in the rust tokio crate
 
-// use crate::enclone_com::*;
 use enclone_com::typed_com::*;
 use std::env;
 use std::error::Error;
@@ -50,14 +49,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 socket
                     .write_all(&msg)
                     .await
-                    .expect("failed to write data to socket");
+                    .expect("client failed to write data to socket");
 
                 // Get the response.
 
                 let n = socket
                     .read(&mut buf)
                     .await
-                    .expect("failed to read data from socket");
+                    .expect("client failed to read data from socket");
 
                 // Unpack the response.
 
@@ -73,9 +72,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     continue;
                 }
 
-                // Check for response.
+                // Check for the expected response.
 
-                if type_name == b"strme" {
+                if type_name == b"colored-text" {
                     print!("{}", strme(&body));
                     continue;
                 }

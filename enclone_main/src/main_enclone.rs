@@ -31,6 +31,7 @@ use enclone::misc3::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
+use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
@@ -793,6 +794,14 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut controls,
         &mut fate,
     );
+
+    // Process TOY_COM option.
+
+    if ctl.gen_opt.toy_com {
+        println!("\nPlease start enclone_client in a terminal window.\n");
+        let _ = enclone_server(&pics);
+        std::process::exit(0);
+    }
 
     // Process the SUBSET_JSON option.
 

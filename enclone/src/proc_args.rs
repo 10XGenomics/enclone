@@ -474,6 +474,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ),
         ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.toy),
+        ("TOY_COM", &mut ctl.gen_opt.toy_com),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",

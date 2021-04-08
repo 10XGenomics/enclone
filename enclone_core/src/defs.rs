@@ -262,6 +262,7 @@ pub struct GeneralOpt {
     pub top_genes: bool,
     pub plot_conditions: Vec<String>,
     pub plot_colors: Vec<String>,
+    pub toy_com: bool,
 }
 
 // Some plot options.  (Should move them all here.)

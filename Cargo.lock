@@ -676,6 +676,7 @@ dependencies = [
  "chrono",
  "debruijn",
  "enclone",
+ "enclone_com",
  "enclone_core",
  "enclone_help",
  "enclone_print",
