@@ -614,10 +614,11 @@ pub const TESTS: [&str; 233] = [
 
 pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 3] = [
+pub const CRASH_SETS: [&str; 4] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4",
+    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are

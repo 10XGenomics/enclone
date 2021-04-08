@@ -452,13 +452,13 @@
                 "score": 272
             }
         ], 
-        "barcode": "CACAGTTTTATGGGGC-1", 
+        "barcode": "AAGAGCACAATCGACC-1", 
         "cdr3": "CQQRSNWPPTF", 
         "cdr3_seq": "TGTCAGCAGCGTAGCAACTGGCCTCCCACTTTC", 
         "cdr3_start": 355, 
         "cdr3_stop": 388, 
         "clonotype": null, 
-        "contig_name": "CACAGTTTTATGGGGC-1_contig_1", 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_1", 
         "filtered": true, 
         "frame": null, 
         "high_confidence": true, 
@@ -548,13 +548,13 @@
                 "score": 422
             }
         ], 
-        "barcode": "CACAGTTTTATGGGGC-1", 
+        "barcode": "AAGAGCACAATCGACC-1", 
         "cdr3": "CARGVPTFGGVPWFDPW", 
         "cdr3_seq": "TGTGCGAGAGGGGTACCTACGTTTGGGGGAGTTCCCTGGTTCGACCCCTGG", 
         "cdr3_start": 381, 
         "cdr3_stop": 432, 
         "clonotype": null, 
-        "contig_name": "CACAGTTTTATGGGGC-1_contig_2", 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_2", 
         "filtered": true, 
         "frame": null, 
         "high_confidence": true, 
@@ -660,13 +660,13 @@
                 "score": 204
             }
         ], 
-        "barcode": "CACAGTTTTATGGGGC-1", 
+        "barcode": "AAGAGCACAATCGACC-1", 
         "cdr3": "CARGVY", 
         "cdr3_seq": "TGTGCGAGAGGTGTCTAT", 
         "cdr3_start": 386, 
         "cdr3_stop": 404, 
         "clonotype": null, 
-        "contig_name": "CACAGTTTTATGGGGC-1_contig_3", 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_3", 
         "filtered": true, 
         "frame": null, 
         "high_confidence": true, 
@@ -738,13 +738,13 @@
                 "score": 397
             }
         ], 
-        "barcode": "CACAGTTTTATGGGGC-1", 
+        "barcode": "AAGAGCACAATCGACC-1", 
         "cdr3": "CNSRDSSGNHLVF", 
         "cdr3_seq": "TGTAACTCCCGGGACAGCAGTGGTAACCATCTGGTATTC", 
         "cdr3_start": 299, 
         "cdr3_stop": 338, 
         "clonotype": null, 
-        "contig_name": "CACAGTTTTATGGGGC-1_contig_4", 
+        "contig_name": "AAGAGCACAATCGACC-1_contig_4", 
         "filtered": true, 
         "frame": null, 
         "high_confidence": true, 
