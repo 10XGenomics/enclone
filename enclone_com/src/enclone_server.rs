@@ -6,15 +6,11 @@
 
 use crate::typed_com::*;
 use enclone_core::*;
+use std::cmp::min;
+use std::{error::Error, net::SocketAddr};
 use string_utils::*;
 use tokio::io::AsyncWriteExt;
-
-use std::{error::Error, net::SocketAddr};
 use tokio::net::TcpStream;
-
-use std::thread;
-
-use std::cmp::min;
 
 pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
@@ -23,14 +19,13 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
     // Create socket.
 
-    println!("entering enclone_server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = addr_raw.parse::<SocketAddr>()?;
 
     let mut stream = TcpStream::connect(addr).await.unwrap();
 
     // Loop forever.
 
-    let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
+    let mut buf = vec![0; 1024];
     loop {
         // Wait for message from client.
 
@@ -42,7 +37,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 n = result.unwrap();
                 break;
             }
-            thread::sleep(std::time::Duration::from_millis(100));
         }
 
         // Unpack the message.
@@ -77,7 +71,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
                 let pic_bytes = pics[id].as_bytes().to_vec();
                 msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
-                println!("packed message has length {}", msg.len());
             }
             let mut start = 0;
             while start < msg.len() {
