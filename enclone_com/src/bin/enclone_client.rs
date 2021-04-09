@@ -25,91 +25,85 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let listener = TcpListener::bind(&addr).await?;
     // println!("Listening on: {}", addr);
 
-    // Not sure what this outer loop is doing.
+    let (mut socket, _) = listener.accept().await?;
+    let mut buf = vec![0; 1024];
 
+    // Loop forever.
+
+    println!("");
     loop {
-        let (mut socket, _) = listener.accept().await?;
-        tokio::spawn(async move {
-            let mut buf = vec![0; 1024];
+        // Request a clonotype number from the user.
 
-            // Loop forever.
+        print!("clonotype number? ");
+        use std::io::Write;
+        std::io::stdout().flush().unwrap();
+        let stdin = io::stdin();
+        let line = stdin.lock().lines().next().unwrap().unwrap();
+        if !line.parse::<usize>().is_ok() {
+            println!("That doesn't make sense.\n");
+            continue;
+        }
+        println!("");
 
-            println!("");
-            loop {
-                // Request a clonotype number from the user.
+        // Send the clonotype number to the server.
 
-                print!("clonotype number? ");
-                use std::io::Write;
-                std::io::stdout().flush().unwrap();
-                let stdin = io::stdin();
-                let line = stdin.lock().lines().next().unwrap().unwrap();
-                if !line.parse::<usize>().is_ok() {
-                    println!("That doesn't make sense.\n");
-                    continue;
-                }
-                println!("");
+        let id = line.as_bytes();
+        let msg = pack_object(ENCLONE_SUBCHANNEL, "request", &id);
+        socket
+            .write_all(&msg)
+            .await
+            .expect("client failed to write data to socket");
 
-                // Send the clonotype number to the server.
+        // Get the response.
 
-                let id = line.as_bytes();
-                let msg = pack_object(ENCLONE_SUBCHANNEL, "request", &id);
-                socket
-                    .write_all(&msg)
-                    .await
-                    .expect("client failed to write data to socket");
+        thread::sleep(std::time::Duration::from_millis(1000));
 
-                // Get the response.
-
-                thread::sleep(std::time::Duration::from_millis(1000));
-
-                buf.clear();
-                loop {
-                    let mut bufbit = vec![0; 1024];
-                    let n = socket
-                        .read(&mut bufbit)
-                        .await
-                        .expect("client failed to read data from socket");
-                    buf.append(&mut bufbit[0..n].to_vec());
-                    if n < 1024 {
-                        break;
-                    }
-                }
-                let n = buf.len();
-
-                // Unpack the response.
-
-                let mut id = 0_u64;
-                let mut type_name = Vec::<u8>::new();
-                let mut body = Vec::<u8>::new();
-                unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-                if !String::from_utf8(body.clone()).is_ok() {
-                    println!("received body but it's not UTF-8");
-                    println!("first byte of body is {}", body[0]);
-                    std::process::exit(1);
-                }
-
-                // Check for error.
-
-                if type_name == b"error" {
-                    print!("{}", strme(&body));
-                    continue;
-                }
-
-                // Check for the expected response.
-
-                if type_name == b"colored-text" {
-                    println!("{}", strme(&body));
-                    continue;
-                }
-
-                // Otherwise it's an internal error.
-
-                println!(
-                    "response from server has type {}, which is unknown",
-                    strme(&type_name)
-                );
-                std::process::exit(1);
+        buf.clear();
+        loop {
+            let mut bufbit = vec![0; 1024];
+            let n = socket
+                .read(&mut bufbit)
+                .await
+                .expect("client failed to read data from socket");
+            buf.append(&mut bufbit[0..n].to_vec());
+            if n < 1024 {
+                break;
             }
-        });
+        }
+        let n = buf.len();
+
+        // Unpack the response.
+
+        let mut id = 0_u64;
+        let mut type_name = Vec::<u8>::new();
+        let mut body = Vec::<u8>::new();
+        unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
+        if !String::from_utf8(body.clone()).is_ok() {
+            println!("received body but it's not UTF-8");
+            println!("first byte of body is {}", body[0]);
+            std::process::exit(1);
+        }
+
+        // Check for error.
+
+        if type_name == b"error" {
+            print!("{}", strme(&body));
+            continue;
+        }
+
+        // Check for the expected response.
+
+        if type_name == b"colored-text" {
+            println!("{}", strme(&body));
+            continue;
+        }
+
+        // Otherwise it's an internal error.
+
+        println!(
+            "response from server has type {}, which is unknown",
+            strme(&type_name)
+        );
+        std::process::exit(1);
     }
 }
