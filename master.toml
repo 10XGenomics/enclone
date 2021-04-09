@@ -60,7 +60,7 @@ tables = "0.1"
 tar = "0.4.33"
 tilde-expand = "0.1.1"
 tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1" }
+tokio-stream = { version = "0.1", features = [] }
 tokio-util = { version = "0.6.3", features = ["net"] }
 vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
 vector_utils = "0.1.3"

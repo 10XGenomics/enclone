@@ -23,5 +23,5 @@ lazy_static = "1.4"
 pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
-tokio-stream = { version = "0.1" }
+tokio-stream = { version = "0.1", features = [] }
 tokio-util = { version = "0.6.3", features = ["net"] }
