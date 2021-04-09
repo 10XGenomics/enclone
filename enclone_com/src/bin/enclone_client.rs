@@ -63,10 +63,43 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                 thread::sleep(std::time::Duration::from_millis(1000));
 
+                buf.clear();
+                loop {
+                    let mut bufbit = vec![0; 1024];
+                    println!("begin read");
+                    let n = socket
+                        .read(&mut bufbit)
+                        .await
+                        .expect("client failed to read data from socket");
+                    println!("read {} bytes", n);
+                    buf.append(&mut bufbit[0..n].to_vec());
+                    if n < 1024 {
+                        break;
+                    }
+
+
+                    // Ping server.
+
+                    /*
+                    let ping = [0_u8];
+                    socket
+                        .write_all(&ping)
+                        .await
+                        .expect("client failed to write data to socket");
+                    */
+
+
+                }
+                let n = buf.len();
+
+                /*
                 let n = socket
                     .read(&mut buf)
                     .await
                     .expect("client failed to read data from socket");
+                */
+
+
                 println!("received {} bytes", n);
 
                 // Unpack the response.

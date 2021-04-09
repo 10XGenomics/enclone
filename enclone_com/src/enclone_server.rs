@@ -21,6 +21,8 @@ use tokio_util::codec::{BytesCodec, FramedRead, FramedWrite};
 use std::thread;
 use std::time::Duration;
 
+use std::cmp::min;
+
 pub async fn connect(
     addr: &SocketAddr,
     mut stdin: impl Stream<Item = Result<Bytes, io::Error>> + Unpin,
@@ -196,7 +198,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
                 let mut s = String::new();
                 use std::cmp::min;
-                for i in 0..min(chars.len(), 200) {
+                for i in 0..min(chars.len(), 10000) {
                     s.push(chars[i]);
                 }
                 let pic_bytes = s.as_bytes().to_vec();
@@ -219,8 +221,52 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
             println!("writing message to stream");
 
+
+
+
+
+
             // let _result = stream.write(&msg).await?;
 
+
+            let mut start = 0;
+            while start < msg.len() {
+
+                let stop = min(start + 1024, msg.len());
+                let n = stream.write(&msg[start..stop]).await.unwrap();
+                println!("sent {} bytes", n);
+                start += n;
+
+
+                // Wait for ping from client.
+
+                /*
+                let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
+                loop {
+                    stream.readable().await?;
+                    let result = stream.try_read(&mut buf);
+                    if result.is_ok() {
+                        break;
+                    }
+                    thread::sleep(std::time::Duration::from_millis(100));
+                }
+                */
+
+
+
+
+            }
+            /*
+            // let null = Vec::<u8>::new();
+            let null = [0_u8];
+            stream.write(&null).await.unwrap();
+            println!("sent 1 bytes");
+            */
+            
+
+
+
+            /*
             let result = stream.try_write(&msg);
             if !result.is_ok() {
                 println!("write failed");
@@ -228,6 +274,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             } else {
                 println!("wrote {} bytes", result.unwrap());
             }
+            */
                 
 
             /*
