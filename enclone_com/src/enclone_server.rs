@@ -19,7 +19,17 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
     // Create socket.
 
-    let mut stream = TcpStream::connect(addr).await.unwrap();
+    let stream = TcpStream::connect(addr).await;
+    if !stream.is_ok() {
+        println!(
+            "Connection failed.  The most likely explanation is that you did not start \
+            enclone_client before\nyou started enclone.  However, in case that's not the problem, \
+            here is the error message:\n{:?}\n",
+            stream.err()
+        );
+        std::process::exit(1);
+    }
+    let mut stream = stream.unwrap();
 
     // Loop forever.
 
