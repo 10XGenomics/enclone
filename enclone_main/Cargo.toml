@@ -29,7 +29,7 @@ enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
-futures = { version = "0.3.0", features = ["thread-pool"]}
+futures = { version = "0.3.0", features = [] }
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", rev = "d1d0c6fed1f6e595e4e2cad226caf8dc9ad4fb8d", features = ["conda"] }
 io_utils = "0.2"
 lazy_static = "1.4"
