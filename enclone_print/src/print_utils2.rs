@@ -437,7 +437,7 @@ pub fn row_fill(
                 ex.clones[0][0].barcode
             );
         }
-        panic!(msg);
+        panic!("{}", msg);
     }
 
     // Get the relevant barcodes.

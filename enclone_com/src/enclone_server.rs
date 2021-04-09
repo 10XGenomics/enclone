@@ -6,18 +6,66 @@
 
 use crate::typed_com::*;
 use enclone_core::*;
-use std::env;
-use std::error::Error;
 use string_utils::*;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 
+use tokio::io;
+
+use bytes::Bytes;
+use futures::{future, Sink, SinkExt, Stream, StreamExt};
+use std::{error::Error, net::SocketAddr};
+use tokio::net::TcpStream;
+use tokio_util::codec::{BytesCodec, FramedRead, FramedWrite};
+
+pub async fn connect(
+    addr: &SocketAddr,
+    mut stdin: impl Stream<Item = Result<Bytes, io::Error>> + Unpin,
+    mut stdout: impl Sink<Bytes, Error = io::Error> + Unpin,
+) -> Result<(), Box<dyn Error>> {
+    let stream = TcpStream::connect(addr).await;
+    if stream.is_err() {
+        println!("The connect function in enclone server failed on calling TcpStream::connect.");
+        println!("error = {:?}\n", stream.err());
+        std::process::exit(1);
+    }
+    let mut stream = stream.unwrap();
+    let (r, w) = stream.split();
+    let mut sink = FramedWrite::new(w, BytesCodec::new());
+    // filter map Result<BytesMut, Error> stream into just a Bytes stream to match stdout Sink
+    // on the event of an Error, log the error and end the stream
+    let mut stream = FramedRead::new(r, BytesCodec::new())
+        .filter_map(|i| match i {
+            //BytesMut into Bytes
+            Ok(i) => future::ready(Some(i.freeze())),
+            Err(e) => {
+                println!("failed to read from socket; error={}", e);
+                future::ready(None)
+            }
+        })
+        .map(Ok);
+
+    match future::join(sink.send_all(&mut stdin), stdout.send_all(&mut stream)).await {
+        (Err(e), _) | (_, Err(e)) => Err(e.into()),
+        _ => Ok(()),
+    }
+}
+
 pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
+    // Fixed address for now.
+
+    let addr_raw = "127.0.0.1:8080";
+
+    // Create socket.
+
+    let addr = addr_raw.parse::<SocketAddr>()?;
+    let stdin = FramedRead::new(io::stdin(), BytesCodec::new());
+    let stdin = stdin.map(|i| i.map(|bytes| bytes.freeze()));
+    let stdout = FramedWrite::new(io::stdout(), BytesCodec::new());
+    connect(&addr, stdin, stdout).await?;
+
     // Initiate communication.
 
-    let addr = env::args()
-        .nth(1)
-        .unwrap_or_else(|| "127.0.0.1:8080".to_string());
     let listener = TcpListener::bind(&addr).await?;
     println!("Listening on: {}", addr);
 

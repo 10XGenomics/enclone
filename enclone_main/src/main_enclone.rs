@@ -59,7 +59,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) {
+pub async fn main_enclone(args: &Vec<String>) {
     let tall = Instant::now();
 
     // Process SOURCE args.
@@ -801,7 +801,7 @@ pub fn main_enclone(args: &Vec<String>) {
     if ctl.gen_opt.toy_com {
         *PICS.lock().unwrap() = pics.clone();
         println!("\nPlease start enclone_client in a terminal window.\n");
-        let _ = enclone_server();
+        enclone_server().await.unwrap();
         std::process::exit(0);
     }
 
