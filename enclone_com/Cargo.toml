@@ -24,4 +24,4 @@ pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1" }
-tokio-util = { version = "0.6.3", features = ["full"] }
+tokio-util = { version = "0.6.3", features = ["net"] }
