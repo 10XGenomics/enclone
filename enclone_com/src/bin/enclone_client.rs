@@ -25,7 +25,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .nth(1)
         .unwrap_or_else(|| "127.0.0.1:8080".to_string());
     let listener = TcpListener::bind(&addr).await?;
-    println!("Listening on: {}", addr);
+    // println!("Listening on: {}", addr);
 
     // Not sure what this outer loop is doing.
 
@@ -36,11 +36,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             // Loop forever.
 
-            println!("start looping");
+            println!("");
             loop {
                 // Request a clonotype number from the user.
 
-                print!("\nclonotype number? ");
+                print!("clonotype number? ");
                 use std::io::Write;
                 std::io::stdout().flush().unwrap();
                 let stdin = io::stdin();
@@ -49,6 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     println!("That doesn't make sense.\n");
                     continue;
                 }
+                println!("");
 
                 // Send the clonotype number to the server.
 
@@ -66,12 +67,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 buf.clear();
                 loop {
                     let mut bufbit = vec![0; 1024];
-                    println!("begin read");
                     let n = socket
                         .read(&mut bufbit)
                         .await
                         .expect("client failed to read data from socket");
-                    println!("read {} bytes", n);
                     buf.append(&mut bufbit[0..n].to_vec());
                     if n < 1024 {
                         break;
@@ -99,17 +98,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     .expect("client failed to read data from socket");
                 */
 
-
-                println!("received {} bytes", n);
-
                 // Unpack the response.
 
                 let mut id = 0_u64;
                 let mut type_name = Vec::<u8>::new();
                 let mut body = Vec::<u8>::new();
                 unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-                println!("response unpacked");
-                println!("type name = {}", strme(&type_name));
                 if !String::from_utf8(body.clone()).is_ok() {
                     println!("received body but it's not UTF-8");
                     println!("first byte of body is {}", body[0]);
@@ -126,7 +120,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 // Check for the expected response.
 
                 if type_name == b"colored-text" {
-                    println!("printing colored text");
                     println!("{}", strme(&body));
                     continue;
                 }
