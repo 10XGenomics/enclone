@@ -24,9 +24,14 @@ pub async fn connect(
     mut stdout: impl Sink<Bytes, Error = io::Error> + Unpin,
 ) -> Result<(), Box<dyn Error>> {
     let stream = TcpStream::connect(addr).await;
+    println!("back from TcpStream"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if stream.is_err() {
         println!("The connect function in enclone server failed on calling TcpStream::connect.");
-        println!("error = {:?}\n", stream.err());
+        println!("error = {:?}", stream.err());
+        println!(
+            "\nThe most likely explanation for this is that you failed to start enclone_client\n\
+            before starting enclone.\n"
+        );
         std::process::exit(1);
     }
     let mut stream = stream.unwrap();
@@ -45,6 +50,7 @@ pub async fn connect(
         })
         .map(Ok);
 
+    println!("at future::join"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     match future::join(sink.send_all(&mut stdin), stdout.send_all(&mut stream)).await {
         (Err(e), _) | (_, Err(e)) => Err(e.into()),
         _ => Ok(()),
@@ -58,11 +64,25 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
     // Create socket.
 
+    println!("entering enclone_server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = addr_raw.parse::<SocketAddr>()?;
+
+
+
+
+    /*
     let stdin = FramedRead::new(io::stdin(), BytesCodec::new());
     let stdin = stdin.map(|i| i.map(|bytes| bytes.freeze()));
     let stdout = FramedWrite::new(io::stdout(), BytesCodec::new());
     connect(&addr, stdin, stdout).await?;
+    */
+
+    // let stream = TcpStream::connect(addr).await;
+
+
+
+
+    println!("now connected"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Initiate communication.
 
@@ -78,13 +98,16 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
             // Loop forever.
 
+            println!("start loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             loop {
                 // Wait for message from client.
 
+                println!("waiting for message from client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 let n = socket
                     .read(&mut buf)
                     .await
                     .expect("failed to read data from socket");
+                println!("received message of length {}", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
                 // Unpack the message.
 
@@ -92,6 +115,9 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 let mut type_name = Vec::<u8>::new();
                 let mut body = Vec::<u8>::new();
                 unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
+                println!("message unpacked"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+                /*
 
                 // Get the response.
 
@@ -106,6 +132,8 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 let mut type_name = Vec::<u8>::new();
                 let mut body = Vec::<u8>::new();
                 unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
+
+                */
 
                 // Check for request.
 

@@ -31,10 +31,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             // Loop forever.
 
+            println!("start looping");
             loop {
                 // Request a clonotype number from the user.
 
                 print!("\nclonotype number? ");
+                use std::io::Write;
+                std::io::stdout().flush().unwrap();
                 let stdin = io::stdin();
                 let line = stdin.lock().lines().next().unwrap().unwrap();
                 if !line.parse::<usize>().is_ok() {

@@ -800,7 +800,7 @@ pub async fn main_enclone(args: &Vec<String>) {
 
     if ctl.gen_opt.toy_com {
         *PICS.lock().unwrap() = pics.clone();
-        println!("\nPlease start enclone_client in a terminal window.\n");
+        println!("\nYou need to have already started enclone_client in a terminal window.\n");
         enclone_server().await.unwrap();
         std::process::exit(0);
     }
