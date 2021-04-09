@@ -93,12 +93,10 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
         let mut type_name = Vec::<u8>::new();
         let mut body = Vec::<u8>::new();
         unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-        println!("type name = {}", strme(&type_name));
 
         // Check for request.
 
         if type_name == b"request" {
-            println!("Request received.");
             if !strme(&body).parse::<usize>().is_ok() {
                 println!(
                     "received the request \"{}\", which doesn't make sense",
@@ -119,24 +117,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
                 // Send back the clonotype picture.
 
-                println!("packing clonotype picture");
-
-                let mut chars = Vec::<char>::new();
-                for char in pics[id].chars() {
-                    chars.push(char);
-                }
-
-                let mut s = String::new();
-                for i in 0..min(chars.len(), 10000) {
-                    s.push(chars[i]);
-                }
-                let pic_bytes = s.as_bytes().to_vec();
-
-                if !String::from_utf8(pic_bytes.clone()).is_ok() {
-                    println!("pic_bytes is not UTF-8");
-                    std::process::exit(1);
-                }
-
+                let pic_bytes = pics[id].as_bytes().to_vec();
                 msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
                 println!("packed message has length {}", msg.len());
             }
