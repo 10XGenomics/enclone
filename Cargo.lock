@@ -621,6 +621,7 @@ dependencies = [
  "enclone_core",
  "futures",
  "lazy_static",
+ "pretty_trace",
  "string_utils",
  "tokio",
  "tokio-stream",

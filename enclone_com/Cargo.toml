@@ -20,6 +20,7 @@ bytes = ">=0.5.5, <2"
 enclone_core = { path = "../enclone_core" }
 futures = { version = "0.3.0", features = ["thread-pool"]}
 lazy_static = "1.4"
+pretty_trace = "0.5"
 string_utils = "0.1"
 tokio = { version = "1.0.0", features = ["full", "tracing"] }
 tokio-stream = { version = "0.1" }

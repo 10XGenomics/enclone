@@ -18,6 +18,9 @@ use std::{error::Error, net::SocketAddr};
 use tokio::net::TcpStream;
 use tokio_util::codec::{BytesCodec, FramedRead, FramedWrite};
 
+use std::thread;
+use std::time::Duration;
+
 pub async fn connect(
     addr: &SocketAddr,
     mut stdin: impl Stream<Item = Result<Bytes, io::Error>> + Unpin,
@@ -77,7 +80,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     connect(&addr, stdin, stdout).await?;
     */
 
-    // let stream = TcpStream::connect(addr).await;
+    let mut stream = TcpStream::connect(addr).await.unwrap();
 
 
 
@@ -86,96 +89,170 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
     // Initiate communication.
 
-    let listener = TcpListener::bind(&addr).await?;
+    // let listener = TcpListener::bind(&addr).await?;
     println!("Listening on: {}", addr);
 
-    // Not sure what this outer loop is doing.
+    let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
 
+    // Loop forever.
+
+    println!("start loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     loop {
-        let (mut socket, _) = listener.accept().await?;
-        tokio::spawn(async move {
-            let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
+        // Wait for message from client.
 
-            // Loop forever.
+        println!("waiting for message from client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-            println!("start loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            loop {
-                // Wait for message from client.
 
-                println!("waiting for message from client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                let n = socket
-                    .read(&mut buf)
-                    .await
-                    .expect("failed to read data from socket");
-                println!("received message of length {}", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        let mut n = 0;
+        loop {
+            stream.readable().await?;
+            let result = stream.try_read(&mut buf);
+            if result.is_ok() {
+                n = result.unwrap();
+                break;
+            }
+            thread::sleep(std::time::Duration::from_millis(100));
+        }
 
-                // Unpack the message.
 
-                let mut id = 0_u64;
-                let mut type_name = Vec::<u8>::new();
-                let mut body = Vec::<u8>::new();
-                unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-                println!("message unpacked"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        /*
+        stream.readable().await?;
+        let result = stream.try_read(&mut buf);
+        if !result.is_ok() {
+            println!("read from client failed");
+            std::process::exit(1);
+        }
+        */
 
-                /*
 
-                // Get the response.
 
-                let n = socket
-                    .read(&mut buf)
-                    .await
-                    .expect("failed to read data from socket");
+        // let n = result.unwrap();
 
-                // Unpack the response.
+        /*
+        let n = socket
+            .read(&mut buf)
+            .await
+            .expect("failed to read data from socket");
+        */
+        println!("received message of length {}", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-                let mut id = 0_u64;
-                let mut type_name = Vec::<u8>::new();
-                let mut body = Vec::<u8>::new();
-                unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
+        // Unpack the message.
 
-                */
+        let mut id = 0_u64;
+        let mut type_name = Vec::<u8>::new();
+        let mut body = Vec::<u8>::new();
+        unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
+        println!("message unpacked"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        println!("type name = {}", strme(&type_name));
 
-                // Check for request.
+        /*
 
-                if type_name == b"request" {
-                    if !strme(&body).parse::<usize>().is_ok() {
-                        println!(
-                            "received the request \"{}\", which doesn't make sense",
-                            strme(&body)
-                        );
-                        continue;
-                    }
+        // Get the response.
 
-                    let msg;
+        let n = socket
+            .read(&mut buf)
+            .await
+            .expect("failed to read data from socket");
 
-                    {
-                        let pics = PICS.lock().unwrap();
-                        let id = strme(&body).force_usize();
-                        if id >= pics.len() {
-                            println!("clonotype id is too large");
-                            continue;
-                        }
+        // Unpack the response.
 
-                        // Send back the clonotype picture.
+        let mut id = 0_u64;
+        let mut type_name = Vec::<u8>::new();
+        let mut body = Vec::<u8>::new();
+        unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
 
-                        msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pics[id].as_bytes());
-                    }
+        */
 
-                    socket
-                        .write_all(&msg)
-                        .await
-                        .expect("server failed to write data to socket");
+        // Check for request.
+
+        if type_name == b"request" {
+            println!("Request received.");
+            if !strme(&body).parse::<usize>().is_ok() {
+                println!(
+                    "received the request \"{}\", which doesn't make sense",
+                    strme(&body)
+                );
+                continue;
+            }
+
+            let msg;
+
+            {
+                let pics = PICS.lock().unwrap();
+                let id = strme(&body).force_usize();
+                if id >= pics.len() {
+                    println!("clonotype id is too large");
                     continue;
                 }
 
-                // Otherwise it's an internal error.
+                // Send back the clonotype picture.
 
-                println!(
-                    "client has sent type {}, which is unknown",
-                    strme(&type_name)
-                );
+                println!("packing clonotype picture");
+
+                let mut chars = Vec::<char>::new();
+                for char in pics[id].chars() {
+                    chars.push(char);
+                }
+
+                let mut s = String::new();
+                use std::cmp::min;
+                for i in 0..min(chars.len(), 200) {
+                    s.push(chars[i]);
+                }
+                let pic_bytes = s.as_bytes().to_vec();
+
+                /*
+                let mut pic_bytes = pics[id].as_bytes().to_vec();
+                pic_bytes.truncate(502); // ???????????????????????????????????????????????????????
+                */
+
+
+                if !String::from_utf8(pic_bytes.clone()).is_ok() {
+                    println!("pic_bytes is not UTF-8");
+                    std::process::exit(1);
+                }
+
+                
+                msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
+                println!("packed message has length {}", msg.len());
+            }
+
+            println!("writing message to stream");
+
+            // let _result = stream.write(&msg).await?;
+
+            let result = stream.try_write(&msg);
+            if !result.is_ok() {
+                println!("write failed");
+                std::process::exit(1);
+            } else {
+                println!("wrote {} bytes", result.unwrap());
+            }
+                
+
+            /*
+            if !result.is_ok() {
+                println!("write to client failed");
                 std::process::exit(1);
             }
-        });
+            */
+
+            /*
+            socket
+                .write_all(&msg)
+                .await
+                .expect("server failed to write data to socket");
+            */
+
+            continue;
+        }
+
+        // Otherwise it's an internal error.
+
+        println!(
+            "client has sent type {}, which is unknown",
+            strme(&type_name)
+        );
+        std::process::exit(1);
     }
 }
