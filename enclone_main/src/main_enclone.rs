@@ -800,7 +800,11 @@ pub async fn main_enclone(args: &Vec<String>) {
 
     if ctl.gen_opt.toy_com {
         *PICS.lock().unwrap() = pics.clone();
-        println!("\nYou need to have already started enclone_client in a terminal window.\n");
+        println!(
+            "\nHello, enclone is now in server mode.  Hopefully you have already started\n\
+            enclone_client in a separate terminal window, before starting enclone, because\n\
+            otherwise the system won't work.  The client should now show a prompt.\n"
+        );
         enclone_server().await.unwrap();
         std::process::exit(0);
     }

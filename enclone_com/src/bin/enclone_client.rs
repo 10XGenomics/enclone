@@ -15,13 +15,18 @@ use tokio::net::TcpListener;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     PrettyTrace::new().on();
+    println!(
+        "\nHello, I am the goofball enclone client.  Now that you've started me, you need\n\
+        to start enclone in a separate window, with the argument TOY_COM and enough other\n\
+        arguments to run enclone (e.g. providing a dataset).\n"
+    );
+
     // Initiate communication.
 
     let addr = "127.0.0.1:8080";
     let listener = TcpListener::bind(&addr).await?;
     let (mut socket, _) = listener.accept().await?;
     let mut buf = vec![0; 1024];
-    println!("");
 
     // Loop forever.
 
@@ -36,7 +41,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("That doesn't make sense.\n");
             continue;
         }
-        println!("");
 
         // Send the clonotype number to the server.
 
@@ -84,7 +88,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // Check for the expected response.
 
         if type_name == b"colored-text" {
-            println!("{}", strme(&body));
+            println!("\n{}", strme(&body));
             continue;
         }
 
