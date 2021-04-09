@@ -76,7 +76,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         break;
                     }
 
-
                     // Ping server.
 
                     /*
@@ -86,8 +85,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         .await
                         .expect("client failed to write data to socket");
                     */
-
-
                 }
                 let n = buf.len();
 

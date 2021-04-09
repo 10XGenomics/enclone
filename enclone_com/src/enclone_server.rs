@@ -72,9 +72,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     println!("entering enclone_server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = addr_raw.parse::<SocketAddr>()?;
 
-
-
-
     /*
     let stdin = FramedRead::new(io::stdin(), BytesCodec::new());
     let stdin = stdin.map(|i| i.map(|bytes| bytes.freeze()));
@@ -83,9 +80,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     */
 
     let mut stream = TcpStream::connect(addr).await.unwrap();
-
-
-
 
     println!("now connected"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -104,7 +98,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
         println!("waiting for message from client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-
         let mut n = 0;
         loop {
             stream.readable().await?;
@@ -116,7 +109,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             thread::sleep(std::time::Duration::from_millis(100));
         }
 
-
         /*
         stream.readable().await?;
         let result = stream.try_read(&mut buf);
@@ -125,8 +117,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             std::process::exit(1);
         }
         */
-
-
 
         // let n = result.unwrap();
 
@@ -208,35 +198,25 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 pic_bytes.truncate(502); // ???????????????????????????????????????????????????????
                 */
 
-
                 if !String::from_utf8(pic_bytes.clone()).is_ok() {
                     println!("pic_bytes is not UTF-8");
                     std::process::exit(1);
                 }
 
-                
                 msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
                 println!("packed message has length {}", msg.len());
             }
 
             println!("writing message to stream");
 
-
-
-
-
-
             // let _result = stream.write(&msg).await?;
-
 
             let mut start = 0;
             while start < msg.len() {
-
                 let stop = min(start + 1024, msg.len());
                 let n = stream.write(&msg[start..stop]).await.unwrap();
                 println!("sent {} bytes", n);
                 start += n;
-
 
                 // Wait for ping from client.
 
@@ -251,10 +231,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                     thread::sleep(std::time::Duration::from_millis(100));
                 }
                 */
-
-
-
-
             }
             /*
             // let null = Vec::<u8>::new();
@@ -262,9 +238,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             stream.write(&null).await.unwrap();
             println!("sent 1 bytes");
             */
-            
-
-
 
             /*
             let result = stream.try_write(&msg);
@@ -275,7 +248,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 println!("wrote {} bytes", result.unwrap());
             }
             */
-                
 
             /*
             if !result.is_ok() {
