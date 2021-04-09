@@ -61,6 +61,10 @@ pub fn pack_object(id: SubChannelIdentifier, type_name: &str, body: &[u8]) -> Ve
 }
 
 pub fn unpack_message(msg: &[u8], id: &mut u64, type_name: &mut Vec<u8>, body: &mut Vec<u8>) {
+    if msg.len() == 0 {
+        println!("Looks like enclone_client exited, bye!\n");
+        std::process::exit(0);
+    }
     if msg.len() < 10 {
         eprintln!(
             "\nReceived a coded message of length {}, and thus appears to be truncated.\n",
