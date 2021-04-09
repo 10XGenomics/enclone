@@ -7,7 +7,7 @@
 use crate::typed_com::*;
 use enclone_core::*;
 use std::cmp::min;
-use std::{error::Error, net::SocketAddr};
+use std::error::Error;
 use string_utils::*;
 use tokio::io::AsyncWriteExt;
 use tokio::net::TcpStream;
@@ -15,11 +15,9 @@ use tokio::net::TcpStream;
 pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
 
-    let addr_raw = "127.0.0.1:8080";
+    let addr = "127.0.0.1:8080";
 
     // Create socket.
-
-    let addr = addr_raw.parse::<SocketAddr>()?;
 
     let mut stream = TcpStream::connect(addr).await.unwrap();
 
@@ -46,7 +44,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
         let mut body = Vec::<u8>::new();
         unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
 
-        // Check for request.
+        // Process request.
 
         if type_name == b"request" {
             if !strme(&body).parse::<usize>().is_ok() {
@@ -56,9 +54,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 );
                 continue;
             }
-
             let msg;
-
             {
                 let pics = PICS.lock().unwrap();
                 let id = strme(&body).force_usize();
