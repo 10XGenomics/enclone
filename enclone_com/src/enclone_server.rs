@@ -9,54 +9,12 @@ use enclone_core::*;
 use string_utils::*;
 use tokio::io::AsyncWriteExt;
 
-use tokio::io;
-
-use bytes::Bytes;
-use futures::{future, Sink, SinkExt, Stream, StreamExt};
 use std::{error::Error, net::SocketAddr};
 use tokio::net::TcpStream;
-use tokio_util::codec::{BytesCodec, FramedRead, FramedWrite};
 
 use std::thread;
 
 use std::cmp::min;
-
-pub async fn connect(
-    addr: &SocketAddr,
-    mut stdin: impl Stream<Item = Result<Bytes, io::Error>> + Unpin,
-    mut stdout: impl Sink<Bytes, Error = io::Error> + Unpin,
-) -> Result<(), Box<dyn Error>> {
-    let stream = TcpStream::connect(addr).await;
-    if stream.is_err() {
-        println!("The connect function in enclone server failed on calling TcpStream::connect.");
-        println!("error = {:?}", stream.err());
-        println!(
-            "\nThe most likely explanation for this is that you failed to start enclone_client\n\
-            before starting enclone.\n"
-        );
-        std::process::exit(1);
-    }
-    let mut stream = stream.unwrap();
-    let (r, w) = stream.split();
-    let mut sink = FramedWrite::new(w, BytesCodec::new());
-    // filter map Result<BytesMut, Error> stream into just a Bytes stream to match stdout Sink
-    // on the event of an Error, log the error and end the stream
-    let mut stream = FramedRead::new(r, BytesCodec::new())
-        .filter_map(|i| match i {
-            //BytesMut into Bytes
-            Ok(i) => future::ready(Some(i.freeze())),
-            Err(e) => {
-                println!("failed to read from socket; error={}", e);
-                future::ready(None)
-            }
-        })
-        .map(Ok);
-
-    match future::join(sink.send_all(&mut stdin), stdout.send_all(&mut stream)).await {
-        (Err(e), _) | (_, Err(e)) => Err(e.into()),
-        _ => Ok(()),
-    }
-}
 
 pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
