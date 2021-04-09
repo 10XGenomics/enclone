@@ -70,16 +70,9 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
 
     let mut stream = TcpStream::connect(addr).await.unwrap();
 
-    // Initiate communication.
-
-    // let listener = TcpListener::bind(&addr).await?;
-    println!("Listening on: {}", addr);
-
-    let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
-
     // Loop forever.
 
-    println!("start loop"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
     loop {
         // Wait for message from client.
 
@@ -94,15 +87,12 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             thread::sleep(std::time::Duration::from_millis(100));
         }
 
-        println!("received message of length {}", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
         // Unpack the message.
 
         let mut id = 0_u64;
         let mut type_name = Vec::<u8>::new();
         let mut body = Vec::<u8>::new();
         unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-        println!("message unpacked"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         println!("type name = {}", strme(&type_name));
 
         // Check for request.
@@ -150,16 +140,10 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
                 println!("packed message has length {}", msg.len());
             }
-
-            println!("writing message to stream");
-
-            // let _result = stream.write(&msg).await?;
-
             let mut start = 0;
             while start < msg.len() {
                 let stop = min(start + 1024, msg.len());
                 let n = stream.write(&msg[start..stop]).await.unwrap();
-                println!("sent {} bytes", n);
                 start += n;
             }
             continue;
