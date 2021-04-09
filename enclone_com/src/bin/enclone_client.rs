@@ -6,10 +6,8 @@
 
 use enclone_com::typed_com::*;
 use pretty_trace::*;
-use std::env;
 use std::error::Error;
-use std::io::{self, BufRead};
-use std::thread;
+use std::io::{self, BufRead, Write};
 use string_utils::*;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
@@ -19,23 +17,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
     PrettyTrace::new().on();
     // Initiate communication.
 
-    let addr = env::args()
-        .nth(1)
-        .unwrap_or_else(|| "127.0.0.1:8080".to_string());
+    let addr = "127.0.0.1:8080";
     let listener = TcpListener::bind(&addr).await?;
-    // println!("Listening on: {}", addr);
-
     let (mut socket, _) = listener.accept().await?;
     let mut buf = vec![0; 1024];
+    println!("");
 
     // Loop forever.
 
-    println!("");
     loop {
         // Request a clonotype number from the user.
 
         print!("clonotype number? ");
-        use std::io::Write;
         std::io::stdout().flush().unwrap();
         let stdin = io::stdin();
         let line = stdin.lock().lines().next().unwrap().unwrap();
@@ -55,8 +48,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             .expect("client failed to write data to socket");
 
         // Get the response.
-
-        thread::sleep(std::time::Duration::from_millis(1000));
 
         buf.clear();
         loop {
@@ -80,7 +71,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
         if !String::from_utf8(body.clone()).is_ok() {
             println!("received body but it's not UTF-8");
-            println!("first byte of body is {}", body[0]);
             std::process::exit(1);
         }
 
