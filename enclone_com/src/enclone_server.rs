@@ -7,8 +7,7 @@
 use crate::typed_com::*;
 use enclone_core::*;
 use string_utils::*;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpListener;
+use tokio::io::AsyncWriteExt;
 
 use tokio::io;
 
@@ -19,7 +18,6 @@ use tokio::net::TcpStream;
 use tokio_util::codec::{BytesCodec, FramedRead, FramedWrite};
 
 use std::thread;
-use std::time::Duration;
 
 use std::cmp::min;
 
@@ -85,9 +83,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     loop {
         // Wait for message from client.
 
-        println!("waiting for message from client"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-        let mut n = 0;
+        let n;
         loop {
             stream.readable().await?;
             let result = stream.try_read(&mut buf);
@@ -141,7 +137,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 }
 
                 let mut s = String::new();
-                use std::cmp::min;
                 for i in 0..min(chars.len(), 10000) {
                     s.push(chars[i]);
                 }

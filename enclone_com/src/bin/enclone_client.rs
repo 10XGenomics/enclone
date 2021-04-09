@@ -9,12 +9,10 @@ use pretty_trace::*;
 use std::env;
 use std::error::Error;
 use std::io::{self, BufRead};
+use std::thread;
 use string_utils::*;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
-
-use std::thread;
-use std::time::Duration;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -32,7 +30,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     loop {
         let (mut socket, _) = listener.accept().await?;
         tokio::spawn(async move {
-            let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
+            let mut buf = vec![0; 1024];
 
             // Loop forever.
 
@@ -75,25 +73,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     if n < 1024 {
                         break;
                     }
-
-                    // Ping server.
-
-                    /*
-                    let ping = [0_u8];
-                    socket
-                        .write_all(&ping)
-                        .await
-                        .expect("client failed to write data to socket");
-                    */
                 }
                 let n = buf.len();
-
-                /*
-                let n = socket
-                    .read(&mut buf)
-                    .await
-                    .expect("client failed to read data from socket");
-                */
 
                 // Unpack the response.
 
