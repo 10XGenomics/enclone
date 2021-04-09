@@ -33,10 +33,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     loop {
         // Request a clonotype number from the user.
 
-        print!("clonotype number? ");
+        print!("clonotype number or q to quit? ");
         std::io::stdout().flush().unwrap();
         let stdin = io::stdin();
         let line = stdin.lock().lines().next().unwrap().unwrap();
+        if line == "q" {
+            println!("");
+            std::process::exit(0);
+        }
         if !line.parse::<usize>().is_ok() {
             println!("That doesn't make sense.\n");
             continue;
