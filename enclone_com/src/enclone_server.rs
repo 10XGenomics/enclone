@@ -29,7 +29,6 @@ pub async fn connect(
     mut stdout: impl Sink<Bytes, Error = io::Error> + Unpin,
 ) -> Result<(), Box<dyn Error>> {
     let stream = TcpStream::connect(addr).await;
-    println!("back from TcpStream"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if stream.is_err() {
         println!("The connect function in enclone server failed on calling TcpStream::connect.");
         println!("error = {:?}", stream.err());
@@ -55,7 +54,6 @@ pub async fn connect(
         })
         .map(Ok);
 
-    println!("at future::join"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     match future::join(sink.send_all(&mut stdin), stdout.send_all(&mut stream)).await {
         (Err(e), _) | (_, Err(e)) => Err(e.into()),
         _ => Ok(()),
@@ -72,16 +70,7 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
     println!("entering enclone_server"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let addr = addr_raw.parse::<SocketAddr>()?;
 
-    /*
-    let stdin = FramedRead::new(io::stdin(), BytesCodec::new());
-    let stdin = stdin.map(|i| i.map(|bytes| bytes.freeze()));
-    let stdout = FramedWrite::new(io::stdout(), BytesCodec::new());
-    connect(&addr, stdin, stdout).await?;
-    */
-
     let mut stream = TcpStream::connect(addr).await.unwrap();
-
-    println!("now connected"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Initiate communication.
 
@@ -109,23 +98,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
             thread::sleep(std::time::Duration::from_millis(100));
         }
 
-        /*
-        stream.readable().await?;
-        let result = stream.try_read(&mut buf);
-        if !result.is_ok() {
-            println!("read from client failed");
-            std::process::exit(1);
-        }
-        */
-
-        // let n = result.unwrap();
-
-        /*
-        let n = socket
-            .read(&mut buf)
-            .await
-            .expect("failed to read data from socket");
-        */
         println!("received message of length {}", n); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         // Unpack the message.
@@ -136,24 +108,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
         unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
         println!("message unpacked"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         println!("type name = {}", strme(&type_name));
-
-        /*
-
-        // Get the response.
-
-        let n = socket
-            .read(&mut buf)
-            .await
-            .expect("failed to read data from socket");
-
-        // Unpack the response.
-
-        let mut id = 0_u64;
-        let mut type_name = Vec::<u8>::new();
-        let mut body = Vec::<u8>::new();
-        unpack_message(&mut buf[0..n], &mut id, &mut type_name, &mut body);
-
-        */
 
         // Check for request.
 
@@ -193,11 +147,6 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 }
                 let pic_bytes = s.as_bytes().to_vec();
 
-                /*
-                let mut pic_bytes = pics[id].as_bytes().to_vec();
-                pic_bytes.truncate(502); // ???????????????????????????????????????????????????????
-                */
-
                 if !String::from_utf8(pic_bytes.clone()).is_ok() {
                     println!("pic_bytes is not UTF-8");
                     std::process::exit(1);
@@ -217,57 +166,9 @@ pub async fn enclone_server() -> Result<(), Box<dyn Error>> {
                 let n = stream.write(&msg[start..stop]).await.unwrap();
                 println!("sent {} bytes", n);
                 start += n;
-
-                // Wait for ping from client.
-
-                /*
-                let mut buf = vec![0; 1024]; // not sure why we can't just use Vec::<u8>::new()
-                loop {
-                    stream.readable().await?;
-                    let result = stream.try_read(&mut buf);
-                    if result.is_ok() {
-                        break;
-                    }
-                    thread::sleep(std::time::Duration::from_millis(100));
-                }
-                */
             }
-            /*
-            // let null = Vec::<u8>::new();
-            let null = [0_u8];
-            stream.write(&null).await.unwrap();
-            println!("sent 1 bytes");
-            */
-
-            /*
-            let result = stream.try_write(&msg);
-            if !result.is_ok() {
-                println!("write failed");
-                std::process::exit(1);
-            } else {
-                println!("wrote {} bytes", result.unwrap());
-            }
-            */
-
-            /*
-            if !result.is_ok() {
-                println!("write to client failed");
-                std::process::exit(1);
-            }
-            */
-
-            /*
-            socket
-                .write_all(&msg)
-                .await
-                .expect("server failed to write data to socket");
-            */
-
             continue;
         }
-
-        // Otherwise it's an internal error.
-
         println!(
             "client has sent type {}, which is unknown",
             strme(&type_name)
