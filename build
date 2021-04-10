@@ -1,4 +1,4 @@
-#!/bin/csh -e
+#!/bin/csh
 
 # Please see https://10xgenomics.github.io/enclone/pages/auto/dev.html.
 
@@ -13,7 +13,15 @@
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-# Really we should check the prerequisites here.
+# partially check prerequisites
+
+foreach pkg (sweep fmt license)
+    cargo $pkg --help >& /dev/null
+    if ( $status != 0 ) then
+        echo "looks like the prereq cargo $pkg is missing; try cargo install cargo-$pkg"
+        exit 1
+    endif
+end
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -22,6 +30,9 @@
 set begin = `date +%s`
 if ( !(-d enclone-data) ) then
     git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
+    if ( $status != 0 ) then
+        exit 1
+    endif
 endif
 if !(-f stamps/data_version_in_use) then
     echo none > stamps/data_version_in_use
@@ -49,6 +60,9 @@ mkdir -p enclone_main/testx/outputs
 # run rustfmt
 
 cargo fmt --all
+if ( $status != 0 ) then
+    exit 1
+endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -69,6 +83,9 @@ if ( $elapsed > 604800 ) then
     echo "this could cause problems\n"
     echo "INTERRUPTING THE UPDATE IS PROBABLY NOT A GOOD IDEA"
     ./update_enclone
+    if ( $status != 0 ) then
+        exit 1
+    endif
     echo $now > stamps/last_cargo_update
     echo "UPDATE COMPLETE"
 endif
@@ -78,6 +95,9 @@ endif
 # compile rust code
 
 cargo b
+if ( $status != 0 ) then
+    exit 1
+endif
 rehash
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -85,12 +105,18 @@ rehash
 # build help pages
 
 target/debug/build_help_pages
+if ( $status != 0 ) then
+    exit 1
+endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # merge html pages
 
 target/debug/merge_html
+if ( $status != 0 ) then
+    exit 1
+endif
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
