@@ -257,7 +257,7 @@ pub struct GeneralOpt {
 
 // Some plot options.
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct PlotOpt {
     pub plot_xy_filename: String,
     pub plot_xy_xvar: String,
