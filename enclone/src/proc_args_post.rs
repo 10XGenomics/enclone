@@ -102,7 +102,7 @@ pub fn proc_args_post(
     // Expand ~ and ~user in output file names.
 
     let mut files = [
-        &mut ctl.gen_opt.plot_file,
+        &mut ctl.plot_opt.plot_file,
         &mut ctl.gen_opt.fasta_filename,
         &mut ctl.gen_opt.fasta_aa_filename,
         &mut ctl.gen_opt.dref_file,
@@ -383,8 +383,8 @@ pub fn proc_args_post(
             .mean_read_pairs_per_cell_cellranger
             .push(rpc_cr);
     }
-    if ctl.gen_opt.plot_by_isotype {
-        if using_plot || ctl.gen_opt.use_legend {
+    if ctl.plot_opt.plot_by_isotype {
+        if using_plot || ctl.plot_opt.use_legend {
             eprintln!("\nPLOT_BY_ISOTYPE cannot be used with PLOT or LEGEND.\n");
             std::process::exit(1);
         }
@@ -392,13 +392,13 @@ pub fn proc_args_post(
             eprintln!("\nPLOT_BY_ISOTYPE can only be used with BCR data.\n");
             std::process::exit(1);
         }
-        if ctl.gen_opt.plot_by_mark {
+        if ctl.plot_opt.plot_by_mark {
             eprintln!("\nPLOT_BY_ISOTYPE and PLOT_BY_MARK cannot be used together.\n");
             std::process::exit(1);
         }
     }
-    if ctl.gen_opt.plot_by_mark {
-        if using_plot || ctl.gen_opt.use_legend {
+    if ctl.plot_opt.plot_by_mark {
+        if using_plot || ctl.plot_opt.use_legend {
             eprintln!("\nPLOT_BY_MARK cannot be used with PLOT or LEGEND.\n");
             std::process::exit(1);
         }

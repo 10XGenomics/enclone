@@ -327,7 +327,7 @@ pub fn tail_code(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.gen_opt.plot_file == "stdout".to_string() {
+    if ctl.plot_opt.plot_file == "stdout".to_string() {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
