@@ -6,6 +6,7 @@
 
 use crate::typed_com::*;
 use enclone_core::defs::*;
+use enclone_tail::plot::*;
 use std::cmp::min;
 use std::error::Error;
 use string_utils::*;
@@ -14,10 +15,10 @@ use tokio::net::TcpStream;
 use vdj_ann::refx::RefData;
 
 pub async fn enclone_server(
-    _ctl: &EncloneControl,
-    _refdata: &RefData,
-    _exacts: &Vec<Vec<usize>>,
-    _exact_clonotypes: &Vec<ExactClonotype>,
+    ctl: &EncloneControl,
+    refdata: &RefData,
+    exacts: &Vec<Vec<usize>>,
+    exact_clonotypes: &Vec<ExactClonotype>,
     pics: &Vec<String>,
 ) -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
@@ -64,7 +65,8 @@ pub async fn enclone_server(
         // Process request.
 
         if type_name == b"request" {
-            if !strme(&body).parse::<usize>().is_ok() {
+            let bs = strme(&body);
+            if bs != "PLOT_BY_ISOTYPE" && !bs.parse::<usize>().is_ok() {
                 println!(
                     "received the request \"{}\", which doesn't make sense",
                     strme(&body)
@@ -72,17 +74,34 @@ pub async fn enclone_server(
                 continue;
             }
             let msg;
-            {
-                let id = strme(&body).force_usize();
-                if id >= pics.len() {
-                    println!("clonotype id is too large");
-                    continue;
+            if bs == "PLOT_BY_ISOTYPE" {
+                let mut svg = String::new();
+                let mut plot_opt = PlotOpt::default();
+                plot_opt.plot_by_isotype = true;
+                plot_opt.plot_file = "stdout".to_string();
+                plot_clonotypes(
+                    &ctl,
+                    &plot_opt,
+                    &refdata,
+                    &exacts,
+                    &exact_clonotypes,
+                    &mut svg,
+                );
+                let svg_bytes = svg.as_bytes().to_vec();
+                msg = pack_object(ENCLONE_SUBCHANNEL, "svg", &svg_bytes);
+            } else {
+                {
+                    let id = strme(&body).force_usize();
+                    if id >= pics.len() {
+                        println!("clonotype id is too large");
+                        continue;
+                    }
+
+                    // Send back the clonotype picture.
+
+                    let pic_bytes = pics[id].as_bytes().to_vec();
+                    msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
                 }
-
-                // Send back the clonotype picture.
-
-                let pic_bytes = pics[id].as_bytes().to_vec();
-                msg = pack_object(ENCLONE_SUBCHANNEL, "colored-text", &pic_bytes);
             }
             let mut start = 0;
             while start < msg.len() {

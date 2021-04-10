@@ -31,9 +31,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Loop forever.
 
     loop {
-        // Request a clonotype number from the user.
+        // Ask for a request from the user.
 
-        print!("clonotype number or q to quit? ");
+        print!("clonotype number or PLOT_BY_ISOTYPE or q to quit? ");
         std::io::stdout().flush().unwrap();
         let stdin = io::stdin();
         let line = stdin.lock().lines().next().unwrap().unwrap();
@@ -41,12 +41,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("");
             std::process::exit(0);
         }
-        if !line.parse::<usize>().is_ok() {
+        if line != "PLOT_BY_ISOTYPE" && !line.parse::<usize>().is_ok() {
             println!("That doesn't make sense.\n");
             continue;
         }
 
-        // Send the clonotype number to the server.
+        // Send the request to the server.
 
         let id = line.as_bytes();
         let msg = pack_object(ENCLONE_SUBCHANNEL, "request", &id);
@@ -92,6 +92,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // Check for the expected response.
 
         if type_name == b"colored-text" {
+            println!("\n{}", strme(&body));
+            continue;
+        }
+        if type_name == b"svg" {
             println!("\n{}", strme(&body));
             continue;
         }

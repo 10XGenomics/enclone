@@ -618,6 +618,7 @@ version = "0.5.51"
 dependencies = [
  "bytes",
  "enclone_core",
+ "enclone_tail",
  "futures",
  "lazy_static",
  "pretty_trace",
