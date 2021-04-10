@@ -19,10 +19,3 @@ const VERSION_STRING: &'static str = env!("VERSION_STRING");
 pub fn version_string() -> String {
     VERSION_STRING.to_string()
 }
-
-use lazy_static::lazy_static;
-use std::sync::Mutex;
-
-lazy_static! {
-    pub static ref PICS: Mutex<Vec<String>> = Mutex::new(Vec::<String>::new());
-}
