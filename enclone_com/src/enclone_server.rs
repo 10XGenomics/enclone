@@ -5,13 +5,21 @@
 // based on code in the rust tokio crate
 
 use crate::typed_com::*;
+use enclone_core::defs::*;
 use std::cmp::min;
 use std::error::Error;
 use string_utils::*;
 use tokio::io::AsyncWriteExt;
 use tokio::net::TcpStream;
+use vdj_ann::refx::RefData;
 
-pub async fn enclone_server(pics: &Vec<String>) -> Result<(), Box<dyn Error>> {
+pub async fn enclone_server(
+    _ctl: &EncloneControl,
+    _refdata: &RefData,
+    _exacts: &Vec<Vec<usize>>,
+    _exact_clonotypes: &Vec<ExactClonotype>,
+    pics: &Vec<String>,
+) -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
 
     let addr = "127.0.0.1:8080";

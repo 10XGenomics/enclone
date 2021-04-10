@@ -811,7 +811,9 @@ pub async fn main_enclone(args: &Vec<String>) {
             enclone_client in a separate terminal window, before starting enclone, because\n\
             otherwise the system won't work.  The client should now show a prompt.\n"
         );
-        enclone_server(&pics).await.unwrap();
+        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &pics)
+            .await
+            .unwrap();
         std::process::exit(0);
     }
 

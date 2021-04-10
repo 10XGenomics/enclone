@@ -625,6 +625,7 @@ dependencies = [
  "tokio",
  "tokio-stream",
  "tokio-util",
+ "vdj_ann",
 ]
 
 [[package]]
