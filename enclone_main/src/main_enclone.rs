@@ -796,6 +796,14 @@ pub async fn main_enclone(args: &Vec<String>) {
         &mut fate,
     );
 
+    // Lock data structures so they can't be changed accidentally.
+
+    let ctl = ctl;
+    let refdata = refdata;
+    let exact_clonotypes = exact_clonotypes;
+    let exacts = exacts;
+    let pics = pics;
+
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {
