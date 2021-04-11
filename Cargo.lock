@@ -620,6 +620,7 @@ dependencies = [
  "enclone_core",
  "enclone_tail",
  "futures",
+ "io_utils",
  "lazy_static",
  "pretty_trace",
  "string_utils",
