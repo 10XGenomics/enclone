@@ -159,13 +159,14 @@ fn substitute_enclone_color(color: &mut String) {
 
 pub fn plot_clonotypes(
     ctl: &EncloneControl,
+    plot_opt: &PlotOpt, // overrides ctl
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
     svg: &mut String,
 ) {
     let t = Instant::now();
-    if ctl.gen_opt.plot_file.is_empty() {
+    if plot_opt.plot_file.is_empty() {
         return;
     }
     if exacts.is_empty() {
@@ -180,18 +181,18 @@ pub fn plot_clonotypes(
         }
     }
     unique_sort(&mut const_names);
-    if ctl.gen_opt.plot_by_isotype_color.len() > 0 {
-        if const_names.len() + 1 > ctl.gen_opt.plot_by_isotype_color.len() {
+    if plot_opt.plot_by_isotype_color.len() > 0 {
+        if const_names.len() + 1 > plot_opt.plot_by_isotype_color.len() {
             eprintln!(
                 "\nUsing the PLOT_BY_ISOTYPE_COLOR argument, you specified {} colors, \
                 but there are {} constant region\nnames, and one more color is needed for the \
                 \"undetermined\" case.  Please add more colors.\n",
-                ctl.gen_opt.plot_by_isotype_color.len(),
+                plot_opt.plot_by_isotype_color.len(),
                 const_names.len()
             );
             std::process::exit(1);
         }
-    } else if ctl.gen_opt.plot_by_isotype && const_names.len() > 12 {
+    } else if plot_opt.plot_by_isotype && const_names.len() > 12 {
         eprintln!(
             "\nCurrently PLOT_BY_ISOTYPE only works if there are at most 12 constant \
             region names.  If this is a problem, please let us know and we will generalize it.\n"
@@ -213,7 +214,7 @@ pub fn plot_clonotypes(
         // For PLOT_BY_MARK, find the dataset having the largest number of cells.
 
         let mut dsx = 0;
-        if ctl.gen_opt.plot_by_mark {
+        if plot_opt.plot_by_mark {
             let mut ds = Vec::<usize>::new();
             for j in 0..exacts[i].len() {
                 let ex = &exact_clonotypes[exacts[i][j]];
@@ -236,7 +237,7 @@ pub fn plot_clonotypes(
 
                 // Determine color for PLOT_BY_ISOTYPE.
 
-                if ctl.gen_opt.plot_by_isotype {
+                if plot_opt.plot_by_isotype {
                     let mut crefs = Vec::<Option<usize>>::new();
                     for l in 0..ex.share.len() {
                         if ex.share[l].left {
@@ -254,15 +255,15 @@ pub fn plot_clonotypes(
                         let p = bin_position(&const_names, &c);
                         color_id = (1 + p) as usize;
                     }
-                    if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+                    if plot_opt.plot_by_isotype_color.is_empty() {
                         let x = print_color13(color_id);
                         color = format!("rgb({},{},{})", x.0, x.1, x.2);
                     } else {
-                        color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                        color = plot_opt.plot_by_isotype_color[color_id].clone();
                     }
 
                 // Determine color for PLOT_BY_MARK.
-                } else if ctl.gen_opt.plot_by_mark {
+                } else if plot_opt.plot_by_mark {
                     let dom = ex.clones[j][0].dataset_index == dsx;
                     let marked = ex.clones[j][0].marked;
                     if dom {
@@ -573,7 +574,7 @@ pub fn plot_clonotypes(
 
         // Find circle centers.
 
-        let centersx = pack_circles(&radiix, &blacklist, ctl.gen_opt.plot_quad);
+        let centersx = pack_circles(&radiix, &blacklist, plot_opt.plot_quad);
         for i in 0..ids.len() {
             centers[ids[i]] = centersx[i];
         }
@@ -775,36 +776,36 @@ pub fn plot_clonotypes(
 
     // Add main legend.
 
-    if ctl.gen_opt.use_legend
-        || (ctl.gen_opt.plot_by_isotype && !ctl.gen_opt.plot_by_isotype_nolegend)
-        || ctl.gen_opt.plot_by_mark
+    if plot_opt.use_legend
+        || (plot_opt.plot_by_isotype && !plot_opt.plot_by_isotype_nolegend)
+        || plot_opt.plot_by_mark
     {
         let (mut colors, mut labels) = (Vec::<String>::new(), Vec::<String>::new());
         let mut max_string_width = 0.0f64;
-        if ctl.gen_opt.plot_by_isotype {
+        if plot_opt.plot_by_isotype {
             for i in 0..const_names.len() {
                 labels.push(const_names[i].clone());
                 let color_id = i + 1;
-                if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+                if plot_opt.plot_by_isotype_color.is_empty() {
                     let x = print_color13(color_id);
                     let color = format!("rgb({},{},{})", x.0, x.1, x.2);
                     colors.push(color);
                 } else {
-                    let color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                    let color = plot_opt.plot_by_isotype_color[color_id].clone();
                     colors.push(color);
                 }
             }
             labels.push("undetermined".to_string());
             let color_id = 0;
-            if ctl.gen_opt.plot_by_isotype_color.is_empty() {
+            if plot_opt.plot_by_isotype_color.is_empty() {
                 let x = print_color13(color_id);
                 let color = format!("rgb({},{},{})", x.0, x.1, x.2);
                 colors.push(color);
             } else {
-                let color = ctl.gen_opt.plot_by_isotype_color[color_id].clone();
+                let color = plot_opt.plot_by_isotype_color[color_id].clone();
                 colors.push(color);
             }
-        } else if ctl.gen_opt.plot_by_mark {
+        } else if plot_opt.plot_by_mark {
             colors.push("red".to_string());
             labels.push("in most common dataset, !marked".to_string());
             colors.push("rgb(255,200,200)".to_string());
@@ -814,7 +815,7 @@ pub fn plot_clonotypes(
             colors.push("rgb(200,200,255)".to_string());
             labels.push("not in most common dataset, marked".to_string());
         } else {
-            if ctl.gen_opt.legend.len() == 0 {
+            if plot_opt.legend.len() == 0 {
                 for s in origins.iter() {
                     let mut color = "black".to_string();
                     if ctl.gen_opt.origin_color_map.contains_key(&s.clone()) {
@@ -824,9 +825,9 @@ pub fn plot_clonotypes(
                 }
             } else {
                 origins.clear();
-                for i in 0..ctl.gen_opt.legend.len() {
-                    colors.push(ctl.gen_opt.legend[i].0.clone());
-                    origins.push(ctl.gen_opt.legend[i].1.clone());
+                for i in 0..plot_opt.legend.len() {
+                    colors.push(plot_opt.legend[i].0.clone());
+                    origins.push(plot_opt.legend[i].1.clone());
                 }
             }
             for i in 0..colors.len() {
@@ -891,12 +892,12 @@ pub fn plot_clonotypes(
 
     // Output the svg file.
 
-    if ctl.gen_opt.plot_file != "stdout".to_string() {
-        let f = File::create(&ctl.gen_opt.plot_file);
+    if plot_opt.plot_file != "stdout".to_string() {
+        let f = File::create(&plot_opt.plot_file);
         if f.is_err() {
             eprintln!(
                 "\nThe file {} in your PLOT argument could not be created.\n",
-                ctl.gen_opt.plot_file
+                plot_opt.plot_file
             );
             std::process::exit(1);
         }

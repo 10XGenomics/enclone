@@ -43,7 +43,15 @@ pub fn tail_code(
     // Plot clonotypes.
 
     let mut svg = String::new();
-    plot_clonotypes(&ctl, &refdata, &exacts, &exact_clonotypes, &mut svg);
+    let plot_opt = ctl.plot_opt.clone();
+    plot_clonotypes(
+        &ctl,
+        &plot_opt,
+        &refdata,
+        &exacts,
+        &exact_clonotypes,
+        &mut svg,
+    );
 
     // Group and print clonotypes.
 
@@ -327,7 +335,7 @@ pub fn tail_code(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    if ctl.gen_opt.plot_file == "stdout".to_string() {
+    if ctl.plot_opt.plot_file == "stdout".to_string() {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");

@@ -39,7 +39,7 @@ pub fn process_special_arg(
     } else if is_simple_arg(&arg, "NH5") {
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
-        ctl.gen_opt.use_legend = true;
+        ctl.plot_opt.use_legend = true;
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
@@ -199,9 +199,9 @@ pub fn process_special_arg(
             eprintln!("\nValue of LEGEND doesn't make sense.\n");
             std::process::exit(1);
         }
-        ctl.gen_opt.use_legend = true;
+        ctl.plot_opt.use_legend = true;
         for i in 0..x.len() / 2 {
-            ctl.gen_opt
+            ctl.plot_opt
                 .legend
                 .push((x[2 * i].clone(), x[2 * i + 1].clone()));
         }
@@ -256,7 +256,7 @@ pub fn process_special_arg(
             eprintln!("\nArgument to PLOT is invalid.\n");
             std::process::exit(1);
         }
-        ctl.gen_opt.plot_file = x[0].to_string();
+        ctl.plot_opt.plot_file = x[0].to_string();
         for j in 1..x.len() {
             if !x[j].contains("->") {
                 eprintln!("\nArgument to PLOT is invalid.\n");
@@ -277,7 +277,7 @@ pub fn process_special_arg(
             eprintln!("\nArgument to PLOT is invalid.\n");
             std::process::exit(1);
         }
-        ctl.gen_opt.plot_file = x[0].to_string();
+        ctl.plot_opt.plot_file = x[0].to_string();
         for j in (1..x.len()).step_by(2) {
             let condition = x[j].to_string();
             let color = x[j + 1].to_string();
@@ -285,13 +285,13 @@ pub fn process_special_arg(
                 eprintln!("\nArgument to PLOT is invalid.\n");
                 std::process::exit(1);
             }
-            ctl.gen_opt.plot_conditions.push(condition);
-            ctl.gen_opt.plot_colors.push(color);
+            ctl.plot_opt.plot_conditions.push(condition);
+            ctl.plot_opt.plot_colors.push(color);
         }
     } else if arg.starts_with("PLOT_BY_ISOTYPE=") {
-        ctl.gen_opt.plot_by_isotype = true;
-        ctl.gen_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
-        if ctl.gen_opt.plot_file.is_empty() {
+        ctl.plot_opt.plot_by_isotype = true;
+        ctl.plot_opt.plot_file = arg.after("PLOT_BY_ISOTYPE=").to_string();
+        if ctl.plot_opt.plot_file.is_empty() {
             eprintln!("\nFilename value needs to be supplied to PLOT_BY_ISOTYPE.\n");
             std::process::exit(1);
         }
@@ -308,14 +308,14 @@ pub fn process_special_arg(
             .split(',')
             .collect::<Vec<&str>>();
         for i in 0..fields.len() {
-            ctl.gen_opt
+            ctl.plot_opt
                 .plot_by_isotype_color
                 .push(fields[i].to_string());
         }
     } else if arg.starts_with("PLOT_BY_MARK=") {
-        ctl.gen_opt.plot_by_mark = true;
-        ctl.gen_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
-        if ctl.gen_opt.plot_file.is_empty() {
+        ctl.plot_opt.plot_by_mark = true;
+        ctl.plot_opt.plot_file = arg.after("PLOT_BY_MARK=").to_string();
+        if ctl.plot_opt.plot_file.is_empty() {
             eprintln!("\nFilename value needs to be supplied to PLOT_BY_MARK.\n");
             std::process::exit(1);
         }

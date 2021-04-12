@@ -31,6 +31,7 @@ use enclone::misc3::*;
 use enclone::proc_args_check::*;
 use enclone::read_json::*;
 use enclone::secret::*;
+use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
@@ -57,7 +58,7 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) {
+pub async fn main_enclone(args: &Vec<String>) {
     let tall = Instant::now();
 
     // Process SOURCE args.
@@ -793,6 +794,28 @@ pub fn main_enclone(args: &Vec<String>) {
         &mut controls,
         &mut fate,
     );
+
+    // Lock data structures so they can't be changed accidentally.
+
+    let ctl = ctl;
+    let refdata = refdata;
+    let exact_clonotypes = exact_clonotypes;
+    let exacts = exacts;
+    let pics = pics;
+
+    // Process TOY_COM option.
+
+    if ctl.gen_opt.toy_com {
+        println!(
+            "\nHello, enclone is now in server mode.  Hopefully you have already started\n\
+            enclone_client in a separate terminal window, before starting enclone, because\n\
+            otherwise the system won't work.  The client should now show a prompt.\n"
+        );
+        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &pics)
+            .await
+            .unwrap();
+        std::process::exit(0);
+    }
 
     // Process the SUBSET_JSON option.
 

@@ -4,7 +4,8 @@ use std::env;
 
 use enclone_main::main_enclone::*;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    main_enclone(&args);
+#[tokio::main]
+async fn main() {
+    let mut args: Vec<String> = env::args().collect();
+    main_enclone(&mut args).await;
 }

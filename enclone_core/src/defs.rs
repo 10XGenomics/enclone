@@ -199,16 +199,8 @@ pub struct GeneralOpt {
     pub gene_scan_control: Option<LinearCondition>,
     pub gene_scan_threshold: Option<LinearCondition>,
     pub gene_scan_exact: bool,
-    pub plot_file: String,
-    pub plot_by_isotype: bool,
-    pub plot_by_isotype_nolegend: bool,
-    pub plot_by_isotype_color: Vec<String>,
-    pub plot_by_mark: bool,
-    pub plot_quad: bool,
     pub clonotype_group_names: Option<String>,
     pub origin_color_map: HashMap<String, String>,
-    pub use_legend: bool,
-    pub legend: Vec<(String, String)>,
     pub accept_inconsistent: bool, // TEMPORARY!
     pub current_ref: bool,         // TEMPORARY!
     pub internal_run: bool,
@@ -260,19 +252,28 @@ pub struct GeneralOpt {
     pub row_fill_verbose: bool,
     pub config: HashMap<String, String>,
     pub top_genes: bool,
-    pub plot_conditions: Vec<String>,
-    pub plot_colors: Vec<String>,
+    pub toy_com: bool,
 }
 
-// Some plot options.  (Should move them all here.)
+// Some plot options.
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct PlotOpt {
     pub plot_xy_filename: String,
     pub plot_xy_xvar: String,
     pub plot_xy_yvar: String,
     pub plot_xy_x_log10: bool,
     pub plot_xy_y_log10: bool,
+    pub plot_conditions: Vec<String>,
+    pub plot_colors: Vec<String>,
+    pub plot_file: String,
+    pub plot_by_isotype: bool,
+    pub plot_by_isotype_nolegend: bool,
+    pub plot_by_isotype_color: Vec<String>,
+    pub plot_by_mark: bool,
+    pub plot_quad: bool,
+    pub use_legend: bool,
+    pub legend: Vec<(String, String)>,
 }
 
 // Allele-finding algorithmic options.

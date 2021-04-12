@@ -42,7 +42,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             ctl.gen_opt.profile = true;
         }
         for i in 1..args.len() {
-            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
+            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" || args[i] == "TOY_COM" {
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
@@ -88,7 +88,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         erase_if(&mut args, &to_delete);
         if args.len() == 1 || args.contains(&"help".to_string()) {
             PrettyTrace::new().on();
-            setup_pager(!nopager && !ctl.gen_opt.profile);
+            setup_pager(!nopager && !ctl.gen_opt.profile && !ctl.gen_opt.toy_com);
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
@@ -182,7 +182,7 @@ pub fn setup(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             PrettyTrace::new().exit_message(&exit_message).on();
             let mut nopager = false;
             for i in 1..args.len() {
-                if args[i] == "NOPAGER" {
+                if args[i] == "NOPAGER" || args[i] == "TOY_COM" {
                     nopager = true;
                 }
             }

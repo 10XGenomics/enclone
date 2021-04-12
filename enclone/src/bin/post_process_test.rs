@@ -1,8 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-// Post process cargo test results to remove stuff we don't need to see.  This includes converting
-// triple newlines to double newlines and removing leading newlines.  All this is done without
-// buffering.
+// Post process cargo test results to remove stuff we don't need to see.
+// This is done without buffering.
 
 use std::io::{self, BufRead};
 
@@ -16,8 +15,6 @@ fn main() {
         " Finished ",
     ];
     let stdin = io::stdin();
-    let mut nulls = 0;
-    let mut nonnull = false;
     for line in stdin.lock().lines() {
         let line = line.unwrap();
         let mut rejected = false;
@@ -26,18 +23,8 @@ fn main() {
                 rejected = true;
             }
         }
-        if rejected {
-            continue;
+        if !rejected && line.len() > 0 {
+            println!("{}", line);
         }
-        if line.len() == 0 {
-            nulls += 1;
-            if nulls > 1 || !nonnull {
-                continue;
-            }
-        } else {
-            nulls = 0;
-            nonnull = true;
-        }
-        println!("{}", line);
     }
 }

@@ -454,7 +454,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PG_READABLE", &mut ctl.gen_opt.peer_group_readable),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),
-        ("QUAD_HIVE", &mut ctl.gen_opt.plot_quad),
+        ("QUAD_HIVE", &mut ctl.plot_opt.plot_quad),
         ("RE", &mut ctl.gen_opt.reannotate),
         ("REPROD", &mut ctl.gen_opt.reprod),
         ("REQUIRE_UNBROKEN_OK", &mut ctl.gen_opt.require_unbroken_ok),
@@ -470,10 +470,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("SUMMARY_CSV", &mut ctl.gen_opt.summary_csv),
         (
             "SUPPRESS_ISOTYPE_LEGEND",
-            &mut ctl.gen_opt.plot_by_isotype_nolegend,
+            &mut ctl.plot_opt.plot_by_isotype_nolegend,
         ),
         ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.toy),
+        ("TOY_COM", &mut ctl.gen_opt.toy_com),
         ("UMI_FILT_MARK", &mut ctl.clono_filt_opt.umi_filt_mark),
         (
             "UMI_RATIO_FILT_MARK",
