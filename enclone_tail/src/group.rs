@@ -354,6 +354,19 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
+            // Implement ALIGN<n>.
+
+            /*
+            for col in ctl.gen_opt.chains_to_align.iter() {
+                let m = col - 1;
+                for k in 0..exacts[oo].len() {
+                    let ex = &exact_clonotypes[exacts[oo][k]];
+                    if m < rsi[oo].mat.len() {
+                        if rsi[oo].mat[m][k].is_some()
+                            let r = rsi[oo].mat[m][k].unwrap();
+                            let seq = &ex.share[r].seq;
+            */
+
             // Generate clustal and phylip output.
 
             print_clustal(

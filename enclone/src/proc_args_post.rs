@@ -446,6 +446,10 @@ pub fn proc_args_post(
     ctl.perf_stats(&t, "after main args loop 2");
     proc_args_tail(&mut ctl, &args);
 
+    // Sort chains_to_align.
+
+    unique_sort(&mut ctl.gen_opt.chains_to_align);
+
     // Check for invalid variables in linear conditions.
 
     for i in 0..ctl.clono_filt_opt.bounds.len() {

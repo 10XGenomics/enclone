@@ -82,7 +82,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "add an additional row to each clonotype table, showing the amino acid consensus",
         );
         h.doc("", "across the clonotype, with X for each variant residue");
-        h.ldoc(
+        h.doc(
             "CONP",
             "add an additional row to each clonotype table, showing the amino acid consensus",
         );
@@ -91,7 +91,12 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "across the clonotype, with a property symbol whenever two different amino acids",
         );
         h.doc("", "are observed, see \"enclone help cvars\"");
-
+        h.ldoc(
+            "ALIGN<n>",
+            "exhibit a visual alignment for chain n (for each exact subclonotype) to the",
+        );
+        h.doc2("donor V(D)J reference, picking the best D for heavy chains / TRB");
+        h.doc2("Multiple values of n may be specified using multiple arguments.");
         h.print_tab2();
         h.print("\n");
         h.print(

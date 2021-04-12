@@ -253,6 +253,7 @@ pub struct GeneralOpt {
     pub config: HashMap<String, String>,
     pub top_genes: bool,
     pub toy_com: bool,
+    pub chains_to_align: Vec<usize>,
 }
 
 // Some plot options.
