@@ -391,7 +391,7 @@ pub fn group_and_print_clonotypes(
                         let al = aligner.semiglobal(&seq, &concat);
                         let width = 100;
                         let vis = vis_align(&seq, &concat, &al, width);
-                        fwriteln!(
+                        fwrite!(
                             logx,
                             "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
                             CONCATENATED V(D)J REFERENCE\n{}\n",
