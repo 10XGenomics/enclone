@@ -216,6 +216,7 @@ pub fn group_and_print_clonotypes(
                             vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                         }
                         concat.append(&mut vref.clone());
+                        let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
                             let mut opt = 0;
                             let mut opt2 = 0;
@@ -224,8 +225,8 @@ pub fn group_and_print_clonotypes(
                                 &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
-                            let mut x = refdata.refs[opt].to_ascii_vec();
-                            concat.append(&mut x);
+                            drefx = refdata.refs[opt].to_ascii_vec();
+                            concat.append(&mut drefx);
                         }
                         let mut x = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                         concat.append(&mut x);
@@ -233,7 +234,57 @@ pub fn group_and_print_clonotypes(
                         let mut aligner = Aligner::new(-6, -1, &score);
                         let al = aligner.semiglobal(&seq, &concat);
                         let width = 100;
-                        let vis = vis_align(&seq, &concat, &al, width);
+                        let mut vis = vis_align(&seq, &concat, &al, width);
+
+                        // Colorize vis.
+
+                        if ctl.pretty {
+                            let mut vis_new = String::new();
+                            let mut pos = 0;
+                            let vcolor = 3;
+                            let dcolor = 1;
+                            let jcolor = 5;
+                            for (i, line) in vis.lines().enumerate() {
+                                if i % 4 != 2 {
+                                    vis_new += &line.clone();
+                                    vis_new += "\n";
+                                } else {
+                                    let mut log = Vec::<u8>::new();
+                                    let line = line.as_bytes();
+                                    if pos < vref.len() {
+                                        print_color(vcolor, &mut log);
+                                    } else if ex.share[r].left && pos < vref.len() + drefx.len() {
+                                        print_color(dcolor, &mut log);
+                                    } else {
+                                        print_color(jcolor, &mut log);
+                                    }
+                                    for j in 0..line.len() {
+                                        log.push(line[j]);
+                                        if line[j] != b' ' {
+                                            pos += 1;
+                                            if pos == vref.len() && j != line.len() - 1 {
+                                                if ex.share[r].left {
+                                                    print_color(dcolor, &mut log);
+                                                } else {
+                                                    print_color(jcolor, &mut log);
+                                                }
+                                            } else if ex.share[r].left && j != line.len() - 1 {
+                                                if pos == vref.len() + drefx.len() {
+                                                    print_color(jcolor, &mut log);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    emit_end_escape(&mut log);
+                                    log.push(b'\n');
+                                    vis_new += &strme(&log);
+                                }
+                            }
+                            vis = vis_new;
+                        }
+
+                        // Print.
+
                         fwrite!(
                             logx,
                             "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
