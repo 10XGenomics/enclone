@@ -394,7 +394,7 @@ pub fn group_and_print_clonotypes(
                         fwrite!(
                             logx,
                             "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
-                            CONCATENATED V(D)J REFERENCE\n{}\n",
+                            CONCATENATED V(D)J REFERENCE\n{}",
                             col,
                             k + 1,
                             vis,
