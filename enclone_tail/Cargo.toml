@@ -18,8 +18,10 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
+align_tools = "0.1.3"
 amino = "0.1"
 ansi_escape = "0.1"
+bio = ">=0.33"
 debruijn = "0.3.2"
 edit-distance = "2.1.0"
 enclone_core = { path = "../enclone_core" }

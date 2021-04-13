@@ -772,8 +772,10 @@ dependencies = [
 name = "enclone_tail"
 version = "0.5.51"
 dependencies = [
+ "align_tools",
  "amino",
  "ansi_escape",
+ "bio",
  "debruijn",
  "edit-distance",
  "enclone_core",

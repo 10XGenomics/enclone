@@ -14,10 +14,13 @@ use crate::phylip::*;
 use crate::plot_points::*;
 use crate::print_stats::*;
 use crate::requirements::*;
+use align_tools::*;
 use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
+use bio::alignment::pairwise::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
+use enclone_core::opt_d::*;
 use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use io_utils::*;
@@ -356,16 +359,49 @@ pub fn group_and_print_clonotypes(
 
             // Implement ALIGN<n>.
 
-            /*
             for col in ctl.gen_opt.chains_to_align.iter() {
                 let m = col - 1;
                 for k in 0..exacts[oo].len() {
                     let ex = &exact_clonotypes[exacts[oo][k]];
-                    if m < rsi[oo].mat.len() {
-                        if rsi[oo].mat[m][k].is_some()
-                            let r = rsi[oo].mat[m][k].unwrap();
-                            let seq = &ex.share[r].seq;
-            */
+                    if m < rsi[oo].mat.len() && rsi[oo].mat[m][k].is_some() {
+                        let r = rsi[oo].mat[m][k].unwrap();
+                        let seq = &ex.share[r].seq;
+                        let mut concat = Vec::<u8>::new();
+                        let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
+                        if rsi[oo].vpids[m].is_none() {
+                        } else {
+                            vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
+                        }
+                        concat.append(&mut vref.clone());
+                        if ex.share[r].left {
+                            let mut opt = 0;
+                            let mut opt2 = 0;
+                            let mut delta = 0;
+                            opt_d(
+                                &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
+                                &mut delta,
+                            );
+                            let mut x = refdata.refs[opt].to_ascii_vec();
+                            concat.append(&mut x);
+                        }
+                        let mut x = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                        concat.append(&mut x);
+                        let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
+                        let mut aligner = Aligner::new(-6, -1, &score);
+                        let al = aligner.semiglobal(&seq, &concat);
+                        let width = 100;
+                        let vis = vis_align(&seq, &concat, &al, width);
+                        fwriteln!(
+                            logx,
+                            "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
+                            CONCATENATED V(D)J REFERENCE\n{}\n",
+                            col,
+                            k + 1,
+                            vis,
+                        );
+                    }
+                }
+            }
 
             // Generate clustal and phylip output.
 
