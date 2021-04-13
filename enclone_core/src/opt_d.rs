@@ -3,9 +3,9 @@
 // Find the optimal D segment, the runner up, and the delta between the scores.  This uses
 // The donor V and J segments that are assigned to the clonotype.
 
+use crate::defs::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
-use crate::defs::*;
 use enclone_proto::types::*;
 use vdj_ann::refx::*;
 use vector_utils::*;
@@ -15,10 +15,10 @@ pub fn opt_d(
     col: usize,
     u: usize,
     rsi: &ColInfo,
-    refdata: &RefData, 
+    refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    opt: &mut usize, 
-    opt2: &mut usize, 
+    opt: &mut usize,
+    opt2: &mut usize,
     delta: &mut usize,
 ) {
     let mid = rsi.mat[col][u].unwrap();
