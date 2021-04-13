@@ -26,9 +26,9 @@ dependencies = [
 
 [[package]]
 name = "align_tools"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "883ce59a36790e15d9e693290daa7faf2d72ad510ca33f5e095772e859a80081"
+checksum = "f7184d89f3de371eb37c92cf57e949f05d616f8a0bd4f1bbfe2358c990cd8e4e"
 dependencies = [
  "bio",
  "debruijn",
@@ -2515,7 +2515,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.1.6"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=10d56a01dbc1f56de97bbde6bbc6f19701575ee8#10d56a01dbc1f56de97bbde6bbc6f19701575ee8"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0b3e59011bac71f7a16ea68541dea68352b755c0#0b3e59011bac71f7a16ea68541dea68352b755c0"
 dependencies = [
  "align_tools",
  "amino",

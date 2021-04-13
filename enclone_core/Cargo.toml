@@ -38,7 +38,7 @@ stats_utils = "0.1"
 stirling_numbers = "0.1.3"
 string_utils = "0.1"
 superslice = "1.0.0"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="10d56a01dbc1f56de97bbde6bbc6f19701575ee8" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0b3e59011bac71f7a16ea68541dea68352b755c0" }
 vector_utils = "0.1.3"
 
 [build-dependencies]
