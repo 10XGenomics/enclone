@@ -10,6 +10,10 @@ use pretty_trace::*;
 
 fn main() {
     PrettyTrace::new().on();
+    println!(
+        "\nYou should already have run ./build.  Otherwise this will give you the \
+        wrong answer!\n"
+    );
     let mut out = String::new();
     let mut ok = false;
     let mut logx = String::new();
