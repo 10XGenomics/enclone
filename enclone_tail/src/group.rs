@@ -189,7 +189,12 @@ pub fn group_and_print_clonotypes(
     // Parallized precompute for ALIGN<n>.
 
     let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
+    let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
     for i in 0..groups.len() {
+        results.push((i, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
         let mut o = Vec::<i32>::new();
         for j in 0..groups[i].len() {
             o.push(groups[i][j].0);
@@ -240,7 +245,12 @@ pub fn group_and_print_clonotypes(
                     }
                 }
             }
-            align_out.insert((i, j), logx);
+            res.1.push(logx);
+        }
+    });
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            align_out.insert((i, j), results[i].1[j].clone());
         }
     }
 
