@@ -2,6 +2,7 @@
 
 extern crate enclone_core;
 
+pub mod align_n;
 pub mod clustal;
 pub mod display_tree;
 pub mod fasta;
