@@ -7,6 +7,7 @@ use amino::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use itertools::*;
 use stats_utils::*;
@@ -148,19 +149,7 @@ pub fn proc_cvar1(
                 cx[col][j] += strme(&log);
             }
         }
-    } else if *var == "comp"
-        || *var == "edit"
-        || *var == "opt_d"
-        || *var == "opt_d_delta"
-        || *var == "opt_dΔ"
-        || *var == "opt_d2"
-    {
-        if !ex.share[mid].left
-            && (*var == "opt_d" || *var == "opt_d_delta" || *var == "opt_dΔ" || *var == "opt_d2")
-        {
-            cvar_stats1![j, var, "".to_string()];
-            return true;
-        }
+    } else if *var == "comp" || *var == "edit" {
         let mut comp = 1000000;
         let mut edit = String::new();
         let td = &ex.share[mid];
@@ -267,27 +256,31 @@ pub fn proc_cvar1(
         }
         sort_sync2(&mut counts, &mut ds);
         let mut comp = 0;
-        let mut best_d = 0;
         if counts.len() > 0 {
             comp = counts[0];
-            best_d = ds[0];
-        }
-        let mut second_comp = 0;
-        let mut best_d2 = 0;
-        if counts.len() > 1 {
-            second_comp = counts[1];
-            best_d2 = ds[1];
         }
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
-        } else if *var == "edit" {
-            cvar_stats1![j, var, format!("{}", edit)];
-        } else if *var == "opt_d" {
-            cvar_stats1![j, var, format!("{}", refdata.name[best_d])];
-        } else if *var == "opt_d2" {
-            cvar_stats1![j, var, format!("{}", refdata.name[best_d2])];
         } else {
-            cvar_stats1![j, var, format!("{}", second_comp - comp)];
+            cvar_stats1![j, var, format!("{}", edit)];
+        }
+    } else if *var == "opt_d" || *var == "opt_d2" || *var == "opt_d_delta" || *var == "opt_dΔ" {
+        if !ex.share[mid].left {
+            cvar_stats1![j, var, "".to_string()];
+            return true;
+        }
+        let mut opt = 0;
+        let mut opt2 = 0;
+        let mut delta = 0;
+        opt_d(
+            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+        );
+        if *var == "opt_d" {
+            cvar_stats1![j, var, format!("{}", refdata.name[opt])];
+        } else if *var == "opt_d2" {
+            cvar_stats1![j, var, format!("{}", refdata.name[opt2])];
+        } else {
+            cvar_stats1![j, var, format!("{}", delta)];
         }
     } else if *var == "cdr1_dna"
         || *var == "cdr1_aa"
