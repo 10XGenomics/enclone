@@ -234,7 +234,6 @@ pub fn group_and_print_clonotypes(
                         let mut aligner = Aligner::new(-6, -1, &score);
                         let al = aligner.semiglobal(&seq, &concat);
                         let width = 100;
-                        println!("concat = {}", strme(&concat));
                         let mut vis = vis_align(&seq, &concat, &al, width);
 
                         // Colorize vis.
