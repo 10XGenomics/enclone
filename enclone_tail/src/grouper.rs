@@ -22,7 +22,8 @@ pub fn grouper(
     // Case 1: symmetric grouping.
 
     if !ctl.clono_group_opt.asymmetric {
-        // Group clonotypes.
+        // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
+        // a heavy/TRB CDR3_AA sequence.
 
         let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
         if ctl.clono_group_opt.heavy_cdr3_aa {
@@ -47,6 +48,9 @@ pub fn grouper(
                 i = j;
             }
         }
+
+        // Handle vj_refname and vj_refname_strong.
+
         if ctl.clono_group_opt.vj_refname || ctl.clono_group_opt.vj_refname_strong {
             let mut all = Vec::<(Vec<String>, usize)>::new();
             for i in 0..exacts.len() {
@@ -89,6 +93,36 @@ pub fn grouper(
                 i = j;
             }
         }
+
+        // Handle vj_refname_heavy.
+
+        if ctl.clono_group_opt.vj_refname_heavy {
+            let mut all = Vec::<(Vec<String>, usize)>::new();
+            for i in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[i][0]];
+                let mut s = Vec::<String>::new();
+                for j in 0..ex.share.len() {
+                    if ex.share[j].left {
+                        s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                        s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    }
+                }
+                s.sort();
+                all.push((s, i));
+            }
+            all.sort();
+            let mut i = 0;
+            while i < all.len() {
+                let j = next_diff1_2(&all, i as i32) as usize;
+                for k in i + 1..j {
+                    e.join(all[i].1 as i32, all[k].1 as i32);
+                }
+                i = j;
+            }
+        }
+
+        // Get orbit reps.
+
         let mut greps = Vec::<i32>::new();
         e.orbit_reps(&mut greps);
 
