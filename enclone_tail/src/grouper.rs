@@ -4,6 +4,7 @@
 
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
+use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use string_utils::*;
@@ -16,6 +17,8 @@ pub fn grouper(
     in_center: &Vec<bool>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
+    _rsi: &Vec<ColInfo>,
+    _dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<(i32, String)>> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

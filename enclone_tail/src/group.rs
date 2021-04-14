@@ -169,7 +169,15 @@ pub fn group_and_print_clonotypes(
 
     // Group clonotypes.
 
-    let groups = grouper(&refdata, &exacts, &in_center, &exact_clonotypes, &ctl);
+    let groups = grouper(
+        &refdata,
+        &exacts,
+        &in_center,
+        &exact_clonotypes,
+        &ctl,
+        &rsi,
+        &dref,
+    );
 
     // Echo command.
 
