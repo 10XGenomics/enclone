@@ -423,6 +423,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "GROUP_VJ_REFNAME_STRONG",
             &mut ctl.clono_group_opt.vj_refname_strong,
         ),
+        (
+            "GROUP_VJ_REFNAME_HEAVY",
+            &mut ctl.clono_group_opt.vj_refname_heavy,
+        ),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),

@@ -128,6 +128,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "(after correction for indels) and identical length CDR3 sequences,",
         );
         h.doc("", "but ignores foursies and moresies");
+        h.doc(
+            "GROUP_VJ_REFNAME_HEAVY",
+            "group by sharing identical IGH or TRB V and J reference gene names",
+        );
         h.ldoc(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)",
