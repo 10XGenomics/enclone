@@ -418,6 +418,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
         ("GRAPH", &mut ctl.gen_opt.graph),
         ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
+        (
+            "GROUP_VDJ_REFNAME_HEAVY",
+            &mut ctl.clono_group_opt.vdj_refname_heavy,
+        ),
         ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
         (
             "GROUP_VJ_REFNAME_STRONG",

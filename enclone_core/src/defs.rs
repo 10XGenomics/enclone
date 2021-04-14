@@ -395,6 +395,7 @@ pub struct ClonoGroupOpt {
     pub vj_refname: bool,    // group by having the same VJ reference names
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
     pub vj_refname_heavy: bool, // group by having the same heavy chain VJ reference names
+    pub vdj_refname_heavy: bool, // group by having the same heavy chain VDJ reference names
     pub min_group: usize,    // minimum number of clonotypes in group to print
     pub asymmetric: bool,    // asymmetric grouping turned on
     pub asymmetric_center: String, // definition of center for asymmetric grouping

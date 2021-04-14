@@ -124,6 +124,9 @@ pub fn proc_args_post(
     if ctl.clono_group_opt.vj_refname_heavy {
         group_styles += 1;
     }
+    if ctl.clono_group_opt.vdj_refname_heavy {
+        group_styles += 1;
+    }
     if ctl.clono_group_opt.vj_refname_strong {
         group_styles += 1;
     }

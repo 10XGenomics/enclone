@@ -132,6 +132,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "GROUP_VJ_REFNAME_HEAVY",
             "group by sharing identical IGH or TRB V and J reference gene names",
         );
+        h.doc(
+            "GROUP_VDJ_REFNAME_HEAVY",
+            "group by sharing identical IGH or TRB V, D and J reference gene names",
+        );
         h.ldoc(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)",
