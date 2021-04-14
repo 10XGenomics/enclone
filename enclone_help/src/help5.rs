@@ -117,7 +117,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "GROUP_VJ_REFNAME",
-            "group by sharing identical V and J reference gene names,",
+            "group by sharing identical V and J reference gene names",
         );
         h.doc(
             "GROUP_VJ_REFNAME_STRONG",
