@@ -28,16 +28,16 @@ pub fn grouper(
     // though the true values have to be the same.  This is also true for V and J segments,
     // although they are less likely to vary.
 
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<usize>>)>::new();
+    let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
     if ctl.clono_group_opt.vdj_refname_heavy {
         for i in 0..exacts.len() {
             opt_d_val.push((i, Vec::new()));
         }
         opt_d_val.par_iter_mut().for_each(|res| {
             let i = res.0;
-            res.1 = vec![Vec::<usize>::new(); rsi[i].mat.len()];
+            res.1 = vec![Vec::<Option<usize>>::new(); rsi[i].mat.len()];
             for col in 0..rsi[i].mat.len() {
-                let mut dvotes = Vec::<usize>::new();
+                let mut dvotes = Vec::<Option<usize>>::new();
                 for u in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][u]];
                     let m = rsi[i].mat[col][u];
@@ -51,7 +51,6 @@ pub fn grouper(
                                 &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
-                            let opt = opt.unwrap();
                             dvotes.push(opt);
                         }
                     }
@@ -180,7 +179,14 @@ pub fn grouper(
                         let j = m.unwrap();
                         if ex.share[j].left {
                             s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                            s.push(refdata.name[opt_d_val[i].1[col][0]].clone());
+                            let d = opt_d_val[i].1[col][0];
+                            let dname;
+                            if d.is_some() {
+                                dname = refdata.name[d.unwrap()].clone();
+                            } else {
+                                dname = "null".to_string();
+                            }
+                            s.push(dname);
                             s.push(refdata.name[ex.share[j].j_ref_id].clone());
                         }
                     }
