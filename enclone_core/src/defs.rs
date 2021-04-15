@@ -254,6 +254,7 @@ pub struct GeneralOpt {
     pub top_genes: bool,
     pub toy_com: bool,
     pub chains_to_align: Vec<usize>,
+    pub chains_to_jun_align: Vec<usize>,
 }
 
 // Some plot options.

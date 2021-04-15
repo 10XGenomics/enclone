@@ -202,6 +202,15 @@ pub fn group_and_print_clonotypes(
         &dref,
         &groups,
     );
+    let jun_align_out = jun_align_n(
+        &refdata,
+        &exacts,
+        &rsi,
+        &exact_clonotypes,
+        &ctl,
+        &dref,
+        &groups,
+    );
 
     // Now print clonotypes.
 
@@ -375,9 +384,10 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
-            // Implement ALIGN<n>.
+            // Implement ALIGN<n> and JUN_ALIGN<n>.
 
             logx.append(&mut align_out[&(i, j)].clone());
+            logx.append(&mut jun_align_out[&(i, j)].clone());
 
             // Generate clustal and phylip output.
 

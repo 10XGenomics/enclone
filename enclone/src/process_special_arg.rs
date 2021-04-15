@@ -47,6 +47,13 @@ pub fn process_special_arg(
             std::process::exit(1);
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
+    } else if arg.starts_with("JUN_ALIGN") {
+        let n = arg.after("JUN_ALIGN");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
