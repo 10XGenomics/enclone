@@ -386,8 +386,10 @@ pub fn group_and_print_clonotypes(
 
             // Implement ALIGN<n> and JUN_ALIGN<n>.
 
-            logx.append(&mut align_out[&(i, j)].clone());
-            logx.append(&mut jun_align_out[&(i, j)].clone());
+            if !ctl.gen_opt.noprint {
+                logx.append(&mut align_out[&(i, j)].clone());
+                logx.append(&mut jun_align_out[&(i, j)].clone());
+            }
 
             // Generate clustal and phylip output.
 
