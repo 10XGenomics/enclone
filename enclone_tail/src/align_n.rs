@@ -160,7 +160,8 @@ pub fn jun_align_n(
     for i in 0..groups.len() {
         results.push((i, Vec::new()));
     }
-    const FLANK: usize = 35;
+    const LFLANK: usize = 15;
+    const RFLANK: usize = 35;
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut o = Vec::<i32>::new();
@@ -188,8 +189,8 @@ pub fn jun_align_n(
                         // Different from previous function:
 
                         let mut vstart = 0;
-                        if vref.len() >= FLANK {
-                            vstart = vref.len() - FLANK;
+                        if vref.len() >= LFLANK {
+                            vstart = vref.len() - LFLANK;
                         }
                         vref = vref[vstart..vref.len()].to_vec();
 
@@ -210,7 +211,7 @@ pub fn jun_align_n(
                         // Different from previous function:
 
                         let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
-                        let jend = min(FLANK, jref.len());
+                        let jend = min(RFLANK, jref.len());
                         let mut x = jref[0..jend].to_vec();
 
                         concat.append(&mut x);
@@ -223,7 +224,7 @@ pub fn jun_align_n(
                             let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
                             let q2 = ex.share[r].annv[1].0;
 
-                            seq_start += q1 as isize - q2 as isize;
+                            seq_start += q2 as isize - q1 as isize;
                         }
                         let seq_end = seq.len() - (jref.len() - jend);
                         let seq = seq[seq_start as usize..seq_end].to_vec();

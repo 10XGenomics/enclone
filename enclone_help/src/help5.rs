@@ -99,7 +99,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.doc2("Multiple values of n may be specified using multiple arguments.");
         h.doc(
             "JUN_ALIGN<n>",
-            "same as ALIGN<n> but only show the region from 35 bases before the end of the V",
+            "same as ALIGN<n> but only show the region from 15 bases before the end of the V",
         );
         h.doc2("segment to 35 bases into the J segment");
         h.print_tab2();
