@@ -44,13 +44,14 @@ pub fn grouper(
                     if m.is_some() {
                         let m = m.unwrap();
                         if ex.share[m].left {
-                            let mut opt = 0;
-                            let mut opt2 = 0;
+                            let mut opt = None;
+                            let mut opt2 = None;
                             let mut delta = 0;
                             opt_d(
                                 &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
+                            let opt = opt.unwrap();
                             dvotes.push(opt);
                         }
                     }

@@ -57,13 +57,14 @@ pub fn align_n(
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
-                            let mut opt = 0;
-                            let mut opt2 = 0;
+                            let mut opt = None;
+                            let mut opt2 = None;
                             let mut delta = 0;
                             opt_d(
                                 &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
+                            let opt = opt.unwrap();
                             drefx = refdata.refs[opt].to_ascii_vec();
                             concat.append(&mut drefx.clone());
                         }
@@ -197,13 +198,14 @@ pub fn jun_align_n(
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
-                            let mut opt = 0;
-                            let mut opt2 = 0;
+                            let mut opt = None;
+                            let mut opt2 = None;
                             let mut delta = 0;
                             opt_d(
                                 &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
+                            let opt = opt.unwrap();
                             drefx = refdata.refs[opt].to_ascii_vec();
                             concat.append(&mut drefx.clone());
                         }

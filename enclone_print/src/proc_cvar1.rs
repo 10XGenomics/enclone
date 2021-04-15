@@ -269,12 +269,14 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, "".to_string()];
             return true;
         }
-        let mut opt = 0;
-        let mut opt2 = 0;
+        let mut opt = None;
+        let mut opt2 = None;
         let mut delta = 0;
         opt_d(
             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
         );
+        let opt = opt.unwrap();
+        let opt2 = opt2.unwrap();
         if *var == "opt_d" {
             cvar_stats1![j, var, format!("{}", refdata.name[opt])];
         } else if *var == "opt_d2" {
