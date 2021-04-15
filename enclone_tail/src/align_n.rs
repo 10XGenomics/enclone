@@ -80,12 +80,22 @@ pub fn align_n(
 
                         // Colorize vis.
 
+                        let mut vdj = "VDJ".to_string();
                         if ctl.pretty {
                             let mut vis_new = String::new();
                             let mut pos = 0;
                             let vcolor = 3;
                             let dcolor = 1;
                             let jcolor = 5;
+                            let mut vdj_bytes = Vec::<u8>::new();
+                            print_color(vcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'V');
+                            print_color(dcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'D');
+                            print_color(jcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'J');
+                            emit_end_escape(&mut vdj_bytes);
+                            vdj = stringme(&vdj_bytes);
                             for (i, line) in vis.lines().enumerate() {
                                 if i % 4 != 2 {
                                     vis_new += &line.clone();
@@ -130,9 +140,10 @@ pub fn align_n(
                         fwrite!(
                             logx,
                             "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
-                            CONCATENATED V(D)J REFERENCE\n{}",
+                            CONCATENATED {} REFERENCE\n{}",
                             col,
                             k + 1,
+                            vdj,
                             vis,
                         );
                     }
@@ -243,12 +254,22 @@ pub fn jun_align_n(
 
                         // Colorize vis.
 
+                        let mut vdj = "VDJ".to_string();
                         if ctl.pretty {
                             let mut vis_new = String::new();
                             let mut pos = 0;
                             let vcolor = 3;
                             let dcolor = 1;
                             let jcolor = 5;
+                            let mut vdj_bytes = Vec::<u8>::new();
+                            print_color(vcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'V');
+                            print_color(dcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'D');
+                            print_color(jcolor, &mut vdj_bytes);
+                            vdj_bytes.push(b'J');
+                            emit_end_escape(&mut vdj_bytes);
+                            vdj = stringme(&vdj_bytes);
                             for (i, line) in vis.lines().enumerate() {
                                 if i % 4 != 2 {
                                     vis_new += &line.clone();
@@ -294,9 +315,10 @@ pub fn jun_align_n(
                             logx,
                             // note added newline in this version of function
                             "\nJUNCTION ALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO \
-                            CONCATENATED V(D)J REFERENCE\n\n{}",
+                            CONCATENATED {} REFERENCE\n\n{}",
                             col,
                             k + 1,
+                            vdj,
                             vis,
                         );
                     }
