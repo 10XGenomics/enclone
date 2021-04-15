@@ -105,7 +105,7 @@ pub fn align_n(
                                         if line[j] != b' ' {
                                             pos += 1;
                                             if pos == vref.len() && j != line.len() - 1 {
-                                                if ex.share[r].left {
+                                                if ex.share[r].left && drefx.len() > 0 {
                                                     print_color(dcolor, &mut log);
                                                 } else {
                                                     print_color(jcolor, &mut log);

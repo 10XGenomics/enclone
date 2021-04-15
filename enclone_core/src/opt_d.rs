@@ -1,7 +1,8 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Find the optimal D segment, the runner up, and the delta between the scores.  This uses
-// The donor V and J segments that are assigned to the clonotype.
+// the donor V and J segments that are assigned to the clonotype.  Note that the optimal D
+// segment may be null.  This is obvious from looking at data.
 
 use crate::defs::*;
 use bio::alignment::pairwise::*;
@@ -34,10 +35,13 @@ pub fn opt_d(
     // there is just one pass.
 
     let z = refdata.ds.len();
-    let mut ds = Vec::<usize>::new();
+    let mut ds = Vec::<Option<usize>>::new();
     let mut counts = Vec::<usize>::new();
-    for di in 0..z {
-        let d = refdata.ds[di];
+    for di in 0..=z {
+        let mut d = 0;
+        if di < z {
+            d = refdata.ds[di];
+        }
         const FLANK: usize = 35;
 
         // Start to build reference concatenation.  First append the V segment.
@@ -57,7 +61,7 @@ pub fn opt_d(
 
         // Append the D segment if IGH/TRB.
 
-        if ex.share[mid].left {
+        if ex.share[mid].left && di < z {
             let mut x = refdata.refs[d].to_ascii_vec();
             concat.append(&mut x);
         }
@@ -83,33 +87,20 @@ pub fn opt_d(
         let seq = tig[seq_start as usize..seq_end].to_vec();
         let al = aligner.semiglobal(&seq, &concat);
         let mut m = 0;
-        let mut pos = al.xstart;
         let mut count = 0;
-        let start = td.cdr3_start - td.ins_len() - seq_start as usize;
-        let stop = td.j_stop - td.v_start - seq_start as usize;
         while m < al.operations.len() {
             let n = next_diff(&al.operations, m);
             match al.operations[m] {
-                Match => {
-                    pos += 1;
-                }
+                Match => {}
                 Subst => {
-                    if pos >= start && pos < stop {
-                        count += 1;
-                    }
-                    pos += 1;
+                    count += 1;
                 }
                 Del => {
-                    if pos >= start && pos < stop {
-                        count += n - m;
-                    }
-                    pos += n - m;
+                    count += n - m;
                     m = n - 1;
                 }
                 Ins => {
-                    if pos >= start && pos < stop {
-                        count += n - m;
-                    }
+                    count += n - m;
                     m = n - 1;
                 }
                 _ => {}
@@ -117,25 +108,29 @@ pub fn opt_d(
             m += 1;
         }
         counts.push(count);
-        ds.push(d);
+        if di < z {
+            ds.push(Some(d));
+        } else {
+            ds.push(None);
+        }
         if count < comp {
             comp = count;
         }
     }
     sort_sync2(&mut counts, &mut ds);
     let mut comp = 0;
-    let mut best_d = 0;
+    let mut best_d = None;
     if counts.len() > 0 {
         comp = counts[0];
         best_d = ds[0];
     }
     let mut second_comp = 0;
-    let mut best_d2 = 0;
+    let mut best_d2 = None;
     if counts.len() > 1 {
         second_comp = counts[1];
         best_d2 = ds[1];
     }
-    *opt = Some(best_d);
-    *opt2 = Some(best_d2);
+    *opt = best_d;
+    *opt2 = best_d2;
     *delta = second_comp - comp;
 }
