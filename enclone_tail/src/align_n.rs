@@ -64,9 +64,11 @@ pub fn align_n(
                                 &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
-                            let opt = opt.unwrap();
-                            drefx = refdata.refs[opt].to_ascii_vec();
-                            concat.append(&mut drefx.clone());
+                            if opt.is_some() {
+                                let opt = opt.unwrap();
+                                drefx = refdata.refs[opt].to_ascii_vec();
+                                concat.append(&mut drefx.clone());
+                            }
                         }
                         let mut x = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                         concat.append(&mut x);
@@ -205,9 +207,11 @@ pub fn jun_align_n(
                                 &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                 &mut delta,
                             );
-                            let opt = opt.unwrap();
-                            drefx = refdata.refs[opt].to_ascii_vec();
-                            concat.append(&mut drefx.clone());
+                            if opt.is_some() {
+                                let opt = opt.unwrap();
+                                drefx = refdata.refs[opt].to_ascii_vec();
+                                concat.append(&mut drefx.clone());
+                            }
                         }
 
                         // Different from previous function:

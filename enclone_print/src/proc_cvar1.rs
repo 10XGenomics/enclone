@@ -275,12 +275,22 @@ pub fn proc_cvar1(
         opt_d(
             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
         );
-        let opt = opt.unwrap();
-        let opt2 = opt2.unwrap();
+        let opt_name;
+        if opt.is_some() {
+            opt_name = format!("{}", refdata.name[opt.unwrap()]);
+        } else {
+            opt_name = "none".to_string();
+        }
+        let opt2_name;
+        if opt2.is_some() {
+            opt2_name = format!("{}", refdata.name[opt2.unwrap()]);
+        } else {
+            opt2_name = "none".to_string();
+        }
         if *var == "opt_d" {
-            cvar_stats1![j, var, format!("{}", refdata.name[opt])];
+            cvar_stats1![j, var, opt_name];
         } else if *var == "opt_d2" {
-            cvar_stats1![j, var, format!("{}", refdata.name[opt2])];
+            cvar_stats1![j, var, opt2_name];
         } else {
             cvar_stats1![j, var, format!("{}", delta)];
         }
