@@ -160,7 +160,7 @@ pub fn jun_align_n(
     for i in 0..groups.len() {
         results.push((i, Vec::new()));
     }
-    const FLANK: usize = 15;
+    const FLANK: usize = 35;
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut o = Vec::<i32>::new();
