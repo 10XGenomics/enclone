@@ -57,6 +57,7 @@ pub fn group_and_print_clonotypes(
 ) {
     // Build index to join info.
 
+    let t = Instant::now();
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
     for i in 0..join_info.len() {
         to_join_info[join_info[i].0].push(i);
@@ -166,9 +167,11 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
+    ctl.perf_stats(&t, "in group code before calling grouper");
 
     // Group clonotypes.
 
+    let t = Instant::now();
     let groups = grouper(
         &refdata,
         &exacts,
@@ -178,9 +181,11 @@ pub fn group_and_print_clonotypes(
         &rsi,
         &dref,
     );
+    ctl.perf_stats(&t, "in grouper");
 
     // Echo command.
 
+    let t = Instant::now();
     let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
@@ -941,4 +946,5 @@ pub fn group_and_print_clonotypes(
     // Test requirements.
 
     test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain);
+    ctl.perf_stats(&t, "in group code after calling grouper");
 }

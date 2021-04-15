@@ -55,7 +55,6 @@ pub fn tail_code(
 
     // Group and print clonotypes.
 
-    let t = Instant::now();
     group_and_print_clonotypes(
         &tall,
         &refdata,
@@ -75,6 +74,7 @@ pub fn tail_code(
 
     // Do gene scan.
 
+    let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;
