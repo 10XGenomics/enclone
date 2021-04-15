@@ -4,6 +4,7 @@
 
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
@@ -17,9 +18,48 @@ pub fn grouper(
     in_center: &Vec<bool>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
-    _rsi: &Vec<ColInfo>,
-    _dref: &Vec<DonorReferenceItem>,
+    rsi: &Vec<ColInfo>,
+    dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<(i32, String)>> {
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Assign a D segment to each "left" column in a clonotype (if we need this information).
+    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
+    // though the true values have to be the same.  This is also true for V and J segments,
+    // although they are less likely to vary.
+
+    let mut opt_d_val = Vec::<(usize, Vec<Vec<usize>>)>::new();
+    if ctl.clono_group_opt.vdj_refname_heavy {
+        for i in 0..exacts.len() {
+            opt_d_val.push((i, Vec::new()));
+        }
+        opt_d_val.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            res.1 = vec![Vec::<usize>::new(); rsi[i].mat.len()];
+            for col in 0..rsi[i].mat.len() {
+                let mut dvotes = Vec::<usize>::new();
+                for u in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][u]];
+                    let m = rsi[i].mat[col][u];
+                    if m.is_some() {
+                        let m = m.unwrap();
+                        if ex.share[m].left {
+                            let mut opt = 0;
+                            let mut opt2 = 0;
+                            let mut delta = 0;
+                            opt_d(
+                                &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
+                                &mut delta,
+                            );
+                            dvotes.push(opt);
+                        }
+                    }
+                }
+                res.1[col] = dvotes;
+            }
+        });
+    }
+
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 1: symmetric grouping.
@@ -57,6 +97,8 @@ pub fn grouper(
         if ctl.clono_group_opt.vj_refname || ctl.clono_group_opt.vj_refname_strong {
             let mut all = Vec::<(Vec<String>, usize)>::new();
             for i in 0..exacts.len() {
+                // It is somewhat flaky, here and below, that we use the first exact
+                // subclonotype to determine reference segments.
                 let ex = &exact_clonotypes[exacts[i][0]];
                 let mut s = Vec::<String>::new();
                 for j in 0..ex.share.len() {
@@ -108,6 +150,38 @@ pub fn grouper(
                     if ex.share[j].left {
                         s.push(refdata.name[ex.share[j].v_ref_id].clone());
                         s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    }
+                }
+                s.sort();
+                all.push((s, i));
+            }
+            all.sort();
+            let mut i = 0;
+            while i < all.len() {
+                let j = next_diff1_2(&all, i as i32) as usize;
+                for k in i + 1..j {
+                    e.join(all[i].1 as i32, all[k].1 as i32);
+                }
+                i = j;
+            }
+        }
+
+        // Handle vdj_refname_heavy.
+
+        if ctl.clono_group_opt.vdj_refname_heavy {
+            let mut all = Vec::<(Vec<String>, usize)>::new();
+            for i in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[i][0]];
+                let mut s = Vec::<String>::new();
+                for col in 0..rsi[i].mat.len() {
+                    let m = rsi[i].mat[col][0];
+                    if m.is_some() {
+                        let j = m.unwrap();
+                        if ex.share[j].left {
+                            s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                            s.push(refdata.name[opt_d_val[i].1[col][0]].clone());
+                            s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                        }
                     }
                 }
                 s.sort();
