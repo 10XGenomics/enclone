@@ -7,6 +7,7 @@ use crate::defs::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_proto::types::*;
+use std::cmp::min;
 use vdj_ann::refx::*;
 use vector_utils::*;
 
@@ -37,6 +38,7 @@ pub fn opt_d(
     let mut counts = Vec::<usize>::new();
     for di in 0..z {
         let d = refdata.ds[di];
+        const FLANK: usize = 35;
 
         // Start to build reference concatenation.  First append the V segment.
 
@@ -46,6 +48,11 @@ pub fn opt_d(
         } else {
             vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
         }
+        let mut vstart = 0;
+        if vref.len() >= FLANK {
+            vstart = vref.len() - FLANK;
+        }
+        vref = vref[vstart..vref.len()].to_vec();
         concat.append(&mut vref.clone());
 
         // Append the D segment if IGH/TRB.
@@ -57,17 +64,29 @@ pub fn opt_d(
 
         // Append the J segment.
 
-        let mut x = refdata.refs[rsi.jids[col]].to_ascii_vec();
+        let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+        let jend = min(FLANK, jref.len());
+        let mut x = jref[0..jend].to_vec();
         concat.append(&mut x);
 
         // Align the V..J sequence on the contig to the reference concatenation.
 
-        let al = aligner.semiglobal(&tig, &concat);
+        let mut seq_start = vstart as isize;
+        // probably not exactly right
+        if ex.share[mid].annv.len() > 1 {
+            let q1 = ex.share[mid].annv[0].0 + ex.share[mid].annv[0].1;
+            let q2 = ex.share[mid].annv[1].0;
+
+            seq_start += q1 as isize - q2 as isize;
+        }
+        let seq_end = tig.len() - (jref.len() - jend);
+        let seq = tig[seq_start as usize..seq_end].to_vec();
+        let al = aligner.semiglobal(&seq, &concat);
         let mut m = 0;
         let mut pos = al.xstart;
         let mut count = 0;
-        let start = td.cdr3_start - td.ins_len();
-        let stop = td.j_stop - td.v_start;
+        let start = td.cdr3_start - td.ins_len() - seq_start as usize;
+        let stop = td.j_stop - td.v_start - seq_start as usize;
         while m < al.operations.len() {
             let n = next_diff(&al.operations, m);
             match al.operations[m] {
