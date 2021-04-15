@@ -16,6 +16,95 @@ use std::io::Write;
 use string_utils::*;
 use vdj_ann::refx::*;
 
+pub fn print_vis_align(
+    seq: &[u8], 
+    concat: &[u8], 
+    col: usize,
+    k: usize,
+    vref: &[u8],
+    drefx: &[u8],
+    left: bool, // will be ex.share[r].left
+    ctl: &EncloneControl,
+    logx: &mut Vec<u8>,
+) {
+
+    // Make visual alignment.
+
+    let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
+    let mut aligner = Aligner::new(-6, -1, &score);
+    let al = aligner.semiglobal(&seq, &concat);
+    let width = 100;
+    let mut vis = vis_align(&seq, &concat, &al, width);
+
+    // Colorize it.
+
+    let mut vdj = "VDJ".to_string();
+    if ctl.pretty {
+        let mut vis_new = String::new();
+        let mut pos = 0;
+        let vcolor = 3;
+        let dcolor = 1;
+        let jcolor = 5;
+        let mut vdj_bytes = Vec::<u8>::new();
+        print_color(vcolor, &mut vdj_bytes);
+        vdj_bytes.push(b'V');
+        print_color(dcolor, &mut vdj_bytes);
+        vdj_bytes.push(b'D');
+        print_color(jcolor, &mut vdj_bytes);
+        vdj_bytes.push(b'J');
+        emit_end_escape(&mut vdj_bytes);
+        vdj = stringme(&vdj_bytes);
+        for (i, line) in vis.lines().enumerate() {
+            if i % 4 != 2 {
+                vis_new += &line.clone();
+                vis_new += "\n";
+            } else {
+                let mut log = Vec::<u8>::new();
+                let line = line.as_bytes();
+                if pos < vref.len() {
+                    print_color(vcolor, &mut log);
+                } else if left && pos < vref.len() + drefx.len() {
+                    print_color(dcolor, &mut log);
+                } else {
+                    print_color(jcolor, &mut log);
+                }
+                for j in 0..line.len() {
+                    log.push(line[j]);
+                    if line[j] != b' ' {
+                        pos += 1;
+                        if pos == vref.len() && j != line.len() - 1 {
+                            if left {
+                                print_color(dcolor, &mut log);
+                            } else {
+                                print_color(jcolor, &mut log);
+                            }
+                        } else if left && j != line.len() - 1 {
+                            if pos == vref.len() + drefx.len() {
+                                print_color(jcolor, &mut log);
+                            }
+                        }
+                    }
+                }
+                emit_end_escape(&mut log);
+                log.push(b'\n');
+                vis_new += &strme(&log);
+            }
+        }
+        vis = vis_new;
+    }
+
+    // Print alignment.
+
+    fwrite!(
+        logx,
+        "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO CONCATENATED {} REFERENCE\n{}",
+        col,
+        k + 1,
+        vdj,
+        vis,
+    );
+}
+
 // There is terrible duplication between the two functions below.
 
 pub fn align_n(
