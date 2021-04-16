@@ -34,12 +34,22 @@ command-line help that comes with your copy of #enclone will always match its be
 <p>
 <b>4/20/21</b>: Several changes that involve D gene assignment.  
 <ul>
+
 <li>Add cvars <code>opt_d</code>, <code>opt_d2</code>, <code>opt_d_delta</code> or equivalently
 <code>opt_dΔ</code>, see
 <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.</li>
+
+<li>Add options <code>ALIGN&ltn></code> and <code>JUN_ALIGN&ltn></code> to exhibit visual 
+alignments of V..J sequences or just the junction regions to the concatenated VDJ reference, see
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
+
+<li>Add global variables <code>d_inconsistency_%</code> and <code>d_inconsistency_n</code> that
+provide statistics on overall consistency of D gene assignment.</li>
+
 <li>Add grouping options <code>GROUP_VJ_REFNAME_HEAVY</code>
 and <code>GROUP_VDJ_REFNAME_HEAVY</code>, see
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
+
 </ul>
 </p>
 
