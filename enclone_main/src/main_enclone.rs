@@ -219,6 +219,7 @@ pub async fn main_enclone(args: &Vec<String>) {
     let gex_info = get_gex_info(&mut ctl);
     check_lvars(&ctl, &gex_info);
     let twoof = Instant::now();
+    check_gvars(&ctl);
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
