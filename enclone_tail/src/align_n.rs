@@ -39,7 +39,12 @@ fn print_vis_align(
 
     // Colorize it.
 
-    let mut vdj = "VDJ".to_string();
+    let mut vdj;
+    if left {
+        vdj = "VDJ".to_string();
+    } else {
+        vdj = "VJ".to_string();
+    }
     if ctl.pretty {
         let mut vis_new = String::new();
         let mut pos = 0;
@@ -49,8 +54,10 @@ fn print_vis_align(
         let mut vdj_bytes = Vec::<u8>::new();
         print_color(vcolor, &mut vdj_bytes);
         vdj_bytes.push(b'V');
-        print_color(dcolor, &mut vdj_bytes);
-        vdj_bytes.push(b'D');
+        if left {
+            print_color(dcolor, &mut vdj_bytes);
+            vdj_bytes.push(b'D');
+        }
         print_color(jcolor, &mut vdj_bytes);
         vdj_bytes.push(b'J');
         emit_end_escape(&mut vdj_bytes);
