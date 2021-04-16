@@ -852,6 +852,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
         );
+        h.doc2("Please note that D gene assignments are frequently \"random\" -- it is not");
+        h.doc2("possible to know the actual D gene that was assigned.");
         h.doc(
             "clen",
             "length of observed constant region (usually truncated at primer start)",
