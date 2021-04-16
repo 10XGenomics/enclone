@@ -445,6 +445,11 @@ pub fn process_special_arg(
             *x = x.replace("_sum", "_Σ");
             *x = x.replace("_mean", "_μ");
         }
+    } else if arg.starts_with("GVARS=") {
+        ctl.gen_opt.gvars.clear();
+        for x in arg.after("GVARS=").split(',').collect::<Vec<&str>>() {
+            ctl.gen_opt.gvars.push(x.to_string());
+        }
     } else if is_f64_arg(&arg, "MAX_SCORE") {
         ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
     } else if is_f64_arg(&arg, "MAX_LOG_SCORE") {

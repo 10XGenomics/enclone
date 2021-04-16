@@ -94,7 +94,8 @@ Test 25 is sensitive to the structure of the file.
 <li>cell-exact: defined for each cell, and also has a value for an exact subclonotype</li>
 <li>exact: defined for each exact subclonotype</li>
 <li>clono: defined for each clonotype</li>
-<li>group: defined for each group of clonotypes.</li>
+<li>group: defined for each group of clonotypes</li>
+<li>global: defined for entirety of all clonotypes.</li>
 </ul>
 </p>
 
@@ -259,7 +260,7 @@ CTCCTAGCAAGGACAC-1  4033     4033
 <tr><td> limits </td><td> footnote to things missing from the implementation (which in general
                           are deliberate)</td></tr>
 <tr><td> class </td><td> lvar or cvar                                             </td></tr>
-<tr><td> level </td><td> cell or exact or clono or group                          </td></tr>
+<tr><td> level </td><td> cell or exact or clono or group or global                </td></tr>
 <tr><td> numeric </td><td> does the variable have numeric values*                 </td></tr>
 <tr><td> help page </td><td> page where variable is documented (both a link and an enclone command)
                                                                                   </td></tr>
@@ -531,7 +532,8 @@ is not present for an exact subclonotype.
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> nucleotide start of CDR3 sequence on full sequence                             </td></tr>
 
 <tr><td> <code> clen </code>                                                            </td>
@@ -655,6 +657,24 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
                                                                                         </td>
     <td> D region id                                                                    </td></tr>
+
+<tr><td> <code> d_inconsistency_% </code>                                               </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> global                                                                         </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> inconsistency percent for D gene assignment                                    </td></tr>
+
+<tr><td> <code> d_inconsistency_n </code>                                               </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> global                                                                         </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> sample size for computation of <code>d_inconsistency_%</code>                  </td></tr>
 
 <tr><td> <code> d_name </code>                                                          </td>
     <td>                                                                                </td>

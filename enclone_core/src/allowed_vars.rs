@@ -1,7 +1,9 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
-
+//
 // Field (variable) names.
+
 // Lead variables for exact subclonotypes and cells.
+
 pub const LVARS_ALLOWED: [&str; 35] = [
     "datasets",
     "origins",
@@ -156,3 +158,5 @@ pub const PCVARS_ALLOWED: [&str; 11] = [
     "vj_aa_nl",
     "var_aa",
 ];
+
+pub const GVARS_ALLOWED: [&str; 2] = ["d_inconsistency_%", "d_inconsistency_n"];

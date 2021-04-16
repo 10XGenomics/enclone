@@ -255,6 +255,7 @@ pub struct GeneralOpt {
     pub toy_com: bool,
     pub chains_to_align: Vec<usize>,
     pub chains_to_jun_align: Vec<usize>,
+    pub gvars: Vec<String>, // per run variables
 }
 
 // Some plot options.
