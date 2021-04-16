@@ -584,7 +584,6 @@ dependencies = [
  "amino",
  "ansi_escape",
  "assert_cmd",
- "attohttpc",
  "bio",
  "debruijn",
  "dirs",

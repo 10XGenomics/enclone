@@ -19,7 +19,6 @@ publish = false
 amino = "0.1"
 ansi_escape = "0.1"
 assert_cmd = "1.0.3"
-attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = ">=0.33"
 debruijn = "0.3.2"
 dirs = "3.0.1"
