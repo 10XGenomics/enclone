@@ -73,15 +73,17 @@ fn print_vis_align(
                     log.push(line[j]);
                     if line[j] != b' ' {
                         pos += 1;
-                        if pos == vref.len() && j != line.len() - 1 {
+                        if j != line.len() - 1 {
                             if left {
-                                print_color(dcolor, &mut log);
+                                if pos == vref.len() + drefx.len() {
+                                    print_color(jcolor, &mut log);
+                                } else if pos == vref.len() {
+                                    print_color(dcolor, &mut log);
+                                }
                             } else {
-                                print_color(jcolor, &mut log);
-                            }
-                        } else if left && j != line.len() - 1 {
-                            if pos == vref.len() + drefx.len() {
-                                print_color(jcolor, &mut log);
+                                if pos == vref.len() {
+                                    print_color(jcolor, &mut log);
+                                }
                             }
                         }
                     }
