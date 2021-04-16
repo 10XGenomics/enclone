@@ -622,7 +622,7 @@ pub const CRASH_SETS: [&str; 4] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     /* 3 */
-    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 LVARS=opt_d,opt_d2,opt_d_delta,opt_d_Δ",
+    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
     /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JUN_ALIGN1",
 ];
 
