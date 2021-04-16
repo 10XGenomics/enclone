@@ -5,11 +5,15 @@ use crate::linear_condition::*;
 use debruijn::dna_string::*;
 use evalexpr::*;
 use hdf5::Dataset;
+use io_utils::*;
 use mirror_sparse_matrix::*;
 use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 use string_utils::*;
@@ -947,4 +951,22 @@ pub struct PotentialJoin {
     pub err: bool,
     pub p1: f64,
     pub mult: f64,
+}
+
+pub fn get_config(config: &mut HashMap<String, String>) -> bool {
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+        }
+    }
+    if config_file.len() > 0 && path_exists(&config_file) {
+        let f = open_for_read![&config_file];
+        for line in f.lines() {
+            let s = line.unwrap();
+            config.insert(s.before("=").to_string(), s.after("=").to_string());
+        }
+        return true;
+    }
+    false
 }

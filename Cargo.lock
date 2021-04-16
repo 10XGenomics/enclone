@@ -588,6 +588,7 @@ dependencies = [
  "bio",
  "debruijn",
  "dirs",
+ "enclone_args",
  "enclone_core",
  "equiv",
  "evalexpr",
@@ -610,6 +611,23 @@ dependencies = [
  "string_utils",
  "tilde-expand",
  "vdj_ann",
+ "vector_utils",
+]
+
+[[package]]
+name = "enclone_args"
+version = "0.5.51"
+dependencies = [
+ "attohttpc",
+ "dirs",
+ "enclone_core",
+ "evalexpr",
+ "io_utils",
+ "itertools",
+ "rayon",
+ "regex",
+ "string_utils",
+ "tilde-expand",
  "vector_utils",
 ]
 
@@ -684,6 +702,7 @@ dependencies = [
  "chrono",
  "debruijn",
  "enclone",
+ "enclone_args",
  "enclone_com",
  "enclone_core",
  "enclone_help",

@@ -27,6 +27,7 @@ enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone_tail = { path = "../enclone_tail" }
 enclone = { path = "../enclone" }
+enclone_args = { path = "../enclone_args" }
 equiv = "0.1.2"
 evalexpr = "5.0.5"
 futures = { version = "0.3.0", features = [] }

@@ -7,9 +7,7 @@ use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
 use itertools::Itertools;
-use std::collections::HashMap;
 use std::fs::{remove_file, File};
-use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
@@ -297,7 +295,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 for j in 0..i {
                     args2.push(args[j].clone());
                 }
-                let f = include_str!["enclone.testdata.bcr.gex"];
+                let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
                 let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
                 for n in y.iter() {
                     if *n != "m1" {
@@ -886,22 +884,4 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     );
-}
-
-pub fn get_config(config: &mut HashMap<String, String>) -> bool {
-    let mut config_file = String::new();
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            config_file = value.to_string();
-        }
-    }
-    if config_file.len() > 0 && path_exists(&config_file) {
-        let f = open_for_read![&config_file];
-        for line in f.lines() {
-            let s = line.unwrap();
-            config.insert(s.before("=").to_string(), s.after("=").to_string());
-        }
-        return true;
-    }
-    false
 }
