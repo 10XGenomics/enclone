@@ -848,6 +848,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         );
         h.doc("opt_d_Δ", "same");
         h.doc2("These are recomputed from scratch and ignore the given assignment.");
+        h.doc2("Note that in many cases D gene assignments are essentially random, as");
+        h.doc2("it is often not possible to know the true D gene assignment.");
+        h.doc2("If the value is \"null\" it means that having no D gene at all scores");
+        h.doc2("better.");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
