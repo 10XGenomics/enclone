@@ -828,6 +828,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "dna%",
             "nucleotide percent identity with donor reference, outside junction region",
         );
+
         h.ldoc("utr_name", "name of 5'-UTR region");
         h.doc("v_name", "name of V region");
         h.doc("d_name", "name of D region (or null)");
@@ -839,6 +840,14 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("j_id", "id of J region");
         h.doc("const_id", "id of constant region (or null, if not known)");
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
+        h.ldoc("opt_d", "name of optimal D gene, or none");
+        h.doc("opt_d2", "name of second best D gene, or none");
+        h.doc(
+            "opt_d_delta",
+            "score difference between first and second best D gene",
+        );
+        h.doc("opt_d_Δ", "same");
+        h.doc2("These are recomputed from scratch and ignore the given assignment.");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
