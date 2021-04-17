@@ -4,8 +4,6 @@
 
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
-use enclone_core::opt_d::*;
-use enclone_proto::types::*;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use string_utils::*;
@@ -19,47 +17,8 @@ pub fn grouper(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     rsi: &Vec<ColInfo>,
-    dref: &Vec<DonorReferenceItem>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
 ) -> Vec<Vec<(i32, String)>> {
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Assign a D segment to each "left" column in a clonotype (if we need this information).
-    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
-    // though the true values have to be the same.  This is also true for V and J segments,
-    // although they are less likely to vary.
-
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
-    if ctl.clono_group_opt.vdj_refname_heavy {
-        for i in 0..exacts.len() {
-            opt_d_val.push((i, Vec::new()));
-        }
-        opt_d_val.par_iter_mut().for_each(|res| {
-            let i = res.0;
-            res.1 = vec![Vec::<Option<usize>>::new(); rsi[i].mat.len()];
-            for col in 0..rsi[i].mat.len() {
-                let mut dvotes = Vec::<Option<usize>>::new();
-                for u in 0..exacts[i].len() {
-                    let ex = &exact_clonotypes[exacts[i][u]];
-                    let m = rsi[i].mat[col][u];
-                    if m.is_some() {
-                        let m = m.unwrap();
-                        if ex.share[m].left {
-                            let mut opt = None;
-                            let mut opt2 = None;
-                            let mut delta = 0;
-                            opt_d(
-                                &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
-                                &mut delta,
-                            );
-                            dvotes.push(opt);
-                        }
-                    }
-                }
-                res.1[col] = dvotes;
-            }
-        });
-    }
-
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 1: symmetric grouping.
