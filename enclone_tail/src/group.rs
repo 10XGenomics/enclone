@@ -176,7 +176,13 @@ pub fn group_and_print_clonotypes(
     // although they are less likely to vary.
 
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
-    if ctl.clono_group_opt.vdj_refname_heavy {
+    let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
+    for x in ctl.gen_opt.gvars.iter() {
+        if x.starts_with("d_inconsistency_") {
+            need_opt_d_val = true;
+        }
+    }
+    if need_opt_d_val {
         for i in 0..exacts.len() {
             opt_d_val.push((i, Vec::new()));
         }
@@ -200,6 +206,8 @@ pub fn group_and_print_clonotypes(
                             );
                             dvotes.push(opt);
                         }
+                    } else {
+                        dvotes.push(None);
                     }
                 }
                 res.1[col] = dvotes;
@@ -960,6 +968,7 @@ pub fn group_and_print_clonotypes(
         &mut logx,
         &mut nclono2,
         &mut two_chain,
+        &opt_d_val,
     );
 
     // Print to stdout.

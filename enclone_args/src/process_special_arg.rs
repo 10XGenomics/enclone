@@ -450,7 +450,6 @@ pub fn process_special_arg(
         for x in arg.after("GVARS=").split(',').collect::<Vec<&str>>() {
             ctl.gen_opt.gvars.push(x.to_string());
         }
-        ctl.gen_opt.gvars_vals = vec![String::new(); ctl.gen_opt.gvars.len()];
     } else if is_f64_arg(&arg, "MAX_SCORE") {
         ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();
     } else if is_f64_arg(&arg, "MAX_LOG_SCORE") {
