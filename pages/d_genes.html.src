@@ -9,17 +9,13 @@
 
 <h1>D genes and junction regions</h1>
 
-<p>
-#enclone has some tools for understanding D gene assignment and junction region structure.
-</p>
+<p>#enclone has some tools for understanding D gene assignment and junction region structure.</p>
 
 <hr>
 
-<p>
-#enclone can assign D genes to each IGH or TRB exact subclonotype, independent of the 
+<p>#enclone can assign D genes to each IGH or TRB exact subclonotype, independent of the 
 assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene,
-or null, if that scores better.  
-</p>
+or null, if that scores better.</p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
 padding: 8px; width: 900px; font-size: 110%">
@@ -34,26 +30,33 @@ region rearrangement, even though that understanding will always be incomplete.
 
 <hr>
 
-<p>
-There are variables that show the best and second best D gene assignment, and the difference
+<p>There are variables that show the best and second best D gene assignment, and the difference
 in score between them, see
 <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.  Here is an
-example:
-</p>
+example:</p>
 
-<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CTRDRDLRGATDAFDIW
-</code></pre>
+<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CTRDRDLRGATDAFDIW</code></pre>
 #include pages/auto/d_gene_example1.html
 
 </p>
-In this example, the D genes are assigned consistently across the clonotype.  #enclone can
-compute the rate at which they are <i>inconsistently</i> assigned across all the data.  This
-is the probability, given two different exact subclonotypes from the same clonotype, that their
-heavy chains are assigned different D genes.  Here you can see the rate:
+In this example, the D genes are assigned consistently across the clonotype.  Here is an example
+where they are assigned inconsistently:
 </p>
+
+<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE
+</code></pre>
+#include pages/auto/d_gene_example1b.html
+
+<p>#enclone can
+compute the rate at which D genes are <i>inconsistently</i> assigned across all the data.  This
+is the probability, given two different exact subclonotypes from the same clonotype, that their
+heavy chains are assigned different D genes.  Here you can see the rate:</p>
 
 <pre><code>enclone BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT</code></pre>
 #include pages/auto/d_gene_example2.html
+
+<p>The second variable is the sample size: the number of pairs of exact subclonotypes that
+were examined.</p>
 
 </body>
 </html>
