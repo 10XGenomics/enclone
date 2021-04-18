@@ -18,11 +18,16 @@
 <p>
 #enclone can assign D genes to each IGH or TRB exact subclonotype, independent of the 
 assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene,
-or null, if that scores better.  These assignments are not guaranteed to be consistent across
+or null, if that scores better.  
+</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
+padding: 8px; width: 900px; font-size: 110%">
+These D gene assignments are not guaranteed to be consistent across
 a clonotype.  In general, although D genes are always assigned, they cannot be assigned 
-confidently, so a significant fraction of assignments are wrong.  This is a consequence of the
+confidently, so a significant fraction of assignments are wrong.  <b>This is a consequence of the
 biology: D genes are short, and junction regions can be heavily edited, so in general it is just
-not possible to know.
+not possible to know.</b>
 </p>
 
 <hr>
