@@ -159,4 +159,4 @@ pub const PCVARS_ALLOWED: [&str; 11] = [
     "var_aa",
 ];
 
-pub const GVARS_ALLOWED: [&str; 2] = ["d_inconsistency_%", "d_inconsistency_n"];
+pub const GVARS_ALLOWED: [&str; 2] = ["d_inconsistent_%", "d_inconsistent_n"];

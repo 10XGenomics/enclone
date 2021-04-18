@@ -738,7 +738,7 @@ pub fn print_stats(
         let (mut total, mut bads) = (0, 0);
         let mut need_inc = false;
         for x in ctl.gen_opt.gvars.iter() {
-            if x.starts_with("d_inconsistency_") {
+            if x.starts_with("d_inconsistent_") {
                 need_inc = true;
             }
         }
@@ -768,9 +768,9 @@ pub fn print_stats(
         }
         for var in ctl.gen_opt.gvars.iter() {
             let mut val = String::new();
-            if *var == "d_inconsistency_%" {
+            if *var == "d_inconsistent_%" {
                 val = format!("{:.2}", 100.0 * bads as f64 / total as f64);
-            } else if *var == "d_inconsistency_n" {
+            } else if *var == "d_inconsistent_n" {
                 val = format!("{}", total);
             }
             println!("{} = {}", var, val);

@@ -178,7 +178,7 @@ pub fn group_and_print_clonotypes(
     let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
     let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
     for x in ctl.gen_opt.gvars.iter() {
-        if x.starts_with("d_inconsistency_") {
+        if x.starts_with("d_inconsistent_") {
             need_opt_d_val = true;
         }
     }

@@ -616,8 +616,8 @@ pub const TESTS: [&str; 240] = [
     r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
     // 239. test GROUP_VJ_REFNAME_HEAVY
     r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
-    // 240. test d_inconsistency_{%,n}
-    r###"BCR=123085 GVARS=d_inconsistency_%,d_inconsistency_n NOPRINT"###,
+    // 240. test d_inconsistent_{%,n}
+    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even

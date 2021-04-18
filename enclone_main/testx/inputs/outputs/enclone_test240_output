@@ -1,6 +1,6 @@
 
 GLOBAL VARIABLES
 
-d_inconsistency_% = 11.10
-d_inconsistency_n = 712
+d_inconsistent_% = 11.10
+d_inconsistent_n = 712
 
