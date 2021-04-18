@@ -70,7 +70,6 @@ example:
 
 <pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CHAINS=2 CDR3=CTRDRDLRGATDAFDIW
 </code></pre>
-
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 51 CELLS</span>
 
 [1.1] CLONOTYPE = 51 CELLS
@@ -92,6 +91,16 @@ example:
 │4   1      │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#31c39a;">S</span>  IGHD1-14  IGHD1-1       1  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
 └───────────┴─────────────────────────────────────────────────────┴──────────────────────────┘
 </span></pre>
+
+</p>
+In this example, the D genes are assigned consistently across the clonotype.  <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can
+compute the rate at which they are <i>inconsistently</i> assigned across all the data.  This
+is the probability, given two different exact subclonotypes from the same clonotype, that their
+heavy chains are assigned different D genes.  Here you can see the rate:
+
+<pre><code>enclone BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
+</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"></span></pre>
 
 </body>
 </html>
