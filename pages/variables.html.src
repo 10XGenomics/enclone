@@ -576,8 +576,7 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> global                                                                         </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
+    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
     <td> inconsistency percent for D gene assignment                                    </td></tr>
 
 <tr><td> <code> d_inconsistent_n </code>                                                </td>
@@ -585,7 +584,7 @@ is not present for an exact subclonotype.
     <td> lvar                                                                           </td>
     <td> global                                                                         </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
                                                                                         </td>
     <td> sample size for computation of <code>d_inconsistent_%</code>                   </td></tr>
 
