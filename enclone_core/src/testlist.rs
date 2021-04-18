@@ -832,7 +832,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 18] = [
     // 17.
     (
         "pages/auto/d_gene_example1.html",
-        "BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CHAINS=2 CDR3=CTRDRDLRGATDAFDIW \
+        "BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CTRDRDLRGATDAFDIW \
          HTML=\"D gene example1\"",
     ),
     // 18.
