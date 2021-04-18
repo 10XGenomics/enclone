@@ -21,3 +21,4 @@ pub mod requirements;
 pub mod string_width;
 pub mod tail;
 pub mod ticks;
+pub mod tree;
