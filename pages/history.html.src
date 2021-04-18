@@ -44,7 +44,8 @@ alignments of V..J sequences or just the junction regions to the concatenated VD
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
 
 <li>Add global variables <code>d_inconsistent_%</code> and <code>d_inconsistent_n</code> that
-provide statistics on overall consistency of D gene assignment.</li>
+provide statistics on overall consistency of D gene assignment, see
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
 
 <li>Add grouping options <code>GROUP_VJ_REFNAME_HEAVY</code>
 and <code>GROUP_VDJ_REFNAME_HEAVY</code>, see

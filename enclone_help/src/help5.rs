@@ -147,6 +147,16 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.print_tab2();
         h.print("\n");
+        h.print(
+            "\\bold{options that control global variables}\n\n\
+             enclone has some global variables that can be computed, with values printed after \
+             everything else, and not otherwise use (currently).  These may be specified using \
+             \\bold{GVARS=var1,...,varn}.  The global variables that are supported currently are:\n\
+             d_inconsistent_%\n\
+             d_inconsistent_n\n\
+             Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for more \
+             information.\n\n",
+        );
         h.end_doc();
     }
 

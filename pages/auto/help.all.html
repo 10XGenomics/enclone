@@ -87,7 +87,7 @@ pages that are directly accessible from the enclone command line.  These pages c
 │enclone help lvars       │  lead column options (long)                                         │
 │enclone help cvars       │  per chain column options (long)                                    │
 │enclone help amino       │  per chain column options for amino acids                           │
-│enclone help display     │  other clonotype display options                                    │
+│enclone help display     │  other clonotype display options (long)                             │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help indels      │  insertion and deletion handling                                    │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
@@ -1558,6 +1558,15 @@ following "toy" options:
 ├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
 │MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)         │
 └─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">options that control global variables</span>
+
+enclone has some global variables that can be computed, with values printed after everything else,
+and not otherwise use (currently).  These may be specified using <span style="font-weight:bold;">GVARS=var1,...,varn</span>.  The global
+variables that are supported currently are:
+d_inconsistent_%
+d_inconsistent_n
+Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for more information.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help indels
