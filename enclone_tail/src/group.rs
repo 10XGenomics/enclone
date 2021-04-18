@@ -976,6 +976,15 @@ pub fn group_and_print_clonotypes(
     if !ctl.gen_opt.html {
         print!("{}", compress_ansi_escapes(&strme(&logx)));
     } else {
+        // Remove initial newline if present.
+        loop {
+            if logx.len() > 0 && logx[0] == b'\n' {
+                logx = logx[1..].to_vec();
+            } else {
+                break;
+            }
+        }
+
         // Note that we do not link to the css file, because it is less fragile then including
         // the font face information directly.  In particular, the css file could be accidentally
         // deleted or renamed, which would break previously generated user html files.  This
