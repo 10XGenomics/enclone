@@ -1,76 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--  -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
-<title>D genes and junction regions</title>
-<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){{dataLayer.push(arguments);}}
-gtag('js', new Date());
-gtag('config', 'UA-58278925-3');
-</script>
-
-        
-        </head>
-
-        <! ––
-
-        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
-
-        PUT DOWN YOUR HAMMER.
-        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
-        THANK YOU FOR YOUR COOPERATION,
-
-        SINCERELY,
-        THE BENEVOLENT OVERLORDS
-
-        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
-
-        ––>
-
+<title>D gene example1</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
+</head>
 <body>
-
-<br>
-<a href="../../index.html#help">
-<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-</a>
-
-<h1>D genes and junction regions</h1>
-
-<p>
-<span style="color:rgb(120,123,175);font-weight:900">enclone</span> has some tools for understanding D gene assignment and junction region structure.
-</p>
-
-<hr>
-
-<p>
-<span style="color:rgb(120,123,175);font-weight:900">enclone</span> can assign D genes to each IGH or TRB exact subclonotype, independent of the 
-assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene,
-or null, if that scores better.  These assignments are not guaranteed to be consistent across
-a clonotype.  In general, although D genes are always assigned, they cannot be assigned 
-confidently, so a significant fraction of assignments are wrong.  This is a consequence of the
-biology: D genes are short, and junction regions can be heavily edited, so in general it is just
-not possible to know.
-</p>
-
-<hr>
-
-<p>
-There are variables that show the best and second best D gene assignment, and the difference
-in score between them, see
-<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.  Here is an
-example:
-</p>
-
-<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CHAINS=2 CDR3=CTRDRDLRGATDAFDIW
-</code></pre>
-
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 51 CELLS</span>
 
 [1.1] CLONOTYPE = 51 CELLS
@@ -92,6 +53,6 @@ example:
 │4   1      │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#31c39a;">S</span>  IGHD1-14  IGHD1-1       1  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
 └───────────┴─────────────────────────────────────────────────────┴──────────────────────────┘
 </span></pre>
-
 </body>
 </html>
+

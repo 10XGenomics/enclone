@@ -34,5 +34,10 @@ in score between them, see
 example:
 </p>
 
+<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CHAINS=2 CDR3=CTRDRDLRGATDAFDIW
+</code></pre>
+
+#include pages/auto/d_gene_example1.html
+
 </body>
 </html>
