@@ -734,7 +734,7 @@ pub fn print_stats(
     // Print global variable values.
 
     if ctl.gen_opt.gvars.len() > 0 {
-        println!("\nGLOBAL VARIABLES\n");
+        fwriteln!(logx, "\nGLOBAL VARIABLES\n");
         let (mut total, mut bads) = (0, 0);
         let mut need_inc = false;
         for x in ctl.gen_opt.gvars.iter() {
@@ -773,7 +773,7 @@ pub fn print_stats(
             } else if *var == "d_inconsistent_n" {
                 val = format!("{}", total);
             }
-            println!("{} = {}", var, val);
+            fwriteln!(logx, "{} = {}", var, val);
         }
     }
 }
