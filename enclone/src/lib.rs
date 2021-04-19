@@ -10,7 +10,6 @@ pub mod innate;
 pub mod join;
 pub mod join2;
 pub mod join_core;
-pub mod load_gex;
 pub mod misc1;
 pub mod misc2;
 pub mod misc3;

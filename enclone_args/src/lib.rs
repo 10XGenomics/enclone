@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
 pub mod explore;
+pub mod load_gex;
 pub mod proc_args;
 pub mod proc_args2;
 pub mod proc_args3;
