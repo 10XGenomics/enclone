@@ -22,7 +22,8 @@ set URL = https://raw.githubusercontent.com/10XDev/cellranger/cellranger-$CELLRA
 
 set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr '#' '\n' | tail -1 | tr -d '"'`
 
-echo "running git tag cellranger{$CELLRANGER_VERSION} $ENCLONE_REV"
+echo "running git tag cellranger$CELLRANGER_VERSION $ENCLONE_REV"
+
 git tag cellranger{$CELLRANGER_VERSION} $ENCLONE_REV
 
 echo "running git push origin --tags"
