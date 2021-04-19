@@ -28,8 +28,6 @@ pub fn opt_d(
     let mut comp = 1000000;
     let td = &ex.share[mid];
     let tig = &td.seq;
-    let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
-    let mut aligner = Aligner::new(-6, -1, &score);
 
     // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
     // there is just one pass.
@@ -85,6 +83,8 @@ pub fn opt_d(
         }
         let seq_end = tig.len() - (jref.len() - jend);
         let seq = tig[seq_start as usize..seq_end].to_vec();
+        let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
+        let mut aligner = Aligner::new(-6, -1, &score);
         let al = aligner.semiglobal(&seq, &concat);
         let mut m = 0;
         let mut count = 0;
