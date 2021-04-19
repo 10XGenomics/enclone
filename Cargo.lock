@@ -618,6 +618,7 @@ name = "enclone_args"
 version = "0.5.51"
 dependencies = [
  "attohttpc",
+ "debruijn",
  "dirs",
  "enclone_core",
  "evalexpr",
@@ -625,8 +626,10 @@ dependencies = [
  "itertools",
  "rayon",
  "regex",
+ "serde_json",
  "string_utils",
  "tilde-expand",
+ "vdj_ann",
  "vector_utils",
 ]
 

@@ -5,7 +5,6 @@
 use vdj_ann::*;
 
 use self::refx::*;
-use crate::read_json::*;
 use amino::*;
 use ansi_escape::*;
 use debruijn::{dna_string::*, Mer};
@@ -13,7 +12,6 @@ use enclone_core::defs::*;
 use enclone_core::print_tools::*;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use std::sync::atomic::AtomicBool;
 use string_utils::*;
 use vector_utils::*;
 
@@ -29,7 +27,6 @@ pub fn build_info(
     // Much of the information in a CloneInfo object is redundant.  So we could probably
     // improve both time and space computational performance by reducing that redundancy.
 
-    let exiting = AtomicBool::new(false);
     let mut info = Vec::<CloneInfo>::new();
     let mut results = Vec::<(
         usize,
@@ -202,10 +199,6 @@ pub fn build_info(
 
             let rt = &refdata.refs[vid as usize];
             if x.annv.len() == 2 {
-                if x.annv[0].1 as usize > rt.len() {
-                    let msg = format!("x.annv[0].1 = {}, rt.len() = {}", x.annv[0].1, rt.len());
-                    json_error(None, &ctl, &exiting, &msg);
-                }
                 let mut r = rt.slice(0, x.annv[0].1 as usize).to_owned();
                 // deletion
                 if x.annv[1].0 == x.annv[0].0 + x.annv[0].1 {

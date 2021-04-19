@@ -3,7 +3,6 @@
 extern crate enclone_core;
 
 pub mod allele;
-pub mod explore;
 pub mod graph_filter;
 pub mod html;
 pub mod info;
@@ -15,7 +14,6 @@ pub mod load_gex;
 pub mod misc1;
 pub mod misc2;
 pub mod misc3;
-pub mod read_json;
 pub mod run_test;
 pub mod secret;
 pub mod subset_json;

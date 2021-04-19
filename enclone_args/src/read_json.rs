@@ -1,7 +1,5 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-use vdj_ann::*;
-
 use self::annotate::*;
 use self::refx::*;
 use self::transcript::*;
@@ -9,19 +7,18 @@ use crate::explore::*;
 use debruijn::dna_string::*;
 use enclone_core::defs::*;
 use io_utils::*;
-// use itertools::Itertools;
 use rayon::prelude::*;
 use serde_json::Value;
-// use std::env;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::{collections::HashMap, io::BufReader};
 use string_utils::*;
+use vdj_ann::*;
 use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
+fn json_error(json: Option<&str>, ctl: &EncloneControl, exiting: &AtomicBool, msg: &str) {
     // The following line prevents error messages from this function from being
     // printed multiple times.
     if !exiting.swap(true, Ordering::Relaxed) {
@@ -432,6 +429,13 @@ fn parse_vector_entry_from_json(
             annv.push((start, len2, t, len1, 0));
         } else if del > 0 && del % 3 == 0 && ins == 0 && len2 > 0 {
             annv.push((len1, len2, t, len1 + del, 0));
+        }
+        let rt = &refdata.refs[v_ref_id as usize];
+        if annv.len() == 2 {
+            if annv[0].1 as usize > rt.len() {
+                let msg = format!("annv[0].1 = {}, rt.len() = {}", annv[0].1, rt.len());
+                json_error(None, &ctl, &exiting, &msg);
+            }
         }
 
         // Check to see if the CDR3 sequence has changed.  This could happen if the cellranger
