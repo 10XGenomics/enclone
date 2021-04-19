@@ -58,5 +58,21 @@ heavy chains are assigned different D genes.  Here you can see the rate:</p>
 <p>The second variable is the sample size: the number of pairs of exact subclonotypes that
 were examined.</p>
 
+<hr>
+
+<p>
+For any chain in any exact subclonotype, #enclone can display the alignment of the entire V..J 
+sequence to the reference V..J sequence, and it can also display the alignment of just the 
+junction region (extended by a small and arbitrary amount on both ends to get the display to
+work).  This feature is enabled by adding 
+<code>ALIGN&ltn></code> or
+<code>JUN_ALIGN&ltn></code> to the command line, where <code>n</code> is the chain number.  It
+displays one alignment per exact subclonotype, so for brevity we'll show examples where there is 
+just one.  Here is an example for the full alignment:
+</p>
+
+<pre><code>enclone BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
+#include pages/auto/align_example.html
+
 </body>
 </html>

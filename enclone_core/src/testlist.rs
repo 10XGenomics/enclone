@@ -737,7 +737,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 19] = [
+pub const SITE_EXAMPLES: [(&str, &str); 20] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -846,6 +846,12 @@ pub const SITE_EXAMPLES: [(&str, &str); 19] = [
         "pages/auto/d_gene_example2.html",
         "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT \
          HTML=\"D gene example2\"",
+    ),
+    // 20.
+    (
+        "pages/auto/align_example.html",
+        "BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d \
+         HTML=\"ALIGN example\"",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:
