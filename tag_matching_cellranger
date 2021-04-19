@@ -1,0 +1,26 @@
+#!/bin/csh
+
+# Create a tagged branch corresponding to a given Cell Ranger version.  For internal use.
+#
+# The reason for having this is that someone might want to know exactly what would have happened
+# if one ran enclone using such a version.  In fact people have asked for this.
+#
+# If you run this script, GitHub Actions will start a new release for the version of enclone that 
+# matches that Cell Ranger version.
+#
+# We need to record this information somewhere so people can find it.
+
+# argument 1 = your GitHub user name
+# argument 2 = your GitHub PAT
+# argument 3 = x.y.z (CellRanger version)
+
+set USER=$1
+set PAT=$2
+set CELLRANGER_VERSION=$3
+
+set URL = https://raw.githubusercontent.com/10XDev/cellranger/cellranger-$CELLRANGER_VERSION/lib/rust/Cargo.lock
+
+set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr '#' '\n' | tail -1 | tr -d '"'`
+
+git tag cellranger{$REV} $ENCLONE_REV
+git push origin --tags
