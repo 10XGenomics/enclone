@@ -737,7 +737,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 20] = [
+pub const SITE_EXAMPLES: [(&str, &str); 21] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -852,6 +852,12 @@ pub const SITE_EXAMPLES: [(&str, &str); 20] = [
         "pages/auto/align_example.html",
         "BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d \
          HTML=\"ALIGN example\"",
+    ),
+    // 21.
+    (
+        "pages/auto/jun_align_example.html",
+        "BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d \
+         HTML=\"JUN_ALIGN example\"",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:

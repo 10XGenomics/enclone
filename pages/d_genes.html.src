@@ -74,5 +74,12 @@ just one.  Here is an example for the full alignment:
 <pre><code>enclone BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
 #include pages/auto/align_example.html
 
+<p>
+And here is the same example, but showing just the junction region:
+</p>
+
+<pre><code>enclone BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
+#include pages/auto/jun_align_example.html
+
 </body>
 </html>
