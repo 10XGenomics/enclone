@@ -326,8 +326,8 @@ fn test_for_broken_links_and_spellcheck() {
         plasmablast preinstalled prepends pwm pwms redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
-        subclonotypes svg testlist thresholding timepoint tracebacks trb tsv twosie ubuntu udiff \
-        umi umis underperforming unicode untarring \
+        subclonotypes svg testlist thresholding timepoint tracebacks trb tsv tttctgtgcgaga \
+        twosie ubuntu udiff umi umis underperforming unicode untarring \
         vdj vilella vilfwym vilm vjlen website wget whitelist wikimedia \
         wikipedia workaround workflow xf xhtml xkcd \
         xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx xy yvar zenodo zx";
