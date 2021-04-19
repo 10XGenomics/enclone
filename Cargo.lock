@@ -828,6 +828,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_tools"
+version = "0.5.51"
+dependencies = [
+ "attohttpc",
+ "debruijn",
+ "dirs",
+ "enclone_core",
+ "evalexpr",
+ "hdf5",
+ "io_utils",
+ "itertools",
+ "mirror_sparse_matrix",
+ "pager",
+ "pretty_trace",
+ "rayon",
+ "regex",
+ "serde_json",
+ "string_utils",
+ "tilde-expand",
+ "vdj_ann",
+ "vector_utils",
+]
+
+[[package]]
 name = "enum-iterator"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
