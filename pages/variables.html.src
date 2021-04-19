@@ -45,9 +45,9 @@ Test 25 is sensitive to the structure of the file.
 
 <p>All variables are in one of two classes:
 <ul>
-<li>lvar: a lead variable; these are not associated to a particular chain, and in clonotype
-    tables appear at the beginning (leading), before the variables that are associated to a 
-    chain</li>
+<li>lvar: a lead variable; these are not associated to a particular chain, and when they appear in 
+    clonotype tables, they're at the beginning (leading), before the variables that are associated 
+    to a chain</li>
 <li>cvar: a chain variable; these are associated to a particular chain.  Except when used
     in <code>CVARS</code> or <code>CVARSP</code>, these need to be suffixed by the chain
     number.</li>
