@@ -37,15 +37,18 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <li>Add cvars <code>opt_d</code>, <code>opt_d2</code>, <code>opt_d_delta</code> or equivalently
 <code>opt_dΔ</code>, see
-<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.</li>
+<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> and
+<a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>
 
 <li>Add options <code>ALIGN&ltn></code> and <code>JUN_ALIGN&ltn></code> to exhibit visual 
 alignments of V..J sequences or just the junction regions to the concatenated VDJ reference, see
-<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> and
+<a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>
 
 <li>Add global variables <code>d_inconsistent_%</code> and <code>d_inconsistent_n</code> that
 provide statistics on overall consistency of D gene assignment, see
-<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
+<a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> and
+<a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>
 
 <li>Add grouping options <code>GROUP_VJ_REFNAME_HEAVY</code>
 and <code>GROUP_VDJ_REFNAME_HEAVY</code>, see
