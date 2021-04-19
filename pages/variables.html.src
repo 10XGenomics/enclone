@@ -154,7 +154,7 @@ version.</li>
 <h2>Example</h2>
 
 <p>The following example illustrates how this applies to the cell-exact variable <code>u</code>:
-<table rules="all" style="border: 3px solid gray">
+<table rules="all" style="border: 3px solid gray;background-color:#faffff">
 <tbody>
 
 <tr><td align="left" style="padding: 4px 11px 0px 14px">
