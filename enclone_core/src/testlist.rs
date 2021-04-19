@@ -632,8 +632,8 @@ pub const CRASH_SETS: [&str; 5] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
-    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JUN_ALIGN1",
-    /* 5 */ "GROUP_VDJ_REFNAME_HEAVY",
+    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JUN_ALIGN1 GROUP_VJ_REFNAME_HEAVY",
+    /* 5 */ "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
