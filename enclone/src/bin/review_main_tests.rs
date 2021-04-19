@@ -5,7 +5,7 @@
 //
 // NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
-use enclone::run_test::*;
+use enclone_core::run_test::*;
 use enclone_core::testlist::*;
 use pager::Pager;
 use pretty_trace::*;

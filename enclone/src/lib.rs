@@ -13,6 +13,5 @@ pub mod join_core;
 pub mod misc1;
 pub mod misc2;
 pub mod misc3;
-pub mod run_test;
 pub mod secret;
 pub mod subset_json;

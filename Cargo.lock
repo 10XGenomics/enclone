@@ -668,6 +668,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "io_utils",
+ "itertools",
  "lazy_static",
  "mirror_sparse_matrix",
  "perf_stats",
