@@ -26,7 +26,7 @@ set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr
 
 # echo "running git tag -a -m$CELLRANGER_VERSION $tag_name $ENCLONE_REV"
 
-echo "running git tag $tag_name $ENCLONE_REV"
+echo "\nrunning git tag $tag_name $ENCLONE_REV"
 
 # git tag -a -m{$CELLRANGER_VERSION} $tag_name $ENCLONE_REV
 
@@ -34,10 +34,11 @@ git tag $tag_name $ENCLONE_REV
 
 # echo "running git push origin --tags"
 
-echo "running git push origin $tag_name"
+echo "\nrunning git push origin $tag_name"
+echo
 
 # git push origin --tags
 
 git push origin $tag_name
 
-echo "done; this should cause GitHub Actions to start a build"
+echo "\ndone; this should cause GitHub Actions to start a build\n"
