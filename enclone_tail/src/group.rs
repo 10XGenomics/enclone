@@ -9,6 +9,7 @@ use crate::clustal::*;
 use crate::fasta::*;
 use crate::grouper::*;
 use crate::phylip::*;
+use crate::plot::*;
 use crate::plot_points::*;
 use crate::print_stats::*;
 use crate::requirements::*;
@@ -834,6 +835,28 @@ pub fn group_and_print_clonotypes(
             14,
         );
         print!("{}", s);
+    }
+
+    // Plot clonotypes.
+
+    let mut svg = String::new();
+    let plot_opt = ctl.plot_opt.clone();
+    plot_clonotypes(
+        &ctl,
+        &plot_opt,
+        &refdata,
+        &exacts,
+        &exact_clonotypes,
+        &mut svg,
+    );
+
+    // Output clonotype plot (if it was generated and directed to stdout).
+
+    if ctl.plot_opt.plot_file == "stdout".to_string() {
+        print!("{}", svg);
+        if !ctl.gen_opt.noprint {
+            println!("");
+        }
     }
 
     // Test requirements.

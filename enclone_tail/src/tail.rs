@@ -3,7 +3,6 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::group::*;
-use crate::plot::*;
 use enclone_core::defs::*;
 use enclone_core::median::*;
 use enclone_proto::types::*;
@@ -40,19 +39,6 @@ pub fn tail_code(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
-    // Plot clonotypes.
-
-    let mut svg = String::new();
-    let plot_opt = ctl.plot_opt.clone();
-    plot_clonotypes(
-        &ctl,
-        &plot_opt,
-        &refdata,
-        &exacts,
-        &exact_clonotypes,
-        &mut svg,
-    );
-
     // Group and print clonotypes.
 
     group_and_print_clonotypes(
@@ -331,15 +317,6 @@ pub fn tail_code(
         let mut log = Vec::<u8>::new();
         print_tabular(&mut log, &rows, 2, Some(b"lllrrr".to_vec()));
         print!("{}", strme(&log));
-    }
-
-    // Output clonotype plot (if it was generated and directed to stdout).
-
-    if ctl.plot_opt.plot_file == "stdout".to_string() {
-        print!("{}", svg);
-        if !ctl.gen_opt.noprint {
-            println!("");
-        }
     }
 
     // Print top genes.
