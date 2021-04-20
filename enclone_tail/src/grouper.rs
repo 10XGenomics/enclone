@@ -1,6 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // This is the actual grouping code.
+//
+// output: a vector, each element of which is a group object
+//
+// group object: a vector of pairs (i, msg) where i is an index into exacts and msg is a message
+//               to be printed
 
 use edit_distance::edit_distance;
 use enclone_core::defs::*;

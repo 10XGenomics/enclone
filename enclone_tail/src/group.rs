@@ -847,6 +847,7 @@ pub fn group_and_print_clonotypes(
         &refdata,
         &exacts,
         &exact_clonotypes,
+        &groups,
         &mut svg,
     );
 
