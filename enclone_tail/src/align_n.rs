@@ -32,8 +32,26 @@ fn print_vis_align(
 ) {
     // Make visual alignment.
 
-    let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
-    let mut aligner = Aligner::new(-6, -1, &score);
+    let score = |a: u8, b: u8| if a == b { 2i32 } else { -2i32 };
+    let gap_open = -12;
+    let gap_extend = -2;
+    let gap_open_at_boundary = -6;
+    let gap_extend_at_boundary = -1;
+    let mut aligner = Aligner::new(-12, -2, &score);
+    let _gap_open_fn = |j: i32| -> i32 {
+        if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
+            gap_open_at_boundary
+        } else {
+            gap_open
+        }
+    };
+    let _gap_extend_fn = |j: i32| -> i32 {
+        if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
+            gap_extend_at_boundary
+        } else {
+            gap_extend
+        }
+    };
     let al = aligner.semiglobal(&seq, &concat);
     let width = 100;
     let mut vis = vis_align(&seq, &concat, &al, width);
