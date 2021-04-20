@@ -38,7 +38,12 @@ fn print_vis_align(
     let gap_open_at_boundary = -6;
     let gap_extend_at_boundary = -1;
 
-    let scoring = Scoring::new(-12, -2, &score);
+    let mut scoring = Scoring::new(-12, -2, &score);
+    scoring.xclip_prefix = MIN_SCORE;
+    scoring.xclip_suffix = MIN_SCORE;
+    scoring.yclip_prefix = 0;
+    scoring.yclip_suffix = 0;
+
     let mut aligner = Aligner::with_scoring(scoring);
 
     // let mut aligner = Aligner::new(-12, -2, &score);
@@ -56,13 +61,6 @@ fn print_vis_align(
             gap_extend
         }
     };
-
-    /*
-    aligner.scoring.xclip_prefix = MIN_SCORE;
-    aligner.scoring.xclip_suffix = MIN_SCORE;
-    aligner.scoring.yclip_prefix = 0;
-    aligner.scoring.yclip_suffix = 0;
-    */
 
     let al = aligner.semiglobal(&seq, &concat);
 
