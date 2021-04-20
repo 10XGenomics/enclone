@@ -37,7 +37,11 @@ fn print_vis_align(
     let gap_extend = -2;
     let gap_open_at_boundary = -6;
     let gap_extend_at_boundary = -1;
-    let mut aligner = Aligner::new(-12, -2, &score);
+
+    let scoring = Scoring::new(-12, -2, &score);
+    let mut aligner = Aligner::with_scoring(scoring);
+
+    // let mut aligner = Aligner::new(-12, -2, &score);
     let _gap_open_fn = |j: i32| -> i32 {
         if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
             gap_open_at_boundary
@@ -52,7 +56,52 @@ fn print_vis_align(
             gap_extend
         }
     };
+
+    /*
+    aligner.scoring.xclip_prefix = MIN_SCORE;
+    aligner.scoring.xclip_suffix = MIN_SCORE;
+    aligner.scoring.yclip_prefix = 0;
+    aligner.scoring.yclip_suffix = 0;
+    */
+
     let al = aligner.semiglobal(&seq, &concat);
+
+    /*
+
+    /// Calculate semiglobal alignment of x against y (x is global, y is local).
+    pub fn semiglobal(&mut self, x: TextSlice<'_>, y: TextSlice<'_>) -> Alignment {
+        // Store the current clip penalties
+        let clip_penalties = [
+            self.scoring.xclip_prefix,
+            self.scoring.xclip_suffix,
+            self.scoring.yclip_prefix,
+            self.scoring.yclip_suffix,
+        ];
+
+        // Temporarily Over-write the clip penalties
+        self.scoring.xclip_prefix = MIN_SCORE;
+        self.scoring.xclip_suffix = MIN_SCORE;
+        self.scoring.yclip_prefix = 0;
+        self.scoring.yclip_suffix = 0;
+
+        // Compute the alignment
+        let mut alignment = self.custom(x, y);
+        alignment.mode = AlignmentMode::Semiglobal;
+
+        // Filter out Xclip and Yclip from alignment.operations
+        alignment.filter_clip_operations();
+
+        // Set the clip penalties to the original values
+        self.scoring.xclip_prefix = clip_penalties[0];
+        self.scoring.xclip_suffix = clip_penalties[1];
+        self.scoring.yclip_prefix = clip_penalties[2];
+        self.scoring.yclip_suffix = clip_penalties[3];
+
+        alignment
+    }
+
+    */
+
     let width = 100;
     let mut vis = vis_align(&seq, &concat, &al, width);
 
