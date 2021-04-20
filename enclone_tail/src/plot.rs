@@ -13,7 +13,7 @@ use ansi_escape::*;
 use enclone_core::defs::*;
 use io_utils::*;
 use std::fs::File;
-use std::io::Write;
+// use std::io::Write;
 use std::io::*;
 use std::time::Instant;
 use string_utils::*;
@@ -178,9 +178,9 @@ pub fn plot_clonotypes(
     svg: &mut String,
 ) {
     let t = Instant::now();
-    if plot_opt.plot_file.is_empty() {
-        return;
-    }
+    // if plot_opt.plot_file.is_empty() {
+    //     return;
+    // }
     if exacts.is_empty() {
         eprintln!("\nThere are no clonotypes to plot, giving up.\n");
         std::process::exit(1);
@@ -920,17 +920,17 @@ pub fn plot_clonotypes(
 
     // Output the svg file.
 
-    if plot_opt.plot_file != "stdout".to_string() {
-        let f = File::create(&plot_opt.plot_file);
-        if f.is_err() {
-            eprintln!(
-                "\nThe file {} in your PLOT argument could not be created.\n",
-                plot_opt.plot_file
-            );
-            std::process::exit(1);
-        }
-        let mut f = BufWriter::new(f.unwrap());
-        fwriteln!(f, "{}", svg);
-    }
+    // if plot_opt.plot_file != "stdout".to_string() {
+    //     let f = File::create(&plot_opt.plot_file);
+    //     if f.is_err() {
+    //         eprintln!(
+    //             "\nThe file {} in your PLOT argument could not be created.\n",
+    //             plot_opt.plot_file
+    //         );
+    //         std::process::exit(1);
+    //     }
+    //     let mut f = BufWriter::new(f.unwrap());
+    //     fwriteln!(f, "{}", svg);
+    // }
     ctl.perf_stats(&t, "building svg file");
 }

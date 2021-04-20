@@ -47,6 +47,7 @@ use stats_utils::*;
 use std::{
     collections::HashMap,
     env,
+    error::Error,
     fs::File,
     io::{BufRead, BufReader, BufWriter, Write},
     thread, time,
@@ -60,7 +61,13 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub async fn main_enclone(args: &Vec<String>) {
+#[derive(Debug, Default)]
+pub struct MainEncloneOutput {
+    pub pics: Vec<String>,
+    pub svg: String,
+}
+
+pub async fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, Box<dyn Error>> {
     let tall = Instant::now();
 
     // Process SOURCE args.
@@ -887,7 +894,7 @@ pub async fn main_enclone(args: &Vec<String>) {
     }
 
     // Tail code.
-
+    let mut svg = String::new();
     tail_code(
         &tall,
         &refdata,
@@ -896,6 +903,7 @@ pub async fn main_enclone(args: &Vec<String>) {
         &rsi,
         &exact_clonotypes,
         &ctl,
+        &mut svg,
         &mut out_datas,
         &join_info,
         &gex_info,
@@ -979,7 +987,12 @@ pub async fn main_enclone(args: &Vec<String>) {
         println!("");
     }
     // It's not totally clear that the exit below actually saves time.  Would need more testing.
-    if !ctl.gen_opt.cellranger {
-        std::process::exit(0);
-    }
+    // if !ctl.gen_opt.cellranger {
+    //     std::process::exit(0);
+    // }
+
+    return Ok(MainEncloneOutput {
+        pics: pics,
+        svg: svg,
+    });
 }

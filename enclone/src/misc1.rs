@@ -6,7 +6,7 @@ use enclone_core::defs::*;
 use equiv::*;
 use itertools::*;
 #[cfg(not(target_os = "windows"))]
-use pager::Pager;
+// use pager::Pager;
 use perf_stats::*;
 use std::collections::HashMap;
 use std::time::Instant;
@@ -44,7 +44,8 @@ pub fn setup_pager(pager: bool) {
     //   from enclone.  This is really bad, so do not turn off this option!
 
     if pager {
-        Pager::with_pager("less -R -F -X").setup();
+        println!("Pager permanently disabled for server.")
+        // Pager::with_pager("less -R -F -X").setup();
     }
 }
 

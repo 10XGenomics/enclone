@@ -44,6 +44,7 @@ pub fn group_and_print_clonotypes(
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
+    mut svg: &mut String,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
@@ -779,7 +780,6 @@ pub fn group_and_print_clonotypes(
 
     // Plot clonotypes.
 
-    let mut svg = String::new();
     let plot_opt = ctl.plot_opt.clone();
     plot_clonotypes(
         &ctl,
@@ -794,7 +794,7 @@ pub fn group_and_print_clonotypes(
     // Output clonotype plot (if it was generated and directed to stdout).
 
     if ctl.plot_opt.plot_file == "stdout".to_string() {
-        print!("{}", svg);
+        // print!("{}", svg);
         if !ctl.gen_opt.noprint {
             println!("");
         }
