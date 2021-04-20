@@ -51,11 +51,12 @@ fn circles_to_svg(
     shades: &Vec<Polygon>,
     shade_colors: &Vec<String>,
     shade_enclosures: &Vec<Polygon>,
-    _group_index2: &Vec<usize>,
-    _clonotype_index2: &Vec<usize>,
+    group_index2: &Vec<usize>,
+    clonotype_index2: &Vec<usize>,
     width: usize,
     height: usize,
     boundary: usize,
+    tooltip: bool,
 ) -> String {
     let n = center.len();
     assert!(!center.is_empty());
@@ -127,9 +128,17 @@ fn circles_to_svg(
         out += "/>\n";
     }
     for i in 0..center.len() {
+        let mut tooltipx = String::new();
+        if tooltip {
+            tooltipx = format!(
+                "data-tooltip='{{\"group_id\":\"{}\",\"clonotype_id\":\"{}\"}}' ",
+                group_index2[i] + 1,
+                clonotype_index2[i] + 1,
+            );
+        }
         out += &format!(
-            "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
-            center[i].0, center[i].1, radius[i], color[i]
+            "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
+            tooltipx, center[i].0, center[i].1, radius[i], color[i]
         );
     }
     out += "</svg>\n";
@@ -704,6 +713,7 @@ pub fn plot_clonotypes(
         WIDTH,
         HEIGHT,
         BOUNDARY,
+        ctl.plot_opt.tooltip,
     );
 
     // Calculate the actual height and width of the svg.
