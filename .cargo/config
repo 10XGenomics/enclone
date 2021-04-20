@@ -13,5 +13,8 @@ t = "test --bin traceback1 --test enclone_test1 --test enclone_test2 --test encl
 #
 # "cargo tb" has to be run from the directory enclone_main, but should be runnable from any
 # machine, so long as at least the medium dataset has been downloaded.
+#
+# Note that because it runs with "--features basic", one gets a bunch of warnings when one runs
+# "cargo tb".
 
 tb = "test --test enclone_test1 --test enclone_test2 --test enclone_test3 --test enclone_test4 --features basic -- --nocapture"
