@@ -3,8 +3,10 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::group::*;
+use crate::grouper::*;
 use enclone_core::defs::*;
 use enclone_core::median::*;
+use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use ndarray::s;
@@ -39,14 +41,74 @@ pub fn tail_code(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     dref: &Vec<DonorReferenceItem>,
 ) {
-    // Group and print clonotypes.
+    // Assign a D segment to each "left" column in a clonotype (if we need this information).
+    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
+    // though the true values have to be the same.  This is also true for V and J segments,
+    // although they are less likely to vary.
+
+    let t = Instant::now();
+    let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
+    let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
+    for x in ctl.gen_opt.gvars.iter() {
+        if x.starts_with("d_inconsistent_") {
+            need_opt_d_val = true;
+        }
+    }
+    if need_opt_d_val {
+        for i in 0..exacts.len() {
+            opt_d_val.push((i, Vec::new()));
+        }
+        opt_d_val.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            res.1 = vec![Vec::<Option<usize>>::new(); rsi[i].mat.len()];
+            for col in 0..rsi[i].mat.len() {
+                let mut dvotes = Vec::<Option<usize>>::new();
+                for u in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][u]];
+                    let m = rsi[i].mat[col][u];
+                    if m.is_some() {
+                        let m = m.unwrap();
+                        if ex.share[m].left {
+                            let mut opt = None;
+                            let mut opt2 = None;
+                            let mut delta = 0;
+                            opt_d(
+                                &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
+                                &mut delta,
+                            );
+                            dvotes.push(opt);
+                        }
+                    } else {
+                        dvotes.push(None);
+                    }
+                }
+                res.1[col] = dvotes;
+            }
+        });
+    }
+    ctl.perf_stats(&t, "computing opt_d");
+
+    // Group clonotypes.
+
+    let t = Instant::now();
+    let groups = grouper(
+        &refdata,
+        &exacts,
+        &in_center,
+        &exact_clonotypes,
+        &ctl,
+        &rsi,
+        &opt_d_val,
+    );
+    ctl.perf_stats(&t, "in grouper");
+
+    // Print clonotypes.
 
     group_and_print_clonotypes(
         &tall,
         &refdata,
         &pics,
         &exacts,
-        &in_center,
         &rsi,
         &exact_clonotypes,
         &ctl,
@@ -56,6 +118,8 @@ pub fn tail_code(
         &vdj_cells,
         &fate,
         &dref,
+        &groups,
+        &opt_d_val,
     );
 
     // Do gene scan.

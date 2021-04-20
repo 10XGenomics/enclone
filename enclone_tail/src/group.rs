@@ -1,13 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Group and print clonotypes.  For now, limited grouping functionality.
+// (NO LONGER DOES THE GROUPING.)
 //
 // To keep compilation time down, this crate should not reach into the enclone crate.
 
 use crate::align_n::*;
 use crate::clustal::*;
 use crate::fasta::*;
-use crate::grouper::*;
 use crate::phylip::*;
 use crate::plot::*;
 use crate::plot_points::*;
@@ -18,12 +18,10 @@ use ansi_escape::ansi_to_html::*;
 use ansi_escape::*;
 use enclone_core::defs::*;
 use enclone_core::mammalian_fixed_len::*;
-use enclone_core::opt_d::*;
 use enclone_core::print_tools::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use itertools::*;
-use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
 use std::fs::remove_file;
@@ -43,7 +41,6 @@ pub fn group_and_print_clonotypes(
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
-    in_center: &Vec<bool>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
@@ -53,6 +50,8 @@ pub fn group_and_print_clonotypes(
     vdj_cells: &Vec<Vec<String>>,
     fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
+    groups: &Vec<Vec<(i32, String)>>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
 ) {
     // Build index to join info.
 
@@ -166,66 +165,7 @@ pub fn group_and_print_clonotypes(
             }
         }
     }
-
-    // Assign a D segment to each "left" column in a clonotype (if we need this information).
-    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
-    // though the true values have to be the same.  This is also true for V and J segments,
-    // although they are less likely to vary.
-
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
-    let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
-    for x in ctl.gen_opt.gvars.iter() {
-        if x.starts_with("d_inconsistent_") {
-            need_opt_d_val = true;
-        }
-    }
-    if need_opt_d_val {
-        for i in 0..exacts.len() {
-            opt_d_val.push((i, Vec::new()));
-        }
-        opt_d_val.par_iter_mut().for_each(|res| {
-            let i = res.0;
-            res.1 = vec![Vec::<Option<usize>>::new(); rsi[i].mat.len()];
-            for col in 0..rsi[i].mat.len() {
-                let mut dvotes = Vec::<Option<usize>>::new();
-                for u in 0..exacts[i].len() {
-                    let ex = &exact_clonotypes[exacts[i][u]];
-                    let m = rsi[i].mat[col][u];
-                    if m.is_some() {
-                        let m = m.unwrap();
-                        if ex.share[m].left {
-                            let mut opt = None;
-                            let mut opt2 = None;
-                            let mut delta = 0;
-                            opt_d(
-                                &ex, col, u, &rsi[i], &refdata, &dref, &mut opt, &mut opt2,
-                                &mut delta,
-                            );
-                            dvotes.push(opt);
-                        }
-                    } else {
-                        dvotes.push(None);
-                    }
-                }
-                res.1[col] = dvotes;
-            }
-        });
-    }
-    ctl.perf_stats(&t, "in group code before calling grouper");
-
-    // Group clonotypes.
-
-    let t = Instant::now();
-    let groups = grouper(
-        &refdata,
-        &exacts,
-        &in_center,
-        &exact_clonotypes,
-        &ctl,
-        &rsi,
-        &opt_d_val,
-    );
-    ctl.perf_stats(&t, "in grouper");
+    ctl.perf_stats(&t, "in group code 1");
 
     // Echo command.
 
@@ -863,5 +803,5 @@ pub fn group_and_print_clonotypes(
     // Test requirements.
 
     test_requirements(&pics, &exacts, &exact_clonotypes, &ctl, nclono2, two_chain);
-    ctl.perf_stats(&t, "in group code after calling grouper");
+    ctl.perf_stats(&t, "in group code 2");
 }
