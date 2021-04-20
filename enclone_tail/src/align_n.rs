@@ -5,6 +5,7 @@
 use align_tools::*;
 use ansi_escape::*;
 use bio::alignment::pairwise::*;
+use bio::alignment::AlignmentMode;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;
@@ -62,25 +63,16 @@ fn print_vis_align(
         }
     };
 
-    let al = aligner.semiglobal(&seq, &concat);
+    // let al = aligner.semiglobal(&seq, &concat);
+
+    let mut al = aligner.custom(&seq, &concat);
+    al.mode = AlignmentMode::Semiglobal;
+    al.filter_clip_operations();
 
     /*
 
     /// Calculate semiglobal alignment of x against y (x is global, y is local).
     pub fn semiglobal(&mut self, x: TextSlice<'_>, y: TextSlice<'_>) -> Alignment {
-        // Store the current clip penalties
-        let clip_penalties = [
-            self.scoring.xclip_prefix,
-            self.scoring.xclip_suffix,
-            self.scoring.yclip_prefix,
-            self.scoring.yclip_suffix,
-        ];
-
-        // Temporarily Over-write the clip penalties
-        self.scoring.xclip_prefix = MIN_SCORE;
-        self.scoring.xclip_suffix = MIN_SCORE;
-        self.scoring.yclip_prefix = 0;
-        self.scoring.yclip_suffix = 0;
 
         // Compute the alignment
         let mut alignment = self.custom(x, y);
@@ -88,12 +80,6 @@ fn print_vis_align(
 
         // Filter out Xclip and Yclip from alignment.operations
         alignment.filter_clip_operations();
-
-        // Set the clip penalties to the original values
-        self.scoring.xclip_prefix = clip_penalties[0];
-        self.scoring.xclip_suffix = clip_penalties[1];
-        self.scoring.yclip_prefix = clip_penalties[2];
-        self.scoring.yclip_suffix = clip_penalties[3];
 
         alignment
     }
