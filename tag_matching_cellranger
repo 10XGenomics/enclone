@@ -22,22 +22,21 @@ set tag_name=v_cellranger_{$CELLRANGER_VERSION}
 
 set URL = https://raw.githubusercontent.com/10XDev/cellranger/cellranger-$CELLRANGER_VERSION/lib/rust/Cargo.lock
 
-set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr '#' '\n' | tail -1 | tr -d '"'`
+curl --user {$USER}:{$PAT} $URL |& grep enclone_main > /dev/null
 
-# echo "running git tag -a -m$CELLRANGER_VERSION $tag_name $ENCLONE_REV"
+if ( $status != 0 ) then
+    echo "failed to find info for that version"
+    exit 1
+endif
+
+set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr '#' '\n' | tail -1 | tr -d '"'`
 
 echo "\nrunning git tag $tag_name $ENCLONE_REV"
 
-# git tag -a -m{$CELLRANGER_VERSION} $tag_name $ENCLONE_REV
-
 git tag $tag_name $ENCLONE_REV
-
-# echo "running git push origin --tags"
 
 echo "\nrunning git push origin $tag_name"
 echo
-
-# git push origin --tags
 
 git push origin $tag_name
 
