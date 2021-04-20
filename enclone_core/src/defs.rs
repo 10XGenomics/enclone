@@ -281,6 +281,7 @@ pub struct PlotOpt {
     pub plot_quad: bool,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
+    pub tooltip: bool,
 }
 
 // Allele-finding algorithmic options.

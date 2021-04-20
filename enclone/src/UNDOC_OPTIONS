@@ -325,3 +325,5 @@ UNACCOUNTED: show unaccounted time at each step
 EVIL_EYE: print logging to facilitate diagnosis of mysterious hanging
 
 TOY_COM: compute clonotypes, then act as toy server, which can speak to enclone_client
+
+TOOLTIP: add tooltip text to honeycomb plots

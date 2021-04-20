@@ -42,7 +42,7 @@ fn get_svg_height(svg: &String) -> f64 {
 
 // Given a collection of circles having specified colors, create an svg string that shows the
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
-// Also shades smoothed polygons.
+// Also shades smoothed polygons.  Also add tooltip notes if requested.
 
 fn circles_to_svg(
     center: &Vec<(f64, f64)>,
