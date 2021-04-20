@@ -8,7 +8,7 @@
 # If you run this script, GitHub Actions will start a new release for the version of enclone that 
 # matches that Cell Ranger version.
 #
-# We need to record this information somewhere so people can find it.
+# NOTE THAT THIS SHOULD NOT BE RUN IF THE ENCLONE VERSION HAS NOT CHANGED!
 
 # argument 1 = your GitHub user name
 # argument 2 = your GitHub PAT
