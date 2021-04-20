@@ -18,13 +18,26 @@ set USER=$1
 set PAT=$2
 set CELLRANGER_VERSION=$3
 
+set tag_name=v_cellranger_{$CELLRANGER_VERSION}
+
 set URL = https://raw.githubusercontent.com/10XDev/cellranger/cellranger-$CELLRANGER_VERSION/lib/rust/Cargo.lock
 
 set ENCLONE_REV = `curl --user {$USER}:{$PAT} $URL |& grep -A2 enclone_main | tr '#' '\n' | tail -1 | tr -d '"'`
 
-echo "running git tag -a -m$CELLRANGER_VERSION cellranger$CELLRANGER_VERSION $ENCLONE_REV"
+# echo "running git tag -a -m$CELLRANGER_VERSION $tag_name $ENCLONE_REV"
 
-git tag -a -m{$CELLRANGER_VERSION} cellranger{$CELLRANGER_VERSION} $ENCLONE_REV
+echo "running git tag $tag_name $ENCLONE_REV"
 
-echo "running git push origin --tags"
-git push origin --tags
+# git tag -a -m{$CELLRANGER_VERSION} $tag_name $ENCLONE_REV
+
+git tag $tag_name $ENCLONE_REV
+
+# echo "running git push origin --tags"
+
+echo "running git push origin $tag_name"
+
+# git push origin --tags
+
+git push origin $tag_name
+
+echo "done; this should cause GitHub Actions to start a build"
