@@ -19,6 +19,7 @@ pub async fn enclone_server(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    groups: &Vec<Vec<(i32, String)>>,
     pics: &Vec<String>,
 ) -> Result<(), Box<dyn Error>> {
     // Fixed address for now.
@@ -79,13 +80,6 @@ pub async fn enclone_server(
                 let mut plot_opt = PlotOpt::default();
                 plot_opt.plot_by_isotype = true;
                 plot_opt.plot_file = "stdout".to_string();
-
-                // Temporary setting of groups.
-
-                let mut groups = Vec::<Vec<(i32, String)>>::new();
-                for i in 0..exacts.len() {
-                    groups.push(vec![(i as i32, String::new())]);
-                }
 
                 // Make plot.
 
