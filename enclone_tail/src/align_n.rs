@@ -31,23 +31,19 @@ fn print_vis_align(
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
 ) {
-    // Make visual alignment.
+    // Make alignment.
 
     let score = |a: u8, b: u8| if a == b { 2i32 } else { -2i32 };
     let gap_open = -12;
     let gap_extend = -2;
     let gap_open_at_boundary = -6;
     let gap_extend_at_boundary = -1;
-
     let mut scoring = Scoring::new(-12, -2, &score);
     scoring.xclip_prefix = MIN_SCORE;
     scoring.xclip_suffix = MIN_SCORE;
     scoring.yclip_prefix = 0;
     scoring.yclip_suffix = 0;
-
     let mut aligner = Aligner::with_scoring(scoring);
-
-    // let mut aligner = Aligner::new(-12, -2, &score);
     let _gap_open_fn = |j: i32| -> i32 {
         if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
             gap_open_at_boundary
@@ -62,29 +58,11 @@ fn print_vis_align(
             gap_extend
         }
     };
-
-    // let al = aligner.semiglobal(&seq, &concat);
-
     let mut al = aligner.custom(&seq, &concat);
     al.mode = AlignmentMode::Semiglobal;
     al.filter_clip_operations();
 
-    /*
-
-    /// Calculate semiglobal alignment of x against y (x is global, y is local).
-    pub fn semiglobal(&mut self, x: TextSlice<'_>, y: TextSlice<'_>) -> Alignment {
-
-        // Compute the alignment
-        let mut alignment = self.custom(x, y);
-        alignment.mode = AlignmentMode::Semiglobal;
-
-        // Filter out Xclip and Yclip from alignment.operations
-        alignment.filter_clip_operations();
-
-        alignment
-    }
-
-    */
+    // Make visual alignment.
 
     let width = 100;
     let mut vis = vis_align(&seq, &concat, &al, width);
