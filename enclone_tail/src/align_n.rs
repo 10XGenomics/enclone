@@ -33,12 +33,10 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    // let score = |a: u8, b: u8| if a == b { 2i32 } else { -2i32 };
     let gap_open = -12;
     let gap_extend = -2;
     let gap_open_at_boundary = -6;
     let gap_extend_at_boundary = -1;
-
     let _gap_open_fn = |j: i32| -> i32 {
         if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
             gap_open_at_boundary
@@ -53,11 +51,8 @@ fn print_vis_align(
             gap_extend
         }
     };
-
-    // let mut scoring = Scoring::new(-12, -2, &score);
     let mut scoring = Scoring::from_scores(-12, -2, 2, -2);
     // let mut scoring = Scoring::from_scores_by_pos2(&gap_open_fn, &gap_extend_fn, 2, -2);
-
     scoring.xclip_prefix = MIN_SCORE;
     scoring.xclip_suffix = MIN_SCORE;
     scoring.yclip_prefix = 0;
