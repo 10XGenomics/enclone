@@ -4,9 +4,9 @@
 // the donor V and J segments that are assigned to the clonotype.  Note that the optimal D
 // segment may be null.  This is obvious from looking at data.
 
+use crate::align_to_vdj_ref::*;
 use crate::defs::*;
-use bio::alignment::pairwise::*;
-use bio::alignment::AlignmentOperation::*;
+use bio_edit::alignment::AlignmentOperation::*;
 use enclone_proto::types::*;
 use std::cmp::min;
 use vdj_ann::refx::*;
@@ -62,9 +62,10 @@ pub fn opt_d(
 
         // Append the D segment if IGH/TRB.
 
+        let mut dref = Vec::<u8>::new();
         if ex.share[mid].left && di < z {
-            let mut x = refdata.refs[d].to_ascii_vec();
-            concat.append(&mut x);
+            dref = refdata.refs[d].to_ascii_vec();
+            concat.append(&mut dref.clone());
             _refsplits.push(concat.len());
         }
 
@@ -72,8 +73,8 @@ pub fn opt_d(
 
         let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
         let jend = min(FLANK, jref.len());
-        let mut x = jref[0..jend].to_vec();
-        concat.append(&mut x);
+        let jref = jref[0..jend].to_vec();
+        concat.append(&mut jref.clone());
         _refsplits.push(concat.len());
 
         // Align the V..J sequence on the contig to the reference concatenation.
@@ -88,11 +89,11 @@ pub fn opt_d(
         }
         let seq_end = tig.len() - (jref.len() - jend);
         let seq = tig[seq_start as usize..seq_end].to_vec();
-        let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
-        let mut aligner = Aligner::new(-6, -1, &score);
-        let al = aligner.semiglobal(&seq, &concat);
-        let mut m = 0;
+
+        let al = align_to_vdj_ref(&seq, &vref, &dref, &jref);
+
         let mut count = 0;
+        let mut m = 0;
         while m < al.operations.len() {
             let n = next_diff(&al.operations, m);
             match al.operations[m] {
