@@ -4,8 +4,7 @@
 
 use align_tools::*;
 use ansi_escape::*;
-use bio_edit::alignment::pairwise::*;
-use bio_edit::alignment::AlignmentMode;
+use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;
@@ -26,48 +25,15 @@ fn print_vis_align(
     col: usize,
     k: usize,
     vref: &[u8],
-    drefx: &[u8],
+    dref: &[u8],
+    jref: &[u8],
     left: bool, // will be ex.share[r].left
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
 ) {
-    // Define alignment penalities.
-
-    let mismatch = -2;
-    let gap_open = -12;
-    let gap_extend = -2;
-    let gap_open_at_boundary = -6;
-    let gap_extend_at_boundary = -1;
-
     // Make alignment.
 
-    let mut scoring = Scoring::from_scores(-12, -2, -mismatch, mismatch);
-    scoring.xclip_prefix = MIN_SCORE;
-    scoring.xclip_suffix = MIN_SCORE;
-    scoring.yclip_prefix = 0;
-    scoring.yclip_suffix = 0;
-    let mut aligner = Aligner::with_scoring(scoring);
-
-    let mut gap_open_fn = vec![0_i32; concat.len() + 1];
-    for j in 1..=concat.len() {
-        if j as usize == vref.len() || j as usize == vref.len() + drefx.len() {
-            gap_open_fn[j] = gap_open_at_boundary;
-        } else {
-            gap_open_fn[j] = gap_open;
-        }
-    }
-    let mut gap_extend_fn = vec![0_i32; concat.len() + 1];
-    for j in 1..=concat.len() {
-        if j as usize == vref.len() || j as usize == vref.len() + drefx.len() {
-            gap_extend_fn[j] = gap_extend_at_boundary;
-        } else {
-            gap_extend_fn[j] = gap_extend;
-        }
-    }
-    let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
-
-    al.mode = AlignmentMode::Semiglobal;
-    al.filter_clip_operations();
+    let al = align_to_vdj_ref(&seq, &vref, &dref, &jref);
 
     // Make visual alignment.
 
@@ -108,7 +74,7 @@ fn print_vis_align(
                 let line = line.as_bytes();
                 if pos < vref.len() {
                     print_color(vcolor, &mut log);
-                } else if left && pos < vref.len() + drefx.len() {
+                } else if left && pos < vref.len() + dref.len() {
                     print_color(dcolor, &mut log);
                 } else {
                     print_color(jcolor, &mut log);
@@ -119,7 +85,7 @@ fn print_vis_align(
                         pos += 1;
                         if j != line.len() - 1 {
                             if left {
-                                if pos == vref.len() + drefx.len() {
+                                if pos == vref.len() + dref.len() {
                                     print_color(jcolor, &mut log);
                                 } else if pos == vref.len() {
                                     print_color(dcolor, &mut log);
@@ -212,8 +178,8 @@ pub fn align_n(
                                 refsplits.push(concat.len());
                             }
                         }
-                        let mut x = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
-                        concat.append(&mut x);
+                        let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                        concat.append(&mut jref.clone());
                         refsplits.push(concat.len());
 
                         // Make and print alignment.
@@ -226,6 +192,7 @@ pub fn align_n(
                             k,
                             &vref,
                             &drefx,
+                            &jref,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
@@ -319,12 +286,6 @@ pub fn jun_align_n(
 
                         let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                         let jend = min(RFLANK, jref.len());
-                        let mut x = jref[0..jend].to_vec();
-                        concat.append(&mut x);
-                        refsplits.push(concat.len());
-
-                        // Different from previous function:
-
                         let mut seq_start = vstart as isize;
                         // probably not exactly right
                         if ex.share[r].annv.len() > 1 {
@@ -335,6 +296,9 @@ pub fn jun_align_n(
                         }
                         let seq_end = seq.len() - (jref.len() - jend);
                         let seq = seq[seq_start as usize..seq_end].to_vec();
+                        let jref = jref[0..jend].to_vec();
+                        concat.append(&mut jref.clone());
+                        refsplits.push(concat.len());
 
                         // Make and print alignment.
 
@@ -346,6 +310,7 @@ pub fn jun_align_n(
                             k,
                             &vref,
                             &drefx,
+                            &jref,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
