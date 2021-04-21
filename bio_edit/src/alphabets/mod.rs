@@ -6,11 +6,7 @@
 use std::borrow::Borrow;
 
 use bit_set::BitSet;
-use vec_map::VecMap;
 
-pub type SymbolRanks = VecMap<u8>;
-
-/// Representation of an alphabet.
 #[derive(Debug, PartialEq)]
 pub struct Alphabet {
     pub symbols: BitSet,
@@ -72,12 +68,10 @@ impl Alphabet {
     }
 }
 
-/// Returns the english ascii lower case alphabet.
 pub fn english_ascii_lower_alphabet() -> Alphabet {
     Alphabet::new(&b"abcdefghijklmnopqrstuvwxyz"[..])
 }
 
-/// Returns the english ascii upper case alphabet.
 pub fn english_ascii_upper_alphabet() -> Alphabet {
     Alphabet::new(&b"ABCDEFGHIJKLMNOPQRSTUVWXYZ"[..])
 }

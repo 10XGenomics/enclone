@@ -304,7 +304,6 @@ dependencies = [
  "strum_macros",
  "thiserror",
  "triple_accel",
- "vec_map",
 ]
 
 [[package]]

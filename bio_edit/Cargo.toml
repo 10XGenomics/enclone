@@ -57,10 +57,6 @@ triple_accel = "0.3"
 thiserror = "1"
 anyhow = "1"
 
-[dependencies.vec_map]
-version = "0.8"
-features = ["eders"]
-
 [dependencies.petgraph]
 version = ">=0.4, <=0.5"
 features = ["stable_graph"]
