@@ -3,11 +3,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Various alignment and distance computing algorithms.
-
 pub mod distance;
 pub mod pairwise;
-pub mod poa;
 
-// Re-export the alignment types.
 pub use bio_types::alignment::*;
