@@ -7,7 +7,6 @@ extern crate approx;
 
 extern crate custom_derive;
 
-#[macro_use]
 extern crate lazy_static;
 
 extern crate newtype_derive;

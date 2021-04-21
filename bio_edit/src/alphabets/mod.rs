@@ -9,8 +9,6 @@ use std::mem;
 use bit_set::BitSet;
 use vec_map::VecMap;
 
-pub mod dna;
-
 pub type SymbolRanks = VecMap<u8>;
 
 /// Representation of an alphabet.
@@ -109,24 +107,6 @@ impl RankTransform {
             .collect()
     }
 
-    /// Iterate over q-grams (substrings of length q) of given `text`. The q-grams are encoded
-    /// as `usize` by storing the symbol ranks in log2(|A|) bits (with |A| being the alphabet size).
-    ///
-    /// If q is larger than usize::BITS / log2(|A|), this method fails with an assertion.
-    ///
-    /// Complexity: O(n), where n is the length of the text.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ACGTacgt");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    ///
-    /// let q_grams: Vec<usize> = dna_ranks.qgrams(2, b"ACGT").collect();
-    /// assert_eq!(q_grams, vec![1, 10, 19]);
-    /// ```
     pub fn qgrams<C, T>(&self, q: u32, text: T) -> QGrams<'_, C, T::IntoIter>
     where
         C: Borrow<u8>,
@@ -153,44 +133,12 @@ impl RankTransform {
         qgrams
     }
 
-    /// Restore alphabet from transform.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    /// assert_eq!(dna_ranks.alphabet().symbols, dna_alphabet.symbols);
-    /// ```
     pub fn alphabet(&self) -> Alphabet {
         let mut symbols = BitSet::with_capacity(self.ranks.len());
         symbols.extend(self.ranks.keys());
         Alphabet { symbols }
     }
 
-    /// Compute the number of bits required to encode the largest rank value.
-    ///
-    /// For example, the alphabet `b"ACGT"` with 4 symbols has the maximal rank
-    /// 3, which can be encoded in 2 bits.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ACGT");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    /// assert_eq!(dna_ranks.get_width(), 2);
-    /// let dna_n_alphabet = alphabets::Alphabet::new(b"ACGTN");
-    /// let dna_n_ranks = alphabets::RankTransform::new(&dna_n_alphabet);
-    /// assert_eq!(dna_n_ranks.get_width(), 3);
-    /// ```
     pub fn get_width(&self) -> usize {
         (self.ranks.len() as f32).log2().ceil() as usize
     }
