@@ -236,5 +236,4 @@ pub mod alphabets;
 pub mod data_structures;
 pub mod io;
 pub mod scores;
-pub mod stats;
 pub mod utils;
