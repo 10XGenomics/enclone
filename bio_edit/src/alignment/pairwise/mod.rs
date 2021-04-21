@@ -891,15 +891,15 @@ impl<F: MatchFunc> Aligner<F> {
     }
 
     /// Modified version of the core function that allows gap open and gap extend penalties to
-    /// be specified as a function of the position the second sequence y.  These functions are 
-    /// one-based and specified as vectors that have y.len() + 1 elements.  In this form of the 
+    /// be specified as a function of the position the second sequence y.  These functions are
+    /// one-based and specified as vectors that have y.len() + 1 elements.  In this form of the
     /// function, the values of gap_open and gap_extend are ignored.
     ///
     /// The code for this is a copy of the custom function, with each instance of gap_open and
     /// gap_extend replaced by a function reference.
     ///
     /// It would be more appealing to provide equivalent functionality using bona fide functions
-    /// (allowing for closures), but it is not clear how to do this without breaking existing 
+    /// (allowing for closures), but it is not clear how to do this without breaking existing
     /// functionality and possibly impacting performance in the case where the gap penalties
     /// are not functions.
     ///
@@ -910,8 +910,8 @@ impl<F: MatchFunc> Aligner<F> {
     /// * `gap_open_fn` - [i32]
     /// * `gap_extend_fn` - [i32]
     pub fn custom_with_gap_fns(
-        &mut self, 
-        x: TextSlice<'_>, 
+        &mut self,
+        x: TextSlice<'_>,
         y: TextSlice<'_>,
         gap_open_fn: &[i32],
         gap_extend_fn: &[i32],
@@ -956,8 +956,7 @@ impl<F: MatchFunc> Aligner<F> {
                 } else {
                     // Insert all i characters
                     let i_score = gap_open_fn[j] + gap_extend_fn[j] * (i as i32);
-                    let c_score =
-                        self.scoring.xclip_prefix + gap_open_fn[j] + gap_extend_fn[j]; // Clip then insert
+                    let c_score = self.scoring.xclip_prefix + gap_open_fn[j] + gap_extend_fn[j]; // Clip then insert
                     if i_score > c_score {
                         self.I[k][i] = i_score;
                         tb.set_i_bits(TB_INS);
@@ -1015,8 +1014,7 @@ impl<F: MatchFunc> Aligner<F> {
                 } else {
                     // Delete all j characters
                     let d_score = gap_open_fn[j] + gap_extend_fn[j] * (j as i32);
-                    let c_score =
-                        self.scoring.yclip_prefix + gap_open_fn[j] + gap_extend_fn[j];
+                    let c_score = self.scoring.yclip_prefix + gap_open_fn[j] + gap_extend_fn[j];
                     if d_score > c_score {
                         self.D[curr][0] = d_score;
                         tb.set_d_bits(TB_DEL);
@@ -1107,9 +1105,8 @@ impl<F: MatchFunc> Aligner<F> {
                     tb.set_s_bits(TB_XCLIP_PREFIX);
                 }
 
-                let yclip_score = self.scoring.yclip_prefix
-                    + gap_open_fn[j]
-                    + gap_extend_fn[j] * (i as i32);
+                let yclip_score =
+                    self.scoring.yclip_prefix + gap_open_fn[j] + gap_extend_fn[j] * (i as i32);
                 if yclip_score > best_s_score {
                     best_s_score = yclip_score;
                     tb.set_s_bits(TB_YCLIP_PREFIX);
