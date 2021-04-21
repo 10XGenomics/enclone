@@ -25,5 +25,4 @@ extern crate pest_derive;
 
 pub mod alignment;
 pub mod alphabets;
-pub mod data_structures;
 pub mod utils;

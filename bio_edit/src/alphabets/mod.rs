@@ -3,17 +3,6 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Implementation of alphabets and useful utilities.
-//!
-//! # Example
-//!
-//! ```rust
-//! use bio::alphabets;
-//! let alphabet = alphabets::dna::alphabet();
-//! assert!(alphabet.is_word(b"AACCTgga"));
-//! assert!(!alphabet.is_word(b"AXYZ"));
-//! ```
-
 use std::borrow::Borrow;
 use std::mem;
 
@@ -216,7 +205,6 @@ impl Alphabet {
 /// will yield ranks `0`, `1`, `2`, `3` for them, respectively.
 ///
 /// `RankTransform` can be used in to perform bit encoding for texts over a
-/// given alphabet via `bio::data_structures::bitenc`.
 #[derive(Serialize, Deserialize)]
 pub struct RankTransform {
     pub ranks: SymbolRanks,
@@ -360,9 +348,6 @@ impl RankTransform {
     ///
     /// For example, the alphabet `b"ACGT"` with 4 symbols has the maximal rank
     /// 3, which can be encoded in 2 bits.
-    ///
-    /// This value can be used to create a `data_structures::bitenc::BitEnc`
-    /// bit encoding tailored to the given alphabet.
     ///
     /// Complexity: O(n), where n is the number of symbols in the alphabet.
     ///
