@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+pub mod align_to_vdj_ref;
 pub mod allowed_vars;
 pub mod copy_for_enclone;
 pub mod defs;

@@ -20,6 +20,7 @@ publish = false
 amino = "0.1"
 ansi_escape = "0.1"
 bio = ">=0.33"
+bio_edit = { path = "../bio_edit" }
 bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 enclone_proto = { path = "../enclone_proto" }

@@ -668,6 +668,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "bio",
+ "bio_edit",
  "bytes",
  "chrono",
  "debruijn",
