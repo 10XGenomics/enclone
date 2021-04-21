@@ -263,7 +263,6 @@ checksum = "6b0decf3291fa83a9f26229d49e8bdf637291ab14451d315d6ac743aa7bf044f"
 dependencies = [
  "derive-new",
  "lazy_static",
- "petgraph",
  "regex",
  "strum_macros",
  "thiserror",

@@ -11,7 +11,6 @@ extern crate lazy_static;
 
 extern crate newtype_derive;
 
-#[macro_use]
 extern crate serde_derive;
 
 extern crate strum_macros;

@@ -24,9 +24,6 @@ license = "MIT"
 build = "build.rs"
 edition = "2018"
 
-[features]
-phylogeny = ["pest", "pest_derive", "bio-types/phylogeny"]
-
 [dependencies]
 bytecount = "0.6"
 csv = "1.1"
