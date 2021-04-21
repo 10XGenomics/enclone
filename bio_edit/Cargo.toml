@@ -24,10 +24,6 @@ license = "MIT"
 build = "build.rs"
 edition = "2018"
 
-[package.metadata.release]
-pre-release-commit-message = "release version {{version}}"
-tag-message = "Version {{version}} of Rust-Bio."
-
 [features]
 runtime-dispatch-simd = ["bytecount/runtime-dispatch-simd"]
 generic-simd = ["bytecount/generic-simd"]
