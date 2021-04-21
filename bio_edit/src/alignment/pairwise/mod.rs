@@ -140,8 +140,6 @@ use std::iter::repeat;
 use crate::alignment::{Alignment, AlignmentMode, AlignmentOperation};
 use crate::utils::TextSlice;
 
-pub mod banded;
-
 /// Value to use as a 'negative infinity' score. Should be close to `i32::MIN`,
 /// but avoid underflow when used with reasonable scoring parameters or even
 /// adding two negative infinities. Use ~ `0.4 * i32::MIN`
