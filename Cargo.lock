@@ -295,7 +295,6 @@ dependencies = [
  "ordered-float",
  "pest",
  "pest_derive",
- "petgraph",
  "regex",
  "serde",
  "serde_derive",
