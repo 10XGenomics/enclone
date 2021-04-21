@@ -50,9 +50,3 @@ multimap = ">=0.6, <=0.8"
 fxhash = "0.2"
 statrs = ">= 0.11, <= 0.13"
 bio-types = ">=0.11.0"
-
-pest = { version = "2", optional = true }
-pest_derive = { version = "2", optional = true }
-fnv = "1.0"
-strum = ">= 0.16, <= 0.20"
-strum_macros = ">= 0.16, <= 0.20"
