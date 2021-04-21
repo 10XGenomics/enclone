@@ -272,7 +272,6 @@ dependencies = [
 name = "bio_edit"
 version = "0.33.1-alpha.0"
 dependencies = [
- "anyhow",
  "approx",
  "bio-types",
  "bit-set",
@@ -280,10 +279,8 @@ dependencies = [
  "bytecount",
  "csv",
  "custom_derive",
- "enum-map",
  "fnv",
  "fxhash",
- "getset",
  "itertools",
  "itertools-num",
  "lazy_static",
@@ -301,8 +298,6 @@ dependencies = [
  "statrs",
  "strum",
  "strum_macros",
- "thiserror",
- "triple_accel",
 ]
 
 [[package]]
