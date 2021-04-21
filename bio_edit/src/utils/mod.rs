@@ -32,22 +32,3 @@ pub fn prescan<T: Copy, F: Fn(T, T) -> T>(a: &mut [T], neutral: T, op: F) {
         s = op(s, t);
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_scan() {
-        let mut a = vec![1, 0, 0, 1];
-        scan(&mut a[..], |a, b| a + b);
-        assert_eq!(a, vec![1, 1, 1, 2]);
-    }
-
-    #[test]
-    fn test_prescan() {
-        let mut a = vec![1, 0, 0, 1];
-        prescan(&mut a[..], 0, |a, b| a + b);
-        assert_eq!(a, vec![0, 1, 1, 1]);
-    }
-}
