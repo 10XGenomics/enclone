@@ -10,7 +10,6 @@ use bit_set::BitSet;
 use vec_map::VecMap;
 
 pub mod dna;
-pub mod rna;
 
 pub type SymbolRanks = VecMap<u8>;
 
