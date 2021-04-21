@@ -206,25 +206,20 @@
 //! Benchmarking Seqan from *Python timeit* entails an overhead of 1.46ms for calling a C++ binary. This overhead was subtracted from above Seqan run times.
 //! Note that this benchmark only compares the two libraries to exemplify that Rust-Bio has comparable speed to C++ libraries: all used algorithms have their advantages for specific text and pattern structures and lengths (see [the pattern matching section in the documentation](https://docs.rs/bio/0.28.2/bio/pattern_matching/index.html))./!
 
-#[macro_use]
 extern crate approx;
 
-#[macro_use]
 extern crate custom_derive;
 
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
 extern crate newtype_derive;
 
 #[macro_use]
 extern crate serde_derive;
 
-#[macro_use]
 extern crate strum_macros;
 
-#[macro_use]
 extern crate getset;
 
 #[cfg(feature = "phylogeny")]
