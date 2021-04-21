@@ -3,24 +3,6 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate approx;
-
-extern crate custom_derive;
-
-extern crate lazy_static;
-
-extern crate newtype_derive;
-
-extern crate serde_derive;
-
-extern crate strum_macros;
-
-extern crate getset;
-
-#[cfg(feature = "phylogeny")]
-#[macro_use]
-extern crate pest_derive;
-
 pub mod alignment;
 pub mod alphabets;
 pub mod utils;
