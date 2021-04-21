@@ -272,27 +272,8 @@ dependencies = [
 name = "bio_edit"
 version = "0.33.1-alpha.0"
 dependencies = [
- "approx",
  "bio-types",
  "bit-set",
- "bv",
- "bytecount",
- "csv",
- "custom_derive",
- "fxhash",
- "itertools",
- "itertools-num",
- "lazy_static",
- "multimap",
- "ndarray",
- "newtype_derive",
- "num-integer",
- "num-traits",
- "ordered-float",
- "regex",
- "serde",
- "serde_derive",
- "statrs",
 ]
 
 [[package]]
