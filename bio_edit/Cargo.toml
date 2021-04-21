@@ -25,8 +25,6 @@ build = "build.rs"
 edition = "2018"
 
 [features]
-runtime-dispatch-simd = ["bytecount/runtime-dispatch-simd"]
-generic-simd = ["bytecount/generic-simd"]
 phylogeny = ["pest", "pest_derive", "bio-types/phylogeny"]
 
 [dependencies]
@@ -69,7 +67,3 @@ features = ["eders"]
 [dependencies.petgraph]
 version = ">=0.4, <=0.5"
 features = ["stable_graph"]
-
-[dev-dependencies]
-proptest = "0.10"
-tempfile = "3.1.0"
