@@ -4,8 +4,8 @@
 
 use align_tools::*;
 use ansi_escape::*;
-use bio::alignment::pairwise::*;
-use bio::alignment::AlignmentMode;
+use bio_edit::alignment::pairwise::*;
+use bio_edit::alignment::AlignmentMode;
 use enclone_core::defs::*;
 use enclone_core::opt_d::*;
 use enclone_proto::types::*;

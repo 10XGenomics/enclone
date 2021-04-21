@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "bio_edit",
     "enclone",
     "enclone_args",
     "enclone_com",
