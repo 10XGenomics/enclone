@@ -16,7 +16,7 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-bio = { path = "/mnt/deck5/david.jaffe/repos/rust-bio" }
+bio = ">=0.33"
 bytes = ">=0.5.5, <2"
 byteorder = "1.4.2"
 failure = "0.1.6"

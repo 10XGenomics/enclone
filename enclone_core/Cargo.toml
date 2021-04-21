@@ -19,7 +19,7 @@ publish = false
 [dependencies]
 amino = "0.1"
 ansi_escape = "0.1"
-bio = { path = "/mnt/deck5/david.jaffe/repos/rust-bio" }
+bio = ">=0.33"
 bytes = ">=0.5.5, <2"
 debruijn = "0.3.2"
 enclone_proto = { path = "../enclone_proto" }
