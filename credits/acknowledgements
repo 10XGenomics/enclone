@@ -12,3 +12,6 @@ We thank Albert Vilella for suggesting the column variables cdr3_aa_conx and cdr
 
 The file polygon.rs uses code taken from the lorikeet-dash crate version 0.1.0, whose license 
 is MIT/Apache-2.0.
+
+The directory bio_edit is a copy of rust-bio, with one modified function, and many other parts
+deleted.
