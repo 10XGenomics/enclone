@@ -9,7 +9,8 @@
 # Modifications:
 # 1. Add a function custom_with_gap_fns that is a copy of custom, with fixed gap penalties
 #    replaced by functions.
-# 2. Delete several parts of the codebase that we are not using.
+# 2. Delete several parts of the codebase that we are not using for this purpose.  Note that
+#    enclone also uses the official version of bio.
 
 name = "bio_edit"
 version = "0.33.1-alpha.0"
