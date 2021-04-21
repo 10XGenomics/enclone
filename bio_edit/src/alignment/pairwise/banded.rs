@@ -1752,7 +1752,6 @@ mod banded {
     // }
 
     use crate::alignment::AlignmentOperation::*;
-    use crate::scores::blosum62;
     use std::iter::repeat;
 
     #[test]
@@ -1873,19 +1872,6 @@ mod banded {
             alignment.operations,
             [Del, Del, Del, Del, Match, Match, Match, Match, Match, Subst, Match, Match, Match,]
         );
-    }
-
-    #[test]
-    fn test_blosum62() {
-        let x = b"AAAA";
-        let y = b"AAAA";
-        let score = &blosum62;
-        let mut aligner = banded::Aligner::with_capacity(x.len(), y.len(), -5, -1, score, 10, 10);
-        let alignment = aligner.global(x, y);
-        assert_eq!(alignment.ystart, 0);
-        assert_eq!(alignment.xstart, 0);
-        assert_eq!(alignment.score, 16);
-        assert_eq!(alignment.operations, [Match, Match, Match, Match]);
     }
 
     #[test]

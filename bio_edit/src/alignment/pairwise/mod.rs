@@ -13,7 +13,6 @@
 //! ```
 //! use bio::alignment::pairwise::*;
 //! use bio::alignment::AlignmentOperation::*;
-//! use bio::scores::blosum62;
 //!
 //! let x = b"ACCGTGGAT";
 //! let y = b"AAAAACCGTTGAT";
@@ -28,22 +27,6 @@
 //!     alignment.operations,
 //!     [Match, Match, Match, Match, Match, Subst, Match, Match, Match]
 //! );
-//!
-//! // You can use predefined scoring matrices such as BLOSUM62
-//! let x = b"LSPADKTNVKAA";
-//! let y = b"PEEKSAV";
-//! // gap open score: -10, gap extension score: -1
-//! let mut aligner = Aligner::with_capacity(x.len(), y.len(), -10, -1, &blosum62);
-//! let alignment = aligner.local(x, y);
-//! assert_eq!(alignment.xstart, 2);
-//! assert_eq!(alignment.xend, 9);
-//! assert_eq!(alignment.ystart, 0);
-//! assert_eq!(alignment.yend, 7);
-//! assert_eq!(
-//!     alignment.operations,
-//!     [Match, Subst, Subst, Match, Subst, Subst, Match]
-//! );
-//! assert_eq!(alignment.score, 16);
 //!
 //! // If you don't know sizes of future sequences, you could
 //! // use Aligner::new().
@@ -1523,7 +1506,6 @@ impl Traceback {
 mod tests {
     use super::*;
     use crate::alignment::AlignmentOperation::*;
-    use crate::scores::blosum62;
 
     #[test]
     fn traceback_cell() {
@@ -1656,36 +1638,6 @@ mod tests {
             alignment.operations,
             [Del, Del, Del, Del, Match, Match, Match, Match, Match, Subst, Match, Match, Match,]
         );
-    }
-
-    #[test]
-    fn test_blosum62() {
-        let x = b"AAAA";
-        let y = b"AAAA";
-        let score = &blosum62;
-        let mut aligner = Aligner::with_capacity(x.len(), y.len(), -5, -1, score);
-        let alignment = aligner.global(x, y);
-        assert_eq!(alignment.ystart, 0);
-        assert_eq!(alignment.xstart, 0);
-        assert_eq!(alignment.score, 16);
-        assert_eq!(alignment.operations, [Match, Match, Match, Match]);
-    }
-
-    #[test]
-    fn test_blosum62_local() {
-        let x = b"LSPADKTNVKAA";
-        let y = b"PEEKSAV";
-        let mut aligner = Aligner::with_capacity(x.len(), y.len(), -10, -1, &blosum62);
-        let alignment = aligner.local(x, y);
-        assert_eq!(alignment.xstart, 2);
-        assert_eq!(alignment.xend, 9);
-        assert_eq!(alignment.ystart, 0);
-        assert_eq!(alignment.yend, 7);
-        assert_eq!(
-            alignment.operations,
-            [Match, Subst, Subst, Match, Subst, Subst, Match]
-        );
-        assert_eq!(alignment.score, 16);
     }
 
     #[test]
