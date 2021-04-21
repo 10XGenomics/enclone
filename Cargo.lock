@@ -30,7 +30,7 @@ version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7184d89f3de371eb37c92cf57e949f05d616f8a0bd4f1bbfe2358c990cd8e4e"
 dependencies = [
- "bio",
+ "bio 0.33.0",
  "debruijn",
  "itertools",
  "string_utils",
@@ -184,6 +184,43 @@ name = "bio"
 version = "0.33.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5bf608c2f4e25edc48f85b8c93f4ef772fe4397d018f4aee88308f8d5864ffd"
+dependencies = [
+ "anyhow",
+ "approx",
+ "bio-types",
+ "bit-set",
+ "bv",
+ "bytecount",
+ "csv",
+ "custom_derive",
+ "enum-map",
+ "fnv",
+ "fxhash",
+ "getset",
+ "itertools",
+ "itertools-num",
+ "lazy_static",
+ "multimap",
+ "ndarray",
+ "newtype_derive",
+ "num-integer",
+ "num-traits",
+ "ordered-float",
+ "petgraph",
+ "regex",
+ "serde",
+ "serde_derive",
+ "statrs",
+ "strum",
+ "strum_macros",
+ "thiserror",
+ "triple_accel",
+ "vec_map",
+]
+
+[[package]]
+name = "bio"
+version = "0.33.1-alpha.0"
 dependencies = [
  "anyhow",
  "approx",
@@ -584,7 +621,7 @@ dependencies = [
  "amino",
  "ansi_escape",
  "assert_cmd",
- "bio",
+ "bio 0.33.1-alpha.0",
  "debruijn",
  "dirs",
  "enclone_args",
@@ -659,7 +696,7 @@ version = "0.5.51"
 dependencies = [
  "amino",
  "ansi_escape",
- "bio",
+ "bio 0.33.1-alpha.0",
  "bytes",
  "chrono",
  "debruijn",
@@ -749,7 +786,7 @@ version = "0.5.51"
 dependencies = [
  "amino",
  "ansi_escape",
- "bio",
+ "bio 0.33.1-alpha.0",
  "byteorder",
  "bytes",
  "debruijn",
@@ -781,7 +818,7 @@ dependencies = [
 name = "enclone_proto"
 version = "0.5.51"
 dependencies = [
- "bio",
+ "bio 0.33.1-alpha.0",
  "byteorder",
  "bytes",
  "failure",
@@ -799,7 +836,7 @@ dependencies = [
  "align_tools",
  "amino",
  "ansi_escape",
- "bio",
+ "bio 0.33.1-alpha.0",
  "debruijn",
  "edit-distance",
  "enclone_core",
@@ -2567,7 +2604,7 @@ source = "git+https://github.com/10XGenomics/rust-toolbox.git?rev=0b3e59011bac71
 dependencies = [
  "align_tools",
  "amino",
- "bio",
+ "bio 0.33.0",
  "debruijn",
  "exons",
  "fasta_tools",

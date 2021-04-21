@@ -31,34 +31,41 @@ fn print_vis_align(
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
 ) {
-    // Make alignment.
+    // Define alignment penalities.
 
+    let mismatch = -2;
     let gap_open = -12;
     let gap_extend = -2;
     let gap_open_at_boundary = -6;
     let gap_extend_at_boundary = -1;
-    let _gap_open_fn = |j: i32| -> i32 {
-        if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
-            gap_open_at_boundary
-        } else {
-            gap_open
-        }
-    };
-    let _gap_extend_fn = |j: i32| -> i32 {
-        if j as usize == vref.len() + 1 || j as usize == vref.len() + drefx.len() + 1 {
-            gap_extend_at_boundary
-        } else {
-            gap_extend
-        }
-    };
-    let mut scoring = Scoring::from_scores(-12, -2, 2, -2);
-    // let mut scoring = Scoring::from_scores_by_pos2(&gap_open_fn, &gap_extend_fn, 2, -2);
+
+    // Make alignment.
+
+    let mut scoring = Scoring::from_scores(-12, -2, -mismatch, mismatch);
     scoring.xclip_prefix = MIN_SCORE;
     scoring.xclip_suffix = MIN_SCORE;
     scoring.yclip_prefix = 0;
     scoring.yclip_suffix = 0;
     let mut aligner = Aligner::with_scoring(scoring);
-    let mut al = aligner.custom(&seq, &concat);
+
+    let mut gap_open_fn = vec![0_i32; concat.len() + 1];
+    for j in 1..=concat.len() {
+        if j as usize == vref.len() || j as usize == vref.len() + drefx.len() {
+            gap_open_fn[j] = gap_open_at_boundary;
+        } else {
+            gap_open_fn[j] = gap_open;
+        }
+    }
+    let mut gap_extend_fn = vec![0_i32; concat.len() + 1];
+    for j in 1..=concat.len() {
+        if j as usize == vref.len() || j as usize == vref.len() + drefx.len() {
+            gap_extend_fn[j] = gap_extend_at_boundary;
+        } else {
+            gap_extend_fn[j] = gap_extend;
+        }
+    }
+    let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
+
     al.mode = AlignmentMode::Semiglobal;
     al.filter_clip_operations();
 
