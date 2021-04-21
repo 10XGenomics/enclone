@@ -1,6 +1,6 @@
 [package]
 
-# This is a modified version of rust-bio.
+# This is a modified version of rust-bio, https://github.com/rust-bio/rust-bio.
 #
 # Copied at
 # commit b6cb8699fb7f16e741a7840f5bcc2d850938a37a
