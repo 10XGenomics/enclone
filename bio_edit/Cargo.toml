@@ -1,5 +1,11 @@
 [package]
+
 # This is a modified version of bio.
+#
+# Copied at
+# commit b6cb8699fb7f16e741a7840f5bcc2d850938a37a
+# Date:   Thu Apr 1 17:11:19 2021 +0200
+
 name = "bio_edit"
 version = "0.33.1-alpha.0"
 authors = ["Johannes Köster <johannes.koester@tu-dortmund.de>"]
