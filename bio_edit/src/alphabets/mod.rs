@@ -10,7 +10,6 @@ use bit_set::BitSet;
 use vec_map::VecMap;
 
 pub mod dna;
-pub mod protein;
 pub mod rna;
 
 pub type SymbolRanks = VecMap<u8>;
@@ -22,20 +21,6 @@ pub struct Alphabet {
 }
 
 impl Alphabet {
-    /// Create new alphabet from given symbols.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// // Create an alphabet (note that a DNA alphabet is already available in bio::alphabets::dna).
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ACGTacgt");
-    /// // Check whether a given text is a word over the alphabet.
-    /// assert!(dna_alphabet.is_word(b"GAttACA"));
-    /// ```
     pub fn new<C, T>(symbols: T) -> Self
     where
         C: Borrow<u8>,
@@ -47,37 +32,10 @@ impl Alphabet {
         Alphabet { symbols: s }
     }
 
-    /// Insert symbol into alphabet.
-    ///
-    /// Complexity: O(1)
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let mut dna_alphabet = alphabets::Alphabet::new(b"ACGTacgt");
-    /// assert!(!dna_alphabet.is_word(b"N"));
-    /// dna_alphabet.insert(78);
-    /// assert!(dna_alphabet.is_word(b"N"));
-    /// ```
     pub fn insert(&mut self, a: u8) {
         self.symbols.insert(a as usize);
     }
 
-    /// Check if given text is a word over the alphabet.
-    ///
-    /// Complexity: O(n), where n is the length of the text.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ACGTacgt");
-    /// assert!(dna_alphabet.is_word(b"GAttACA"));
-    /// assert!(!dna_alphabet.is_word(b"42"));
-    /// ```
     pub fn is_word<C, T>(&self, text: T) -> bool
     where
         C: Borrow<u8>,
@@ -87,109 +45,30 @@ impl Alphabet {
             .all(|c| self.symbols.contains(*c.borrow() as usize))
     }
 
-    /// Return lexicographically maximal symbol.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// assert_eq!(dna_alphabet.max_symbol(), Some(116)); // max symbol is "t"
-    /// let empty_alphabet = alphabets::Alphabet::new(b"");
-    /// assert_eq!(empty_alphabet.max_symbol(), None);
-    /// ```
     pub fn max_symbol(&self) -> Option<u8> {
         self.symbols.iter().max().map(|a| a as u8)
     }
 
-    /// Return size of the alphabet.
-    ///
-    /// Upper and lower case representations of the same character
-    /// are counted as distinct characters.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// assert_eq!(dna_alphabet.len(), 8);
-    /// ```
     pub fn len(&self) -> usize {
         self.symbols.len()
     }
 
-    /// Is this alphabet empty?
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// assert!(!dna_alphabet.is_empty());
-    /// let empty_alphabet = alphabets::Alphabet::new(b"");
-    /// assert!(empty_alphabet.is_empty());
-    /// ```
     pub fn is_empty(&self) -> bool {
         self.symbols.is_empty()
     }
 
-    /// Return a new alphabet taking the intersect between this and other.
-    ///
-    /// # Example
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let alpha_a = alphabets::Alphabet::new(b"acgtACGT");
-    /// let alpha_b = alphabets::Alphabet::new(b"atcgMVP");
-    /// let intersect_alpha = alpha_a.intersection(&alpha_b);
-    ///
-    /// assert_eq!(intersect_alpha, alphabets::Alphabet::new(b"atcg"));
-    /// ```
     pub fn intersection(&self, other: &Alphabet) -> Self {
         return Alphabet {
             symbols: self.symbols.intersection(&other.symbols).collect(),
         };
     }
 
-    /// Return a new alphabet taking the difference between this and other.
-    ///
-    /// # Example
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// let dna_alphabet_upper = alphabets::Alphabet::new(b"ACGT");
-    /// let dna_lower = dna_alphabet.difference(&dna_alphabet_upper);
-    ///
-    /// assert_eq!(dna_lower, alphabets::Alphabet::new(b"atcg"));
-    /// ```
     pub fn difference(&self, other: &Alphabet) -> Self {
         return Alphabet {
             symbols: self.symbols.difference(&other.symbols).collect(),
         };
     }
 
-    /// Return a new alphabet taking the union between this and other.
-    ///
-    /// # Example
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ATCG");
-    /// let tokenize_alpha = alphabets::Alphabet::new(b"?|");
-    /// let alpha = dna_alphabet.union(&tokenize_alpha);
-    ///
-    /// assert_eq!(alpha, alphabets::Alphabet::new(b"ATCG?|"));
-    /// ```
     pub fn union(&self, other: &Alphabet) -> Self {
         return Alphabet {
             symbols: self.symbols.union(&other.symbols).collect(),
@@ -197,32 +76,12 @@ impl Alphabet {
     }
 }
 
-/// Tools based on transforming the alphabet symbols to their lexicographical ranks.
-///
-/// Lexicographical rank is computed using `u8` representations,
-/// i.e. ASCII codes, of the input characters.
-/// For example, assuming that the alphabet consists of the symbols `A`, `C`, `G`, and `T`, this
-/// will yield ranks `0`, `1`, `2`, `3` for them, respectively.
-///
-/// `RankTransform` can be used in to perform bit encoding for texts over a
 #[derive(Serialize, Deserialize)]
 pub struct RankTransform {
     pub ranks: SymbolRanks,
 }
 
 impl RankTransform {
-    /// Construct a new `RankTransform`.
-    ///
-    /// Complexity: O(n), where n is the number of symbols in the alphabet.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    /// ```
     pub fn new(alphabet: &Alphabet) -> Self {
         let mut ranks = VecMap::new();
         for (r, c) in alphabet.symbols.iter().enumerate() {
@@ -232,40 +91,10 @@ impl RankTransform {
         RankTransform { ranks }
     }
 
-    /// Get the rank of symbol `a`.
-    ///
-    /// This method panics for characters not contained in the alphabet.
-    ///
-    /// Complexity: O(1)
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"acgtACGT");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    /// assert_eq!(dna_ranks.get(65), 0); // "A"
-    /// assert_eq!(dna_ranks.get(116), 7); // "t"
-    /// ```
     pub fn get(&self, a: u8) -> u8 {
         *self.ranks.get(a as usize).expect("Unexpected character.")
     }
 
-    /// Transform a given `text` into a vector of rank values.
-    ///
-    /// Complexity: O(n), where n is the length of the text.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use bio::alphabets;
-    ///
-    /// let dna_alphabet = alphabets::Alphabet::new(b"ACGTacgt");
-    /// let dna_ranks = alphabets::RankTransform::new(&dna_alphabet);
-    /// let text = b"aAcCgGtT";
-    /// assert_eq!(dna_ranks.transform(text), vec![4, 0, 5, 1, 6, 2, 7, 3]);
-    /// ```
     pub fn transform<C, T>(&self, text: T) -> Vec<u8>
     where
         C: Borrow<u8>,
