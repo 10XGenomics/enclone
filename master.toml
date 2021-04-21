@@ -11,7 +11,6 @@ assert_cmd = "1.0.3"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = ">=0.33"
-# bio = { path = "/mnt/deck5/david.jaffe/repos/rust-bio" }
 bio-types = ">=0.11.0"
 bit-set = "0.5"
 byteorder = "1.4.2"
