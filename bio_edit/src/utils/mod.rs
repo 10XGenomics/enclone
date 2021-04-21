@@ -3,11 +3,6 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Common utilities.
-
-mod fastexp;
-pub use self::fastexp::FastExp;
-
 mod text;
 pub use self::text::{trim_newline, Text, TextSlice};
 
