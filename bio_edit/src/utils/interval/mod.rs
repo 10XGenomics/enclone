@@ -74,25 +74,3 @@ impl<N: Ord + Clone> Deref for Interval<N> {
         &self.0
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::Interval;
-
-    #[test]
-    #[should_panic]
-    fn negative_width_range() {
-        let _ = Interval::from(10..5);
-    }
-
-    #[test]
-    fn range_interval_conversions() {
-        assert_eq!(Interval::new(1..10).unwrap(), (1..10).into());
-        assert_eq!(Interval::from(1..10), Interval::new(1..10).unwrap());
-        //deref access
-        let r = Interval::new(1..10).unwrap();
-        assert_eq!(*r, (1..10));
-        assert_eq!(r.start, 1);
-        assert_eq!(r.end, 10);
-    }
-}

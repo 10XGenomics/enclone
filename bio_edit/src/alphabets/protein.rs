@@ -20,28 +20,3 @@ use crate::alphabets::Alphabet;
 pub fn alphabet() -> Alphabet {
     Alphabet::new(&b"ARNDCEQGHILKMFPSTWYVarndceqghilkmfpstwyv"[..])
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn is_word() {
-        assert!(alphabet().is_word(b"PRSkl"));
-    }
-
-    #[test]
-    fn is_no_word() {
-        assert!(!alphabet().is_word(b"Bb"));
-    }
-
-    #[test]
-    fn symbol_is_no_word() {
-        assert!(!alphabet().is_word(b"#"));
-    }
-
-    #[test]
-    fn number_is_no_word() {
-        assert!(!alphabet().is_word(b"42"));
-    }
-}

@@ -88,33 +88,3 @@ where
         .map(|a| complement(*a.borrow()))
         .collect()
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn is_word() {
-        assert!(alphabet().is_word(b"GAUUACA"));
-    }
-
-    #[test]
-    fn is_no_word() {
-        assert!(!alphabet().is_word(b"gaTTaca"));
-    }
-
-    #[test]
-    fn symbol_is_no_word() {
-        assert!(!alphabet().is_word(b"#"));
-    }
-
-    #[test]
-    fn number_is_no_word() {
-        assert!(!alphabet().is_word(b"42"));
-    }
-
-    #[test]
-    fn test_reverse_complement() {
-        assert_eq!(revcomp(b"GAUUACA"), b"UGUAAUC");
-    }
-}
