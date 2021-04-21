@@ -1,10 +1,15 @@
 [package]
 
-# This is a modified version of bio.
+# This is a modified version of rust-bio.
 #
 # Copied at
 # commit b6cb8699fb7f16e741a7840f5bcc2d850938a37a
 # Date:   Thu Apr 1 17:11:19 2021 +0200
+#
+# Modifications:
+# 1. Add a function custom_with_gap_fns that is a copy of custom, with fixed gap penalties
+#    replaced by functions.
+# 2. Delete several parts of the codebase that we are not using.
 
 name = "bio_edit"
 version = "0.33.1-alpha.0"
@@ -26,7 +31,6 @@ tag-message = "Version {{version}} of Rust-Bio."
 runtime-dispatch-simd = ["bytecount/runtime-dispatch-simd"]
 generic-simd = ["bytecount/generic-simd"]
 phylogeny = ["pest", "pest_derive", "bio-types/phylogeny"]
-
 
 [dependencies]
 bytecount = "0.6"
