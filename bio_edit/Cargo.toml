@@ -9,7 +9,7 @@
 # Modifications:
 # 1. Add a function custom_with_gap_fns that is a copy of custom, with fixed gap penalties
 #    replaced by functions.
-# 2. Delete several parts of the codebase that we are not using for this purpose.  Note that
+# 2. Delete several parts of the codebase that we're not using in enclone.  Note that
 #    enclone also uses the official version of bio.
 
 name = "bio_edit"
@@ -73,7 +73,6 @@ features = ["eders"]
 [dependencies.petgraph]
 version = ">=0.4, <=0.5"
 features = ["stable_graph"]
-
 
 [dev-dependencies]
 proptest = "0.10"
