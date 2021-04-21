@@ -422,15 +422,3 @@ pub fn english_ascii_lower_alphabet() -> Alphabet {
 pub fn english_ascii_upper_alphabet() -> Alphabet {
     Alphabet::new(&b"ABCDEFGHIJKLMNOPQRSTUVWXYZ"[..])
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_alphabet_eq() {
-        assert_eq!(Alphabet::new(b"ATCG"), Alphabet::new(b"ATCG"));
-        assert_eq!(Alphabet::new(b"ATCG"), Alphabet::new(b"TAGC"));
-        assert_ne!(Alphabet::new(b"ATCG"), Alphabet::new(b"ATC"));
-    }
-}

@@ -58,20 +58,3 @@ impl FastExp<f64> for f64 {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_fastexp() {
-        let x = 1e-15_f64.ln();
-        assert_relative_eq!(x.fastexp(), 1e-15);
-        let x = 1e-8_f64.ln();
-        assert_relative_eq!(x.fastexp(), 1e-8, epsilon = 0.00000000000002);
-        let x = 0.5_f64.ln();
-        assert_relative_eq!(x.fastexp(), 0.5, epsilon = 0.01);
-        let x = -159.000_000_023_278_6_f64;
-        assert_relative_eq!(x.fastexp(), (-159.000_000_023_278_6).exp());
-    }
-}
