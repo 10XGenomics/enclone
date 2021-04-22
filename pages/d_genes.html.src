@@ -81,5 +81,27 @@ And here is the same example, but showing just the junction region:
 <pre><code>enclone BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
 #include pages/auto/jun_align_example.html
 
+<hr>
+
+<h2>How the algorithm works</h2>
+
+<p>
+The algorithm picks the D region that has the best alignment score, allowing for the case where
+the D region is null.  In the case of a tie, a winner is arbitrarily selected.  The alignment
+uses an affine Smith-Waterman algorithm with parameters:
+</p>
+
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<tr><td> <b>case</b>                       </td><td> <b>score</b>      </td></tr>
+<tr><td> match                             </td><td>   2               </td></tr>
+<tr><td> mismatch                          </td><td>  -2               </td></tr>
+<tr><td> gap open between V/D/J segments   </td><td>  -6               </td></tr>
+<tr><td> gap open (otherwise)              </td><td> -12               </td></tr>
+<tr><td> gap extend between V/D/J segments </td><td>  -2               </td></tr>
+<tr><td> gap extend (otherwise)            </td><td>  -1               </td></tr>
+</table>
+</p>
+
 </body>
 </html>
