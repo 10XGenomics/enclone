@@ -22,6 +22,7 @@ pub fn align_to_vdj_ref(
 ) -> bio_edit::alignment::Alignment {
     // Define penalties.
 
+    let matchp = 2;
     let mismatch = -2;
     let gap_open = -12;
     let gap_extend = -2;
@@ -37,7 +38,7 @@ pub fn align_to_vdj_ref(
 
     // Make alignment.
 
-    let mut scoring = Scoring::from_scores(gap_open, gap_extend, -mismatch, mismatch);
+    let mut scoring = Scoring::from_scores(gap_open, gap_extend, matchp, mismatch);
     scoring.xclip_prefix = MIN_SCORE;
     scoring.xclip_suffix = MIN_SCORE;
     scoring.yclip_prefix = 0;
