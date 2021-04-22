@@ -664,7 +664,7 @@ pub fn plot_clonotypes(
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
             group_index.push(i);
-            clonotype_index.push(groups[i][j].0 as usize);
+            clonotype_index.push(j);
         }
     }
     let mut group_index2 = Vec::<usize>::new();
