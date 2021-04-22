@@ -1,6 +1,15 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
-
+//
 // Align a sequence to a concatenated V(D)J reference, encouraging gaps at the junction points.
+//
+// results of current version:
+//
+// dataset       n     inconsistent%
+// ---------------------------------
+// BCR=123085    712        2.25
+// BI=1         7653       24.06
+// BI=3        13010       13.11
+// BI=4        27766       17.02
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
