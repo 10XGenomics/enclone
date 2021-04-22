@@ -82,6 +82,9 @@ And here is the same example, but showing just the junction region:
 <pre><code>enclone BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
 #include pages/auto/jun_align_example.html
 
+<p>There are also options <code>ALIGN_2ND&ltn></code> 
+and <code>JUN_ALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
+
 <hr>
 
 <h2>How the algorithm works</h2>

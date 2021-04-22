@@ -79,18 +79,21 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.docpr("", "and otherwise show a \\bold{▮}.");
         h.ldoc(
             "CONX",
-            "add an additional row to each clonotype table, showing the amino acid consensus",
-        );
-        h.doc("", "across the clonotype, with X for each variant residue");
-        h.doc(
-            "CONP",
-            "add an additional row to each clonotype table, showing the amino acid consensus",
+            "add an additional row to each clonotype table, showing the amino acid",
         );
         h.doc(
             "",
-            "across the clonotype, with a property symbol whenever two different amino acids",
+            "consensus across the clonotype, with X for each variant residue",
         );
-        h.doc("", "are observed, see \"enclone help cvars\"");
+        h.doc(
+            "CONP",
+            "add an additional row to each clonotype table, showing the amino acid",
+        );
+        h.doc(
+            "",
+            "consensus across the clonotype, with a property symbol whenever two different",
+        );
+        h.doc("", "amino acids are observed, see \"enclone help cvars\"");
         h.ldoc(
             "ALIGN<n>",
             "exhibit a visual alignment for chain n (for each exact subclonotype) to the",
@@ -98,10 +101,18 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.doc2("donor V(D)J reference, picking the best D for heavy chains / TRB");
         h.doc2("Multiple values of n may be specified using multiple arguments.");
         h.doc(
-            "JUN_ALIGN<n>",
-            "same as ALIGN<n> but only show the region from 15 bases before the end of the V",
+            "ALIGN_2ND<n>",
+            "same as ALIGN<n> but use second best D segment",
         );
-        h.doc2("segment to 35 bases into the J segment");
+        h.doc(
+            "JUN_ALIGN<n>",
+            "same as ALIGN<n> but only show the region from 15 bases before the end of the",
+        );
+        h.doc2("V segment to 35 bases into the J segment");
+        h.doc(
+            "JUN_ALIGN_2ND<n>",
+            "same as JUN_ALIGN<n> but use second best D segment",
+        );
         h.print_tab2();
         h.print("\n");
         h.print(

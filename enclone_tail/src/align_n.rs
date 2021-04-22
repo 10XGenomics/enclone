@@ -120,7 +120,7 @@ fn print_vis_align(
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// There is terrible duplication between the two functions below.
+// There is terrible duplication between the functions below.
 
 pub fn align_n(
     refdata: &RefData,
@@ -174,6 +174,97 @@ pub fn align_n(
                             if opt.is_some() {
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
+                                concat.append(&mut drefx.clone());
+                                refsplits.push(concat.len());
+                            }
+                        }
+                        let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                        concat.append(&mut jref.clone());
+                        refsplits.push(concat.len());
+
+                        // Make and print alignment.
+
+                        print_vis_align(
+                            &seq,
+                            &concat,
+                            &refsplits,
+                            *col,
+                            k,
+                            &vref,
+                            &drefx,
+                            &jref,
+                            ex.share[r].left,
+                            &ctl,
+                            &mut logx,
+                        );
+                    }
+                }
+            }
+            res.1.push(logx);
+        }
+    });
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            align_out.insert((i, j), results[i].1[j].clone());
+        }
+    }
+    align_out
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn align2_n(
+    refdata: &RefData,
+    exacts: &Vec<Vec<usize>>,
+    rsi: &Vec<ColInfo>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    ctl: &EncloneControl,
+    dref: &Vec<DonorReferenceItem>,
+    groups: &Vec<Vec<(i32, String)>>,
+) -> HashMap<(usize, usize), Vec<u8>> {
+    let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
+    let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
+    for i in 0..groups.len() {
+        results.push((i, Vec::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let mut o = Vec::<i32>::new();
+        for j in 0..groups[i].len() {
+            o.push(groups[i][j].0);
+        }
+        for j in 0..o.len() {
+            let mut logx = Vec::<u8>::new();
+            let oo = o[j] as usize;
+            for col in ctl.gen_opt.chains_to_align2.iter() {
+                let m = col - 1;
+                for k in 0..exacts[oo].len() {
+                    let ex = &exact_clonotypes[exacts[oo][k]];
+                    if m < rsi[oo].mat.len() && rsi[oo].mat[m][k].is_some() {
+                        let r = rsi[oo].mat[m][k].unwrap();
+                        let seq = &ex.share[r].seq;
+                        let mut concat = Vec::<u8>::new();
+                        let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
+                        if rsi[oo].vpids[m].is_none() {
+                        } else {
+                            vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
+                        }
+                        let mut refsplits = Vec::<usize>::new();
+                        refsplits.push(0);
+                        concat.append(&mut vref.clone());
+                        refsplits.push(concat.len());
+                        let mut drefx = Vec::<u8>::new();
+                        if ex.share[r].left {
+                            let mut opt = None;
+                            let mut opt2 = None;
+                            let mut delta = 0;
+                            opt_d(
+                                &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
+                                &mut delta,
+                            );
+                            if opt2.is_some() {
+                                let opt2 = opt2.unwrap();
+                                drefx = refdata.refs[opt2].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
                                 refsplits.push(concat.len());
                             }
@@ -277,6 +368,124 @@ pub fn jun_align_n(
                             if opt.is_some() {
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
+                                concat.append(&mut drefx.clone());
+                                refsplits.push(concat.len());
+                            }
+                        }
+
+                        // Different from previous function:
+
+                        let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                        let jend = min(RFLANK, jref.len());
+                        let mut seq_start = vstart as isize;
+                        // probably not exactly right
+                        if ex.share[r].annv.len() > 1 {
+                            let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
+                            let q2 = ex.share[r].annv[1].0;
+
+                            seq_start += q2 as isize - q1 as isize;
+                        }
+                        let seq_end = seq.len() - (jref.len() - jend);
+                        let seq = seq[seq_start as usize..seq_end].to_vec();
+                        let jref = jref[0..jend].to_vec();
+                        concat.append(&mut jref.clone());
+                        refsplits.push(concat.len());
+
+                        // Make and print alignment.
+
+                        print_vis_align(
+                            &seq,
+                            &concat,
+                            &refsplits,
+                            *col,
+                            k,
+                            &vref,
+                            &drefx,
+                            &jref,
+                            ex.share[r].left,
+                            &ctl,
+                            &mut logx,
+                        );
+                    }
+                }
+            }
+            res.1.push(logx);
+        }
+    });
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            align_out.insert((i, j), results[i].1[j].clone());
+        }
+    }
+    align_out
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+pub fn jun_align2_n(
+    refdata: &RefData,
+    exacts: &Vec<Vec<usize>>,
+    rsi: &Vec<ColInfo>,
+    exact_clonotypes: &Vec<ExactClonotype>,
+    ctl: &EncloneControl,
+    dref: &Vec<DonorReferenceItem>,
+    groups: &Vec<Vec<(i32, String)>>,
+) -> HashMap<(usize, usize), Vec<u8>> {
+    let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
+    let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
+    for i in 0..groups.len() {
+        results.push((i, Vec::new()));
+    }
+    const LFLANK: usize = 15;
+    const RFLANK: usize = 35;
+    results.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let mut o = Vec::<i32>::new();
+        for j in 0..groups[i].len() {
+            o.push(groups[i][j].0);
+        }
+        for j in 0..o.len() {
+            let mut logx = Vec::<u8>::new();
+            let oo = o[j] as usize;
+            // This line differs from the previous function.
+            for col in ctl.gen_opt.chains_to_jun_align2.iter() {
+                let m = col - 1;
+                for k in 0..exacts[oo].len() {
+                    let ex = &exact_clonotypes[exacts[oo][k]];
+                    if m < rsi[oo].mat.len() && rsi[oo].mat[m][k].is_some() {
+                        let r = rsi[oo].mat[m][k].unwrap();
+                        let seq = &ex.share[r].seq;
+                        let mut concat = Vec::<u8>::new();
+                        let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
+                        if rsi[oo].vpids[m].is_none() {
+                        } else {
+                            vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
+                        }
+
+                        // Different from previous function:
+
+                        let mut vstart = 0;
+                        if vref.len() >= LFLANK {
+                            vstart = vref.len() - LFLANK;
+                        }
+                        vref = vref[vstart..vref.len()].to_vec();
+
+                        let mut refsplits = Vec::<usize>::new();
+                        refsplits.push(0);
+                        concat.append(&mut vref.clone());
+                        refsplits.push(concat.len());
+                        let mut drefx = Vec::<u8>::new();
+                        if ex.share[r].left {
+                            let mut opt = None;
+                            let mut opt2 = None;
+                            let mut delta = 0;
+                            opt_d(
+                                &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
+                                &mut delta,
+                            );
+                            if opt2.is_some() {
+                                let opt2 = opt2.unwrap();
+                                drefx = refdata.refs[opt2].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
                                 refsplits.push(concat.len());
                             }

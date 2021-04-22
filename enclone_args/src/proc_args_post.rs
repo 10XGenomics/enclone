@@ -455,7 +455,9 @@ pub fn proc_args_post(
     // Sort chains_to_align.
 
     unique_sort(&mut ctl.gen_opt.chains_to_align);
+    unique_sort(&mut ctl.gen_opt.chains_to_align2);
     unique_sort(&mut ctl.gen_opt.chains_to_jun_align);
+    unique_sort(&mut ctl.gen_opt.chains_to_jun_align2);
 
     // Check for invalid variables in linear conditions.
 

@@ -40,6 +40,13 @@ pub fn process_special_arg(
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.plot_opt.use_legend = true;
+    } else if arg.starts_with("ALIGN_2ND") {
+        let n = arg.after("ALIGN_2ND");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_align2.push(n.force_usize());
     } else if arg.starts_with("ALIGN") {
         let n = arg.after("ALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
@@ -47,6 +54,13 @@ pub fn process_special_arg(
             std::process::exit(1);
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
+    } else if arg.starts_with("JUN_ALIGN_2ND") {
+        let n = arg.after("JUN_ALIGN_2ND");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
     } else if arg.starts_with("JUN_ALIGN") {
         let n = arg.after("JUN_ALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
