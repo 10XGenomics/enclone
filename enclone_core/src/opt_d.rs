@@ -6,7 +6,6 @@
 
 use crate::align_to_vdj_ref::*;
 use crate::defs::*;
-use bio_edit::alignment::AlignmentOperation::*;
 use enclone_proto::types::*;
 use std::cmp::min;
 use vdj_ann::refx::*;
@@ -34,7 +33,7 @@ pub fn opt_d(
 
     let z = refdata.ds.len();
     let mut ds = Vec::<Option<usize>>::new();
-    let mut counts = Vec::<usize>::new();
+    let mut counts = Vec::<i32>::new();
     for di in 0..=z {
         let mut d = 0;
         if di < z {
@@ -92,45 +91,27 @@ pub fn opt_d(
 
         let al = align_to_vdj_ref(&seq, &vref, &dref, &jref);
 
-        let mut count = 0;
-        let mut m = 0;
-        while m < al.operations.len() {
-            let n = next_diff(&al.operations, m);
-            match al.operations[m] {
-                Match => {}
-                Subst => {
-                    count += 1;
-                }
-                Del => {
-                    count += n - m;
-                    m = n - 1;
-                }
-                Ins => {
-                    count += n - m;
-                    m = n - 1;
-                }
-                _ => {}
-            };
-            m += 1;
-        }
+        let count = al.score;
         counts.push(count);
         if di < z {
             ds.push(Some(d));
         } else {
             ds.push(None);
         }
-        if count < comp {
+        if count > comp {
             comp = count;
         }
     }
     sort_sync2(&mut counts, &mut ds);
-    let mut comp = 0;
+    counts.reverse();
+    ds.reverse();
+    let mut comp = 0 as i32;
     let mut best_d = None;
     if counts.len() > 0 {
         comp = counts[0];
         best_d = ds[0];
     }
-    let mut second_comp = 0;
+    let mut second_comp = 0 as i32;
     let mut best_d2 = None;
     if counts.len() > 1 {
         second_comp = counts[1];
@@ -138,5 +119,5 @@ pub fn opt_d(
     }
     *opt = best_d;
     *opt2 = best_d2;
-    *delta = second_comp - comp;
+    *delta = (comp - second_comp) as usize;
 }
