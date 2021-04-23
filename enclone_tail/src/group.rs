@@ -224,6 +224,34 @@ pub fn group_and_print_clonotypes(
         width,
     );
 
+    // Test for consistency if requested.
+
+    let mut align_out_test = HashMap::<(usize, usize), Vec<u8>>::new();
+    let mut jun_align_out_test = HashMap::<(usize, usize), Vec<u8>>::new();
+    if ctl.gen_opt.align_jun_align_consistency {
+        let width = 1000;
+        align_out_test = align_n(
+            &refdata,
+            &exacts,
+            &rsi,
+            &exact_clonotypes,
+            &ctl,
+            &dref,
+            &groups,
+            width,
+        );
+        jun_align_out_test = jun_align_n(
+            &refdata,
+            &exacts,
+            &rsi,
+            &exact_clonotypes,
+            &ctl,
+            &dref,
+            &groups,
+            width,
+        );
+    }
+
     // Now print clonotypes.
 
     let mut plot_xy_vals = Vec::<(f32, f32)>::new();
@@ -403,6 +431,27 @@ pub fn group_and_print_clonotypes(
                 logx.append(&mut align2_out[&(i, j)].clone());
                 logx.append(&mut jun_align_out[&(i, j)].clone());
                 logx.append(&mut jun_align2_out[&(i, j)].clone());
+            }
+            if ctl.gen_opt.align_jun_align_consistency {
+                let x = stringme(&align_out_test[&(i, j)]);
+                let y = stringme(&jun_align_out_test[&(i, j)]);
+                let mut xlines = Vec::<String>::new();
+                for line in x.lines() {
+                    xlines.push(line.to_string());
+                }
+                let mut ylines = Vec::<String>::new();
+                for line in y.lines() {
+                    ylines.push(line.to_string());
+                }
+                let mut ok = true;
+                for n in 1..=3 {
+                    if !xlines[xlines.len() - n].contains(&ylines[ylines.len() - n]) {
+                        ok = false;
+                    }
+                }
+                if !ok {
+                    logx.append(&mut b"consistency test failed".to_vec());
+                }
             }
 
             // Generate clustal and phylip output.

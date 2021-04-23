@@ -327,3 +327,6 @@ EVIL_EYE: print logging to facilitate diagnosis of mysterious hanging
 TOY_COM: compute clonotypes, then act as toy server, which can speak to enclone_client
 
 TOOLTIP: add tooltip text to honeycomb plots
+
+ALIGN_JUN_ALIGN_CONSISTENCY: test to see if they give consistent results 
+(run with ALIGN1 JUN_ALIGN1 PLAIN)
