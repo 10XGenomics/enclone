@@ -16,6 +16,7 @@
 // gap_open_at_boundary      -6      -5      -4      -4
 // gap_extend_at_boundary    -1      -1      -1      -0.666...
 // inconsistent%             16.24   15.78   15.72   16.25
+//                                           15.71 (now)
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
