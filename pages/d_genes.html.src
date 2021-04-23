@@ -100,10 +100,10 @@ uses an affine Smith-Waterman algorithm with parameters:
 <tr><td> <b>case</b>                       </td><td> <b>score</b>      </td></tr>
 <tr><td> match                             </td><td>   2               </td></tr>
 <tr><td> mismatch                          </td><td>  -2               </td></tr>
-<tr><td> gap open between V/D/J segments   </td><td>  -6               </td></tr>
+<tr><td> gap open between V/D/J segments   </td><td>  -4               </td></tr>
 <tr><td> gap open (otherwise)              </td><td> -12               </td></tr>
-<tr><td> gap extend between V/D/J segments </td><td>  -2               </td></tr>
-<tr><td> gap extend (otherwise)            </td><td>  -1               </td></tr>
+<tr><td> gap extend between V/D/J segments </td><td>  -1               </td></tr>
+<tr><td> gap extend (otherwise)            </td><td>  -2               </td></tr>
 </table>
 </p>
 
