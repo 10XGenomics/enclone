@@ -47,8 +47,8 @@ pub fn align_to_vdj_ref(
     let mut scoring = Scoring::from_scores(gap_open, gap_extend, matchp, mismatch);
     scoring.xclip_prefix = MIN_SCORE;
     scoring.xclip_suffix = MIN_SCORE;
-    scoring.yclip_prefix = 0;
-    scoring.yclip_suffix = 0;
+    scoring.yclip_prefix = MIN_SCORE;
+    scoring.yclip_suffix = MIN_SCORE;
     let mut aligner = Aligner::with_scoring(scoring);
     let mut gap_open_fn = vec![0_i32; concat.len() + 1];
     for j in 1..=concat.len() {
@@ -68,6 +68,5 @@ pub fn align_to_vdj_ref(
     }
     let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
     al.mode = AlignmentMode::Semiglobal;
-    al.filter_clip_operations();
     al
 }
