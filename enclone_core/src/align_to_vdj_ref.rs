@@ -7,16 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-//
-//                                          ******
-// match                      2       2       2       2
-// mismatch                  -2      -2      -2      -2
-// gap_open                 -12     -12     -12     -12
-// gap_extend                -2      -2      -2      -2
-// gap_open_at_boundary      -6      -5      -4      -4
-// gap_extend_at_boundary    -1      -1      -1      -0.666...
-// inconsistent%             16.24   15.78   15.72   16.25
-//                                           15.71 (now)
+// d_inconsistent_% = 14.79
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
