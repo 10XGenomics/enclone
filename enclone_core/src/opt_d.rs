@@ -26,7 +26,7 @@ pub fn opt_d(
     assert!(ex.share[mid].left);
     let mut comp = 1000000;
     let td = &ex.share[mid];
-    let tig = &td.seq;
+    let tig = &td.seq_del;
 
     // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
     // there is just one pass.
