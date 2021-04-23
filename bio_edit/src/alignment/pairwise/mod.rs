@@ -1034,8 +1034,8 @@ impl<F: MatchFunc> Aligner<F> {
                 if j == n && self.Sn[0] > self.S[curr][0] {
                     // Check if the suffix clip score is better
                     self.S[curr][0] = self.Sn[0];
-                    tb.set_s_bits(TB_YCLIP_SUFFIX);
-                // Track the score if we do suffix clip (y) from here
+                    // tb.set_s_bits(TB_YCLIP_SUFFIX);
+                    // Track the score if we do suffix clip (y) from here
                 } else if self.S[curr][0] + self.scoring.yclip_suffix > self.Sn[0] {
                     self.Sn[0] = self.S[curr][0] + self.scoring.yclip_suffix;
                     self.Ly[0] = n - j;
@@ -1138,7 +1138,7 @@ impl<F: MatchFunc> Aligner<F> {
             let curr = j % 2;
             if self.Sn[i] > self.S[curr][i] {
                 self.S[curr][i] = self.Sn[i];
-                self.traceback.get_mut(i, j).set_s_bits(TB_YCLIP_SUFFIX);
+                // self.traceback.get_mut(i, j).set_s_bits(TB_YCLIP_SUFFIX);
             }
             if self.S[curr][i] + self.scoring.xclip_suffix > self.S[curr][m] {
                 self.S[curr][m] = self.S[curr][i] + self.scoring.xclip_suffix;
