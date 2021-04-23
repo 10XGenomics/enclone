@@ -42,6 +42,13 @@ pub fn align_to_vdj_ref(
     concat.append(&mut dref.to_vec());
     concat.append(&mut jref.to_vec());
 
+    // Set clip penalties.  Note that yclip_suffix was set to zero.   This was
+    // accompanied by a change to bio_edit in commit ccabb0dd1768738bdeee5b62458048d74f6dcfab,
+    // and the entire commit is very flaky.  The alignment of these two sequences illustrates
+    // the problem if one does not make the commit:
+    // TTACTGTAAAGTCATGCTCTATGATAGTCGTGGTTCTGACTACTACTACGTTATGGACGTCTGGGGC
+    // TTACTGTGCGAGACAGTATTACTATGATAGTAGTGGTTATTACTACATTACTACTACTACTACGGTATGGACGTCTGGGGC.
+
     // Make alignment.
 
     let mut scoring = Scoring::from_scores(gap_open, gap_extend, matchp, mismatch);
