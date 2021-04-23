@@ -39,7 +39,8 @@ pub fn opt_d(
         if di < z {
             d = refdata.ds[di];
         }
-        const FLANK: usize = 35;
+        const LFLANK: usize = 15;
+        const RFLANK: usize = 35;
 
         // Start to build reference concatenation.  First append the V segment.
 
@@ -50,8 +51,8 @@ pub fn opt_d(
             vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
         }
         let mut vstart = 0;
-        if vref.len() >= FLANK {
-            vstart = vref.len() - FLANK;
+        if vref.len() >= LFLANK {
+            vstart = vref.len() - LFLANK;
         }
         vref = vref[vstart..vref.len()].to_vec();
         concat.append(&mut vref.clone());
@@ -69,9 +70,7 @@ pub fn opt_d(
         // Append the J segment.
 
         let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
-        let jend = min(FLANK, jref.len());
-        let jref = jref[0..jend].to_vec();
-        concat.append(&mut jref.clone());
+        let jend = min(RFLANK, jref.len());
 
         // Align the V..J sequence on the contig to the reference concatenation.
 
@@ -85,6 +84,8 @@ pub fn opt_d(
         }
         let seq_end = tig.len() - (jref.len() - jend);
         let seq = tig[seq_start as usize..seq_end].to_vec();
+        let jref = jref[0..jend].to_vec();
+        concat.append(&mut jref.clone());
 
         let al = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
