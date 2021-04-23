@@ -451,6 +451,8 @@ pub fn group_and_print_clonotypes(
                 }
                 if !ok {
                     logx.append(&mut b"consistency test failed".to_vec());
+                    println!("{}", strme(&logx));
+                    std::process::exit(1);
                 }
             }
 
