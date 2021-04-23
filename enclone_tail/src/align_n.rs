@@ -29,6 +29,7 @@ fn print_vis_align(
     left: bool, // will be ex.share[r].left
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
+    width: usize,
 ) {
     // Make alignment.
 
@@ -36,7 +37,6 @@ fn print_vis_align(
 
     // Make visual alignment.
 
-    let width = 100;
     let mut vis = vis_align(&seq, &concat, &al, width);
 
     // Colorize it.
@@ -129,6 +129,7 @@ pub fn align_n(
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
+    width: usize,
 ) -> HashMap<(usize, usize), Vec<u8>> {
     let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
     let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
@@ -189,6 +190,7 @@ pub fn align_n(
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
+                            width,
                         );
                     }
                 }
@@ -214,6 +216,7 @@ pub fn align2_n(
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
+    width: usize,
 ) -> HashMap<(usize, usize), Vec<u8>> {
     let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
     let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
@@ -274,6 +277,7 @@ pub fn align2_n(
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
+                            width,
                         );
                     }
                 }
@@ -299,6 +303,7 @@ pub fn jun_align_n(
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
+    width: usize,
 ) -> HashMap<(usize, usize), Vec<u8>> {
     let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
     let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
@@ -386,6 +391,7 @@ pub fn jun_align_n(
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
+                            width,
                         );
                     }
                 }
@@ -411,6 +417,7 @@ pub fn jun_align2_n(
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
+    width: usize,
 ) -> HashMap<(usize, usize), Vec<u8>> {
     let mut align_out = HashMap::<(usize, usize), Vec<u8>>::new();
     let mut results = Vec::<(usize, Vec<Vec<u8>>)>::new();
@@ -498,6 +505,7 @@ pub fn jun_align2_n(
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
+                            width,
                         );
                     }
                 }

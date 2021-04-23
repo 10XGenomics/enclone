@@ -182,6 +182,7 @@ pub fn group_and_print_clonotypes(
 
     // Parallized precompute for ALIGN<n>.
 
+    let width = 100;
     let align_out = align_n(
         &refdata,
         &exacts,
@@ -190,6 +191,7 @@ pub fn group_and_print_clonotypes(
         &ctl,
         &dref,
         &groups,
+        width,
     );
     let align2_out = align2_n(
         &refdata,
@@ -199,6 +201,7 @@ pub fn group_and_print_clonotypes(
         &ctl,
         &dref,
         &groups,
+        width,
     );
     let jun_align_out = jun_align_n(
         &refdata,
@@ -208,6 +211,7 @@ pub fn group_and_print_clonotypes(
         &ctl,
         &dref,
         &groups,
+        width,
     );
     let jun_align2_out = jun_align2_n(
         &refdata,
@@ -217,6 +221,7 @@ pub fn group_and_print_clonotypes(
         &ctl,
         &dref,
         &groups,
+        width,
     );
 
     // Now print clonotypes.
