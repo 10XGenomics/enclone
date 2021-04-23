@@ -54,10 +54,7 @@ pub fn opt_d(
             vstart = vref.len() - FLANK;
         }
         vref = vref[vstart..vref.len()].to_vec();
-        let mut _refsplits = Vec::<usize>::new();
-        _refsplits.push(0);
         concat.append(&mut vref.clone());
-        _refsplits.push(concat.len());
 
         // Append the D segment if IGH/TRB.
 
@@ -65,7 +62,6 @@ pub fn opt_d(
         if ex.share[mid].left && di < z {
             dref = refdata.refs[d].to_ascii_vec();
             concat.append(&mut dref.clone());
-            _refsplits.push(concat.len());
         }
 
         // Append the J segment.
@@ -74,7 +70,6 @@ pub fn opt_d(
         let jend = min(FLANK, jref.len());
         let jref = jref[0..jend].to_vec();
         concat.append(&mut jref.clone());
-        _refsplits.push(concat.len());
 
         // Align the V..J sequence on the contig to the reference concatenation.
 
