@@ -2,14 +2,20 @@
 //
 // Align a sequence to a concatenated V(D)J reference, encouraging gaps at the junction points.
 //
-// results of current version:
+// results of various parameter choices
 //
-// dataset       n     inconsistent%
-// ---------------------------------
-// BCR=123085    712        2.25
-// BI=1         7653       24.06
-// BI=3        13010       13.11
-// BI=4        27766       17.02
+// enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
+//
+// d_inconsistent_n = 53373
+//
+//                                          ******
+// match                      2       2       2       2
+// mismatch                  -2      -2      -2      -2
+// gap_open                 -12     -12     -12     -12
+// gap_extend                -2      -2      -2      -2
+// gap_open_at_boundary      -6      -5      -4      -4
+// gap_extend_at_boundary    -1      -1      -1      -0.666...
+// inconsistent%             16.24   15.78   15.72   16.25
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
@@ -26,7 +32,7 @@ pub fn align_to_vdj_ref(
     let mismatch = -2;
     let gap_open = -12;
     let gap_extend = -2;
-    let gap_open_at_boundary = -6;
+    let gap_open_at_boundary = -4;
     let gap_extend_at_boundary = -1;
 
     // Build concatenation.

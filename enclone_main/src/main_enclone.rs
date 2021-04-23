@@ -631,9 +631,11 @@ pub async fn main_enclone(args: &Vec<String>) {
     // Filter using constraints imposed by FCELL.
 
     filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
+    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Delete exact subclonotypes that appear to represent doublets.
 
+    let tdoublet = Instant::now();
     delete_doublets(
         &mut orbits,
         is_bcr,
@@ -644,9 +646,11 @@ pub async fn main_enclone(args: &Vec<String>) {
         &info,
         &raw_joins,
     );
+    ctl.perf_stats(&tdoublet, "doublet filtering");
 
     // Merge onesies where totally unambiguous, then check for disjoint orbits.
 
+    let tmerge = Instant::now();
     merge_onesies(
         &mut orbits,
         &ctl,
@@ -655,6 +659,8 @@ pub async fn main_enclone(args: &Vec<String>) {
         &eq,
         &disintegrated,
     );
+    ctl.perf_stats(&tmerge, "merging onesies");
+    let tsplit = Instant::now();
     split_orbits(
         &mut orbits,
         is_bcr,
@@ -665,9 +671,11 @@ pub async fn main_enclone(args: &Vec<String>) {
         &info,
         &raw_joins,
     );
+    ctl.perf_stats(&tsplit, "splitting orbits");
 
     // Mark VDJ noncells.
 
+    let tmark = Instant::now();
     if ctl.clono_filt_opt.non_cell_mark {
         for i in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[i];
@@ -679,8 +687,7 @@ pub async fn main_enclone(args: &Vec<String>) {
             }
         }
     }
-
-    ctl.perf_stats(&tumi, "umi filtering and such");
+    ctl.perf_stats(&tmark, "marking vdj noncells");
 
     // Load the GEX and FB data.
 
