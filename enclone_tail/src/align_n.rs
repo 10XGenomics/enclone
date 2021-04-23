@@ -21,7 +21,6 @@ use vdj_ann::refx::*;
 fn print_vis_align(
     seq: &[u8],
     concat: &[u8],
-    _refsplits: &Vec<usize>,
     col: usize,
     k: usize,
     vref: &[u8],
@@ -158,10 +157,7 @@ pub fn align_n(
                         } else {
                             vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                         }
-                        let mut refsplits = Vec::<usize>::new();
-                        refsplits.push(0);
                         concat.append(&mut vref.clone());
-                        refsplits.push(concat.len());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
                             let mut opt = None;
@@ -175,19 +171,16 @@ pub fn align_n(
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
-                                refsplits.push(concat.len());
                             }
                         }
                         let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                         concat.append(&mut jref.clone());
-                        refsplits.push(concat.len());
 
                         // Make and print alignment.
 
                         print_vis_align(
                             &seq,
                             &concat,
-                            &refsplits,
                             *col,
                             k,
                             &vref,
@@ -249,10 +242,7 @@ pub fn align2_n(
                         } else {
                             vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                         }
-                        let mut refsplits = Vec::<usize>::new();
-                        refsplits.push(0);
                         concat.append(&mut vref.clone());
-                        refsplits.push(concat.len());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
                             let mut opt = None;
@@ -266,19 +256,16 @@ pub fn align2_n(
                                 let opt2 = opt2.unwrap();
                                 drefx = refdata.refs[opt2].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
-                                refsplits.push(concat.len());
                             }
                         }
                         let jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                         concat.append(&mut jref.clone());
-                        refsplits.push(concat.len());
 
                         // Make and print alignment.
 
                         print_vis_align(
                             &seq,
                             &concat,
-                            &refsplits,
                             *col,
                             k,
                             &vref,
@@ -352,10 +339,7 @@ pub fn jun_align_n(
                         }
                         vref = vref[vstart..vref.len()].to_vec();
 
-                        let mut refsplits = Vec::<usize>::new();
-                        refsplits.push(0);
                         concat.append(&mut vref.clone());
-                        refsplits.push(concat.len());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
                             let mut opt = None;
@@ -369,7 +353,6 @@ pub fn jun_align_n(
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
-                                refsplits.push(concat.len());
                             }
                         }
 
@@ -389,14 +372,12 @@ pub fn jun_align_n(
                         let seq = seq[seq_start as usize..seq_end].to_vec();
                         let jref = jref[0..jend].to_vec();
                         concat.append(&mut jref.clone());
-                        refsplits.push(concat.len());
 
                         // Make and print alignment.
 
                         print_vis_align(
                             &seq,
                             &concat,
-                            &refsplits,
                             *col,
                             k,
                             &vref,
@@ -470,10 +451,7 @@ pub fn jun_align2_n(
                         }
                         vref = vref[vstart..vref.len()].to_vec();
 
-                        let mut refsplits = Vec::<usize>::new();
-                        refsplits.push(0);
                         concat.append(&mut vref.clone());
-                        refsplits.push(concat.len());
                         let mut drefx = Vec::<u8>::new();
                         if ex.share[r].left {
                             let mut opt = None;
@@ -487,7 +465,6 @@ pub fn jun_align2_n(
                                 let opt2 = opt2.unwrap();
                                 drefx = refdata.refs[opt2].to_ascii_vec();
                                 concat.append(&mut drefx.clone());
-                                refsplits.push(concat.len());
                             }
                         }
 
@@ -507,14 +484,12 @@ pub fn jun_align2_n(
                         let seq = seq[seq_start as usize..seq_end].to_vec();
                         let jref = jref[0..jend].to_vec();
                         concat.append(&mut jref.clone());
-                        refsplits.push(concat.len());
 
                         // Make and print alignment.
 
                         print_vis_align(
                             &seq,
                             &concat,
-                            &refsplits,
                             *col,
                             k,
                             &vref,
