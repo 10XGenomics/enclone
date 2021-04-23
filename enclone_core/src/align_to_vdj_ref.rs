@@ -28,7 +28,7 @@ pub fn align_to_vdj_ref(
     vref: &[u8],
     dref: &[u8],
     jref: &[u8],
-    _drefname: &str, // useful for debugging
+    drefname: &str, // useful for debugging
 ) -> bio_edit::alignment::Alignment {
     // Define penalties.
 
@@ -110,6 +110,11 @@ pub fn align_to_vdj_ref(
         };
     }
     max_perf = max(max_perf, perf);
+    let verbose = false;
+    if verbose {
+        use string_utils::*;
+        println!("{} ==> {}, ref = {}", drefname, max_perf, strme(&concat));
+    }
     al.score += 2 * max_perf;
 
     // Return the alignment.
