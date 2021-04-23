@@ -26,6 +26,7 @@ fn print_vis_align(
     vref: &[u8],
     dref: &[u8],
     jref: &[u8],
+    drefname: &str,
     left: bool, // will be ex.share[r].left
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
@@ -33,7 +34,7 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let al = align_to_vdj_ref(&seq, &vref, &dref, &jref);
+    let al = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
     // Make visual alignment.
 
@@ -160,6 +161,7 @@ pub fn align_n(
                         }
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
+                        let mut drefname = String::new();
                         if ex.share[r].left {
                             let mut opt = None;
                             let mut opt2 = None;
@@ -171,6 +173,7 @@ pub fn align_n(
                             if opt.is_some() {
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
+                                drefname = refdata.name[opt].clone();
                                 concat.append(&mut drefx.clone());
                             }
                         }
@@ -187,6 +190,7 @@ pub fn align_n(
                             &vref,
                             &drefx,
                             &jref,
+                            &drefname,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
@@ -247,6 +251,7 @@ pub fn align2_n(
                         }
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
+                        let mut drefname = String::new();
                         if ex.share[r].left {
                             let mut opt = None;
                             let mut opt2 = None;
@@ -258,6 +263,7 @@ pub fn align2_n(
                             if opt2.is_some() {
                                 let opt2 = opt2.unwrap();
                                 drefx = refdata.refs[opt2].to_ascii_vec();
+                                drefname = refdata.name[opt2].clone();
                                 concat.append(&mut drefx.clone());
                             }
                         }
@@ -274,6 +280,7 @@ pub fn align2_n(
                             &vref,
                             &drefx,
                             &jref,
+                            &drefname,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
@@ -346,6 +353,7 @@ pub fn jun_align_n(
 
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
+                        let mut drefname = String::new();
                         if ex.share[r].left {
                             let mut opt = None;
                             let mut opt2 = None;
@@ -357,6 +365,7 @@ pub fn jun_align_n(
                             if opt.is_some() {
                                 let opt = opt.unwrap();
                                 drefx = refdata.refs[opt].to_ascii_vec();
+                                drefname = refdata.name[opt].clone();
                                 concat.append(&mut drefx.clone());
                             }
                         }
@@ -388,6 +397,7 @@ pub fn jun_align_n(
                             &vref,
                             &drefx,
                             &jref,
+                            &drefname,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,
@@ -460,6 +470,7 @@ pub fn jun_align2_n(
 
                         concat.append(&mut vref.clone());
                         let mut drefx = Vec::<u8>::new();
+                        let mut drefname = String::new();
                         if ex.share[r].left {
                             let mut opt = None;
                             let mut opt2 = None;
@@ -471,6 +482,7 @@ pub fn jun_align2_n(
                             if opt2.is_some() {
                                 let opt2 = opt2.unwrap();
                                 drefx = refdata.refs[opt2].to_ascii_vec();
+                                drefname = refdata.name[opt2].clone();
                                 concat.append(&mut drefx.clone());
                             }
                         }
@@ -502,6 +514,7 @@ pub fn jun_align2_n(
                             &vref,
                             &drefx,
                             &jref,
+                            &drefname,
                             ex.share[r].left,
                             &ctl,
                             &mut logx,

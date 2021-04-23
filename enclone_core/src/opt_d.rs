@@ -59,8 +59,10 @@ pub fn opt_d(
         // Append the D segment if IGH/TRB.
 
         let mut dref = Vec::<u8>::new();
+        let mut drefname = String::new();
         if ex.share[mid].left && di < z {
             dref = refdata.refs[d].to_ascii_vec();
+            drefname = refdata.name[d].clone();
             concat.append(&mut dref.clone());
         }
 
@@ -84,7 +86,7 @@ pub fn opt_d(
         let seq_end = tig.len() - (jref.len() - jend);
         let seq = tig[seq_start as usize..seq_end].to_vec();
 
-        let al = align_to_vdj_ref(&seq, &vref, &dref, &jref);
+        let al = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
         let count = al.score;
         counts.push(count);

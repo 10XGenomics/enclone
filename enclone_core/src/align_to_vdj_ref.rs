@@ -20,12 +20,15 @@
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
+use bio_edit::alignment::AlignmentOperation::*;
+use std::cmp::max;
 
 pub fn align_to_vdj_ref(
     seq: &[u8],
     vref: &[u8],
     dref: &[u8],
     jref: &[u8],
+    _drefname: &str, // useful for debugging
 ) -> bio_edit::alignment::Alignment {
     // Define penalties.
 
@@ -76,5 +79,40 @@ pub fn align_to_vdj_ref(
     }
     let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
     al.mode = AlignmentMode::Semiglobal;
+
+    // Find the maximum perfect stretch in the D gene and add the length of that to the score.
+
+    let (mut perf, mut max_perf) = (0, 0);
+    let mut rpos = 0;
+    for m in 0..al.operations.len() {
+        match al.operations[m] {
+            Match => {
+                if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                    perf += 1;
+                }
+                rpos += 1;
+            }
+            Subst => {
+                max_perf = max(max_perf, perf);
+                perf = 0;
+                rpos += 1;
+            }
+            Del => {
+                max_perf = max(max_perf, perf);
+                perf = 0;
+                rpos += 1;
+            }
+            Ins => {
+                max_perf = max(max_perf, perf);
+                perf = 0;
+            }
+            _ => {}
+        };
+    }
+    max_perf = max(max_perf, perf);
+    al.score += 2 * max_perf;
+
+    // Return the alignment.
+
     al
 }
