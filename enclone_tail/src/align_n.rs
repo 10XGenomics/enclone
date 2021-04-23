@@ -328,7 +328,7 @@ pub fn jun_align_n(
                     let ex = &exact_clonotypes[exacts[oo][k]];
                     if m < rsi[oo].mat.len() && rsi[oo].mat[m][k].is_some() {
                         let r = rsi[oo].mat[m][k].unwrap();
-                        let seq = &ex.share[r].seq;
+                        let seq = &ex.share[r].seq_del;
                         let mut concat = Vec::<u8>::new();
                         let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
                         if rsi[oo].vpids[m].is_none() {
@@ -442,7 +442,7 @@ pub fn jun_align2_n(
                     let ex = &exact_clonotypes[exacts[oo][k]];
                     if m < rsi[oo].mat.len() && rsi[oo].mat[m][k].is_some() {
                         let r = rsi[oo].mat[m][k].unwrap();
-                        let seq = &ex.share[r].seq;
+                        let seq = &ex.share[r].seq_del;
                         let mut concat = Vec::<u8>::new();
                         let mut vref = refdata.refs[rsi[oo].vids[m]].to_ascii_vec();
                         if rsi[oo].vpids[m].is_none() {
