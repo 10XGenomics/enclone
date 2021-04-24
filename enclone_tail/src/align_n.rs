@@ -31,6 +31,7 @@ fn print_vis_align(
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
     width: usize,
+    add: &str,
 ) {
     // Make alignment.
 
@@ -110,10 +111,11 @@ fn print_vis_align(
 
     fwrite!(
         logx,
-        "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO CONCATENATED {} REFERENCE\n{}",
+        "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO CONCATENATED {} REFERENCE{}\n{}",
         col,
         k + 1,
         vdj,
+        add,
         vis,
     );
 }
@@ -195,6 +197,7 @@ pub fn align_n(
                             &ctl,
                             &mut logx,
                             width,
+                            "",
                         );
                     }
                 }
@@ -285,6 +288,7 @@ pub fn align2_n(
                             &ctl,
                             &mut logx,
                             width,
+                            " (2ND BEST D)",
                         );
                     }
                 }
@@ -402,6 +406,7 @@ pub fn jun_align_n(
                             &ctl,
                             &mut logx,
                             width,
+                            "",
                         );
                     }
                 }
@@ -519,6 +524,7 @@ pub fn jun_align2_n(
                             &ctl,
                             &mut logx,
                             width,
+                            " (2ND BEST D)",
                         );
                     }
                 }
