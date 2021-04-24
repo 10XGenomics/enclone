@@ -36,7 +36,7 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let al = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
+    let (al, _score) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
     // Make visual alignment.
 
@@ -193,7 +193,7 @@ pub fn align_n(
                             if ex.share[r].left {
                                 let mut opt = None;
                                 let mut opt2 = None;
-                                let mut delta = 0;
+                                let mut delta = 0.0;
                                 opt_d(
                                     &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                     &mut delta,

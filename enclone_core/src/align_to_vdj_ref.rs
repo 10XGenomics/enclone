@@ -7,7 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 14.44
+// d_inconsistent_% = 14.46
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
@@ -20,7 +20,7 @@ pub fn align_to_vdj_ref(
     dref: &[u8],
     jref: &[u8],
     drefname: &str, // useful for debugging
-) -> bio_edit::alignment::Alignment {
+) -> (bio_edit::alignment::Alignment, f64) {
     // Define penalties.
 
     let matchp = 2;
@@ -109,9 +109,9 @@ pub fn align_to_vdj_ref(
         use string_utils::*;
         println!("{} ==> {}, ref = {}", drefname, max_perf, strme(&concat));
     }
-    al.score += (2.25 * max_perf as f64).round() as i32;
+    let score = al.score as f64 + 2.25 * max_perf as f64;
 
-    // Return the alignment.
+    // Return the alignment and score.
 
-    al
+    (al, score)
 }

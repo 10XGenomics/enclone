@@ -9,7 +9,6 @@ use crate::defs::*;
 use enclone_proto::types::*;
 use std::cmp::min;
 use vdj_ann::refx::*;
-use vector_utils::*;
 
 pub fn opt_d(
     ex: &ExactClonotype,
@@ -20,11 +19,11 @@ pub fn opt_d(
     dref: &Vec<DonorReferenceItem>,
     opt: &mut Option<usize>,
     opt2: &mut Option<usize>,
-    delta: &mut usize,
+    delta: &mut f64,
 ) {
     let mid = rsi.mat[col][u].unwrap();
     assert!(ex.share[mid].left);
-    let mut comp = 1000000;
+    let mut comp = 1000000.0;
     let td = &ex.share[mid];
     let tig = &td.seq_del;
 
@@ -33,7 +32,7 @@ pub fn opt_d(
 
     let z = refdata.ds.len();
     let mut ds = Vec::<Option<usize>>::new();
-    let mut counts = Vec::<i32>::new();
+    let mut counts = Vec::<f64>::new();
     for di in 0..=z {
         let mut d = 0;
         if di < z {
@@ -87,9 +86,8 @@ pub fn opt_d(
         let jref = jref[0..jend].to_vec();
         concat.append(&mut jref.clone());
 
-        let al = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
+        let (_al, count) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
-        let count = al.score;
         counts.push(count);
         if di < z {
             ds.push(Some(d));
@@ -100,16 +98,30 @@ pub fn opt_d(
             comp = count;
         }
     }
-    sort_sync2(&mut counts, &mut ds);
-    counts.reverse();
-    ds.reverse();
-    let mut comp = 0 as i32;
+
+    // Reverse sort sync (counts, ds).
+
+    let mut counts_ds = Vec::new();
+    for i in 0..counts.len() {
+        counts_ds.push((counts[i], ds[i]));
+    }
+    counts_ds.sort_by(|a, b| b.partial_cmp(a).unwrap()); // reverse sort
+    counts.clear();
+    ds.clear();
+    for i in 0..counts_ds.len() {
+        counts.push(counts_ds[i].0);
+        ds.push(counts_ds[i].1);
+    }
+
+    // Proceed.
+
+    let mut comp = 0.0;
     let mut best_d = None;
     if counts.len() > 0 {
         comp = counts[0];
         best_d = ds[0];
     }
-    let mut second_comp = 0 as i32;
+    let mut second_comp = 0.0;
     let mut best_d2 = None;
     if counts.len() > 1 {
         second_comp = counts[1];
@@ -117,5 +129,5 @@ pub fn opt_d(
     }
     *opt = best_d;
     *opt2 = best_d2;
-    *delta = (comp - second_comp) as usize;
+    *delta = comp - second_comp;
 }

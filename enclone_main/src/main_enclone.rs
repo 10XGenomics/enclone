@@ -848,7 +848,7 @@ pub async fn main_enclone(args: &Vec<String>) {
                         if ex.share[m].left {
                             let mut opt = None;
                             let mut opt2 = None;
-                            let mut delta = 0;
+                            let mut delta = 0.0;
                             opt_d(
                                 &ex, col, u, &rsi[i], &refdata, &drefs, &mut opt, &mut opt2,
                                 &mut delta,

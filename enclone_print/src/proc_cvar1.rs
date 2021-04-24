@@ -271,7 +271,7 @@ pub fn proc_cvar1(
         }
         let mut opt = None;
         let mut opt2 = None;
-        let mut delta = 0;
+        let mut delta = 0.0;
         opt_d(
             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
         );
@@ -292,7 +292,7 @@ pub fn proc_cvar1(
         } else if *var == "opt_d2" {
             cvar_stats1![j, var, opt2_name];
         } else {
-            cvar_stats1![j, var, format!("{}", delta)];
+            cvar_stats1![j, var, format!("{:.1}", delta)];
         }
     } else if *var == "cdr1_dna"
         || *var == "cdr1_aa"
