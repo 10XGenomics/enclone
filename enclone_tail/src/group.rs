@@ -192,8 +192,9 @@ pub fn group_and_print_clonotypes(
         &dref,
         &groups,
         width,
+        false,
     );
-    let jun_align_out = jun_align_n(
+    let jun_align_out = align_n(
         &refdata,
         &exacts,
         &rsi,
@@ -202,6 +203,7 @@ pub fn group_and_print_clonotypes(
         &dref,
         &groups,
         width,
+        true,
     );
 
     // Test for consistency if requested.
@@ -219,8 +221,9 @@ pub fn group_and_print_clonotypes(
             &dref,
             &groups,
             width,
+            false,
         );
-        jun_align_out_test = jun_align_n(
+        jun_align_out_test = align_n(
             &refdata,
             &exacts,
             &rsi,
@@ -229,6 +232,7 @@ pub fn group_and_print_clonotypes(
             &dref,
             &groups,
             width,
+            true,
         );
     }
 
