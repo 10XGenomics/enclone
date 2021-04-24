@@ -92,7 +92,7 @@ and <code>JUN_ALIGN_2ND&ltn></code> to instead use the second best D segments.</
 <p>
 The algorithm aligns the V..J region on a transcript to the V..J reference region, allowing
 for each possible D reference segment (or the null D segment), in the case of IGH or TRB.  These 
-alignments are carred out using an affine Smith-Waterman algorithm with the following parameters:
+alignments are carried out using an affine Smith-Waterman algorithm with the following parameters:
 </p>
 
 <p>
