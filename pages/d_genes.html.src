@@ -90,9 +90,9 @@ and <code>JUN_ALIGN_2ND&ltn></code> to instead use the second best D segments.</
 <h2>How the algorithm works</h2>
 
 <p>
-The algorithm picks the D region that has the best alignment score, allowing for the case where
-the D region is null.  In the case of a tie, a winner is arbitrarily selected.  The alignment
-uses an affine Smith-Waterman algorithm with parameters:
+The algorithm aligns the V..J region on a transcript to the V..J reference region, allowing
+for each possible D reference segment (or the null D segment), in the case of IGH or TRB.  These 
+alignments are carred out using an affine Smith-Waterman algorithm with the following parameters:
 </p>
 
 <p>
@@ -106,6 +106,11 @@ uses an affine Smith-Waterman algorithm with parameters:
 <tr><td> gap extend (otherwise)            </td><td>  -2               </td></tr>
 </table>
 </p>
+
+<p>After aligning, the alignment score is adjusted by adding <code>2.25</code> times the
+longest perfect match for a given D segment (or <code>5</code>, in the case where the D
+segment is null).  This addition is rounded to the nearest integer.  Then the D segment having 
+the highest score is selected, arbitrarily selecting a winner in the case of a tie.</p>
 
 </body>
 </html>
