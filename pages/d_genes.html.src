@@ -59,6 +59,10 @@ heavy chains are assigned different D genes.  Here you can see the rate:</p>
 <p>The second variable is the sample size: the number of pairs of exact subclonotypes that
 were examined.</p>
 
+<p>The inconsistency rate for this dataset is deceptively low, perhaps because the sample
+size is too small.  For larger datasets we see a rate of around 14%, however the rate likely
+depends on the particular samples, and not just the sample size.</p>
+
 <hr>
 
 <p>
@@ -111,6 +115,13 @@ alignments are carried out using an affine Smith-Waterman algorithm with the fol
 longest perfect match for a given D segment (or <code>5</code>, in the case where the D
 segment is null).  Then the D segment having 
 the highest score is selected, arbitrarily selecting a winner in the case of a tie.</p>
+
+<p>We arrived at this algorithm by "intuitive guesswork", by optimizing the D gene
+inconsistency rate for a large dataset (over a million cells), and by comparing to IgBLAST
+calls, in an attempt to either match them or produce a different result that appeared to be
+better.  Although we do not know which D gene assignments are correct, the use of the
+inconsistency rate leverages the truth we do have: that cells in the same clonotype have the
+same true D gene.</p>
 
 </body>
 </html>
