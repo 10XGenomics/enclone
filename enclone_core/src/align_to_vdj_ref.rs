@@ -101,12 +101,15 @@ pub fn align_to_vdj_ref(
         };
     }
     max_perf = max(max_perf, perf);
+    if dref.is_empty() {
+        max_perf = 5;
+    }
     let verbose = false;
     if verbose {
         use string_utils::*;
         println!("{} ==> {}, ref = {}", drefname, max_perf, strme(&concat));
     }
-    al.score += 2 * max_perf;
+    al.score += (2.25 * max_perf as f64).round() as i32;
 
     // Return the alignment.
 
