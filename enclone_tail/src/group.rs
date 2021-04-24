@@ -193,27 +193,7 @@ pub fn group_and_print_clonotypes(
         &groups,
         width,
     );
-    let align2_out = align2_n(
-        &refdata,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &dref,
-        &groups,
-        width,
-    );
     let jun_align_out = jun_align_n(
-        &refdata,
-        &exacts,
-        &rsi,
-        &exact_clonotypes,
-        &ctl,
-        &dref,
-        &groups,
-        width,
-    );
-    let jun_align2_out = jun_align2_n(
         &refdata,
         &exacts,
         &rsi,
@@ -428,9 +408,7 @@ pub fn group_and_print_clonotypes(
 
             if !ctl.gen_opt.noprint {
                 logx.append(&mut align_out[&(i, j)].clone());
-                logx.append(&mut align2_out[&(i, j)].clone());
                 logx.append(&mut jun_align_out[&(i, j)].clone());
-                logx.append(&mut jun_align2_out[&(i, j)].clone());
             }
             if ctl.gen_opt.align_jun_align_consistency {
                 let x = stringme(&align_out_test[&(i, j)]);
