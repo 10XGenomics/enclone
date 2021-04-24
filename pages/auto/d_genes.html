@@ -229,6 +229,10 @@ and <code>JUN_ALIGN_2ND&ltn></code> to instead use the second best D segments.</
 
 <h2>How the algorithm works</h2>
 
+<p>The problems we are solving here are to (a) pick the "best" reference D segment, in the case of
+IGH or TRB, and (b) exhibit the "correct" alignment of the transcript to the concatenated
+reference.</p>
+
 <p>
 The algorithm aligns the V(D)J region on a transcript to the concatenated V(D)J reference, allowing
 for each possible D reference segment (or the null D segment), in the case of IGH or TRB.  These 
