@@ -71,36 +71,67 @@ pub fn align_to_vdj_ref(
     let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
     al.mode = AlignmentMode::Semiglobal;
 
-    // Find the maximum perfect stretch in the D gene and add the length of that to the score.
+    // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero 
+    // denotes a mismatch.
 
-    let (mut perf, mut max_perf) = (0, 0);
-    let mut rpos = 0;
-    for m in 0..al.operations.len() {
-        match al.operations[m] {
-            Match => {
-                if rpos >= vref.len() && rpos < vref.len() + dref.len() {
-                    perf += 1;
+    let mut zos = Vec::<Vec<u8>>::new();
+    {
+        let mut rpos = 0;
+        let mut zo = Vec::<u8>::new();
+        for m in 0..al.operations.len() {
+            match al.operations[m] {
+                Match => {
+                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                        zo.push(1);
+                    }
+                    rpos += 1;
                 }
-                rpos += 1;
-            }
-            Subst => {
-                max_perf = max(max_perf, perf);
-                perf = 0;
-                rpos += 1;
-            }
-            Del => {
-                max_perf = max(max_perf, perf);
-                perf = 0;
-                rpos += 1;
-            }
-            Ins => {
-                max_perf = max(max_perf, perf);
-                perf = 0;
-            }
-            _ => {}
-        };
+                Subst => {
+                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                        zo.push(0);
+                    }
+                    rpos += 1;
+                }
+                Del => {
+                    if zo.len() > 0 {
+                        zos.push(zo.clone());
+                        zo.clear();
+                    }
+                    rpos += 1;
+                }
+                Ins => {
+                    if zo.len() > 0 {
+                        zos.push(zo.clone());
+                        zo.clear();
+                    }
+                }
+                _ => {}
+            };
+        }
+        if zo.len() > 0 {
+            zos.push(zo.clone());
+        }
     }
-    max_perf = max(max_perf, perf);
+
+    // Find the maximum perfect stretch in the D gene.
+
+    let mut max_perf = 0;
+    for i in 0..zos.len() {
+        let zo = &zos[i];
+        let mut j = 0;
+        while j < zo.len() {
+            let mut perf = 0;
+            while j < zo.len() && zo[j] == 1 {
+                perf += 1;
+                j += 1;
+            }
+            max_perf = max(max_perf, perf);
+            j += 1;
+        }
+    }
+
+    // Add length of the maximum perfect stretch to the score (null case handled differently).
+
     if dref.is_empty() {
         max_perf = 5;
     }
