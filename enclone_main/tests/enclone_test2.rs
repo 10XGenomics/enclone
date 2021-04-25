@@ -317,7 +317,7 @@ fn test_for_broken_links_and_spellcheck() {
         dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
         genomics germline github githubusercontent google googletagmanager grok gz html \
-        hypermutation hypermutations igh igk igl ighm igkc imgt \
+        hypermutation hypermutations igblast igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json krh levenshtein linux loh lvar lvars \
         macbook mait metadata mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
