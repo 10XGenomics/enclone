@@ -9,6 +9,8 @@ use vdj_ann::*;
 use self::refx::*;
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
+use enclone_proto::types::DonorReferenceItem;
 use std::cmp::*;
 use string_utils::*;
 use vector_utils::*;
@@ -20,6 +22,7 @@ pub fn survives_filter(
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
     gex_info: &GexInfo,
+    dref: &Vec<DonorReferenceItem>,
 ) -> bool {
     let mut mults = Vec::<usize>::new();
     for i in 0..exacts.len() {
@@ -431,5 +434,40 @@ pub fn survives_filter(
     if ctl.clono_filt_opt.fail_only && donors.len() <= 1 {
         return false;
     }
+
+    // Inconsistent D genes.
+
+    if ctl.clono_filt_opt.d_inconsistent {
+        let mut inconsistent = false;
+        for col in 0..rsi.mat.len() {
+            let mut dvotes = Vec::<Option<usize>>::new();
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut opt = None;
+                        let mut opt2 = None;
+                        let mut delta = 0.0;
+                        opt_d(
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                        );
+                        dvotes.push(opt);
+                    }
+                }
+            }
+            unique_sort(&mut dvotes);
+            if dvotes.len() >= 2 {
+                inconsistent = true;
+            }
+        }
+        if !inconsistent {
+            return false;
+        }
+    }
+
+    // Done.
+
     return true;
 }

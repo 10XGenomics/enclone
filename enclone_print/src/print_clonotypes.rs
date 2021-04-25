@@ -337,7 +337,15 @@ pub fn print_clonotypes(
 
             let mut in_center = true;
             if pass == 2
-                && !survives_filter(&exacts, &rsi, &ctl, &exact_clonotypes, &refdata, &gex_info)
+                && !survives_filter(
+                    &exacts,
+                    &rsi,
+                    &ctl,
+                    &exact_clonotypes,
+                    &refdata,
+                    &gex_info,
+                    &dref,
+                )
             {
                 if ctl.clono_group_opt.asymmetric_center == "from_filters" {
                     in_center = false;

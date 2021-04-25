@@ -375,6 +375,7 @@ pub struct ClonoFiltOpt {
     pub inkt: bool,
     pub mait: bool,
     pub doublet: bool, // filter putative doublets
+    pub d_inconsistent: bool,
 }
 
 // Clonotype printing options.
