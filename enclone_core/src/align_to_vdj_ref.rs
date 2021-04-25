@@ -156,7 +156,15 @@ pub fn align_to_vdj_ref(
     let verbose = false;
     if verbose {
         use string_utils::*;
-        println!("{} ==> {:.1}, ref = {}", drefname, bits, strme(&concat));
+        println!("\n{} ==> {:.1}", drefname, bits);
+        println!("seq = {}", strme(&seq));
+        println!("ref = {}", strme(&concat));
+        use itertools::Itertools;
+        for zo in zos.iter() {
+            print!("{}", zo.iter().format(""));
+        }
+        println!("");
+        println!("ops = {:?}", al.operations.iter().format(","));
     }
     let score = al.score as f64 + 1.2 * bits;
 
