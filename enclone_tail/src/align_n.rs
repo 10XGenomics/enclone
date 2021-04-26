@@ -36,7 +36,7 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let (ops, _score) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
+    let (ops, _score) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname, left);
 
     // Make visual alignment.
 

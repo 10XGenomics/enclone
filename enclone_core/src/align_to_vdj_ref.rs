@@ -111,6 +111,7 @@ pub fn align_to_vdj_ref(
     dref: &[u8],
     jref: &[u8],
     drefname: &str, // useful for debugging
+    left: bool,
 ) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 

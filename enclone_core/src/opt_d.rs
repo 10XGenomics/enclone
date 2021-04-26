@@ -86,7 +86,7 @@ pub fn opt_d(
         let jref = jref[0..jend].to_vec();
         concat.append(&mut jref.clone());
 
-        let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
+        let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname, true);
 
         counts.push(count);
         if di < z {
