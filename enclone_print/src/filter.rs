@@ -467,6 +467,35 @@ pub fn survives_filter(
         }
     }
 
+    // None D genes.
+
+    if ctl.clono_filt_opt.d_none {
+        let mut none = false;
+        for col in 0..rsi.mat.len() {
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut opt = None;
+                        let mut opt2 = None;
+                        let mut delta = 0.0;
+                        opt_d(
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                        );
+                        if opt.is_none() {
+                            none = true;
+                        }
+                    }
+                }
+            }
+        }
+        if !none {
+            return false;
+        }
+    }
+
     // Done.
 
     return true;
