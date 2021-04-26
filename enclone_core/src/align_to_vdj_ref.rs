@@ -13,6 +13,8 @@ use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes a mismatch.
 
 fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Vec<Vec<u8>> {
@@ -56,6 +58,49 @@ fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Ve
     }
     zos
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Compute a match bit score.
+
+fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
+    let mut bits = 0.0_f64;
+    for i in 0..zos.len() {
+        let zo = &zos[i];
+        for start in 0..zo.len() {
+            for stop in start + 1..=zo.len() {
+                let b = &zo[start..stop];
+                let n = b.len();
+                let mut k = 0; // number of mismatches
+                for z in 0..n {
+                    if b[z] == 0 {
+                        k += 1;
+                    }
+                }
+
+                // Let p be the probability that a random DNA sequence of length n will match a
+                // given DNA sequence with ≤ k mismatches = sum{l=0..=k} (n choose l) * 3^l / 4^n.
+
+                let mut sum = 0.0;
+                let mut choose = 1.0;
+                for l in 0..=k {
+                    sum += choose;
+                    choose *= (n - l) as f64;
+                    choose /= (l + 1) as f64;
+                    choose *= 3.0;
+                }
+                let p = sum / 4.0_f64.powi(n as i32);
+
+                // Update bits.
+
+                bits = bits.max(-p.log2());
+            }
+        }
+    }
+    bits
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn align_to_vdj_ref(
     seq: &[u8],
@@ -115,45 +160,10 @@ pub fn align_to_vdj_ref(
     al.mode = AlignmentMode::Semiglobal;
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
-    // denotes a mismatch.
+    // denotes a mismatch.  Then compute a match bit score.
 
     let zos = zero_one(&al, &vref, &dref);
-
-    // Compute a match bit score.
-
-    let mut bits = 0.0_f64;
-    for i in 0..zos.len() {
-        let zo = &zos[i];
-        for start in 0..zo.len() {
-            for stop in start + 1..=zo.len() {
-                let b = &zo[start..stop];
-                let n = b.len();
-                let mut k = 0; // number of mismatches
-                for z in 0..n {
-                    if b[z] == 0 {
-                        k += 1;
-                    }
-                }
-
-                // Let p be the probability that a random DNA sequence of length n will match a
-                // given DNA sequence with ≤ k mismatches = sum{l=0..=k} (n choose l) * 3^l / 4^n.
-
-                let mut sum = 0.0;
-                let mut choose = 1.0;
-                for l in 0..=k {
-                    sum += choose;
-                    choose *= (n - l) as f64;
-                    choose /= (l + 1) as f64;
-                    choose *= 3.0;
-                }
-                let p = sum / 4.0_f64.powi(n as i32);
-
-                // Update bits.
-
-                bits = bits.max(-p.log2());
-            }
-        }
-    }
+    let mut bits = match_bit_score(&zos);
 
     // Add a constant times bits to the alignment score (null case handled differently).
 
