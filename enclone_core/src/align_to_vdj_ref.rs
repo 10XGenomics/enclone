@@ -7,7 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 16.00
+// d_inconsistent_% = 15.33
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
@@ -240,7 +240,7 @@ pub fn align_to_vdj_ref(
     // In the non-null case, where the D segment is placed without indels, see if the placement 
     // seems like it might be wrong.
 
-    const BITS_MULTIPLIER: f64 = 1.3;
+    const BITS_MULTIPLIER: f64 = 2.0;
     if zos.len() == 1 {
 
         // Set pos to the start of D on seq.
