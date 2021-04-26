@@ -227,8 +227,8 @@ pub fn align_to_vdj_ref(
         println!("ops = {:?}", al.operations.iter().format(","));
     }
 
-    // In the non-null case, where the D segment is placed without indels, see if the placement seems like
-    // it might be wrong.
+    // In the non-null case, where the D segment is placed without indels, see if the placement 
+    // seems like it might be wrong.
 
     if zos.len() == 1 {
 
@@ -262,8 +262,8 @@ pub fn align_to_vdj_ref(
         }
 
         // Look for alternate starts near the given start.
-        // This is in the range pos-DWOBBLE..=pos+DWOBBLE, but we are a bit careful in case the reference
-        // is badly busted.
+        // This is in the range pos-DWOBBLE..=pos+DWOBBLE, but we are a bit careful in case the
+        //  reference is badly busted.
 
         const D_WOBBLE: usize = 4;
         let mut dstart = 0;
@@ -342,7 +342,7 @@ pub fn align_to_vdj_ref(
     // Add a constant times bits to the alignment score (null case handled differently).
 
     if dref.is_empty() {
-        bits = 10.0;
+        bits = 5.5;
     }
     let full_score = rescore(&al.operations) as f64 + 1.2 * bits;
 
