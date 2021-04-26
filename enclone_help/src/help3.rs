@@ -393,6 +393,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "having some MAIT evidence, see \\green{bit.ly/enclone} for details",
         );
+        h.ldoc(
+            "D_INCONSISTENT",
+            "only show clonotypes having an inconsistent assignment of D genes",
+        );
 
         // print main table
 
