@@ -24,7 +24,7 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 244] = [
+pub const TESTS: [&str; 245] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -627,6 +627,8 @@ pub const TESTS: [&str; 244] = [
     // 244. test ALIGN_JUN_ALIGN_CONSISTENCY
     r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JUN_ALIGN1 ALIGN_JUN_ALIGN_CONSISTENCY AMINO=cdr3
          PLAIN NOPAGER EXPECT_OK"###,
+    // 245. test D_INCONSISTENT, and lock number of inconsistencies
+    r###"BCR=123085 D_INCONSISTENT CVARS=opt_d COMPLETE NGROUP"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
