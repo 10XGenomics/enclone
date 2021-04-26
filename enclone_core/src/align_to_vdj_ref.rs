@@ -12,10 +12,13 @@
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
+use io_utils::*;
+use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes a mismatch.
+// Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes 
+// a mismatch.
 
 fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Vec<Vec<u8>> {
     let mut zos = Vec::<Vec<u8>>::new();
@@ -118,10 +121,11 @@ pub fn align_to_vdj_ref(
     let gap_open_at_boundary = -4 as i32;
     let gap_extend_at_boundary = -1 as i32;
 
-    // Define scoring function.  It does not appear that the aligner is scoring in exactly the intended 
-    // fashion in all cases.  This is likely more of an issue for alv and alj.  The problem has to do with the 
-    // interpretation of being at the boundary.  This is still somewhat of a problem since although we're 
-    // rescoring to "fix" the problem, the aligner might have chosen a suboptimal placement in the first place.
+    // Define scoring function.  It does not appear that the aligner is scoring in exactly the 
+    // intended fashion in all cases.  This is likely more of an issue for alv and alj.  The 
+    // problem has to do with the interpretation of being at the boundary.  This is still somewhat 
+    // of a problem since although we're rescoring to "fix" the problem, the aligner might have 
+    // chosen a suboptimal placement in the first place.
 
     let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> i32 {
         let mut score = 0 as i32;
@@ -215,8 +219,13 @@ pub fn align_to_vdj_ref(
 
     let verbose = false;
     if verbose {
-        use string_utils::*;
-        println!("\n{} ==> {:.1}", drefname, bits);
+        let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
+        println!("\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
+            drefname, 
+            rescore(&al.operations), 
+            bits,
+            full_score,
+        );
         println!("seq = {}", strme(&seq));
         println!("ref = {}", strme(&concat));
         use itertools::Itertools;
@@ -230,6 +239,7 @@ pub fn align_to_vdj_ref(
     // In the non-null case, where the D segment is placed without indels, see if the placement 
     // seems like it might be wrong.
 
+    const BITS_MULTIPLIER: f64 = 1.2;
     if zos.len() == 1 {
 
         // Set pos to the start of D on seq.
@@ -263,7 +273,7 @@ pub fn align_to_vdj_ref(
 
         // Look for alternate starts near the given start.
         // This is in the range pos-DWOBBLE..=pos+DWOBBLE, but we are a bit careful in case the
-        //  reference is badly busted.
+        // reference is badly busted.
 
         const D_WOBBLE: usize = 4;
         let mut dstart = 0;
@@ -332,10 +342,13 @@ pub fn align_to_vdj_ref(
                         }
                     }
                     ops_new.append(&mut alj.operations.clone());
-                    let full_score = al.score as f64 + 1.2 * bits;
+                    let full_score = al.score as f64 + BITS_MULTIPLIER * bits;
                     let score_alt = rescore(&ops_new);
-                    let full_score_alt = score_alt as f64 + 1.2 * bits_alt;
+                    let full_score_alt = score_alt as f64 + BITS_MULTIPLIER * bits_alt;
                     if full_score_alt > full_score {
+                        if verbose {
+                            printme!(score_alt, bits_alt);
+                        }
                         return (ops_new, full_score_alt);
                     }
                 }
@@ -348,7 +361,7 @@ pub fn align_to_vdj_ref(
     if dref.is_empty() {
         bits = 10.0;
     }
-    let full_score = rescore(&al.operations) as f64 + 1.2 * bits;
+    let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
 
     // Return the alignment and score.
 
