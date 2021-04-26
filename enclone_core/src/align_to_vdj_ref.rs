@@ -108,15 +108,61 @@ pub fn align_to_vdj_ref(
     dref: &[u8],
     jref: &[u8],
     drefname: &str, // useful for debugging
-) -> (bio_edit::alignment::Alignment, f64) {
+) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
-    let matchp = 2;
-    let mismatch = -2;
-    let gap_open = -12;
-    let gap_extend = -2;
-    let gap_open_at_boundary = -4;
-    let gap_extend_at_boundary = -1;
+    let matchp = 2 as i32;
+    let mismatch = -2 as i32;
+    let gap_open = -12 as i32;
+    let gap_extend = -2 as i32;
+    let gap_open_at_boundary = -4 as i32;
+    let gap_extend_at_boundary = -1 as i32;
+
+    // Define scoring function.  It does not appear that the aligner is scoring in exactly the intended 
+    // fashion in all cases.  This is likely more of an issue for alv and alj.  The problem has to do with the 
+    // interpretation of being at the boundary.  This is still somewhat of a problem since although we're 
+    // rescoring to "fix" the problem, the aligner might have chosen a suboptimal placement in the first place.
+
+    let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> i32 {
+        let mut score = 0 as i32;
+        let mut i = 0;
+        let mut rpos = 0;
+        while i < ops.len() {
+            if ops[i] == Match {
+                rpos += 1;
+                score += matchp;
+                i += 1;
+            } else if ops[i] == Subst {
+                rpos += 1;
+                score += mismatch;
+                i += 1;
+            } else if ops[i] == Ins {
+                let mut j = i + 1;
+                while j < ops.len() && ops[j] == Ins {
+                    j += 1;
+                }
+                if rpos == vref.len() || rpos == vref.len() + dref.len() {
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                } else {
+                    score += gap_open + (j - i - 1) as i32 * gap_extend;
+                }
+                i = j;
+            } else if ops[i] == Del {
+                let mut j = i + 1;
+                while j < ops.len() && ops[j] == Del {
+                    j += 1;
+                }
+                if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                } else {
+                    score += gap_open + (j - i - 1) as i32 * gap_extend;
+                }
+                rpos += j - i;
+                i = j;
+            }
+        }
+        score
+    };
 
     // Build concatenation.
 
@@ -165,11 +211,8 @@ pub fn align_to_vdj_ref(
     let zos = zero_one(&al, &vref, &dref);
     let mut bits = match_bit_score(&zos);
 
-    // Add a constant times bits to the alignment score (null case handled differently).
+    // Possibly emit verbose logging.
 
-    if dref.is_empty() {
-        bits = 10.0;
-    }
     let verbose = false;
     if verbose {
         use string_utils::*;
@@ -183,9 +226,127 @@ pub fn align_to_vdj_ref(
         println!("");
         println!("ops = {:?}", al.operations.iter().format(","));
     }
-    let score = al.score as f64 + 1.2 * bits;
+
+    // In the non-null case, where the D segment is placed without indels, see if the placement seems like
+    // it might be wrong.
+
+    if zos.len() == 1 {
+
+        // Set pos to the start of D on seq.
+
+        let (mut pos, mut rpos) = (0, 0);
+        for m in 0..al.operations.len() {
+            match al.operations[m] {
+                Match => {
+                    if rpos == vref.len() {
+                        break;
+                    }
+                    pos += 1;
+                    rpos += 1;
+                }
+                Subst => {
+                    if rpos == vref.len() {
+                        break;
+                    }
+                    pos += 1;
+                    rpos += 1;
+                }
+                Del => {
+                    rpos += 1;
+                }
+                Ins => {
+                    pos += 1;
+                }
+                _ => {}
+            };
+        }
+
+        // Look for alternate starts near the given start.
+        // This is in the range pos-DWOBBLE..=pos+DWOBBLE, but we are a bit careful in case the reference
+        // is badly busted.
+
+        const D_WOBBLE: usize = 4;
+        let mut dstart = 0;
+        if pos >= D_WOBBLE {
+            dstart = pos - D_WOBBLE;
+        }
+        let mut dstop = pos + D_WOBBLE;
+        if dstop + dref.len() > seq.len() {
+            dstop = seq.len() - dref.len();
+        }
+        for dpos in dstart..=dstop {
+            if dpos != pos {
+
+                // Compute bits for the alternate start.
+
+                let mut zos = vec![vec![1; dref.len()]];
+                for i in 0..dref.len() {
+                    if dref[i] != seq[dpos + i] {
+                        zos[0][i] = 0;
+                    }
+                }
+                let bits_alt = match_bit_score(&zos);
+
+                // Does the alt placement appear to be better?
+
+                if bits_alt > bits {
+
+                    // Realign, forcing the D segment to be in the given place, without indels.
+
+                    let mut gap_open_fn = vec![gap_open; vref.len() + 1];
+                    gap_open_fn[vref.len()] = gap_open_at_boundary;
+                    let mut gap_extend_fn = vec![gap_extend; vref.len() + 1];
+                    gap_extend_fn[vref.len()] = gap_extend_at_boundary;
+                    let mut alv = aligner.custom_with_gap_fns(
+                        &seq[0..dpos], 
+                        &vref, 
+                        &gap_open_fn, 
+                        &gap_extend_fn
+                    );
+                    alv.mode = AlignmentMode::Semiglobal;
+                    let mut gap_open_fn = vec![gap_open; jref.len() + 1];
+                    gap_open_fn[1] = gap_open_at_boundary;
+                    let mut gap_extend_fn = vec![gap_extend; jref.len() + 1];
+                    gap_extend_fn[1] = gap_extend_at_boundary;
+                    let mut alj = aligner.custom_with_gap_fns(
+                        &seq[dpos + dref.len()..], 
+                        &jref, 
+                        &gap_open_fn, 
+                        &gap_extend_fn
+                    );
+                    alj.mode = AlignmentMode::Semiglobal;
+
+                    // Compute the new score and see if its better.
+
+                    let mut ops_new = Vec::<bio_edit::alignment::AlignmentOperation>::new();
+                    ops_new.append(&mut alv.operations.clone());
+                    for i in 0..zos[0].len() {
+                        if zos[0][i] == 0 {
+                            ops_new.push(Subst);
+                        } else {
+                            ops_new.push(Match);
+                        }
+                    }
+                    ops_new.append(&mut alj.operations.clone());
+                    let full_score = al.score as f64 + 1.2 * bits;
+                    let score_alt = rescore(&ops_new);
+                    let full_score_alt = score_alt as f64 + 1.2 * bits_alt;
+                    if full_score_alt > full_score {
+                        return (ops_new, full_score_alt);
+                    }
+                }
+            }
+        }
+    }
+
+    // Add a constant times bits to the alignment score (null case handled differently).
+
+    if dref.is_empty() {
+        bits = 10.0;
+    }
+    let full_score = rescore(&al.operations) as f64 + 1.2 * bits;
 
     // Return the alignment and score.
 
-    (al, score)
+    (al.operations, full_score)
 }

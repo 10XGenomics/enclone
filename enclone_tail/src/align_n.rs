@@ -36,11 +36,11 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let (al, _score) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
+    let (ops, _score) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname);
 
     // Make visual alignment.
 
-    let mut vis = vis_align(&seq, &concat, &al, width);
+    let mut vis = vis_align(&seq, &concat, &ops, width);
 
     // Colorize it.
 

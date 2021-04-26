@@ -4,7 +4,7 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-align_tools = "0.1.4"
+align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
 assert_cmd = "1.0.3"
@@ -65,5 +65,5 @@ tilde-expand = "0.1.1"
 tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = [] }
 tokio-util = { version = "0.6.3", features = ["net"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0b3e59011bac71f7a16ea68541dea68352b755c0" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="ee06030f18a1514d84e77b23b124c7483e0cafaf" }
 vector_utils = "0.1.3"
