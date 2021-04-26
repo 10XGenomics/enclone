@@ -7,7 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 14.03
+// d_inconsistent_% = 16.11
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
