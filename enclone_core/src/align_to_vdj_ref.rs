@@ -13,6 +13,50 @@ use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
 
+// Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes a mismatch.
+
+fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Vec<Vec<u8>> {
+    let mut zos = Vec::<Vec<u8>>::new();
+    {
+        let mut rpos = 0;
+        let mut zo = Vec::<u8>::new();
+        for m in 0..al.operations.len() {
+            match al.operations[m] {
+                Match => {
+                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                        zo.push(1);
+                    }
+                    rpos += 1;
+                }
+                Subst => {
+                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                        zo.push(0);
+                    }
+                    rpos += 1;
+                }
+                Del => {
+                    if zo.len() > 0 {
+                        zos.push(zo.clone());
+                        zo.clear();
+                    }
+                    rpos += 1;
+                }
+                Ins => {
+                    if zo.len() > 0 {
+                        zos.push(zo.clone());
+                        zo.clear();
+                    }
+                }
+                _ => {}
+            };
+        }
+        if zo.len() > 0 {
+            zos.push(zo.clone());
+        }
+    }
+    zos
+}
+
 pub fn align_to_vdj_ref(
     seq: &[u8],
     vref: &[u8],
@@ -73,44 +117,7 @@ pub fn align_to_vdj_ref(
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.
 
-    let mut zos = Vec::<Vec<u8>>::new();
-    {
-        let mut rpos = 0;
-        let mut zo = Vec::<u8>::new();
-        for m in 0..al.operations.len() {
-            match al.operations[m] {
-                Match => {
-                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
-                        zo.push(1);
-                    }
-                    rpos += 1;
-                }
-                Subst => {
-                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
-                        zo.push(0);
-                    }
-                    rpos += 1;
-                }
-                Del => {
-                    if zo.len() > 0 {
-                        zos.push(zo.clone());
-                        zo.clear();
-                    }
-                    rpos += 1;
-                }
-                Ins => {
-                    if zo.len() > 0 {
-                        zos.push(zo.clone());
-                        zo.clear();
-                    }
-                }
-                _ => {}
-            };
-        }
-        if zo.len() > 0 {
-            zos.push(zo.clone());
-        }
-    }
+    let zos = zero_one(&al, &vref, &dref);
 
     // Compute a match bit score.
 
