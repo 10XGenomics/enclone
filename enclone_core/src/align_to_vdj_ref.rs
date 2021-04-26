@@ -100,7 +100,7 @@ fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
     bits
 }
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn align_to_vdj_ref(
     seq: &[u8],
@@ -272,7 +272,11 @@ pub fn align_to_vdj_ref(
         }
         let mut dstop = pos + D_WOBBLE;
         if dstop + dref.len() > seq.len() {
-            dstop = seq.len() - dref.len();
+            if seq.len() >= dref.len() {
+                dstop = seq.len() - dref.len();
+            } else {
+                dstop = dstart - 1;
+            }
         }
         for dpos in dstart..=dstop {
             if dpos != pos {
