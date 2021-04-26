@@ -359,9 +359,14 @@ pub fn align_to_vdj_ref(
 
     // Add a constant times bits to the alignment score (null case handled differently).
 
-    if dref.is_empty() {
-        bits = 10.0;
+    if left && dref.is_empty() {
+        if !al.operations.contains(&Ins) {
+            bits = 10.0;
+        } else {
+            bits = -1000.0;
+        }
     }
+
     let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
 
     // Return the alignment and score.
