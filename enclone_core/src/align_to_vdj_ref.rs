@@ -378,8 +378,11 @@ pub fn align_to_vdj_ref(
             bits = -1000.0;
         }
     }
-
-    let full_score = al.score as f64 + BITS_MULTIPLIER * bits;
+    let mut full_score = al.score as f64 + BITS_MULTIPLIER * bits;
+    const D2_PENALTY: f64 = -15.0;
+    if drefname.contains(":") {
+        full_score += D2_PENALTY;
+    }
 
     // Return the alignment and score.
 
