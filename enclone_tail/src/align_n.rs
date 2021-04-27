@@ -199,20 +199,25 @@ pub fn align_n(
                                     &mut delta,
                                 );
                                 if pass == 1 {
-                                    if !opt.is_empty() {
-                                        let opt = opt[0];
-                                        drefx = refdata.refs[opt].to_ascii_vec();
-                                        drefname = refdata.name[opt].clone();
-                                        concat.append(&mut drefx.clone());
+                                    for j in 0..opt.len() {
+                                        let d = opt[j];
+                                        drefx.append(&mut refdata.refs[d].to_ascii_vec());
+                                        if j > 0 {
+                                            drefname += ":";
+                                        }
+                                        drefname += &mut refdata.name[d].clone();
                                     }
                                 } else {
-                                    if !opt2.is_empty() {
-                                        let opt2 = opt2[0];
-                                        drefx = refdata.refs[opt2].to_ascii_vec();
-                                        drefname = refdata.name[opt2].clone();
-                                        concat.append(&mut drefx.clone());
+                                    for j in 0..opt2.len() {
+                                        let d = opt2[j];
+                                        drefx.append(&mut refdata.refs[d].to_ascii_vec());
+                                        if j > 0 {
+                                            drefname += ":";
+                                        }
+                                        drefname += &mut refdata.name[d].clone();
                                     }
                                 }
+                                concat.append(&mut drefx.clone());
                             }
                             let mut jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                             if jun {

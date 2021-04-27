@@ -27,17 +27,23 @@ pub fn opt_d(
     let td = &ex.share[mid];
     let tig = &td.seq_del;
 
-    // Go through passes.  If IGH/TRB, we go through every D segment.  Otherwise
-    // there is just one pass.
+    // Go through every D segment, or possibly every concatenation of D segments.
 
-    let z = refdata.ds.len();
-    let mut ds = Vec::<Option<usize>>::new();
-    let mut counts = Vec::<f64>::new();
-    for di in 0..=z {
-        let mut d = 0;
-        if di < z {
-            d = refdata.ds[di];
+    let mut todo = Vec::<Vec<usize>>::new();
+    todo.push(vec![]);
+    for i in refdata.ds.iter() {
+        todo.push(vec![*i]);
+    }
+    if ex.share[mid].cdr3_aa.len() >= 25 {
+        for i1 in refdata.ds.iter() {
+            for i2 in refdata.ds.iter() {
+                todo.push(vec![*i1, *i2]);
+            }
         }
+    }
+    let mut ds = Vec::<Vec<usize>>::new();
+    let mut counts = Vec::<f64>::new();
+    for di in 0..todo.len() {
         const LFLANK: usize = 15;
         const RFLANK: usize = 35;
 
@@ -56,15 +62,19 @@ pub fn opt_d(
         vref = vref[vstart..vref.len()].to_vec();
         concat.append(&mut vref.clone());
 
-        // Append the D segment if IGH/TRB.
+        // Append the D segment or segments.
 
         let mut dref = Vec::<u8>::new();
         let mut drefname = String::new();
-        if ex.share[mid].left && di < z {
-            dref = refdata.refs[d].to_ascii_vec();
-            drefname = refdata.name[d].clone();
-            concat.append(&mut dref.clone());
+        for j in 0..todo[di].len() {
+            let d = todo[di][j];
+            dref.append(&mut refdata.refs[d].to_ascii_vec());
+            if j > 0 {
+                drefname += ":";
+            }
+            drefname += &mut refdata.name[d].clone();
         }
+        concat.append(&mut dref.clone());
 
         // Append the J segment.
 
@@ -89,11 +99,7 @@ pub fn opt_d(
         let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname, true);
 
         counts.push(count);
-        if di < z {
-            ds.push(Some(d));
-        } else {
-            ds.push(None);
-        }
+        ds.push(todo[di].clone());
         if count > comp {
             comp = count;
         }
@@ -103,39 +109,31 @@ pub fn opt_d(
 
     let mut counts_ds = Vec::new();
     for i in 0..counts.len() {
-        counts_ds.push((counts[i], ds[i]));
+        counts_ds.push((counts[i], ds[i].clone()));
     }
     counts_ds.sort_by(|a, b| b.partial_cmp(a).unwrap()); // reverse sort
     counts.clear();
     ds.clear();
     for i in 0..counts_ds.len() {
         counts.push(counts_ds[i].0);
-        ds.push(counts_ds[i].1);
+        ds.push(counts_ds[i].1.clone());
     }
 
     // Proceed.
 
     let mut comp = 0.0;
-    let mut best_d = None;
+    let mut best_d = Vec::new();
     if counts.len() > 0 {
         comp = counts[0];
-        best_d = ds[0];
+        best_d = ds[0].clone();
     }
     let mut second_comp = 0.0;
-    let mut best_d2 = None;
+    let mut best_d2 = Vec::new();
     if counts.len() > 1 {
         second_comp = counts[1];
-        best_d2 = ds[1];
+        best_d2 = ds[1].clone();
     }
-    if best_d.is_some() {
-        *opt = vec![best_d.unwrap()];
-    } else {
-        *opt = vec![];
-    }
-    if best_d2.is_some() {
-        *opt2 = vec![best_d2.unwrap()];
-    } else {
-        *opt2 = vec![];
-    }
+    *opt = best_d;
+    *opt2 = best_d2;
     *delta = comp - second_comp;
 }
