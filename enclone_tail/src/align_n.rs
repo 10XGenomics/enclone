@@ -234,6 +234,10 @@ pub fn align_n(
 
                             let mut add = String::new();
                             if ex.share[r].left {
+                                let mut drefname = drefname.clone();
+                                if drefname == "".to_string() {
+                                    drefname = "none".to_string();
+                                }
                                 let rank;
                                 if pass == 1 {
                                     rank = "1ST";
