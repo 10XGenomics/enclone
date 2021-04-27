@@ -38,7 +38,7 @@ pub fn tail_code(
     ind_readers: &Vec<Option<hdf5::Reader>>,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
-    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
     // Print clonotypes.
 

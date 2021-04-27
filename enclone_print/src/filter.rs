@@ -440,15 +440,15 @@ pub fn survives_filter(
     if ctl.clono_filt_opt.d_inconsistent {
         let mut inconsistent = false;
         for col in 0..rsi.mat.len() {
-            let mut dvotes = Vec::<Option<usize>>::new();
+            let mut dvotes = Vec::<Vec<usize>>::new();
             for u in 0..exacts.len() {
                 let ex = &exact_clonotypes[exacts[u]];
                 let m = rsi.mat[col][u];
                 if m.is_some() {
                     let m = m.unwrap();
                     if ex.share[m].left {
-                        let mut opt = None;
-                        let mut opt2 = None;
+                        let mut opt = Vec::new();
+                        let mut opt2 = Vec::new();
                         let mut delta = 0.0;
                         opt_d(
                             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
@@ -478,13 +478,13 @@ pub fn survives_filter(
                 if m.is_some() {
                     let m = m.unwrap();
                     if ex.share[m].left {
-                        let mut opt = None;
-                        let mut opt2 = None;
+                        let mut opt = Vec::new();
+                        let mut opt2 = Vec::new();
                         let mut delta = 0.0;
                         opt_d(
                             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
                         );
-                        if opt.is_none() {
+                        if opt.is_empty() {
                             none = true;
                         }
                     }

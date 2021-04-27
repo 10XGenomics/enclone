@@ -17,8 +17,8 @@ pub fn opt_d(
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    opt: &mut Option<usize>,
-    opt2: &mut Option<usize>,
+    opt: &mut Vec<usize>,
+    opt2: &mut Vec<usize>,
     delta: &mut f64,
 ) {
     let mid = rsi.mat[col][u].unwrap();
@@ -127,7 +127,15 @@ pub fn opt_d(
         second_comp = counts[1];
         best_d2 = ds[1];
     }
-    *opt = best_d;
-    *opt2 = best_d2;
+    if best_d.is_some() {
+        *opt = vec![best_d.unwrap()];
+    } else {
+        *opt = vec![];
+    }
+    if best_d2.is_some() {
+        *opt2 = vec![best_d2.unwrap()];
+    } else {
+        *opt2 = vec![];
+    }
     *delta = comp - second_comp;
 }

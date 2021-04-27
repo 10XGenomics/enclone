@@ -51,7 +51,7 @@ pub fn group_and_print_clonotypes(
     fate: &Vec<HashMap<String, String>>,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
-    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
     // Build index to join info.
 

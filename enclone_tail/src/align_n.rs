@@ -191,23 +191,23 @@ pub fn align_n(
                             let mut drefx = Vec::<u8>::new();
                             let mut drefname = String::new();
                             if ex.share[r].left {
-                                let mut opt = None;
-                                let mut opt2 = None;
+                                let mut opt = Vec::new();
+                                let mut opt2 = Vec::new();
                                 let mut delta = 0.0;
                                 opt_d(
                                     &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                     &mut delta,
                                 );
                                 if pass == 1 {
-                                    if opt.is_some() {
-                                        let opt = opt.unwrap();
+                                    if !opt.is_empty() {
+                                        let opt = opt[0];
                                         drefx = refdata.refs[opt].to_ascii_vec();
                                         drefname = refdata.name[opt].clone();
                                         concat.append(&mut drefx.clone());
                                     }
                                 } else {
-                                    if opt2.is_some() {
-                                        let opt2 = opt2.unwrap();
+                                    if !opt2.is_empty() {
+                                        let opt2 = opt2[0];
                                         drefx = refdata.refs[opt2].to_ascii_vec();
                                         drefname = refdata.name[opt2].clone();
                                         concat.append(&mut drefx.clone());

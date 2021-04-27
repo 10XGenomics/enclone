@@ -22,7 +22,7 @@ pub fn grouper(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     rsi: &Vec<ColInfo>,
-    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) -> Vec<Vec<(i32, String)>> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -143,10 +143,10 @@ pub fn grouper(
                         let j = m.unwrap();
                         if ex.share[j].left {
                             s.push(refdata.name[ex.share[j].v_ref_id].clone());
-                            let d = opt_d_val[i].1[col][0];
+                            let d = &opt_d_val[i].1[col][0];
                             let dname;
-                            if d.is_some() {
-                                dname = refdata.name[d.unwrap()].clone();
+                            if !d.is_empty() {
+                                dname = refdata.name[d[0]].clone();
                             } else {
                                 dname = "null".to_string();
                             }

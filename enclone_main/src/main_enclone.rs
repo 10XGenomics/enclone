@@ -824,7 +824,7 @@ pub async fn main_enclone(args: &Vec<String>) {
     // although they are less likely to vary.
 
     let t = Instant::now();
-    let mut opt_d_val = Vec::<(usize, Vec<Vec<Option<usize>>>)>::new();
+    let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
     let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
     for x in ctl.gen_opt.gvars.iter() {
         if x.starts_with("d_inconsistent_") {
@@ -837,17 +837,17 @@ pub async fn main_enclone(args: &Vec<String>) {
         }
         opt_d_val.par_iter_mut().for_each(|res| {
             let i = res.0;
-            res.1 = vec![Vec::<Option<usize>>::new(); rsi[i].mat.len()];
+            res.1 = vec![Vec::<Vec<usize>>::new(); rsi[i].mat.len()];
             for col in 0..rsi[i].mat.len() {
-                let mut dvotes = Vec::<Option<usize>>::new();
+                let mut dvotes = Vec::<Vec<usize>>::new();
                 for u in 0..exacts[i].len() {
                     let ex = &exact_clonotypes[exacts[i][u]];
                     let m = rsi[i].mat[col][u];
                     if m.is_some() {
                         let m = m.unwrap();
                         if ex.share[m].left {
-                            let mut opt = None;
-                            let mut opt2 = None;
+                            let mut opt = Vec::new();
+                            let mut opt2 = Vec::new();
                             let mut delta = 0.0;
                             opt_d(
                                 &ex, col, u, &rsi[i], &refdata, &drefs, &mut opt, &mut opt2,
@@ -856,7 +856,7 @@ pub async fn main_enclone(args: &Vec<String>) {
                             dvotes.push(opt);
                         }
                     } else {
-                        dvotes.push(None);
+                        dvotes.push(Vec::new());
                     }
                 }
                 res.1[col] = dvotes;

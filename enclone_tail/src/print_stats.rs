@@ -27,7 +27,7 @@ pub fn print_stats(
     logx: &mut Vec<u8>,
     nclono2: &mut usize,
     two_chain: &mut usize,
-    opt_d_val: &Vec<(usize, Vec<Vec<Option<usize>>>)>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
     // Compute some umi stats.
 

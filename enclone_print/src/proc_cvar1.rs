@@ -269,23 +269,33 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, "".to_string()];
             return true;
         }
-        let mut opt = None;
-        let mut opt2 = None;
+        let mut opt = Vec::new();
+        let mut opt2 = Vec::new();
         let mut delta = 0.0;
         opt_d(
             &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
         );
-        let opt_name;
-        if opt.is_some() {
-            opt_name = format!("{}", refdata.name[opt.unwrap()]);
-        } else {
+        let mut opt_name = String::new();
+        if opt.is_empty() {
             opt_name = "none".to_string();
-        }
-        let opt2_name;
-        if opt2.is_some() {
-            opt2_name = format!("{}", refdata.name[opt2.unwrap()]);
         } else {
+            for i in 0..opt.len() {
+                if i > 0 {
+                    opt_name += ":";
+                }
+                opt_name += &refdata.name[opt[i]];
+            }
+        }
+        let mut opt2_name = String::new();
+        if opt2.is_empty() {
             opt2_name = "none".to_string();
+        } else {
+            for i in 0..opt2.len() {
+                if i > 0 {
+                    opt2_name += ":";
+                }
+                opt2_name += &refdata.name[opt2[i]];
+            }
         }
         if *var == "opt_d" {
             cvar_stats1![j, var, opt_name];
