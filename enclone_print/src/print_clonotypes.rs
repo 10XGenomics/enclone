@@ -866,25 +866,7 @@ pub fn print_clonotypes(
 
                 // Process COMPLETE.
 
-                if ctl.gen_opt.complete {
-                    let mut used = vec![false; cols];
-                    for u in 0..nexacts {
-                        if !bads[u] {
-                            for m in 0..cols {
-                                if mat[m][u].is_some() {
-                                    used[m] = true;
-                                }
-                            }
-                        }
-                    }
-                    for u in 0..nexacts {
-                        for m in 0..cols {
-                            if used[m] && mat[m][u].is_none() {
-                                bads[u] = true;
-                            }
-                        }
-                    }
-                }
+                process_complete(&ctl, nexacts, &mut bads, &mat);
 
                 // Done unless on second pass.
 

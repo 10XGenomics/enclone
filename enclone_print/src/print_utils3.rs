@@ -502,3 +502,35 @@ pub fn insert_reference_rows(
         }
     }
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Process COMPLETE.
+
+pub fn process_complete(
+    ctl: &EncloneControl,
+    nexacts: usize,
+    bads: &mut Vec<bool>,
+    mat: &Vec<Vec<Option<usize>>>,
+) {
+    let cols = mat.len();
+    if ctl.gen_opt.complete {
+        let mut used = vec![false; cols];
+        for u in 0..nexacts {
+            if !bads[u] {
+                for m in 0..cols {
+                    if mat[m][u].is_some() {
+                        used[m] = true;
+                    }
+                }
+            }
+        }
+        for u in 0..nexacts {
+            for m in 0..cols {
+                if used[m] && mat[m][u].is_none() {
+                    bads[u] = true;
+                }
+            }
+        }
+    }
+}
