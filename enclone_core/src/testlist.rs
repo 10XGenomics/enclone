@@ -608,10 +608,10 @@ pub const TESTS: [&str; 245] = [
     r###"BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ,opt_d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
     // 235. test ALIGN<n>
     r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=opt_d"###,
-    // 236. test ALIGN<n> and JUN_ALIGN<n>, case where there's a D segment
-    r###"BCR=85333 ALIGN1 JUN_ALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
-    // 237. test ALIGN<n> and JUN_ALIGN<n>, case where there is no D segment
-    r###"BCR=85333 ALIGN1 JUN_ALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
+    // 236. test ALIGN<n> and JALIGN<n>, case where there's a D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
+    // 237. test ALIGN<n> and JALIGN<n>, case where there is no D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
     // 238. test GROUP_VDJ_REFNAME_HEAVY
     r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
     // 239. test GROUP_VJ_REFNAME_HEAVY
@@ -622,10 +622,10 @@ pub const TESTS: [&str; 245] = [
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2 TOOLTIP"###,
     // 242. test ALIGN_2ND<n>
     r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=opt_d"###,
-    // 243. test JUN_ALIGN_2ND<n>
-    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JUN_ALIGN_2ND1 CVARS=opt_d"###,
-    // 244. test ALIGN_JUN_ALIGN_CONSISTENCY
-    r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JUN_ALIGN1 ALIGN_JUN_ALIGN_CONSISTENCY AMINO=cdr3
+    // 243. test JALIGN_2ND<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JALIGN_2ND1 CVARS=opt_d"###,
+    // 244. test ALIGN_JALIGN_CONSISTENCY
+    r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JALIGN1 ALIGN_JALIGN_CONSISTENCY AMINO=cdr3
          PLAIN NOPAGER EXPECT_OK"###,
     // 245. test D_INCONSISTENT, and lock number of inconsistencies
     r###"BCR=123085 D_INCONSISTENT CVARS=opt_d COMPLETE NGROUP"###,
@@ -643,7 +643,7 @@ pub const CRASH_SETS: [&str; 5] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
-    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JUN_ALIGN1 GROUP_VJ_REFNAME_HEAVY",
+    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JALIGN1 GROUP_VJ_REFNAME_HEAVY",
     /* 5 */ "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
 ];
 
@@ -867,8 +867,8 @@ pub const SITE_EXAMPLES: [(&str, &str); 21] = [
     // 21.
     (
         "pages/auto/jun_align_example.html",
-        "BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d \
-         HTML=\"JUN_ALIGN example\"",
+        "BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d \
+         HTML=\"JALIGN example\"",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:

@@ -54,15 +54,15 @@ pub fn process_special_arg(
             std::process::exit(1);
         }
         ctl.gen_opt.chains_to_align.push(n.force_usize());
-    } else if arg.starts_with("JUN_ALIGN_2ND") {
-        let n = arg.after("JUN_ALIGN_2ND");
+    } else if arg.starts_with("JALIGN_2ND") {
+        let n = arg.after("JALIGN_2ND");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
             eprintln!("\nArgument {} is not properly specified.\n", arg);
             std::process::exit(1);
         }
         ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
-    } else if arg.starts_with("JUN_ALIGN") {
-        let n = arg.after("JUN_ALIGN");
+    } else if arg.starts_with("JALIGN") {
+        let n = arg.after("JALIGN");
         if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
             eprintln!("\nArgument {} is not properly specified.\n", arg);
             std::process::exit(1);

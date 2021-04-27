@@ -408,7 +408,7 @@ pub fn group_and_print_clonotypes(
                 fwriteln!(logx, "{}", strme(&join_info[ji[i]].3));
             }
 
-            // Implement ALIGN<n> and JUN_ALIGN<n>.
+            // Implement ALIGN<n> and JALIGN<n>.
 
             if !ctl.gen_opt.noprint {
                 logx.append(&mut align_out[&(i, j)].clone());

@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Parallized precompute for ALIGN<n> and JUN_ALIGN<n>.
+// Parallized precompute for ALIGN<n> and JALIGN<n>.
 
 use align_tools::*;
 use ansi_escape::*;

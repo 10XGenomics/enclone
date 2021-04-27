@@ -72,7 +72,7 @@ sequence to the reference V..J sequence, and it can also display the alignment o
 junction region (extended by a small and arbitrary amount on both ends to get the display to
 work).  This feature is enabled by adding 
 <code>ALIGN&ltn></code> or
-<code>JUN_ALIGN&ltn></code> to the command line, where <code>n</code> is the chain number.  It
+<code>JALIGN&ltn></code> to the command line, where <code>n</code> is the chain number.  It
 displays one alignment per exact subclonotype, so for brevity we'll show examples where there is 
 just one.  Here is an example for the full alignment:
 </p>
@@ -84,11 +84,11 @@ just one.  Here is an example for the full alignment:
 And here is the same example, but showing just the junction region:
 </p>
 
-<pre><code>enclone BCR=123085 JUN_ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
+<pre><code>enclone BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
 #include pages/auto/jun_align_example.html
 
 <p>There are also options <code>ALIGN_2ND&ltn></code> 
-and <code>JUN_ALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
+and <code>JALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
 
 <hr>
 

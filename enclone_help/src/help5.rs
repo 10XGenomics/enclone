@@ -105,13 +105,13 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "same as ALIGN<n> but use second best D segment",
         );
         h.doc(
-            "JUN_ALIGN<n>",
+            "JALIGN<n>",
             "same as ALIGN<n> but only show the region from 15 bases before the end of the",
         );
         h.doc2("V segment to 35 bases into the J segment");
         h.doc(
-            "JUN_ALIGN_2ND<n>",
-            "same as JUN_ALIGN<n> but use second best D segment",
+            "JALIGN_2ND<n>",
+            "same as JALIGN<n> but use second best D segment",
         );
         h.print_tab2();
         h.print("\n");
