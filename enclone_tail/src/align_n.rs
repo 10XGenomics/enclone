@@ -112,7 +112,7 @@ fn print_vis_align(
 
     fwrite!(
         logx,
-        "\nALIGNMENT OF CHAIN {} FOR EXACT SUBCLONOTYPE {} TO CONCATENATED {} REFERENCE{}\n{}",
+        "\nCHAIN {} OF #{}  •  CONCATENATED {} REFERENCE{}\n{}",
         col,
         k + 1,
         vdj,
@@ -232,12 +232,13 @@ pub fn align_n(
 
                             // Make and print alignment.
 
-                            let add;
+                            let rank;
                             if pass == 1 {
-                                add = "";
+                                rank = "1ST";
                             } else {
-                                add = " (2ND BEST D)";
+                                rank = "2ND";
                             }
+                            let add = format!("  •  D = {} = {}", rank, drefname);
                             print_vis_align(
                                 &seq,
                                 &concat,
@@ -251,7 +252,7 @@ pub fn align_n(
                                 &ctl,
                                 &mut logx,
                                 width,
-                                add,
+                                &add,
                             );
                         }
                     }
