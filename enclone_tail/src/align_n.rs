@@ -232,13 +232,16 @@ pub fn align_n(
 
                             // Make and print alignment.
 
-                            let rank;
-                            if pass == 1 {
-                                rank = "1ST";
-                            } else {
-                                rank = "2ND";
+                            let mut add = String::new();
+                            if ex.share[r].left {
+                                let rank;
+                                if pass == 1 {
+                                    rank = "1ST";
+                                } else {
+                                    rank = "2ND";
+                                }
+                                add = format!("  •  D = {} = {}", rank, drefname);
                             }
-                            let add = format!("  •  D = {} = {}", rank, drefname);
                             print_vis_align(
                                 &seq,
                                 &concat,
