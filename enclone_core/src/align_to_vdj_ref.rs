@@ -16,7 +16,7 @@ use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes 
+// Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes
 // a mismatch.
 
 fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Vec<Vec<u8>> {
@@ -121,10 +121,10 @@ pub fn align_to_vdj_ref(
     let gap_open_at_boundary = -4 as i32;
     let gap_extend_at_boundary = -1 as i32;
 
-    // Define scoring function.  It does not appear that the aligner is scoring in exactly the 
-    // intended fashion in all cases.  This is likely more of an issue for alv and alj.  The 
-    // problem has to do with the interpretation of being at the boundary.  This is still somewhat 
-    // of a problem since although we're rescoring to "fix" the problem, the aligner might have 
+    // Define scoring function.  It does not appear that the aligner is scoring in exactly the
+    // intended fashion in all cases.  This is likely more of an issue for alv and alj.  The
+    // problem has to do with the interpretation of being at the boundary.  This is still somewhat
+    // of a problem since although we're rescoring to "fix" the problem, the aligner might have
     // chosen a suboptimal placement in the first place.
 
     let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> i32 {
@@ -220,9 +220,10 @@ pub fn align_to_vdj_ref(
     let verbose = false;
     if verbose {
         let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
-        println!("\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
-            drefname, 
-            rescore(&al.operations), 
+        println!(
+            "\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
+            drefname,
+            rescore(&al.operations),
             bits,
             full_score,
         );
@@ -236,7 +237,7 @@ pub fn align_to_vdj_ref(
         println!("ops = {:?}", al.operations.iter().format(","));
     }
 
-    // In the non-null case, where the D segment is placed without indels, see if the placement 
+    // In the non-null case, where the D segment is placed without indels, see if the placement
     // seems like it might be wrong.
     //
     // TURNED OFF BECAUSE IT MAKES INCONSISTENCY RESULT WORSE.  NOT CLEAR WHY.
@@ -318,9 +319,9 @@ pub fn align_to_vdj_ref(
                     let mut gap_extend_fn = vec![gap_extend; vref.len() + 1];
                     gap_extend_fn[vref.len()] = gap_extend_at_boundary;
                     let mut alv = aligner.custom_with_gap_fns(
-                        &seq[0..dpos], 
-                        &vref, 
-                        &gap_open_fn, 
+                        &seq[0..dpos],
+                        &vref,
+                        &gap_open_fn,
                         &gap_extend_fn
                     );
                     alv.mode = AlignmentMode::Semiglobal;
@@ -329,9 +330,9 @@ pub fn align_to_vdj_ref(
                     let mut gap_extend_fn = vec![gap_extend; jref.len() + 1];
                     gap_extend_fn[1] = gap_extend_at_boundary;
                     let mut alj = aligner.custom_with_gap_fns(
-                        &seq[dpos + dref.len()..], 
-                        &jref, 
-                        &gap_open_fn, 
+                        &seq[dpos + dref.len()..],
+                        &jref,
+                        &gap_open_fn,
                         &gap_extend_fn
                     );
                     alj.mode = AlignmentMode::Semiglobal;
