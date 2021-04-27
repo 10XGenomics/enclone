@@ -28,6 +28,7 @@ fn print_vis_align(
     dref: &[u8],
     jref: &[u8],
     drefname: &str,
+    dlen2: usize,
     left: bool, // will be ex.share[r].left
     ctl: &EncloneControl,
     logx: &mut Vec<u8>,
@@ -55,12 +56,17 @@ fn print_vis_align(
         let mut pos = 0;
         let vcolor = 3;
         let dcolor = 1;
+        let d2color = 4;
         let jcolor = 5;
         let mut vdj_bytes = Vec::<u8>::new();
         print_color(vcolor, &mut vdj_bytes);
         vdj_bytes.push(b'V');
         if left {
             print_color(dcolor, &mut vdj_bytes);
+            vdj_bytes.push(b'D');
+        }
+        if dlen2 > 0 {
+            print_color(d2color, &mut vdj_bytes);
             vdj_bytes.push(b'D');
         }
         print_color(jcolor, &mut vdj_bytes);
@@ -76,6 +82,11 @@ fn print_vis_align(
                 let line = line.as_bytes();
                 if pos < vref.len() {
                     print_color(vcolor, &mut log);
+                } else if dlen2 > 0
+                    && pos >= vref.len() + dref.len() - dlen2
+                    && pos < vref.len() + dref.len()
+                {
+                    print_color(d2color, &mut log);
                 } else if left && pos < vref.len() + dref.len() {
                     print_color(dcolor, &mut log);
                 } else {
@@ -87,7 +98,9 @@ fn print_vis_align(
                         pos += 1;
                         if j != line.len() - 1 {
                             if left {
-                                if pos == vref.len() + dref.len() {
+                                if dlen2 > 0 && pos == vref.len() + dref.len() - dlen2 {
+                                    print_color(d2color, &mut log);
+                                } else if pos == vref.len() + dref.len() {
                                     print_color(jcolor, &mut log);
                                 } else if pos == vref.len() {
                                     print_color(dcolor, &mut log);
@@ -190,6 +203,7 @@ pub fn align_n(
                             let mut concat = vref.clone();
                             let mut drefx = Vec::<u8>::new();
                             let mut drefname = String::new();
+                            let mut dlen2 = 0;
                             if ex.share[r].left {
                                 let mut opt = Vec::new();
                                 let mut opt2 = Vec::new();
@@ -202,6 +216,9 @@ pub fn align_n(
                                     for j in 0..opt.len() {
                                         let d = opt[j];
                                         drefx.append(&mut refdata.refs[d].to_ascii_vec());
+                                        if j == 1 {
+                                            dlen2 = refdata.refs[d].len();
+                                        }
                                         if j > 0 {
                                             drefname += ":";
                                         }
@@ -211,6 +228,9 @@ pub fn align_n(
                                     for j in 0..opt2.len() {
                                         let d = opt2[j];
                                         drefx.append(&mut refdata.refs[d].to_ascii_vec());
+                                        if j == 1 {
+                                            dlen2 = refdata.refs[d].len();
+                                        }
                                         if j > 0 {
                                             drefname += ":";
                                         }
@@ -260,6 +280,7 @@ pub fn align_n(
                                 &drefx,
                                 &jref,
                                 &drefname,
+                                dlen2,
                                 ex.share[r].left,
                                 &ctl,
                                 &mut logx,
