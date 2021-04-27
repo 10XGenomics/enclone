@@ -7,12 +7,11 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 15.33
+// d_inconsistent_% = 14.81
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
-use io_utils::*;
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -239,8 +238,14 @@ pub fn align_to_vdj_ref(
 
     // In the non-null case, where the D segment is placed without indels, see if the placement 
     // seems like it might be wrong.
+    //
+    // TURNED OFF BECAUSE IT MAKES INCONSISTENCY RESULT WORSE.
 
     const BITS_MULTIPLIER: f64 = 2.0;
+
+    /*
+
+    use io_utils::*;
     if zos.len() == 1 {
 
         // Set pos to the start of D on seq.
@@ -357,6 +362,8 @@ pub fn align_to_vdj_ref(
         }
     }
 
+    */
+
     // Add a constant times bits to the alignment score (null case handled differently).
 
     if left && dref.is_empty() {
@@ -367,7 +374,7 @@ pub fn align_to_vdj_ref(
         }
     }
 
-    let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
+    let full_score = al.score as f64 + BITS_MULTIPLIER * bits;
 
     // Return the alignment and score.
 
