@@ -239,9 +239,9 @@ pub fn align_to_vdj_ref(
     // In the non-null case, where the D segment is placed without indels, see if the placement 
     // seems like it might be wrong.
     //
-    // TURNED OFF BECAUSE IT MAKES INCONSISTENCY RESULT WORSE.
+    // TURNED OFF BECAUSE IT MAKES INCONSISTENCY RESULT WORSE.  NOT CLEAR WHY.
 
-    const BITS_MULTIPLIER: f64 = 2.0;
+    const BITS_MULTIPLIER: f64 = 2.0; // tried 1.5 and 2.5, both worse
 
     /*
 
@@ -365,6 +365,10 @@ pub fn align_to_vdj_ref(
     */
 
     // Add a constant times bits to the alignment score (null case handled differently).
+    //
+    // Note that we do not allow the null case if there is an insertion in the alignment.  In an
+    // an earlier version, we allowed many more null cases, and we believe that this was distorting
+    // our inconsistency scoring.  This is because calling null makes it easier to be consistent.
 
     if left && dref.is_empty() {
         if !al.operations.contains(&Ins) {
