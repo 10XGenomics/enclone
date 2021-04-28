@@ -233,7 +233,7 @@ pub fn align_to_vdj_ref(
     let bits1 = match_bit_score(&zos1);
     let bits2 = match_bit_score(&zos2);
     let mut bits = bits1.max(bits2);
-    const MIN_BITS_FOR_D2: f64 = 10.0;
+    const MIN_BITS_FOR_D2: f64 = 14.0;
     if d2ref.len() > 0 && bits1.min(bits2) < MIN_BITS_FOR_D2 {
         bits = 0.0;
     }
