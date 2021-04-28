@@ -7,8 +7,23 @@
 use crate::align_to_vdj_ref::*;
 use crate::defs::*;
 use enclone_proto::types::*;
-use std::cmp::min;
 use vdj_ann::refx::*;
+
+pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
+    let mut flank = 15;
+    if flank > vref.len() {
+        flank = vref.len();
+    }
+    flank
+}
+
+pub fn jflank(_seq: &[u8], jref: &[u8]) -> usize {
+    let mut flank = 35;
+    if flank > jref.len() {
+        flank = jref.len();
+    }
+    flank
+}
 
 pub fn opt_d(
     ex: &ExactClonotype,
@@ -44,9 +59,6 @@ pub fn opt_d(
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
     for di in 0..todo.len() {
-        const LFLANK: usize = 15;
-        const RFLANK: usize = 35;
-
         // Start to build reference concatenation.  First append the V segment.
 
         let mut concat = Vec::<u8>::new();
@@ -55,10 +67,7 @@ pub fn opt_d(
         } else {
             vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
         }
-        let mut vstart = 0;
-        if vref.len() >= LFLANK {
-            vstart = vref.len() - LFLANK;
-        }
+        let vstart = vref.len() - vflank(&tig, &vref);
         vref = vref[vstart..vref.len()].to_vec();
         concat.append(&mut vref.clone());
 
@@ -85,7 +94,7 @@ pub fn opt_d(
         // Append the J segment.
 
         let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
-        let jend = min(RFLANK, jref.len());
+        let jend = jflank(&tig, &jref);
 
         // Align the V..J sequence on the contig to the reference concatenation.
 

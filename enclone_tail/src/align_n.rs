@@ -10,7 +10,6 @@ use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use io_utils::*;
 use rayon::prelude::*;
-use std::cmp::min;
 use std::collections::HashMap;
 use std::io::Write;
 use string_utils::*;
@@ -163,8 +162,6 @@ pub fn align_n(
     let mut all_cols = cols1.clone();
     all_cols.append(&mut cols2.clone());
     unique_sort(&mut all_cols);
-    const LFLANK: usize = 15;
-    const RFLANK: usize = 35;
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut o = Vec::<i32>::new();
@@ -187,10 +184,7 @@ pub fn align_n(
                             } else {
                                 vref = dref[rsi[oo].vpids[m].unwrap()].nt_sequence.clone();
                             }
-                            let mut vstart = 0;
-                            if vref.len() >= LFLANK {
-                                vstart = vref.len() - LFLANK;
-                            }
+                            let vstart = vref.len() - vflank(&seq, &vref);
                             if jun {
                                 vref = vref[vstart..vref.len()].to_vec();
                             }
@@ -244,7 +238,7 @@ pub fn align_n(
                             }
                             let mut jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
                             if jun {
-                                let jend = min(RFLANK, jref.len());
+                                let jend = jflank(&seq, &jref);
                                 let mut seq_start = vstart as isize;
                                 // probably not exactly right
                                 if ex.share[r].annv.len() > 1 {
