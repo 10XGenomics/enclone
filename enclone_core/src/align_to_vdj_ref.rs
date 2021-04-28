@@ -19,7 +19,7 @@ use string_utils::*;
 // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes
 // a mismatch.
 
-fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Vec<Vec<u8>> {
+fn zero_one(al: &bio_edit::alignment::Alignment, start: usize, stop: usize) -> Vec<Vec<u8>> {
     let mut zos = Vec::<Vec<u8>>::new();
     {
         let mut rpos = 0;
@@ -27,13 +27,13 @@ fn zero_one(al: &bio_edit::alignment::Alignment, vref: &[u8], dref: &[u8]) -> Ve
         for m in 0..al.operations.len() {
             match al.operations[m] {
                 Match => {
-                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                    if rpos >= start && rpos < stop {
                         zo.push(1);
                     }
                     rpos += 1;
                 }
                 Subst => {
-                    if rpos >= vref.len() && rpos < vref.len() + dref.len() {
+                    if rpos >= start && rpos < stop {
                         zo.push(0);
                     }
                     rpos += 1;
@@ -108,6 +108,7 @@ pub fn align_to_vdj_ref(
     seq: &[u8],
     vref: &[u8],
     dref: &[u8],
+    d2ref: &[u8],
     jref: &[u8],
     drefname: &str, // useful for debugging
     left: bool,
@@ -145,7 +146,9 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Ins {
                     j += 1;
                 }
-                if rpos == vref.len() || rpos == vref.len() + dref.len() {
+                if rpos == vref.len() + dref.len() + d2ref.len() {
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                } else if rpos == vref.len() || rpos == vref.len() + dref.len() {
                     score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
@@ -156,7 +159,9 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
                 }
-                if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
+                if rpos == vref.len() + dref.len() + d2ref.len() {
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                } else if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
                     score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
@@ -173,6 +178,7 @@ pub fn align_to_vdj_ref(
     let mut concat = Vec::<u8>::new();
     concat.append(&mut vref.to_vec());
     concat.append(&mut dref.to_vec());
+    concat.append(&mut d2ref.to_vec());
     concat.append(&mut jref.to_vec());
 
     // Set clip penalties.  Note that yclip_suffix was set to zero.   This was
@@ -192,7 +198,10 @@ pub fn align_to_vdj_ref(
     let mut aligner = Aligner::with_scoring(scoring);
     let mut gap_open_fn = vec![0_i32; concat.len() + 1];
     for j in 1..=concat.len() {
-        if j as usize == vref.len() || j as usize == vref.len() + dref.len() {
+        if j as usize == vref.len()
+            || j as usize == vref.len() + dref.len()
+            || j as usize == vref.len() + dref.len() + d2ref.len()
+        {
             gap_open_fn[j] = gap_open_at_boundary;
         } else {
             gap_open_fn[j] = gap_open;
@@ -200,7 +209,10 @@ pub fn align_to_vdj_ref(
     }
     let mut gap_extend_fn = vec![0_i32; concat.len() + 1];
     for j in 1..=concat.len() {
-        if j as usize == vref.len() || j as usize == vref.len() + dref.len() {
+        if j as usize == vref.len()
+            || j as usize == vref.len() + dref.len()
+            || j as usize == vref.len() + dref.len() + d2ref.len()
+        {
             gap_extend_fn[j] = gap_extend_at_boundary;
         } else {
             gap_extend_fn[j] = gap_extend;
@@ -212,8 +224,15 @@ pub fn align_to_vdj_ref(
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.  Then compute a match bit score.
 
-    let zos = zero_one(&al, &vref, &dref);
-    let mut bits = match_bit_score(&zos);
+    let zos1 = zero_one(&al, vref.len(), vref.len() + dref.len());
+    let zos2 = zero_one(
+        &al,
+        vref.len() + dref.len(),
+        vref.len() + dref.len() + d2ref.len(),
+    );
+    let bits1 = match_bit_score(&zos1);
+    let bits2 = match_bit_score(&zos2);
+    let mut bits = bits1.max(bits2);
 
     // Possibly emit verbose logging.
 
@@ -230,140 +249,12 @@ pub fn align_to_vdj_ref(
         println!("seq = {}", strme(&seq));
         println!("ref = {}", strme(&concat));
         use itertools::Itertools;
-        for zo in zos.iter() {
+        for zo in zos1.iter() {
             print!("{}", zo.iter().format(""));
         }
         println!("");
         println!("ops = {:?}", al.operations.iter().format(","));
     }
-
-    // In the non-null case, where the D segment is placed without indels, see if the placement
-    // seems like it might be wrong.
-    //
-    // TURNED OFF BECAUSE IT MAKES INCONSISTENCY RESULT WORSE.  NOT CLEAR WHY.
-
-    const BITS_MULTIPLIER: f64 = 2.0; // tried 1.5 and 2.5, both worse
-
-    /*
-
-    use io_utils::*;
-    if zos.len() == 1 {
-
-        // Set pos to the start of D on seq.
-
-        let (mut pos, mut rpos) = (0, 0);
-        for m in 0..al.operations.len() {
-            match al.operations[m] {
-                Match => {
-                    if rpos == vref.len() {
-                        break;
-                    }
-                    pos += 1;
-                    rpos += 1;
-                }
-                Subst => {
-                    if rpos == vref.len() {
-                        break;
-                    }
-                    pos += 1;
-                    rpos += 1;
-                }
-                Del => {
-                    rpos += 1;
-                }
-                Ins => {
-                    pos += 1;
-                }
-                _ => {}
-            };
-        }
-
-        // Look for alternate starts near the given start.
-        // This is in the range pos-DWOBBLE..=pos+DWOBBLE, but we are a bit careful in case the
-        // reference is badly busted.
-
-        const D_WOBBLE: usize = 4;
-        let mut dstart = 0;
-        if pos >= D_WOBBLE {
-            dstart = pos - D_WOBBLE;
-        }
-        let mut dstop = pos + D_WOBBLE;
-        if dstop + dref.len() > seq.len() {
-            if seq.len() >= dref.len() {
-                dstop = seq.len() - dref.len();
-            } else {
-                dstop = dstart - 1;
-            }
-        }
-        for dpos in dstart..=dstop {
-            if dpos != pos {
-
-                // Compute bits for the alternate start.
-
-                let mut zos = vec![vec![1; dref.len()]];
-                for i in 0..dref.len() {
-                    if dref[i] != seq[dpos + i] {
-                        zos[0][i] = 0;
-                    }
-                }
-                let bits_alt = match_bit_score(&zos);
-
-                // Does the alt placement appear to be better?
-
-                if bits_alt > bits {
-
-                    // Realign, forcing the D segment to be in the given place, without indels.
-
-                    let mut gap_open_fn = vec![gap_open; vref.len() + 1];
-                    gap_open_fn[vref.len()] = gap_open_at_boundary;
-                    let mut gap_extend_fn = vec![gap_extend; vref.len() + 1];
-                    gap_extend_fn[vref.len()] = gap_extend_at_boundary;
-                    let mut alv = aligner.custom_with_gap_fns(
-                        &seq[0..dpos],
-                        &vref,
-                        &gap_open_fn,
-                        &gap_extend_fn
-                    );
-                    alv.mode = AlignmentMode::Semiglobal;
-                    let mut gap_open_fn = vec![gap_open; jref.len() + 1];
-                    gap_open_fn[1] = gap_open_at_boundary;
-                    let mut gap_extend_fn = vec![gap_extend; jref.len() + 1];
-                    gap_extend_fn[1] = gap_extend_at_boundary;
-                    let mut alj = aligner.custom_with_gap_fns(
-                        &seq[dpos + dref.len()..],
-                        &jref,
-                        &gap_open_fn,
-                        &gap_extend_fn
-                    );
-                    alj.mode = AlignmentMode::Semiglobal;
-
-                    // Compute the new score and see if its better.
-
-                    let mut ops_new = Vec::<bio_edit::alignment::AlignmentOperation>::new();
-                    ops_new.append(&mut alv.operations.clone());
-                    for i in 0..zos[0].len() {
-                        if zos[0][i] == 0 {
-                            ops_new.push(Subst);
-                        } else {
-                            ops_new.push(Match);
-                        }
-                    }
-                    ops_new.append(&mut alj.operations.clone());
-                    let full_score = al.score as f64 + BITS_MULTIPLIER * bits;
-                    let score_alt = rescore(&ops_new);
-                    let full_score_alt = score_alt as f64 + BITS_MULTIPLIER * bits_alt;
-                    if full_score_alt > full_score {
-                        if verbose {
-                            printme!(score_alt, bits_alt);
-                        }
-                        return (ops_new, full_score_alt);
-                    }
-                }
-            }
-        }
-    }
-
-    */
 
     // Add a constant times bits to the alignment score (null case handled differently).
     //
@@ -371,6 +262,7 @@ pub fn align_to_vdj_ref(
     // an earlier version, we allowed many more null cases, and we believe that this was distorting
     // our inconsistency scoring.  This is because calling null makes it easier to be consistent.
 
+    const BITS_MULTIPLIER: f64 = 2.0; // tried 1.5 and 2.5, both worse
     if left && dref.is_empty() {
         if !al.operations.contains(&Ins) {
             bits = 10.0;

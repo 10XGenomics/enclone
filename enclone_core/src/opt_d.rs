@@ -65,16 +65,22 @@ pub fn opt_d(
         // Append the D segment or segments.
 
         let mut dref = Vec::<u8>::new();
+        let mut d2ref = Vec::<u8>::new();
         let mut drefname = String::new();
         for j in 0..todo[di].len() {
             let d = todo[di][j];
-            dref.append(&mut refdata.refs[d].to_ascii_vec());
+            if j == 0 {
+                dref = refdata.refs[d].to_ascii_vec();
+            } else if j == 1 {
+                d2ref = refdata.refs[d].to_ascii_vec();
+            }
             if j > 0 {
                 drefname += ":";
             }
             drefname += &mut refdata.name[d].clone();
         }
         concat.append(&mut dref.clone());
+        concat.append(&mut d2ref.clone());
 
         // Append the J segment.
 
@@ -96,7 +102,7 @@ pub fn opt_d(
         let jref = jref[0..jend].to_vec();
         concat.append(&mut jref.clone());
 
-        let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &jref, &drefname, true);
+        let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
 
         counts.push(count);
         ds.push(todo[di].clone());
