@@ -496,6 +496,35 @@ pub fn survives_filter(
         }
     }
 
+    // Second D genes.
+
+    if ctl.clono_filt_opt.d_second {
+        let mut second = false;
+        for col in 0..rsi.mat.len() {
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut opt = Vec::new();
+                        let mut opt2 = Vec::new();
+                        let mut delta = 0.0;
+                        opt_d(
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                        );
+                        if opt.len() == 2 {
+                            second = true;
+                        }
+                    }
+                }
+            }
+        }
+        if !second {
+            return false;
+        }
+    }
+
     // Done.
 
     return true;

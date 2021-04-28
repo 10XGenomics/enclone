@@ -414,6 +414,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("DESCRIP", &mut ctl.gen_opt.descrip),
         ("D_INCONSISTENT", &mut ctl.clono_filt_opt.d_inconsistent),
         ("D_NONE", &mut ctl.clono_filt_opt.d_none),
+        ("D_SECOND", &mut ctl.clono_filt_opt.d_second),
         ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
         ("EXP", &mut ctl.gen_opt.exp),
