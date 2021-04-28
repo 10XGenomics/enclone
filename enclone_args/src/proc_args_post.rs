@@ -212,6 +212,10 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.gen_opt.align_jun_align_consistency && ctl.pretty {
+        eprintln!("\nIf you use ALIGN_JALIGN_CONSISTENCY, you should also use PLAIN.\n");
+        std::process::exit(1);
+    }
     if ctl.gen_opt.gene_scan_exact && ctl.gen_opt.gene_scan_test.is_none() {
         eprintln!("\nIt doesn't make sense to specify SCAN_EXIT unless SCAN is also specified.\n");
         std::process::exit(1);

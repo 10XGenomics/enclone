@@ -428,11 +428,18 @@ pub fn group_and_print_clonotypes(
                 let mut ok = true;
                 for n in 1..=3 {
                     if !xlines[xlines.len() - n].contains(&ylines[ylines.len() - n]) {
+                        let err =
+                        format!("\nERROR\n{}\ndoes not contain\n{}\n",
+                            xlines[xlines.len() - n],
+                            ylines[ylines.len() - n],
+                        );
+                        logx.append(&mut err.as_bytes().to_vec());
                         ok = false;
+                        break;
                     }
                 }
                 if !ok {
-                    logx.append(&mut b"consistency test failed".to_vec());
+                    logx.append(&mut b"consistency test failed\n".to_vec());
                     println!("{}", strme(&logx));
                     std::process::exit(1);
                 }

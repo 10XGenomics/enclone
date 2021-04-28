@@ -17,12 +17,27 @@ pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
     flank
 }
 
-pub fn jflank(_seq: &[u8], jref: &[u8]) -> usize {
-    let mut flank = 35;
+pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
+    let flank = 15;
     if flank > jref.len() {
-        flank = jref.len();
+        return jref.len();
     }
-    flank
+    const MATCHLEN: usize = 5;
+    let mut start = 0;
+    for i in 0..=jref.len() - MATCHLEN {
+        let mut matchlen = 0;
+        for j in 0..MATCHLEN {
+            if seq[seq.len() - jref.len() + i + j] != jref[i + j] {
+                break;
+            }
+            matchlen += 1;
+        }
+        if matchlen == MATCHLEN {
+            start = i;
+            break;
+        }
+    }
+    flank + start
 }
 
 pub fn opt_d(
