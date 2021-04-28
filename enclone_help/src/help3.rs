@@ -397,6 +397,11 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "D_INCONSISTENT",
             "only show clonotypes having an inconsistent assignment of D genes",
         );
+        h.doc(
+            "D_NONE",
+            "only show clonotypes having a null D gene assignment",
+        );
+        h.doc("D_SECOND", "only show VDDJ clonotypes");
 
         // print main table
 

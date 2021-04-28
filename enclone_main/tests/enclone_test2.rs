@@ -330,7 +330,7 @@ fn test_for_broken_links_and_spellcheck() {
         tttctgtgcgaga \
         tttctgtgcgagat \
         twosie ubuntu udiff umi umis underperforming unicode untarring \
-        vdj vilella vilfwym vilm vjlen website wget whitelist wikimedia \
+        vddj vdj vilella vilfwym vilm vjlen website wget whitelist wikimedia \
         wikipedia workaround workflow xf xhtml xkcd \
         xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx xy yvar zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();
