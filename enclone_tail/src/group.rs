@@ -428,8 +428,8 @@ pub fn group_and_print_clonotypes(
                 let mut ok = true;
                 for n in 1..=3 {
                     if !xlines[xlines.len() - n].contains(&ylines[ylines.len() - n]) {
-                        let err =
-                        format!("\nERROR\n{}\ndoes not contain\n{}\n",
+                        let err = format!(
+                            "\nERROR\n{}\ndoes not contain\n{}\n",
                             xlines[xlines.len() - n],
                             ylines[ylines.len() - n],
                         );
