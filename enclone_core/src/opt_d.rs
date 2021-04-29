@@ -55,7 +55,7 @@ pub fn evaluate_d(
     ds: &Vec<usize>,
     jref: &[u8],
     refdata: &RefData,
-) -> f64 {
+) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Start to build reference concatenation.  First append the V segment.
 
     let mut concat = Vec::<u8>::new();
@@ -93,8 +93,8 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-    let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
-    count
+    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
+    (ops, count)
 }
 
 pub fn opt_d(
@@ -130,6 +130,7 @@ pub fn opt_d(
     }
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
+    let mut good_d = Vec::<usize>::new();
     let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
     if rsi.vpids[col].is_none() {
     } else {
@@ -145,12 +146,35 @@ pub fn opt_d(
         seq_start += q1 as isize - q2 as isize;
     }
     let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
+    const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
-        let count = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
+        let (ops, count) = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
         counts.push(count);
+        let zos = zero_one(&ops, vref.len(), vref.len() + dref.len());
+        let bits = match_bit_score(&zos);
+        if bits >= MIN_BITS_FOR_D2 {
+            good_d.push(todo[di][0]);
+        }
         ds.push(todo[di].clone());
         if count > comp {
             comp = count;
+        }
+    }
+    if ex.share[mid].cdr3_aa.len() >= 20 {
+        todo.clear();
+        for i1 in good_d.iter() {
+            for i2 in good_d.iter() {
+                todo.push(vec![*i1, *i2]);
+            }
+        }
+        for di in 0..todo.len() {
+            let (_ops, count) =
+                evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
+            counts.push(count);
+            ds.push(todo[di].clone());
+            if count > comp {
+                comp = count;
+            }
         }
     }
 

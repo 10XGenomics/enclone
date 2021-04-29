@@ -19,7 +19,7 @@ use string_utils::*;
 // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes
 // a mismatch.
 
-fn zero_one(
+pub fn zero_one(
     ops: &Vec<bio_edit::alignment::AlignmentOperation>,
     start: usize,
     stop: usize,
@@ -69,7 +69,7 @@ fn zero_one(
 
 // Compute a match bit score.
 
-fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
+pub fn match_bit_score(zos: &Vec<Vec<u8>>) -> f64 {
     let mut bits = 0.0_f64;
     for i in 0..zos.len() {
         let zo = &zos[i];
