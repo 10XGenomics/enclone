@@ -19,13 +19,17 @@ use string_utils::*;
 // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero denotes
 // a mismatch.
 
-fn zero_one(al: &bio_edit::alignment::Alignment, start: usize, stop: usize) -> Vec<Vec<u8>> {
+fn zero_one(
+    ops: &Vec<bio_edit::alignment::AlignmentOperation>,
+    start: usize,
+    stop: usize,
+) -> Vec<Vec<u8>> {
     let mut zos = Vec::<Vec<u8>>::new();
     {
         let mut rpos = 0;
         let mut zo = Vec::<u8>::new();
-        for m in 0..al.operations.len() {
-            match al.operations[m] {
+        for m in 0..ops.len() {
+            match ops[m] {
                 Match => {
                     if rpos >= start && rpos < stop {
                         zo.push(1);
@@ -224,9 +228,9 @@ pub fn align_to_vdj_ref(
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.  Then compute a match bit score.
 
-    let zos1 = zero_one(&al, vref.len(), vref.len() + dref.len());
+    let zos1 = zero_one(&al.operations, vref.len(), vref.len() + dref.len());
     let zos2 = zero_one(
-        &al,
+        &al.operations,
         vref.len() + dref.len(),
         vref.len() + dref.len() + d2ref.len(),
     );

@@ -93,7 +93,6 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-
     let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
     count
 }
