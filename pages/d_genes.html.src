@@ -26,9 +26,11 @@ In general, although D genes are always assigned, they cannot be assigned confid
       they allow one to better understand what happened during junction
       region rearrangement, even though that understanding is often incomplete.
 <br>• D gene assignments are not guaranteed to be consistent across a clonotype.  
-<br>• We have no way of knowing the true error rate in D gene assignment.  However because we 
-      observe an inconsistency rate within clonotypes of <code>~15%</code>, we very roughly 
-      estimate the error rate for D gene assignment at <code>10%</code>.
+<br>• We have no way of knowing the true error rate in D gene assignment.  However because on
+      very large data sets we observe an inconsistency rate within clonotypes of 
+      <code>~15%</code>, we very roughly estimate the error rate for D gene assignment at 
+      <code>10%</code>.  Note of course that the true rate would likely depend on sample properties
+      including the rate of SHM.
 </p>
 
 <hr>
