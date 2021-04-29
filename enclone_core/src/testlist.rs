@@ -641,10 +641,19 @@ pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
 pub const CRASH_SETS: [&str; 5] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
+    //
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
-    /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
-    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 ALIGN1 JALIGN1 GROUP_VJ_REFNAME_HEAVY",
-    /* 5 */ "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
+    //
+    /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4",
+    // removed CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ because possibly too slow
+    //
+    /* 4 */
+    "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY",
+    // removed ALIGN1 JALIGN1 because possibly too slow
+    //
+    /* 5 */
+    "GROUP_VDJ_REFNAME_HEAVY",
+    // removed GVARS=d_inconsistent_%,d_inconsistent_n because possibly too slow
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
