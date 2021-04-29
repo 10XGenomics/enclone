@@ -7,6 +7,7 @@
 use crate::align_to_vdj_ref::*;
 use crate::defs::*;
 use enclone_proto::types::*;
+use std::cmp::min;
 use vdj_ann::refx::*;
 
 pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
@@ -22,6 +23,10 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
     if flank > jref.len() {
         return jref.len();
     }
+
+    // Let start be the first position on the J gene where there is a perfect match of length at least
+    // five to the contig.
+
     const MATCHLEN: usize = 5;
     let mut start = 0;
     for i in 0..=jref.len() - MATCHLEN {
@@ -37,7 +42,10 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
             break;
         }
     }
-    flank + start
+
+    // Add start to the flank, so long as that's possible.
+
+    min(flank + start, jref.len())
 }
 
 pub fn opt_d(
