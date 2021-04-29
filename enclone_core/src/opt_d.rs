@@ -48,6 +48,51 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
     min(flank + start, jref.len())
 }
 
+pub fn _evaluate_d(tig: &[u8], vref: &[u8], seq_start: usize, ds: &Vec<usize>, jref: &[u8], refdata: &RefData)
+-> f64 {
+
+    // Start to build reference concatenation.  First append the V segment.
+
+    let mut concat = Vec::<u8>::new();
+    let vstart = vref.len() - vflank(&tig, &vref);
+    let vref = vref[vstart..vref.len()].to_vec();
+    concat.append(&mut vref.clone());
+
+    // Append the D segment or segments.
+
+    let mut dref = Vec::<u8>::new();
+    let mut d2ref = Vec::<u8>::new();
+    let mut drefname = String::new();
+    for j in 0..ds.len() {
+        let d = ds[j];
+        if j == 0 {
+            dref = refdata.refs[d].to_ascii_vec();
+        } else if j == 1 {
+            d2ref = refdata.refs[d].to_ascii_vec();
+        }
+        if j > 0 {
+            drefname += ":";
+        }
+        drefname += &mut refdata.name[d].clone();
+    }
+    concat.append(&mut dref.clone());
+    concat.append(&mut d2ref.clone());
+
+    // Append the J segment.
+
+    let jend = jflank(&tig, &jref);
+
+    // Align the V..J sequence on the contig to the reference concatenation.
+
+    let seq_end = tig.len() - (jref.len() - jend);
+    let seq = tig[seq_start as usize..seq_end].to_vec();
+    let jref = jref[0..jend].to_vec();
+    concat.append(&mut jref.clone());
+
+    let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
+    count
+}
+
 pub fn opt_d(
     ex: &ExactClonotype,
     col: usize,
