@@ -48,9 +48,14 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
     min(flank + start, jref.len())
 }
 
-pub fn _evaluate_d(tig: &[u8], vref: &[u8], seq_start: usize, ds: &Vec<usize>, jref: &[u8], refdata: &RefData)
--> f64 {
-
+pub fn _evaluate_d(
+    tig: &[u8],
+    vref: &[u8],
+    seq_start: usize,
+    ds: &Vec<usize>,
+    jref: &[u8],
+    refdata: &RefData,
+) -> f64 {
     // Start to build reference concatenation.  First append the V segment.
 
     let mut concat = Vec::<u8>::new();
