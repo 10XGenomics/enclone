@@ -24,8 +24,8 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
         return jref.len();
     }
 
-    // Let start be the first position on the J gene where there is a perfect match of length at least
-    // five to the contig.
+    // Let start be the first position on the J gene where there is a perfect match of length at
+    // least five to the contig.
 
     const MATCHLEN: usize = 5;
     let mut start = 0;
@@ -48,7 +48,7 @@ pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
     min(flank + start, jref.len())
 }
 
-pub fn _evaluate_d(
+pub fn evaluate_d(
     tig: &[u8],
     vref: &[u8],
     seq_start: usize,
@@ -131,61 +131,23 @@ pub fn opt_d(
     }
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
+    let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
+    if rsi.vpids[col].is_none() {
+    } else {
+        vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
+    }
+    let vstart = vref.len() - vflank(&tig, &vref);
+    let mut seq_start = vstart as isize;
+    // probably not exactly right
+    if ex.share[mid].annv.len() > 1 {
+        let q1 = ex.share[mid].annv[0].0 + ex.share[mid].annv[0].1;
+        let q2 = ex.share[mid].annv[1].0;
+
+        seq_start += q1 as isize - q2 as isize;
+    }
+    let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
     for di in 0..todo.len() {
-        // Start to build reference concatenation.  First append the V segment.
-
-        let mut concat = Vec::<u8>::new();
-        let mut vref = refdata.refs[rsi.vids[col]].to_ascii_vec();
-        if rsi.vpids[col].is_none() {
-        } else {
-            vref = dref[rsi.vpids[col].unwrap()].nt_sequence.clone();
-        }
-        let vstart = vref.len() - vflank(&tig, &vref);
-        vref = vref[vstart..vref.len()].to_vec();
-        concat.append(&mut vref.clone());
-
-        // Append the D segment or segments.
-
-        let mut dref = Vec::<u8>::new();
-        let mut d2ref = Vec::<u8>::new();
-        let mut drefname = String::new();
-        for j in 0..todo[di].len() {
-            let d = todo[di][j];
-            if j == 0 {
-                dref = refdata.refs[d].to_ascii_vec();
-            } else if j == 1 {
-                d2ref = refdata.refs[d].to_ascii_vec();
-            }
-            if j > 0 {
-                drefname += ":";
-            }
-            drefname += &mut refdata.name[d].clone();
-        }
-        concat.append(&mut dref.clone());
-        concat.append(&mut d2ref.clone());
-
-        // Append the J segment.
-
-        let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
-        let jend = jflank(&tig, &jref);
-
-        // Align the V..J sequence on the contig to the reference concatenation.
-
-        let mut seq_start = vstart as isize;
-        // probably not exactly right
-        if ex.share[mid].annv.len() > 1 {
-            let q1 = ex.share[mid].annv[0].0 + ex.share[mid].annv[0].1;
-            let q2 = ex.share[mid].annv[1].0;
-
-            seq_start += q1 as isize - q2 as isize;
-        }
-        let seq_end = tig.len() - (jref.len() - jend);
-        let seq = tig[seq_start as usize..seq_end].to_vec();
-        let jref = jref[0..jend].to_vec();
-        concat.append(&mut jref.clone());
-
-        let (_ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
-
+        let count = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
         counts.push(count);
         ds.push(todo[di].clone());
         if count > comp {
