@@ -11,7 +11,7 @@ use std::cmp::min;
 use vdj_ann::refx::*;
 
 pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
-    let mut flank = 15;
+    let mut flank = 13;
     if flank > vref.len() {
         flank = vref.len();
     }
@@ -19,7 +19,7 @@ pub fn vflank(_seq: &[u8], vref: &[u8]) -> usize {
 }
 
 pub fn jflank(seq: &[u8], jref: &[u8]) -> usize {
-    let flank = 15;
+    let flank = 13;
     if flank > jref.len() {
         return jref.len();
     }
