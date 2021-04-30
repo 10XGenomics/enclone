@@ -55,8 +55,8 @@ fn print_vis_align(
         let mut pos = 0;
         let vcolor = 3;
         let dcolor = 1;
-        let d2color = 4;
-        let jcolor = 5;
+        let d2color = 0;
+        let jcolor = 2;
         let mut vdj_bytes = Vec::<u8>::new();
         print_color(vcolor, &mut vdj_bytes);
         vdj_bytes.push(b'V');
