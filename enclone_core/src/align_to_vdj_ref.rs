@@ -224,13 +224,63 @@ pub fn align_to_vdj_ref(
     }
     let mut al = aligner.custom_with_gap_fns(&seq, &concat, &gap_open_fn, &gap_extend_fn);
     al.mode = AlignmentMode::Semiglobal;
+    let mut ops = al.operations;
+
+    // Fix alignments.  Something is not right in the aligner.  We observe that sometimes
+    // deletions are off by one.
+
+    let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
+    let mut i = 0;
+    let mut pos = 0;
+    let mut rpos = 0;
+    while i < ops.len() {
+        if ops[i] == Match {
+            pos += 1;
+            rpos += 1;
+            i += 1;
+        } else if ops[i] == Subst {
+            pos += 1;
+            rpos += 1;
+            i += 1;
+        } else if ops[i] == Ins {
+            let mut j = i + 1;
+            while j < ops.len() && ops[j] == Ins {
+                j += 1;
+            }
+            pos += j - i;
+            i = j;
+        } else if ops[i] == Del {
+            let mut j = i + 1;
+            while j < ops.len() && ops[j] == Del {
+                j += 1;
+            }
+            if rpos + j - i == vref.len() - 1 
+                || rpos == vref.len() + dref.len() - 1
+                || rpos == vref.len() + dref.len() + d2ref.len() - 1 {
+                if j < ops.len() && (ops[j] == Match || ops[j] == Subst) {
+                    if seq[pos] == concat[rpos] {
+                        edits.push((i, Match));
+                        edits.push((j, Del));
+                    } else {
+                        edits.push((i, Subst));
+                        edits.push((j, Del));
+                    }
+                }
+            }
+            rpos += j - i;
+            i = j;
+        }
+    }
+    for x in edits.iter() {
+        ops[x.0] = x.1;
+    }
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.  Then compute a match bit score.
 
-    let zos1 = zero_one(&al.operations, vref.len(), vref.len() + dref.len());
+    let zos1 = zero_one(&ops, vref.len(), vref.len() + dref.len());
     let zos2 = zero_one(
-        &al.operations,
+        &ops,
         vref.len() + dref.len(),
         vref.len() + dref.len() + d2ref.len(),
     );
@@ -246,11 +296,11 @@ pub fn align_to_vdj_ref(
 
     let verbose = false;
     if verbose {
-        let full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
+        let full_score = rescore(&ops) as f64 + BITS_MULTIPLIER * bits;
         println!(
             "\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
             drefname,
-            rescore(&al.operations),
+            rescore(&ops),
             bits,
             full_score,
         );
@@ -261,7 +311,7 @@ pub fn align_to_vdj_ref(
             print!("{}", zo.iter().format(""));
         }
         println!("");
-        println!("ops = {:?}", al.operations.iter().format(","));
+        println!("ops = {:?}", ops.iter().format(","));
     }
 
     // Add a constant times bits to the alignment score (null case handled differently).
@@ -272,13 +322,13 @@ pub fn align_to_vdj_ref(
 
     const BITS_MULTIPLIER: f64 = 2.0; // tried 1.5 and 2.5, both worse
     if left && dref.is_empty() {
-        if !al.operations.contains(&Ins) {
+        if !ops.contains(&Ins) {
             bits = 10.0;
         } else {
             bits = -1000.0;
         }
     }
-    let mut full_score = rescore(&al.operations) as f64 + BITS_MULTIPLIER * bits;
+    let mut full_score = rescore(&ops) as f64 + BITS_MULTIPLIER * bits;
     const D2_PENALTY: f64 = -15.0;
     if drefname.contains(":") {
         full_score += D2_PENALTY;
@@ -286,5 +336,5 @@ pub fn align_to_vdj_ref(
 
     // Return the alignment and score.
 
-    (al.operations, full_score)
+    (ops, full_score)
 }
