@@ -135,6 +135,7 @@ pub async fn main_enclone(args: &Vec<String>) {
             "serde_json",
             "std",
             "superslice",
+            "tokio",
             "unknown",
         ];
         let mut b = Vec::<String>::new();
