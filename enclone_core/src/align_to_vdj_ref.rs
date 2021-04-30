@@ -254,9 +254,10 @@ pub fn align_to_vdj_ref(
             while j < ops.len() && ops[j] == Del {
                 j += 1;
             }
-            if rpos + j - i == vref.len() - 1 
+            if rpos + j - i == vref.len() - 1
                 || rpos == vref.len() + dref.len() - 1
-                || rpos == vref.len() + dref.len() + d2ref.len() - 1 {
+                || rpos == vref.len() + dref.len() + d2ref.len() - 1
+            {
                 if j < ops.len() && (ops[j] == Match || ops[j] == Subst) {
                     if seq[pos] == concat[rpos] {
                         edits.push((i, Match));
