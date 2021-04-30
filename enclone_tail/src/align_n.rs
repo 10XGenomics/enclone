@@ -268,6 +268,12 @@ pub fn align_n(
                                 }
                                 add = format!("  •  D = {} = {}", rank, drefname);
                             }
+                            let widthx;
+                            if !jun {
+                                widthx = width;
+                            } else {
+                                widthx = 1000;
+                            }
                             print_vis_align(
                                 &seq,
                                 &concat,
@@ -281,7 +287,7 @@ pub fn align_n(
                                 ex.share[r].left,
                                 &ctl,
                                 &mut logx,
-                                width,
+                                widthx,
                                 &add,
                             );
                         }
