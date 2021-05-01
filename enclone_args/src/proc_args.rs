@@ -193,6 +193,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.umi_filt = true;
     ctl.clono_filt_opt.umi_ratio_filt = true;
 
+    ctl.gen_opt.align_fix = true;
+
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
         "var".to_string(),
@@ -393,7 +395,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "ALIGN_JALIGN_CONSISTENCY",
             &mut ctl.gen_opt.align_jun_align_consistency,
         ),
-        ("ALIGN_FIX", &mut ctl.gen_opt.align_fix),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
@@ -508,6 +509,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("H5_SLICE", &mut ctl.gen_opt.h5_pre),
         ("NBC_DUP", &mut ctl.clono_filt_opt.bc_dup),
         ("NDOUBLET", &mut ctl.clono_filt_opt.doublet),
+        ("NFIX", &mut ctl.gen_opt.align_fix),
         ("NFOURSIE_KILL", &mut ctl.clono_filt_opt.weak_foursies),
         ("NMERGE_ONESIES", &mut ctl.join_alg_opt.merge_onesies_ctl),
         ("NQUAL", &mut ctl.clono_filt_opt.qual_filter),
