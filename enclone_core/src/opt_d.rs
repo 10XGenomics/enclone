@@ -143,7 +143,15 @@ pub fn opt_d(
     let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
     const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
-        let (ops, count) = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata, &ctl);
+        let (ops, count) = evaluate_d(
+            &tig,
+            &vref,
+            seq_start as usize,
+            &todo[di],
+            &jref,
+            &refdata,
+            &ctl,
+        );
         counts.push(count);
         if !todo[di].is_empty() {
             let drefx = refdata.refs[todo[di][0]].to_ascii_vec();
@@ -168,8 +176,15 @@ pub fn opt_d(
             }
         }
         for di in 0..todo.len() {
-            let (_ops, count) =
-                evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata, &ctl);
+            let (_ops, count) = evaluate_d(
+                &tig,
+                &vref,
+                seq_start as usize,
+                &todo[di],
+                &jref,
+                &refdata,
+                &ctl,
+            );
             counts.push(count);
             ds.push(todo[di].clone());
             if count > comp {
