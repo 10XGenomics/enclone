@@ -121,13 +121,6 @@ pub fn opt_d(
     for i in refdata.ds.iter() {
         todo.push(vec![*i]);
     }
-    if ex.share[mid].cdr3_aa.len() >= 20 {
-        for i1 in refdata.ds.iter() {
-            for i2 in refdata.ds.iter() {
-                todo.push(vec![*i1, *i2]);
-            }
-        }
-    }
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
     let mut good_d = Vec::<usize>::new();
