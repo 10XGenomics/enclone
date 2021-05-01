@@ -7,7 +7,9 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 14.81
+// d_inconsistent_% = 15.92
+//
+// Value was 14.77 before adding align_fix but it's not clear how to get back to that.
 
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
