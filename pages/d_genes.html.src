@@ -94,6 +94,11 @@ And here is the same example, but showing just the junction region:
 <p>There are also options <code>ALIGN_2ND&ltn></code> 
 and <code>JALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
 
+<p>Here is an example showing a <code>VDDJ</code> clonotype:</p>
+
+<pre><code>enclone BCR=165808 JALIGN1 CDR3=CARAYDILTGYYERGYSYGWGFDYW</code></pre>
+#include pages/auto/vddj.html
+
 <hr>
 
 <h2>How the algorithm works</h2>
