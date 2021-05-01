@@ -12,6 +12,7 @@
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
+use crate::defs::*;
 use string_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -116,6 +117,7 @@ pub fn align_to_vdj_ref(
     jref: &[u8],
     drefname: &str, // useful for debugging
     left: bool,
+    ctl: &EncloneControl,
 ) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
@@ -164,9 +166,9 @@ pub fn align_to_vdj_ref(
                     j += 1;
                 }
                 if rpos == vref.len() + dref.len() + d2ref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                    score += -8 + (j - i - 1) as i32 * -1;
                 } else if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                    score += -8 + (j - i - 1) as i32 * -1;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
                 }
@@ -229,51 +231,53 @@ pub fn align_to_vdj_ref(
     // Fix alignments.  Something is not right in the aligner.  We observe that sometimes
     // deletions are off by one.
 
-    let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
-    let mut i = 0;
-    let mut pos = 0;
-    let mut rpos = 0;
-    while i < ops.len() {
-        if ops[i] == Match {
-            pos += 1;
-            rpos += 1;
-            i += 1;
-        } else if ops[i] == Subst {
-            pos += 1;
-            rpos += 1;
-            i += 1;
-        } else if ops[i] == Ins {
-            let mut j = i + 1;
-            while j < ops.len() && ops[j] == Ins {
-                j += 1;
-            }
-            pos += j - i;
-            i = j;
-        } else if ops[i] == Del {
-            let mut j = i + 1;
-            while j < ops.len() && ops[j] == Del {
-                j += 1;
-            }
-            if rpos + j - i == vref.len() - 1
-                || rpos == vref.len() + dref.len() - 1
-                || rpos == vref.len() + dref.len() + d2ref.len() - 1
-            {
-                if j < ops.len() && (ops[j] == Match || ops[j] == Subst) {
-                    if seq[pos] == concat[rpos] {
-                        edits.push((i, Match));
-                        edits.push((j, Del));
-                    } else {
-                        edits.push((i, Subst));
-                        edits.push((j, Del));
+    if ctl.gen_opt.align_fix {
+        let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
+        let mut i = 0;
+        let mut pos = 0;
+        let mut rpos = 0;
+        while i < ops.len() {
+            if ops[i] == Match {
+                pos += 1;
+                rpos += 1;
+                i += 1;
+            } else if ops[i] == Subst {
+                pos += 1;
+                rpos += 1;
+                i += 1;
+            } else if ops[i] == Ins {
+                let mut j = i + 1;
+                while j < ops.len() && ops[j] == Ins {
+                    j += 1;
+                }
+                pos += j - i;
+                i = j;
+            } else if ops[i] == Del {
+                let mut j = i + 1;
+                while j < ops.len() && ops[j] == Del {
+                    j += 1;
+                }
+                if rpos + j - i == vref.len() - 1
+                    || rpos == vref.len() + dref.len() - 1
+                    || rpos == vref.len() + dref.len() + d2ref.len() - 1
+                {
+                    if j < ops.len() && (ops[j] == Match || ops[j] == Subst) {
+                        if seq[pos] == concat[rpos] {
+                            edits.push((i, Match));
+                            edits.push((j, Del));
+                        } else {
+                            edits.push((i, Subst));
+                            edits.push((j, Del));
+                        }
                     }
                 }
+                rpos += j - i;
+                i = j;
             }
-            rpos += j - i;
-            i = j;
         }
-    }
-    for x in edits.iter() {
-        ops[x.0] = x.1;
+        for x in edits.iter() {
+            ops[x.0] = x.1;
+        }
     }
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero

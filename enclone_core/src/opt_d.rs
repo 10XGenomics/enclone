@@ -55,6 +55,7 @@ pub fn evaluate_d(
     ds: &Vec<usize>,
     jref: &[u8],
     refdata: &RefData,
+    ctl: &EncloneControl,
 ) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Start to build reference concatenation.  First append the V segment.
 
@@ -93,7 +94,7 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true);
+    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true, &ctl);
     (ops, count)
 }
 
@@ -107,6 +108,7 @@ pub fn opt_d(
     opt: &mut Vec<usize>,
     opt2: &mut Vec<usize>,
     delta: &mut f64,
+    ctl: &EncloneControl,
 ) {
     let mid = rsi.mat[col][u].unwrap();
     assert!(ex.share[mid].left);
@@ -141,7 +143,7 @@ pub fn opt_d(
     let jref = refdata.refs[rsi.jids[col]].to_ascii_vec();
     const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
-        let (ops, count) = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
+        let (ops, count) = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata, &ctl);
         counts.push(count);
         let zos = zero_one(&ops, vref.len(), vref.len() + dref.len());
         let bits = match_bit_score(&zos);
@@ -162,7 +164,7 @@ pub fn opt_d(
         }
         for di in 0..todo.len() {
             let (_ops, count) =
-                evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata);
+                evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata, &ctl);
             counts.push(count);
             ds.push(todo[di].clone());
             if count > comp {

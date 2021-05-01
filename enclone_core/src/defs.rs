@@ -263,6 +263,7 @@ pub struct GeneralOpt {
     pub chains_to_jun_align2: Vec<usize>,
     pub align_jun_align_consistency: bool,
     pub gvars: Vec<String>, // per run variables
+    pub align_fix: bool,
 }
 
 // Some plot options.

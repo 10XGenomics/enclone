@@ -393,6 +393,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "ALIGN_JALIGN_CONSISTENCY",
             &mut ctl.gen_opt.align_jun_align_consistency,
         ),
+        ("ALIGN_FIX", &mut ctl.gen_opt.align_fix),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),

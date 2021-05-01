@@ -273,7 +273,7 @@ pub fn proc_cvar1(
         let mut opt2 = Vec::new();
         let mut delta = 0.0;
         opt_d(
-            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta, &ctl,
         );
         let mut opt_name = String::new();
         if opt.is_empty() {

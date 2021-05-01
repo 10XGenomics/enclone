@@ -451,7 +451,7 @@ pub fn survives_filter(
                         let mut opt2 = Vec::new();
                         let mut delta = 0.0;
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta, &ctl,
                         );
                         dvotes.push(opt);
                     }
@@ -482,7 +482,7 @@ pub fn survives_filter(
                         let mut opt2 = Vec::new();
                         let mut delta = 0.0;
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta, &ctl,
                         );
                         if opt.is_empty() {
                             none = true;
@@ -511,7 +511,7 @@ pub fn survives_filter(
                         let mut opt2 = Vec::new();
                         let mut delta = 0.0;
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta, &ctl,
                         );
                         if opt.len() == 2 {
                             second = true;
