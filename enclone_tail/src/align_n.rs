@@ -247,6 +247,11 @@ pub fn align_n(
                                     seq_start += q2 as isize - q1 as isize;
                                 }
                                 let seq_end = seq.len() - (jref.len() - jend);
+                                // very flaky bug workaround
+                                // asserted on BCR=180030 CDR3=CARERDLIWFGPW JALIGN1
+                                if seq_start as usize > seq_end {
+                                    seq_start = vstart as isize;
+                                }
                                 seq = seq[seq_start as usize..seq_end].to_vec();
                                 jref = jref[0..jend].to_vec();
                             }
