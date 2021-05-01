@@ -325,7 +325,7 @@ pub fn align_to_vdj_ref(
     // an earlier version, we allowed many more null cases, and we believe that this was distorting
     // our inconsistency scoring.  This is because calling null makes it easier to be consistent.
 
-    const BITS_MULTIPLIER: f64 = 2.0; // tried 1.5 and 2.5, both worse
+    const BITS_MULTIPLIER: f64 = 2.2; // tried 1.5 and 2.5, both worse
     if left && dref.is_empty() {
         if !ops.contains(&Ins) {
             bits = 10.0;
