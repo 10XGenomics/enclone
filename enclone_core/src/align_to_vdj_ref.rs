@@ -166,9 +166,9 @@ pub fn align_to_vdj_ref(
                     j += 1;
                 }
                 if rpos == vref.len() + dref.len() + d2ref.len() {
-                    score += -8 + (j - i - 1) as i32 * -1;
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
-                    score += -8 + (j - i - 1) as i32 * -1;
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
                 }
