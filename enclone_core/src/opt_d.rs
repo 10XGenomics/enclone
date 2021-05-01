@@ -145,10 +145,15 @@ pub fn opt_d(
     for di in 0..todo.len() {
         let (ops, count) = evaluate_d(&tig, &vref, seq_start as usize, &todo[di], &jref, &refdata, &ctl);
         counts.push(count);
-        let zos = zero_one(&ops, vref.len(), vref.len() + dref.len());
-        let bits = match_bit_score(&zos);
-        if bits >= MIN_BITS_FOR_D2 {
-            good_d.push(todo[di][0]);
+        if !todo[di].is_empty() {
+            let drefx = refdata.refs[todo[di][0]].to_ascii_vec();
+            let vstart = vref.len() - vflank(&tig, &vref);
+            let vref = vref[vstart..vref.len()].to_vec();
+            let zos = zero_one(&ops, vref.len(), vref.len() + drefx.len());
+            let bits = match_bit_score(&zos);
+            if bits >= MIN_BITS_FOR_D2 {
+                good_d.push(todo[di][0]);
+            }
         }
         ds.push(todo[di].clone());
         if count > comp {
