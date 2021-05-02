@@ -234,7 +234,21 @@ pub fn align_n(
                                     if j > 0 {
                                         drefname += ":";
                                     }
+                                    if ctl.pretty {
+                                        let mut log = Vec::<u8>::new();
+                                        if j == 0 {
+                                            print_color(DCOLOR, &mut log);
+                                        } else {
+                                            print_color(D2COLOR, &mut log);
+                                        }
+                                        drefname += &strme(&log);
+                                    }
                                     drefname += &mut refdata.name[d].clone();
+                                    if ctl.pretty {
+                                        let mut log = Vec::<u8>::new();
+                                        emit_end_escape(&mut log);
+                                        drefname += &strme(&log);
+                                    }
                                 }
                                 concat.append(&mut drefx.clone());
                                 concat.append(&mut d2ref.clone());
