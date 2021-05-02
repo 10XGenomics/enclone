@@ -57,7 +57,12 @@ pub fn define_column_info(
                 continue;
             }
             if !left
-                && (var == "opt_d" || var == "opt_d2" || var == "opt_d_delta" || var == "opt_dΔ")
+                && (var == "opt_d"
+                    || var == "opt_d2"
+                    || var == "opt_d_delta"
+                    || var == "opt_dΔ"
+                    || var == "d#"
+                    || var == "d2#")
             {
                 continue;
             }
