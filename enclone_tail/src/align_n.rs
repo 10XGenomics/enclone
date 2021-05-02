@@ -206,32 +206,18 @@ pub fn align_n(
                                     &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
                                     &mut delta, &ctl,
                                 );
-                                if pass == 1 {
-                                    for j in 0..opt.len() {
-                                        let d = opt[j];
-                                        if j == 0 {
-                                            drefx = refdata.refs[d].to_ascii_vec();
-                                        } else {
-                                            d2ref = refdata.refs[d].to_ascii_vec();
-                                        }
-                                        if j > 0 {
-                                            drefname += ":";
-                                        }
-                                        drefname += &mut refdata.name[d].clone();
+                                let optx = if pass == 1 { opt } else { opt2 };
+                                for j in 0..optx.len() {
+                                    let d = optx[j];
+                                    if j == 0 {
+                                        drefx = refdata.refs[d].to_ascii_vec();
+                                    } else {
+                                        d2ref = refdata.refs[d].to_ascii_vec();
                                     }
-                                } else {
-                                    for j in 0..opt2.len() {
-                                        let d = opt2[j];
-                                        if j == 0 {
-                                            drefx = refdata.refs[d].to_ascii_vec();
-                                        } else {
-                                            d2ref = refdata.refs[d].to_ascii_vec();
-                                        }
-                                        if j > 0 {
-                                            drefname += ":";
-                                        }
-                                        drefname += &mut refdata.name[d].clone();
+                                    if j > 0 {
+                                        drefname += ":";
                                     }
+                                    drefname += &mut refdata.name[d].clone();
                                 }
                                 concat.append(&mut drefx.clone());
                                 concat.append(&mut d2ref.clone());
