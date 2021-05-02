@@ -105,9 +105,8 @@ pub fn opt_d(
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
-    opt: &mut Vec<usize>,
-    opt2: &mut Vec<usize>,
-    delta: &mut f64,
+    scores: &mut Vec<f64>,
+    dsx: &mut Vec<Vec<usize>>,
     ctl: &EncloneControl,
 ) {
     let mid = rsi.mat[col][u].unwrap();
@@ -207,21 +206,8 @@ pub fn opt_d(
         ds.push(counts_ds[i].1.clone());
     }
 
-    // Proceed.
+    // Done.
 
-    let mut comp = 0.0;
-    let mut best_d = Vec::new();
-    if counts.len() > 0 {
-        comp = counts[0];
-        best_d = ds[0].clone();
-    }
-    let mut second_comp = 0.0;
-    let mut best_d2 = Vec::new();
-    if counts.len() > 1 {
-        second_comp = counts[1];
-        best_d2 = ds[1].clone();
-    }
-    *opt = best_d;
-    *opt2 = best_d2;
-    *delta = comp - second_comp;
+    *scores = counts;
+    *dsx = ds;
 }

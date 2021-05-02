@@ -847,13 +847,23 @@ pub async fn main_enclone(args: &Vec<String>) {
                     if m.is_some() {
                         let m = m.unwrap();
                         if ex.share[m].left {
-                            let mut opt = Vec::new();
-                            let mut opt2 = Vec::new();
-                            let mut delta = 0.0;
+                            let mut scores = Vec::<f64>::new();
+                            let mut ds = Vec::<Vec<usize>>::new();
                             opt_d(
-                                &ex, col, u, &rsi[i], &refdata, &drefs, &mut opt, &mut opt2,
-                                &mut delta, &ctl,
+                                &ex,
+                                col,
+                                u,
+                                &rsi[i],
+                                &refdata,
+                                &drefs,
+                                &mut scores,
+                                &mut ds,
+                                &ctl,
                             );
+                            let mut opt = Vec::new();
+                            if ds.len() > 0 {
+                                opt = ds[0].clone();
+                            }
                             dvotes.push(opt);
                         }
                     } else {

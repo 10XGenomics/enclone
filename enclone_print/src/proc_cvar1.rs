@@ -269,12 +269,27 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, "".to_string()];
             return true;
         }
-        let mut opt = Vec::new();
-        let mut opt2 = Vec::new();
-        let mut delta = 0.0;
+        let mut scores = Vec::<f64>::new();
+        let mut ds = Vec::<Vec<usize>>::new();
         opt_d(
-            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta, &ctl,
+            &ex,
+            col,
+            u,
+            &rsi,
+            &refdata,
+            &dref,
+            &mut scores,
+            &mut ds,
+            &ctl,
         );
+        let mut opt = Vec::new();
+        if ds.len() > 0 {
+            opt = ds[0].clone();
+        }
+        let mut opt2 = Vec::new();
+        if ds.len() > 1 {
+            opt2 = ds[1].clone();
+        }
         let mut opt_name = String::new();
         if opt.is_empty() {
             opt_name = "none".to_string();
@@ -302,6 +317,10 @@ pub fn proc_cvar1(
         } else if *var == "opt_d2" {
             cvar_stats1![j, var, opt2_name];
         } else {
+            let mut delta = 0.0;
+            if scores.len() > 1 {
+                delta = scores[0] - scores[1];
+            }
             cvar_stats1![j, var, format!("{:.1}", delta)];
         }
     } else if *var == "cdr1_dna"

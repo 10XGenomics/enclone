@@ -447,13 +447,23 @@ pub fn survives_filter(
                 if m.is_some() {
                     let m = m.unwrap();
                     if ex.share[m].left {
-                        let mut opt = Vec::new();
-                        let mut opt2 = Vec::new();
-                        let mut delta = 0.0;
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
                             &ctl,
                         );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
                         dvotes.push(opt);
                     }
                 }
@@ -479,13 +489,23 @@ pub fn survives_filter(
                 if m.is_some() {
                     let m = m.unwrap();
                     if ex.share[m].left {
-                        let mut opt = Vec::new();
-                        let mut opt2 = Vec::new();
-                        let mut delta = 0.0;
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
                             &ctl,
                         );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
                         if opt.is_empty() {
                             none = true;
                         }
@@ -509,13 +529,23 @@ pub fn survives_filter(
                 if m.is_some() {
                     let m = m.unwrap();
                     if ex.share[m].left {
-                        let mut opt = Vec::new();
-                        let mut opt2 = Vec::new();
-                        let mut delta = 0.0;
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
                         opt_d(
-                            &ex, col, u, &rsi, &refdata, &dref, &mut opt, &mut opt2, &mut delta,
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
                             &ctl,
                         );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
                         if opt.len() == 2 {
                             second = true;
                         }

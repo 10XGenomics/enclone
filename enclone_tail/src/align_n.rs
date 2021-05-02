@@ -202,13 +202,27 @@ pub fn align_n(
                             let mut d2ref = Vec::<u8>::new();
                             let mut drefname = String::new();
                             if ex.share[r].left {
-                                let mut opt = Vec::new();
-                                let mut opt2 = Vec::new();
-                                let mut delta = 0.0;
+                                let mut scores = Vec::<f64>::new();
+                                let mut ds = Vec::<Vec<usize>>::new();
                                 opt_d(
-                                    &ex, m, k, &rsi[oo], &refdata, &dref, &mut opt, &mut opt2,
-                                    &mut delta, &ctl,
+                                    &ex,
+                                    m,
+                                    k,
+                                    &rsi[oo],
+                                    &refdata,
+                                    &dref,
+                                    &mut scores,
+                                    &mut ds,
+                                    &ctl,
                                 );
+                                let mut opt = Vec::new();
+                                if ds.len() > 0 {
+                                    opt = ds[0].clone();
+                                }
+                                let mut opt2 = Vec::new();
+                                if ds.len() > 1 {
+                                    opt2 = ds[1].clone();
+                                }
                                 let optx = if pass == 1 { opt } else { opt2 };
                                 for j in 0..optx.len() {
                                     let d = optx[j];
