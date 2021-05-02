@@ -3,6 +3,7 @@
 // See README for documentation.
 
 use self::refx::*;
+use crate::blacklist::*;
 use crate::determine_ref::*;
 use crate::disintegrate::*;
 use crate::doublets::*;
@@ -109,40 +110,7 @@ pub async fn main_enclone(args: &Vec<String>) {
         println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
-        let blacklist = [
-            "alloc",
-            "build",
-            "core",
-            "core-arch",
-            "crossbeam-deque",
-            "crossbeam-epoch",
-            "debruijn",
-            "float-ord",
-            "hashbrown",
-            "hdf5-rust",
-            "hdf5-types",
-            "lock_api",
-            "lz4",
-            "ndarray",
-            "parking_lot",
-            "parking_lot_core",
-            "rayon",
-            "rayon-core",
-            "regex",
-            "regex-syntax",
-            "rust-bio",
-            "serde",
-            "serde_json",
-            "std",
-            "superslice",
-            "tokio",
-            "unknown",
-        ];
-        let mut b = Vec::<String>::new();
-        for x in blacklist.iter() {
-            b.push(x.to_string());
-        }
-        start_profiling(&b);
+        start_profiling(&profiling_blacklist());
     }
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
