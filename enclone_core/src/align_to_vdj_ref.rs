@@ -123,12 +123,13 @@ pub fn align_to_vdj_ref(
 ) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
-    let matchp = 2 as i32;
-    let mismatch = -2 as i32;
-    let gap_open = -12 as i32;
-    let gap_extend = -2 as i32;
-    let gap_open_at_boundary = -4 as i32;
-    let gap_extend_at_boundary = -1 as i32;
+    let matchp = 20 as i32;
+    let mismatch = -20 as i32;
+    let gap_open = -120 as i32;
+    let gap_extend = -20 as i32;
+    let gap_open_at_boundary = -40 as i32;
+    let gap_extend_at_boundary = -10 as i32;
+    let align_div = 10.0;
     const MIN_BITS_FOR_D2: f64 = 14.0;
     const BITS_MULTIPLIER: f64 = 2.2; // tried 1.5 and 2.5, both worse
     const D2_PENALTY: f64 = -15.0;
@@ -139,7 +140,7 @@ pub fn align_to_vdj_ref(
     // of a problem since although we're rescoring to "fix" the problem, the aligner might have
     // chosen a suboptimal placement in the first place.
 
-    let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> i32 {
+    let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> f64 {
         let mut score = 0 as i32;
         let mut i = 0;
         let mut rpos = 0;
@@ -181,7 +182,7 @@ pub fn align_to_vdj_ref(
                 i = j;
             }
         }
-        score
+        score as f64 / align_div
     };
 
     // Build concatenation.
@@ -305,7 +306,7 @@ pub fn align_to_vdj_ref(
 
     let verbose = false;
     if verbose {
-        let full_score = rescore(&ops) as f64 + BITS_MULTIPLIER * bits;
+        let full_score = rescore(&ops) + BITS_MULTIPLIER * bits;
         println!(
             "\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
             drefname,
@@ -336,7 +337,7 @@ pub fn align_to_vdj_ref(
             bits = -1000.0;
         }
     }
-    let mut full_score = rescore(&ops) as f64 + BITS_MULTIPLIER * bits;
+    let mut full_score = rescore(&ops) + BITS_MULTIPLIER * bits;
     if drefname.contains(":") {
         full_score += D2_PENALTY;
     }
