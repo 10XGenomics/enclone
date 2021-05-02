@@ -18,6 +18,13 @@ use vector_utils::*;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+const VCOLOR: usize = 3;
+const DCOLOR: usize = 1;
+const D2COLOR: usize = 0;
+const JCOLOR: usize = 2;
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 fn print_vis_align(
     seq: &[u8],
     concat: &[u8],
@@ -53,22 +60,18 @@ fn print_vis_align(
     if ctl.pretty {
         let mut vis_new = String::new();
         let mut pos = 0;
-        let vcolor = 3;
-        let dcolor = 1;
-        let d2color = 0;
-        let jcolor = 2;
         let mut vdj_bytes = Vec::<u8>::new();
-        print_color(vcolor, &mut vdj_bytes);
+        print_color(VCOLOR, &mut vdj_bytes);
         vdj_bytes.push(b'V');
         if left {
-            print_color(dcolor, &mut vdj_bytes);
+            print_color(DCOLOR, &mut vdj_bytes);
             vdj_bytes.push(b'D');
         }
         if d2ref.len() > 0 {
-            print_color(d2color, &mut vdj_bytes);
+            print_color(D2COLOR, &mut vdj_bytes);
             vdj_bytes.push(b'D');
         }
-        print_color(jcolor, &mut vdj_bytes);
+        print_color(JCOLOR, &mut vdj_bytes);
         vdj_bytes.push(b'J');
         emit_end_escape(&mut vdj_bytes);
         vdj = stringme(&vdj_bytes);
@@ -80,16 +83,16 @@ fn print_vis_align(
                 let mut log = Vec::<u8>::new();
                 let line = line.as_bytes();
                 if pos < vref.len() {
-                    print_color(vcolor, &mut log);
+                    print_color(VCOLOR, &mut log);
                 } else if d2ref.len() > 0
                     && pos >= vref.len() + dref.len()
                     && pos < vref.len() + dref.len() + d2ref.len()
                 {
-                    print_color(d2color, &mut log);
+                    print_color(D2COLOR, &mut log);
                 } else if left && pos < vref.len() + dref.len() + d2ref.len() {
-                    print_color(dcolor, &mut log);
+                    print_color(DCOLOR, &mut log);
                 } else {
-                    print_color(jcolor, &mut log);
+                    print_color(JCOLOR, &mut log);
                 }
                 for j in 0..line.len() {
                     log.push(line[j]);
@@ -98,15 +101,15 @@ fn print_vis_align(
                         if j != line.len() - 1 {
                             if left {
                                 if d2ref.len() > 0 && pos == vref.len() + dref.len() {
-                                    print_color(d2color, &mut log);
+                                    print_color(D2COLOR, &mut log);
                                 } else if pos == vref.len() + dref.len() + d2ref.len() {
-                                    print_color(jcolor, &mut log);
+                                    print_color(JCOLOR, &mut log);
                                 } else if pos == vref.len() {
-                                    print_color(dcolor, &mut log);
+                                    print_color(DCOLOR, &mut log);
                                 }
                             } else {
                                 if pos == vref.len() {
-                                    print_color(jcolor, &mut log);
+                                    print_color(JCOLOR, &mut log);
                                 }
                             }
                         }
