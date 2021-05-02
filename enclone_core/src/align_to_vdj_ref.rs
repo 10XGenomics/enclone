@@ -129,6 +129,9 @@ pub fn align_to_vdj_ref(
     let gap_extend = -2 as i32;
     let gap_open_at_boundary = -4 as i32;
     let gap_extend_at_boundary = -1 as i32;
+    const MIN_BITS_FOR_D2: f64 = 14.0;
+    const BITS_MULTIPLIER: f64 = 2.2; // tried 1.5 and 2.5, both worse
+    const D2_PENALTY: f64 = -15.0;
 
     // Define scoring function.  It does not appear that the aligner is scoring in exactly the
     // intended fashion in all cases.  This is likely more of an issue for alv and alj.  The
@@ -294,7 +297,6 @@ pub fn align_to_vdj_ref(
     let bits1 = match_bit_score(&zos1);
     let bits2 = match_bit_score(&zos2);
     let mut bits = bits1.max(bits2);
-    const MIN_BITS_FOR_D2: f64 = 14.0;
     if d2ref.len() > 0 && bits1.min(bits2) < MIN_BITS_FOR_D2 {
         bits = 0.0;
     }
@@ -327,7 +329,6 @@ pub fn align_to_vdj_ref(
     // an earlier version, we allowed many more null cases, and we believe that this was distorting
     // our inconsistency scoring.  This is because calling null makes it easier to be consistent.
 
-    const BITS_MULTIPLIER: f64 = 2.2; // tried 1.5 and 2.5, both worse
     if left && dref.is_empty() {
         if !ops.contains(&Ins) {
             bits = 10.0;
@@ -336,7 +337,6 @@ pub fn align_to_vdj_ref(
         }
     }
     let mut full_score = rescore(&ops) as f64 + BITS_MULTIPLIER * bits;
-    const D2_PENALTY: f64 = -15.0;
     if drefname.contains(":") {
         full_score += D2_PENALTY;
     }
