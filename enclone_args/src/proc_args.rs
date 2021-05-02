@@ -177,6 +177,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.peer_group_dist = "MFL".to_string();
     ctl.gen_opt.color_by_rarity_pc = -1.0;
     ctl.gen_opt.jscore_match = 20;
+    ctl.gen_opt.jscore_mismatch = -20;
 
     // Set up clonotyping control parameters.
 
@@ -526,7 +527,6 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
-        ("JSCORE_MATCH", &mut ctl.gen_opt.jscore_match),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),
@@ -545,6 +545,13 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
+    ];
+
+    // Define arguments that set something to an i32.
+
+    let set_i32 = [
+        ("JSCORE_MATCH", &mut ctl.gen_opt.jscore_match),
+        ("JSCORE_MISMATCH", &mut ctl.gen_opt.jscore_mismatch),
     ];
 
     // Define arguments that set something to a string.
@@ -695,6 +702,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_usize.len() {
             if is_usize_arg(&arg, &set_usize[j].0) {
                 *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_i32 args.
+
+        for j in 0..set_i32.len() {
+            if is_i32_arg(&arg, &set_i32[j].0) {
+                *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
                 continue 'args_loop;
             }
         }
