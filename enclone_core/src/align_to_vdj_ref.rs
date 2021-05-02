@@ -123,7 +123,7 @@ pub fn align_to_vdj_ref(
 ) -> (Vec<bio::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
-    let matchp = 20 as i32;
+    let matchp = ctl.gen_opt.jscore_match as i32;
     let mismatch = -20 as i32;
     let gap_open = -120 as i32;
     let gap_extend = -20 as i32;

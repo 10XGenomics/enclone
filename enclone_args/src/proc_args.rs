@@ -176,6 +176,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.silent = true;
     ctl.gen_opt.peer_group_dist = "MFL".to_string();
     ctl.gen_opt.color_by_rarity_pc = -1.0;
+    ctl.gen_opt.jscore_match = 20;
 
     // Set up clonotyping control parameters.
 
@@ -525,6 +526,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     let set_usize = [
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
+        ("JSCORE_MATCH", &mut ctl.gen_opt.jscore_match),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),

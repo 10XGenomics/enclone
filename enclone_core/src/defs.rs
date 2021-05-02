@@ -264,6 +264,7 @@ pub struct GeneralOpt {
     pub align_jun_align_consistency: bool,
     pub gvars: Vec<String>, // per run variables
     pub align_fix: bool,
+    pub jscore_match: usize,
 }
 
 // Some plot options.
