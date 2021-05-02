@@ -842,6 +842,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
         h.ldoc("opt_d", "name of optimal D gene, or none");
         h.doc("opt_d2", "name of second best D gene, or none");
+        h.doc("d#", "score for optimal D gene");
+        h.doc("d2#", "score for second best D gene");
         h.doc(
             "opt_d_delta",
             "score difference between first and second best D gene",

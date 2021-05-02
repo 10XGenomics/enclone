@@ -264,7 +264,13 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, format!("{}", edit)];
         }
-    } else if *var == "opt_d" || *var == "opt_d2" || *var == "opt_d_delta" || *var == "opt_dΔ" {
+    } else if *var == "opt_d"
+        || *var == "opt_d2"
+        || *var == "opt_d_delta"
+        || *var == "opt_dΔ"
+        || *var == "d#"
+        || *var == "d2#"
+    {
         if !ex.share[mid].left {
             cvar_stats1![j, var, "".to_string()];
             return true;
@@ -316,6 +322,18 @@ pub fn proc_cvar1(
             cvar_stats1![j, var, opt_name];
         } else if *var == "opt_d2" {
             cvar_stats1![j, var, opt2_name];
+        } else if *var == "d#" {
+            let mut score = 0.0;
+            if scores.len() > 0 {
+                score = scores[0];
+            }
+            cvar_stats1![j, var, format!("{:.1}", score)];
+        } else if *var == "d2#" {
+            let mut score = 0.0;
+            if scores.len() > 1 {
+                score = scores[1];
+            }
+            cvar_stats1![j, var, format!("{:.1}", score)];
         } else {
             let mut delta = 0.0;
             if scores.len() > 1 {
