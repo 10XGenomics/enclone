@@ -330,3 +330,10 @@ TOOLTIP: add tooltip text to honeycomb plots
 
 ALIGN_JUN_ALIGN_CONSISTENCY: test to see if they give consistent results 
 (run with ALIGN1 JUN_ALIGN1 PLAIN)
+
+junction region alignment penalties accessible from the command line:
+- JSCORE_MATCH
+- JSCORE_MISMATCH
+- JSCORE_GAP_EXTEND
+- JSCORE_GAP_OPEN
+- JSCORE_BITS_MULT
