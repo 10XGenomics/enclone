@@ -109,8 +109,9 @@ reference.</p>
 
 <p>
 The algorithm aligns the V(D)J region on a transcript to the concatenated V(D)J reference, allowing
-for each possible D reference segment (or the null D segment), in the case of IGH or TRB.  These 
-alignments are carried out using an affine Smith-Waterman algorithm with the following parameters:
+for each possible D reference segment (or the null D segment), in the case of IGH or TRB.  These
+alignments are carried out using a modified affine Smith-Waterman algorithm that starts with the
+following parameters:
 </p>
 
 <p>
@@ -125,17 +126,26 @@ alignments are carried out using an affine Smith-Waterman algorithm with the fol
 </table>
 </p>
 
-<p>After aligning, the alignment score is adjusted by adding <code>2.25</code> times the
-longest perfect match for a given D segment (or <code>5</code>, in the case where the D
-segment is null).  Then the D segment having 
+<p>To the score from this, we add <code>2.2</code> times a "bit score" for the alignment,
+defined as <code>-log2</code> of the probability that a random DNA sequence of length n will match 
+a given DNA sequence with ≤ k mismatches = <code>sum{l=0..=k} (n choose l) * 3^l / 4^n</code>.</p>
+
+<p>Note that because the original alignment is not computed using the full score, the result
+is an <i>approximation</i> to what one would get (hypothetically) were one to actually optimize
+the full score.</p>
+
+<p>Then the D segment having 
 the highest score is selected, arbitrarily selecting a winner in the case of a tie.</p>
 
-<p>We arrived at this algorithm by "intuitive guesswork", by optimizing the D gene
-inconsistency rate for a large dataset (over a million cells), and by comparing to IgBLAST
-calls, in an attempt to either match them or produce a different result that appeared to be
-better.  Although we do not know which D gene assignments are correct, the use of the
-inconsistency rate leverages the truth we do have: that cells in the same clonotype have the
-same true D gene.</p>
+<p>The following were optimized in designing the algorithm:
+<ul>
+<li>the inconsistency rate for a large dataset (over a million cells)</li>
+<li>placement of indels (manual examination)</li>
+<li>consistency with IgBLAST, or if not, justifiable difference from it</li>
+</ul>
+However, there is no rigorous way to balance these criteria.  The algorithm is not optimal
+but it is unclear how one would decide that a new algorithm was better.
+</p>
 
 </body>
 </html>
