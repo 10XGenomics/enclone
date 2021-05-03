@@ -12,6 +12,9 @@
 // Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
 // to that.
 //
+// We expect deletions that bridge boundaries, but the alignment scoring favors those that start
+// at a boundary, which is not correct.
+//
 // If you mess with this, you can test your changes with "cargo t test_enclone_d" and
 // "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
 // want to worsen the placement of indels.  Also run the above big test.
@@ -242,7 +245,7 @@ pub fn align_to_vdj_ref(
     // Fix alignments.  Something is not right in the aligner.  We observe that sometimes
     // deletions are off by one.
 
-    if ctl.gen_opt.align_fix {
+    if ctl.gen_opt.align_fix && dref.len() > 0 {
         let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
         let mut i = 0;
         let mut pos = 0;
@@ -268,8 +271,7 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
                 }
-                if rpos == vref.len() - 1
-                    || rpos + j - i == vref.len() - 1
+                if rpos + j - i == vref.len() - 1
                     || rpos == vref.len() + dref.len() - 1
                     || rpos == vref.len() + dref.len() + d2ref.len() - 1
                 {
