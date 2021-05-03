@@ -114,8 +114,7 @@ reference.</p>
 <p>
 The algorithm aligns the V(D)J region on a transcript to the concatenated V(D)J reference, allowing
 for each possible D reference segment (or the null D segment, or DD), in the case of IGH or TRB.  
-These alignments are carried out using a modified affine Smith-Waterman algorithm that starts with 
-the following parameters:
+These alignments are carried out using the following scoring scheme:
 </p>
 
 <p>
@@ -123,9 +122,11 @@ the following parameters:
 <tr><td> <b>case</b>                       </td><td> <b>score</b>      </td></tr>
 <tr><td> match                             </td><td>   2               </td></tr>
 <tr><td> mismatch                          </td><td>  -2               </td></tr>
-<tr><td> gap open between V/D/J segments   </td><td>  -4               </td></tr>
+<tr><td> gap open for insertion between V/D/J segments   </td><td>  -4     </td></tr>
+<tr><td> gap open for deletion bridging V/D/J segments   </td><td>  -4     </td></tr>
 <tr><td> gap open (otherwise)              </td><td> -12               </td></tr>
-<tr><td> gap extend between V/D/J segments </td><td>  -1               </td></tr>
+<tr><td> gap extend for insertion between V/D/J segments </td><td>  -1     </td></tr>
+<tr><td> gap extend for deletion bridging V/D/J segments </td><td>  -1     </td></tr>
 <tr><td> gap extend (otherwise)            </td><td>  -2               </td></tr>
 </table>
 </p>
@@ -134,9 +135,10 @@ the following parameters:
 defined as <code>-log2</code> of the probability that a random DNA sequence of length n will match 
 a given DNA sequence with ≤ k mismatches = <code>sum{l=0..=k} (n choose l) * 3^l / 4^n</code>.</p>
 
-<p>Note that because the original alignment is not computed using the full score, the result
-is an <i>approximation</i> to what one would get (hypothetically) were one to actually optimize
-the full score.</p>
+<p>The alignment that is produced is approximately optimal, relative to this scoring scheme.  It
+is not exactly optimal because we first produce an alignment using a Smith-Waterman algorithm,
+which does not fully incorporate the complexity of the scoring scheme, and then edit both the
+alignment and its score.</p>
 
 <p>Then the D segment having 
 the highest score is selected, arbitrarily selecting a winner in the case of a tie.</p>

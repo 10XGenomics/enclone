@@ -1,19 +1,16 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Align a sequence to a concatenated V(D)J reference, encouraging gaps at the junction points.
+// Align a sequence to a concatenated V(D)J reference, encouraging insertions exactly at
+// junction points and deletions that bridge junction points.
 //
 // results of various parameter choices
 //
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 16.02
+// d_inconsistent_% = 16.43
 //
-// Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
-// to that.
-//
-// We expect deletions that bridge boundaries, but the alignment scoring favors those that start
-// at a boundary, which is not correct.
+// Value was 14.77 earlier but it's not clear how to get back to that.
 //
 // If you mess with this, you can test your changes with "cargo t test_enclone_d" and
 // "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
@@ -253,12 +250,14 @@ pub fn align_to_vdj_ref(
     //
     // Changed to favor bridging.
 
-    /*
-    if ctl.gen_opt.align_fix && dref.len() > 0 {
+    if ctl.gen_opt.align_fix {
         let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
         let mut i = 0;
         let mut pos = 0;
         let mut rpos = 0;
+        let b1 = vref.len();
+        let b2 = vref.len() + dref.len();
+        let b3 = vref.len() + dref.len() + d2ref.len();
         while i < ops.len() {
             if ops[i] == Match {
                 pos += 1;
@@ -280,18 +279,33 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
                 }
-                if rpos + j - i == vref.len() - 1
-                    || rpos == vref.len() + dref.len() - 1
-                    || rpos == vref.len() + dref.len() + d2ref.len() - 1
-                {
-                    if j < ops.len() && (ops[j] == Match || ops[j] == Subst) {
-                        if seq[pos] == concat[rpos] {
-                            edits.push((i, Match));
-                            edits.push((j, Del));
-                        } else {
-                            edits.push((i, Subst));
-                            edits.push((j, Del));
-                        }
+                let k = j - i;
+                for bi in [b1, b2, b3].iter() {
+                    let bi = *bi;
+
+                    // Maybe can shift right one.
+
+                    if rpos < bi
+                        && rpos + k >= bi
+                        && j < ops.len()
+                        && pos < seq.len()
+                        && rpos < concat.len()
+                        && ops[j] == Subst
+                        && seq[pos] == concat[rpos]
+                    {
+                        edits.push((i, Match));
+                        edits.push((j, Del));
+                        break;
+
+                    // Maybe can shift left one.
+                    } else if rpos + k > bi
+                        && i > 0
+                        && ops[i - 1] == Subst
+                        && seq[pos - 1] == concat[rpos + k - 1]
+                    {
+                        edits.push((i - 1, Del));
+                        edits.push((j - 1, Match));
+                        break;
                     }
                 }
                 rpos += j - i;
@@ -302,7 +316,6 @@ pub fn align_to_vdj_ref(
             ops[x.0] = x.1;
         }
     }
-    */
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.  Then compute a match bit score.
