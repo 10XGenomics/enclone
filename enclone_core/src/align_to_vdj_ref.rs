@@ -7,7 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 16.05
+// d_inconsistent_% = 16.02
 //
 // Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
 // to that.
@@ -147,11 +147,16 @@ pub fn align_to_vdj_ref(
     // problem has to do with the interpretation of being at the boundary.  This is still somewhat
     // of a problem since although we're rescoring to "fix" the problem, the aligner might have
     // chosen a suboptimal placement in the first place.
+    //
+    // Note handling of deletions that bridge boundaries.
 
     let rescore = |ops: &Vec<bio_edit::alignment::AlignmentOperation>| -> f64 {
         let mut score = 0 as i32;
         let mut i = 0;
         let mut rpos = 0;
+        let b1 = vref.len();
+        let b2 = vref.len() + dref.len();
+        let b3 = vref.len() + dref.len() + d2ref.len();
         while i < ops.len() {
             if ops[i] == Match {
                 rpos += 1;
@@ -179,9 +184,10 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
                 }
-                if rpos == vref.len() + dref.len() + d2ref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
-                } else if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
+                if (rpos <= b1 && rpos + j - i >= b1)
+                    || (rpos <= b2 && rpos + j - i >= b2)
+                    || (rpos <= b3 && rpos + j - i >= b3)
+                {
                     score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
@@ -244,7 +250,10 @@ pub fn align_to_vdj_ref(
 
     // Fix alignments.  Something is not right in the aligner.  We observe that sometimes
     // deletions are off by one.
+    //
+    // Changed to favor bridging.
 
+    /*
     if ctl.gen_opt.align_fix && dref.len() > 0 {
         let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
         let mut i = 0;
@@ -293,6 +302,7 @@ pub fn align_to_vdj_ref(
             ops[x.0] = x.1;
         }
     }
+    */
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
     // denotes a mismatch.  Then compute a match bit score.
