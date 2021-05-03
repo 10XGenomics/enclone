@@ -85,7 +85,15 @@ fn parse_vector_entry_from_json(
     tigs: &mut Vec<TigData>,
     exiting: &AtomicBool,
 ) {
-    let v: Value = serde_json::from_str(strme(&x)).unwrap();
+    let v: Result<Value, _> = serde_json::from_str(strme(&x));
+    if v.is_err() {
+        eprintln!(
+            "\nInternal error, failed to parse a value from a string.  The string is:\n{}\n",
+            strme(&x)
+        );
+        std::process::exit(1);
+    }
+    let v = v.unwrap();
     let barcode = &v["barcode"].to_string().between("\"", "\"").to_string();
 
     // Get cell status.  Sometime after CR 4.0 was released, and before 4.1 was released,
