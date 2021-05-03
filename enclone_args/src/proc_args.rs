@@ -557,9 +557,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
 
     // Define arguments that set something to an f64.
 
-    let set_f64 = [
-        ("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier),
-    ];
+    let set_f64 = [("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier)];
 
     // Define arguments that set something to a string.
 
