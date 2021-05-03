@@ -3,6 +3,7 @@
 // Parallized precompute for ALIGN<n> and JALIGN<n>.
 
 use align_tools::*;
+use amino::*;
 use ansi_escape::*;
 use enclone_core::align_to_vdj_ref::*;
 use enclone_core::defs::*;
@@ -40,6 +41,8 @@ fn print_vis_align(
     logx: &mut Vec<u8>,
     width: usize,
     add: &str,
+    frame: usize,
+    jun: bool,
 ) {
     // Make alignment.
 
@@ -123,15 +126,42 @@ fn print_vis_align(
         vis = vis_new;
     }
 
+    // Add amino acid line.
+        
+    let mut aaline = Vec::<u8>::new();
+    if jun {
+        let mut lines = Vec::<String>::new();
+        for line in vis.lines() {
+            lines.push(line.to_string());
+        }
+        let mut count = 0;
+        let s = lines[1].as_bytes();
+        for c in s.iter() {
+            if (*c as char).is_ascii_alphabetic() {
+                if (count + frame) % 3 == 1 && count > 0 && count + 1 < seq.len() {
+                    let aa = codon_to_aa(&[seq[count - 1], seq[count], seq[count + 1]]);
+                    aaline.push(aa);
+                } else {
+                    aaline.append(&mut b" ".to_vec());
+                }
+                count += 1;
+            } else {
+                aaline.append(&mut b" ".to_vec());
+            }
+        }
+        aaline.append(&mut b"\n".to_vec());
+    }
+
     // Print alignment.
 
     fwrite!(
         logx,
-        "\nCHAIN {} OF #{}  •  CONCATENATED {} REFERENCE{}\n{}",
+        "\nCHAIN {} OF #{}  •  CONCATENATED {} REFERENCE{}\n{}{}",
         col,
         k + 1,
         vdj,
         add,
+        strme(&aaline),
         vis,
     );
 }
@@ -254,6 +284,7 @@ pub fn align_n(
                                 concat.append(&mut d2ref.clone());
                             }
                             let mut jref = refdata.refs[rsi[oo].jids[m]].to_ascii_vec();
+                            let mut frame = 0;
                             if jun {
                                 let jend = jflank(&seq, &jref);
                                 let mut seq_start = vstart as isize;
@@ -270,6 +301,7 @@ pub fn align_n(
                                     seq_start = vstart as isize;
                                 }
                                 seq = seq[seq_start as usize..seq_end].to_vec();
+                                frame = seq_start as usize % 3;
                                 jref = jref[0..jend].to_vec();
                             }
                             concat.append(&mut jref.clone());
@@ -311,6 +343,8 @@ pub fn align_n(
                                 &mut logx,
                                 widthx,
                                 &add,
+                                frame,
+                                jun,
                             );
                         }
                     }
