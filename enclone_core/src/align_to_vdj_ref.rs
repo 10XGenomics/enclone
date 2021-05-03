@@ -7,7 +7,7 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 16.45
+// d_inconsistent_% = 16.05
 //
 // Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
 // to that.
