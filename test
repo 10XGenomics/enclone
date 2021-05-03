@@ -51,9 +51,6 @@ echo "used $elapsed seconds total"
 
 ##### FAIL IF TOO MUCH TIME USED #####
 
-# Note that the expected time is generally replicated to within about one second on a system with
-# very low load.
-
 set expected = 128
 set fudge_num = 11
 set fudge_den = 10
