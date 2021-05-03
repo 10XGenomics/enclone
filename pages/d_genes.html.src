@@ -14,15 +14,16 @@
 <hr>
 
 <p>#enclone can assign D genes to each IGH or TRB exact subclonotype, independent of the 
-assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene,
-or two D genes (in a VDDJ) configuration, or none, if that scores better.  The "none" case is
+assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene, 
+or two D genes (in a VDDJ) configuration, or null, depending on score.  The "none" case is
 applied only when no insertion is observed.</p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
 padding: 8px; width: 900px; font-size: 110%">
 In general, although D genes are always assigned, they cannot be assigned confidently.
 <br>• <b>This is a consequence of the biology: D genes are short, and junction regions can be 
-      heavily edited, so in general it is just not possible to know.</b>  
+      heavily edited during SHM and through non-templated indels during VDJ recombination, so in 
+      general it is just not possible to know.</b>
 <br>• The reason we make these assignments, even though they are not confident, is that in general 
       they allow one to better understand what happened during junction
       region rearrangement, even though that understanding is often incomplete.
