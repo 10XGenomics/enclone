@@ -653,16 +653,14 @@ pub const CRASH_SETS: [&str; 5] = [
     //
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     //
-    /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4",
-    // removed CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ because possibly too slow
+    /* 3 */
+    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
     //
     /* 4 */
-    "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY",
-    // removed ALIGN1 JALIGN1 because possibly too slow
+    "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
     //
     /* 5 */
-    "GROUP_VDJ_REFNAME_HEAVY",
-    // removed GVARS=d_inconsistent_%,d_inconsistent_n because possibly too slow
+    "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
