@@ -178,6 +178,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.color_by_rarity_pc = -1.0;
     ctl.gen_opt.jscore_match = 20;
     ctl.gen_opt.jscore_mismatch = -20;
+    ctl.gen_opt.jscore_gap_open = -120;
+    ctl.gen_opt.jscore_gap_extend = -20;
     ctl.gen_opt.jscore_bits_multiplier = 2.2;
 
     // Set up clonotyping control parameters.
@@ -551,6 +553,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     // Define arguments that set something to an i32.
 
     let set_i32 = [
+        ("JSCORE_GAP_EXTEND", &mut ctl.gen_opt.jscore_gap_extend),
+        ("JSCORE_GAP_OPEN", &mut ctl.gen_opt.jscore_gap_open),
         ("JSCORE_MATCH", &mut ctl.gen_opt.jscore_match),
         ("JSCORE_MISMATCH", &mut ctl.gen_opt.jscore_mismatch),
     ];

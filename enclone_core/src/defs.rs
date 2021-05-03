@@ -267,6 +267,8 @@ pub struct GeneralOpt {
     pub jscore_match: i32,
     pub jscore_mismatch: i32,
     pub jscore_bits_multiplier: f64,
+    pub jscore_gap_open: i32,
+    pub jscore_gap_extend: i32,
 }
 
 // Some plot options.

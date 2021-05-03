@@ -130,8 +130,8 @@ pub fn align_to_vdj_ref(
 
     let matchp = ctl.gen_opt.jscore_match;
     let mismatch = ctl.gen_opt.jscore_mismatch;
-    let gap_open = -120 as i32;
-    let gap_extend = -20 as i32;
+    let gap_open = ctl.gen_opt.jscore_gap_open;
+    let gap_extend = ctl.gen_opt.jscore_gap_extend;
     let gap_open_at_boundary = -40 as i32;
     let gap_extend_at_boundary = -10 as i32;
     let align_div = 10.0;
