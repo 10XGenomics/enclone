@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 //
-// Parallized precompute for ALIGN<n> and JALIGN<n>.
+// Parallelized precompute for ALIGN<n> and JALIGN<n>.
 
 use align_tools::*;
 use amino::*;
