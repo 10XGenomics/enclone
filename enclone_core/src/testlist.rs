@@ -26,7 +26,7 @@ pub const TEST_FILES_VERSION: u8 = 15;
 
 // Tests that are affected by the D region alignment algorithm.  All such tests should go here.
 
-pub const DTESTS: [&str; 14] = [
+pub const DTESTS: [&str; 15] = [
     // 1. test ALIGN_2ND<n>
     r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=opt_d"###,
     // 2. test JALIGN_2ND<n>
@@ -56,6 +56,8 @@ pub const DTESTS: [&str; 14] = [
     r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
     // 14. test placement of indel, needed shifting right
     r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CAKDKSRPPTHYYGSGSYYSRILDNW"###,
+    // 15. test placement of indel, needed shifting left
+    r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CARMAQFYSGSGTYYIGPYYFEYW"###,
 ];
 
 pub const TESTS: [&str; 234] = [
