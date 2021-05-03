@@ -64,6 +64,8 @@ if ( $elapsed_times > $expected_plus_times ) then
     echo "FAILED"
     echo
     exit 1
+else
+    echo "\ntest time = $elapsed seconds versus expected time of $expected seconds"
 endif
 
 ##### DONE #####
