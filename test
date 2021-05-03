@@ -47,7 +47,6 @@ endif
 
 set end = `date +%s`
 set elapsed = `expr $end - $start`
-echo "used $elapsed seconds total"
 
 ##### FAIL IF TOO MUCH TIME USED #####
 
@@ -65,7 +64,7 @@ if ( $elapsed_times > $expected_plus_times ) then
     echo
     exit 1
 else
-    echo "\ntest time = $elapsed seconds versus expected time of $expected seconds"
+    echo "\ntotal test time = $elapsed seconds versus expected time of $expected seconds"
 endif
 
 ##### DONE #####
