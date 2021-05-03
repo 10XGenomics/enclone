@@ -121,6 +121,81 @@ fn test_enclone() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+// 10b.  tests that are affected by D region assignment
+
+#[cfg(not(feature = "cpu"))]
+#[test]
+fn test_enclone_d() {
+    PrettyTrace::new().on();
+    let t = Instant::now();
+    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
+    //                       id     ok    output
+    let mut results = Vec::<(usize, bool, String)>::new();
+    for i in 0..DTESTS.len() {
+        results.push((i, false, String::new()));
+    }
+    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let mut tracking = false;
+    let mut comments = Vec::<String>::new();
+    let mut lines = Vec::<String>::new();
+    for line in this.lines() {
+        if line.starts_with("pub const DTESTS: ") {
+            tracking = true;
+            continue;
+        }
+        if tracking {
+            if line == "];" {
+                break;
+            }
+            lines.push(line.to_string());
+        }
+    }
+    let mut i = 0;
+    while i < lines.len() {
+        let mut j = i + 1;
+        while j < lines.len() {
+            if lines[j].starts_with("    // ") {
+                let c = lines[j].after("    // ").as_bytes()[0];
+                if c >= b'0' && c <= b'9' {
+                    break;
+                }
+            }
+            j += 1;
+        }
+        comments.push(lines[i..j].iter().format("\n").to_string());
+        i = j;
+    }
+
+    results.par_iter_mut().for_each(|res| {
+        let it = res.0;
+        let test = DTESTS[it].to_string();
+        let mut out = String::new();
+        run_test(
+            env!("CARGO_BIN_EXE_enclone"),
+            it,
+            &comments[it],
+            &test,
+            "dtest",
+            &mut res.1,
+            &mut res.2,
+            &mut out,
+        );
+    });
+    for i in 0..results.len() {
+        print!("{}", results[i].2);
+        if !results[i].1 {
+            std::process::exit(1);
+        }
+    }
+    println!(
+        "\ntotal time for {} enclone subtests = {:.2} seconds\n",
+        DTESTS.len(),
+        elapsed(&t)
+    );
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 // 11.
 
 // NOT BASIC

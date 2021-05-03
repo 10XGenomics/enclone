@@ -11,6 +11,9 @@
 //
 // Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
 // to that.
+//
+// If you mess with this, you can test your changes with "cargo t test_enclone_d" and
+// "merge_html BUILD" and then manually examine the D gene page.
 
 use crate::defs::*;
 use bio_edit::alignment::pairwise::*;

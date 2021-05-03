@@ -8,6 +8,10 @@
 # by .cargo/config.
 #
 # If you want to run this over and over to look for sporadic failures, use ./testtest.
+#
+# To run just one test,
+# cargo t <testname>
+# should work.
 
 ##### GET START TIME #####
 
