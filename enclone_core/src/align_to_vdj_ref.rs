@@ -130,8 +130,8 @@ pub fn align_to_vdj_ref(
     let gap_open_at_boundary = -40 as i32;
     let gap_extend_at_boundary = -10 as i32;
     let align_div = 10.0;
+    let bits_multiplier = ctl.gen_opt.jscore_bits_multiplier;
     const MIN_BITS_FOR_D2: f64 = 14.0;
-    const BITS_MULTIPLIER: f64 = 2.2; // tried 1.5 and 2.5, both worse
     const D2_PENALTY: f64 = -15.0;
 
     // Define scoring function.  It does not appear that the aligner is scoring in exactly the
@@ -306,7 +306,7 @@ pub fn align_to_vdj_ref(
 
     let verbose = false;
     if verbose {
-        let full_score = rescore(&ops) + BITS_MULTIPLIER * bits;
+        let full_score = rescore(&ops) + bits_multiplier * bits;
         println!(
             "\n{} ==> score = {:.1}, bits = {:.1}, full_score = {:.1}",
             drefname,
@@ -337,7 +337,7 @@ pub fn align_to_vdj_ref(
             bits = -1000.0;
         }
     }
-    let mut full_score = rescore(&ops) + BITS_MULTIPLIER * bits;
+    let mut full_score = rescore(&ops) + bits_multiplier * bits;
     if drefname.contains(":") {
         full_score += D2_PENALTY;
     }

@@ -266,6 +266,7 @@ pub struct GeneralOpt {
     pub align_fix: bool,
     pub jscore_match: i32,
     pub jscore_mismatch: i32,
+    pub jscore_bits_multiplier: f64,
 }
 
 // Some plot options.

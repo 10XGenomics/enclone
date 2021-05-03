@@ -178,6 +178,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.gen_opt.color_by_rarity_pc = -1.0;
     ctl.gen_opt.jscore_match = 20;
     ctl.gen_opt.jscore_mismatch = -20;
+    ctl.gen_opt.jscore_bits_multiplier = 2.2;
 
     // Set up clonotyping control parameters.
 
@@ -554,6 +555,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("JSCORE_MISMATCH", &mut ctl.gen_opt.jscore_mismatch),
     ];
 
+    // Define arguments that set something to an f64.
+
+    let set_f64 = [
+        ("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier),
+    ];
+
     // Define arguments that set something to a string.
 
     let set_string = [
@@ -711,6 +718,15 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_i32.len() {
             if is_i32_arg(&arg, &set_i32[j].0) {
                 *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_f64 args.
+
+        for j in 0..set_f64.len() {
+            if is_f64_arg(&arg, &set_f64[j].0) {
+                *(set_f64[j].1) = arg.after(&format!("{}=", set_f64[j].0)).force_f64();
                 continue 'args_loop;
             }
         }
