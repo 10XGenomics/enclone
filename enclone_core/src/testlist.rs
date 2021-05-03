@@ -24,6 +24,38 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
+// Tests that are affected by the D region alignment algorithm.  All such tests should go here.
+
+pub const DTESTS: [&str; 13] = [
+    // 1. test ALIGN_2ND<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=opt_d"###,
+    // 2. test JALIGN_2ND<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JALIGN_2ND1 CVARS=opt_d"###,
+    // 3. test ALIGN_JALIGN_CONSISTENCY
+    r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JALIGN1 ALIGN_JALIGN_CONSISTENCY AMINO=cdr3
+         PLAIN NOPAGER EXPECT_OK"###,
+    // 4. test D_INCONSISTENT, and lock number of inconsistencies
+    r###"BCR=123085 D_INCONSISTENT CVARS=opt_d COMPLETE NGROUP"###,
+    // 5. the JALIGN1 in this example had a boundary location that was off by one
+    r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=cdr3_len CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
+    // 6. the JALIGN1 in this example had a boundary location that was off by one
+    r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=opt_d CDR3=CAKAGPTESGYYVWYFDLW"###,
+    // 7. test d_inconsistent_{%,n}
+    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
+    // 8. test ALIGN<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=opt_d"###,
+    // 9. test ALIGN<n> and JALIGN<n>, case where there's a D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
+    // 10. test ALIGN<n> and JALIGN<n>, case where there is no D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
+    // 11. test opt_d etc.
+    r###"BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ,opt_d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
+    // 12. test GROUP_VDJ_REFNAME_HEAVY
+    r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
+    // 13. test GROUP_VJ_REFNAME_HEAVY
+    r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
+];
+
 pub const TESTS: [&str; 234] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
@@ -606,38 +638,6 @@ pub const TESTS: [&str; 234] = [
          KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
     // 234. test TOOLTIP
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2 TOOLTIP"###,
-];
-
-// Tests that are affected by the D region alignment algorithm.
-
-pub const DTESTS: [&str; 13] = [
-    // 1. test ALIGN_2ND<n>
-    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=opt_d"###,
-    // 2. test JALIGN_2ND<n>
-    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JALIGN_2ND1 CVARS=opt_d"###,
-    // 3. test ALIGN_JALIGN_CONSISTENCY
-    r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JALIGN1 ALIGN_JALIGN_CONSISTENCY AMINO=cdr3
-         PLAIN NOPAGER EXPECT_OK"###,
-    // 4. test D_INCONSISTENT, and lock number of inconsistencies
-    r###"BCR=123085 D_INCONSISTENT CVARS=opt_d COMPLETE NGROUP"###,
-    // 5. the JALIGN1 in this example had a boundary location that was off by one
-    r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=cdr3_len CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
-    // 6. the JALIGN1 in this example had a boundary location that was off by one
-    r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=opt_d CDR3=CAKAGPTESGYYVWYFDLW"###,
-    // 7. test d_inconsistent_{%,n}
-    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
-    // 8. test ALIGN<n>
-    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=opt_d"###,
-    // 9. test ALIGN<n> and JALIGN<n>, case where there's a D segment
-    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
-    // 10. test ALIGN<n> and JALIGN<n>, case where there is no D segment
-    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
-    // 11. test opt_d etc.
-    r###"BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ,opt_d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
-    // 12. test GROUP_VDJ_REFNAME_HEAVY
-    r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
-    // 13. test GROUP_VJ_REFNAME_HEAVY
-    r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
