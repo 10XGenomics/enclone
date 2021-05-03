@@ -392,8 +392,8 @@ fn test_for_broken_links_and_spellcheck() {
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
         dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
-        genomics germline ggctttgactactgg github githubusercontent google googletagmanager grok \
-        gz html \
+        genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
+        googletagmanager grok gz html \
         hypermutation hypermutations igblast igh igk igl ighm igkc imgt \
         indel indels inkt jsdelivr json krh levenshtein linux loh lvar lvars \
         macbook mait metadata mkdir \
