@@ -13,7 +13,8 @@
 // to that.
 //
 // If you mess with this, you can test your changes with "cargo t test_enclone_d" and
-// "merge_html BUILD" and then manually examine the D gene page.
+// "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
+// want to worsen the placement of indels.  Also run the above big test.
 
 use crate::defs::*;
 use bio_edit::alignment::pairwise::*;
