@@ -310,7 +310,8 @@ fn test_for_broken_links_and_spellcheck() {
     // places and reduce the dictionary exceptions accordingly.
 
     let extra_words =
-        "abybank actgtgcgagag adefghiklmnpqrstvwy amazonaws anarci barcode barcodes barcoding bcn \
+        "abybank actgtgcgagag actgtgcgagagc adefghiklmnpqrstvwy amazonaws anarci barcode \
+        barcodes barcoding bcn \
         bioinf cdiff cellranger chmod clen clono clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
@@ -327,7 +328,9 @@ fn test_for_broken_links_and_spellcheck() {
         plasmablast preinstalled prepends pwm pwms redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
-        subclonotypes svg tctgtgcgagat testlist thresholding timepoint tracebacks trb tsv \
+        subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
+        thresholding timepoint \
+        tracebacks trb tsv \
         tttctgtgcgaga \
         tttctgtgcgagat \
         twosie ubuntu udiff umi umis underperforming unicode untarring \

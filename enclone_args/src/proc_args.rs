@@ -176,7 +176,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.silent = true;
     ctl.gen_opt.peer_group_dist = "MFL".to_string();
     ctl.gen_opt.color_by_rarity_pc = -1.0;
-    ctl.gen_opt.jscore_match = 26;
+    ctl.gen_opt.jscore_match = 20;
     ctl.gen_opt.jscore_mismatch = -20;
     ctl.gen_opt.jscore_bits_multiplier = 2.2;
 
