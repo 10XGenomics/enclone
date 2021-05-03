@@ -9,7 +9,7 @@
 // d_inconsistent_n = 53373
 // d_inconsistent_% = 15.84
 //
-// Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back 
+// Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back
 // to that.
 
 use crate::defs::*;
