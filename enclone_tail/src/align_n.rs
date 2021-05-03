@@ -127,7 +127,7 @@ fn print_vis_align(
     }
 
     // Add amino acid line.
-        
+
     let mut aaline = Vec::<u8>::new();
     if jun {
         let mut lines = Vec::<String>::new();
