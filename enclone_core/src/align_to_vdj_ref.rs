@@ -7,9 +7,10 @@
 // enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
 //
 // d_inconsistent_n = 53373
-// d_inconsistent_% = 15.94
+// d_inconsistent_% = 15.84
 //
-// Value was 14.77 before adding align_fix but it's not clear how to get back to that.
+// Value was 14.77 before adding align_fix (and other changes) but it's not clear how to get back 
+// to that.
 
 use crate::defs::*;
 use bio_edit::alignment::pairwise::*;
@@ -263,7 +264,8 @@ pub fn align_to_vdj_ref(
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
                 }
-                if rpos + j - i == vref.len() - 1
+                if rpos == vref.len() - 1
+                    || rpos + j - i == vref.len() - 1
                     || rpos == vref.len() + dref.len() - 1
                     || rpos == vref.len() + dref.len() + d2ref.len() - 1
                 {
