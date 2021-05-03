@@ -91,6 +91,10 @@ And here is the same example, but showing just the junction region:
 <pre><code>enclone BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
 #include pages/auto/jun_align_example.html
 
+<p>For <code>JALIGN</code>, we show a line of amino acids that represent the translation of
+bases in the exact subclonotype sequence.  The amino acid lies over the middle base of the
+corresponding codon.</p>
+
 <p>There are also options <code>ALIGN_2ND&ltn></code> 
 and <code>JALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
 
