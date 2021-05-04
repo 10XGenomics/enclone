@@ -470,6 +470,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("NPLAIN", &mut ctl.pretty),
         ("NWHITEF", &mut ctl.gen_opt.nwhitef),
         ("NWARN", &mut ctl.gen_opt.nwarn),
+        ("OLD_RESCORE", &mut ctl.gen_opt.old_rescore),
         ("PCELL", &mut ctl.parseable_opt.pbarcode),
         ("PG_READABLE", &mut ctl.gen_opt.peer_group_readable),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
