@@ -24,6 +24,14 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
+// Unaccounted time test.  This is separated out so that we can avoid running it in parallel with
+// other tests, to reduce the sporadic failure rate.  Also this is off in GitHub Actions.
+
+pub const UNAC_TESTS: [&str; 1] = [
+    // 1. enforce no unaccounted time
+    r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
+];
+
 // Tests that are affected by the D region alignment algorithm.  All such tests should go here.
 
 pub const DTESTS: [&str; 15] = [
@@ -539,8 +547,8 @@ pub const TESTS: [&str; 234] = [
          SCAN="(IGHV1-69D_g_μ)>=1800,(IGHV3-64D_g_μ)>=100,t-10*c>=5.0" NOPRINT H5 SCAN_EXACT"###,
     // 201. test SOURCE
     r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3"###,
-    // 202. enforce no unaccounted time
-    r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
+    // 202. DUPLICATE TO REPLACE
+    r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3 EXPECT_OK"###,
     // 203. test plotting with using the BC option to set color
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv PLOT=stdout NOPRINT"###,
     //
