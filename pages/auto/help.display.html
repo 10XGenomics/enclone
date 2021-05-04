@@ -48,37 +48,44 @@ gtag('config', 'UA-58278925-3');
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">other options that control clonotype display</span>
 
-┌───────────────┬─────────────────────────────────────────────────────────────────────────────────┐
-│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,               │
-│               │  for each such line, displaying the barcode name, the number of UMIs assigned,  │
-│               │  and the gene expression UMI count, if applicable, under gex_med                │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a                │
-│               │  single line near the top of the printout for a given clonotype                 │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near       │
-│               │  the top of the printout for a given clonotype                                  │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,            │
-│               │  near the top of the printout for a given clonotype                             │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│SUM            │  print sum row for each clonotype (sum is across cells)                         │
-│MEAN           │  print mean row for each clonotype (mean is across cells)                       │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,    │
-│               │  show a C if the column lies within a complementarity-determining region,       │
-│               │  and F if it lies in a framework region, and an L if it lies in the leader      │
-│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,    │
-│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,       │
-│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                        │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│CONX           │  add an additional row to each clonotype table, showing the amino acid consensus│
-│               │  across the clonotype, with X for each variant residue                          │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│CONP           │  add an additional row to each clonotype table, showing the amino acid consensus│
-│               │  across the clonotype, with a property symbol whenever two different amino acids│
-│               │  are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                                         │
-└───────────────┴─────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,             │
+│               │  for each such line, displaying the barcode name, the number of UMIs assigned,│
+│               │  and the gene expression UMI count, if applicable, under gex_med              │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a              │
+│               │  single line near the top of the printout for a given clonotype               │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near     │
+│               │  the top of the printout for a given clonotype                                │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,          │
+│               │  near the top of the printout for a given clonotype                           │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SUM            │  print sum row for each clonotype (sum is across cells)                       │
+│MEAN           │  print mean row for each clonotype (mean is across cells)                     │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a C if the column lies within a complementarity-determining region,     │
+│               │  and F if it lies in a framework region, and an L if it lies in the leader    │
+│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,     │
+│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                      │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│CONX           │  add an additional row to each clonotype table, showing the amino acid        │
+│               │  consensus across the clonotype, with X for each variant residue              │
+│CONP           │  add an additional row to each clonotype table, showing the amino acid        │
+│               │  consensus across the clonotype, with a property symbol whenever two different│
+│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                           │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ALIGN&lt;n>       │  exhibit a visual alignment for chain n (for each exact subclonotype) to the  │
+│               │  donor V(D)J reference, picking the best D for heavy chains / TRB             │
+│               │  Multiple values of n may be specified using multiple arguments.              │
+│ALIGN_2ND&lt;n>   │  same as ALIGN&lt;n> but use second best D segment                               │
+│JALIGN&lt;n>      │  same as ALIGN&lt;n> but only show the region from 15 bases before the end of the│
+│               │  V segment to 35 bases into the J segment                                     │
+│JALIGN_2ND&lt;n>  │  same as JALIGN&lt;n> but use second best D segment                              │
+└───────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">options that control clonotype grouping</span>
 
@@ -88,15 +95,26 @@ to the enclone command line.  We intend to add useful versions of grouping to a 
 enclone, that are reflective of functional (antigen-binding) differences.  For now there are the
 following "toy" options:
 
-┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
-│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
-│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names,           │
-│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences              │
-│                         │  (after correction for indels) and identical length CDR3 sequences, │
-│                         │  but ignores foursies and moresies                                  │
-├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)       │
-└─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB  │
+│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names              │
+│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences                │
+│                         │  (after correction for indels) and identical length CDR3 sequences,   │
+│                         │  but ignores foursies and moresies                                    │
+│GROUP_VJ_REFNAME_HEAVY   │  group by sharing identical IGH or TRB V and J reference gene names   │
+│GROUP_VDJ_REFNAME_HEAVY  │  group by sharing identical IGH or TRB V, D and J reference gene names│
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)         │
+└─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">options that control global variables</span>
+
+enclone has some global variables that can be computed, with values printed after everything else,
+and not otherwise used (currently).  These may be specified using <span style="font-weight:bold;">GVARS=var1,...,varn</span>.  The global
+variables that are supported currently are:
+d_inconsistent_%
+d_inconsistent_n
+Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for more information.
 
 </span></pre>
 </body>

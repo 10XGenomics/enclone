@@ -690,3 +690,16 @@ pub fn check_lvars(ctl: &EncloneControl, gex_info: &GexInfo) {
     }
     ctl.perf_stats(&t, "checking gene");
 }
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Check gvars args.
+
+pub fn check_gvars(ctl: &EncloneControl) {
+    for x in ctl.gen_opt.gvars.iter() {
+        if !GVARS_ALLOWED.contains(&x.as_str()) {
+            eprintln!("\nUnknown global variable {}.\n", x);
+            std::process::exit(1);
+        }
+    }
+}

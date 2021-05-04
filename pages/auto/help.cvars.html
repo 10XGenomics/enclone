@@ -143,7 +143,20 @@ where each xi is one of:
 │const_id         │  id of constant region (or null, if not known)                               │
 │                 │  (these are the numbers after ">" in the VDJ reference file)                 │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│d1_name          │  name of optimal D gene, or none                                             │
+│d2_name          │  name of second best D gene, or none                                         │
+│d1_score         │  score for optimal D gene                                                    │
+│d2_score         │  score for second best D gene                                                │
+│d_delta          │  score difference between first and second best D gene                       │
+│d_Δ              │  same                                                                        │
+│                 │  These are recomputed from scratch and ignore the given assignment.          │
+│                 │  Note that in many cases D gene assignments are essentially random, as       │
+│                 │  it is often not possible to know the true D gene assignment.                │
+│                 │  If the value is "null" it means that having no D gene at all scores better  │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
+│                 │  Please note that D gene assignments are frequently "random" -- it is not    │
+│                 │  possible to know the actual D gene that was assigned.                       │
 │clen             │  length of observed constant region (usually truncated at primer start)      │
 │ulen             │  length of observed 5'-UTR sequence;                                         │
 │                 │  note however that what report is just the start of the V segment            │

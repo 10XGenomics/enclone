@@ -4,13 +4,15 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-align_tools = "0.1.2"
+align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
 assert_cmd = "1.0.3"
 # bumping attohttpc to 0.16 would cause a ~1.5% increase in executable size
 attohttpc = { version = "0.12", default-features = false, features = ["compress", "tls-rustls"] }
 bio = ">=0.33"
+bio-types = ">=0.11.0"
+bit-set = "0.5"
 byteorder = "1.4.2"
 bytes = ">=0.5.5, <2"
 chrono = "0.4.19"
@@ -51,6 +53,7 @@ rayon = "1.4"
 regex = { version = "1.3.1", default-features = false, features = ["std", "perf"] }
 serde = "1.0.90"
 serde_derive = "1.0"
+serde_json = "*"
 sha2 = "0.9.3"
 stats_utils = "0.1"
 stirling_numbers = "0.1.3"
@@ -62,5 +65,5 @@ tilde-expand = "0.1.1"
 tokio = { version = "1.0.0", features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", features = [] }
 tokio-util = { version = "0.6.3", features = ["net"] }
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }
 vector_utils = "0.1.3"

@@ -121,6 +121,12 @@ pub fn proc_args_post(
     if ctl.clono_group_opt.vj_refname {
         group_styles += 1;
     }
+    if ctl.clono_group_opt.vj_refname_heavy {
+        group_styles += 1;
+    }
+    if ctl.clono_group_opt.vdj_refname_heavy {
+        group_styles += 1;
+    }
     if ctl.clono_group_opt.vj_refname_strong {
         group_styles += 1;
     }
@@ -206,6 +212,10 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.gen_opt.align_jun_align_consistency && ctl.pretty {
+        eprintln!("\nIf you use ALIGN_JALIGN_CONSISTENCY, you should also use PLAIN.\n");
+        std::process::exit(1);
+    }
     if ctl.gen_opt.gene_scan_exact && ctl.gen_opt.gene_scan_test.is_none() {
         eprintln!("\nIt doesn't make sense to specify SCAN_EXIT unless SCAN is also specified.\n");
         std::process::exit(1);
@@ -445,6 +455,13 @@ pub fn proc_args_post(
     }
     ctl.perf_stats(&t, "after main args loop 2");
     proc_args_tail(&mut ctl, &args);
+
+    // Sort chains_to_align.
+
+    unique_sort(&mut ctl.gen_opt.chains_to_align);
+    unique_sort(&mut ctl.gen_opt.chains_to_align2);
+    unique_sort(&mut ctl.gen_opt.chains_to_jun_align);
+    unique_sort(&mut ctl.gen_opt.chains_to_jun_align2);
 
     // Check for invalid variables in linear conditions.
 

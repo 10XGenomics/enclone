@@ -87,7 +87,7 @@ pages that are directly accessible from the enclone command line.  These pages c
 │enclone help lvars       │  lead column options (long)                                         │
 │enclone help cvars       │  per chain column options (long)                                    │
 │enclone help amino       │  per chain column options for amino acids                           │
-│enclone help display     │  other clonotype display options                                    │
+│enclone help display     │  other clonotype display options (long)                             │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │enclone help indels      │  insertion and deletion handling                                    │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
@@ -827,6 +827,7 @@ scanning for feature enrichment.
 │                     │  For both SEG and SEGN, multiple instances are allowed, and their       │
 │                     │  effects are cumulative.                                                │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MAX_EXACTS=n         │  only show clonotypes having at most n exact subclonotypes              │
 │MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes             │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │VJ=seq               │  only show clonotypes using exactly the given V..J sequence             │
@@ -853,6 +854,10 @@ scanning for feature enrichment.
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │MAIT                 │  only show clonotypes for which some exact subclonotype is annotated as │
 │                     │  having some MAIT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│D_INCONSISTENT       │  only show clonotypes having an inconsistent assignment of D genes      │
+│D_NONE               │  only show clonotypes having a null D gene assignment                   │
+│D_SECOND             │  only show VDDJ clonotypes                                              │
 └─────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 * Examples of how to specify CDR3:
@@ -1425,7 +1430,20 @@ where each xi is one of:
 │const_id         │  id of constant region (or null, if not known)                               │
 │                 │  (these are the numbers after ">" in the VDJ reference file)                 │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│d1_name          │  name of optimal D gene, or none                                             │
+│d2_name          │  name of second best D gene, or none                                         │
+│d1_score         │  score for optimal D gene                                                    │
+│d2_score         │  score for second best D gene                                                │
+│d_delta          │  score difference between first and second best D gene                       │
+│d_Δ              │  same                                                                        │
+│                 │  These are recomputed from scratch and ignore the given assignment.          │
+│                 │  Note that in many cases D gene assignments are essentially random, as       │
+│                 │  it is often not possible to know the true D gene assignment.                │
+│                 │  If the value is "null" it means that having no D gene at all scores better  │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │vjlen            │  number of bases from the start of the V region to the end of the J region   │
+│                 │  Please note that D gene assignments are frequently "random" -- it is not    │
+│                 │  possible to know the actual D gene that was assigned.                       │
 │clen             │  length of observed constant region (usually truncated at primer start)      │
 │ulen             │  length of observed 5'-UTR sequence;                                         │
 │                 │  note however that what report is just the start of the V segment            │
@@ -1491,37 +1509,44 @@ enclone help display
 
 <span style="font-weight:bold;">other options that control clonotype display</span>
 
-┌───────────────┬─────────────────────────────────────────────────────────────────────────────────┐
-│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,               │
-│               │  for each such line, displaying the barcode name, the number of UMIs assigned,  │
-│               │  and the gene expression UMI count, if applicable, under gex_med                │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a                │
-│               │  single line near the top of the printout for a given clonotype                 │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near       │
-│               │  the top of the printout for a given clonotype                                  │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,            │
-│               │  near the top of the printout for a given clonotype                             │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│SUM            │  print sum row for each clonotype (sum is across cells)                         │
-│MEAN           │  print mean row for each clonotype (mean is across cells)                       │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,    │
-│               │  show a C if the column lies within a complementarity-determining region,       │
-│               │  and F if it lies in a framework region, and an L if it lies in the leader      │
-│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,    │
-│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,       │
-│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                        │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│CONX           │  add an additional row to each clonotype table, showing the amino acid consensus│
-│               │  across the clonotype, with X for each variant residue                          │
-├───────────────┼─────────────────────────────────────────────────────────────────────────────────┤
-│CONP           │  add an additional row to each clonotype table, showing the amino acid consensus│
-│               │  across the clonotype, with a property symbol whenever two different amino acids│
-│               │  are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                                         │
-└───────────────┴─────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│PER_CELL       │  expand out each exact clonotype line, showing one line per cell,             │
+│               │  for each such line, displaying the barcode name, the number of UMIs assigned,│
+│               │  and the gene expression UMI count, if applicable, under gex_med              │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│BARCODES       │  print list of all barcodes of the cells in each clonotype, in a              │
+│               │  single line near the top of the printout for a given clonotype               │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SEQC           │  print V..J sequence for each chain in the first exact subclonotype, near     │
+│               │  the top of the printout for a given clonotype                                │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│FULL_SEQC      │  print full sequence for each chain in the first exact subclonotype,          │
+│               │  near the top of the printout for a given clonotype                           │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│SUM            │  print sum row for each clonotype (sum is across cells)                       │
+│MEAN           │  print mean row for each clonotype (mean is across cells)                     │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│DIFF_STYLE=C1  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a C if the column lies within a complementarity-determining region,     │
+│               │  and F if it lies in a framework region, and an L if it lies in the leader    │
+│DIFF_STYLE=C2  │  instead of showing an x for each amino acid column containing a difference,  │
+│               │  show a <span style="color:#c23621;font-weight:bold;">◼</span> if the column lies within a complementarity-determining region,     │
+│               │  and otherwise show a <span style="font-weight:bold;">▮</span>.                                                      │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│CONX           │  add an additional row to each clonotype table, showing the amino acid        │
+│               │  consensus across the clonotype, with X for each variant residue              │
+│CONP           │  add an additional row to each clonotype table, showing the amino acid        │
+│               │  consensus across the clonotype, with a property symbol whenever two different│
+│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                           │
+├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│ALIGN&lt;n>       │  exhibit a visual alignment for chain n (for each exact subclonotype) to the  │
+│               │  donor V(D)J reference, picking the best D for heavy chains / TRB             │
+│               │  Multiple values of n may be specified using multiple arguments.              │
+│ALIGN_2ND&lt;n>   │  same as ALIGN&lt;n> but use second best D segment                               │
+│JALIGN&lt;n>      │  same as ALIGN&lt;n> but only show the region from 15 bases before the end of the│
+│               │  V segment to 35 bases into the J segment                                     │
+│JALIGN_2ND&lt;n>  │  same as JALIGN&lt;n> but use second best D segment                              │
+└───────────────┴───────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">options that control clonotype grouping</span>
 
@@ -1531,15 +1556,26 @@ to the enclone command line.  We intend to add useful versions of grouping to a 
 enclone, that are reflective of functional (antigen-binding) differences.  For now there are the
 following "toy" options:
 
-┌─────────────────────────┬─────────────────────────────────────────────────────────────────────┐
-│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB│
-│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names,           │
-│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences              │
-│                         │  (after correction for indels) and identical length CDR3 sequences, │
-│                         │  but ignores foursies and moresies                                  │
-├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
-│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)       │
-└─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬───────────────────────────────────────────────────────────────────────┐
+│GROUP_HEAVY_CDR3         │  group by perfect identity of CDR3 amino acid sequence of IGH or TRB  │
+│GROUP_VJ_REFNAME         │  group by sharing identical V and J reference gene names              │
+│GROUP_VJ_REFNAME_STRONG  │  same but also require identical length V..J sequences                │
+│                         │  (after correction for indels) and identical length CDR3 sequences,   │
+│                         │  but ignores foursies and moresies                                    │
+│GROUP_VJ_REFNAME_HEAVY   │  group by sharing identical IGH or TRB V and J reference gene names   │
+│GROUP_VDJ_REFNAME_HEAVY  │  group by sharing identical IGH or TRB V, D and J reference gene names│
+├─────────────────────────┼───────────────────────────────────────────────────────────────────────┤
+│MIN_GROUP                │  minimum number of clonotypes in group to print (default = 1)         │
+└─────────────────────────┴───────────────────────────────────────────────────────────────────────┘
+
+<span style="font-weight:bold;">options that control global variables</span>
+
+enclone has some global variables that can be computed, with values printed after everything else,
+and not otherwise used (currently).  These may be specified using <span style="font-weight:bold;">GVARS=var1,...,varn</span>.  The global
+variables that are supported currently are:
+d_inconsistent_%
+d_inconsistent_n
+Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for more information.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help indels

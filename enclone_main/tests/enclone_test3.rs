@@ -1,13 +1,13 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-#![allow(dead_code)]
+#![allow(unused_imports, dead_code)]
 
 use ansi_escape::*;
 use enclone::html::*;
-use enclone::misc3::parse_bsv;
-use enclone::run_test::*;
 use enclone_core::defs::*;
+use enclone_core::run_test::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
 use failure::Error;
@@ -596,7 +596,7 @@ fn test_annotated_example() {
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
     std::fs::create_dir_all("testx/outputs/woof").unwrap();
-    let test = r###"BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+    let test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -629,6 +629,8 @@ fn test_subset_json() {
     let o2 = new.stdout;
     if o1 != o2 {
         eprintln!("\nSubset json test failed: outputs are unequal.\n");
+        eprintln!("output 1:\n{}\n", strme(&o1));
+        eprintln!("output 2:\n{}\n", strme(&o2));
         std::process::exit(1);
     }
     let _ = remove_dir_all("testx/outputs/woof");

@@ -42,7 +42,7 @@ fn get_svg_height(svg: &String) -> f64 {
 
 // Given a collection of circles having specified colors, create an svg string that shows the
 // circles on a canvas of fixed size.  The circles are moved and resized accordingly.
-// Also shades smoothed polygons.
+// Also shades smoothed polygons.  Also add tooltip notes if requested.
 
 fn circles_to_svg(
     center: &Vec<(f64, f64)>,
@@ -51,9 +51,12 @@ fn circles_to_svg(
     shades: &Vec<Polygon>,
     shade_colors: &Vec<String>,
     shade_enclosures: &Vec<Polygon>,
+    group_index2: &Vec<usize>,
+    clonotype_index2: &Vec<usize>,
     width: usize,
     height: usize,
     boundary: usize,
+    tooltip: bool,
 ) -> String {
     let n = center.len();
     assert!(!center.is_empty());
@@ -125,9 +128,17 @@ fn circles_to_svg(
         out += "/>\n";
     }
     for i in 0..center.len() {
+        let mut tooltipx = String::new();
+        if tooltip {
+            tooltipx = format!(
+                " data-tooltip='{{\"group_id\":\"{}\",\"clonotype_id\":\"{}\"}}'",
+                group_index2[i] + 1,
+                clonotype_index2[i] + 1,
+            );
+        }
         out += &format!(
-            "<circle cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
-            center[i].0, center[i].1, radius[i], color[i]
+            "<circle{} cx=\"{:.2}\" cy=\"{:.2}\" r=\"{:.2}\" fill=\"{}\" />\n",
+            tooltipx, center[i].0, center[i].1, radius[i], color[i]
         );
     }
     out += "</svg>\n";
@@ -163,6 +174,7 @@ pub fn plot_clonotypes(
     refdata: &RefData,
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
+    groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
 ) {
     let t = Instant::now();
@@ -199,7 +211,7 @@ pub fn plot_clonotypes(
         );
         std::process::exit(1);
     }
-    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>)>::new();
+    let mut clusters = Vec::<(Vec<String>, Vec<(f64, f64)>, usize)>::new();
     let mut radii = Vec::<f64>::new();
     const SEP: f64 = 1.0; // separation between clusters
     let mut origins = Vec::<String>::new();
@@ -334,7 +346,7 @@ pub fn plot_clonotypes(
                 radius.max(1.0 + (coords[j].0 * coords[j].0 + coords[j].1 * coords[j].1).sqrt());
         }
         radius += SEP;
-        clusters.push((colors, coords));
+        clusters.push((colors, coords, i));
         radii.push(radius);
     }
 
@@ -647,11 +659,24 @@ pub fn plot_clonotypes(
     let mut center = Vec::<(f64, f64)>::new();
     let mut radius = Vec::<f64>::new();
     let mut color = Vec::<String>::new();
+    let mut group_index = Vec::<usize>::new();
+    let mut clonotype_index = Vec::<usize>::new();
+    for i in 0..groups.len() {
+        for j in 0..groups[i].len() {
+            group_index.push(i);
+            clonotype_index.push(j);
+        }
+    }
+    let mut group_index2 = Vec::<usize>::new();
+    let mut clonotype_index2 = Vec::<usize>::new();
     for i in 0..clusters.len() {
         for j in 0..clusters[i].0.len() {
             color.push(clusters[i].0[j].clone());
             center.push((clusters[i].1[j].0, clusters[i].1[j].1));
             radius.push(1.0);
+            let ind = clusters[i].2;
+            group_index2.push(group_index[ind]);
+            clonotype_index2.push(clonotype_index[ind]);
         }
     }
     const WIDTH: usize = 400;
@@ -683,9 +708,12 @@ pub fn plot_clonotypes(
         &shades,
         &shade_colors,
         &shade_enclosures,
+        &group_index2,
+        &clonotype_index2,
         WIDTH,
         HEIGHT,
         BOUNDARY,
+        ctl.plot_opt.tooltip,
     );
 
     // Calculate the actual height and width of the svg.

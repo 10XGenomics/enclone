@@ -5,11 +5,15 @@ use crate::linear_condition::*;
 use debruijn::dna_string::*;
 use evalexpr::*;
 use hdf5::Dataset;
+use io_utils::*;
 use mirror_sparse_matrix::*;
 use perf_stats::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
+use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::sync::atomic::AtomicBool;
 use std::time::Instant;
 use string_utils::*;
@@ -253,6 +257,17 @@ pub struct GeneralOpt {
     pub config: HashMap<String, String>,
     pub top_genes: bool,
     pub toy_com: bool,
+    pub chains_to_align: Vec<usize>,
+    pub chains_to_align2: Vec<usize>,
+    pub chains_to_jun_align: Vec<usize>,
+    pub chains_to_jun_align2: Vec<usize>,
+    pub align_jun_align_consistency: bool,
+    pub gvars: Vec<String>, // per run variables
+    pub jscore_match: i32,
+    pub jscore_mismatch: i32,
+    pub jscore_bits_multiplier: f64,
+    pub jscore_gap_open: i32,
+    pub jscore_gap_extend: i32,
 }
 
 // Some plot options.
@@ -274,6 +289,7 @@ pub struct PlotOpt {
     pub plot_quad: bool,
     pub use_legend: bool,
     pub legend: Vec<(String, String)>,
+    pub tooltip: bool,
 }
 
 // Allele-finding algorithmic options.
@@ -339,21 +355,22 @@ pub struct ClonoFiltOpt {
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
     pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
-    pub vj: Vec<u8>,         // only show clonotypes having exactly this full length V..J sequence
-    pub vdup: bool,          // only show clonotypes having a same V segment in two chains
-    pub have_onesie: bool,   // only show clonotypes including a onesie exact subclonotype
-    pub cdiff: bool,         // only show clonotypes having a constant region difference
-    pub del: bool,           // only show clonotypes exhibiting a deletion
-    pub qual_filter: bool,   // filter out exact subclonotypes having a weak base
-    pub weak_chains: bool,   // filter weak chains from clonotypes
-    pub weak_onesies: bool,  // filter weak onesies
+    pub max_exacts: usize,
+    pub vj: Vec<u8>, // only show clonotypes having exactly this full length V..J sequence
+    pub vdup: bool,  // only show clonotypes having a same V segment in two chains
+    pub have_onesie: bool, // only show clonotypes including a onesie exact subclonotype
+    pub cdiff: bool, // only show clonotypes having a constant region difference
+    pub del: bool,   // only show clonotypes exhibiting a deletion
+    pub qual_filter: bool, // filter out exact subclonotypes having a weak base
+    pub weak_chains: bool, // filter weak chains from clonotypes
+    pub weak_onesies: bool, // filter weak onesies
     pub weak_foursies: bool, // filter weak foursies
-    pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
-    pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
+    pub bc_dup: bool, // filter duplicated barcodes within an exact subclonotype
+    pub donor: bool, // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub bound_type: Vec<String>, // types of those bounds
     pub barcode: Vec<String>, // requires one of these barcodes
-    pub umi_filt: bool,      // umi count filter
+    pub umi_filt: bool, // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
     pub non_cell_mark: bool,
     pub marked: bool,              // only print clonotypes having a mark
@@ -364,6 +381,9 @@ pub struct ClonoFiltOpt {
     pub inkt: bool,
     pub mait: bool,
     pub doublet: bool, // filter putative doublets
+    pub d_inconsistent: bool,
+    pub d_none: bool,
+    pub d_second: bool,
 }
 
 // Clonotype printing options.
@@ -393,6 +413,8 @@ pub struct ClonoGroupOpt {
     pub heavy_cdr3_aa: bool, // group by perfect identity of cdr3_aa IGH or TRB
     pub vj_refname: bool,    // group by having the same VJ reference names
     pub vj_refname_strong: bool, // group by having the same VJ reference names, but stronger
+    pub vj_refname_heavy: bool, // group by having the same heavy chain VJ reference names
+    pub vdj_refname_heavy: bool, // group by having the same heavy chain VDJ reference names
     pub min_group: usize,    // minimum number of clonotypes in group to print
     pub asymmetric: bool,    // asymmetric grouping turned on
     pub asymmetric_center: String, // definition of center for asymmetric grouping
@@ -784,8 +806,8 @@ pub fn justification(x: &str) -> u8 {
         || x.ends_with("_barcodes")
         || (x.starts_with("cdr") && !x.ends_with("len"))
         || (x.starts_with("fwr") && !x.ends_with("len"))
-        || x == "opt_d"
-        || x == "opt_d2"
+        || x.starts_with("d1_name")
+        || x.starts_with("d2_name")
     {
         return b'l';
     } else {
@@ -941,4 +963,22 @@ pub struct PotentialJoin {
     pub err: bool,
     pub p1: f64,
     pub mult: f64,
+}
+
+pub fn get_config(config: &mut HashMap<String, String>) -> bool {
+    let mut config_file = String::new();
+    for (key, value) in env::vars() {
+        if key == "ENCLONE_CONFIG" {
+            config_file = value.to_string();
+        }
+    }
+    if config_file.len() > 0 && path_exists(&config_file) {
+        let f = open_for_read![&config_file];
+        for line in f.lines() {
+            let s = line.unwrap();
+            config.insert(s.before("=").to_string(), s.after("=").to_string());
+        }
+        return true;
+    }
+    false
 }

@@ -9,9 +9,9 @@
 
 use ansi_escape::*;
 use enclone::html::*;
-use enclone::misc3::parse_bsv;
-use enclone::run_test::*;
+use enclone_core::run_test::*;
 use enclone_core::testlist::*;
+use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
 use failure::Error;

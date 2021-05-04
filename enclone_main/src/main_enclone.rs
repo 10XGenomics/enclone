@@ -3,6 +3,7 @@
 // See README for documentation.
 
 use self::refx::*;
+use crate::blacklist::*;
 use crate::determine_ref::*;
 use crate::disintegrate::*;
 use crate::doublets::*;
@@ -19,22 +20,24 @@ use crate::subset::*;
 use crate::vars::*;
 use debruijn::dna_string::DnaString;
 use enclone::allele::*;
-use enclone::explore::*;
 use enclone::graph_filter::*;
 use enclone::info::*;
 use enclone::innate::*;
 use enclone::join::*;
-use enclone::load_gex::*;
 use enclone::misc1::*;
 use enclone::misc2::*;
 use enclone::misc3::*;
-use enclone::proc_args_check::*;
-use enclone::read_json::*;
 use enclone::secret::*;
+use enclone_args::explore::*;
+use enclone_args::load_gex::*;
+use enclone_args::proc_args_check::*;
+use enclone_args::read_json::*;
 use enclone_com::enclone_server::*;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
 use enclone_print::loupe::*;
 use enclone_print::print_clonotypes::*;
+use enclone_tail::grouper::*;
 use enclone_tail::tail::tail_code;
 use equiv::EquivRel;
 use io_utils::*;
@@ -107,39 +110,7 @@ pub async fn main_enclone(args: &Vec<String>) {
         println!("the evil eye is on");
     }
     if ctl.gen_opt.profile {
-        let blacklist = [
-            "alloc",
-            "build",
-            "core",
-            "core-arch",
-            "crossbeam-deque",
-            "crossbeam-epoch",
-            "debruijn",
-            "float-ord",
-            "hashbrown",
-            "hdf5-rust",
-            "hdf5-types",
-            "lock_api",
-            "lz4",
-            "ndarray",
-            "parking_lot",
-            "parking_lot_core",
-            "rayon",
-            "rayon-core",
-            "regex",
-            "regex-syntax",
-            "rust-bio",
-            "serde",
-            "serde_json",
-            "std",
-            "superslice",
-            "unknown",
-        ];
-        let mut b = Vec::<String>::new();
-        for x in blacklist.iter() {
-            b.push(x.to_string());
-        }
-        start_profiling(&b);
+        start_profiling(&profiling_blacklist());
     }
     let (mut print_cpu, mut print_cpu_info) = (false, false);
     let (mut comp, mut comp2) = (false, false);
@@ -219,6 +190,7 @@ pub async fn main_enclone(args: &Vec<String>) {
     let gex_info = get_gex_info(&mut ctl);
     check_lvars(&ctl, &gex_info);
     let twoof = Instant::now();
+    check_gvars(&ctl);
     check_pcols(&ctl, &gex_info, &ctl.parseable_opt.pcols);
     check_pcols(&ctl, &gex_info, &ctl.gen_opt.tree);
     if ctl.plot_opt.plot_xy_filename.len() > 0 {
@@ -628,9 +600,11 @@ pub async fn main_enclone(args: &Vec<String>) {
     // Filter using constraints imposed by FCELL.
 
     filter_by_fcell(&ctl, &mut orbits, &info, &mut exact_clonotypes);
+    ctl.perf_stats(&tumi, "umi filtering and such");
 
     // Delete exact subclonotypes that appear to represent doublets.
 
+    let tdoublet = Instant::now();
     delete_doublets(
         &mut orbits,
         is_bcr,
@@ -641,9 +615,11 @@ pub async fn main_enclone(args: &Vec<String>) {
         &info,
         &raw_joins,
     );
+    ctl.perf_stats(&tdoublet, "doublet filtering");
 
     // Merge onesies where totally unambiguous, then check for disjoint orbits.
 
+    let tmerge = Instant::now();
     merge_onesies(
         &mut orbits,
         &ctl,
@@ -652,6 +628,8 @@ pub async fn main_enclone(args: &Vec<String>) {
         &eq,
         &disintegrated,
     );
+    ctl.perf_stats(&tmerge, "merging onesies");
+    let tsplit = Instant::now();
     split_orbits(
         &mut orbits,
         is_bcr,
@@ -662,9 +640,11 @@ pub async fn main_enclone(args: &Vec<String>) {
         &info,
         &raw_joins,
     );
+    ctl.perf_stats(&tsplit, "splitting orbits");
 
     // Mark VDJ noncells.
 
+    let tmark = Instant::now();
     if ctl.clono_filt_opt.non_cell_mark {
         for i in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[i];
@@ -676,8 +656,7 @@ pub async fn main_enclone(args: &Vec<String>) {
             }
         }
     }
-
-    ctl.perf_stats(&tumi, "umi filtering and such");
+    ctl.perf_stats(&tmark, "marking vdj noncells");
 
     // Load the GEX and FB data.
 
@@ -803,6 +782,82 @@ pub async fn main_enclone(args: &Vec<String>) {
     let exacts = exacts;
     let pics = pics;
 
+    // Process the SUBSET_JSON option.
+
+    subset_json(&ctl, &exact_clonotypes, &exacts, &ann);
+    ctl.perf_stats(&torb, "making orbits");
+
+    // Assign a D segment to each "left" column in a clonotype (if we need this information).
+    // The assignments are to exact subclonotypes, and might differ across a clonotype, even
+    // though the true values have to be the same.  This is also true for V and J segments,
+    // although they are less likely to vary.
+
+    let t = Instant::now();
+    let mut opt_d_val = Vec::<(usize, Vec<Vec<Vec<usize>>>)>::new();
+    let mut need_opt_d_val = ctl.clono_group_opt.vdj_refname_heavy;
+    for x in ctl.gen_opt.gvars.iter() {
+        if x.starts_with("d_inconsistent_") {
+            need_opt_d_val = true;
+        }
+    }
+    if need_opt_d_val {
+        for i in 0..exacts.len() {
+            opt_d_val.push((i, Vec::new()));
+        }
+        opt_d_val.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            res.1 = vec![Vec::<Vec<usize>>::new(); rsi[i].mat.len()];
+            for col in 0..rsi[i].mat.len() {
+                let mut dvotes = Vec::<Vec<usize>>::new();
+                for u in 0..exacts[i].len() {
+                    let ex = &exact_clonotypes[exacts[i][u]];
+                    let m = rsi[i].mat[col][u];
+                    if m.is_some() {
+                        let m = m.unwrap();
+                        if ex.share[m].left {
+                            let mut scores = Vec::<f64>::new();
+                            let mut ds = Vec::<Vec<usize>>::new();
+                            opt_d(
+                                &ex,
+                                col,
+                                u,
+                                &rsi[i],
+                                &refdata,
+                                &drefs,
+                                &mut scores,
+                                &mut ds,
+                                &ctl,
+                            );
+                            let mut opt = Vec::new();
+                            if ds.len() > 0 {
+                                opt = ds[0].clone();
+                            }
+                            dvotes.push(opt);
+                        }
+                    } else {
+                        dvotes.push(Vec::new());
+                    }
+                }
+                res.1[col] = dvotes;
+            }
+        });
+    }
+    ctl.perf_stats(&t, "computing opt_d");
+
+    // Group clonotypes.
+
+    let t = Instant::now();
+    let groups = grouper(
+        &refdata,
+        &exacts,
+        &in_center,
+        &exact_clonotypes,
+        &ctl,
+        &rsi,
+        &opt_d_val,
+    );
+    ctl.perf_stats(&t, "in grouper");
+
     // Process TOY_COM option.
 
     if ctl.gen_opt.toy_com {
@@ -811,16 +866,11 @@ pub async fn main_enclone(args: &Vec<String>) {
             enclone_client in a separate terminal window, before starting enclone, because\n\
             otherwise the system won't work.  The client should now show a prompt.\n"
         );
-        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &pics)
+        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
             .await
             .unwrap();
         std::process::exit(0);
     }
-
-    // Process the SUBSET_JSON option.
-
-    subset_json(&ctl, &exact_clonotypes, &exacts, &ann);
-    ctl.perf_stats(&torb, "making orbits");
 
     // Tail code.
 
@@ -829,7 +879,6 @@ pub async fn main_enclone(args: &Vec<String>) {
         &refdata,
         &pics,
         &exacts,
-        &in_center,
         &rsi,
         &exact_clonotypes,
         &ctl,
@@ -844,6 +893,8 @@ pub async fn main_enclone(args: &Vec<String>) {
         &d_readers,
         &ind_readers,
         &drefs,
+        &groups,
+        &opt_d_val,
     );
 
     // Report profiling.

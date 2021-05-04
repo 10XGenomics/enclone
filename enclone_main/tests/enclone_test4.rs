@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-#![allow(dead_code)]
+#![allow(unused_imports, dead_code)]
 
 use enclone_core::defs::*;
 use io_utils::*;
@@ -25,7 +25,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 77648128;
+    const ENCLONE_SIZE: usize = 80298672;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -249,10 +249,13 @@ fn test_dependency_structure() {
 
     let f = include_str!["../../enclone_core/Cargo.toml"];
     for line in f.lines() {
-        if !line.starts_with("name =") && line.starts_with("enclone") {
+        if !line.starts_with("name =")
+            && line.starts_with("enclone")
+            && !line.starts_with("enclone_proto")
+        {
             eprintln!(
-                "\nenclone_core should not depend on any other enclone crate.\n\
-                This restriction is there to reduce compile time.\n"
+                "\nenclone_core should not depend on any other enclone crate\n\
+                except enclone_proto.  This restriction is there to reduce compile time.\n"
             );
             std::process::exit(1);
         }

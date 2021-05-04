@@ -65,7 +65,10 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) {
             "enclone help amino",
             "per chain column options for amino acids",
         );
-        h.doc("enclone help display", "other clonotype display options");
+        h.doc(
+            "enclone help display",
+            "other clonotype display options (long)",
+        );
         h.ldoc("enclone help indels", "insertion and deletion handling");
         h.ldoc(
             "enclone help color",

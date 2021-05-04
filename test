@@ -8,6 +8,10 @@
 # by .cargo/config.
 #
 # If you want to run this over and over to look for sporadic failures, use ./testtest.
+#
+# To run just one test,
+# cargo t <testname>
+# should work.
 
 ##### GET START TIME #####
 
@@ -20,9 +24,16 @@ if ( `where post_process_test` == "" ) then
     exit 1
 endif
 
-##### RUN TEST GROUP 1 #####
+##### RUN UNACCOUNTED TIME TEST #####
+
+# This is separate because we think it will fail less if it is not running at the same time
+# as other tests. Also, we don't want it in GitHub Actions because it fails occasionally.
 
 echo
+cargo test --features cpu test_accounting -- --nocapture |& post_process_test
+
+##### RUN TEST GROUP 1 #####
+
 cargo t |& post_process_test
 
 if ( $status != 0 ) then
@@ -43,5 +54,26 @@ endif
 
 set end = `date +%s`
 set elapsed = `expr $end - $start`
-echo "used $elapsed seconds total"
+
+##### FAIL IF TOO MUCH TIME USED #####
+
+set expected = 128
+set fudge_num = 11
+set fudge_den = 10
+set expected_plus_times = `expr $expected \* $fudge_num`
+set elapsed_times = `expr $elapsed \* $fudge_den`
+if ( $elapsed_times > $expected_plus_times ) then
+    echo "\nThe expected time for the test is $expected seconds, with an allowed fudge factor of"
+    echo "10%, but the test actually took $elapsed seconds.  If something has been done to make"
+    echo "the test actually slower, this is a real failure.  However it may be that the failure"
+    echo "is due simply to server load, or bad luck, and in that case it is not a failure."
+    echo "FAILED"
+    echo
+    exit 1
+else
+    echo "\ntotal test time = $elapsed seconds versus expected time of $expected seconds"
+endif
+
+##### DONE #####
+
 echo

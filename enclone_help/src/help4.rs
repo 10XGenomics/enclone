@@ -828,6 +828,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
             "dna%",
             "nucleotide percent identity with donor reference, outside junction region",
         );
+
         h.ldoc("utr_name", "name of 5'-UTR region");
         h.doc("v_name", "name of V region");
         h.doc("d_name", "name of D region (or null)");
@@ -839,10 +840,25 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("j_id", "id of J region");
         h.doc("const_id", "id of constant region (or null, if not known)");
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
+        h.ldoc("d1_name", "name of optimal D gene, or none");
+        h.doc("d2_name", "name of second best D gene, or none");
+        h.doc("d1_score", "score for optimal D gene");
+        h.doc("d2_score", "score for second best D gene");
+        h.doc(
+            "d_delta",
+            "score difference between first and second best D gene",
+        );
+        h.doc("d_Δ", "same");
+        h.doc2("These are recomputed from scratch and ignore the given assignment.");
+        h.doc2("Note that in many cases D gene assignments are essentially random, as");
+        h.doc2("it is often not possible to know the true D gene assignment.");
+        h.doc2("If the value is \"null\" it means that having no D gene at all scores better");
         h.ldoc(
             "vjlen",
             "number of bases from the start of the V region to the end of the J region",
         );
+        h.doc2("Please note that D gene assignments are frequently \"random\" -- it is not");
+        h.doc2("possible to know the actual D gene that was assigned.");
         h.doc(
             "clen",
             "length of observed constant region (usually truncated at primer start)",

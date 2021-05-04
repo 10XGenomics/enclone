@@ -53,12 +53,14 @@ endif
 
 # make outputs
 
+echo "making outputs"
 mkdir -p enclone_main/testx/outputs
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 # run rustfmt
 
+echo "formatting"
 cargo fmt --all
 if ( $status != 0 ) then
     exit 1
@@ -75,6 +77,7 @@ endif
 #
 # If running this causes problems, you can just "git checkout Cargo.lock" to undo the change.
 
+echo "updating"
 set last    = `cat stamps/last_cargo_update`
 set now     = `date +%s`
 set elapsed = `expr $now - $last`

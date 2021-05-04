@@ -18,8 +18,11 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
+align_tools = "0.1"
 amino = "0.1"
 ansi_escape = "0.1"
+bio = ">=0.33"
+bio_edit = { path = "../bio_edit" }
 debruijn = "0.3.2"
 edit-distance = "2.1.0"
 enclone_core = { path = "../enclone_core" }
@@ -43,7 +46,7 @@ string_utils = "0.1"
 superslice = "1.0.0"
 tables = "0.1"
 tar = "0.4.33"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="57e9783ae1200a104d751dabdff72d3eca2cef64" }
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", rev="0e8f09b6abc3b6cedc6bd09250277f8f744fe448" }
 vector_utils = "0.1.3"
 # to replace by this after bumping version
 # vector_utils = "0.1.0"

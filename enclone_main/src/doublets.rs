@@ -105,8 +105,8 @@ pub fn delete_doublets(
                     }
                 }
             }
-            unique_sort(&mut content);
-            content.sort();
+            content.par_sort();
+            content.dedup();
             let mut j = 0;
             while j < content.len() {
                 let k = next_diff1_2(&content, j as i32) as usize;
@@ -118,7 +118,8 @@ pub fn delete_doublets(
                 }
                 j = k;
             }
-            unique_sort(&mut shares);
+            shares.par_sort();
+            shares.dedup();
         }
 
         // Find triples of pure subclonotypes in which the first two have no share, but both

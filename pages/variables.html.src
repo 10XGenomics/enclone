@@ -45,9 +45,9 @@ Test 25 is sensitive to the structure of the file.
 
 <p>All variables are in one of two classes:
 <ul>
-<li>lvar: a lead variable; these are not associated to a particular chain, and in clonotype
-    tables appear at the beginning (leading), before the variables that are associated to a 
-    chain</li>
+<li>lvar: a lead variable; these are not associated to a particular chain, and when they appear in 
+    clonotype tables, they're at the beginning (leading), before the variables that are associated 
+    to a chain</li>
 <li>cvar: a chain variable; these are associated to a particular chain.  Except when used
     in <code>CVARS</code> or <code>CVARSP</code>, these need to be suffixed by the chain
     number.</li>
@@ -60,7 +60,8 @@ Test 25 is sensitive to the structure of the file.
 <li>cell-exact: defined for each cell, and also has a value for an exact subclonotype</li>
 <li>exact: defined for each exact subclonotype</li>
 <li>clono: defined for each clonotype</li>
-<li>group: defined for each group of clonotypes.</li>
+<li>group: defined for each group of clonotypes</li>
+<li>global: defined for entirety of all clonotypes.</li>
 </ul>
 </p>
 
@@ -121,6 +122,14 @@ Test 25 is sensitive to the structure of the file.
 <td align="center">yes </td>
 <td>not available at all for visual output</td>
 </tr>
+<tr>
+<td align="center">global</td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td align="center">no  </td>
+<td>only accessible via <code>GVARS</code></td>
+</tr>
 </tbody>
 </table>
 </p>
@@ -145,7 +154,7 @@ version.</li>
 <h2>Example</h2>
 
 <p>The following example illustrates how this applies to the cell-exact variable <code>u</code>:
-<table rules="all" style="border: 3px solid gray">
+<table rules="all" style="border: 3px solid gray;background-color:#faffff">
 <tbody>
 
 <tr><td align="left" style="padding: 4px 11px 0px 14px">
@@ -172,7 +181,7 @@ version.</li>
 <tr><td> limits </td><td> footnote to things missing from the implementation (which in general
                           are deliberate)</td></tr>
 <tr><td> class </td><td> lvar or cvar                                             </td></tr>
-<tr><td> level </td><td> cell or exact or clono or group                          </td></tr>
+<tr><td> level </td><td> cell or exact or clono or group or global                </td></tr>
 <tr><td> numeric </td><td> does the variable have numeric values*                 </td></tr>
 <tr><td> help page </td><td> page where variable is documented (both a link and an enclone command)
                                                                                   </td></tr>
@@ -444,7 +453,8 @@ is not present for an exact subclonotype.
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
     <td> nucleotide start of CDR3 sequence on full sequence                             </td></tr>
 
 <tr><td> <code> clen </code>                                                            </td>
@@ -527,7 +537,7 @@ is not present for an exact subclonotype.
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>D-F</h2>
+<h2>D</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -543,57 +553,37 @@ is not present for an exact subclonotype.
 </thead>
 <tbody>
 
-<tr><td> <code> d_donor </code>                                                         </td>
+<tr><td> <code> d1_name </code>                                                         </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> distance from donor reference                                                  </td></tr>
-
-<tr><td> <code> d_frame </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
-
-<tr><td> <code> d_id </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> D region id                                                                    </td></tr>
-
-<tr><td> <code> d_name </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> clono                                                                          </td>
     <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> D region name                                                                  </td></tr>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> optimal D segment name                                                         </td></tr>
 
-<tr><td> <code> d_start </code>                                                         </td>
+<tr><td> <code> d2_name </code>                                                         </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
-                                                                                        </td>
-    <td> start of D on full nucleotide sequence (or null)                               </td></tr>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> second best D segment name                                                     </td></tr>
 
-<tr><td> <code> d_univ </code>                                                          </td>
+<tr><td> <code> d1_score </code>                                                        </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> distance from universal reference                                              </td></tr>
+    <td> score of optimal D segment                                                     </td></tr>
+
+<tr><td> <code> d2_score </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score of second best D segment                                                 </td></tr>
 
 <tr><td> <code> datasets </code>                                                        </td>
     <td>                                                                                </td>
@@ -634,6 +624,114 @@ is not present for an exact subclonotype.
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
     <td> amino acid distance to donor reference                                         </td></tr>
+
+<tr><td> <code> d_delta </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score delta between top two D gene assignments                                 </td></tr>
+
+<tr><td> <code> d_donor </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> distance from donor reference                                                  </td></tr>
+
+<tr><td> <code> d_frame </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> reading frame of D segment (0, 1, 2 or null)                                   </td></tr>
+
+<tr><td> <code> d_id </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> D region id                                                                    </td></tr>
+
+<tr><td> <code> d_inconsistent_% </code>                                                </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> global                                                                         </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
+    <td> inconsistency percent for D gene assignment                                    </td></tr>
+
+<tr><td> <code> d_inconsistent_n </code>                                                </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> global                                                                         </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/d_genes.html"><code>D genes</code></a>               </td>
+                                                                                        </td>
+    <td> sample size for computation of <code>d_inconsistent_%</code>                   </td></tr>
+
+<tr><td> <code> d_name </code>                                                          </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> clono                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> D region name                                                                  </td></tr>
+
+<tr><td> <code> d_start </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a> 
+                                                                                        </td>
+    <td> start of D on full nucleotide sequence (or null)                               </td></tr>
+
+<tr><td> <code> d_univ </code>                                                          </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> distance from universal reference                                              </td></tr>
+
+<tr><td> <code> d_Δ </code>                                                             </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score delta between top two D gene assignments                                 </td></tr>
+
+</tbody>
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>E-F</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
 
 <tr><td> <code> edit </code>                                                            </td>
     <td>                                                                                </td>

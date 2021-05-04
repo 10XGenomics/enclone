@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>JALIGN example</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
+</head>
+<body>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span>
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                        │  CHAIN 2                  │
+│           │  <span style="font-weight:bold;">190.1.1|IGHV4-39 ◆ 13|IGHD2-15 ◆ 57|IGHJ5</span>      │  219|IGKV1-12 ◆ 216|IGKJ4 │
+│           ├─────────────────────────────────────────────────┼───────────────────────────┤
+│           │      111111111111111111111                      │      11111111111          │
+│           │  135 222222223333333333444                      │  369 01111111111          │
+│           │  648 234567890123456789012                      │  155 90123456789          │
+│           │      ═════════CDR3════════                      │      ════CDR3═══          │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+├───────────┼─────────────────────────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  ... .....................  u  const  d1_name   </span>│<span style="font-weight:bold;">  ... ...........  u  const</span>│
+│1  1       │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">P</span><span style="color:#f37721;font-weight:bold;">G</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#72c0ff;font-weight:bold;">YI</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">VV</span><span style="color:#31c39a;">V</span><span style="color:#72c0ff;font-weight:bold;">AA</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#31c39a;">VG</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  4  IGHG1  IGHD2-15  │  <span style="color:#f37721;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#e7bd20;">S</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">PL</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  2  IGKC │
+└───────────┴─────────────────────────────────────────────────┴───────────────────────────┘
+
+CHAIN 1 OF #1  •  CONCATENATED <span style="color:#3e7dd1;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">D</span><span style="color:#e7bd20;">J</span> REFERENCE  •  D = 1ST = <span style="color:#f37721;font-weight:bold;">IGHD2-15</span>
+   C  A  R      Y  I  V  V  V  V  A  A  T  I  N  V  G  W  F  D  P 
+*          *||||                          **|||||****             
+TCTGTGCGAGAT    ATATTGTAGTGGTGGTAGCTGCTACTATAAACGTAGGCTGGTTCGACCCC
+<span style="color:#3e7dd1;font-weight:bold;">ACTGTGCGAGACA</span><span style="color:#f37721;font-weight:bold;">AGGATATTGTAGTGGTGGTAGCTGCTACTCC</span><span style="color:#e7bd20;">     ACAACTGGTTCGACCCC</span>
+</span></pre>
+</body>
+</html>
+

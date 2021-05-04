@@ -1,0 +1,28 @@
+[package]
+
+# This is a modified version of rust-bio, https://github.com/rust-bio/rust-bio.
+#
+# Copied at
+# commit b6cb8699fb7f16e741a7840f5bcc2d850938a37a
+# Date:   Thu Apr 1 17:11:19 2021 +0200
+#
+# Modifications:
+# 1. Add a function custom_with_gap_fns that is a copy of custom, with fixed gap penalties
+#    replaced by functions.
+# 2. Delete many parts of the codebase, for the immediate purpose of using custom_with_gap_fns.  
+#    Note that enclone also uses the official version of bio.
+
+name = "bio_edit"
+version = "0.33.1-alpha.0"
+authors = ["Johannes Köster <johannes.koester@tu-dortmund.de>"]
+description = "A bioinformatics library for Rust. This library provides implementations of many algorithms and data structures that are useful for bioinformatics, but also in other fields."
+homepage = "https://rust-bio.github.io"
+repository = "https://github.com/rust-bio/rust-bio"
+documentation = "https://docs.rs/bio"
+readme = "README.md"
+license = "MIT"
+edition = "2018"
+
+[dependencies]
+bio-types = ">=0.11.0"
+bit-set = "0.5"

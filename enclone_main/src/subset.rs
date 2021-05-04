@@ -29,6 +29,7 @@ pub fn subset_json(
         unique_sort(&mut barcodes);
         let mut g = open_for_write_new![&ctl.gen_opt.subset_json];
         fwriteln!(g, "[");
+        let mut written = false;
         for li in 0..ctl.origin_info.dataset_path.len() {
             let json = format!("{}/{}", ctl.origin_info.dataset_path[li], ann);
             let mut jsonx = json.clone();
@@ -50,12 +51,19 @@ pub fn subset_json(
                 }
             }
             for j in 0..xs.len() {
+                if j == 0 && written {
+                    fwriteln!(g, ",");
+                }
+                written = true;
                 fwrite!(g, "{}", strme(&xs[j]));
                 if j < xs.len() - 1 {
                     fwrite!(g, ",");
+                    fwriteln!(g, "");
                 }
-                fwriteln!(g, "");
             }
+        }
+        if written {
+            fwriteln!(g, "");
         }
         fwriteln!(g, "]");
     }

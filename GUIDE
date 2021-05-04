@@ -1,17 +1,19 @@
 
 guide to some of the directories here:
 
-enclone_main       this includes the enclone main program
+enclone            most of the code up to "printing"
+enclone_args       argument processing
 enclone_com        inter-processs communication (experimenal)
 enclone_core       core definitions, etc.
 enclone_help       help menus from the command line
-enclone            most of the code up to "printing"
+enclone_main       this includes the enclone main program
 enclone_print      prints clonotypes in the sense of creating the "pictures" (much of core logic)
 enclone_proto      stuff for communicating with Loupe, and reused for other purposes
 enclone_tail       last part of the code
+enclone_tools      miscellaneous binaries
 
+credits            credits
 fonts              DejaVuSansMono, in case not otherwise available
 img                images for site
 pages              pages on site and source code for such
 target             where rust puts compilation stuff
-third_party        credits

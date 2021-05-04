@@ -3,7 +3,6 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::group::*;
-use crate::plot::*;
 use enclone_core::defs::*;
 use enclone_core::median::*;
 use enclone_proto::types::*;
@@ -24,7 +23,6 @@ pub fn tail_code(
     refdata: &RefData,
     pics: &Vec<String>,
     exacts: &Vec<Vec<usize>>,
-    in_center: &Vec<bool>,
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
@@ -39,29 +37,16 @@ pub fn tail_code(
     d_readers: &Vec<Option<hdf5::Reader>>,
     ind_readers: &Vec<Option<hdf5::Reader>>,
     dref: &Vec<DonorReferenceItem>,
+    groups: &Vec<Vec<(i32, String)>>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
-    // Plot clonotypes.
+    // Print clonotypes.
 
-    let mut svg = String::new();
-    let plot_opt = ctl.plot_opt.clone();
-    plot_clonotypes(
-        &ctl,
-        &plot_opt,
-        &refdata,
-        &exacts,
-        &exact_clonotypes,
-        &mut svg,
-    );
-
-    // Group and print clonotypes.
-
-    let t = Instant::now();
     group_and_print_clonotypes(
         &tall,
         &refdata,
         &pics,
         &exacts,
-        &in_center,
         &rsi,
         &exact_clonotypes,
         &ctl,
@@ -71,10 +56,13 @@ pub fn tail_code(
         &vdj_cells,
         &fate,
         &dref,
+        &groups,
+        &opt_d_val,
     );
 
     // Do gene scan.
 
+    let t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;
@@ -331,15 +319,6 @@ pub fn tail_code(
         let mut log = Vec::<u8>::new();
         print_tabular(&mut log, &rows, 2, Some(b"lllrrr".to_vec()));
         print!("{}", strme(&log));
-    }
-
-    // Output clonotype plot (if it was generated and directed to stdout).
-
-    if ctl.plot_opt.plot_file == "stdout".to_string() {
-        print!("{}", svg);
-        if !ctl.gen_opt.noprint {
-            println!("");
-        }
     }
 
     // Print top genes.

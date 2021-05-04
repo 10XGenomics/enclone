@@ -7,6 +7,7 @@ use amino::*;
 use bio::alignment::pairwise::*;
 use bio::alignment::AlignmentOperation::*;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
 use enclone_proto::types::*;
 use itertools::*;
 use stats_utils::*;
@@ -148,19 +149,7 @@ pub fn proc_cvar1(
                 cx[col][j] += strme(&log);
             }
         }
-    } else if *var == "comp"
-        || *var == "edit"
-        || *var == "opt_d"
-        || *var == "opt_d_delta"
-        || *var == "opt_dΔ"
-        || *var == "opt_d2"
-    {
-        if !ex.share[mid].left
-            && (*var == "opt_d" || *var == "opt_d_delta" || *var == "opt_dΔ" || *var == "opt_d2")
-        {
-            cvar_stats1![j, var, "".to_string()];
-            return true;
-        }
+    } else if *var == "comp" || *var == "edit" {
         let mut comp = 1000000;
         let mut edit = String::new();
         let td = &ex.share[mid];
@@ -267,27 +256,90 @@ pub fn proc_cvar1(
         }
         sort_sync2(&mut counts, &mut ds);
         let mut comp = 0;
-        let mut best_d = 0;
         if counts.len() > 0 {
             comp = counts[0];
-            best_d = ds[0];
-        }
-        let mut second_comp = 0;
-        let mut best_d2 = 0;
-        if counts.len() > 1 {
-            second_comp = counts[1];
-            best_d2 = ds[1];
         }
         if *var == "comp".to_string() {
             cvar_stats1![j, var, format!("{}", comp)];
-        } else if *var == "edit" {
-            cvar_stats1![j, var, format!("{}", edit)];
-        } else if *var == "opt_d" {
-            cvar_stats1![j, var, format!("{}", refdata.name[best_d])];
-        } else if *var == "opt_d2" {
-            cvar_stats1![j, var, format!("{}", refdata.name[best_d2])];
         } else {
-            cvar_stats1![j, var, format!("{}", second_comp - comp)];
+            cvar_stats1![j, var, format!("{}", edit)];
+        }
+    } else if *var == "d1_name"
+        || *var == "d2_name"
+        || *var == "d_delta"
+        || *var == "d_Δ"
+        || *var == "d1_score"
+        || *var == "d2_score"
+    {
+        if !ex.share[mid].left {
+            cvar_stats1![j, var, "".to_string()];
+            return true;
+        }
+        let mut scores = Vec::<f64>::new();
+        let mut ds = Vec::<Vec<usize>>::new();
+        opt_d(
+            &ex,
+            col,
+            u,
+            &rsi,
+            &refdata,
+            &dref,
+            &mut scores,
+            &mut ds,
+            &ctl,
+        );
+        let mut opt = Vec::new();
+        if ds.len() > 0 {
+            opt = ds[0].clone();
+        }
+        let mut opt2 = Vec::new();
+        if ds.len() > 1 {
+            opt2 = ds[1].clone();
+        }
+        let mut opt_name = String::new();
+        if opt.is_empty() {
+            opt_name = "none".to_string();
+        } else {
+            for i in 0..opt.len() {
+                if i > 0 {
+                    opt_name += ":";
+                }
+                opt_name += &refdata.name[opt[i]];
+            }
+        }
+        let mut opt2_name = String::new();
+        if opt2.is_empty() {
+            opt2_name = "none".to_string();
+        } else {
+            for i in 0..opt2.len() {
+                if i > 0 {
+                    opt2_name += ":";
+                }
+                opt2_name += &refdata.name[opt2[i]];
+            }
+        }
+        if *var == "d1_name" {
+            cvar_stats1![j, var, opt_name];
+        } else if *var == "d2_name" {
+            cvar_stats1![j, var, opt2_name];
+        } else if *var == "d#" {
+            let mut score = 0.0;
+            if scores.len() > 0 {
+                score = scores[0];
+            }
+            cvar_stats1![j, var, format!("{:.1}", score)];
+        } else if *var == "d2_score" {
+            let mut score = 0.0;
+            if scores.len() > 1 {
+                score = scores[1];
+            }
+            cvar_stats1![j, var, format!("{:.1}", score)];
+        } else {
+            let mut delta = 0.0;
+            if scores.len() > 1 {
+                delta = scores[0] - scores[1];
+            }
+            cvar_stats1![j, var, format!("{:.1}", delta)];
         }
     } else if *var == "cdr1_dna"
         || *var == "cdr1_aa"

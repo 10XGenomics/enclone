@@ -27,6 +27,7 @@ pub fn print_stats(
     logx: &mut Vec<u8>,
     nclono2: &mut usize,
     two_chain: &mut usize,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
     // Compute some umi stats.
 
@@ -728,5 +729,51 @@ pub fn print_stats(
     if ctl.gen_opt.summary_csv {
         println!("\nmiddle_mean_umis_heavy,middle_mean_umis_light,n_twothreesie");
         println!("{:.2},{:.2},{}", middle_mean_umish, middle_mean_umisl, n23);
+    }
+
+    // Print global variable values.
+
+    if ctl.gen_opt.gvars.len() > 0 {
+        fwriteln!(logx, "\nGLOBAL VARIABLES\n");
+        let (mut total, mut bads) = (0, 0);
+        let mut need_inc = false;
+        for x in ctl.gen_opt.gvars.iter() {
+            if x.starts_with("d_inconsistent_") {
+                need_inc = true;
+            }
+        }
+        if need_inc {
+            for i in 0..exacts.len() {
+                for col in 0..rsi[i].mat.len() {
+                    for u1 in 0..exacts[i].len() {
+                        let m1 = rsi[i].mat[col][u1];
+                        if m1.is_some() {
+                            let m1 = m1.unwrap();
+                            let ex1 = &exact_clonotypes[exacts[i][u1]];
+                            if ex1.share[m1].left {
+                                for u2 in (u1 + 1)..exacts[i].len() {
+                                    let m2 = rsi[i].mat[col][u2];
+                                    if m2.is_some() {
+                                        total += 1;
+                                        if opt_d_val[i].1[col][u1] != opt_d_val[i].1[col][u2] {
+                                            bads += 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for var in ctl.gen_opt.gvars.iter() {
+            let mut val = String::new();
+            if *var == "d_inconsistent_%" {
+                val = format!("{:.2}", 100.0 * bads as f64 / total as f64);
+            } else if *var == "d_inconsistent_n" {
+                val = format!("{}", total);
+            }
+            fwriteln!(logx, "{} = {}", var, val);
+        }
     }
 }

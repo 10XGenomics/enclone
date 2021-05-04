@@ -325,3 +325,15 @@ UNACCOUNTED: show unaccounted time at each step
 EVIL_EYE: print logging to facilitate diagnosis of mysterious hanging
 
 TOY_COM: compute clonotypes, then act as toy server, which can speak to enclone_client
+
+TOOLTIP: add tooltip text to honeycomb plots
+
+ALIGN_JUN_ALIGN_CONSISTENCY: test to see if they give consistent results 
+(run with ALIGN1 JUN_ALIGN1 PLAIN)
+
+junction region alignment penalties accessible from the command line:
+- JSCORE_MATCH
+- JSCORE_MISMATCH
+- JSCORE_GAP_EXTEND
+- JSCORE_GAP_OPEN
+- JSCORE_BITS_MULT

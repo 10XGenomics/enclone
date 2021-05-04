@@ -7,9 +7,7 @@ use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
 use itertools::Itertools;
-use std::collections::HashMap;
 use std::fs::{remove_file, File};
-use std::io::{BufRead, BufReader};
 use std::{env, process::Command, time::Instant};
 use string_utils::*;
 use tilde_expand::*;
@@ -178,6 +176,11 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.silent = true;
     ctl.gen_opt.peer_group_dist = "MFL".to_string();
     ctl.gen_opt.color_by_rarity_pc = -1.0;
+    ctl.gen_opt.jscore_match = 20;
+    ctl.gen_opt.jscore_mismatch = -20;
+    ctl.gen_opt.jscore_gap_open = -120;
+    ctl.gen_opt.jscore_gap_extend = -20;
+    ctl.gen_opt.jscore_bits_multiplier = 2.2;
 
     // Set up clonotyping control parameters.
 
@@ -194,6 +197,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.max_datasets = 1000000000;
     ctl.clono_filt_opt.umi_filt = true;
     ctl.clono_filt_opt.umi_ratio_filt = true;
+    ctl.clono_filt_opt.max_exacts = 1_000_000_000;
 
     ctl.clono_print_opt.amino = vec![
         "cdr3".to_string(),
@@ -297,7 +301,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
                 for j in 0..i {
                     args2.push(args[j].clone());
                 }
-                let f = include_str!["enclone.testdata.bcr.gex"];
+                let f = include_str!["../../enclone/src/enclone.testdata.bcr.gex"];
                 let (mut bcrv, mut gexv) = (Vec::<String>::new(), Vec::<String>::new());
                 for n in y.iter() {
                     if *n != "m1" {
@@ -391,6 +395,10 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("ACCEPT_INCONSISTENT", &mut ctl.gen_opt.accept_inconsistent),
         ("ACCEPT_REUSE", &mut ctl.gen_opt.accept_reuse),
         ("AGROUP", &mut ctl.clono_group_opt.asymmetric),
+        (
+            "ALIGN_JALIGN_CONSISTENCY",
+            &mut ctl.gen_opt.align_jun_align_consistency,
+        ),
         ("ALLOW_INCONSISTENT", &mut ctl.gen_opt.allow_inconsistent),
         ("ANN", &mut ctl.join_print_opt.ann),
         ("ANN0", &mut ctl.join_print_opt.ann0),
@@ -410,6 +418,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("DEBUG_TABLE_PRINTING", &mut ctl.debug_table_printing),
         ("DEL", &mut ctl.clono_filt_opt.del),
         ("DESCRIP", &mut ctl.gen_opt.descrip),
+        ("D_INCONSISTENT", &mut ctl.clono_filt_opt.d_inconsistent),
+        ("D_NONE", &mut ctl.clono_filt_opt.d_none),
+        ("D_SECOND", &mut ctl.clono_filt_opt.d_second),
         ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
         ("EXP", &mut ctl.gen_opt.exp),
@@ -418,10 +429,18 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("FULL_SEQC", &mut ctl.clono_print_opt.full_seqc),
         ("GRAPH", &mut ctl.gen_opt.graph),
         ("GROUP_HEAVY_CDR3", &mut ctl.clono_group_opt.heavy_cdr3_aa),
+        (
+            "GROUP_VDJ_REFNAME_HEAVY",
+            &mut ctl.clono_group_opt.vdj_refname_heavy,
+        ),
         ("GROUP_VJ_REFNAME", &mut ctl.clono_group_opt.vj_refname),
         (
             "GROUP_VJ_REFNAME_STRONG",
             &mut ctl.clono_group_opt.vj_refname_strong,
+        ),
+        (
+            "GROUP_VJ_REFNAME_HEAVY",
+            &mut ctl.clono_group_opt.vj_refname_heavy,
         ),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
@@ -472,6 +491,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
             "SUPPRESS_ISOTYPE_LEGEND",
             &mut ctl.plot_opt.plot_by_isotype_nolegend,
         ),
+        ("TOOLTIP", &mut ctl.plot_opt.tooltip),
         ("TOP_GENES", &mut ctl.gen_opt.top_genes),
         ("TOY", &mut ctl.toy),
         ("TOY_COM", &mut ctl.gen_opt.toy_com),
@@ -512,6 +532,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),
         ("MAX_DIFFS", &mut ctl.heur.max_diffs),
+        ("MAX_EXACTS", &mut ctl.clono_filt_opt.max_exacts),
         ("MIN_ALT", &mut ctl.allele_alg_opt.min_alt),
         ("MIN_CELLS_EXACT", &mut ctl.gen_opt.min_cells_exact),
         ("MIN_CHAINS_EXACT", &mut ctl.gen_opt.min_chains_exact),
@@ -527,6 +548,19 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
     ];
+
+    // Define arguments that set something to an i32.
+
+    let set_i32 = [
+        ("JSCORE_GAP_EXTEND", &mut ctl.gen_opt.jscore_gap_extend),
+        ("JSCORE_GAP_OPEN", &mut ctl.gen_opt.jscore_gap_open),
+        ("JSCORE_MATCH", &mut ctl.gen_opt.jscore_match),
+        ("JSCORE_MISMATCH", &mut ctl.gen_opt.jscore_mismatch),
+    ];
+
+    // Define arguments that set something to an f64.
+
+    let set_f64 = [("JSCORE_BITS_MULT", &mut ctl.gen_opt.jscore_bits_multiplier)];
 
     // Define arguments that set something to a string.
 
@@ -676,6 +710,24 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
         for j in 0..set_usize.len() {
             if is_usize_arg(&arg, &set_usize[j].0) {
                 *(set_usize[j].1) = arg.after(&format!("{}=", set_usize[j].0)).force_usize();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_i32 args.
+
+        for j in 0..set_i32.len() {
+            if is_i32_arg(&arg, &set_i32[j].0) {
+                *(set_i32[j].1) = arg.after(&format!("{}=", set_i32[j].0)).force_i32();
+                continue 'args_loop;
+            }
+        }
+
+        // Process set_f64 args.
+
+        for j in 0..set_f64.len() {
+            if is_f64_arg(&arg, &set_f64[j].0) {
+                *(set_f64[j].1) = arg.after(&format!("{}=", set_f64[j].0)).force_f64();
                 continue 'args_loop;
             }
         }
@@ -878,22 +930,4 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     proc_args_post(
         &mut ctl, &args, &metas, &metaxs, &xcrs, have_gex, &gex, &bc, using_plot,
     );
-}
-
-pub fn get_config(config: &mut HashMap<String, String>) -> bool {
-    let mut config_file = String::new();
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            config_file = value.to_string();
-        }
-    }
-    if config_file.len() > 0 && path_exists(&config_file) {
-        let f = open_for_read![&config_file];
-        for line in f.lines() {
-            let s = line.unwrap();
-            config.insert(s.before("=").to_string(), s.after("=").to_string());
-        }
-        return true;
-    }
-    false
 }

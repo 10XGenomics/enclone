@@ -15,6 +15,7 @@
 // it doesn't matter much because not much time is spent here.
 
 use enclone_core::defs::*;
+use rayon::prelude::*;
 use stats_utils::*;
 use std::time::Instant;
 use vector_utils::*;
@@ -27,8 +28,13 @@ pub fn test_vdj_gex_inconsistent(
     gex_info: &GexInfo,
 ) {
     let tinc = Instant::now();
-    let mut fail = false;
+
+    let mut results = Vec::<(usize, String)>::new();
     for li in 0..ctl.origin_info.n() {
+        results.push((li, String::new()));
+    }
+    results.par_iter_mut().for_each(|res| {
+        let li = res.0;
         if ctl.origin_info.gex_path[li].len() > 0 && !ctl.gen_opt.allow_inconsistent {
             let vdj = &vdj_cells[li];
             let gex = &gex_info.gex_cell_barcodes[li];
@@ -89,21 +95,29 @@ pub fn test_vdj_gex_inconsistent(
             if total >= 1 {
                 let bino = binomial_sum(total, good, 0.7);
                 if bino < 0.00002 {
-                    fail = true;
-                    eprint!(
+                    res.1 = format!(
                         "\nThe VDJ dataset with path\n{}\nand the GEX dataset with path\n\
                         {}\nshow insufficient sharing of barcodes.  ",
                         ctl.origin_info.dataset_path[li], ctl.origin_info.gex_path[li],
                     );
-                    eprintln!(
-                        "Of the {} VDJ cells that were tested,\nonly {} were GEX cells.",
+                    res.1 += &mut format!(
+                        "Of the {} VDJ cells that were tested,\nonly {} were GEX cells.\n",
                         total, good
                     );
                 }
             }
         }
+    });
+    let mut fail = false;
+    for i in 0..results.len() {
+        if results[i].1.len() > 0 {
+            fail = true;
+        }
     }
     if fail {
+        for i in 0..results.len() {
+            eprint!("{}", results[i].1);
+        }
         eprintln!(
             "\nThis test is restricted to VDJ cells having both chain types, uses at most \
             one cell\nper exact subclonotype, and uses up to 100 cells having the highest \

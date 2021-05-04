@@ -12,3 +12,5 @@ cargo update -p wyhash --precise 0.4.2
 cargo update -p statrs --precise 0.12.0
 cargo update -p pprof --precise 0.4.2
 cargo update -p ndarray:0.15.1 --precise 0.14.0
+cargo update -p dirs --precise 3.0.1
+cargo update -p dirs-sys --precise 0.3.5

@@ -2,6 +2,7 @@
 
 extern crate enclone_core;
 
+pub mod align_n;
 pub mod clustal;
 pub mod display_tree;
 pub mod fasta;
@@ -20,3 +21,4 @@ pub mod requirements;
 pub mod string_width;
 pub mod tail;
 pub mod ticks;
+pub mod tree;

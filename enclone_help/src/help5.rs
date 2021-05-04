@@ -79,19 +79,40 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.docpr("", "and otherwise show a \\bold{▮}.");
         h.ldoc(
             "CONX",
-            "add an additional row to each clonotype table, showing the amino acid consensus",
-        );
-        h.doc("", "across the clonotype, with X for each variant residue");
-        h.ldoc(
-            "CONP",
-            "add an additional row to each clonotype table, showing the amino acid consensus",
+            "add an additional row to each clonotype table, showing the amino acid",
         );
         h.doc(
             "",
-            "across the clonotype, with a property symbol whenever two different amino acids",
+            "consensus across the clonotype, with X for each variant residue",
         );
-        h.doc("", "are observed, see \"enclone help cvars\"");
-
+        h.doc(
+            "CONP",
+            "add an additional row to each clonotype table, showing the amino acid",
+        );
+        h.doc(
+            "",
+            "consensus across the clonotype, with a property symbol whenever two different",
+        );
+        h.doc("", "amino acids are observed, see \"enclone help cvars\"");
+        h.ldoc(
+            "ALIGN<n>",
+            "exhibit a visual alignment for chain n (for each exact subclonotype) to the",
+        );
+        h.doc2("donor V(D)J reference, picking the best D for heavy chains / TRB");
+        h.doc2("Multiple values of n may be specified using multiple arguments.");
+        h.doc(
+            "ALIGN_2ND<n>",
+            "same as ALIGN<n> but use second best D segment",
+        );
+        h.doc(
+            "JALIGN<n>",
+            "same as ALIGN<n> but only show the region from 15 bases before the end of the",
+        );
+        h.doc2("V segment to 35 bases into the J segment");
+        h.doc(
+            "JALIGN_2ND<n>",
+            "same as JALIGN<n> but use second best D segment",
+        );
         h.print_tab2();
         h.print("\n");
         h.print(
@@ -112,7 +133,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "GROUP_VJ_REFNAME",
-            "group by sharing identical V and J reference gene names,",
+            "group by sharing identical V and J reference gene names",
         );
         h.doc(
             "GROUP_VJ_REFNAME_STRONG",
@@ -123,12 +144,30 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             "(after correction for indels) and identical length CDR3 sequences,",
         );
         h.doc("", "but ignores foursies and moresies");
+        h.doc(
+            "GROUP_VJ_REFNAME_HEAVY",
+            "group by sharing identical IGH or TRB V and J reference gene names",
+        );
+        h.doc(
+            "GROUP_VDJ_REFNAME_HEAVY",
+            "group by sharing identical IGH or TRB V, D and J reference gene names",
+        );
         h.ldoc(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)",
         );
         h.print_tab2();
         h.print("\n");
+        h.print(
+            "\\bold{options that control global variables}\n\n\
+             enclone has some global variables that can be computed, with values printed after \
+             everything else, and not otherwise used (currently).  These may be specified using \
+             \\bold{GVARS=var1,...,varn}.  The global variables that are supported currently are:\n\
+             d_inconsistent_%\n\
+             d_inconsistent_n\n\
+             Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for more \
+             information.\n\n",
+        );
         h.end_doc();
     }
 

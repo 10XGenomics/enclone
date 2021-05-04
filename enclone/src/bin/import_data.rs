@@ -12,8 +12,8 @@
 //
 // For use at 10x Genomics.
 
-use enclone::proc_args::get_config;
 use enclone_core::copy_for_enclone::*;
+use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;

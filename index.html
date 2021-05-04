@@ -373,6 +373,13 @@ Restart your terminal session; you can now run <span style="color:rgb(120,123,17
 Only required files will be downloaded.  
 See <a href="pages/auto/history.html">history</a> for what has changed.</span></p>
 
+<p>Previous releases of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, matching particular Cell Ranger releases, may be found here:
+<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_5.0.0">5.0.0</a>
+(5.0.1 used the same <span style="color:rgb(120,123,175);font-weight:900">enclone</span> version)
+<br><a href="https://github.com/10XGenomics/enclone/releases/tag/v_cellranger_6.0.0">6.0.0</a>
+(6.0.1 used the same <span style="color:rgb(120,123,175);font-weight:900">enclone</span> version).
+</p>
+
 <hr>
 
 <p><a name="running" style="display:block; position:relative; top:-20px;"></a></p>
@@ -408,20 +415,25 @@ documentation within its online menus.  To get started you should:</p>
 <p><a name="help" style="display:block; position:relative; top:-20px;"></a></p>
 <h2>Help</h2>
 
-<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> help is split between material on this site and pages that are invocable from the 
-<span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line, and all are documented below.</p>
-
-<p><b>From any page, clicking on the banner at the top will take you back 
+<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 530px; margin-left: 3px">
+<b>From any page, clicking on the banner at the top will take you back 
 <span style="color:red">here</span>.</b></p>
 
-<table rules="all" cellpadding="3" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left">command</th>
-<th align="left">what it provides</th>
-</tr>
-</thead>
+<table>
+
+<tr valign="top">
+<td>
+
+<table rules="all" cellpadding="3" style="border: 2px solid black; margin-right: 8px">
 <tbody>
+<tr><td colspan="2" style="text-align:center; background-color: #BBF9ED"><b>pages on site and accessible from command line</b></td></tr>
+<tr>
+<td align="left"><b>command</b></td>
+<td align="left"><b>what it provides</b></td>
+</tr>
+
+
+
 <tr>
 <td align="left"><a href="pages/auto/help.setup.html">enclone help</a></td>
 <td align="left">help to test for correct setup</td>
@@ -436,15 +448,15 @@ documentation within its online menus.  To get started you should:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.how.html">enclone help how</a></td>
-<td align="left">outline of how <span style="color:rgb(120,123,175);font-weight:900">enclone</span> works, see also heuristics page, below</td>
+<td align="left">outline of how <span style="color:rgb(120,123,175);font-weight:900">enclone</span> works, see also heuristics</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.command.html">enclone help command</a></td>
-<td align="left">info about <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line argument processing</td>
+<td align="left">info about <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command line processing</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.glossary.html">enclone help glossary</a></td>
-<td align="left">glossary of terms used by <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, and conventions</td>
+<td align="left">glossary of terms used by <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, conventions</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.example1.html">enclone help example1</a></td>
@@ -452,7 +464,7 @@ documentation within its online menus.  To get started you should:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.example2.html">enclone help example2</a></td>
-<td align="left">example showing gene expression and feature barcodes</td>
+<td align="left">example of gene expression, feature barcodes</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.input.html">enclone help input</a></td>
@@ -468,7 +480,7 @@ documentation within its online menus.  To get started you should:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.filter.html">enclone help filter</a></td>
-<td align="left">clonotype filtering options, scanning for feature enrichment</td>
+<td align="left">clonotype filtering, feature enrichment scanning</td>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.special.html">enclone help special</a></td>
@@ -503,25 +515,26 @@ documentation within its online menus.  To get started you should:</p>
 </tr>
 <tr>
 <td align="left"><a href="pages/auto/help.all.html">enclone help all</a></td>
-<td align="left">concatenation of all the help pages (USE THIS TO SEARCH ALL THE HELP PAGES)</td>
+<td align="left">concatenation of all the help pages <br> (USE THIS TO SEARCH ALL HELP PAGES)</td>
 </tr>
 </tbody>
 </table>
 
-<br>
 
-For completeness, here are all the other pages on this site:
 
-<br><br>
+</td>
+<td>
 
-<table rules="all" cellpadding="3" style="border: 1px solid black">
-<thead>
-<tr>
-<th align="left">page</th>
-<th align="left">audience</th>
-</tr>
-</thead>
+
+<table rules="all" cellpadding="3" style="border: 2px solid black">
 <tbody>
+<tr><td colspan="2" style="text-align:center; background-color: #BBF9ED"><b>other pages on site</b></td></tr>
+<tr>
+<td align="left"><b>page</b></td>
+<td align="left"><b>audience</b></td>
+</tr>
+
+
 <tr>
     <td align="left"><a href="pages/auto/history.html">history of changes</a></td>
     <td align="left">everyone</td>
@@ -544,12 +557,11 @@ For completeness, here are all the other pages on this site:
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/heuristics.html">notes on heuristics</a></td>
-    <td align="left">people who want to know details on how the algorithm works</td>
+    <td align="left">those curious about the algorithm</td>
 </tr>
 <tr>
-    <td align="left"><a href="pages/auto/default_filters.html">notes on <span style="color:rgb(120,123,175);font-weight:900">enclone</span> default
-    filtering</a></td>
-    <td align="left">people who want to know details on how the algorithm works</td>
+    <td align="left"><a href="pages/auto/default_filters.html"><span style="color:rgb(120,123,175);font-weight:900">enclone</span> default filtering</a></td>
+    <td align="left">those curious about the algorithm</td>
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/plot.html">plots</a></td>
@@ -565,25 +577,34 @@ For completeness, here are all the other pages on this site:
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/installation_details.html">installation details
-    </a></td> <td align="left">if you're curious about what the install command does</td>
+    </a></td> <td align="left">those curious what install command does</td>
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/innate.html">iNKT and MAIT cells
-    </a></td> <td align="left">people interested in iNKT and MAIT cells</td>
+    </a></td> <td align="left">those curious about iNKT and MAIT cells</td>
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/features.html">V(D)J features
-    </a></td> <td align="left">people interested in how CDR1, CDR2 etc. are calculated</td>
+    </a></td> <td align="left">those curious about CDR*, etc. calculations</td>
 </tr>
 <tr>
     <td align="left"><a href="pages/auto/variables.html">enclone variable inventory
+    </a></td> <td align="left">everyone</td>
+</tr>
+<tr>
+    <td align="left"><a href="pages/auto/d_genes.html">D genes, junction regions
     </a></td> <td align="left">everyone</td>
 </tr>
 
 </tbody>
 </table>
 
+</tr>
+</table>
+
 <br>
+And we're here to help!  See the bottom of this page for how to contact us.
+<br><br>
 
 <hr>
 

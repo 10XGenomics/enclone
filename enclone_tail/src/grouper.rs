@@ -1,6 +1,11 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // This is the actual grouping code.
+//
+// output: a vector, each element of which is a group object
+//
+// group object: a vector of pairs (i, msg) where i is an index into exacts and msg is a message
+//               to be printed
 
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
@@ -16,13 +21,16 @@ pub fn grouper(
     in_center: &Vec<bool>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
+    rsi: &Vec<ColInfo>,
+    opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) -> Vec<Vec<(i32, String)>> {
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 1: symmetric grouping.
 
     if !ctl.clono_group_opt.asymmetric {
-        // Group clonotypes.
+        // If heavy_cdr3_aa == true, make two clonotypes equivalent if they share
+        // a heavy/TRB CDR3_AA sequence.
 
         let mut e: EquivRel = EquivRel::new(exacts.len() as i32);
         if ctl.clono_group_opt.heavy_cdr3_aa {
@@ -47,9 +55,14 @@ pub fn grouper(
                 i = j;
             }
         }
+
+        // Handle vj_refname and vj_refname_strong.
+
         if ctl.clono_group_opt.vj_refname || ctl.clono_group_opt.vj_refname_strong {
             let mut all = Vec::<(Vec<String>, usize)>::new();
             for i in 0..exacts.len() {
+                // It is somewhat flaky, here and below, that we use the first exact
+                // subclonotype to determine reference segments.
                 let ex = &exact_clonotypes[exacts[i][0]];
                 let mut s = Vec::<String>::new();
                 for j in 0..ex.share.len() {
@@ -89,6 +102,75 @@ pub fn grouper(
                 i = j;
             }
         }
+
+        // Handle vj_refname_heavy.
+
+        if ctl.clono_group_opt.vj_refname_heavy {
+            let mut all = Vec::<(Vec<String>, usize)>::new();
+            for i in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[i][0]];
+                let mut s = Vec::<String>::new();
+                for j in 0..ex.share.len() {
+                    if ex.share[j].left {
+                        s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                        s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                    }
+                }
+                s.sort();
+                all.push((s, i));
+            }
+            all.sort();
+            let mut i = 0;
+            while i < all.len() {
+                let j = next_diff1_2(&all, i as i32) as usize;
+                for k in i + 1..j {
+                    e.join(all[i].1 as i32, all[k].1 as i32);
+                }
+                i = j;
+            }
+        }
+
+        // Handle vdj_refname_heavy.
+
+        if ctl.clono_group_opt.vdj_refname_heavy {
+            let mut all = Vec::<(Vec<String>, usize)>::new();
+            for i in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[i][0]];
+                let mut s = Vec::<String>::new();
+                for col in 0..rsi[i].mat.len() {
+                    let m = rsi[i].mat[col][0];
+                    if m.is_some() {
+                        let j = m.unwrap();
+                        if ex.share[j].left {
+                            s.push(refdata.name[ex.share[j].v_ref_id].clone());
+                            let d = &opt_d_val[i].1[col][0];
+                            let dname;
+                            if !d.is_empty() {
+                                dname = refdata.name[d[0]].clone();
+                            } else {
+                                dname = "null".to_string();
+                            }
+                            s.push(dname);
+                            s.push(refdata.name[ex.share[j].j_ref_id].clone());
+                        }
+                    }
+                }
+                s.sort();
+                all.push((s, i));
+            }
+            all.sort();
+            let mut i = 0;
+            while i < all.len() {
+                let j = next_diff1_2(&all, i as i32) as usize;
+                for k in i + 1..j {
+                    e.join(all[i].1 as i32, all[k].1 as i32);
+                }
+                i = j;
+            }
+        }
+
+        // Get orbit reps.
+
         let mut greps = Vec::<i32>::new();
         e.orbit_reps(&mut greps);
 
@@ -121,7 +203,7 @@ pub fn grouper(
         groups.reverse();
         return groups;
 
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 2: asymmetric grouping.
     } else {

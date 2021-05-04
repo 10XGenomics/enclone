@@ -1,7 +1,9 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
-
+//
 // Field (variable) names.
+
 // Lead variables for exact subclonotypes and cells.
+
 pub const LVARS_ALLOWED: [&str; 35] = [
     "datasets",
     "origins",
@@ -42,7 +44,7 @@ pub const LVARS_ALLOWED: [&str; 35] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 88] = [
+pub const CVARS_ALLOWED: [&str; 90] = [
     "var",
     "u",
     "u_min",
@@ -127,10 +129,12 @@ pub const CVARS_ALLOWED: [&str; 88] = [
     "utr_name",
     "cdr3_start",
     "v_start",
-    "opt_d",
-    "opt_d_delta",
-    "opt_dΔ",
-    "opt_d2",
+    "d1_name",
+    "d2_name",
+    "d1_score",
+    "d2_score",
+    "d_delta",
+    "d_Δ",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];
@@ -156,3 +160,5 @@ pub const PCVARS_ALLOWED: [&str; 11] = [
     "vj_aa_nl",
     "var_aa",
 ];
+
+pub const GVARS_ALLOWED: [&str; 2] = ["d_inconsistent_%", "d_inconsistent_n"];

@@ -4,12 +4,16 @@
 //
 // Note that this gives the wrong answer if you haven't run ./build first.
 
-use enclone::run_test::*;
+use enclone_core::run_test::*;
 use enclone_core::testlist::*;
 use pretty_trace::*;
 
 fn main() {
     PrettyTrace::new().on();
+    println!(
+        "\nYou should already have run ./build.  Otherwise this will give you the \
+        wrong answer!\n"
+    );
     let mut out = String::new();
     let mut ok = false;
     let mut logx = String::new();

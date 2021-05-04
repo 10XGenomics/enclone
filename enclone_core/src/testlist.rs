@@ -24,7 +24,51 @@ pub fn enclone_testdata_public_gex_human() -> String {
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-pub const TESTS: [&str; 233] = [
+// Unaccounted time test.  This is separated out so that we can avoid running it in parallel with
+// other tests, to reduce the sporadic failure rate.  Also this is off in GitHub Actions.
+
+pub const UNAC_TESTS: [&str; 1] = [
+    // 1. enforce no unaccounted time
+    r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
+];
+
+// Tests that are affected by the D region alignment algorithm.  All such tests should go here.
+
+pub const DTESTS: [&str; 15] = [
+    // 1. test ALIGN_2ND<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=d1_name"###,
+    // 2. test JALIGN_2ND<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JALIGN_2ND1 CVARS=d2_name"###,
+    // 3. test ALIGN_JALIGN_CONSISTENCY
+    r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JALIGN1 ALIGN_JALIGN_CONSISTENCY AMINO=cdr3
+         PLAIN NOPAGER EXPECT_OK"###,
+    // 4. test D_INCONSISTENT, and lock number of inconsistencies
+    r###"BCR=123085 D_INCONSISTENT CVARS=d1_name COMPLETE NGROUP"###,
+    // 5. the JALIGN1 in this example had a boundary location that was off by one
+    r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=d1_score,d2_score CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
+    // 6. the JALIGN1 in this example had a boundary location that was off by one
+    r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=d1_name CDR3=CAKAGPTESGYYVWYFDLW"###,
+    // 7. test d_inconsistent_{%,n}
+    r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT"###,
+    // 8. test ALIGN<n>
+    r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=d1_name"###,
+    // 9. test ALIGN<n> and JALIGN<n>, case where there's a D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
+    // 10. test ALIGN<n> and JALIGN<n>, case where there is no D segment
+    r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
+    // 11. test d1 etc.
+    r###"BCR=123085 CVARS=d1_name,d2_name,d_Δ,d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
+    // 12. test GROUP_VDJ_REFNAME_HEAVY
+    r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
+    // 13. test GROUP_VJ_REFNAME_HEAVY
+    r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
+    // 14. test placement of indel, needed shifting right
+    r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CAKDKSRPPTHYYGSGSYYSRILDNW"###,
+    // 15. test placement of indel, needed shifting left
+    r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CARMAQFYSGSGTYYIGPYYFEYW"###,
+];
+
+pub const TESTS: [&str; 234] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -503,8 +547,8 @@ pub const TESTS: [&str; 233] = [
          SCAN="(IGHV1-69D_g_μ)>=1800,(IGHV3-64D_g_μ)>=100,t-10*c>=5.0" NOPRINT H5 SCAN_EXACT"###,
     // 201. test SOURCE
     r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3"###,
-    // 202. enforce no unaccounted time
-    r###"BCR=123085 COMPE UNACCOUNTED NOPRINT EXPECT_OK"###,
+    // 202. DUPLICATE TO REPLACE
+    r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3 EXPECT_OK"###,
     // 203. test plotting with using the BC option to set color
     r###"BCR=123085 BC=testx/inputs/123077_cells.csv PLOT=stdout NOPRINT"###,
     //
@@ -604,6 +648,8 @@ pub const TESTS: [&str; 233] = [
     // 233. test use of two linear constraints
     r###"BCR=123085 GEX=123217
          KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
+    // 234. test TOOLTIP
+    r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=stdout NOPRINT MIN_CHAINS_EXACT=2 TOOLTIP"###,
 ];
 
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
@@ -614,11 +660,19 @@ pub const TESTS: [&str; 233] = [
 
 pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 4] = [
-    /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1",
+pub const CRASH_SETS: [&str; 5] = [
+    /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
+    //
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
-    /* 3 */ "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4",
-    /* 4 */ "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3",
+    //
+    /* 3 */
+    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ",
+    //
+    /* 4 */
+    "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
+    //
+    /* 5 */
+    "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
 ];
 
 // Test using datasets that are either in the extended public dataset collection, or which are
@@ -722,7 +776,7 @@ pub const EXAMPLES: [&str; 2] = [
 
 // List of examples on site.
 
-pub const SITE_EXAMPLES: [(&str, &str); 16] = [
+pub const SITE_EXAMPLES: [(&str, &str); 22] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
     (
@@ -813,6 +867,42 @@ pub const SITE_EXAMPLES: [(&str, &str); 16] = [
         "pages/auto/variable_demo2.html",
         "BCR=123085 CDR3=CALMGTYCSGDNCYSWFDPW POUT=stdouth PCOLS=barcodes,u1 \
          HTML=\"variable demo2\"",
+    ),
+    // 17.
+    (
+        "pages/auto/d_gene_example1.html",
+        "BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CTRDRDLRGATDAFDIW \
+         HTML=\"D gene example1\"",
+    ),
+    // 18.
+    (
+        "pages/auto/d_gene_example1b.html",
+        "BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE \
+         HTML=\"D gene example1b\"",
+    ),
+    // 19.
+    (
+        "pages/auto/d_gene_example2.html",
+        "BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT \
+         HTML=\"D gene example2\"",
+    ),
+    // 20.
+    (
+        "pages/auto/align_example.html",
+        "BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name \
+         HTML=\"ALIGN example\"",
+    ),
+    // 21.
+    (
+        "pages/auto/jun_align_example.html",
+        "BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name \
+         HTML=\"JALIGN example\"",
+    ),
+    // 22.
+    (
+        "pages/auto/vddj.html",
+        "BCR=165808 JALIGN1 CDR3=CARAYDILTGYYERGYSYGWGFDYW \
+         HTML=\"VDDJ example\"",
     ),
 
 // Notes on how to add to the above SITE_EXAMPLES:

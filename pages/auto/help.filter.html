@@ -74,6 +74,7 @@ scanning for feature enrichment.
 │                     │  For both SEG and SEGN, multiple instances are allowed, and their       │
 │                     │  effects are cumulative.                                                │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│MAX_EXACTS=n         │  only show clonotypes having at most n exact subclonotypes              │
 │MIN_EXACTS=n         │  only show clonotypes having at least n exact subclonotypes             │
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │VJ=seq               │  only show clonotypes using exactly the given V..J sequence             │
@@ -100,6 +101,10 @@ scanning for feature enrichment.
 ├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
 │MAIT                 │  only show clonotypes for which some exact subclonotype is annotated as │
 │                     │  having some MAIT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details              │
+├─────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│D_INCONSISTENT       │  only show clonotypes having an inconsistent assignment of D genes      │
+│D_NONE               │  only show clonotypes having a null D gene assignment                   │
+│D_SECOND             │  only show VDDJ clonotypes                                              │
 └─────────────────────┴─────────────────────────────────────────────────────────────────────────┘
 
 * Examples of how to specify CDR3:

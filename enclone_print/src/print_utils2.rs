@@ -640,7 +640,13 @@ pub fn row_fill(
 
             let mut needed = false;
             let var = &all_vars[j];
-            if !ex.share[mid].left && (*var == "opt_d" || *var == "opt_d2" || *var == "opt_d_delta")
+            if !ex.share[mid].left
+                && (*var == "d1_name"
+                    || *var == "d2_name"
+                    || *var == "d_delta"
+                    || *var == "d_Δ"
+                    || *var == "d1_score"
+                    || *var == "d2_score")
             {
                 continue;
             }

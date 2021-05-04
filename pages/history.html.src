@@ -29,6 +29,34 @@ source code that's available).  We apologize for this asynchrony!  Note however 
 command-line help that comes with your copy of #enclone will always match its behavior.</p>
 
 <hr>
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<p>
+<b>5/4/21</b>: Several changes that involve D gene assignment, and which allow for the VDDJ case:
+<ul>
+<li>Add cvars <code>d1_name</code>, <code>d2_name</code>, <code>d1_score</code>, 
+    <code>d2_score</code>, <code>d_delta</code> or equivalently <code>d_Δ</code>, see
+    <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> and
+    <a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>
+<li>Add options <code>ALIGN&ltn></code> and <code>JALIGN&ltn></code> to exhibit visual 
+    alignments of V..J sequences or just the junction regions to the concatenated VDJ reference, see
+    <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> and
+    <a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.
+    There are also <code>ALIGN_2ND&ltn></code> and <code>JALIGN_2ND&ltn></code> to use instead the 
+    second best D gene alignments.</li>
+<li>Add global variables <code>d_inconsistent_%</code> and <code>d_inconsistent_n</code> that
+    provide statistics on overall consistency of D gene assignment, see
+    <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a> and
+    <a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>
+<li>Add filters <code>D_INCONSISTENT</code> to only show clonotypes having an inconsistent D gene 
+    assignment, <code>D_NONE</code> to show clonotypes have a null D gene assignment, and
+    <code>D_SECOND</code> to show only VDDJ clonotypes.</li>
+<li>Add grouping options <code>GROUP_VJ_REFNAME_HEAVY</code> and <code>GROUP_VDJ_REFNAME_HEAVY</code>, see
+    <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</li>
+</ul>
+Additionally, the main page on this site now provides links to previous releases of #enclone
+that match particular releases of Cell Ranger.  And there is a new filter <code>MAX_EXACTS</code>.
+</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 

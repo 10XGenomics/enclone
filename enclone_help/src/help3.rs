@@ -316,9 +316,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc2("effects are cumulative.");
 
-        // doc MIN_EXACTS
+        // doc MAX_EXACTS and MIN_EXACTS
 
         h.ldoc(
+            "MAX_EXACTS=n",
+            "only show clonotypes having at most n exact subclonotypes",
+        );
+        h.doc(
             "MIN_EXACTS=n",
             "only show clonotypes having at least n exact subclonotypes",
         );
@@ -393,6 +397,15 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
             "",
             "having some MAIT evidence, see \\green{bit.ly/enclone} for details",
         );
+        h.ldoc(
+            "D_INCONSISTENT",
+            "only show clonotypes having an inconsistent assignment of D genes",
+        );
+        h.doc(
+            "D_NONE",
+            "only show clonotypes having a null D gene assignment",
+        );
+        h.doc("D_SECOND", "only show VDDJ clonotypes");
 
         // print main table
 

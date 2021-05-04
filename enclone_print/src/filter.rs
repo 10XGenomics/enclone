@@ -9,6 +9,8 @@ use vdj_ann::*;
 use self::refx::*;
 use edit_distance::edit_distance;
 use enclone_core::defs::*;
+use enclone_core::opt_d::*;
+use enclone_proto::types::DonorReferenceItem;
 use std::cmp::*;
 use string_utils::*;
 use vector_utils::*;
@@ -20,6 +22,7 @@ pub fn survives_filter(
     exact_clonotypes: &Vec<ExactClonotype>,
     refdata: &RefData,
     gex_info: &GexInfo,
+    dref: &Vec<DonorReferenceItem>,
 ) -> bool {
     let mut mults = Vec::<usize>::new();
     for i in 0..exacts.len() {
@@ -231,9 +234,12 @@ pub fn survives_filter(
         return false;
     }
 
-    // Clonotypes with at least n chains
+    // Clonotypes with at least n chains or at most n chains
 
     if exacts.len() < ctl.clono_filt_opt.min_exacts {
+        return false;
+    }
+    if exacts.len() > ctl.clono_filt_opt.max_exacts {
         return false;
     }
 
@@ -431,5 +437,131 @@ pub fn survives_filter(
     if ctl.clono_filt_opt.fail_only && donors.len() <= 1 {
         return false;
     }
+
+    // Inconsistent D genes.
+
+    if ctl.clono_filt_opt.d_inconsistent {
+        let mut inconsistent = false;
+        for col in 0..rsi.mat.len() {
+            let mut dvotes = Vec::<Vec<usize>>::new();
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
+                        opt_d(
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
+                            &ctl,
+                        );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
+                        dvotes.push(opt);
+                    }
+                }
+            }
+            unique_sort(&mut dvotes);
+            if dvotes.len() >= 2 {
+                inconsistent = true;
+            }
+        }
+        if !inconsistent {
+            return false;
+        }
+    }
+
+    // None D genes.
+
+    if ctl.clono_filt_opt.d_none {
+        let mut none = false;
+        for col in 0..rsi.mat.len() {
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
+                        opt_d(
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
+                            &ctl,
+                        );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
+                        if opt.is_empty() {
+                            none = true;
+                        }
+                    }
+                }
+            }
+        }
+        if !none {
+            return false;
+        }
+    }
+
+    // Second D genes.
+
+    if ctl.clono_filt_opt.d_second {
+        let mut second = false;
+        for col in 0..rsi.mat.len() {
+            for u in 0..exacts.len() {
+                let ex = &exact_clonotypes[exacts[u]];
+                let m = rsi.mat[col][u];
+                if m.is_some() {
+                    let m = m.unwrap();
+                    if ex.share[m].left {
+                        let mut scores = Vec::<f64>::new();
+                        let mut ds = Vec::<Vec<usize>>::new();
+                        opt_d(
+                            &ex,
+                            col,
+                            u,
+                            &rsi,
+                            &refdata,
+                            &dref,
+                            &mut scores,
+                            &mut ds,
+                            &ctl,
+                        );
+                        let mut opt = Vec::new();
+                        if ds.len() > 0 {
+                            opt = ds[0].clone();
+                        }
+                        if opt.len() == 2 {
+                            second = true;
+                        }
+                    }
+                }
+            }
+        }
+        if !second {
+            return false;
+        }
+    }
+
+    // Done.
+
     return true;
 }

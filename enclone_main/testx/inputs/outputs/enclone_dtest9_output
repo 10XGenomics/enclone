@@ -1,0 +1,46 @@
+
+[1m[38;5;27m[1] GROUP = 1 CLONOTYPES = 1 CELLS[0m
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────────┬──────────────────────────┐
+│           │  [1mCHAIN 1[0m                                │  CHAIN 2                 │
+│           │  [1m194|IGHV4-59 ◆ 21|IGHD3-3 ◆ 59|IGHJ6[0m   │  265|IGKV2-28 ◆ 213|IGKJ1│
+│           ├─────────────────────────────────────────┼──────────────────────────┤
+│           │  111111111111111111111111111            │  11111111111             │
+│           │  111111122222222223333333333            │  11111111222             │
+│           │  345678901234567890123456789            │  23456789012             │
+│           │  ════════════CDR3═══════════            │  ════CDR3═══             │
+│reference  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[1m[38;5;175mY[0m[38;5;36mM[1m[38;5;25mD[38;5;75mV[38;5;166mW[0m            │  [1m[38;5;75mC[0m[38;5;36mM[1m[38;5;166mQ[0m◦◦◦◦◦◦◦◦             │
+│donor ref  │  ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦[1m[38;5;175mY[0m[38;5;36mM[1m[38;5;25mD[38;5;75mV[38;5;166mW[0m            │  [1m[38;5;75mC[0m[38;5;36mM[1m[38;5;166mQ[0m◦◦◦◦◦◦◦◦             │
+├───────────┼─────────────────────────────────────────┼──────────────────────────┤
+│[1m#  n       [0m│[1m  ...........................  u  const  [0m│[1m  ...........   u  const  [0m│
+│1  1       │  [38;5;178mC[38;5;36mA[38;5;178mR[38;5;36mG[1m[38;5;175mY[0m[38;5;36mD[1m[38;5;25mF[38;5;166mW[0m[38;5;178mS[1m[38;5;166mG[38;5;75mY[0m[38;5;178mLV[38;5;36mG[1m[38;5;25mN[38;5;166mW[38;5;75mA[38;5;166mG[38;5;25mD[38;5;175mYYYY[0m[38;5;36mM[1m[38;5;25mD[38;5;75mV[38;5;166mW[0m  5  IGHD   │  [1m[38;5;75mC[0m[38;5;36mM[1m[38;5;166mQ[38;5;75mA[38;5;175mL[38;5;166mQ[38;5;175mTP[38;5;166mW[38;5;25mT[38;5;166mF[0m  18  IGKC   │
+└───────────┴─────────────────────────────────────────┴──────────────────────────┘
+
+CHAIN 1 OF #1  •  CONCATENATED [1m[38;5;25mV[38;5;166mD[0m[38;5;178mJ[0m REFERENCE  •  D = 1ST = [1m[38;5;166mIGHD3-3[0m
+                                                                                                    
+ATGAAACATCTGTGGTTCTTCCTTCTCCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTT
+[1m[38;5;25mATGAAACATCTGTGGTTCTTCCTTCTCCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTT[0m
+
+                                                                                                    
+CGGAGACCCTGTCCCTCACCTGCACTGTCTCTGGTGGCTCCATCAGTAGTTACTACTGGAGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGAT
+[1m[38;5;25mCGGAGACCCTGTCCCTCACCTGCACTGTCTCTGGTGGCTCCATCAGTAGTTACTACTGGAGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGAT[0m
+
+                                                                                                    
+TGGGTATATCTATTACAGTGGGAGCACCAACTACAACCCCTCCCTCAAGAGTCGAGTCACCATATCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAG
+[1m[38;5;25mTGGGTATATCTATTACAGTGGGAGCACCAACTACAACCCCTCCCTCAAGAGTCGAGTCACCATATCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAG[0m
+
+                                                 |||**                      *****||||||||||* ****   
+CTGAGCTCTGTGACCGCTGCGGACACGGCCGTGTATTACTGTGCGAGAG   GCTACGATTTTTGGAGTGGTTATTTGGTTGGCAATTGGGCTGGTGACT
+[1m[38;5;25mCTGAGCTCTGTGACCGCTGCGGACACGGCCGTGTATTACTGTGCGAGAGA[38;5;166mGTATTACGATTTTTGGAGTGGTTATTATACC[0m[38;5;178m          ATTACTACT[0m
+
+                                                      
+ACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG
+[38;5;178mACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCAG[0m
+
+CHAIN 1 OF #1  •  CONCATENATED [1m[38;5;25mV[38;5;166mD[0m[38;5;178mJ[0m REFERENCE  •  D = 1ST = [1m[38;5;166mIGHD3-3[0m
+   C  A  R     G  Y  D  F  W  S  G  Y  L  V  G  N  W  A  G  D  Y  Y  Y   
+            |||**                      *****||||||||||* ****             
+ACTGTGCGAGAG   GCTACGATTTTTGGAGTGGTTATTTGGTTGGCAATTGGGCTGGTGACTACTACTACTA
+[1m[38;5;25mACTGTGCGAGAGA[38;5;166mGTATTACGATTTTTGGAGTGGTTATTATACC[0m[38;5;178m          ATTACTACTACTACTACTA[0m
+

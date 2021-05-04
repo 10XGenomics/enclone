@@ -4,7 +4,7 @@
 //
 // This records the id and cellranger version.
 
-use enclone::proc_args::*;
+use enclone_core::defs::*;
 use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;

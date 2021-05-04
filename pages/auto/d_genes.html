@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--  -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>D genes and junction regions</title>
+<link rel="stylesheet" type="text/css" href="../enclone_css_v2.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){{dataLayer.push(arguments);}}
+gtag('js', new Date());
+gtag('config', 'UA-58278925-3');
+</script>
+
+        
+        </head>
+
+        <! ––
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        PUT DOWN YOUR HAMMER.
+        THIS IS AN AUTO-GENERATED FILE.  PLEASE DO NOT EDIT IT.
+        THANK YOU FOR YOUR COOPERATION,
+
+        SINCERELY,
+        THE BENEVOLENT OVERLORDS
+
+        💩 💩 💩 🔴 🔨 🔨 🔨 🔨 🔨 🔨 🔴 💩 💩 💩
+
+        ––>
+
+<body>
+
+<br>
+<a href="../../index.html#help">
+<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
+</a>
+
+<h1>D genes and junction regions</h1>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> has some tools for understanding D gene assignment and junction region structure.</p>
+
+<hr>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can assign D genes to each IGH or TRB exact subclonotype, independent of the 
+assignment made by Cell Ranger.  Every such exact subclonotype is assigned the optimal D gene, 
+or two D genes (in a VDDJ) configuration, or null, depending on score.  The "none" case is
+applied only when no insertion is observed.</p>
+
+<p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
+padding: 8px; width: 900px; font-size: 110%">
+In general, although D genes are always assigned, they cannot be assigned confidently.
+<br>• <b>This is a consequence of the biology: D genes are short, and junction regions can be 
+      heavily edited during SHM and through non-templated indels during VDJ recombination, so in 
+      general it is just not possible to know.</b>
+<br>• The reason we make these assignments, even though they are not confident, is that in general 
+      they allow one to better understand what happened during junction
+      region rearrangement, even though that understanding is often incomplete.
+<br>• D gene assignments are not guaranteed to be consistent across a clonotype.  
+<br>• We have no way of knowing the true error rate in D gene assignment.  However because on
+      very large data sets we observe an inconsistency rate within clonotypes of 
+      <code>~13%</code>, we very roughly estimate the error rate for D gene assignment at
+      <code>5-15%</code>.  Note of course that the true rate would likely 
+      depend on sample properties including the rate of SHM.
+</p>
+
+<hr>
+
+<p>There are variables that show the best and second best D gene assignment, and the difference
+in score between them, see
+<a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.  Here is an
+example:</p>
+
+<pre><code>enclone BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CTRDRDLRGATDAFDIW</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 51 CELLS</span>
+
+[1.1] CLONOTYPE = 51 CELLS
+┌───────────┬───────────────────────────────────────────────────┬──────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                          │  CHAIN 2                 │
+│           │  <span style="font-weight:bold;">144.1.2|IGHV3-49 ◆ 53|IGHJ3</span>                      │  279|IGKV3-11 ◆ 217|IGKJ5│
+│           ├───────────────────────────────────────────────────┼──────────────────────────┤
+│           │   1 11111111111111111 1                           │    1111111111111         │
+│           │  51 11112222222222333 4                           │  6 0001111111111         │
+│           │  53 67890123456789012 1                           │  4 7890123456789         │
+│           │     ═══════CDR3══════                             │    ═════CDR3════         │
+│reference  │  <span style="color:#72c0ff;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">V</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>                           │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span>◦◦◦◦◦◦◦◦◦◦         │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">FV</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>                           │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span>◦◦◦◦◦◦◦◦◦◦         │
+├───────────┼───────────────────────────────────────────────────┼──────────────────────────┤
+│<span style="font-weight:bold;">#   n      </span>│<span style="font-weight:bold;">  .x ................. x  d1_name   d2_name   d_Δ  </span>│<span style="font-weight:bold;">  x .x...........         </span>│
+│1  46      │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>  IGHD1-14  IGHD1-26  4.0  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
+│2   3      │  <span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">M</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>  IGHD1-14  IGHD1-26  4.0  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">CH</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
+│3   1      │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#f37721;font-weight:bold;">S</span>  IGHD1-14  IGHD1-26  4.0  │  <span style="color:#3e7dd1;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
+│4   1      │  <span style="color:#f37721;font-weight:bold;">FV</span> <span style="color:#e7bd20;">C</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#e7bd20;">R</span><span style="color:#31c39a;">DR</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GA</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">F</span><span style="color:#31c39a;">D</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">W</span> <span style="color:#31c39a;">S</span>  IGHD1-14  IGHD1-26  4.0  │  <span style="color:#f37721;font-weight:bold;">R</span> <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#3e7dd1;font-weight:bold;">PP</span><span style="color:#72c0ff;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">I</span><span style="color:#e7bd20;">T</span><span style="color:#f37721;font-weight:bold;">F</span>         │
+└───────────┴───────────────────────────────────────────────────┴──────────────────────────┘
+</span></pre>
+
+</p>
+In this example, the D genes are assigned consistently across the clonotype.  Here is an example
+where they are assigned inconsistently:
+</p>
+
+<pre><code>enclone BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE
+</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 6 CELLS</span>
+
+[1.1] CLONOTYPE = 6 CELLS
+┌───────────┬─────────────────────────────────────────────────────┬──────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                            │  CHAIN 2                 │
+│           │  <span style="font-weight:bold;">146.1.1|IGHV3-53 ◆ 51|IGHJ2</span>                        │  279|IGKV3-11 ◆ 215|IGKJ3│
+│           ├─────────────────────────────────────────────────────┼──────────────────────────┤
+│           │     11111111111111111111                            │  1111111111111           │
+│           │  12 11111112222222222333                            │  0001111111111           │
+│           │  35 34567890123456789012                            │  7890123456789           │
+│           │     ════════CDR3════════                            │  ═════CDR3════           │
+│reference  │  <span style="color:#eb99c2;font-weight:bold;">ST</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">W</span>                            │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span>◦◦◦◦◦◦◦◦◦◦           │
+│donor ref  │  <span style="color:#72c0ff;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">S</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#31c39a;">L</span><span style="color:#f37721;font-weight:bold;">W</span>                            │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span>◦◦◦◦◦◦◦◦◦◦           │
+├───────────┼─────────────────────────────────────────────────────┼──────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  .. ...........x........  d1_name   d2_name    d_Δ  </span>│<span style="font-weight:bold;">  .............           </span>│
+│1  5       │  <span style="color:#72c0ff;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#eb99c2;font-weight:bold;">E</span><span style="color:#72c0ff;font-weight:bold;">GG</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#f37721;font-weight:bold;">VV</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">DL</span><span style="color:#f37721;font-weight:bold;">W</span>  IGHD2-21  IGHD2-15  13.7  │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#31c39a;">P</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#72c0ff;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>           │
+│2  1       │  <span style="color:#72c0ff;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">S</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#eb99c2;font-weight:bold;">E</span><span style="color:#72c0ff;font-weight:bold;">GG</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">G</span><span style="color:#f37721;font-weight:bold;">VV</span><span style="color:#eb99c2;font-weight:bold;">TT</span><span style="color:#e7bd20;">T</span><span style="color:#3e7dd1;font-weight:bold;">D</span><span style="color:#f37721;font-weight:bold;">W</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">DL</span><span style="color:#f37721;font-weight:bold;">W</span>  IGHD2-15  IGHD3-22   1.5  │  <span style="color:#e7bd20;">C</span><span style="color:#3e7dd1;font-weight:bold;">QQ</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#f37721;font-weight:bold;">NW</span><span style="color:#31c39a;">P</span><span style="color:#3e7dd1;font-weight:bold;">P</span><span style="color:#72c0ff;font-weight:bold;">L</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>           │
+└───────────┴─────────────────────────────────────────────────────┴──────────────────────────┘
+</span></pre>
+
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can
+compute the rate at which D genes are <i>inconsistently</i> assigned across all the data.  This
+is the probability, given two different exact subclonotypes from the same clonotype, that their
+heavy chains are assigned different D genes.  Here you can see the rate:</p>
+
+<pre><code>enclone BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">GLOBAL VARIABLES
+
+d_inconsistent_% = 2.11
+d_inconsistent_n = 712
+</span></pre>
+
+<p>The second variable is the sample size: the number of pairs of exact subclonotypes that
+were examined.</p>
+
+<p>The inconsistency rate for this dataset is deceptively low, perhaps because the sample size is 
+too small.  For larger datasets we see a rate of around 16%, however the rate likely depends on 
+the particular samples, and not just the sample size.  The option <code>D_INCONSISTENT</code> can 
+be used to show only those clonotypes having D gene assignment inconsistencies.</p>
+
+<hr>
+
+<p>
+For any chain in any exact subclonotype, <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can display the alignment of the entire V..J 
+sequence to the reference V..J sequence, and it can also display the alignment of just the 
+junction region (extended by a small and arbitrary amount on both ends to get the display to
+work).  This feature is enabled by adding 
+<code>ALIGN&ltn></code> or
+<code>JALIGN&ltn></code> to the command line, where <code>n</code> is the chain number.  It
+displays one alignment per exact subclonotype, so for brevity we'll show examples where there is 
+just one.  Here is an example for the full alignment:
+</p>
+
+<pre><code>enclone BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span>
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                        │  CHAIN 2                  │
+│           │  <span style="font-weight:bold;">190.1.1|IGHV4-39 ◆ 13|IGHD2-15 ◆ 57|IGHJ5</span>      │  219|IGKV1-12 ◆ 216|IGKJ4 │
+│           ├─────────────────────────────────────────────────┼───────────────────────────┤
+│           │      111111111111111111111                      │      11111111111          │
+│           │  135 222222223333333333444                      │  369 01111111111          │
+│           │  648 234567890123456789012                      │  155 90123456789          │
+│           │      ═════════CDR3════════                      │      ════CDR3═══          │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+├───────────┼─────────────────────────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  ... .....................  u  const  d1_name   </span>│<span style="font-weight:bold;">  ... ...........  u  const</span>│
+│1  1       │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">P</span><span style="color:#f37721;font-weight:bold;">G</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#72c0ff;font-weight:bold;">YI</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">VV</span><span style="color:#31c39a;">V</span><span style="color:#72c0ff;font-weight:bold;">AA</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#31c39a;">VG</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  4  IGHG1  IGHD2-15  │  <span style="color:#f37721;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#e7bd20;">S</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">PL</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  2  IGKC │
+└───────────┴─────────────────────────────────────────────────┴───────────────────────────┘
+
+CHAIN 1 OF #1  •  CONCATENATED <span style="color:#3e7dd1;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">D</span><span style="color:#e7bd20;">J</span> REFERENCE  •  D = 1ST = <span style="color:#f37721;font-weight:bold;">IGHD2-15</span>
+                                                                                                    
+ATGGATCTCATGTGCAAGAAAATGAAGCACCTGTGGTTCTTCCTCCTGGTGGTGGCGGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCGG
+<span style="color:#3e7dd1;font-weight:bold;">ATGGATCTCATGTGCAAGAAAATGAAGCACCTGTGGTTCTTCCTCCTGGTGGTGGCGGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCGG</span>
+
+    *                                                                     *                         
+GCCCTGGACTGGTGAAGCCTTCGGAGACCCTGTCCCTCACCTGCACTGTCTCTGGTGGCTCCATCAGCAGTAGTGGTTACTACTGGGGCTGGATCCGCCA
+<span style="color:#3e7dd1;font-weight:bold;">GCCCAGGACTGGTGAAGCCTTCGGAGACCCTGTCCCTCACCTGCACTGTCTCTGGTGGCTCCATCAGCAGTAGTAGTTACTACTGGGGCTGGATCCGCCA</span>
+
+                                                                                                    
+GCCCCCAGGGAAGGGGCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATATCCGTAGAC
+<span style="color:#3e7dd1;font-weight:bold;">GCCCCCAGGGAAGGGGCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATATCCGTAGAC</span>
+
+                                                                *          *||||                    
+ACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGCAGACACGGCTGTGTATTTCTGTGCGAGAT    ATATTGTAGTGGTGGTAGCT
+<span style="color:#3e7dd1;font-weight:bold;">ACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGCAGACACGGCTGTGTATTACTGTGCGAGACA</span><span style="color:#f37721;font-weight:bold;">AGGATATTGTAGTGGTGGTAGCT</span>
+
+      **|||||****                                               
+GCTACTATAAACGTAGGCTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG
+<span style="color:#f37721;font-weight:bold;">GCTACTCC</span><span style="color:#e7bd20;">     ACAACTGGTTCGACCCCTGGGGCCAGGGAACCCTGGTCACCGTCTCCTCAG</span>
+</span></pre>
+
+<p>
+And here is the same example, but showing just the junction region:
+</p>
+
+<pre><code>enclone BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span>
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────────────────┬───────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                        │  CHAIN 2                  │
+│           │  <span style="font-weight:bold;">190.1.1|IGHV4-39 ◆ 13|IGHD2-15 ◆ 57|IGHJ5</span>      │  219|IGKV1-12 ◆ 216|IGKJ4 │
+│           ├─────────────────────────────────────────────────┼───────────────────────────┤
+│           │      111111111111111111111                      │      11111111111          │
+│           │  135 222222223333333333444                      │  369 01111111111          │
+│           │  648 234567890123456789012                      │  155 90123456789          │
+│           │      ═════════CDR3════════                      │      ════CDR3═══          │
+│reference  │  <span style="color:#3e7dd1;font-weight:bold;">L</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+│donor ref  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#e7bd20;">PS</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦<span style="color:#f37721;font-weight:bold;">W</span>                      │  <span style="color:#31c39a;">SP</span><span style="color:#e7bd20;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span>◦◦◦◦◦◦◦◦          │
+├───────────┼─────────────────────────────────────────────────┼───────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  ... .....................  u  const  d1_name   </span>│<span style="font-weight:bold;">  ... ...........  u  const</span>│
+│1  1       │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">P</span><span style="color:#f37721;font-weight:bold;">G</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#72c0ff;font-weight:bold;">YI</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">VV</span><span style="color:#31c39a;">V</span><span style="color:#72c0ff;font-weight:bold;">AA</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#3e7dd1;font-weight:bold;">I</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#31c39a;">VG</span><span style="color:#f37721;font-weight:bold;">WF</span><span style="color:#3e7dd1;font-weight:bold;">DP</span><span style="color:#f37721;font-weight:bold;">W</span>  4  IGHG1  IGHD2-15  │  <span style="color:#f37721;font-weight:bold;">S</span><span style="color:#e7bd20;">P</span><span style="color:#eb99c2;font-weight:bold;">T</span> <span style="color:#e7bd20;">C</span><span style="color:#f37721;font-weight:bold;">Q</span><span style="color:#3e7dd1;font-weight:bold;">Q</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#e7bd20;">S</span><span style="color:#f37721;font-weight:bold;">F</span><span style="color:#31c39a;">PL</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">F</span>  2  IGKC │
+└───────────┴─────────────────────────────────────────────────┴───────────────────────────┘
+
+CHAIN 1 OF #1  •  CONCATENATED <span style="color:#3e7dd1;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">D</span><span style="color:#e7bd20;">J</span> REFERENCE  •  D = 1ST = <span style="color:#f37721;font-weight:bold;">IGHD2-15</span>
+   C  A  R      Y  I  V  V  V  V  A  A  T  I  N  V  G  W  F  D  P 
+*          *||||                          **|||||****             
+TCTGTGCGAGAT    ATATTGTAGTGGTGGTAGCTGCTACTATAAACGTAGGCTGGTTCGACCCC
+<span style="color:#3e7dd1;font-weight:bold;">ACTGTGCGAGACA</span><span style="color:#f37721;font-weight:bold;">AGGATATTGTAGTGGTGGTAGCTGCTACTCC</span><span style="color:#e7bd20;">     ACAACTGGTTCGACCCC</span>
+</span></pre>
+
+<p>For <code>JALIGN</code>, we show a line of amino acids that represent the translation of
+bases in the exact subclonotype sequence.  The amino acid lies over the middle base of the
+corresponding codon.</p>
+
+<p>There are also options <code>ALIGN_2ND&ltn></code> 
+and <code>JALIGN_2ND&ltn></code> to instead use the second best D segments.</p>
+
+<p>Here is an example showing a VDDJ clonotype:</p>
+
+<pre><code>enclone BCR=165808 JALIGN1 CDR3=CARAYDILTGYYERGYSYGWGFDYW</code></pre>
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px"><span style="color:#4c7aff;font-weight:bold;">[1] GROUP = 1 CLONOTYPES = 1 CELLS</span>
+
+[1.1] CLONOTYPE = 1 CELLS
+┌───────────┬─────────────────────────────────────────────┬────────────────────────────────┐
+│           │  <span style="font-weight:bold;">CHAIN 1</span>                                    │  CHAIN 2                       │
+│           │  <span style="font-weight:bold;">122.1.1|IGHV3-23 ◆ 22|IGHD3-9 ◆ 55|IGHJ4</span>   │  331|IGLV1-51 ◆ 311|IGLJ2      │
+│           ├─────────────────────────────────────────────┼────────────────────────────────┤
+│           │       1111111111111111111111111             │     1111111111111 11           │
+│           │  2677 1111112222222222333333333             │  66 0001111111111 22           │
+│           │  3857 4567890123456789012345678             │  45 7890123456789 48           │
+│           │       ═══════════CDR3══════════             │     ═════CDR3════              │
+│reference  │  <span style="color:#f37721;font-weight:bold;">V</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦             │  <span style="color:#72c0ff;font-weight:bold;">K</span><span style="color:#31c39a;">L</span> <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">G</span><span style="color:#f37721;font-weight:bold;">TW</span><span style="color:#31c39a;">D</span>◦◦◦◦◦◦◦◦ <span style="color:#e7bd20;">K</span><span style="color:#eb99c2;font-weight:bold;">L</span>           │
+│donor ref  │  <span style="color:#e7bd20;">L</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#eb99c2;font-weight:bold;">Y</span> ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦             │  <span style="color:#72c0ff;font-weight:bold;">K</span><span style="color:#31c39a;">L</span> <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">G</span><span style="color:#f37721;font-weight:bold;">TW</span><span style="color:#31c39a;">D</span>◦◦◦◦◦◦◦◦ <span style="color:#e7bd20;">K</span><span style="color:#eb99c2;font-weight:bold;">L</span>           │
+├───────────┼─────────────────────────────────────────────┼────────────────────────────────┤
+│<span style="font-weight:bold;">#  n       </span>│<span style="font-weight:bold;">  .... .........................   u  const  </span>│<span style="font-weight:bold;">  .. ............. ..   u  const</span>│
+│1  1       │  <span style="color:#e7bd20;">L</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">N</span><span style="color:#72c0ff;font-weight:bold;">Y</span> <span style="color:#e7bd20;">C</span><span style="color:#31c39a;">A</span><span style="color:#e7bd20;">R</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#31c39a;">D</span><span style="color:#72c0ff;font-weight:bold;">I</span><span style="color:#e7bd20;">L</span><span style="color:#eb99c2;font-weight:bold;">T</span><span style="color:#f37721;font-weight:bold;">G</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#e7bd20;">E</span><span style="color:#72c0ff;font-weight:bold;">R</span><span style="color:#eb99c2;font-weight:bold;">GY</span><span style="color:#3e7dd1;font-weight:bold;">S</span><span style="color:#72c0ff;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">GW</span><span style="color:#31c39a;">G</span><span style="color:#3e7dd1;font-weight:bold;">FD</span><span style="color:#eb99c2;font-weight:bold;">Y</span><span style="color:#f37721;font-weight:bold;">W</span>  16  IGHM   │  <span style="color:#e7bd20;">K</span><span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#72c0ff;font-weight:bold;">C</span><span style="color:#eb99c2;font-weight:bold;">G</span><span style="color:#f37721;font-weight:bold;">TW</span><span style="color:#31c39a;">D</span><span style="color:#3e7dd1;font-weight:bold;">SSL</span><span style="color:#e7bd20;">S</span><span style="color:#72c0ff;font-weight:bold;">A</span><span style="color:#f37721;font-weight:bold;">V</span><span style="color:#31c39a;">V</span><span style="color:#f37721;font-weight:bold;">F</span> <span style="color:#3e7dd1;font-weight:bold;">T</span><span style="color:#e7bd20;">P</span>  15  IGLC2│
+└───────────┴─────────────────────────────────────────────┴────────────────────────────────┘
+
+CHAIN 1 OF #1  •  CONCATENATED <span style="color:#3e7dd1;font-weight:bold;">V</span><span style="color:#f37721;font-weight:bold;">D</span><span style="color:#72c0ff;font-weight:bold;">D</span><span style="color:#e7bd20;">J</span> REFERENCE  •  D = 1ST = <span style="color:#f37721;font-weight:bold;">IGHD3-9</span>:<span style="color:#72c0ff;font-weight:bold;">IGHD5-18</span>
+   C  A  R     A  Y  D  I  L  T  G  Y  Y  E  R  G  Y  S  Y  G  W    G  F  D  Y  W 
+         *  |||*                        |||||                  *||***             
+ACTGTGCGAGAG   CTTACGATATTTTGACTGGTTATTACGAACGTGGATACAGCTATGGTTG  GGGCTTTGACTACTGG
+<span style="color:#3e7dd1;font-weight:bold;">ACTGTGCGAAAGA</span><span style="color:#f37721;font-weight:bold;">GTATTACGATATTTTGACTGGTTATTA</span><span style="color:#72c0ff;font-weight:bold;">     GTGGATACAGCTATGGTTAC</span><span style="color:#e7bd20;">ACTACTTTGACTACTGG</span>
+</span></pre>
+
+<p>For VDDJ clonotypes, we do not check that the two D genes are in order on the
+genome, which would make sense biologically.  We do not carry out the check because an individual
+genome might be rearranged, and in an case, we are simply reporting what we observe.</p>
+
+<hr>
+
+<h2>How the algorithm works</h2>
+
+<p>The problems we are solving here are to (a) pick the "best" reference D segment, in the case of
+IGH or TRB, and (b) exhibit the "correct" alignment of the transcript to the concatenated
+reference.</p>
+
+<p>
+The algorithm aligns the V(D)J region on a transcript to the concatenated V(D)J reference, allowing
+for each possible D reference segment (or the null D segment, or DD), in the case of IGH or TRB.  
+These alignments are carried out using the following scoring scheme:
+</p>
+
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<tr><td> <b>case</b>                       </td><td> <b>score</b>      </td></tr>
+<tr><td> match                             </td><td>   2               </td></tr>
+<tr><td> mismatch                          </td><td>  -2               </td></tr>
+<tr><td> gap open for insertion between V/D/J segments   </td><td>  -4     </td></tr>
+<tr><td> gap open for deletion bridging V/D/J segments   </td><td>  -4     </td></tr>
+<tr><td> gap open (otherwise)              </td><td> -12               </td></tr>
+<tr><td> gap extend for insertion between V/D/J segments </td><td>  -1     </td></tr>
+<tr><td> gap extend (otherwise)            </td><td>  -2               </td></tr>
+</table>
+</p>
+
+<p>To the score from this, we add <code>2.2</code> times a "bit score" for the alignment,
+defined as <code>-log2</code> of the probability that a random DNA sequence of length n will match 
+a given DNA sequence with ≤ k mismatches = <code>sum{l=0..=k} (n choose l) * 3^l / 4^n</code>.</p>
+
+<p>The alignment that is produced is approximately optimal, relative to this scoring scheme.  It
+is not exactly optimal because we first produce an alignment using a Smith-Waterman algorithm,
+which does not fully incorporate the complexity of the scoring scheme, and then edit both the
+alignment and its score.</p>
+
+<p>Then the D segment having 
+the highest score is selected, arbitrarily selecting a winner in the case of a tie.</p>
+
+<p>The following were optimized in designing the algorithm:
+<ul>
+<li>the inconsistency rate for a large dataset (over a million cells)</li>
+<li>placement of indels (manual examination)</li>
+<li>consistency with IgBLAST, or if not, justifiable difference from it.</li>
+</ul>
+However, there is no rigorous way to balance these criteria.  The algorithm is not optimal
+but it is unclear how one would decide that a new algorithm was better.
+</p>
+
+<p>In more detail, here is how we assess the inconsistency rate.  There are two issues.  First,
+if one allows clonotypes having a large number of exact subclonotypes, then measurement is noisy
+because a single clonotype can overly influence the rate.  For this reason, we restrict to
+clonotypes having at most <code>10</code> exact subclonotypes.  Second, for experimental purposes,
+it is too slow to keep recomputing using a very large dataset.  Therefore we do the following
+(with a large dataset substituted in):
+</p>
+
+<pre><code>enclone BCR=... SUBSET_JSON=subset/outs/all_contig_annotations.json NOPRINT MIN_EXACTS=2 MAX_EXACTS=10</code></pre>
+
+<p>which is slow, followed by:</p>
+
+<pre><code>enclone BCR=subset GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT</code></pre>
+
+<p>which is much faster, to get an inconsistency rate.</p>
+
+<hr>
+
+<h2>References for VDDJ recombination</h2>
+
+<p>
+<ol>
+<li>Briney, B.S. et al. 2012. 
+    <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3449247/pdf/imm0137-0056.pdf">Frequency 
+    and genetic characterization of V(DD)J recombinants in the 
+    human peripheral blood antibody repertoire</a>. <b>Immunology</b>.</li>
+<li>Briney, B.S. et al. 2013. 
+    <a href="https://www.frontiersin.org/articles/10.3389/fimmu.2013.00042/full">Secondary 
+    mechanisms of diversification in the human antibody 
+    repertoire</a>. <b>Frontiers in Immunology</b>.</li>
+<li>Safonova Y. et al. 2019. 
+    <a href="https://www.frontiersin.org/articles/10.3389/fimmu.2019.00987/full">De novo Inference 
+    of Diversity Genes and Analysis of Non-canonical V(DD)J Recombination in Immunoglobulins</a>. 
+    <b>Frontiers in Immunology</b>.</li>
+<li>Safonova Y. et al. 2020. <a href="https://genome.cshlp.org/content/30/11/1547.short">V(DD)J 
+    recombination is an important and evolutionarily conserved 
+    mechanism for generating antibodies with unusually long CDR3s</a>. <b>Genome Research</b>.</li>
+</ol>
+</p>
+
+</body>
+</html>

@@ -57,7 +57,12 @@ pub fn define_column_info(
                 continue;
             }
             if !left
-                && (var == "opt_d" || var == "opt_d2" || var == "opt_d_delta" || var == "opt_dΔ")
+                && (var == "d1_name"
+                    || var == "d2_name"
+                    || var == "d_delta"
+                    || var == "d_Δ"
+                    || var == "d1_score"
+                    || var == "d2_score")
             {
                 continue;
             }
@@ -499,6 +504,38 @@ pub fn insert_reference_rows(
                 }
             }
             rows.push(row);
+        }
+    }
+}
+
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Process COMPLETE.
+
+pub fn process_complete(
+    ctl: &EncloneControl,
+    nexacts: usize,
+    bads: &mut Vec<bool>,
+    mat: &Vec<Vec<Option<usize>>>,
+) {
+    let cols = mat.len();
+    if ctl.gen_opt.complete {
+        let mut used = vec![false; cols];
+        for u in 0..nexacts {
+            if !bads[u] {
+                for m in 0..cols {
+                    if mat[m][u].is_some() {
+                        used[m] = true;
+                    }
+                }
+            }
+        }
+        for u in 0..nexacts {
+            for m in 0..cols {
+                if used[m] && mat[m][u].is_none() {
+                    bads[u] = true;
+                }
+            }
         }
     }
 }

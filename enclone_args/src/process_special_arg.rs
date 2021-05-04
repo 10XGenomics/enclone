@@ -40,6 +40,34 @@ pub fn process_special_arg(
         ctl.gen_opt.force_h5 = false;
     } else if arg == "LEGEND" {
         ctl.plot_opt.use_legend = true;
+    } else if arg.starts_with("ALIGN_2ND") {
+        let n = arg.after("ALIGN_2ND");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_align2.push(n.force_usize());
+    } else if arg.starts_with("ALIGN") {
+        let n = arg.after("ALIGN");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_align.push(n.force_usize());
+    } else if arg.starts_with("JALIGN_2ND") {
+        let n = arg.after("JALIGN_2ND");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_jun_align2.push(n.force_usize());
+    } else if arg.starts_with("JALIGN") {
+        let n = arg.after("JALIGN");
+        if !n.parse::<usize>().is_ok() || n.force_usize() == 0 {
+            eprintln!("\nArgument {} is not properly specified.\n", arg);
+            std::process::exit(1);
+        }
+        ctl.gen_opt.chains_to_jun_align.push(n.force_usize());
     } else if arg.starts_with("PLOTXY_EXACT=") {
         let fields = arg.after("PLOTXY_EXACT=").split(',').collect::<Vec<&str>>();
         if fields.len() != 3 {
@@ -430,6 +458,11 @@ pub fn process_special_arg(
         for x in ctl.clono_print_opt.lvars.iter_mut() {
             *x = x.replace("_sum", "_Σ");
             *x = x.replace("_mean", "_μ");
+        }
+    } else if arg.starts_with("GVARS=") {
+        ctl.gen_opt.gvars.clear();
+        for x in arg.after("GVARS=").split(',').collect::<Vec<&str>>() {
+            ctl.gen_opt.gvars.push(x.to_string());
         }
     } else if is_f64_arg(&arg, "MAX_SCORE") {
         ctl.join_alg_opt.max_score = arg.after("MAX_SCORE=").force_f64();

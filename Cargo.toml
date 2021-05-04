@@ -1,7 +1,9 @@
 [workspace]
 
 members = [
+    "bio_edit",
     "enclone",
+    "enclone_args",
     "enclone_com",
     "enclone_core",
     "enclone_help",
@@ -9,6 +11,7 @@ members = [
     "enclone_print",
     "enclone_proto",
     "enclone_tail",
+    "enclone_tools",
 ]
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -20,6 +23,7 @@ members = [
 [profile.dev]
 debug = 1
 opt-level = 3
+split-debuginfo = "unpacked"
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -34,6 +38,7 @@ overflow-checks = true
 [profile.test]
 debug = 1
 opt-level = 3
+split-debuginfo = "unpacked"
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
