@@ -461,10 +461,10 @@ fn test_for_broken_links_and_spellcheck() {
         "abybank actgtgcgagag actgtgcgagagc adefghiklmnpqrstvwy amazonaws anarci barcode \
         barcodes barcoding bcn \
         bioinf cdiff cellranger chmod clen clono clonotype clonotypes \
-        clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr \
+        clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr cshlp \
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
         dref dyiid enclone executables false fcell \
-        fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
+        fixedtextbox foursie foursies frameshifted frameshifts frontiersin fwr fwyh ganesh \
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
         googletagmanager grok gz html \
         hypermutation hypermutations igblast igh igk igl ighm igkc imgt immunoglobulins \

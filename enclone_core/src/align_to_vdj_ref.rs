@@ -274,82 +274,77 @@ pub fn align_to_vdj_ref(
     al.mode = AlignmentMode::Semiglobal;
     let mut ops = al.operations;
 
-    // Fix alignments.  Something is not right in the aligner.  We observe that sometimes
-    // deletions are off by one.
-    //
-    // Changed to favor bridging.
+    // Fix alignments.
 
-    if ctl.gen_opt.align_fix {
-        let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
-        let mut i = 0;
-        let mut pos = 0;
-        let mut rpos = 0;
-        let b1 = vref.len();
-        let b2 = vref.len() + dref.len();
-        let b3 = vref.len() + dref.len() + d2ref.len();
-        let mut edited = vec![false; ops.len()];
-        while i < ops.len() {
-            if ops[i] == Match {
-                pos += 1;
-                rpos += 1;
-                i += 1;
-            } else if ops[i] == Subst {
-                pos += 1;
-                rpos += 1;
-                i += 1;
-            } else if ops[i] == Ins {
-                let mut j = i + 1;
-                while j < ops.len() && ops[j] == Ins {
-                    j += 1;
-                }
-                pos += j - i;
-                i = j;
-            } else if ops[i] == Del {
-                let mut j = i + 1;
-                while j < ops.len() && ops[j] == Del {
-                    j += 1;
-                }
-                let k = j - i;
-                for bi in [b1, b2, b3].iter() {
-                    let bi = *bi;
-
-                    // Maybe can shift right one.
-
-                    if rpos < bi
-                        && rpos + k >= bi
-                        && j < ops.len()
-                        && pos < seq.len()
-                        && rpos < concat.len()
-                        && ops[j] == Subst
-                        && seq[pos] == concat[rpos]
-                    {
-                        edits.push((i, Match));
-                        edits.push((j, Del));
-                        edited[i] = true;
-                        edited[j] = true;
-                        break;
-
-                    // Maybe can shift left one.
-                    } else if rpos + k > bi
-                        && i > 0
-                        && ops[i - 1] == Subst
-                        && seq[pos - 1] == concat[rpos + k - 1]
-                        && !edited[i - 1]
-                    {
-                        edits.push((i - 1, Del));
-                        edits.push((j - 1, Match));
-                        edited[i - 1] = true;
-                        edited[j - 1] = true;
-                        break;
-                    }
-                }
-                rpos += j - i;
-                i = j;
+    let mut edits = Vec::<(usize, bio_edit::alignment::AlignmentOperation)>::new();
+    let mut i = 0;
+    let mut pos = 0;
+    let mut rpos = 0;
+    let b1 = vref.len();
+    let b2 = vref.len() + dref.len();
+    let b3 = vref.len() + dref.len() + d2ref.len();
+    let mut edited = vec![false; ops.len()];
+    while i < ops.len() {
+        if ops[i] == Match {
+            pos += 1;
+            rpos += 1;
+            i += 1;
+        } else if ops[i] == Subst {
+            pos += 1;
+            rpos += 1;
+            i += 1;
+        } else if ops[i] == Ins {
+            let mut j = i + 1;
+            while j < ops.len() && ops[j] == Ins {
+                j += 1;
             }
+            pos += j - i;
+            i = j;
+        } else if ops[i] == Del {
+            let mut j = i + 1;
+            while j < ops.len() && ops[j] == Del {
+                j += 1;
+            }
+            let k = j - i;
+            for bi in [b1, b2, b3].iter() {
+                let bi = *bi;
+
+                // Maybe can shift right one.
+
+                if rpos < bi
+                    && rpos + k >= bi
+                    && j < ops.len()
+                    && pos < seq.len()
+                    && rpos < concat.len()
+                    && ops[j] == Subst
+                    && seq[pos] == concat[rpos]
+                {
+                    edits.push((i, Match));
+                    edits.push((j, Del));
+                    edited[i] = true;
+                    edited[j] = true;
+                    break;
+
+                // Maybe can shift left one.
+                } else if rpos + k > bi
+                    && i > 0
+                    && ops[i - 1] == Subst
+                    && seq[pos - 1] == concat[rpos + k - 1]
+                    && !edited[i - 1]
+                {
+                    edits.push((i - 1, Del));
+                    edits.push((j - 1, Match));
+                    edited[i - 1] = true;
+                    edited[j - 1] = true;
+                    break;
+                }
+            }
+            rpos += j - i;
+            i = j;
         }
-        for x in edits.iter() {
-            ops[x.0] = x.1;
-        }
+    }
+    for x in edits.iter() {
+        ops[x.0] = x.1;
     }
 
     // Create zero-one vectors corresponding to indel-free aligned parts of the D gene; a zero
