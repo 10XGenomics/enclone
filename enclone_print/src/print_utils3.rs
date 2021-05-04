@@ -59,8 +59,8 @@ pub fn define_column_info(
             if !left
                 && (var == "opt_d"
                     || var == "opt_d2"
-                    || var == "opt_d_delta"
-                    || var == "opt_dΔ"
+                    || var == "d_delta"
+                    || var == "d_Δ"
                     || var == "d1_score"
                     || var == "d2_score")
             {

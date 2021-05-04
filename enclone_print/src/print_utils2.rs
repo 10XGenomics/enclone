@@ -643,7 +643,8 @@ pub fn row_fill(
             if !ex.share[mid].left
                 && (*var == "opt_d"
                     || *var == "opt_d2"
-                    || *var == "opt_d_delta"
+                    || *var == "d_delta"
+                    || *var == "d_Δ"
                     || *var == "d1_score"
                     || *var == "d2_score")
             {

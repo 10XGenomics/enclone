@@ -845,10 +845,10 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("d1_score", "score for optimal D gene");
         h.doc("d2_score", "score for second best D gene");
         h.doc(
-            "opt_d_delta",
+            "d_delta",
             "score difference between first and second best D gene",
         );
-        h.doc("opt_dΔ", "same");
+        h.doc("d_Δ", "same");
         h.doc2("These are recomputed from scratch and ignore the given assignment.");
         h.doc2("Note that in many cases D gene assignments are essentially random, as");
         h.doc2("it is often not possible to know the true D gene assignment.");

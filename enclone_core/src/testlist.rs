@@ -57,7 +57,7 @@ pub const DTESTS: [&str; 15] = [
     // 10. test ALIGN<n> and JALIGN<n>, case where there is no D segment
     r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
     // 11. test opt_d etc.
-    r###"BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ,opt_d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
+    r###"BCR=123085 CVARS=opt_d,opt_d2,d_Δ,d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
     // 12. test GROUP_VDJ_REFNAME_HEAVY
     r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
     // 13. test GROUP_VJ_REFNAME_HEAVY
@@ -666,7 +666,7 @@ pub const CRASH_SETS: [&str; 5] = [
     /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
     //
     /* 3 */
-    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,opt_d_delta,opt_dΔ",
+    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=opt_d,opt_d2,d_delta,d_Δ",
     //
     /* 4 */
     "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
@@ -871,13 +871,13 @@ pub const SITE_EXAMPLES: [(&str, &str); 22] = [
     // 17.
     (
         "pages/auto/d_gene_example1.html",
-        "BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CTRDRDLRGATDAFDIW \
+        "BCR=123085 CVARS=opt_d,opt_d2,d_Δ CDR3=CTRDRDLRGATDAFDIW \
          HTML=\"D gene example1\"",
     ),
     // 18.
     (
         "pages/auto/d_gene_example1b.html",
-        "BCR=123085 CVARS=opt_d,opt_d2,opt_dΔ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE \
+        "BCR=123085 CVARS=opt_d,opt_d2,d_Δ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE \
          HTML=\"D gene example1b\"",
     ),
     // 19.
