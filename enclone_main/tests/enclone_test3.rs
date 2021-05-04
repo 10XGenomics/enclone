@@ -596,7 +596,7 @@ fn test_annotated_example() {
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
     std::fs::create_dir_all("testx/outputs/woof").unwrap();
-    let test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+    let test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW LVARS=n SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -629,6 +629,8 @@ fn test_subset_json() {
     let o2 = new.stdout;
     if o1 != o2 {
         eprintln!("\nSubset json test failed: outputs are unequal.\n");
+        eprintln!("output 1:\n{}\n", strme(&o1));
+        eprintln!("output 2:\n{}\n", strme(&o2));
         std::process::exit(1);
     }
     let _ = remove_dir_all("testx/outputs/woof");
