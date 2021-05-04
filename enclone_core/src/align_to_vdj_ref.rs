@@ -281,6 +281,7 @@ pub fn align_to_vdj_ref(
         let b1 = vref.len();
         let b2 = vref.len() + dref.len();
         let b3 = vref.len() + dref.len() + d2ref.len();
+        let mut edited = vec![false; ops.len()];
         while i < ops.len() {
             if ops[i] == Match {
                 pos += 1;
@@ -318,6 +319,8 @@ pub fn align_to_vdj_ref(
                     {
                         edits.push((i, Match));
                         edits.push((j, Del));
+                        edited[i] = true;
+                        edited[j] = true;
                         break;
 
                     // Maybe can shift left one.
@@ -325,9 +328,12 @@ pub fn align_to_vdj_ref(
                         && i > 0
                         && ops[i - 1] == Subst
                         && seq[pos - 1] == concat[rpos + k - 1]
+                        && !edited[i - 1]
                     {
                         edits.push((i - 1, Del));
                         edits.push((j - 1, Match));
+                        edited[i - 1] = true;
+                        edited[j - 1] = true;
                         break;
                     }
                 }
