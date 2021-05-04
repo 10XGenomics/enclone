@@ -159,5 +159,24 @@ However, there is no rigorous way to balance these criteria.  The algorithm is n
 but it is unclear how one would decide that a new algorithm was better.
 </p>
 
+<hr>
+
+<h2>References for VDDJ recombination</h2>
+
+<p>
+<ol>
+<li>Briney, B.S. et al. 2012. Frequency and genetic characterization of V(DD)J recombinants in the 
+    human peripheral blood antibody repertoire. Immunology. 
+    DOI: 10.1111/j.1365-2567.2012.03605.x.</li>
+<li>Briney, B.S. et al. 2013. Secondary mechanisms of diversification in the human antibody 
+    repertoire. Front. Immunol. DOI: 10.3389/fimmu.2013.00042.</li>
+<li>Safonova Y. et al. 2019. De novo Inference of Diversity Genes and Analysis of Non-canonical 
+    V(DD)J Recombination in Immunoglobulins. Front. Immunol. DOI: 10.3389/fimmu.2019.00987.</li>
+<li>Safonova Y. et al. 2020. V(DD)J recombination is an important and evolutionarily conserved 
+    mechanism for generating antibodies with unusually long CDR3s. Genome Research.  
+    DOI: 10.1101/gr.259598.119.</li>
+</ol>
+</p>
+
 </body>
 </html>
