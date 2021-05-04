@@ -29,11 +29,11 @@ endif
 # This is separate because we think it will fail less if it is not running at the same time
 # as other tests. Also, we don't want it in GitHub Actions because it fails occasionally.
 
+echo
 cargo test --features cpu test_accounting -- --nocapture |& post_process_test
 
 ##### RUN TEST GROUP 1 #####
 
-echo
 cargo t |& post_process_test
 
 if ( $status != 0 ) then
