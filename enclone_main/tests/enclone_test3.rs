@@ -596,7 +596,7 @@ fn test_annotated_example() {
 fn test_subset_json() {
     // Note need create_dir_all because testx/outputs may not exist for GitHub Actions.
     std::fs::create_dir_all("testx/outputs/woof").unwrap();
-    let test = r###"BCR=123085 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
+    let test = r###"BCR=123085,123089 CDR3=CARVGSFLSSSWHPRDYYYYGMDVW SUBSET_JSON=testx/outputs/woof/all_contig_annotations.json"###;
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
