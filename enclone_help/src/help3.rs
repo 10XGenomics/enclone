@@ -316,9 +316,13 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) {
         );
         h.doc2("effects are cumulative.");
 
-        // doc MIN_EXACTS
+        // doc MAX_EXACTS and MIN_EXACTS
 
         h.ldoc(
+            "MAX_EXACTS=n",
+            "only show clonotypes having at most n exact subclonotypes",
+        );
+        h.doc(
             "MIN_EXACTS=n",
             "only show clonotypes having at least n exact subclonotypes",
         );

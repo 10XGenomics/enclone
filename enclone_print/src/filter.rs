@@ -234,9 +234,12 @@ pub fn survives_filter(
         return false;
     }
 
-    // Clonotypes with at least n chains
+    // Clonotypes with at least n chains or at most n chains
 
     if exacts.len() < ctl.clono_filt_opt.min_exacts {
+        return false;
+    }
+    if exacts.len() > ctl.clono_filt_opt.max_exacts {
         return false;
     }
 

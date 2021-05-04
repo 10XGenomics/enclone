@@ -357,21 +357,22 @@ pub struct ClonoFiltOpt {
     pub seg: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment names
     pub segn: Vec<Vec<String>>, // only show clonotypes using one of these VDJ segment numbers
     pub min_exacts: usize,   // only show clonotypes having at least this many exact subclonotypes
-    pub vj: Vec<u8>,         // only show clonotypes having exactly this full length V..J sequence
-    pub vdup: bool,          // only show clonotypes having a same V segment in two chains
-    pub have_onesie: bool,   // only show clonotypes including a onesie exact subclonotype
-    pub cdiff: bool,         // only show clonotypes having a constant region difference
-    pub del: bool,           // only show clonotypes exhibiting a deletion
-    pub qual_filter: bool,   // filter out exact subclonotypes having a weak base
-    pub weak_chains: bool,   // filter weak chains from clonotypes
-    pub weak_onesies: bool,  // filter weak onesies
+    pub max_exacts: usize,
+    pub vj: Vec<u8>, // only show clonotypes having exactly this full length V..J sequence
+    pub vdup: bool,  // only show clonotypes having a same V segment in two chains
+    pub have_onesie: bool, // only show clonotypes including a onesie exact subclonotype
+    pub cdiff: bool, // only show clonotypes having a constant region difference
+    pub del: bool,   // only show clonotypes exhibiting a deletion
+    pub qual_filter: bool, // filter out exact subclonotypes having a weak base
+    pub weak_chains: bool, // filter weak chains from clonotypes
+    pub weak_onesies: bool, // filter weak onesies
     pub weak_foursies: bool, // filter weak foursies
-    pub bc_dup: bool,        // filter duplicated barcodes within an exact subclonotype
-    pub donor: bool,         // allow cells from different donors to be placed in the same clonotype
+    pub bc_dup: bool, // filter duplicated barcodes within an exact subclonotype
+    pub donor: bool, // allow cells from different donors to be placed in the same clonotype
     pub bounds: Vec<LinearCondition>, // bounds on certain variables
     pub bound_type: Vec<String>, // types of those bounds
     pub barcode: Vec<String>, // requires one of these barcodes
-    pub umi_filt: bool,      // umi count filter
+    pub umi_filt: bool, // umi count filter
     pub umi_filt_mark: bool, // umi count filter (but only mark)
     pub non_cell_mark: bool,
     pub marked: bool,              // only print clonotypes having a mark
