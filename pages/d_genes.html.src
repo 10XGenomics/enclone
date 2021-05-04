@@ -30,8 +30,8 @@ In general, although D genes are always assigned, they cannot be assigned confid
 <br>• D gene assignments are not guaranteed to be consistent across a clonotype.  
 <br>• We have no way of knowing the true error rate in D gene assignment.  However because on
       very large data sets we observe an inconsistency rate within clonotypes of 
-      <code>~16%</code>, we very roughly estimate the error rate for D gene assignment at
-      <code>10%</code>.  Note of course that the true rate would likely 
+      <code>~13%</code>, we very roughly estimate the error rate for D gene assignment at
+      <code>5-15%</code>.  Note of course that the true rate would likely 
       depend on sample properties including the rate of SHM.
 </p>
 
@@ -157,6 +157,22 @@ the highest score is selected, arbitrarily selecting a winner in the case of a t
 However, there is no rigorous way to balance these criteria.  The algorithm is not optimal
 but it is unclear how one would decide that a new algorithm was better.
 </p>
+
+<p>In more detail, here is how we assess the inconsistency rate.  There are two issues.  First,
+if one allows clonotypes having a large number of exact subclonotypes, then measurement is noisy
+because a single clonotype can overly influence the rate.  For this reason, we restrict to
+clonotypes having at most <code>10</code> exact subclonotypes.  Second, for experimental purposes,
+it is too slow to keep recomputing using a very large dataset.  Therefore we do the following
+(with a large dataset substituted in):
+</p>
+
+<pre><code>enclone BCR=... SUBSET_JSON=subset/outs/all_contig_annotations.json MIN_EXACTS=2 MAX_EXACTS=10</code></pre>
+
+<p>which is slow, followed by:</p>
+
+<pre><code>enclone BCR=subset GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT</code></pre>
+
+<p>which is much faster, to get an inconsistency rate.</p>
 
 <hr>
 
