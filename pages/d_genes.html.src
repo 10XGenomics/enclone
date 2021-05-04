@@ -132,7 +132,7 @@ These alignments are carried out using the following scoring scheme:
 <tr><td> gap open for deletion bridging V/D/J segments   </td><td>  -4     </td></tr>
 <tr><td> gap open (otherwise)              </td><td> -12               </td></tr>
 <tr><td> gap extend for insertion between V/D/J segments </td><td>  -1     </td></tr>
-<tr><td> gap extend for deletion bridging V/D/J segments </td><td>  -1     </td></tr>
+<tr><td> gap extend for deletion bridging V/D/J segments </td><td>  -2     </td></tr>
 <tr><td> gap extend (otherwise)            </td><td>  -2               </td></tr>
 </table>
 </p>

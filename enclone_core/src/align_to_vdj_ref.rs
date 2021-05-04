@@ -134,6 +134,7 @@ pub fn align_to_vdj_ref(
     let gap_extend = ctl.gen_opt.jscore_gap_extend;
     let gap_open_at_boundary = -40 as i32;
     let gap_extend_at_boundary = -10 as i32;
+    let del_gap_extend_at_boundary = -20 as i32;
     let align_div = 10.0;
     let bits_multiplier = ctl.gen_opt.jscore_bits_multiplier;
     const MIN_BITS_FOR_D2: f64 = 14.0;
@@ -185,7 +186,7 @@ pub fn align_to_vdj_ref(
                     || (rpos <= b2 && rpos + j - i >= b2)
                     || (rpos <= b3 && rpos + j - i >= b3)
                 {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
+                    score += gap_open_at_boundary + (j - i - 1) as i32 * del_gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
                 }
