@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-#![allow(dead_code)]
+#![allow(unused_imports, dead_code)]
 
 use ansi_escape::*;
 use enclone::html::*;
