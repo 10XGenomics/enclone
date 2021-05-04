@@ -34,7 +34,7 @@ command-line help that comes with your copy of #enclone will always match its be
 <p>
 <b>5/4/21</b>: Several changes that involve D gene assignment, and which allow for the VDDJ case:
 <ul>
-<li>Add cvars <code>opt_d</code>, <code>opt_d2</code>, <code>d1_score</code>, 
+<li>Add cvars <code>d1_name</code>, <code>d2_name</code>, <code>d1_score</code>, 
     <code>d2_score</code>, <code>d_delta</code> or equivalently <code>d_Δ</code>, see
     <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> and
     <a href="../../pages/auto/d_genes.html"><code>D genes and junction regions</code></a>.</li>

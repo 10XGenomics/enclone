@@ -42,7 +42,7 @@ in score between them, see
 <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.  Here is an
 example:</p>
 
-<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,d_Δ CDR3=CTRDRDLRGATDAFDIW</code></pre>
+<pre><code>enclone BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CTRDRDLRGATDAFDIW</code></pre>
 #include pages/auto/d_gene_example1.html
 
 </p>
@@ -50,7 +50,7 @@ In this example, the D genes are assigned consistently across the clonotype.  He
 where they are assigned inconsistently:
 </p>
 
-<pre><code>enclone BCR=123085 CVARS=opt_d,opt_d2,d_Δ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE
+<pre><code>enclone BCR=123085 CVARS=d1_name,d2_name,d_Δ CDR3=CAREGGVGVVTATDWYFDLW COMPLETE
 </code></pre>
 #include pages/auto/d_gene_example1b.html
 
@@ -83,14 +83,14 @@ displays one alignment per exact subclonotype, so for brevity we'll show example
 just one.  Here is an example for the full alignment:
 </p>
 
-<pre><code>enclone BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
+<pre><code>enclone BCR=123085 ALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name</code></pre>
 #include pages/auto/align_example.html
 
 <p>
 And here is the same example, but showing just the junction region:
 </p>
 
-<pre><code>enclone BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=opt_d</code></pre>
+<pre><code>enclone BCR=123085 JALIGN1 CDR3=CARYIVVVVAATINVGWFDPW CVARSP=d1_name</code></pre>
 #include pages/auto/jun_align_example.html
 
 <p>For <code>JALIGN</code>, we show a line of amino acids that represent the translation of

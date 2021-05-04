@@ -57,8 +57,8 @@ pub fn define_column_info(
                 continue;
             }
             if !left
-                && (var == "opt_d"
-                    || var == "opt_d2"
+                && (var == "d1_name"
+                    || var == "d2_name"
                     || var == "d_delta"
                     || var == "d_Δ"
                     || var == "d1_score"

@@ -129,12 +129,12 @@ pub const CVARS_ALLOWED: [&str; 90] = [
     "utr_name",
     "cdr3_start",
     "v_start",
-    "opt_d",
-    "d_delta",
-    "d_Δ",
-    "opt_d2",
+    "d1_name",
+    "d2_name",
     "d1_score",
     "d2_score",
+    "d_delta",
+    "d_Δ",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];

@@ -264,8 +264,8 @@ pub fn proc_cvar1(
         } else {
             cvar_stats1![j, var, format!("{}", edit)];
         }
-    } else if *var == "opt_d"
-        || *var == "opt_d2"
+    } else if *var == "d1_name"
+        || *var == "d2_name"
         || *var == "d_delta"
         || *var == "d_Δ"
         || *var == "d1_score"
@@ -318,9 +318,9 @@ pub fn proc_cvar1(
                 opt2_name += &refdata.name[opt2[i]];
             }
         }
-        if *var == "opt_d" {
+        if *var == "d1_name" {
             cvar_stats1![j, var, opt_name];
-        } else if *var == "opt_d2" {
+        } else if *var == "d2_name" {
             cvar_stats1![j, var, opt2_name];
         } else if *var == "d#" {
             let mut score = 0.0;

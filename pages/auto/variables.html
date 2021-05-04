@@ -640,6 +640,86 @@ is not present for an exact subclonotype.
 </thead>
 <tbody>
 
+<tr><td> <code> d1_name </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> optimal D segment name                                                         </td></tr>
+
+<tr><td> <code> d2_name </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> second best D segment name                                                     </td></tr>
+
+<tr><td> <code> d1_score </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score of optimal D segment                                                     </td></tr>
+
+<tr><td> <code> d2_score </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score of second best D segment                                                 </td></tr>
+
+<tr><td> <code> datasets </code>                                                        </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> cell-exact                                                                     </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> dataset names                                                                  </td></tr>
+
+<tr><td> <code> dna% </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> nucleotide identity with donor reference                                       </td></tr>
+
+<tr><td> <code> donors </code>                                                          </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> cell-exact                                                                     </td>
+    <td> no                                                                             </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> donor names                                                                    </td></tr>
+
+<tr><td> <code> dref </code>                                                            </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> nucleotide distance to donor reference                                         </td></tr>
+
+<tr><td> <code> dref_aa </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> lvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
+    <td> amino acid distance to donor reference                                         </td></tr>
+
+<tr><td> <code> d_delta </code>                                                         </td>
+    <td>                                                                                </td>
+    <td> cvar                                                                           </td>
+    <td> exact                                                                          </td>
+    <td> yes                                                                            </td>
+    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
+    <td> score difference between top two D segment assignments                         </td></tr>
+
 <tr><td> <code> d_donor </code>                                                         </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
@@ -709,61 +789,13 @@ is not present for an exact subclonotype.
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> distance from universal reference                                              </td></tr>
 
-<tr><td> <code> d1_score </code>                                                        </td>
+<tr><td> <code> d_Δ </code>                                                             </td>
     <td>                                                                                </td>
     <td> cvar                                                                           </td>
     <td> exact                                                                          </td>
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score of optimal D segment                                                     </td></tr>
-
-<tr><td> <code> d2_score </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score of second best D segment                                                 </td></tr>
-
-<tr><td> <code> datasets </code>                                                        </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> dataset names                                                                  </td></tr>
-
-<tr><td> <code> dna% </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> nucleotide identity with donor reference                                       </td></tr>
-
-<tr><td> <code> donors </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> cell-exact                                                                     </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> donor names                                                                    </td></tr>
-
-<tr><td> <code> dref </code>                                                            </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> nucleotide distance to donor reference                                         </td></tr>
-
-<tr><td> <code> dref_aa </code>                                                         </td>
-    <td>                                                                                </td>
-    <td> lvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> </td>
-    <td> amino acid distance to donor reference                                         </td></tr>
+    <td> score difference between top two D segment assignments                         </td></tr>
 
 <tr><td> <code> edit </code>                                                            </td>
     <td>                                                                                </td>
@@ -1053,38 +1085,6 @@ is not present for an exact subclonotype.
     <td> no                                                                             </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> notes for exact subclonotype                                                   </td></tr>
-
-<tr><td> <code> opt_d </code>                                                           </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> optimal D segment name                                                         </td></tr>
-
-<tr><td> <code> opt_d2 </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> no                                                                             </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> second best D segment name                                                     </td></tr>
-
-<tr><td> <code> opt_d_delta </code>                                                     </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score difference between top two D segment assignments                         </td></tr>
-
-<tr><td> <code> opt_dΔ </code>                                                          </td>
-    <td>                                                                                </td>
-    <td> cvar                                                                           </td>
-    <td> exact                                                                          </td>
-    <td> yes                                                                            </td>
-    <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
-    <td> score difference between top two D segment assignments                         </td></tr>
 
 <tr><td> <code> origins </code>                                                         </td>
     <td>                                                                                </td>

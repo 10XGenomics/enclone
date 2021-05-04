@@ -840,8 +840,8 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) {
         h.doc("j_id", "id of J region");
         h.doc("const_id", "id of constant region (or null, if not known)");
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
-        h.ldoc("opt_d", "name of optimal D gene, or none");
-        h.doc("opt_d2", "name of second best D gene, or none");
+        h.ldoc("d1_name", "name of optimal D gene, or none");
+        h.doc("d2_name", "name of second best D gene, or none");
         h.doc("d1_score", "score for optimal D gene");
         h.doc("d2_score", "score for second best D gene");
         h.doc(
