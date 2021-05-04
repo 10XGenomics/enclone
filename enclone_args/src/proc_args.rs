@@ -197,6 +197,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) {
     ctl.clono_filt_opt.max_datasets = 1000000000;
     ctl.clono_filt_opt.umi_filt = true;
     ctl.clono_filt_opt.umi_ratio_filt = true;
+    ctl.clono_filt_opt.max_exacts = 1_000_000_000;
 
     ctl.gen_opt.align_fix = true;
 

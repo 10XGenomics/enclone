@@ -467,13 +467,13 @@ fn test_for_broken_links_and_spellcheck() {
         fixedtextbox foursie foursies frameshifted frameshifts fwr fwyh ganesh \
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
         googletagmanager grok gz html \
-        hypermutation hypermutations igblast igh igk igl ighm igkc imgt \
+        hypermutation hypermutations igblast igh igk igl ighm igkc imgt immunoglobulins \
         indel indels inkt jsdelivr json krh levenshtein linux loh lvar lvars \
         macbook mait metadata mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nqual nwhitef oligos onesie onesies parseable pbmc \
         pcell pdb pgas phad phylip \
-        plasmablast preinstalled prepends pwm pwms redownloads \
+        plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stdout sthnqedkr subclonotype \
         subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
