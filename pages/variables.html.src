@@ -537,7 +537,7 @@ is not present for an exact subclonotype.
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr>
-<h2>D-F</h2>
+<h2>D</h2>
 <p>
 <table rules="all" cellpadding="6" style="border: 1px solid black">
 <thead>
@@ -709,6 +709,29 @@ is not present for an exact subclonotype.
     <td> yes                                                                            </td>
     <td> <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> </td>
     <td> score delta between top two D gene assignments                                 </td></tr>
+
+</tbody>
+</table>
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr>
+<h2>E-F</h2>
+<p>
+<table rules="all" cellpadding="6" style="border: 1px solid black">
+<thead>
+<tr>
+<th align="left"> variable          </th>
+<th align="left"> limits            </th>
+<th align="left"> class             </th>
+<th align="left"> level             </th>
+<th align="left"> numeric           </th>
+<th align="left"> help page         </th>
+<th align="left"> brief description </th>
+</tr>
+</thead>
+<tbody>
 
 <tr><td> <code> edit </code>                                                            </td>
     <td>                                                                                </td>
