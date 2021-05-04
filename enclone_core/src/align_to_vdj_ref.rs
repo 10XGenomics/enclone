@@ -169,7 +169,7 @@ pub fn align_to_vdj_ref(
                 rpos += 1;
                 score += mismatch;
                 i += 1;
-            } else if ops[i] == Ins && !ctl.gen_opt.old_rescore {
+            } else if ops[i] == Ins {
                 let mut j = i + 1;
                 while j < ops.len() && ops[j] == Ins {
                     j += 1;
@@ -182,7 +182,7 @@ pub fn align_to_vdj_ref(
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
                 }
                 i = j;
-            } else if ops[i] == Del && !ctl.gen_opt.old_rescore {
+            } else if ops[i] == Del {
                 let mut j = i + 1;
                 while j < ops.len() && ops[j] == Del {
                     j += 1;
@@ -192,29 +192,6 @@ pub fn align_to_vdj_ref(
                     || (rpos <= b3 && rpos + j - i >= b3)
                 {
                     score += gap_open_at_boundary + (j - i - 1) as i32 * del_gap_extend_at_boundary;
-                } else {
-                    score += gap_open + (j - i - 1) as i32 * gap_extend;
-                }
-                rpos += j - i;
-                i = j;
-            } else if ops[i] == Ins && ctl.gen_opt.old_rescore {
-                let mut j = i + 1;
-                while j < ops.len() && ops[j] == Ins {
-                    j += 1;
-                }
-                if rpos == vref.len() || rpos == vref.len() + dref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
-                } else {
-                    score += gap_open + (j - i - 1) as i32 * gap_extend;
-                }
-                i = j;
-            } else if ops[i] == Del && ctl.gen_opt.old_rescore {
-                let mut j = i + 1;
-                while j < ops.len() && ops[j] == Del {
-                    j += 1;
-                }
-                if rpos + j - i == vref.len() || rpos == vref.len() + dref.len() {
-                    score += gap_open_at_boundary + (j - i - 1) as i32 * gap_extend_at_boundary;
                 } else {
                     score += gap_open + (j - i - 1) as i32 * gap_extend;
                 }

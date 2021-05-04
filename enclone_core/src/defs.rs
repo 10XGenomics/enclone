@@ -268,7 +268,6 @@ pub struct GeneralOpt {
     pub jscore_bits_multiplier: f64,
     pub jscore_gap_open: i32,
     pub jscore_gap_extend: i32,
-    pub old_rescore: bool,
 }
 
 // Some plot options.
