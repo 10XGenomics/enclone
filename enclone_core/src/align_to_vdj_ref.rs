@@ -5,7 +5,7 @@
 //
 // ASSESSMENT
 //
-// enclone BI=1-4,9 BUILT_IN SUBSET_JSON=subset/outs/all_contig_annotations.json 
+// enclone BI=1-4,9 BUILT_IN SUBSET_JSON=subset/outs/all_contig_annotations.json
 //         MIN_EXACTS=2 MAX_EXACTS=10 NOPRINT
 //
 // (slow)
