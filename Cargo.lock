@@ -234,7 +234,7 @@ dependencies = [
 
 [[package]]
 name = "bio_edit"
-version = "0.33.1-alpha.0"
+version = "0.5.51"
 dependencies = [
  "bio-types",
  "bit-set",
