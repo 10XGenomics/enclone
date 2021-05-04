@@ -3,14 +3,19 @@
 // Align a sequence to a concatenated V(D)J reference, encouraging insertions exactly at
 // junction points and deletions that bridge junction points.
 //
-// results of various parameter choices
+// ASSESSMENT
 //
-// enclone BI=1-4,9 BUILT_IN GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
+// enclone BI=1-4,9 BUILT_IN SUBSET_JSON=subset/outs/all_contig_annotations.json 
+//         MIN_EXACTS=2 MAX_EXACTS=10 NOPRINT
 //
-// d_inconsistent_n = 53373
-// d_inconsistent_% = 16.43
+// (slow)
 //
-// Value was 14.77 earlier but it's not clear how to get back to that.
+// enclone BCR=subset GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT
+//
+// (fast)
+//
+// inconsistency rate from this = 13.33%
+// sample size = 53,373
 //
 // If you mess with this, you can test your changes with "cargo t test_enclone_d" and
 // "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
