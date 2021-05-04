@@ -133,8 +133,8 @@ pub const CVARS_ALLOWED: [&str; 90] = [
     "opt_d_delta",
     "opt_dΔ",
     "opt_d2",
-    "d#",
-    "d2#",
+    "d1_score",
+    "d2_score",
 ];
 
 pub const CVARS_ALLOWED_PCELL: [&str; 2] = ["u_cell", "r_cell"];

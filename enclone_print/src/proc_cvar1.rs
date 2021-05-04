@@ -268,8 +268,8 @@ pub fn proc_cvar1(
         || *var == "opt_d2"
         || *var == "opt_d_delta"
         || *var == "opt_dΔ"
-        || *var == "d#"
-        || *var == "d2#"
+        || *var == "d1_score"
+        || *var == "d2_score"
     {
         if !ex.share[mid].left {
             cvar_stats1![j, var, "".to_string()];
@@ -328,7 +328,7 @@ pub fn proc_cvar1(
                 score = scores[0];
             }
             cvar_stats1![j, var, format!("{:.1}", score)];
-        } else if *var == "d2#" {
+        } else if *var == "d2_score" {
             let mut score = 0.0;
             if scores.len() > 1 {
                 score = scores[1];

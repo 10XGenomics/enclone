@@ -644,8 +644,8 @@ pub fn row_fill(
                 && (*var == "opt_d"
                     || *var == "opt_d2"
                     || *var == "opt_d_delta"
-                    || *var == "d#"
-                    || *var == "d2#")
+                    || *var == "d1_score"
+                    || *var == "d2_score")
             {
                 continue;
             }

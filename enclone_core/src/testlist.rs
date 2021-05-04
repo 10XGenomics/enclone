@@ -37,7 +37,7 @@ pub const DTESTS: [&str; 15] = [
     // 4. test D_INCONSISTENT, and lock number of inconsistencies
     r###"BCR=123085 D_INCONSISTENT CVARS=opt_d COMPLETE NGROUP"###,
     // 5. the JALIGN1 in this example had a boundary location that was off by one
-    r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=d#,d2# CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
+    r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=d1_score,d2_score CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
     // 6. the JALIGN1 in this example had a boundary location that was off by one
     r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=opt_d CDR3=CAKAGPTESGYYVWYFDLW"###,
     // 7. test d_inconsistent_{%,n}

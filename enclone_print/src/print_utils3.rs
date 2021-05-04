@@ -61,8 +61,8 @@ pub fn define_column_info(
                     || var == "opt_d2"
                     || var == "opt_d_delta"
                     || var == "opt_dΔ"
-                    || var == "d#"
-                    || var == "d2#")
+                    || var == "d1_score"
+                    || var == "d2_score")
             {
                 continue;
             }
