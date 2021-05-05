@@ -122,10 +122,20 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              We offer some options to do actual grouping, with the intention of reflecting \
              functional (antigen-binding) differences, but with many caveats because this is a \
              very hard problem.\n\n\
-             To turn on grouping, one uses a command of the form\n\
+             \
+             These options are experimental.  There are many natural extensions that we have \
+             not implemented.\n\n\
+             \
+             enclone has two types of grouping: symmetric and asymmetric.  Symmetric grouping \
+             creates nonoverlapping groups, whereas asymmetric grouping creates groups that may \
+             overlap.\n\n\
+             \
+             To turn on symmetric grouping, and as a prelude to asymmetric grouping (described \
+             subsequently), one uses a command of the form\n\
              \\bold{GROUP=c1,...,cn}\n\
              where each \\bold{ci} is a condition.  Two clonotypes are placed in the same group \
-             if all the conditions are satisfied, and that grouping is extended transitively.\n\n\
+             if all the conditions are satisfied, and that grouping is extended transitively \
+             (even in the asymmetric case).\n\n\
              Here are the conditions:\n\n",
         );
         h.rows.clear();
@@ -157,7 +167,39 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print_tab2();
         h.print("\n");
 
-        h.print("In addition, there are the following grouping options:\n");
+        h.print(
+            "To turn on asymmetric grouping, one uses the \\bold{AGROUP} option.  To use \
+            this, it is in addition necessary to define \"center clonotypes\", \
+            \"a distance formula\", and a \"distance bound\".  Each group will then consist \
+            of the center clonotype (which comes first), followed by, in order by distance \
+            (relative to the formula), all those clonotypes that satisfy the distance bound \
+            (with ties broken arbitrarily).  For each clonotype in a group, we print its \
+            distance from the first clonotype, and this is also available as a parseable variable \
+            \\bold{dist_center}.\n\n",
+        );
+
+        h.print(
+            "\\bold{Center clonotypes.}  These are in principle any set of clonotypes.  \
+            For now we allow two options\n\
+            \\bold{AG_CENTER=from_filters}\n\
+            which causes all the filters described at \"enclone help filters\" to NOT filter \
+            clonotypes in the usual way, but instead filter to define the center, and\n\
+            \\bold{AG_CENTER=copy_filters}\n\
+            which effectively does nothing -- it just says that filters apply to all clonotypes, \
+            whether in the center or not.  In addition, in both cases, only clonotypes containing \
+            cells from donor d1 are placed in the center.\n\n",
+        );
+
+        h.print(
+            "Please note that asymmetric grouping is very time consuming, and run time is \
+            roughly a linear function of (number of center clonotypes) * (number of clonotypes).  \
+            So it is advisable to restrict the number of center clonotypes.\n\n",
+        );
+
+        h.print(
+            "In addition, there are the following grouping options, for both the symmetric \
+            and asymmetric cases:\n",
+        );
         h.rows.clear();
         h.doc(
             "MIN_GROUP",
