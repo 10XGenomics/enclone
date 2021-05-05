@@ -118,44 +118,52 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "\\bold{options that control clonotype grouping}\n\n\
              By default, enclone organizes clonotypes into groups, and each group contains \
-             just one clonotype!  If you prefer not to see the grouping messages, you can \
-             turn them off by adding the option \\bold{NGROUP} to the enclone command line.  \
-             We intend to add useful versions of grouping to a future version of enclone, that \
-             are reflective of functional (antigen-binding) differences.  For now there are the \
-             following \"toy\" options:\n\n",
+             just one clonotype!  \
+             We offer some options to do actual grouping, with the intention of reflecting \
+             functional (antigen-binding) differences, but with many caveats because this is a \
+             very hard problem.\n\n\
+             To turn on grouping, one uses a command of the form\n\
+             \\bold{GROUP=c1,...,cn}\n\
+             where each \\bold{ci} is a condition.  Two clonotypes are placed in the same group \
+             if all the conditions are satisfied, and that grouping is extended transitively.\n\n\
+             Here are the conditions:\n\n",
         );
         h.rows.clear();
 
         h.doc(
-            "GROUP_HEAVY_CDR3",
-            "group by perfect identity of CDR3 amino acid sequence \
-             of IGH or TRB",
+            "vj_refname",
+            "V segments have the same reference sequence name, and likewise for J segments",
         );
         h.doc(
-            "GROUP_VJ_REFNAME",
-            "group by sharing identical V and J reference gene names",
+            "vdj_refname",
+            "V segments have the same reference sequence name, and likewise for J segments",
         );
-        h.doc(
-            "GROUP_VJ_REFNAME_STRONG",
-            "same but also require identical length V..J sequences",
-        );
-        h.doc(
-            "",
-            "(after correction for indels) and identical length CDR3 sequences,",
-        );
-        h.doc("", "but ignores foursies and moresies");
-        h.doc(
-            "GROUP_VJ_REFNAME_HEAVY",
-            "group by sharing identical IGH or TRB V and J reference gene names",
-        );
-        h.doc(
-            "GROUP_VDJ_REFNAME_HEAVY",
-            "group by sharing identical IGH or TRB V, D and J reference gene names",
-        );
+        h.doc2("and D segments supplied by Cell Ranger");
+
         h.ldoc(
+            "len",
+            "the lengths of V..J are the same (after correction for indels)",
+        );
+        h.doc("cdr3_len", "CDR3 sequences have the same length");
+        h.ldoc(
+            "aa≥n%",
+            "amino acid identity on concatenated V..J sequences of at least n%",
+        );
+        h.doc(
+            "aa_heavy≥n%",
+            "amino acid identity on IGH/TRB V..J sequences of at least n%",
+        );
+        h.doc2("(in both cases, we also recognize >= and ⩾)");
+        h.print_tab2();
+        h.print("\n");
+
+        h.print("In addition, there are the following grouping options:\n");
+        h.rows.clear();
+        h.doc(
             "MIN_GROUP",
             "minimum number of clonotypes in group to print (default = 1)",
         );
+        h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2();
         h.print("\n");
         h.print(
