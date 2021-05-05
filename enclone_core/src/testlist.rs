@@ -58,9 +58,9 @@ pub const DTESTS: [&str; 15] = [
     r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
     // 11. test d1 etc.
     r###"BCR=123085 CVARS=d1_name,d2_name,d_Δ,d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
-    // 12. test GROUP_VDJ_REFNAME_HEAVY
+    // 12. test GROUP_VDJ_REFNAME_HEAVY (deprecated but supported)
     r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
-    // 13. test GROUP_VJ_REFNAME_HEAVY
+    // 13. test GROUP_VJ_REFNAME_HEAVY (deprecated but supported)
     r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
     // 14. test placement of indel, needed shifting right
     r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CAKDKSRPPTHYYGSGSYYSRILDNW"###,
@@ -226,13 +226,13 @@ pub const TESTS: [&str; 234] = [
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN HTML SET_IN_STONE"###,
     // 60. test 4/8 for newline correctness
     r###"BCR=85333 CDR3="CLLSYSGARVF|CQSADSSGTYKVF" AMINO= PLAIN NGROUP HTML SET_IN_STONE"###,
-    // 61. test 5/8 for newline correctness
+    // 61. test 5/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
-    // 62. test 6/8 for newline correctness
+    // 62. test 6/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
-    // 63. test 7/8 for newline correctness
+    // 63. test 7/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
-    // 64. test 8/8 for newline correctness
+    // 64. test 8/8 for newline correctness (this grouping option deprecated but supported)
     r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
     // 65. test NCELL
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
