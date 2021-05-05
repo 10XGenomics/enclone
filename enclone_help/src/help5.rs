@@ -197,8 +197,29 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
 
         h.print(
+            "\\bold{Distance formula.}  This could in principle be any function that takes as \
+            input two clonotypes and returns a number.  For now we allow only\n\
+            \\bold{AG_DIST_FORMULA=cdr3_edit_distance}\n\
+            which is the \"Levenshtein CDR3 edit distance between two clonotypes\".  This is the \
+            minimum, over all pairs of exact subclonotypes, one from each of the two clonotypes, \
+            of the edit distance between two exact subclonotypes.  We take the sum, over all \
+            pairs of heavy chains, one from each of the two exact subclonotypes, of the \
+            edit distance between the CDR3 sequences for the heavy chains, plus the same for \
+            light chains.  Exact subclonotypes that lack a heavy or a light chain are ignored \
+            by this computation.  Also the distance between two clonotypes is declared infinite \
+            if one of them lacks a heavy chain or one of them lacks a light chain.\n\n",
+        );
+        h.print(
+            "\\bold{Distance bound.}  Initially we allow the following two forms:\n\
+            \\bold{AG_DIST_BOUND=top=n}\n\
+            which returns the top n clonotypes, and\n\
+            \\bold{AG_DIST_BOUND=max=d}\n\
+            which returns all clonotypes having distance ≤ d from the center clonotype.\n\n",
+        );
+
+        h.print(
             "In addition, there are the following grouping options, for both the symmetric \
-            and asymmetric cases:\n",
+            and asymmetric cases:\n\n",
         );
         h.rows.clear();
         h.doc(
