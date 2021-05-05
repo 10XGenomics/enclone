@@ -121,7 +121,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              just one clonotype!  \
              We offer some options to do actual grouping, with the intention of reflecting \
              functional (antigen-binding) differences, but with many caveats because this is a \
-             very hard problem.\n\n\
+             hard problem.\n\n\
              \
              These options are experimental.  There are many natural extensions that we have \
              not implemented.\n\n\
@@ -136,6 +136,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
              where each \\bold{ci} is a condition.  Two clonotypes are placed in the same group \
              if all the conditions are satisfied, and that grouping is extended transitively \
              (even in the asymmetric case).\n\n\
+             In what follows, \\bold{heavy chain} means IGH or TRB.\n\n\
              Here are the conditions:\n\n",
         );
         h.rows.clear();
@@ -146,9 +147,9 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         );
         h.doc(
             "vdj_refname",
-            "V segments have the same reference sequence name, and likewise for J segments",
+            "V segments have the same reference sequence name, and likewise for J segments,",
         );
-        h.doc2("and D segments supplied by Cell Ranger");
+        h.doc2("and likewise for D segments supplied by Cell Ranger");
 
         h.ldoc(
             "len",
@@ -157,11 +158,11 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.doc("cdr3_len", "CDR3 sequences have the same length");
         h.ldoc(
             "aa≥n%",
-            "amino acid identity on concatenated V..J sequences of at least n%",
+            "amino acid identity on concatenated V..J sequences is at least n%",
         );
         h.doc(
             "aa_heavy≥n%",
-            "amino acid identity on IGH/TRB V..J sequences of at least n%",
+            "amino acid identity on heavy chain V..J sequences is at least n%",
         );
         h.doc2("(in both cases, we also recognize >= and ⩾)");
         h.print_tab2();
@@ -170,7 +171,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
         h.print(
             "To turn on asymmetric grouping, one uses the \\bold{AGROUP} option.  To use \
             this, it is in addition necessary to define \"center clonotypes\", \
-            \"a distance formula\", and a \"distance bound\".  Each group will then consist \
+            a \"distance formula\", and a \"distance bound\".  Each group will then consist \
             of the center clonotype (which comes first), followed by, in order by distance \
             (relative to the formula), all those clonotypes that satisfy the distance bound \
             (with ties broken arbitrarily).  For each clonotype in a group, we print its \
@@ -180,7 +181,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
 
         h.print(
             "\\bold{Center clonotypes.}  These are in principle any set of clonotypes.  \
-            For now we allow two options\n\
+            For now we allow two options:\n\
             \\bold{AG_CENTER=from_filters}\n\
             which causes all the filters described at \"enclone help filters\" to NOT filter \
             clonotypes in the usual way, but instead filter to define the center, and\n\
@@ -190,15 +191,16 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             cells from donor d1 are placed in the center.\n\n",
         );
 
-        h.print(
+        h.print_with_box(
             "Please note that asymmetric grouping is very time consuming, and run time is \
             roughly a linear function of (number of center clonotypes) * (number of clonotypes).  \
-            So it is advisable to restrict the number of center clonotypes.\n\n",
+            So it is advisable to restrict the number of center clonotypes.",
+            false,
         );
 
         h.print(
             "\\bold{Distance formula.}  This could in principle be any function that takes as \
-            input two clonotypes and returns a number.  For now we allow only\n\
+            input two clonotypes and returns a number.  For now we allow only:\n\
             \\bold{AG_DIST_FORMULA=cdr3_edit_distance}\n\
             which is the \"Levenshtein CDR3 edit distance between two clonotypes\".  This is the \
             minimum, over all pairs of exact subclonotypes, one from each of the two clonotypes, \
@@ -210,7 +212,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) {
             if one of them lacks a heavy chain or one of them lacks a light chain.\n\n",
         );
         h.print(
-            "\\bold{Distance bound.}  Initially we allow the following two forms:\n\
+            "\\bold{Distance bound.}  For now we allow the following two forms:\n\
             \\bold{AG_DIST_BOUND=top=n}\n\
             which returns the top n clonotypes, and\n\
             \\bold{AG_DIST_BOUND=max=d}\n\
